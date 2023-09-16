@@ -1,0 +1,10 @@
+{
+  "port": 8800,
+  "parseJson": true,
+  "language": "js",
+  "cors": true,
+  "urlEncoded": true,
+  "mode": "development",
+  "doLogs": true,
+  "saltRounds": 10
+}
