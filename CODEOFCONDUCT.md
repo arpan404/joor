@@ -38,7 +38,7 @@ The following behaviors are considered unacceptable and will not be tolerated wi
 
 ## Reporting and Enforcement
 
-If you witness or experience behavior that violates this Code of Conduct, please report it immediately. You can do so by contacting the project maintainers or by sending an email to [@arpan404](arpanworkmail7@gmail.com). All reports will be treated with confidentiality and will be reviewed and addressed promptly.
+If you witness or experience behavior that violates this Code of Conduct, please report it immediately. You can do so by contacting the project maintainers or by sending an email to [@arpan404](mailto:arpanworkmail7@gmail.com). All reports will be treated with confidentiality and will be reviewed and addressed promptly.
 
 Instances of unacceptable behavior may result in temporary or permanent bans from participation in the Joor, as determined by the project maintainers. Our goal is to ensure a safe and respectful environment for everyone, and we will take appropriate action to address any issues.
 
