@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import { JOORCONFIG } from "../../types/app/index.js";
 import { Config } from "../server/config/index.js";
-
 export default class Hash {
   private static configData: JOORCONFIG | null = null;
   public static async encrypt(plainText: string): Promise<string | boolean> {

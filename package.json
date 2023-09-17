@@ -6,7 +6,7 @@
   "license": "MIT",
   "module": "index.ts",
   "type": "module",
-  "main":"./joor/app/index.js",
+  "main":"./src/app/index.js",
   "scripts": {
     "build": "tsc"
   },

@@ -9,7 +9,6 @@ export class Config {
       try {
         const configPath = path.resolve(process.cwd(), this.configFile);
         this.configData = (await Bun.file(configPath).json()) as JOORCONFIG;
-        console.log(chalk.greenBright("Successfully loaded config file."));
       } catch (error: any) {
         if (error.code === "ENOENT") {
           console.error(

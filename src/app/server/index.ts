@@ -4,6 +4,7 @@
 // import chalk from "chalk";
 // import fs, { Dirent } from "fs";
 import { JOORCONFIG } from "../../types/app/index.js";
+import { servePort } from "./libs/serve.js";
 // import { DYNAMIC_DATA } from "types/server.js";
 export class Server {
   private config: JOORCONFIG | null = null;
@@ -11,7 +12,9 @@ export class Server {
     this.config = configData;
   }
   public async listen() {
-    console.log(this.config);
+    if (this.config) {
+      servePort(this.config);
+    }
 
     // try {
     // //   await this.startListening();

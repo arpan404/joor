@@ -18,6 +18,7 @@ export default class Joor {
       const data: JOORCONFIG | null = await Config.get();
       if (data !== null) {
         Joor.configData = data;
+        console.log(chalk.greenBright("Successfully loaded config file."));
       } else {
         console.error(chalk.red("Error loading config file."));
       }
