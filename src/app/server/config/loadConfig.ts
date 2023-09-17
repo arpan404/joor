@@ -1,6 +1,6 @@
 import path from "path";
-import { JOORCONFIG } from "../../types/index";
 import chalk from "chalk";
+import { JOORCONFIG } from "../../../types/app/index.js";
 export class Config {
   private static configFile: string = "joor.config.json";
   public static configData: JOORCONFIG | null = null;
@@ -8,8 +8,7 @@ export class Config {
     if (this.configData === null) {
       try {
         const configPath = path.resolve(process.cwd(), this.configFile);
-        const configContent = await Bun.file(configPath).text();
-        this.configData = (await JSON.parse(configContent)) as JOORCONFIG;
+        this.configData = (await Bun.file(configPath).json()) as JOORCONFIG;
         console.log(chalk.greenBright("Successfully loaded config file."));
       } catch (error: any) {
         if (error.code === "ENOENT") {

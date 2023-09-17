@@ -1,10 +1,11 @@
 import chalk from "chalk";
-import { Config } from "../server/config";
-import { JOORCONFIG } from "../types";
+import { JOORCONFIG } from "../../types/app/index.js";
+import { Config } from "../server/config/index.js";
 
 export default class Hash {
-  private static configData: JOORCONFIG | null = Config.configData;
+  private static configData: JOORCONFIG | null = null;
   public static async encrypt(plainText: string): Promise<string | boolean> {
+    this.configData = await Config.get();
     if (this.configData !== null) {
       try {
         let saltRounds = this.configData?.saltRounds!;

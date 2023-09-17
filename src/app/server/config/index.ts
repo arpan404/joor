@@ -1,1 +1,1 @@
-export * from "./loadConfig";
+export * from "./loadConfig.js";

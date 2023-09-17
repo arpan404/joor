@@ -6,7 +6,7 @@ import {
     LANGUAGE,
     MODE,
     DOLOGS,
-  } from "./data";
+  } from "./data.js";
   
   export interface JOORCONFIG {
     port?: PORT;

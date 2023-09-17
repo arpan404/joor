@@ -1,3 +1,2 @@
-// @bun
-// src/cli/index.ts
-console.log("Helo");
+export {};
+//# sourceMappingURL=index.js.map
