@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { JOORCONFIG } from "../../../types/app/index.js";
-import handleRequests from "./handleRequests.js";
+import handleRequests from "../request/handleRequests.js";
 
 export async function servePort(configData: JOORCONFIG) {
   const isUnderDevelopment = configData.mode === "development" ? true : false;
@@ -9,7 +9,7 @@ export async function servePort(configData: JOORCONFIG) {
       port: configData.port,
       development: isUnderDevelopment,
       async fetch(request: Request): Promise<Response> {
-        const response: Response = await handleRequests(request);
+        const response: Response = await handleRequests(request, configData);
         return response;
       },
     });
