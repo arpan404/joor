@@ -1,5 +1,5 @@
 {
-  "name": "int0",
+  "name": "ground0",
   "module": "index.ts",
   "type": "module",
   "devDependencies": {

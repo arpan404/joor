@@ -1,4 +1,4 @@
-import { RESPONSE } from "../../../../../../src/types/app";
+import { RESPONSE } from "../../../../../src/types/app";
 
 export function route(request: Request): any{
   return {
