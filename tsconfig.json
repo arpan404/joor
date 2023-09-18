@@ -4,7 +4,6 @@
     "module": "NodeNext",
     "target": "esnext",
     "moduleResolution": "NodeNext",
-    // "moduleDetection": "",
     "allowImportingTsExtensions": false,
     "noEmit": false,
     "emitDeclarationOnly": false,
