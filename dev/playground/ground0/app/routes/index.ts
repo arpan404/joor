@@ -1,11 +1,10 @@
-import { RESPONSE } from "../../../../../src/types/app";
+import { RESPONSE } from "joor";
 
-export function route(request: Request): any{
+export function route(request: Request): RESPONSE {
+  console.log(request)
   return {
-    response:{
-        body:{
-            name:"Arpan"
-        }
-    }
+    body: {
+      name: "Arpan",
+    },
   };
 }

@@ -6,9 +6,13 @@
   "license": "MIT",
   "module": "index.ts",
   "type": "module",
-  "main":"./src/app/index.js",
+  "main": "./src/app/index.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "concurrency-test": "bun run ./dev/tools/tests/concurrency/index.ts"
   },
   "devDependencies": {
     "bun-types": "latest"

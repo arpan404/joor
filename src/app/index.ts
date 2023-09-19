@@ -39,7 +39,7 @@ export default class Joor {
 /* 
 Other classes or functions that should be accessible for users should be imported from their respective files, and exported from here.
 
-Note: You should import respective classes/functions from their respective folder's index file, and export them from here.
+Note: You should import respective classes/functions/types from their respective folder's index file, and export them from here.
 
 Example:
 import { Hash } from "./hashing/index.js";
@@ -56,4 +56,6 @@ Also, Joor class should be default export from this file
 */
 
 import Hash from "./hashing/index.js";
-export { Hash };
+import { RESPONSE } from "../types/app/index.js";
+export { Hash, RESPONSE };
+

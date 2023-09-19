@@ -1,4 +1,3 @@
-
 /** 
 @example
 // If the function returns a status code and a body in string form
@@ -46,4 +45,25 @@ type INTERNAL_RESPONSE = {
   response?: RESPONSE;
   code?: string;
 };
-export { RESPONSE, INTERNAL_RESPONSE };
+
+// This is the type for the response that is returned by the function handling middleware of the route
+
+type MIDDLEWARE_RESPONSE = {
+  isMiddleware: boolean;
+  reponse: undefined | RESPONSE;
+};
+
+type DYNAMIC_ROUTE_RESPONSE =
+  | {
+      param: string;
+      baseRoute: string;
+      file: string;
+    }
+  | false;
+
+export {
+  RESPONSE,
+  INTERNAL_RESPONSE,
+  MIDDLEWARE_RESPONSE,
+  DYNAMIC_ROUTE_RESPONSE,
+};
