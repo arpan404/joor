@@ -9,7 +9,7 @@ import handleMiddleWare from "./handleMiddleWare.js";
  * @param {Request} request - The request object
  * @param {string} file - The absolute path to the file
  * @param {".js" | ".ts"} fileExtension - Extensions of the file
- * @returns {INTERNAL_RESPONSE} - The response object
+ * @returns {Promise<INTERNAL_RESPONSE>} - The response object
 
  * Use it to get the body of the response, the status code, and other information.
  *
