@@ -56,6 +56,6 @@ Also, Joor class should be default export from this file
 */
 
 import Hash from "./hashing/index.js";
-import { RESPONSE } from "../types/app/index.js";
+import { RESPONSE } from "../types/index.js";
 export { Hash, RESPONSE };
 

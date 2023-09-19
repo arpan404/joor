@@ -40,5 +40,4 @@ async function handleMiddleWare(
     };
   }
 }
-
 export default handleMiddleWare;

@@ -3,10 +3,13 @@ import chalk from "chalk";
 import { Config } from "../config/loadConfig.js";
 /**
  *
+ * Function to check if folder handling dynamic routes exists or not
+ *
  * @param baseFolder - The path of base folder of dynamic route
  * @param urlFolderElement - The name of folder that is serving dynamic route
  * @returns {boolean} - Boolean : true if route exists, false if route doesnot exist
  */
+
 async function checkDynamicRoute(
   baseFolder: string,
   urlFolderElement: string

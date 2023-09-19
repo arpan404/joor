@@ -1,4 +1,4 @@
-import { INTERNAL_RESPONSE, JOORCONFIG } from "types/app/index.js";
+import { INTERNAL_RESPONSE, JOORCONFIG } from "../../../types/app/index.js";
 import handleRegularRoute from "./handleRegularRoute.js";
 
 // Function to handle the every requests
