@@ -39,6 +39,7 @@ async function handleRequests(
       return new Response(result.response?.body, {
         status: result.response?.status || 200,
       });
+      // return new Response('{messa:"aaa"}');
     }
     const dynamicRoute: DYNAMIC_ROUTE_RESPONSE = await handleDynamicRoute(
       folder,
@@ -64,6 +65,9 @@ async function handleRequests(
     const configData = Config.configData;
     if (configData?.doLogs) {
       console.log(chalk.redBright(error));
+    }
+    if (configData?.mode === "production") {
+      return new Response("Route not found", { status: 404 });
     }
     return new Response("Internal Server Error", { status: 500 });
   }
