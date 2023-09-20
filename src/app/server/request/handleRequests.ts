@@ -1,12 +1,16 @@
-import { INTERNAL_RESPONSE, JOORCONFIG } from "../../../types/app/index.js";
+import {
+  DYNAMIC_ROUTE_RESPONSE,
+  INTERNAL_RESPONSE,
+  JOORCONFIG,
+} from "../../../types/app/index.js";
+import handleDynamicRoute from "./handleDynamicRoute.js";
 import handleRegularRoute from "./handleRegularRoute.js";
 
 // Function to handle the every requests
 
-/*
- * Example function for handling a route
- * @param {Request} req - The request object
- * @returns {RESPONSE} The response object
+/** This function is used to handle the every requests made to the Joor server.
+ * @param {Request} request - The request object
+ * @returns {RESPONSE}- The response object
  */
 async function handleRequests(
   request: Request,
@@ -24,7 +28,36 @@ async function handleRequests(
     file,
     fileExtension
   );
-  console.log(result);
-  return new Response(result.response?.body);
+  if (result.success) {
+    if (result.response === undefined) {
+      return new Response("Route not found", { status: 404 });
+    }
+    return new Response(result.response?.body, {
+      status: result.response?.status || 200,
+    });
+  }
+  const dynamicRoute: DYNAMIC_ROUTE_RESPONSE = await handleDynamicRoute(
+    folder,
+    fileExtension
+  );
+  if (!dynamicRoute) {
+    return new Response("Route not found", { status: 404 });
+  }
+  const dynamicRouteResponseData: INTERNAL_RESPONSE = await handleRegularRoute(
+    request,
+    dynamicRoute.file,
+    fileExtension
+  );
+  if (dynamicRouteResponseData.success) {
+    if (dynamicRouteResponseData.response === undefined) {
+      return new Response("Route not found", { status: 404 });
+    }
+    return new Response(dynamicRouteResponseData.response?.body, {
+      status: dynamicRouteResponseData.response?.status || 200,
+    });
+  }
+  return new Response(dynamicRouteResponseData.response?.body, {
+    status: dynamicRouteResponseData.response?.status || 200,
+  });
 }
 export default handleRequests;

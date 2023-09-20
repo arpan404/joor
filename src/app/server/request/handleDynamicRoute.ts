@@ -9,11 +9,15 @@ import checkDynamicRoute from "./checkDynamicRoute.js";
  * @param fileExtension - Extension of files of the project : ".js" or ".ts"
  * @returns {DYNAMIC_ROUTE_RESPONSE} - The response object of type DYNAMIC_ROUTE_RESPONSE
  *
- * @example
- * //param - folder should be like:
+ *
+ * param - folder should be like:
+ *
  * /Users/Desktop/joor/app/routes/user/arpan
- * For this url should be like:
+ *
+ * For this, url should be like:
+ *
  * http://localhost:8000/user/arpan
+ *
  * And folder structure should be like:
  * app/route/[user]/index.ts
  *
