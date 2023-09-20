@@ -1,6 +1,4 @@
-import { RESPONSE } from "joor";
-
-export function route(request: Request): RESPONSE {
+export function route(request: Request){
   console.log(request)
   return {
     body: {

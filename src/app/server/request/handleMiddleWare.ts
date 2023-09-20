@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { MIDDLEWARE_RESPONSE, RESPONSE } from "../../../types/app/index.js";
 import { Config } from "../config/loadConfig.js";
 
@@ -20,9 +21,9 @@ async function handleMiddleWare(
     const pathArray: Array<string> = file.split("/");
     pathArray.pop();
     const middlewareFile: string =
-      pathArray.join("/") + "/middleware" + fileExtension;
+      pathArray.join("/") + "middleware" + fileExtension;
     //if no middleware files found return
-    if (await Bun.file(middlewareFile).exists()) {
+    if (!await Bun.file(middlewareFile).exists()) {
       return {
         isMiddleware: false,
         reponse: undefined,
@@ -47,7 +48,7 @@ async function handleMiddleWare(
   } catch (error) {
     const configData = Config.configData;
     if (configData?.doLogs) {
-      console.log(error);
+      console.log(chalk.redBright(error));
     }
     //returning return value such that no middleware file exists if any error occurs
     return {

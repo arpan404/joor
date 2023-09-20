@@ -1,6 +1,7 @@
 import {
   INTERNAL_RESPONSE,
   MIDDLEWARE_RESPONSE,
+  RESPONSE,
 } from "../../../types/app/index.js";
 import handleMiddleWare from "./handleMiddleWare.js";
 // Function to handle regular route
@@ -25,7 +26,7 @@ async function handleRegularRoute(
 ): Promise<INTERNAL_RESPONSE> {
   try {
     const module = await import(file);
-    let data: INTERNAL_RESPONSE | null = null;
+    let data: RESPONSE | null = null;
     let httpMethod: string = request.method;
     httpMethod = module[httpMethod] ? httpMethod : httpMethod.toLowerCase();
     httpMethod = module[httpMethod]
@@ -49,7 +50,10 @@ async function handleRegularRoute(
       data = module.route(request);
     }
     if (data !== null) {
-      return data;
+      return {
+        success: true,
+        response: data,
+      };
     } else {
       return {
         success: false,
