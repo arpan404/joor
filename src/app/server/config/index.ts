@@ -1,1 +1,3 @@
-export * from "./loadConfig";
+// Every fuctions related to Joor's config file should only be exported and imported from here
+
+export * from "./loadConfig.js";

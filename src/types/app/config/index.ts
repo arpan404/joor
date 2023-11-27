@@ -6,8 +6,9 @@ import {
     LANGUAGE,
     MODE,
     DOLOGS,
-  } from "./data";
+  } from "./data.js";
   
+  // This is the type of the config object that is stored in the joor.config.json file
   export interface JOORCONFIG {
     port?: PORT;
     parseJson?: PARSEJSON;
