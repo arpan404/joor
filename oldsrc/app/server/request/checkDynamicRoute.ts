@@ -1,6 +1,6 @@
 import fs, { Dirent } from "fs";
 import chalk from "chalk";
-import { Config } from "../config/loadConfig.js";
+import { Config } from "../../../../src/app/config/loadConfig.js";
 /**
  *
  * Function to check if folder handling dynamic routes exists or not

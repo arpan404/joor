@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { JOORCONFIG } from "../../types/app/index.js";
-import { Config } from "../server/config/index.js";
+import { Config } from "../../../src/app/config/index.js";
 
 // Class to handle all encryption and verification of passwords, and other data.
 // This class should be accessible to user

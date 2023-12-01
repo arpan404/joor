@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { DYNAMIC_ROUTE_RESPONSE } from "../../../types/app/index.js";
-import { Config } from "../config/loadConfig.js";
+import { Config } from "../../../../src/app/config/loadConfig.js";
 import checkDynamicRoute from "./checkDynamicRoute.js";
 
 /**

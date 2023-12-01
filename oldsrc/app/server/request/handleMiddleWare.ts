@@ -1,7 +1,8 @@
 import chalk from "chalk";
 import { MIDDLEWARE_RESPONSE, RESPONSE } from "../../../types/app/index.js";
-import { Config } from "../config/loadConfig.js";
-
+import { Config } from "../../../../src/app/config/loadConfig.js";
+import http from "http";
+import fs from "fs";
 /**
  *
  * @param request - The request object
@@ -11,7 +12,7 @@ import { Config } from "../config/loadConfig.js";
  * @return {MIDDLEWARE_RESPONSE} - The middleware response object
  * */
 async function handleMiddleWare(
-  request: Request,
+  request: http.IncomingMessage,
   file: string,
   fileExtension: ".js" | ".ts",
   httpMethod: string
@@ -23,12 +24,8 @@ async function handleMiddleWare(
     const middlewareFile: string =
       pathArray.join("/") + "middleware" + fileExtension;
     //if no middleware files found return
-    if (!await Bun.file(middlewareFile).exists()) {
-      return {
-        isMiddleware: false,
-        reponse: undefined,
-      };
-    }
+   
+await fs.promises.access(middlewareFile)
     // importing the middleware file
     const middleware = await import(middlewareFile);
     let data: RESPONSE | undefined = undefined;

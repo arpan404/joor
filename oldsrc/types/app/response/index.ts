@@ -17,6 +17,7 @@ function route(req:Request):RESPONSE{
 // This is the type for the response that is returned by the function of a route
 type RESPONSE = {
   status?: number;
+  headerType?: string;
   body: any;
 };
 
@@ -45,6 +46,7 @@ type INTERNAL_RESPONSE = {
   response?: RESPONSE;
   code?: string;
 };
+
 
 // This is the type for the response that is returned by the function handling middleware of the route
 

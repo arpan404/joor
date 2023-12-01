@@ -4,6 +4,7 @@ import {
   RESPONSE,
 } from "../../../types/app/index.js";
 import handleMiddleWare from "./handleMiddleWare.js";
+import http from "http";
 // Function to handle regular route
 // It search for route and middleware files, and returns response.
 /**
@@ -20,14 +21,14 @@ import handleMiddleWare from "./handleMiddleWare.js";
  * ```
  */
 async function handleRegularRoute(
-  request: Request,
+  request: http.IncomingMessage,
   file: string,
   fileExtension: ".js" | ".ts"
 ): Promise<INTERNAL_RESPONSE> {
   try {
     const module = await import(file);
     let data: RESPONSE | null = null;
-    let httpMethod: string = request.method;
+    let httpMethod: string = request.method!;
     httpMethod = module[httpMethod] ? httpMethod : httpMethod.toLowerCase();
     httpMethod = module[httpMethod]
       ? httpMethod

@@ -1,6 +1,7 @@
 import path from "path";
 import chalk from "chalk";
-import { JOORCONFIG } from "../../../types/app/index.js";
+import fs from "fs";
+import { JOORCONFIG } from "../../../oldsrc/types/app/index.js";
 
 // Class to handle loading of config file
 export class Config {
@@ -18,7 +19,9 @@ export class Config {
       // Getting absoulte path of the config file and storing its data to variable as object of type JOORCONFIG
 
       const configPath = path.resolve(process.cwd(), this.configFile);
-      this.configData = (await Bun.file(configPath).json()) as JOORCONFIG;
+      this.configData = (await JSON.parse(
+        fs.readFileSync(configPath, "utf8")
+      )) as JOORCONFIG;
     } catch (error: any) {
       // Catching all the errors and displaying them to the user
       // if not file not found
