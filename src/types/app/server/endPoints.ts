@@ -2,10 +2,16 @@
 type END_POINT_DETAIL = {
   route: string;
   filePath: string;
-  isDynamic: string;
-  type: "api" | "html" | "text";
-  methodsAvailable: Array<"get" | "post" | "delete" | "put" | "patch">;
+  isDynamic: boolean;
+  type: "api" | "web";
+  hasMiddleWare: boolean;
+};
+
+type AVAILABLE_ROUTE = {
+  filePath: string;
+  hasMiddleWare: boolean;
 };
 
 type END_POINTS = Array<END_POINT_DETAIL>;
-export default END_POINTS;
+
+export { END_POINTS, AVAILABLE_ROUTE, END_POINT_DETAIL };

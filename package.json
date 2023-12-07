@@ -6,13 +6,12 @@
   "license": "MIT",
   "module": "index.ts",
   "type": "module",
-  "main": "./src/app/index.js",
+  "main": "./src/app/index.ts",
   "files": [
     "src"
   ],
   "scripts": {
-    "build": "tsc",
-    "concurrency-test": "bun run ./dev/tools/tests/concurrency/index.ts"
+    "build": "tsc"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

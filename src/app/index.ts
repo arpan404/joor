@@ -9,7 +9,6 @@ import { JOORCONFIG } from "../types/app/config/index.js";
 import { Config } from "./config/index.js";
 import { Server } from "./server/index.js";
 
-
 /**
  * Class to initiate a new Joor server
  * @example```
@@ -17,16 +16,16 @@ import { Server } from "./server/index.js";
  * const app = new Joor();
  * await app.start();
  * ```
- * 
+ *
  * This will start a new Joor server with default config data from joor.config.json file
  */
-export default class Joor{
+export default class Joor {
   // private variable to hold config data to use in server & initiated as null
   private static configData: JOORCONFIG | null = null;
 
   /**
    * Method to start a new Joor server
-   * 
+   *
    * This method is async so it should always be awaited
    * @example```
    * const app = new Joor();
@@ -34,18 +33,18 @@ export default class Joor{
    * ```
    */
 
-  public async start(){
+  public async start() {
     //First load config data, then only start a new server id data is not null
     this.initialize().then(async () => {
-        if (Joor.configData !== null) {
-          // if present, then started a new server with configData as parameter.
-          const server = new Server(Joor.configData);
-          await server.listen();
-        }
-      });
+      if (Joor.configData !== null) {
+        // if present, then started a new server with configData as parameter.
+        const server = new Server(Joor.configData);
+        await server.listen();
+      }
+    });
   }
-   //Always private method, used to load config data from config file
-   private async initialize(): Promise<void> {
+  //Always private method, used to load config data from config file
+  private async initialize(): Promise<void> {
     if (Config.configData === null) {
       const data: JOORCONFIG | null = await Config.get();
       if (data !== null) {
@@ -73,3 +72,6 @@ export {Hash};
 Also, Joor class should be default export from this file
 
 */
+
+import { REQUEST } from "../types/app/index.js";
+export { REQUEST };
