@@ -1,3 +1,4 @@
+import joor from "data.js";
 import { AVAILABLE_ROUTE, END_POINT_DETAIL } from "types/app/index.js";
 
 /**
@@ -23,10 +24,10 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
   // Checking if there are more than one '/app/routes/' in path of your project. If yes, throw error.
   if (routePathSplitted.length !== 2) {
     throw new Error(
-      "There cannot be more than one '/app/routes/' in path of your project."
+      `There cannot be more than one '/app/routes/' in path of your project. For more information, see our documentation ${joor.docs}/routes`
     );
   }
-  
+
   // Removing file name from file path
   let routePath: string | string[] = routePathSplitted[1].split("/");
   routePath.pop();
@@ -43,7 +44,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     if (routePath[index].match(dynamicRouteRegEx)) {
       if (index !== routePath.length - 1) {
         throw new Error(
-          "You can only use any other end points inside dynamic endpoint."
+          `You can only use any other end points inside dynamic endpoint. For more information, see our documentation ${joor.docs}/routes `
         );
       }
     }
@@ -68,9 +69,10 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
 
     // Api route cannot be used inside web routes
     if (routePath.startsWith("/api")) {
-      throw new Error("The route api cannot be used inside web folder.");
+      throw new Error(
+        `The route api cannot be used inside web folder. For more information, see our documentation ${joor.docs}/routes`
+      );
     }
-  
   }
   routePath.length === 0 ? (routePath = "/") : "";
   formatedRoute.route = routePath;
