@@ -1,10 +1,10 @@
-import { JOORCONFIG } from "types/app/index.js";
+import { END_POINTS, JOORCONFIG } from "types/app/index.js";
 import http from "http";
 import Marker from "app/misc/marker.js";
 import joor from "data.js";
 import handleRequests from "./request/handleRequests.js";
 
-export async function servePort(configData: JOORCONFIG) {
+export async function servePort(configData: JOORCONFIG, availableRoutes:END_POINTS) {
   const isUnderDevelopment = configData.mode === "development" ? true : false;
   const server = http.createServer(
     async (request: http.IncomingMessage, response: http.ServerResponse) => {
