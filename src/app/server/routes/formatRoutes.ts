@@ -16,14 +16,22 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     isDynamic: false,
     type: route.filePath.includes("/app/routes/api") ? "api" : "web",
   };
+
+  // Splitting the file path so that it can be directly used as url after formatting
   const routePathSplitted = route.filePath.split("/app/routes/");
+
+  // Checking if there are more than one '/app/routes/' in path of your project. If yes, throw error.
   if (routePathSplitted.length !== 2) {
     throw new Error(
-      "There cannot be more than one '/app/routes/' in path of your project"
+      "There cannot be more than one '/app/routes/' in path of your project."
     );
   }
+  
+  // Removing file name from file path
   let routePath: string | string[] = routePathSplitted[1].split("/");
   routePath.pop();
+
+  // Checking dynamic routes
   const dynamicRouteRegEx = /^\[.*\]$/;
   let dynamicFolders = 0;
   for (let i in routePath) {
@@ -35,7 +43,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     if (routePath[index].match(dynamicRouteRegEx)) {
       if (index !== routePath.length - 1) {
         throw new Error(
-          "You can only use any other end points inside dynamic endpoint"
+          "You can only use any other end points inside dynamic endpoint."
         );
       }
     }
@@ -43,6 +51,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
   routePath = "/" + routePath.join("/");
   dynamicFolders > 0 ? (formatedRoute.isDynamic = true) : "";
 
+  //If route is dynamic, format it to usuable format
   if (formatedRoute.isDynamic) {
     const dynamicElement = routePath
       .split("/")
@@ -52,8 +61,19 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     routePath = routePath.replace(`[${dynamicElement}]`, "");
     routePath = routePath + `${dynamicElement}/:id`;
   }
-  routePath = routePath.replace("/web", "");
+
+  // Routes inside web folder are served as direct link
+  if (routePath.startsWith("/web")) {
+    routePath = routePath.substring(4);
+
+    // Api route cannot be used inside web routes
+    if (routePath.startsWith("/api")) {
+      throw new Error("The route api cannot be used inside web folder.");
+    }
+  
+  }
   routePath.length === 0 ? (routePath = "/") : "";
   formatedRoute.route = routePath;
+
   return formatedRoute;
 }
