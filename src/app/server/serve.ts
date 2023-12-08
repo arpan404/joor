@@ -1,15 +1,22 @@
-import { END_POINTS, JOORCONFIG } from "types/app/index.js";
 import http from "http";
-import Marker from "app/misc/marker.js";
-import joor from "data.js";
+import { END_POINTS, JOORCONFIG } from "../../types/app/index.js";
 import handleRequests from "./request/handleRequests.js";
+import Marker from "../misc/marker.js";
+import joor from "../../data.js";
 
-export async function servePort(configData: JOORCONFIG, availableRoutes:END_POINTS) {
+export async function servePort(
+  configData: JOORCONFIG,
+  availableRoutes: END_POINTS
+) {
   const isUnderDevelopment = configData.mode === "development" ? true : false;
   const server = http.createServer(
     async (request: http.IncomingMessage, response: http.ServerResponse) => {
       try {
-        const responseData = await handleRequests(request, configData);
+        const responseData = await handleRequests(
+          request,
+          configData,
+          availableRoutes
+        );
         response.writeHead(responseData.status, responseData.headers);
         response.end(responseData.body);
       } catch (error: any) {
@@ -32,7 +39,7 @@ export async function servePort(configData: JOORCONFIG, availableRoutes:END_POIN
         );
         console.log(
           Marker.greenBright(
-            `For more information, have a look at: ${joor.docs}/error/port`
+            `For more information, have a look at: ${joor.docs}/port`
           )
         );
       } else {

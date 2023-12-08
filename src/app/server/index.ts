@@ -1,7 +1,7 @@
-import { END_POINTS, JOORCONFIG } from "types/app/index.js";
 import { servePort } from "./serve.js";
 import listEndPoints from "./routes/listEndPoints.js";
-import Marker from "app/misc/marker.js";
+import { END_POINTS, JOORCONFIG } from "../../types/app/index.js";
+import Marker from "../misc/marker.js";
 
 // Class to handle server related work such as creating server, listening to the port, loading config file
 export class Server {

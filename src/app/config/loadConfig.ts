@@ -1,7 +1,8 @@
 import path from "path";
-import chalk from "chalk";
 import fs from "fs";
-import { JOORCONFIG } from "../../../oldsrc/types/app/index.js";
+import Marker from "../misc/marker.js";
+import { JOORCONFIG } from "../../types/app/index.js";
+import joor from "../../data.js";
 
 // Class to handle loading of config file
 export class Config {
@@ -27,7 +28,7 @@ export class Config {
       // if not file not found
       if (error.code === "ENOENT") {
         console.error(
-          chalk.red(
+          Marker.red(
             `Error: The configuration file '${this.configFile}' for joor app is not found.\nMake sure the file is in the root directory of your project.`
           )
         );
@@ -35,16 +36,16 @@ export class Config {
       // if file is not in proper required format
       else if (error instanceof SyntaxError) {
         console.error(
-          chalk.red(
+          Marker.red(
             `Error: The configuration file '${this.configFile}' for joor app is not in the proper JSON format.\nPlease check the content and ensure it is valid JSON.`
           )
         );
       } else {
-        console.error(chalk.red("Error loading config file."), error);
+        console.error(Marker.red("Error loading config file."), error);
       }
       console.log(
         "For more information, have a look at : " +
-          chalk.green("https://joor.xyz/docs/error/configfile")
+          Marker.green(`${joor.docs}/configfile`)
       );
     }
   }

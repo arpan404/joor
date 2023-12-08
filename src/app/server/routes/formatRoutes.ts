@@ -1,5 +1,5 @@
-import joor from "data.js";
-import { AVAILABLE_ROUTE, END_POINT_DETAIL } from "types/app/index.js";
+import joor from "../../../data.js";
+import { AVAILABLE_ROUTE, END_POINT_DETAIL } from "../../../types/app/index.js";
 
 /**
  *

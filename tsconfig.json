@@ -19,10 +19,10 @@
     "allowJs": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "./src/",
+    "rootDir": "./src",
     "outDir": "./build",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
   },
   "include": ["src"],
   "exclude": ["node_modules"]

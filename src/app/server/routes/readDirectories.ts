@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { AVAILABLE_ROUTE } from "types/app/index.js";
+import { AVAILABLE_ROUTE } from "../../../types/app/index.js";
+
 
 /**
  *
