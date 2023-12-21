@@ -1,1 +1,6 @@
-export async function route(req) {}
+
+export async function route(req) {
+  return {
+    body: "Hello",
+  };
+}
