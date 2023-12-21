@@ -13,8 +13,9 @@ export class Server {
   public async listen() {
     try {
       // starts server only if routes and config files are loaded properly
-      const availableRoutes: END_POINTS = await listEndPoints();
-      if (availableRoutes.length === 0) {
+      const availableRoutesDetail: END_POINTS = await listEndPoints();
+    
+      if (availableRoutesDetail.length === 0) {
         console.log(
           Marker.redBright(
             "No routes available. Create a route to start a server."
@@ -23,7 +24,7 @@ export class Server {
         process.exit(1);
       }
       if (this.config) {
-        servePort(this.config, availableRoutes);
+        servePort(this.config, availableRoutesDetail);
       }
     } catch (error: any) {
       console.log(Marker.redBright(error));

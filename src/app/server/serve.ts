@@ -6,7 +6,7 @@ import joor from "../../data.js";
 
 export async function servePort(
   configData: JOORCONFIG,
-  availableRoutes: END_POINTS
+  availableRoutesDetail: END_POINTS
 ) {
   const isUnderDevelopment = configData.mode === "development" ? true : false;
   const server = http.createServer(
@@ -15,7 +15,7 @@ export async function servePort(
         const responseData = await handleRequests(
           request,
           configData,
-          availableRoutes
+          availableRoutesDetail
         );
         response.writeHead(responseData.status, responseData.headers);
         response.end(responseData.body);
@@ -34,7 +34,7 @@ export async function servePort(
           Marker.red(
             `\nPort ${configData.port} is already in use.\nEdit ${Marker.bgBlue(
               " joor.config.json "
-            )} file to use another port.\n`
+            )} ${Marker.red("file to use another port.")}\n`
           )
         );
         console.log(
