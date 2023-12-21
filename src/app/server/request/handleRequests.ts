@@ -58,7 +58,6 @@ async function findCurrentRouteData(
     return matches && data;
   });
 
-
   if (currentRouteData && currentRouteData.isDynamic) return currentRouteData;
   return;
 }
@@ -75,7 +74,6 @@ function matchDynamicRoute(
   urlRoute = urlRoute.join("/");
   request.param = param;
   if (mainRoute === urlRoute && idString === ":id") {
-    console.log(mainRoute, urlRoute, param);
     return true;
   }
   return false;

@@ -73,5 +73,6 @@ Also, Joor class should be default export from this file
 
 */
 
-import { REQUEST } from "../types/app/index.js";
-export { REQUEST };
+import { REQUEST, RESPONSE } from "../types/app/index.js";
+
+export { REQUEST, RESPONSE };
