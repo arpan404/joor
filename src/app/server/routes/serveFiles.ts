@@ -1,6 +1,5 @@
 import * as pathModule from "path";
 import fs from "fs";
-
 import {
   ContentTypeMap,
   INTERNAL_FORMATTED_RESPONSE,
@@ -8,7 +7,8 @@ import {
 } from "../../../types/app/index.js";
 import Marker from "../../misc/marker.js";
 
-// Map file extensions to corresponding content types
+// Map file extensions to corresponding content types for efficiency
+// Making it global variable for performance reason
 const contentTypeMap: ContentTypeMap = {
   ".html": "text/html",
   ".css": "text/css",
@@ -58,12 +58,23 @@ const contentTypeMap: ContentTypeMap = {
   ".otf": "font/otf",
 };
 
+/**
+ * Function to serve files inside app/public folder.
+ * @param path - Requested URL of file
+ * @param configData - Config Data loaded from joor.config.json file
+ * @returns false - If file is not found; Response - If file is found.
+ */
 export default async function serveFiles(
   path: string,
   configData: JOORCONFIG
 ): Promise<boolean | INTERNAL_FORMATTED_RESPONSE> {
   let filePath = pathModule.join(process.cwd(), "app", "public", path);
   try {
+    /*
+    Decoding the file path to properly handle file names with special characters,
+    such as white space (%20). This ensures accurate access to the file
+    corresponding to the file path with encoded characters.
+    */
     filePath = decodeURIComponent(filePath);
     const data = await fs.promises.readFile(filePath);
     let contentType = "text/plain"; // Default content type (if not found in the map)
