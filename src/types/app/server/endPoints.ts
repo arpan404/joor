@@ -7,11 +7,6 @@ type END_POINT_DETAIL = {
   hasMiddleWare: boolean;
 };
 
-type AVAILABLE_ROUTE = {
-  filePath: string;
-  hasMiddleWare: boolean;
-};
-
 type END_POINTS = Array<END_POINT_DETAIL>;
 
-export { END_POINTS, AVAILABLE_ROUTE, END_POINT_DETAIL };
+export { END_POINTS, END_POINT_DETAIL };
