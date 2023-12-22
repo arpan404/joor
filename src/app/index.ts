@@ -3,10 +3,11 @@
  - It is the entry point of the framework.
  - Every classes, methods and functions that should be accessible for users should be imported from their respective files, and exported from here.
 */
-import { JOORCONFIG } from "../types/app/index.js";
-import { Config } from "./server/config/index.js";
-import { Server } from "./server/index.js";
+// import { JOORCONFIG } from ";
 
+import { JOORCONFIG } from "../types/app/config/index.js";
+import { Config } from "./config/index.js";
+import { Server } from "./server/index.js";
 
 /**
  * Class to initiate a new Joor server
@@ -15,24 +16,23 @@ import { Server } from "./server/index.js";
  * const app = new Joor();
  * await app.start();
  * ```
- * 
+ *
  * This will start a new Joor server with default config data from joor.config.json file
  */
 export default class Joor {
   // private variable to hold config data to use in server & initiated as null
   private static configData: JOORCONFIG | null = null;
 
-  // public method to start a server
-  // This method should always be public
   /**
    * Method to start a new Joor server
-   * 
+   *
    * This method is async so it should always be awaited
    * @example```
    * const app = new Joor();
    * await app.start();
    * ```
    */
+
   public async start() {
     //First load config data, then only start a new server id data is not null
     this.initialize().then(async () => {
@@ -43,7 +43,6 @@ export default class Joor {
       }
     });
   }
-
   //Always private method, used to load config data from config file
   private async initialize(): Promise<void> {
     if (Config.configData === null) {
@@ -54,6 +53,7 @@ export default class Joor {
     }
   }
 }
+
 /* 
 Other classes or functions that should be accessible for users should be imported from their respective files, and exported from here.
 
@@ -73,6 +73,6 @@ Also, Joor class should be default export from this file
 
 */
 
-import Hash from "./hashing/index.js";
-import { RESPONSE } from "../types/index.js";
-export { Hash };
+import { REQUEST, RESPONSE } from "../types/app/index.js";
+
+export { REQUEST, RESPONSE };

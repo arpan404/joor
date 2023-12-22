@@ -19,8 +19,7 @@
     "allowJs": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "types": ["bun-types"],
-    "baseUrl": "./src/",
+    "rootDir": "./src",
     "outDir": "./build",
     "declaration": true,
     "sourceMap": true

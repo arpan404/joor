@@ -5,7 +5,7 @@ node_modules/
 build/
 
 # Ignore test folder
-test/
+# test/
 
 #Ignore system files
 .DS_Store
@@ -16,4 +16,4 @@ test/
 *.sublime-*
 
 # Ignore package lock files
-bun.lockb
+package-lock.json

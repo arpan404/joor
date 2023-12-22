@@ -1,0 +1,22 @@
+{
+  "name": "dev-tools",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "ts-node --esm ./dev/build.ts",
+    "concurrency-test": "ts-node --esm ./tests/concurrencyBenchmark.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node-fetch": "^2.6.9",
+    "node-fetch": "^3.3.2",
+    "ts-node": "^10.9.2"
+  }
+}
