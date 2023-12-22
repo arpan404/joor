@@ -6,7 +6,8 @@ import {
   REQUEST,
 } from "../../../types/app/index.js";
 import Marker from "../../misc/marker.js";
-import handleAPIRoute from "./handleAPIRoute.js";
+import serveFiles from "../routes/serveFiles.js";
+import handleRoutes from "./handleRoutes.js";
 
 export default async function handleRequests(
   request: REQUEST,
@@ -19,15 +20,19 @@ export default async function handleRequests(
       request,
       availableRoutesDetail
     );
-    console.log(currentRouteData);
     if (currentRouteData) {
-      await handleAPIRoute(request, currentRouteData);
+      response = await handleRoutes(request, currentRouteData);
     } else {
-      response = {
-        status: 400,
-        body: "Not found",
-        headers: { "Content-Type": "text/plain" },
-      };
+      const fileSystemResponse = await serveFiles(request.url!, configData);
+      if (fileSystemResponse && typeof fileSystemResponse !== "boolean") {
+        response = fileSystemResponse;
+      } else {
+        response = {
+          status: 400,
+          body: "Not found",
+          headers: { "Content-Type": "text/plain" },
+        };
+      }
     }
   } catch (error: any) {
     if (configData.doLogs) {
