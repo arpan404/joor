@@ -1,75 +1,85 @@
-import chalk from "chalk";
 import {
-  DYNAMIC_ROUTE_RESPONSE,
-  INTERNAL_RESPONSE,
+  END_POINTS,
+  END_POINT_DETAIL,
+  INTERNAL_FORMATTED_RESPONSE,
   JOORCONFIG,
+  REQUEST,
 } from "../../../types/app/index.js";
-import { Config } from "../config/loadConfig.js";
-import handleDynamicRoute from "./handleDynamicRoute.js";
-import handleRegularRoute from "./handleRegularRoute.js";
+import Marker from "../../misc/marker.js";
+import serveFiles from "../routes/serveFiles.js";
+import handleRoutes from "./handleRoutes.js";
 
-// Function to handle the every requests
-
-/** This function is used to handle the every requests made to the Joor server.
- * @param {Request} request - The request object
- * @returns {RESPONSE}- The response object
- */
-async function handleRequests(
-  request: Request,
-  configData: JOORCONFIG
-): Promise<Response> {
+export default async function handleRequests(
+  request: REQUEST,
+  configData: JOORCONFIG,
+  availableRoutesDetail: END_POINTS
+): Promise<INTERNAL_FORMATTED_RESPONSE> {
+  let response: INTERNAL_FORMATTED_RESPONSE | undefined;
   try {
-    // getting the path name from the url
-    const url: URL = new URL(request.url);
-    const pathName: string = url.pathname.slice(1);
-    const rootFolder = "/app/routes/";
-    let folder = process.cwd() + rootFolder + pathName;
-    const fileExtension = configData.language === "js" ? ".js" : ".ts";
-    const file = folder + "/index" + fileExtension;
-    let result: INTERNAL_RESPONSE = await handleRegularRoute(
+    const currentRouteData = await findCurrentRouteData(
       request,
-      file,
-      fileExtension
+      availableRoutesDetail
     );
-    console.log(result);
-    if (result.success) {
-      if (result.response === undefined) {
-        return new Response("Route not found", { status: 404 });
+    if (currentRouteData) {
+      response = await handleRoutes(request, currentRouteData);
+    } else {
+      const fileSystemResponse = await serveFiles(request.url!, configData);
+      if (fileSystemResponse && typeof fileSystemResponse !== "boolean") {
+        response = fileSystemResponse;
+      } else {
+        response = {
+          status: 400,
+          body: "Not found",
+          headers: { "Content-Type": "text/plain" },
+        };
       }
-      return new Response(result.response?.body, {
-        status: result.response?.status || 200,
-      });
-      // return new Response('{messa:"aaa"}');
     }
-    const dynamicRoute: DYNAMIC_ROUTE_RESPONSE = await handleDynamicRoute(
-      folder,
-      fileExtension
-    );
-    if (!dynamicRoute) {
-      return new Response("Route not found", { status: 404 });
+  } catch (error: any) {
+    if (configData.doLogs) {
+      console.log(Marker.redBright(error));
     }
-    const dynamicRouteResponseData: INTERNAL_RESPONSE =
-      await handleRegularRoute(request, dynamicRoute.file, fileExtension);
-    if (dynamicRouteResponseData.success) {
-      if (dynamicRouteResponseData.response === undefined) {
-        return new Response("Route not found", { status: 404 });
-      }
-      return new Response(dynamicRouteResponseData.response?.body, {
-        status: dynamicRouteResponseData.response?.status || 200,
-      });
-    }
-    return new Response(dynamicRouteResponseData.response?.body, {
-      status: dynamicRouteResponseData.response?.status || 200,
-    });
-  } catch (error) {
-    const configData = Config.configData;
-    if (configData?.doLogs) {
-      console.log(chalk.redBright(error));
-    }
-    if (configData?.mode === "production") {
-      return new Response("Route not found", { status: 404 });
-    }
-    return new Response("Internal Server Error", { status: 500 });
+    response = {
+      status: 500,
+      body: "Internal Server Error",
+      headers: { "Content-Type": "text/plain" },
+    };
+  } finally {
+    return response as INTERNAL_FORMATTED_RESPONSE;
   }
 }
-export default handleRequests;
+
+async function findCurrentRouteData(
+  request: REQUEST,
+  availableRoutesDetail: END_POINTS
+): Promise<END_POINT_DETAIL | undefined> {
+  let currentRouteData: END_POINT_DETAIL | undefined =
+    availableRoutesDetail.find((data) => data.route === request.url);
+
+  if (currentRouteData && !currentRouteData.isDynamic) return currentRouteData;
+  if (currentRouteData && currentRouteData.isDynamic) return;
+
+  currentRouteData = availableRoutesDetail.find((data) => {
+    const matches = matchDynamicRoute(request, data.route, request.url!);
+    return matches && data;
+  });
+
+  if (currentRouteData && currentRouteData.isDynamic) return currentRouteData;
+  return;
+}
+function matchDynamicRoute(
+  request: REQUEST,
+  route: string,
+  url: string
+): boolean {
+  let mainRoute: Array<string> | string = route.split("/");
+  const idString = mainRoute.pop();
+  mainRoute = mainRoute.join("/");
+  let urlRoute: Array<string> | string = url.split("/");
+  const param = urlRoute.pop();
+  urlRoute = urlRoute.join("/");
+  request.param = param;
+  if (mainRoute === urlRoute && idString === ":id") {
+    return true;
+  }
+  return false;
+}
