@@ -2,7 +2,7 @@
 
 Joor is a cutting-edge, open-source backend framework specifically designed for Node.js, offering full support for both TypeScript and JavaScript. Its primary focus is to empower developers with a robust, scalable, and secure platform, enabling them to create modern web applications with ease. With Joor, you can harness the full potential of Node.js and efficiently build advanced server-side applications tailored to your unique requirements.
 
-**Important Notice:** Please be aware that this project is currently under active development and is not yet ready for production use.
+**Important Notice:** Please be aware that this project is currently under active development and is not yet ready for production use. Also, all intended features are not currently available.
 
 ## Documentation
 
