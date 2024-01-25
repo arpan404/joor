@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { AVAILABLE_ROUTE } from "../../../types/app/index.js";
 
-
 /**
  *
  * @param appFolder - The path to folder which contains routing files and folder
@@ -41,10 +40,12 @@ export default function readDirectories(
   // Checking if the folder contains index.js or index.ts file
   // If the folder doesnot contain index file, the route will not be considered valid
   if (files.includes("index.js") || files.includes("index.ts")) {
-    routeData.filePath = path.join(
-      appFolder,
-      files.includes("index.js") ? "index.js" : "index.ts"
-    );
+    const flag = process.platform === "win32" ? "file://" : "";
+    routeData.filePath =
+      flag +
+      path
+        .join(appFolder, files.includes("index.js") ? "index.js" : "index.ts")
+        .replace(/\\/g, "/");
   }
 
   // Checking if the folder contains middleware.js or middleware.ts file

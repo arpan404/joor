@@ -1,6 +1,6 @@
 {
   "name": "joor",
-  "version": "0.0.1-alpha",
+  "version": "0.0.6x-test",
   "description": "Joor is a full-fledged backend web framework for small to enterprise level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
   "author": "Joor",
   "license": "MIT",

@@ -1,11 +1,16 @@
 {
   "name": "ground0",
-  "module": "index.ts",
+  "version": "1.0.0",
+  "description": "",
   "type": "module",
-  "devDependencies": {
-    "bun-types": "latest"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "joor": "^0.0.1-ax3"
   }
 }

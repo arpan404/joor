@@ -15,10 +15,9 @@ import { END_POINTS } from "../../../types/app/index.js";
  */
 export default async function listEndPoints(): Promise<END_POINTS> {
   let routes: END_POINTS = [];
-  const appFolder = join(process.cwd(), "app/routes");
+  let appFolder = join(process.cwd(), "app/routes");
   try {
     const availableRoutes = readDirectories(appFolder);
-
     for (const route of availableRoutes) {
       try {
         routes = [...routes, formatRoutes(route)];

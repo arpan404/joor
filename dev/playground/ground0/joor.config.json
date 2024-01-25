@@ -1,5 +1,5 @@
 {
-    "port": 8000,
+    "port": 8003,
     "parseJson": true,
     "language": "ts",
     "cors": true,

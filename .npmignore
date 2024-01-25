@@ -1,6 +1,6 @@
-src
 node_modules
 dev
+src
 CODEOFCONDUCT.md
 CONTRIBUTING.md
 tsconfig.json
