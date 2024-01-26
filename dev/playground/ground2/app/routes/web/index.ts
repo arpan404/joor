@@ -1,6 +1,7 @@
 import { REQUEST, RESPONSE } from "joor";
 
 export async function route(req: REQUEST): Promise<RESPONSE> {
+  console.log(req);
   return {
     body: `<html>
 <head>

@@ -1,5 +1,6 @@
 import { REQUEST, RESPONSE } from "joor";
 export async function get(req:REQUEST):Promise<RESPONSE> {
+  console.log(req);
   return {
     body: [
       {

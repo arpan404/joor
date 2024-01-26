@@ -19,8 +19,8 @@
     "allowJs": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "rootDir": "./",
-    "outDir": "./build",
+    "rootDir": ".",
+    "outDir": "./dist",
     "declaration": true,
     "sourceMap": true
   },
