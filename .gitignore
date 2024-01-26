@@ -4,9 +4,6 @@ node_modules/
 # Ignore build artifacts
 build/
 
-# Ignore test folder
-# test/
-
 #Ignore system files
 .DS_Store
 
