@@ -1,0 +1,1 @@
+{"version":3,"file":"createApp.js","sourceRoot":"","sources":["../../../src/cli/creator/createApp.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO,CAAC,KAAK,UAAU,SAAS,CACrC,WAAmB,EACnB,kBAA0B,EAC1B,QAAgB,EAChB,QAAgB,EAChB,OAAe;IAEf,OAAO,CAAC,GAAG,CAAC,kBAAkB,EAAE,WAAW,EAAE,QAAQ,EAAE,QAAQ,EAAE,OAAO,CAAC,CAAC;AAC5E,CAAC"}

@@ -15,7 +15,10 @@ const packageFileData = `
   "description": "Joor is a full-fledged backend web framework for small to enterprise level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
   "main": "./app/index.js", 
   "types": "./app/index.d.ts",
-  "type":"module"
+  "type":"module",
+  "bin":{
+    "create-joor": "cli/creator/index.js"
+  }
 } 
 `;
 
@@ -86,7 +89,6 @@ async function copyFolder(source: string, destination: string) {
     console.log("Error while copying build files to release folder: ", error);
   }
 }
-
 
 async function createRelease() {
   try {

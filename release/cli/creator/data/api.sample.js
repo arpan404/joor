@@ -1,6 +1,7 @@
-import { REQUEST, RESPONSE } from "joor";
+const apiSample = `
+{##ImportTypesReqRes##}
 
-export async function get(req: REQUEST): Promise<RESPONSE> {
+export async function get(req{##RequestType##}){##PromiseResponseType##}{
   console.log(req);
   return {
     body: [
@@ -17,3 +18,6 @@ export async function get(req: REQUEST): Promise<RESPONSE> {
     ],
   };
 }
+`;
+export default apiSample;
+//# sourceMappingURL=api.sample.js.map
