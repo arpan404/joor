@@ -4,7 +4,14 @@ export default async function createApp(
   language: string,
   database: string,
   version: string,
-  author:string
+  author: string
 ) {
-  console.log(projectDescription, projectName, language, database, version, author);
+  console.log(
+    projectDescription,
+    projectName,
+    language,
+    database,
+    version,
+    author
+  );
 }
