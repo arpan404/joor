@@ -1,50 +1,78 @@
 #!/usr/bin/env node
-import { OPTION_SELECTOR } from "../../types/cli/optionSelector.js";
-import takeInput from "../common/takeInput.js";
-import optionSelector from "../common/optionSelector.js";
 import createApp from "./createApp.js";
+import inquirer from "inquirer";
 
-const languageOptions: Array<OPTION_SELECTOR> = [
-  {
-    name: "JavaScript",
-    value: "javascript",
-  },
-  {
-    name: "TypeScript",
-    value: "typescript",
-  },
-];
-const databaseOptions: Array<OPTION_SELECTOR> = [
-  {
-    name: "MongoDB",
-    value: "mongodb",
-  },
-  {
-    name: "PostreSQL",
-    value: "postresql",
-  },
-  {
-    name: "mysql",
-    value: "mysql",
-  },
-];
 const creator = async (): Promise<void> => {
-  const projectName = await takeInput("Name :", "joor-app");
-  const projectDescription = await takeInput(
-    "Description: ",
-    "A backend web app created and powered by Joor."
+  const answer = await inquirer.prompt([
+    {
+      type: "input",
+      name: "name",
+      message: "What is your project-name? ",
+      default: "joor-app",
+    },
+    {
+      type: "input",
+      name: "description",
+      message: "Enter project's description : ",
+      default: "A backend web app created and powered by Joor.",
+    },
+
+    {
+      type: "list",
+      name: "language",
+      message: "Choose language:",
+      choices: [
+        {
+          name: "JavaScript",
+          value: "javascript",
+        },
+        {
+          name: "TypeScript",
+          value: "typescript",
+        },
+      ],
+      default: "typescript",
+    },
+    {
+      type: "list",
+      name: "database",
+      message: "Choose database:",
+      choices: [
+        {
+          name: "MongoDB",
+          value: "mongodb",
+        },
+        {
+          name: "PostgreSQL",
+          value: "postgresql",
+        },
+        {
+          name: "MySQL",
+          value: "mysql",
+        },
+      ],
+      default: "mongodb",
+    },
+    {
+      type: "input",
+      name: "version",
+      message: "Version : ",
+      default: "1.0.0",
+    },
+    {
+      type: "input",
+      name: "author",
+      message: "Author's Name: ",
+      default: "Socioy",
+    },
+  ]);
+  createApp(
+    answer.name,
+    answer.description,
+    answer.language,
+    answer.database,
+    answer.version,
+    answer.author
   );
-  const language = await optionSelector(
-    "Choose language: ",
-    languageOptions,
-    1
-  );
-  const database = await optionSelector(
-    "Choose database: ",
-    databaseOptions,
-    0
-  );
-  const version = await takeInput("Version: ", "1.0.0");
-  await createApp(projectName, projectDescription, language, database, version);
 };
 creator();

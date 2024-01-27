@@ -18,15 +18,19 @@ const packageFileData = `
   "type":"module",
   "bin":{
     "create-joor": "cli/creator/index.js"
-  }
+  },
+  "dependencies": ##dependencies##
+
 } 
 `;
+const toRemoveDependencies = `"dependencies": ##dependencies##`;
 
 // This is used to take input from user in command line
 const rl = Readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
+const flag = process.platform === "win32" ? "file://" : "";
 
 //regex for checking version
 const versionRegex =
@@ -35,7 +39,8 @@ const versionRegex =
 //function to create builds using typescript compiler
 async function runBuilds() {
   try {
-    const buildPath = process.cwd().replace("/dev/tools", "/build");
+    const buildPath =
+      flag + process.cwd().replace("/dev/tools", "/build").replace(/\\g/, "/");
 
     // deleting build folder, if it exists
     if (fs.existsSync(buildPath)) {
@@ -90,6 +95,41 @@ async function copyFolder(source: string, destination: string) {
   }
 }
 
+async function makePackageFile(version: string, packagFilePath: string) {
+  try {
+    const packageDataFileLocation =
+      flag +
+      process.cwd().replace("/dev/tools", "/package.json").replace(/\\g/, "/");
+
+    let packageData = packageFileData.replace("version_placeholder", version);
+
+    const sourcePackageJson = await fs.promises.readFile(
+      packageDataFileLocation,
+      "utf8"
+    );
+    const sourcePackageData = JSON.parse(sourcePackageJson);
+
+    if (
+      sourcePackageData.dependencies &&
+      Object.keys(sourcePackageData.dependencies).length > 0
+    ) {
+      packageData = packageData.replace(
+        "##dependencies##",
+        JSON.stringify(sourcePackageData.dependencies, null, 2)
+      );
+    } else {
+      packageData = packageData.replace(toRemoveDependencies, " ");
+      const commaIndex = packageData.lastIndexOf(",");
+      packageData =
+        packageData.slice(0, commaIndex) + packageData.slice(commaIndex + 1);
+      console.log(packageData);
+    }
+    await fs.promises.writeFile(packagFilePath, packageData);
+  } catch (error: any) {
+    throw error;
+  }
+}
+
 async function createRelease() {
   try {
     // compile typescript files first to js
@@ -97,8 +137,11 @@ async function createRelease() {
 
     console.log("\n....Creating Release Version....\n");
 
-    const releasePath = process.cwd().replace("/dev/tools", "/release");
-    const buildPath = process.cwd().replace("/dev/tools", "/build");
+    const releasePath =
+      flag +
+      process.cwd().replace("/dev/tools", "/release").replace(/\\g/, "/");
+    const buildPath =
+      flag + process.cwd().replace("/dev/tools", "/build").replace(/\\g/, "/");
 
     //delete relase folder if it exists to avoid ambiguity
     if (fs.existsSync(releasePath)) {
@@ -120,7 +163,9 @@ async function createRelease() {
     await copyFolder(buildPath, releasePath);
     console.log("Copied all files from build folder to release folder.\n");
     console.log("Copying package.json and Readme files\n");
-    const readMeSourcePath = process.cwd().replace("/dev/tools", "/README.md");
+    const readMeSourcePath =
+      flag +
+      process.cwd().replace("/dev/tools", "/README.md").replace(/\\g/, "/");
     const readMeDestinationPath = releasePath.concat("/README.md");
     const packagFilePath = releasePath.concat("/package.json");
     await fs.promises.copyFile(readMeSourcePath, readMeDestinationPath);
@@ -130,8 +175,8 @@ async function createRelease() {
       version = await rl.question("Enter the version of of this release: ");
     }
     rl.close();
-    const packageData = packageFileData.replace("version_placeholder", version);
-    fs.promises.writeFile(packagFilePath, packageData);
+
+    await makePackageFile(version, packagFilePath);
 
     if (fs.existsSync(buildPath)) {
       console.log("\nDeleting build folder...");
@@ -154,4 +199,5 @@ async function createRelease() {
     console.error("Error building project:", error);
   }
 }
+
 createRelease();
