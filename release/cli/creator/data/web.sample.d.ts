@@ -1,0 +1,2 @@
+declare const webSample = "\n{##ImportTypesReqRes##}\n\nexport async function get(req{##RequestType##}){##PromiseResponseType##} {\n  console.log(req);\n  return {\n    body: `\n        <html>\n            <head>\n                <title>Hello Server</title>\n            </head>\n\n            <body>\n            <h1>Joor Project has been successfully setup.</h1>\n            <p>Edit files to get desired outcomes.</p>\n            </body>\n        </html>\n      `,\n  };\n}\n";
+export default webSample;

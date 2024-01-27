@@ -1,0 +1,2 @@
+declare const apiSample = "\n{##ImportTypesReqRes##}\n\nexport async function get(req{##RequestType##}){##PromiseResponseType##}{\n  console.log(req);\n  return {\n    body: [\n      {\n        userID: \"#ty6a\",\n        username: \"@joor\",\n        email: \"joor@domain.com\",\n      },\n      {\n        userID: \"#ty7a\",\n        username: \"@socioy\",\n        email: \"socioy@domain.com\",\n      },\n    ],\n  };\n}\n";
+export default apiSample;
