@@ -1,11 +1,11 @@
-const apiSample = `
+const dynamicApiSample = `
 {##ImportTypesReqRes##}
 
 export async function get(req{##RequestType##}){##PromiseResponseType##}{
   return {
     body: [
       {
-        method: req.method,
+        userID: req.param,
         username: "@joor",
         email: "joor@domain.com",
       },
@@ -13,4 +13,4 @@ export async function get(req{##RequestType##}){##PromiseResponseType##}{
   };
 }
 `;
-export default apiSample;
+export default dynamicApiSample;

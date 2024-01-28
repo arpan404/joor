@@ -1,9 +1,8 @@
-const webSample = `
-{##ImportTypesReqRes##}
+import { REQUEST, RESPONSE } from "joor"
 
-export async function get(req{##RequestType##}){##PromiseResponseType##} {
+export async function get(req:REQUEST): Promise<RESPONSE> {
   return {
-    body: \`
+    body: `
         <html>
             <head>
                 <title>Hello Server</title>
@@ -12,11 +11,9 @@ export async function get(req{##RequestType##}){##PromiseResponseType##} {
             <body>
             <h1>Joor Project has been successfully setup.</h1>
             <p>Edit files to get desired outcomes.</p>
-            <b>Method Used: \${req.method}\</b>
+            <b>Method Used: ${req.method}</b>
             </body>
         </html>
-      \`,
+      `,
   };
 }
-`;
-export default webSample;

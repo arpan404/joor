@@ -1,0 +1,6 @@
+{
+  "port": 8080,
+  "language": "ts",
+  "mode": "development",
+  "doLogs": true
+}
