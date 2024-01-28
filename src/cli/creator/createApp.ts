@@ -6,6 +6,7 @@ import createPackage from "./helpers/createPackage.js";
 import createConfig from "./helpers/createConfig.js";
 import createFolderStructure from "./helpers/createFolderStructure.js";
 import createRouteFiles from "./helpers/createRouteFiles.js";
+import joorInstaller from "./helpers/joorInstaller.js";
 export default async function createApp(
   projectName: string,
   projectDescription: string,
@@ -34,6 +35,7 @@ export default async function createApp(
   await createConfig(workingDirectory, isTypescript);
   createFolderStructure(workingDirectory, isTypescript);
   await createRouteFiles(workingDirectory, isTypescript);
+  await joorInstaller(projectName);
   console.log(database);
   try {
   } catch (error: any) {

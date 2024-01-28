@@ -7,7 +7,10 @@
   "main": "index.ts",
   "scripts": {
     "dev": "joor dev",
-    "build":"joor build",
-    "prod":"joor production"
+    "build": "joor build",
+    "prod": "joor production"
+  },
+  "dependencies": {
+    "joor": "^0.0.1-ax5"
   }
 }
