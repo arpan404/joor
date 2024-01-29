@@ -20,7 +20,6 @@ const packageFileData = `
     "create-joor": "cli/creator/index.js"
   },
   "dependencies": ##dependencies##
-
 } 
 `;
 const toRemoveDependencies = `"dependencies": ##dependencies##`;
@@ -124,7 +123,7 @@ async function makePackageFile(version: string, packagFilePath: string) {
         packageData.slice(0, commaIndex) + packageData.slice(commaIndex + 1);
       console.log(packageData);
     }
-    await fs.promises.writeFile(packagFilePath, packageData);
+    await fs.promises.writeFile(packagFilePath, packageData.trim());
   } catch (error: any) {
     throw error;
   }
