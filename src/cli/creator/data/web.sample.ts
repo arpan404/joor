@@ -2,7 +2,6 @@ const webSample = `
 {##ImportTypesReqRes##}
 
 export async function get(req{##RequestType##}){##PromiseResponseType##} {
-  console.log(req);
   return {
     body: \`
         <html>
@@ -13,6 +12,7 @@ export async function get(req{##RequestType##}){##PromiseResponseType##} {
             <body>
             <h1>Joor Project has been successfully setup.</h1>
             <p>Edit files to get desired outcomes.</p>
+            <b>Method Used: \${req.method}\</b>
             </body>
         </html>
       \`,

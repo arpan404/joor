@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../../../../src/cli/creator/joor-app/app/routes/api/[user]/index.ts"],"names":[],"mappings":"AAEA,MAAM,CAAC,KAAK,UAAU,GAAG,CAAC,GAAW;IACnC,OAAO;QACL,IAAI,EAAE;YACJ;gBACE,MAAM,EAAE,GAAG,CAAC,KAAK;gBACjB,QAAQ,EAAE,OAAO;gBACjB,KAAK,EAAE,iBAAiB;aACzB;SACF;KACF,CAAC;AACJ,CAAC"}

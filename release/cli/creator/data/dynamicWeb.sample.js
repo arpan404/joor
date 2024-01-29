@@ -2,7 +2,6 @@ const dynamicWebSample = `
 {##ImportTypesReqRes##}
 
 export async function get(req{##RequestType##}){##PromiseResponseType##} {
-  console.log(req);
   return {
     body: \`
         <html>
