@@ -3,6 +3,7 @@ node_modules/
 
 # Ignore build artifacts
 build/
+release/
 
 #Ignore system files
 .DS_Store
