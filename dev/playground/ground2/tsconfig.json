@@ -22,8 +22,8 @@
     "rootDir": ".",
     "outDir": "./dist",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
   },
   "include": ["app", "index.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

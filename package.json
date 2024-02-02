@@ -11,7 +11,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "setup": "node ./dev/tools/dev/setup.js"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",

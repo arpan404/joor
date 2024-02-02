@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "index.ts",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "build": "ts-node --esm ./dev/build.ts",
+    "build": "tsx ./dev/build.ts",
     "concurrency-test": "ts-node --esm ./tests/concurrencyBenchmark.ts"
   },
   "keywords": [],
@@ -16,7 +16,6 @@
   "license": "ISC",
   "dependencies": {
     "@types/node-fetch": "^2.6.9",
-    "node-fetch": "^3.3.2",
-    "ts-node": "^10.9.2"
+    "node-fetch": "^3.3.2"
   }
 }
