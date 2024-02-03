@@ -56,7 +56,6 @@ Expand Joor's capabilities with a vast range of plugins and modules. Create a cu
 
 Joor's suite of user-friendly development and debugging tools simplifies the development process, helping you build, test, and troubleshoot your application with ease.
 
-
 #### **In conclusion**, Joor equips developers with all the necessary tools to create modern, scalable, and secure web applications. Save time, optimize performance, and focus on your application's unique features with Joor's powerful and developer-friendly features. Embrace the future of Node.js development with Joor!
 
 ## Installation
@@ -64,7 +63,7 @@ Joor's suite of user-friendly development and debugging tools simplifies the dev
 To install Joor, you can use npm:
 
 ```
-npm install joor -G
+npm i -g joor
 
 ```
 
