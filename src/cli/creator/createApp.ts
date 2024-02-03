@@ -13,34 +13,39 @@ export default async function createApp(
   language: string,
   database: string,
   version: string,
-  author: string
+  author: string,
 ) {
-  let workingDirectory = path.join(process.cwd(), projectName);
-  const isTypescript: boolean = language === "typescript";
-  if (fs.existsSync(workingDirectory)) {
-    throw new Error(
-      `Folder named ${projectName} already exists. Try using other names for the project or delete the existing folder named ${projectName}.`
-    );
-  }
-  await fs.promises.mkdir(workingDirectory);
-  await createIndex(workingDirectory, language === "typescript");
-  await createPackage(
-    workingDirectory,
-    language === "typescript",
-    projectName,
-    projectDescription,
-    version,
-    author
-  );
-  await createConfig(workingDirectory, isTypescript);
-  createFolderStructure(workingDirectory, isTypescript);
-  await createRouteFiles(workingDirectory, isTypescript);
-  await joorInstaller(projectName);
-  console.log(database);
   try {
+    let workingDirectory = path.join(process.cwd(), projectName);
+    const isTypescript: boolean = language === "typescript";
+
+    // Throw error if the folder with same as the project exists in current directory
+
+    if (fs.existsSync(workingDirectory)) {
+      throw new Error(
+        `Folder named ${projectName} already exists. Try using other names for the project or delete the existing folder named ${projectName}.`,
+      );
+    }
+
+    // Create project files and folder according to the user's requirement
+    await fs.promises.mkdir(workingDirectory);
+    await createIndex(workingDirectory, language === "typescript");
+    await createPackage(
+      workingDirectory,
+      isTypescript,
+      projectName,
+      projectDescription,
+      version,
+      author,
+    );
+    await createConfig(workingDirectory, isTypescript);
+    createFolderStructure(workingDirectory, isTypescript);
+    await createRouteFiles(workingDirectory, isTypescript);
+    await joorInstaller(projectName);
+    console.log(database);
   } catch (error: any) {
     console.log(
-      Marker.redBright(`Could not create project.\nError:\n${error}`)
+      Marker.redBright(`Could not create project.\nError:\n${error}`),
     );
   }
 }
