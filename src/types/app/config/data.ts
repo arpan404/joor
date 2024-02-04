@@ -7,4 +7,4 @@ export type URLENCODED = boolean;
 export type LANGUAGE = "ts" | "js";
 export type MODE = "production" | "development";
 export type DOLOGS = boolean;
-
+export type ALLOWS_FILE_UPLOAD = boolean;

@@ -13,13 +13,13 @@ import matchDynamicRoute from "./matchDynamicRoute.js";
  */
 export default async function findCurrentRouteData(
   request: REQUEST,
-  availableRoutesDetail: END_POINTS
+  availableRoutesDetail: END_POINTS,
 ): Promise<END_POINT_DETAIL | undefined> {
   let currentRouteData: END_POINT_DETAIL | undefined =
     availableRoutesDetail.find((data) => data.route === request.url);
   if (currentRouteData && !currentRouteData.isDynamic) return currentRouteData;
   if (currentRouteData && currentRouteData.isDynamic) return;
-  
+
   // Getting route data considering it as a dynamic route
   currentRouteData = availableRoutesDetail.find((data) => {
     const matches = matchDynamicRoute(request, data.route, request.url!);

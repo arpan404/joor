@@ -14,12 +14,12 @@ export class Server {
     try {
       // starts server only if routes and config files are loaded properly
       const availableRoutesDetail: END_POINTS = await listEndPoints();
-    
+
       if (availableRoutesDetail.length === 0) {
         console.log(
           Marker.redBright(
-            "No routes available. Create a route to start a server."
-          )
+            "No routes available. Create a route to start a server.",
+          ),
         );
         process.exit(1);
       }
