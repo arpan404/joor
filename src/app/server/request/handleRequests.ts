@@ -7,7 +7,6 @@ import {
 import Marker from "../../misc/marker.js";
 import findCurrentRouteData from "../misc/findCurrentRouteData.js";
 import serveFiles from "../misc/serveFiles.js";
-import handleFileUpload from "../upload/handleFileUpload.js";
 import handleRoutes from "./handleRoutes.js";
 
 export default async function handleRequests(
@@ -17,11 +16,6 @@ export default async function handleRequests(
 ): Promise<INTERNAL_FORMATTED_RESPONSE> {
   let response: INTERNAL_FORMATTED_RESPONSE | undefined;
   try {
-    // uploading files to server directly
-    if (request.method === "POST" && configData.allowsFileUpload) {
-      await handleFileUpload(request, configData);
-    }
-
     // checking if the route is valid or not
     const currentRouteData = await findCurrentRouteData(
       request,

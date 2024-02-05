@@ -4,7 +4,6 @@ import { IncomingMessage } from "http";
 declare module "http" {
   interface IncomingMessage {
     param?: string;
-    uploadedFiles?: string[];
   }
 }
 // Providing custom REQUEST type by extending the IncmingMessage type provided by http

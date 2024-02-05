@@ -9,8 +9,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "nodemon": "^3.0.2"
-  }
+  "license": "ISC"
 }

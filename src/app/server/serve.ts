@@ -3,10 +3,11 @@ import { END_POINTS, JOORCONFIG } from "../../types/app/index.js";
 import handleRequests from "./request/handleRequests.js";
 import Marker from "../misc/marker.js";
 import joor from "../../data.js";
+import handleFileUpload from "./upload/handleFileUpload.js";
 
 export async function servePort(
   configData: JOORCONFIG,
-  availableRoutesDetail: END_POINTS
+  availableRoutesDetail: END_POINTS,
 ) {
   const isUnderDevelopment = configData.mode === "development" ? true : false;
   const server = http.createServer(
@@ -15,7 +16,7 @@ export async function servePort(
         const responseData = await handleRequests(
           request,
           configData,
-          availableRoutesDetail
+          availableRoutesDetail,
         );
         response.writeHead(responseData.status, responseData.headers);
         response.end(responseData.body);
@@ -24,7 +25,7 @@ export async function servePort(
         response.writeHead(500, { "Content-Type": "text/plain" });
         response.end("Internal Server Error");
       }
-    }
+    },
   );
 
   server.on("error", (error: NodeJS.ErrnoException) => {
@@ -33,20 +34,20 @@ export async function servePort(
         console.log(
           Marker.red(
             `\nPort ${configData.port} is already in use.\nEdit ${Marker.bgBlue(
-              " joor.config.json "
-            )} ${Marker.red("file to use another port.")}\n`
-          )
+              " joor.config.json ",
+            )} ${Marker.red("file to use another port.")}\n`,
+          ),
         );
         console.log(
           Marker.greenBright(
-            `For more information, have a look at: ${joor.docs}/port`
-          )
+            `For more information, have a look at: ${joor.docs}/port`,
+          ),
         );
       } else {
         console.log(
           Marker.redBright(`An error occurred while starting the server : `) +
             "\n" +
-            error
+            error,
         );
       }
       process.exit(1);
@@ -57,14 +58,14 @@ export async function servePort(
     if (isUnderDevelopment) {
       console.log(
         Marker.bgGreenBoldBlueBright(
-          `\n Started at : http://localhost:${configData.port} \n`
-        )
+          `\n Started at : http://localhost:${configData.port} \n`,
+        ),
       );
     } else {
       console.log(
         Marker.bgGreenBoldBlueBright(
-          `\n Started production server at : Port ${configData.port} \n`
-        )
+          `\n Started production server at : Port ${configData.port} \n`,
+        ),
       );
     }
   });

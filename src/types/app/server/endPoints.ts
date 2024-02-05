@@ -4,12 +4,14 @@ type END_POINT_DETAIL = {
   filePath: string;
   isDynamic: boolean;
   type: "api" | "web";
-  hasMiddleWare: boolean;
+  uploadFilePath?: string;
+  middlwareFilePath?: string;
 };
 
 type AVAILABLE_ROUTE = {
   filePath: string;
   hasMiddleWare: boolean;
+  hasUpload: boolean;
 };
 
 type END_POINTS = Array<END_POINT_DETAIL>;
