@@ -48,8 +48,9 @@ async function runBuilds() {
         .rm(buildPath, { recursive: true })
         .catch((error) => {
           console.log(
-            "Error deleting folder. Try deleting the existing build folder to continue building the project."
+            "Error deleting folder. Try deleting the existing build folder to continue building the project.",
           );
+          throw error;
         })
         .then(() => console.log("Deleted build folder\n"));
     } else {
@@ -62,13 +63,14 @@ async function runBuilds() {
     if (buildResult.stderr) {
       console.log(
         "Something went wrong while building the project\nError: ",
-        buildResult.stderr
+        buildResult.stderr,
       );
     } else {
       console.log("Build completed\n");
     }
-  } catch (error) {
-    console.error("Error building project:", error);
+  } catch (error: any) {
+    console.error("Error building project.");
+    throw error;
   }
 }
 
@@ -89,8 +91,9 @@ async function copyFolder(source: string, destination: string) {
         await fs.promises.copyFile(sourceFile, destFile);
       }
     }
-  } catch (error) {
-    console.log("Error while copying build files to release folder: ", error);
+  } catch (error: any) {
+    console.log("Error while copying build files to release folder.");
+    throw error;
   }
 }
 
@@ -104,7 +107,7 @@ async function makePackageFile(version: string, packagFilePath: string) {
 
     const sourcePackageJson = await fs.promises.readFile(
       packageDataFileLocation,
-      "utf8"
+      "utf8",
     );
     const sourcePackageData = JSON.parse(sourcePackageJson);
 
@@ -114,7 +117,7 @@ async function makePackageFile(version: string, packagFilePath: string) {
     ) {
       packageData = packageData.replace(
         "##dependencies##",
-        JSON.stringify(sourcePackageData.dependencies, null, 2)
+        JSON.stringify(sourcePackageData.dependencies, null, 2),
       );
     } else {
       packageData = packageData.replace(toRemoveDependencies, " ");
@@ -125,6 +128,7 @@ async function makePackageFile(version: string, packagFilePath: string) {
     }
     await fs.promises.writeFile(packagFilePath, packageData.trim());
   } catch (error: any) {
+    console.error("Error while making package file for release.");
     throw error;
   }
 }
@@ -148,9 +152,10 @@ async function createRelease() {
       await fs.promises
         .rm(releasePath, { recursive: true })
         .catch((error) => {
-          console.log(
-            "Error deleting folder. Try deleting the existing release folder to continue building the project."
+          console.error(
+            "Error deleting folder. Try deleting the existing release folder to continue building the project.",
           );
+          throw error;
         })
         .then(() => console.log("Deleted release folder\n"));
     } else {
@@ -182,9 +187,10 @@ async function createRelease() {
       await fs.promises
         .rm(buildPath, { recursive: true })
         .catch((error) => {
-          console.log(
-            "Error deleting folder. Try deleting the build folder manually."
+          console.error(
+            "Error deleting folder. Try deleting the build folder manually.",
           );
+          throw error;
         })
         .then(() => console.log("Deleted build folder\n"));
     } else {
@@ -192,10 +198,13 @@ async function createRelease() {
     }
 
     console.log(
-      `\n\nSuccessfully, build a new release version of Joor.\nVersion : ${version}\n`
+      `\n\nSuccessfully, build a new release version of Joor.\nVersion : ${version}\n`,
     );
   } catch (error) {
-    console.error("Error building project:", error);
+    console.error(error);
+    throw error;
+  } finally {
+    rl.close();
   }
 }
 

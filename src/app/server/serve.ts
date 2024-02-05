@@ -3,7 +3,6 @@ import { END_POINTS, JOORCONFIG } from "../../types/app/index.js";
 import handleRequests from "./request/handleRequests.js";
 import Marker from "../misc/marker.js";
 import joor from "../../data.js";
-import handleFileUpload from "./upload/handleFileUpload.js";
 
 export async function servePort(
   configData: JOORCONFIG,
