@@ -26,12 +26,13 @@ import { AVAILABLE_ROUTE } from "../../../types/app/index.js";
  */
 
 export default function readDirectories(
-  appFolder: string
+  appFolder: string,
 ): Array<AVAILABLE_ROUTE> {
   let routesAvailable: Array<AVAILABLE_ROUTE> = [];
   const routeData = {
     filePath: "",
     hasMiddleWare: false,
+    hasUpload: false,
   };
 
   // Listing all files and directories available in the folder
@@ -53,7 +54,10 @@ export default function readDirectories(
   if (files.includes("middleware.js") || files.includes("middleware.ts")) {
     routeData.hasMiddleWare = true;
   }
-
+  // Check if the route has upload feature or not.
+  if (files.includes("upload.js") || files.includes("upload.ts")) {
+    routeData.hasUpload = true;
+  }
   // Only appending routes list if length of file name is not 0
   if (routeData.filePath.length !== 0) {
     routesAvailable = [...routesAvailable, routeData];

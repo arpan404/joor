@@ -13,10 +13,24 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
   const formatedRoute: END_POINT_DETAIL = {
     route: "",
     filePath: route.filePath,
-    hasMiddleWare: route.hasMiddleWare,
     isDynamic: false,
     type: route.filePath.includes("/app/routes/api") ? "api" : "web",
   };
+  const fileExtension = route.filePath.split("/").pop()?.split(".").pop();
+
+  //
+  if (route.hasUpload) {
+    formatedRoute.uploadFilePath = route.filePath.replace(
+      `index.${fileExtension}`,
+      `upload.${fileExtension}`,
+    );
+  }
+  if (route.hasMiddleWare) {
+    formatedRoute.middlwareFilePath = route.filePath.replace(
+      `index.${fileExtension}`,
+      `middlware.${fileExtension}`,
+    );
+  }
 
   // Splitting the file path so that it can be directly used as url after formatting
   const routePathSplitted = route.filePath.split("/app/routes/");
@@ -24,7 +38,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
   // Checking if there are more than one '/app/routes/' in path of your project. If yes, throw error.
   if (routePathSplitted.length !== 2) {
     throw new Error(
-      `There cannot be more than one '/app/routes/' in path of your project. For more information, see our documentation ${joor.docs}/routes`
+      `There cannot be more than one '/app/routes/' in path of your project. For more information, see our documentation ${joor.docs}/routes`,
     );
   }
 
@@ -44,7 +58,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     if (routePath[index].match(dynamicRouteRegEx)) {
       if (index !== routePath.length - 1) {
         throw new Error(
-          `You can only use any other end points inside dynamic endpoint. For more information, see our documentation ${joor.docs}/routes `
+          `You can only use any other end points inside dynamic endpoint. For more information, see our documentation ${joor.docs}/routes `,
         );
       }
     }
@@ -70,7 +84,7 @@ export default function formatRoutes(route: AVAILABLE_ROUTE): END_POINT_DETAIL {
     // Api route cannot be used inside web routes
     if (routePath.startsWith("/api")) {
       throw new Error(
-        `The route api cannot be used inside web folder. For more information, see our documentation ${joor.docs}/routes`
+        `The route api cannot be used inside web folder. For more information, see our documentation ${joor.docs}/routes`,
       );
     }
   }

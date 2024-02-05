@@ -6,6 +6,7 @@ import {
 } from "../../../types/app/index.js";
 import { REQUEST } from "../../index.js";
 import Marker from "../../misc/marker.js";
+import formatResponse from "../misc/formatResponse.js";
 
 /**
  *
@@ -16,44 +17,67 @@ import Marker from "../../misc/marker.js";
 export default async function handleRoutes(
   request: REQUEST,
   routeData: END_POINT_DETAIL,
-  configData: JOORCONFIG
+  configData: JOORCONFIG,
 ): Promise<INTERNAL_FORMATTED_RESPONSE> {
   try {
-    const module = await import(routeData.filePath);
+    const method = request.method!.toLowerCase();
+
     let data: RESPONSE;
-    //if method name is being used as function name to handle request, it must be in small letters
-    if (module[request.method!.toLowerCase()]) {
-      data = await module[request.method!.toLowerCase()](request);
+
+    let module;
+
+    // Using middleware if it exists
+    if (routeData.middlwareFilePath) {
+      module = await import(routeData.middlwareFilePath);
+      if (module[method]) {
+        data = (await module[method](request)) as RESPONSE;
+        if (data) {
+          return formatResponse(data, routeData.type);
+        }
+      } else {
+        data = (await module.route(request)) as RESPONSE;
+        if (data) {
+          return formatResponse(data, routeData.type);
+        }
+      }
+    }
+
+    if (routeData.uploadFilePath) {
+      module = await import(routeData.uploadFilePath);
+      if (module[method]) {
+        data = (await module[method](request)) as RESPONSE;
+        if (data) {
+          return formatResponse(data, routeData.type);
+        }
+      } else {
+        data = (await module.route(request)) as RESPONSE;
+        if (data) {
+          return formatResponse(data, routeData.type);
+        }
+      }
+    }
+
+    // if method name is being used as function name to in middleware, it must be in small lettersif method name is being used as function name to handle request, it must be in small letters
+    if (module[method]) {
+      data = (await module[method](request)) as RESPONSE;
     } else {
-      data = await module.route(request); // default function to handle  route is 'route'
+      data = (await module.route(request)) as RESPONSE; // default function to handle  route is 'route'
     }
     if (!data) {
       return {
-        status: 400,
+        status: 404,
         body: "Not found",
         headers: { "Content-Type": "text/plain" },
       };
     }
-    data.body =
-      routeData.type === "api" ? JSON.stringify(data.body) : data.body;
-    data.headers = data.headers
-      ? data.headers
-      : routeData.type === "api"
-      ? { "Content-Type": "application/json" }
-      : { "Content-Type": "text/html" };
-
-    return {
-      status: data.status || 200,
-      body: data.body,
-      headers: data.headers,
-    };
+    return formatResponse(data, routeData.type);
   } catch (error: any) {
     if (configData.doLogs) {
       console.log(Marker.redBright(error));
     }
     return {
-      status: 400,
-      body: "Not found",
+      status: 500,
+      body: "Internal Server Error",
       headers: { "Content-Type": "text/plain" },
     };
   }

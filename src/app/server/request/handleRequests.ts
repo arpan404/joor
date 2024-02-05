@@ -12,14 +12,14 @@ import handleRoutes from "./handleRoutes.js";
 export default async function handleRequests(
   request: REQUEST,
   configData: JOORCONFIG,
-  availableRoutesDetail: END_POINTS
+  availableRoutesDetail: END_POINTS,
 ): Promise<INTERNAL_FORMATTED_RESPONSE> {
   let response: INTERNAL_FORMATTED_RESPONSE | undefined;
   try {
     // checking if the route is valid or not
     const currentRouteData = await findCurrentRouteData(
       request,
-      availableRoutesDetail
+      availableRoutesDetail,
     );
     // if route is valid; then handling the request using function to handle route
     if (currentRouteData) {
