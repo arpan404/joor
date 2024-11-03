@@ -63,7 +63,7 @@ Joor's suite of user-friendly development and debugging tools simplifies the dev
 To install Joor, you can use npm:
 
 ```
-npm i -g joor
+npm i -g joorData
 
 ```
 
@@ -72,7 +72,7 @@ npm i -g joor
 To get started with Joor, you can create a new project using the CLI tool:
 
 ```
-npx create-joor
+npx create-joorData
 
 ```
 

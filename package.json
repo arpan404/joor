@@ -1,0 +1,26 @@
+{
+  "name": "joor",
+  "version": "0.0.1",
+  "description": "Joor is a full-fledged backend web framework for small to enterprise level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
+  "author": "Joor",
+  "license": "MIT",
+  "module": "index.ts",
+  "type": "module",
+  "main": "./build/app/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "setup": "node ./dev/tools/dev/setup.js"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "inquirer": "^9.2.12"
+  }
+}

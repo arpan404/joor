@@ -1,3 +1,3 @@
-import Joor from "joor";
+import Joor from "joorData";
 const app = new Joor();
 app.start();

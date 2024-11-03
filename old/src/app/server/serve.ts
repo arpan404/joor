@@ -33,7 +33,7 @@ export async function servePort(
         console.log(
           Marker.red(
             `\nPort ${configData.port} is already in use.\nEdit ${Marker.bgBlue(
-              " joor.config.json ",
+              " joorData.config.json ",
             )} ${Marker.red("file to use another port.")}\n`,
           ),
         );

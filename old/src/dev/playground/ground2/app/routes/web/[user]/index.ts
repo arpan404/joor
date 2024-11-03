@@ -1,4 +1,4 @@
-import { REQUEST, RESPONSE } from "joor";
+import { REQUEST, RESPONSE } from "joorData";
 
 export async function get(req: REQUEST): Promise<RESPONSE> {
   console.log(req);

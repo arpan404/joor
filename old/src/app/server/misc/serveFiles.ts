@@ -61,7 +61,7 @@ const contentTypeMap: ContentTypeMap = {
 /**
  * Function to serve files inside app/public folder.
  * @param path - Requested URL of file
- * @param configData - Config Data loaded from joor.config.json file
+ * @param configData - Config Data loaded from joorData.config.json file
  * @returns false - If file is not found; Response - If file is found.
  */
 export default async function serveFiles(

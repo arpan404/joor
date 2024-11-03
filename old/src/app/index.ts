@@ -12,12 +12,12 @@ import { Server } from "./server/index.js";
 /**
  * Class to initiate a new Joor server
  * @example```
- * import Joor from "joor";
+ * import Joor from "joorData";
  * const app = new Joor();
  * await app.start();
  * ```
  *
- * This will start a new Joor server with default config data from joor.config.json file
+ * This will start a new Joor server with default config data from joorData.config.json file
  */
 export default class Joor {
   // private variable to hold config data to use in server & initiated as null

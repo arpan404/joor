@@ -8,7 +8,7 @@ const creator = async (): Promise<void> => {
       type: "input",
       name: "name",
       message: "What is your project-name? ",
-      default: "joor-app",
+      default: "joorData-app",
     },
     {
       type: "input",

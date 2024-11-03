@@ -1,4 +1,4 @@
-import { REQUEST, RESPONSE } from "joor";
+import { REQUEST, RESPONSE } from "joorData";
 
 export async function get(req: REQUEST): Promise<RESPONSE> {
   console.log(req);
@@ -7,7 +7,7 @@ export async function get(req: REQUEST): Promise<RESPONSE> {
       {
         route: "/api/user/:id",
         filePath:
-          "/Users/arpanbhandari/Documents/Coding/joor/dev/playground/ground1/app/routes/api/[user]/index.js",
+          "/Users/arpanbhandari/Documents/Coding/joorData/dev/playground/ground1/app/routes/api/[user]/index.js",
         hasMiddleWare: false,
         isDynamic: true,
         type: "api",
@@ -15,7 +15,7 @@ export async function get(req: REQUEST): Promise<RESPONSE> {
       {
         route: "/api/user/:id",
         filePath:
-          "/Users/arpanbhandari/Documents/Coding/joor/dev/playground/ground1/app/routes/api/[user]/index.js",
+          "/Users/arpanbhandari/Documents/Coding/joorData/dev/playground/ground1/app/routes/api/[user]/index.js",
         hasMiddleWare: false,
         isDynamic: true,
         type: "api",

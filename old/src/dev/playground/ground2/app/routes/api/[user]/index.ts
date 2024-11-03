@@ -1,4 +1,4 @@
-import { REQUEST, RESPONSE } from "joor";
+import { REQUEST, RESPONSE } from "joorData";
 
 export async function get(req: REQUEST): Promise<RESPONSE> {
   console.log(req);
@@ -6,8 +6,8 @@ export async function get(req: REQUEST): Promise<RESPONSE> {
     body: [
       {
         userID: "#ty6a",
-        username: "@joor",
-        email: "joor@domain.com",
+        username: "@joorData",
+        email: "joorData@domain.com",
       },
       {
         userID: "#ty7a",

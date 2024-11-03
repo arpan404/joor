@@ -1,4 +1,4 @@
-//Datatypes of each individual data of joor.config.json should be defined here
+//Datatypes of each individual data of joorData.config.json should be defined here
 
 export type PORT = number;
 export type PARSEJSON = boolean;

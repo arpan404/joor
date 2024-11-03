@@ -8,7 +8,7 @@ export default async function createConfig(
   try {
     const lang = isTypescript ? "ts" : "js";
     const toWrite = configSample.replace("{##language##}", lang);
-    const configPath = path.join(projectPath, "/joor.config.json");
+    const configPath = path.join(projectPath, "/joorData.config.json");
     await fs.promises.writeFile(configPath, toWrite.trim());
   } catch (error: any) {
     throw error;

@@ -6,8 +6,8 @@ import joor from "../../data.js";
 
 // Class to handle loading of config file
 export class Config {
-  //Name of configFile must be joor.config.json and should be located in root directory of project
-  private static configFile: string = "joor.config.json";
+  //Name of configFile must be joorData.config.json and should be located in root directory of project
+  private static configFile: string = "joorData.config.json";
 
   // Predefining configData as null so that it can be initialized later
   public static configData: JOORCONFIG | null = null;
@@ -50,7 +50,7 @@ export class Config {
     }
   }
 
-  // This function can be accessed by public class or functions, and loads (only if not loaded before), and returns config data from joor.config.json file
+  // This function can be accessed by public class or functions, and loads (only if not loaded before), and returns config data from joorData.config.json file
   public static async get(): Promise<JOORCONFIG | null> {
     if (this.configData === null) {
       await this.load();

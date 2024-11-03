@@ -8,7 +8,7 @@ import {
   ALLOWS_FILE_UPLOAD,
 } from "./data.js";
 
-// This is the type of the config object that is stored in the joor.config.json file
+// This is the type of the config object that is stored in the joorData.config.json file
 export interface JOORCONFIG {
   port: PORT;
   parseJson?: PARSEJSON;

@@ -44,7 +44,7 @@ To test and run the new features you added to Joor, please follow these steps.
 2. Enter appropriate version name, then you will see the release folder in root directory.
 3. Once release version is build successfully, navigate to `release` folder using terminal.
 4. Run `npm link` command.
-5. Navigate to the test project folder and run `npm link joor`.
+5. Navigate to the test project folder and run `npm link joorData`.
 6. Now you can test all the features available in that build.
 
 ## Code Review
