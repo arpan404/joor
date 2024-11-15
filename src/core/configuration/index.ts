@@ -5,6 +5,16 @@ import joorData from "../../data/joor";
 import Jrror from "../error";
 import JOOR_CONFIG from "./type";
 
+/**
+ * Class to work with configuration file.
+ *
+ * @example
+ * const config = Configuration.getConfig();
+ * console.log(config.port);
+ *
+ *
+ */
+
 class Configuration {
   private static configFile: string = joorData.configFile;
   private static configData: JOOR_CONFIG | null = null;
