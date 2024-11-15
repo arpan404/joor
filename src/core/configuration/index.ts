@@ -12,8 +12,9 @@ import JOOR_CONFIG from "./type";
  * It ensures that configuration is loaded only once and throws custom errors in case of issues.
  *
  * @example
- * const config = await new Configuration().getConfig();
- * console.log(config.port);
+ * const config = new Configuration()
+ * const configData = config.getConfig()
+ * console.log(configData)
  */
 class Configuration {
   /**
@@ -77,7 +78,7 @@ class Configuration {
    * @throws {Jrror} Throws "config-p3" if configuration loading fails unexpectedly.
    * @protected
    */
-  protected async getConfig(): Promise<JOOR_CONFIG> {
+  public async getConfig(): Promise<JOOR_CONFIG> {
     if (Configuration.configData === null) {
       await this.loadConfig();
       if (Configuration.configData === null) {
