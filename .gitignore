@@ -16,4 +16,4 @@ old/
 *.sublime-*
 
 # Ignore package lock files
-package-lock.json
+/package-lock.json
