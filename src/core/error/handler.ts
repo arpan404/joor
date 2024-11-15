@@ -21,7 +21,15 @@ class JrrorHandler {
     }
   }
   private formatMessage(jrror: Jrror) {
-    return `Error Code : ${jrror.errorCode}\nMessage : ${jrror.message}\nFor more information, see: ${joorData.docs}/${joorData.docsVersion}/errors?errorCode=${jrror.errorCode}`;
+    return (
+      `Error Code : ${jrror.errorCode}\nMessage : ${jrror.message}\n` +
+      chalk.greenBright(
+        `For more information, have a look at :` +
+          chalk.bgGreenBright.whiteBright(
+            `${joorData.docs}/${joorData.docsVersion}/errors?errorCode=${jrror.errorCode}`
+          )
+      )
+    );
   }
 }
 
