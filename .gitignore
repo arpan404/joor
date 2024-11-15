@@ -4,6 +4,7 @@ node_modules/
 # Ignore build artifacts
 build/
 release/
+old/
 
 #Ignore system files
 .DS_Store
@@ -11,6 +12,7 @@ release/
 # Ignore IDE and editor files
 .vscode/
 .idea/
+
 *.sublime-*
 
 # Ignore package lock files
