@@ -1,5 +1,5 @@
 import joorData from "../../data/joor";
-import errorList from "./list";
+import errorList from "../../data/errors";
 import { JOOR_ERROR } from "./type";
 import chalk from "chalk";
 
