@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
-    "module": "esnext",
+    "module": "NodeNext",
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": false,
     "noEmit": false,
     "emitDeclarationOnly": false,
@@ -24,6 +24,6 @@
     "declaration": true,
     "sourceMap": true
   },
-  "include": ["src"],
+  "include": ["src", "src/cli/creator/helpers/.ts"],
   "exclude": ["node_modules"]
 }
