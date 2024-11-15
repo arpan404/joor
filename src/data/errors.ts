@@ -1,5 +1,5 @@
-import joorData from "../../data/joor";
-import { JOOR_ERROR_LIST } from "./type";
+import { JOOR_ERROR_LIST } from "../core/error/type";
+import joorData from "./joor";
 
 /**
  * Contains all the error's data which can be retrived using errorCode
