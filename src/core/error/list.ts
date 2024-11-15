@@ -1,6 +1,9 @@
 import joorData from "../../data/joor";
 import { JOOR_ERROR_LIST } from "./type";
 
+/**
+ * Contains all the error's data which can be retrived using errorCode
+ */
 const errorList: JOOR_ERROR_LIST = {
   "config-w1": {
     message:
