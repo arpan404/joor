@@ -15,6 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "checkJs": false,
     "allowJs": false,
     "noUnusedLocals": true,

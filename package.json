@@ -11,13 +11,15 @@
     "src"
   ],
   "scripts": {
-    "build": "tsc",
-    "setup": "node ./dev/tools/dev/setup.js"
+    "build": "tsx dev/scripts/build.ts",
+    "compile": "tsc",
+    "setup": "node dev/scripts/setup.js"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",
     "@types/node": "^20.10.0",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "chalk": "^5.3.0",
