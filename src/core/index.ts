@@ -1,13 +1,8 @@
-/*
- - This file serves as the main entry point of the framework.
- - It imports and exports all necessary classes, methods, and functions that should be accessible to users.
- - Ensure that each class or function is imported from its respective file and exported from here for consistency and ease of use.
-*/
-
 import chalk from "chalk";
 import Configuration from "./configuration";
 import JOOR_CONFIG from "./configuration/type";
 import Jrror from "./error";
+import Server from "./server";
 
 /**
  * Represents the Joor framework server.
@@ -73,24 +68,3 @@ class Joor {
 }
 
 export default Joor;
-
-/*
-  Any additional classes or functions that should be accessible to users must be imported from their respective files 
-  and exported from this file.
-
-  Example:
-  import { Response } from "./server";
-  export { Response };
-
-
-Doing 
-import { Response } from "./server/response";
-export { Response };
-
-
-Also, Joor class should be default export from this file
-
-*/
-
-import Server, { Response } from "./server";
-export { Response };
