@@ -27,7 +27,7 @@ const errorList: JOOR_ERROR_LIST = {
     type: "panic",
   },
   "response-e1": {
-    message: ``,
+    message: `Invalid data type provided to "setStatus" method of Response class`,
     type: "error",
   },
 };
