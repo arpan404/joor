@@ -26,5 +26,9 @@ const errorList: JOOR_ERROR_LIST = {
     message: `Error occured while loading the configuration file.`,
     type: "panic",
   },
+  "response-e1": {
+    message: ``,
+    type: "error",
+  },
 };
 export default errorList;

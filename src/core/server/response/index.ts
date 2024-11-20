@@ -1,3 +1,4 @@
+import Jrror from "../../error";
 import { RESPONSE } from "./type";
 
 class Response {
@@ -9,6 +10,9 @@ class Response {
   private session: RESPONSE["session"];
 
   public setStatus(value: typeof this.status): this {
+    if (typeof value !== "number") {
+      throw new Jrror("response-e1");
+    }
     this.status = value;
     return this;
   }
