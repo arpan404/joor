@@ -39,10 +39,6 @@ class Configuration {
    * in `Configuration.configData`. It ensures that the configuration is only loaded once.
    *
    * @throws {Jrror} Throws:
-   * - "config-1" if the configuration is already loaded.
-   * - "config-p1" if the file is not found.
-   * - "config-p2" if there is a syntax error in the configuration file.
-   * - "config-p3" for other unknown errors.
    * @private
    */
   private async loadConfig(): Promise<void> {
