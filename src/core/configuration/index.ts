@@ -47,7 +47,12 @@ class Configuration {
    */
   private async loadConfig(): Promise<void> {
     if (Configuration.configData !== null) {
-      throw new Jrror("config-1");
+      throw new Jrror({
+        errorCode: "config-w1",
+        message:
+          "The configuration data is already loaded. Attempting to load it again is not recommended",
+        type: "warn",
+      });
     }
     try {
       const configPath = path.resolve(process.cwd(), Configuration.configFile);
@@ -59,12 +64,24 @@ class Configuration {
       );
     } catch (error: any) {
       if (error.code === "ENOENT") {
-        throw new Jrror("config-p1");
+        throw new Jrror({
+          errorCode: "config-p1",
+          message: `Error: The configuration file '${joorData.configFile}' for Joor app is not found.\nMake sure the file is in the root directory of your project.`,
+          type: "panic",
+        });
       } else if (error instanceof SyntaxError) {
-        throw new Jrror("config-p2");
+        throw new Jrror({
+          errorCode: "config-p2",
+          message: `Error: The configuration file '${joorData.configFile}' for Joor app is not in the proper JSON format.\nPlease check the content and ensure it is valid JSON.`,
+          type: "panic",
+        });
       } else {
         console.error(error);
-        throw new Jrror("config-p3");
+        throw new Jrror({
+          errorCode: "config-p3",
+          message: `Error occured while loading the configuration file.`,
+          type: "panic",
+        });
       }
     }
   }
@@ -82,7 +99,11 @@ class Configuration {
     if (Configuration.configData === null) {
       await this.loadConfig();
       if (Configuration.configData === null) {
-        throw new Jrror("config-p3");
+        throw new Jrror({
+          errorCode: "config-p3",
+          message: `Error occured while loading the configuration data from ${joorData.configFile}.`,
+          type: "panic",
+        });
       }
     }
     return Configuration.configData;
