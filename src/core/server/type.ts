@@ -15,7 +15,7 @@ type JOOR_ERROR = {
 };
 
 type RESPONSE<T> = {
-  status: number;
+  status?: number;
   message?: string;
   data?: T;
   error?: string | JOOR_ERROR;
