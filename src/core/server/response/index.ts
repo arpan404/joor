@@ -1,5 +1,23 @@
+import Jrror from "../../error";
 import { RESPONSE } from "./type";
-
+/**
+ * A class whose instance must be returned from a function handling route
+ * @example
+ * ```typescript
+ * const response = new Response();
+ * response.setStatus(200).setMessage("Ok!")
+ *
+ * return response
+ *
+ * 
+ * Methods available:
+ * setStatus - to set status code eg. 404, 200 in the response
+ * setMessage - to set message in the response
+ * setError - to set error in the response
+ * setCookies - to set cookies in the response
+ * setHeaders - to set http headers in the response
+ * setSession - to set session data in the response
+ */
 class Response {
   private status: RESPONSE["status"];
   private message: RESPONSE["message"];
@@ -7,10 +25,15 @@ class Response {
   private cookies: RESPONSE["cookies"];
   private headers: RESPONSE["headers"];
   private session: RESPONSE["session"];
+  private data: RESPONSE["data"]
 
   public setStatus(value: typeof this.status): this {
     if (typeof value !== "number") {
-    //   throw new Jrror("response-e1");
+      throw new Jrror({
+        errorCode: "response-status-invalid",
+        message: `Status can only be of type number but ${typeof value} provided`,
+        type: "error",
+      });
     }
     this.status = value;
     return this;
@@ -36,5 +59,7 @@ class Response {
     this.session = value;
     return this;
   }
+
+//   public setData(value: typeof this.session, )
 }
 export default Response;
