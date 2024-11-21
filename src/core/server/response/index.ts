@@ -11,7 +11,7 @@ class Response {
 
   public setStatus(value: typeof this.status): this {
     if (typeof value !== "number") {
-      throw new Jrror("response-e1");
+    //   throw new Jrror("response-e1");
     }
     this.status = value;
     return this;

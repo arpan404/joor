@@ -31,7 +31,7 @@ class Joor {
    * ```
    * This example starts the server with the loaded configuration.
    *
-   * @throws {Jrror} Throws a custom error if configuration is not found.
+   * @throws {Jrror} Throws a custom error if configuration is not found. But also handles it.
    */
   public async start(): Promise<void> {
     try {
@@ -40,7 +40,11 @@ class Joor {
         const server = new Server();
         await server.listen();
       } else {
-        throw new Jrror("joor-p1");
+        throw new Jrror({
+          errorCode: "joor-p1",
+          message: `Error occured while loading the configuration file.`,
+          type: "panic",
+        });
       }
     } catch (error: unknown) {
       if (error instanceof Jrror) {
