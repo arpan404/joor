@@ -1,4 +1,3 @@
-import Jrror from "../../error";
 import { RESPONSE } from "./type";
 
 class Response {

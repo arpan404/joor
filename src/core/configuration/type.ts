@@ -1,3 +1,17 @@
+/**
+ * @example
+ * ```json
+ * {
+ * port: 8800,
+ * parseJSON: true,
+ * cors: true,
+ * urlEncoded: true,
+ * allowedURL: ["http://localhost/", "https://example.com/"],
+ * mode: "development",
+ * doLogs: true,
+ * allowsFileUpload: true
+ * }
+ */
 type JOOR_CONFIG = {
   port: number;
   parseJSON?: boolean;
