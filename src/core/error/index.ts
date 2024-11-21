@@ -87,7 +87,7 @@ class Jrror extends JoorError {
    *
    */
   public handle(): void {
-    const errorMessage = this.formatMessage(this);
+    const errorMessage = this.formatMessage();
 
     if (this.type === "warn") {
       console.warn(chalk.yellowBright(errorMessage));
@@ -119,18 +119,15 @@ class Jrror extends JoorError {
     return;
   }
   /**
-   * Formats the error message for user-friendly display.
-   * Includes the error code, message, and a link to documentation.
+   * Formats the error message for user-friendly display, including the error code, message, and a link to documentation.
    *
-   * @private
-   * @param {Jrror} jrror - The `Jrror` instance to format.
    * @returns {string} The formatted error message.
    */
-  private formatMessage(jrror: Jrror): string {
-    const docLink = `${joorData.docs}/${joorData.docsVersion}/errors?errorCode=${jrror.errorCode}`;
+  private formatMessage(): string {
+    const docLink = `${joorData.docs}/${joorData.docsVersion}/errors?errorCode=${this.errorCode}`;
     return `
-        Error Code: ${jrror.errorCode}
-        Message: ${jrror.message}
+        Error Code: ${this.errorCode}
+        Message: ${this.message}
         ${chalk.greenBright(
           "For more information, visit:"
         )} ${chalk.bgGreenBright.whiteBright(docLink)}
