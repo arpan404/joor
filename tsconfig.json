@@ -23,7 +23,15 @@
     "rootDir": "./src",
     "outDir": "./build",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true, 
+    "baseUrl":"./src",
+    "paths": {
+      "@/*": ["*"],
+      "@joor/*": ["joor/*"],
+      
+    }
+  
+
   },
   "include": ["src"],
   "exclude": ["node_modules"]

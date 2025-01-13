@@ -8,7 +8,7 @@ type ERROR = {
 type RESPONSE = {
   status?: number;
   message?: string;
-  data?: any;
+  data?: unknown;
   error?: string | ERROR;
   cookies?: { [key: string]: string };
   headers?: { [key: string]: string };
