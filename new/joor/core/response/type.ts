@@ -14,4 +14,12 @@ type RESPONSE = {
   headers?: { [key: string]: string };
 };
 
-export { RESPONSE };
+type INTERNAL_RESPONSE = {
+  status: number;
+  message: string;
+  data: unknown;
+  headers?: { [key: string]: string };
+  cookies?: { [key: string]: string };
+};
+
+export { RESPONSE, INTERNAL_RESPONSE };

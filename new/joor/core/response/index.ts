@@ -1,5 +1,6 @@
 import Jrror from "@/error";
-import { RESPONSE } from "@/core/response/type";
+import { RESPONSE, INTERNAL_RESPONSE } from "@/core/response/type";
+import httpCodes from "../http/code";
 
 /**
  * A class whose instance must be returned from a function handling route
@@ -31,6 +32,7 @@ class Response {
   private cookies: RESPONSE["cookies"];
   private headers: RESPONSE["headers"];
   private data: RESPONSE["data"];
+  private dataType: "normal" | "error" | "json" = "normal";
 
   /**
    * Sets the status of the response.
@@ -130,6 +132,7 @@ class Response {
       });
     }
     this.error = value;
+    this.dataType = "error";
     return this;
   }
 
@@ -207,6 +210,7 @@ class Response {
       });
     }
     this.data = value;
+    this.dataType = "normal";
     return this;
   }
 
@@ -246,7 +250,59 @@ class Response {
         type: "error",
       });
     }
+    this.dataType = "json";
     return this;
+  }
+
+  public parseResponse(): INTERNAL_RESPONSE {
+    const response = {} as INTERNAL_RESPONSE;
+    if (this.status) {
+      response.status = this.status;
+    } else {
+      if (this.dataType === "error") {
+        response.status = 500;
+      } else {
+        response.status = 200;
+      }
+    }
+    if (this.message) {
+      response.message = this.message;
+    } else {
+      if (httpCodes[response.status]) {
+        response.message = httpCodes[response.status];
+      } else {
+        if (this.dataType === "error") {
+          response.message = "Internal Server Error";
+        } else {
+          response.message = "OK";
+        }
+      }
+    }
+    if (this.cookies) {
+      response.cookies = this.cookies;
+    }
+    if (this.headers) {
+      response.headers = this.headers;
+    }
+
+    if (this.dataType === "error" && this.error) {
+      response.data = this.error;
+    } else if (
+      this.data &&
+      (this.dataType === "normal" || this.dataType === "json")
+    ) {
+      response.data = this.data;
+      if (this.dataType === "json") {
+        response.headers = {
+          ...response.headers,
+          "Content-Type": "application/json",
+        };
+      }
+    } else {
+      response.data = null;
+    }
+
+    return response;
   }
 }
 
