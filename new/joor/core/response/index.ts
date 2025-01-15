@@ -254,6 +254,21 @@ class Response {
     return this;
   }
 
+/**
+ * Parses the response object for internal use.
+ * This method is not intended for external use.
+ * @returns {INTERNAL_RESPONSE} - The parsed response object.
+ * @example
+ * ```typescript
+ * {
+ *   status: number,
+ *   message: string,
+ *   data: object | null,
+ *   cookies?: object,
+ *   headers?: object
+ * }
+ * ```
+ */
   public parseResponse(): INTERNAL_RESPONSE {
     const response = {} as INTERNAL_RESPONSE;
     if (this.status) {
@@ -265,6 +280,7 @@ class Response {
         response.status = 200;
       }
     }
+
     if (this.message) {
       response.message = this.message;
     } else {
@@ -278,9 +294,11 @@ class Response {
         }
       }
     }
+
     if (this.cookies) {
       response.cookies = this.cookies;
     }
+    
     if (this.headers) {
       response.headers = this.headers;
     }
