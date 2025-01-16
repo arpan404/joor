@@ -1,6 +1,6 @@
-import { RESPONSE } from "@/core/response/type";
+import Response from "@/core/response";
 
-type ROUTE_HANDLER = () => RESPONSE;
+type ROUTE_HANDLER = () => Promise<Response>;
 type ROUTE_METHOD = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
 
 type ROUTE_TYPE = {

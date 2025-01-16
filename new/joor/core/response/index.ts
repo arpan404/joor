@@ -82,11 +82,17 @@ class JoorResponse {
    *
    * @example
    * ```typescript
-   * response.setCookies({ "cookie1": "value1", "cookie2": "value2" });
+   * response.setCookies({ "cookie1": { value: "value1", options: { domain: "example.com", path: "/", expires: new Date(), httpOnly: true, secure: true, sameSite: "Strict" }});
    * ```
-   *
    */
   public setCookies(value: typeof this.cookies): this {
+    if (!value) {
+      throw new Jrror({
+        code: "response-cookies-invalid",
+        message: `Cookies cannot be null or undefined`,
+        type: "error",
+      });
+    }
     if (typeof value !== typeof this.cookies) {
       throw new Jrror({
         code: "response-cookies-invalid",
@@ -95,7 +101,14 @@ class JoorResponse {
         type: "error",
       });
     }
-    this.cookies = value;
+    if (Object.keys(value).length === 0) {
+      throw new Jrror({
+        code: "response-cookies-invalid",
+        message: `Cookies cannot be empty`,
+        type: "error",
+      });
+    }
+    this.cookies = { ...this.cookies, ...value };
     return this;
   }
 
@@ -144,7 +157,7 @@ class JoorResponse {
    * @throws {Jrror} If the provided value is not of type object.
    * @example
    * ```typescript
-   * response.setHeaders({ "Content-Type": "application/json"});
+   * response.setHeader{ "Content-Type": "application/json"});
    * ```
    * - Can be used to set multiple headers at once.
    * - Can be used multiple times to set different headers.
@@ -161,7 +174,7 @@ class JoorResponse {
    * ```
    * Here, the previous headers will be overridden by the new headers.
    */
-  public setHeaders(
+  public setHeader(
     value: typeof this.headers,
     override: boolean = false
   ): this {
@@ -254,21 +267,21 @@ class JoorResponse {
     return this;
   }
 
-/**
- * Parses the response object for internal use.
- * This method is not intended for external use.
- * @returns {INTERNAL_RESPONSE} - The parsed response object.
- * @example
- * ```typescript
- * {
- *   status: number,
- *   message: string,
- *   data: object | null,
- *   cookies?: object,
- *   headers?: object
- * }
- * ```
- */
+  /**
+   * Parses the response object for internal use.
+   * This method is not intended for external use.
+   * @returns {INTERNAL_RESPONSE} - The parsed response object.
+   * @example
+   * ```typescript
+   * {
+   *   status: number,
+   *   message: string,
+   *   data: object | null,
+   *   cookies?: object,
+   *   headers?: object
+   * }
+   * ```
+   */
   public parseResponse(): INTERNAL_RESPONSE {
     const response = {} as INTERNAL_RESPONSE;
     if (this.status) {
@@ -298,7 +311,7 @@ class JoorResponse {
     if (this.cookies) {
       response.cookies = this.cookies;
     }
-    
+
     if (this.headers) {
       response.headers = this.headers;
     }

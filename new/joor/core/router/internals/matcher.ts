@@ -1,14 +1,20 @@
 import Jrror from "@/error";
-import { ROUTE_HANDLER, ROUTE_METHOD, ROUTE_TYPE } from "@/core/router/type";
+import {
+  ROUTE_HANDLER,
+  ROUTE_METHOD,
+  ROUTE_TYPE,
+  ROUTES,
+} from "@/core/router/type";
 import Router from "@/core/router";
 
-async function matchRoute(
+function matchRoute(
   path: string,
-  method: ROUTE_METHOD
-): Promise<{
+  method: ROUTE_METHOD,
+  routesRegistered: ROUTES
+): {
   handlers: ROUTE_HANDLER[];
   type: ROUTE_TYPE;
-} | null> {
+} | null {
   try {
     if (!path) {
       throw new Jrror({
@@ -27,7 +33,7 @@ async function matchRoute(
       return null;
     }
 
-    const routes = Router.routes[method];
+    const routes = routesRegistered[method];
     if (!routes) {
       return null;
     }
