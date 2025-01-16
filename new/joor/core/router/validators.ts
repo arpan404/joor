@@ -1,7 +1,8 @@
 import Jrror from "@/error";
-import { ROUTES } from "@/core/router/type";
+import { ROUTE_PATH } from "@/core/router/type";
+import { RESPONSE } from "@/core/response/type";
 
-function validateRoute(route: ROUTES["route"]) {
+function validateRoute(route: ROUTE_PATH) {
   if (typeof route !== "string") {
     throw new Jrror({
       code: "route-invalid",
@@ -19,7 +20,7 @@ function validateRoute(route: ROUTES["route"]) {
   }
 }
 
-function validateHandler(handler: ROUTES["handler"]) {
+function validateHandler(handler: () => RESPONSE) {
   if (typeof handler !== "function") {
     throw new Jrror({
       code: "handler-invalid",

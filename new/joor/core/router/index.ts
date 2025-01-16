@@ -1,4 +1,9 @@
-import { ROUTES } from "@/core/router/type";
+import {
+  ROUTE_HANDLER,
+  ROUTE_METHOD,
+  ROUTE_PATH,
+  ROUTES,
+} from "@/core/router/type";
 import { validateRoute, validateHandler } from "@/core/router/validators";
 
 /**
@@ -18,7 +23,6 @@ import { validateRoute, validateHandler } from "@/core/router/validators";
  *
  * Methods:
  * - `get`, `post`, `put`, `patch`, `delete`, `options`: Define a route with the specified HTTP method.
- * - Each method takes:
  *   - `route`: A string representing the route path.
  *   - `handlers`: One or more functions to handle the request.
  *
@@ -27,15 +31,27 @@ import { validateRoute, validateHandler } from "@/core/router/validators";
  *
  * Example:
  * ```typescript
- * const middleware = (req: Request) => {
+ * const middleware = (req: JoorRequest) => {
  *   if (!req.headers["Authorization"]) {
  *     return new Response(401, "Unauthorized");
  *   }
  * };
  *
- * const handler = (req: Request) => new Response(200, "Success");
+ * const handler = (req: Request) => new JoorResponse(200, "Success");
  *
  * router.get("/secure", middleware, handler);
+ * ```
+ *
+ * Dynamic Routes:
+ * - Dynamic routes must start with `[` and end with `]`, for example: `/user/[id]`.
+ * - These routes will be treated as dynamic and the parameter inside the brackets will be extracted.
+ * - Dynamic routes parameters can be accessed using `req.params`.
+ * - Example:
+ * ```typescript
+ * router.get("/user/[id]", (req) => {
+ *  const userId = req.params.id;
+ * return new JoorResponse(200, `User ID: ${userId}`);
+ * });
  * ```
  */
 class Router {
@@ -43,14 +59,14 @@ class Router {
    * Set of registered routes.
    * Uses `Set` to store unique route-method-handler combinations.
    */
-  routes = new Set<ROUTES>();
+  static routes = {} as ROUTES;
 
   /**
    * Registers a GET route with the specified handlers.
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  get(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public get(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("GET", route, handlers);
   }
 
@@ -59,7 +75,7 @@ class Router {
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  post(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public post(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("POST", route, handlers);
   }
 
@@ -68,7 +84,7 @@ class Router {
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  put(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public put(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("PUT", route, handlers);
   }
 
@@ -77,7 +93,7 @@ class Router {
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  patch(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public patch(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("PATCH", route, handlers);
   }
 
@@ -86,7 +102,7 @@ class Router {
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  delete(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public delete(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("DELETE", route, handlers);
   }
 
@@ -95,7 +111,7 @@ class Router {
    * @param route - The route path.
    * @param handlers - Middleware or handlers for the route.
    */
-  options(route: ROUTES["route"], ...handlers: ROUTES["handlers"]) {
+  public options(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute("OPTIONS", route, handlers);
   }
 
@@ -107,14 +123,40 @@ class Router {
    * @param handlers - Array of middleware or handler functions.
    */
   private addRoute(
-    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS",
-    route: ROUTES["route"],
-    handlers: ROUTES["handlers"]
+    method: ROUTE_METHOD,
+    route: ROUTE_PATH,
+    handlers: ROUTE_HANDLER[]
   ) {
     validateRoute(route);
     handlers.forEach(validateHandler);
+    if (
+      route.split("/").at(-1)?.startsWith("[") &&
+      route.split("/").at(-1)?.endsWith("]")
+    ) {
+      const dynamicParam = route.split("/").at(-1)?.slice(1, -1);
 
-    this.routes.add({ route, handlers, method });
+      Router.routes = {
+        ...Router.routes,
+        [method]: {
+          ...Router.routes[method],
+          [route]: {
+            handlers,
+            type: { isDynamic: true, dynamicParam },
+          },
+        },
+      };
+    } else {
+      Router.routes = {
+        ...Router.routes,
+        [method]: {
+          ...Router.routes[method],
+          [route]: {
+            handlers,
+            type: { isDynamic: false },
+          },
+        },
+      };
+    }
   }
 }
 

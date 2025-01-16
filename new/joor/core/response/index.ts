@@ -6,7 +6,7 @@ import httpCodes from "../http/code";
  * A class whose instance must be returned from a function handling route
  * @example
  * ```typescript
- * const response = new Response();
+ * const response = new JoorResponse();
  * response.setStatus(200).setMessage("Ok!")
  *
  * return response
@@ -25,7 +25,7 @@ import httpCodes from "../http/code";
  * Note - Use setDataAsJson even if you have to send error data. You must provide http status code to indicate the error.
  */
 
-class Response {
+class JoorResponse {
   private status: RESPONSE["status"];
   private message: RESPONSE["message"];
   private error: RESPONSE["error"];
@@ -38,7 +38,7 @@ class Response {
    * Sets the status of the response.
    *
    * @param value - The status value to set. Must be of type number.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type number.
    */
   public setStatus(value: typeof this.status): this {
@@ -57,7 +57,7 @@ class Response {
    * Sets the message of the response.
    *
    * @param value - The message value to set. Must be of type string.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type string.
    */
   public setMessage(value: typeof this.message): this {
@@ -77,7 +77,7 @@ class Response {
    * Sets the cookies in the response.
    *
    * @param value - The cookies value to set. Must be of type object.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type object.
    *
    * @example
@@ -103,7 +103,7 @@ class Response {
    * Sets the error in the response.
    *
    * @param value - The error value to set. Must be of type string or object.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type string or object.
    *
    * @example
@@ -140,7 +140,7 @@ class Response {
    * Sets the headers in the response.
    * @param value - The headers value to set. Must be of type object.
    * @param override - A boolean value to determine if the headers should be overridden or not. Default is false.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type object.
    * @example
    * ```typescript
@@ -184,7 +184,7 @@ class Response {
   /**
    * Sets the data to be sent in the response's body.
    * @param value - The data value to set. Must be of type object.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type object.
    * @example
    * ```typescript
@@ -217,7 +217,7 @@ class Response {
   /**
    * Sets the data to be sent in the response's body as json.
    * @param value - The data value to set. Must be of type string.
-   * @returns The current instance of the Response class.
+   * @returns The current instance of the JoorResponse class.
    * @throws {Jrror} If the provided value is not of type string.
    * @example
    * ```typescript
@@ -324,4 +324,4 @@ class Response {
   }
 }
 
-export default Response;
+export default JoorResponse;
