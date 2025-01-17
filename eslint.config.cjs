@@ -39,40 +39,43 @@ module.exports = [
     },
     rules: {
       // Common rules for both JS and TS
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'clear'] }],
       'no-return-await': 'error',
       'no-promise-executor-return': 'error',
       'no-template-curly-in-string': 'error',
       'no-unmodified-loop-condition': 'error',
-      
+
       // Best practices
       'array-callback-return': 'error',
       'consistent-return': 'error',
-      'curly': ['error', 'all'],
+      curly: ['error', 'all'],
       'default-param-last': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-param-reassign': 'error',
-      
+
       // Modern JavaScript/TypeScript
       'prefer-const': 'error',
       'prefer-template': 'error',
-      'prefer-destructuring': ['error', {
-        array: true,
-        object: true,
-      }],
+      'prefer-destructuring': [
+        'error',
+        {
+          array: true,
+          object: true,
+        },
+      ],
       'prefer-rest-params': 'error',
       'prefer-spread': 'error',
-      
+
       // Error handling
       'no-throw-literal': 'error',
       'prefer-promise-reject-errors': 'error',
-      
+
       // Variables
       'no-shadow': 'off', // Turned off in favor of typescript's no-shadow
       'no-use-before-define': 'off', // Turned off in favor of typescript's no-use-before-define
-      
+
       // ES6+
       'arrow-body-style': ['error', 'as-needed'],
       'no-var': 'error',
@@ -97,17 +100,23 @@ module.exports = [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_',
-      }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
       '@typescript-eslint/no-shadow': 'error',
-      '@typescript-eslint/no-use-before-define': ['error', {
-        functions: false,
-        classes: true,
-        variables: true,
-        typedefs: true,
-      }],
+      '@typescript-eslint/no-use-before-define': [
+        'error',
+        {
+          functions: false,
+          classes: true,
+          variables: true,
+          typedefs: true,
+        },
+      ],
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
@@ -125,7 +134,13 @@ module.exports = [
   },
   // Test-specific configuration
   {
-    files: ['**/*.test.ts', '**/*.test.js', '**/*.spec.ts', '**/*.spec.js', 'tests/**/*'],
+    files: [
+      '**/*.test.ts',
+      '**/*.test.js',
+      '**/*.spec.ts',
+      '**/*.spec.js',
+      'tests/**/*',
+    ],
     rules: {
       'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
