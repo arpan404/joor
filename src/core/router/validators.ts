@@ -1,6 +1,6 @@
 import Jrror from "@/error";
 import { ROUTE_PATH } from "@/core/router/type";
-import { RESPONSE } from "@/core/response/type";
+import JoorResponse from "@/core/response";
 
 function validateRoute(route: ROUTE_PATH) {
   if (typeof route !== "string") {
@@ -20,7 +20,7 @@ function validateRoute(route: ROUTE_PATH) {
   }
 }
 
-function validateHandler(handler: () => RESPONSE) {
+function validateHandler(handler: () => Promise<JoorResponse>) {
   if (typeof handler !== "function") {
     throw new Jrror({
       code: "handler-invalid",

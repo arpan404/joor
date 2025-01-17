@@ -1,7 +1,6 @@
-// import Response from "./response";
-import { REQUEST } from "./type";
-class Server {
-  public async listen() {}
+class Server{
+    public async listen(): Promise<void> {
+        console.log("Server is listening");
+    }
 }
 export default Server;
-export { REQUEST };

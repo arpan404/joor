@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import chalk from "chalk";
 import joorData from "@/data/joor";
-import JOOR_CONFIG from "./type";
+import JOOR_CONFIG from "@/core/config/type";
 import Jrror from "@/error";
 
 /**

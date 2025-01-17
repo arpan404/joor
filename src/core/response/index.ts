@@ -1,5 +1,5 @@
 import Jrror from "@/error";
-import { RESPONSE, INTERNAL_RESPONSE } from "@/core/response/type";
+import { RESPONSE, INTERNAL_RESPONSE, RESPONSE_DATA_TYPE } from "@/core/response/type";
 import httpCodes from "../http/code";
 
 /**
@@ -32,7 +32,7 @@ class JoorResponse {
   private cookies: RESPONSE["cookies"];
   private headers: RESPONSE["headers"];
   private data: RESPONSE["data"];
-  private dataType: "normal" | "error" | "json" = "normal";
+  private dataType: RESPONSE_DATA_TYPE = "normal";
 
   /**
    * Sets the status of the response.

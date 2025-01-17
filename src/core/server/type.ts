@@ -1,26 +1,10 @@
-import { IncomingMessage } from "http";
-
-declare namespace http {
-  interface IncmingMessage {
-    param?: string;
-  }
-}
-interface REQUEST extends IncomingMessage {}
-
-type JOOR_ERROR = {
-  code?: string;
-  message?: string;
-  details?: string;
-  timeStamp?: Date;
+type PREPARED_RESPONSE = {
+  headers: {
+    [key: string]: string;
+  };
+  status: number;
+  data: unknown;
+  cookies: Array<string>;
 };
 
-type RESPONSE<T> = {
-  status?: number;
-  message?: string;
-  data?: T;
-  error?: string | JOOR_ERROR;
-  cookies?: { [key: string]: string };
-  headers?: { [key: string]: string };
-  session?: string;
-};
-export { REQUEST, RESPONSE };
+export { PREPARED_RESPONSE };

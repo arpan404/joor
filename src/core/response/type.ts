@@ -8,13 +8,14 @@ type RESPONSE_ERROR = {
 type RESPONSE_STATUS = number;
 type RESPONSE_MESSAGE = string;
 type RESPONSE_DATA = unknown;
+type RESPONSE_DATA_TYPE = "json" | "normal" | "error";
 type RESPONSE_COOKIES = {
   [key: string]: {
     value: string;
     options?: {
       domain?: string;
       path?: string;
-      expires?: Date;
+      expires?: Date | string;
       httpOnly?: boolean;
       secure?: boolean;
       sameSite?: "Strict" | "Lax" | "None";
@@ -38,6 +39,7 @@ type INTERNAL_RESPONSE = {
   data: RESPONSE_DATA;
   headers?: RESPONSE_HEADERS;
   cookies?: RESPONSE_COOKIES;
+  dataType?: RESPONSE_DATA_TYPE;
 };
 
-export { RESPONSE, INTERNAL_RESPONSE };
+export { RESPONSE, INTERNAL_RESPONSE, RESPONSE_DATA_TYPE };
