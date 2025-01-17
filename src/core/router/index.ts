@@ -3,8 +3,8 @@ import {
   ROUTE_METHOD,
   ROUTE_PATH,
   ROUTES,
-} from "@/core/router/type";
-import { validateRoute, validateHandler } from "@/core/router/validators";
+} from '@/core/router/type';
+import { validateRoute, validateHandler } from '@/core/router/validators';
 
 /**
  * Router Class
@@ -67,7 +67,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public get(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("GET", route, handlers);
+    this.addRoute('GET', route, handlers);
   }
 
   /**
@@ -76,7 +76,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public post(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("POST", route, handlers);
+    this.addRoute('POST', route, handlers);
   }
 
   /**
@@ -85,7 +85,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public put(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("PUT", route, handlers);
+    this.addRoute('PUT', route, handlers);
   }
 
   /**
@@ -94,7 +94,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public patch(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("PATCH", route, handlers);
+    this.addRoute('PATCH', route, handlers);
   }
 
   /**
@@ -103,7 +103,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public delete(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("DELETE", route, handlers);
+    this.addRoute('DELETE', route, handlers);
   }
 
   /**
@@ -112,7 +112,7 @@ class Router {
    * @param handlers - Middleware or handlers for the route.
    */
   public options(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute("OPTIONS", route, handlers);
+    this.addRoute('OPTIONS', route, handlers);
   }
 
   /**
@@ -130,10 +130,10 @@ class Router {
     validateRoute(route);
     handlers.forEach(validateHandler);
     if (
-      route.split("/").at(-1)?.startsWith("[") &&
-      route.split("/").at(-1)?.endsWith("]")
+      route.split('/').at(-1)?.startsWith('[') &&
+      route.split('/').at(-1)?.endsWith(']')
     ) {
-      const dynamicParam = route.split("/").at(-1)?.slice(1, -1);
+      const dynamicParam = route.split('/').at(-1)?.slice(1, -1);
 
       Router.routes = {
         ...Router.routes,

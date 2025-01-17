@@ -1,9 +1,9 @@
-import chalk from "chalk";
-import JOOR_CONFIG from "@/core/config/type";
-import Jrror from "@/error";
-import Server from "@/core/server";
-import Configuration from "@/core/config";
-import loadEnv from "@/core/config/env";
+import chalk from 'chalk';
+import JOOR_CONFIG from '@/core/config/type';
+import Jrror from '@/error';
+import Server from '@/core/server';
+import Configuration from '@/core/config';
+import loadEnv from '@/core/config/env';
 
 /**
  * Represents the Joor framework server.
@@ -43,16 +43,16 @@ class Joor {
         await server.listen();
       } else {
         throw new Jrror({
-          code: "config-load-failed",
+          code: 'config-load-failed',
           message: `Error occured while loading the configuration file.`,
-          type: "panic",
+          type: 'panic',
         });
       }
     } catch (error: unknown) {
       if (error instanceof Jrror) {
         error.handle();
       } else {
-        console.log(chalk.redBright("Unknown Error Occurred.\n") + error);
+        console.log(chalk.redBright('Unknown Error Occurred.\n') + error);
       }
     }
   }

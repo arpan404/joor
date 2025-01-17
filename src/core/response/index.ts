@@ -1,6 +1,10 @@
-import Jrror from "@/error";
-import { RESPONSE, INTERNAL_RESPONSE, RESPONSE_DATA_TYPE } from "@/core/response/type";
-import httpCodes from "../http/code";
+import Jrror from '@/error';
+import {
+  RESPONSE,
+  INTERNAL_RESPONSE,
+  RESPONSE_DATA_TYPE,
+} from '@/core/response/type';
+import httpCodes from '@/core/http/code';
 
 /**
  * A class whose instance must be returned from a function handling route
@@ -26,13 +30,13 @@ import httpCodes from "../http/code";
  */
 
 class JoorResponse {
-  private status: RESPONSE["status"];
-  private message: RESPONSE["message"];
-  private error: RESPONSE["error"];
-  private cookies: RESPONSE["cookies"];
-  private headers: RESPONSE["headers"];
-  private data: RESPONSE["data"];
-  private dataType: RESPONSE_DATA_TYPE = "normal";
+  private status: RESPONSE['status'];
+  private message: RESPONSE['message'];
+  private error: RESPONSE['error'];
+  private cookies: RESPONSE['cookies'];
+  private headers: RESPONSE['headers'];
+  private data: RESPONSE['data'];
+  private dataType: RESPONSE_DATA_TYPE = 'normal';
 
   /**
    * Sets the status of the response.
@@ -42,11 +46,11 @@ class JoorResponse {
    * @throws {Jrror} If the provided value is not of type number.
    */
   public setStatus(value: typeof this.status): this {
-    if (typeof value !== "number") {
+    if (typeof value !== 'number') {
       throw new Jrror({
-        code: "response-status-invalid",
+        code: 'response-status-invalid',
         message: `Status can only be of type number but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     this.status = value;
@@ -63,10 +67,10 @@ class JoorResponse {
   public setMessage(value: typeof this.message): this {
     if (typeof value !== typeof this.message) {
       throw new Jrror({
-        code: "response-message-invalid",
+        code: 'response-message-invalid',
         message: `Message can only be of type ${typeof this
           .message} but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     this.message = value;
@@ -88,24 +92,24 @@ class JoorResponse {
   public setCookies(value: typeof this.cookies): this {
     if (!value) {
       throw new Jrror({
-        code: "response-cookies-invalid",
+        code: 'response-cookies-invalid',
         message: `Cookies cannot be null or undefined`,
-        type: "error",
+        type: 'error',
       });
     }
     if (typeof value !== typeof this.cookies) {
       throw new Jrror({
-        code: "response-cookies-invalid",
+        code: 'response-cookies-invalid',
         message: `Cookies can only be of type ${typeof this
           .cookies} but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     if (Object.keys(value).length === 0) {
       throw new Jrror({
-        code: "response-cookies-invalid",
+        code: 'response-cookies-invalid',
         message: `Cookies cannot be empty`,
-        type: "error",
+        type: 'error',
       });
     }
     this.cookies = { ...this.cookies, ...value };
@@ -131,21 +135,21 @@ class JoorResponse {
   public setError(value: typeof this.error): this {
     if (typeof value !== typeof this.error) {
       throw new Jrror({
-        code: "response-error-invalid",
+        code: 'response-error-invalid',
         message: `Error can only be of type ${typeof this
           .error} but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     if (this.data) {
       throw new Jrror({
-        code: "response-data-already-set",
+        code: 'response-data-already-set',
         message: `Response data has already been set. You cannot set error and data at the same time. The one you set later will override the previous one.`,
-        type: "warn",
+        type: 'warn',
       });
     }
     this.error = value;
-    this.dataType = "error";
+    this.dataType = 'error';
     return this;
   }
 
@@ -180,10 +184,10 @@ class JoorResponse {
   ): this {
     if (typeof value !== typeof this.headers) {
       throw new Jrror({
-        code: "response-headers-invalid",
+        code: 'response-headers-invalid',
         message: `Headers can only be of type ${typeof this
           .headers} but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     if (override) {
@@ -209,21 +213,21 @@ class JoorResponse {
   public setData(value: typeof this.data): this {
     if (typeof value !== typeof this.data) {
       throw new Jrror({
-        code: "response-data-invalid",
+        code: 'response-data-invalid',
         message: `Data can only be of type ${typeof this
           .data} but ${typeof value} provided`,
-        type: "error",
+        type: 'error',
       });
     }
     if (this.error) {
       throw new Jrror({
-        code: "response-error-already-set",
+        code: 'response-error-already-set',
         message: `Response error has already been set. You cannot set error and data at the same time. The one you set later will override the previous one.`,
-        type: "warn",
+        type: 'warn',
       });
     }
     this.data = value;
-    this.dataType = "normal";
+    this.dataType = 'normal';
     return this;
   }
 
@@ -242,28 +246,28 @@ class JoorResponse {
   public setDataAsJson(value: typeof this.data): this {
     if (this.data) {
       throw new Jrror({
-        code: "response-data-already-set",
+        code: 'response-data-already-set',
         message: `Response data has already been set. Use setDataAsJson only if you want to send data as json.`,
-        type: "warn",
+        type: 'warn',
       });
     }
     if (this.error) {
       throw new Jrror({
-        code: "response-error-already-set",
+        code: 'response-error-already-set',
         message: `Response error has already been set. You cannot set error and json data at the same time. The one you set later will override the previous one.`,
-        type: "warn",
+        type: 'warn',
       });
     }
     try {
       this.data = JSON.parse(value as string);
     } catch (e) {
       throw new Jrror({
-        code: "response-json_data-invalid",
+        code: 'response-json_data-invalid',
         message: `Failed to parse the json data in the response object.`,
-        type: "error",
+        type: 'error',
       });
     }
-    this.dataType = "json";
+    this.dataType = 'json';
     return this;
   }
 
@@ -287,7 +291,7 @@ class JoorResponse {
     if (this.status) {
       response.status = this.status;
     } else {
-      if (this.dataType === "error") {
+      if (this.dataType === 'error') {
         response.status = 500;
       } else {
         response.status = 200;
@@ -300,10 +304,10 @@ class JoorResponse {
       if (httpCodes[response.status]) {
         response.message = httpCodes[response.status];
       } else {
-        if (this.dataType === "error") {
-          response.message = "Internal Server Error";
+        if (this.dataType === 'error') {
+          response.message = 'Internal Server Error';
         } else {
-          response.message = "OK";
+          response.message = 'OK';
         }
       }
     }
@@ -316,17 +320,17 @@ class JoorResponse {
       response.headers = this.headers;
     }
 
-    if (this.dataType === "error" && this.error) {
+    if (this.dataType === 'error' && this.error) {
       response.data = this.error;
     } else if (
       this.data &&
-      (this.dataType === "normal" || this.dataType === "json")
+      (this.dataType === 'normal' || this.dataType === 'json')
     ) {
       response.data = this.data;
-      if (this.dataType === "json") {
+      if (this.dataType === 'json') {
         response.headers = {
           ...response.headers,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         };
       }
     } else {

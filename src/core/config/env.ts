@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 /**
  * Loads environment variables from the appropriate .env file based on the NODE_ENV variable.
@@ -14,13 +14,13 @@ import dotenv from "dotenv";
  * directly into `process.env`.
  */
 export default function loadEnv(): void {
-  let envPath = ".env.local";
-  if (process.env.NODE_ENV === "production") {
-    envPath = ".env.production";
-  } else if (process.env.NODE_ENV === "staging") {
-    envPath = ".env.staging";
-  } else if (process.env.NODE_ENV === "testing") {
-    envPath = ".env.testing";
+  let envPath = '.env.local';
+  if (process.env.NODE_ENV === 'production') {
+    envPath = '.env.production';
+  } else if (process.env.NODE_ENV === 'staging') {
+    envPath = '.env.staging';
+  } else if (process.env.NODE_ENV === 'testing') {
+    envPath = '.env.testing';
   }
   dotenv.config({ path: envPath });
 }

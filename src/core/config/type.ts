@@ -18,7 +18,7 @@ type JOOR_CONFIG = {
   cors?: boolean;
   urlEncoded?: boolean;
   allowedURL?: Array<string>;
-  mode: "development" | "production" | "testing";
+  mode: 'development' | 'production' | 'testing';
   doLogs?: boolean;
   allowsFileUpload?: boolean;
 };

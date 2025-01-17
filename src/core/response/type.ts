@@ -8,7 +8,7 @@ type RESPONSE_ERROR = {
 type RESPONSE_STATUS = number;
 type RESPONSE_MESSAGE = string;
 type RESPONSE_DATA = unknown;
-type RESPONSE_DATA_TYPE = "json" | "normal" | "error";
+type RESPONSE_DATA_TYPE = 'json' | 'normal' | 'error';
 type RESPONSE_COOKIES = {
   [key: string]: {
     value: string;
@@ -18,7 +18,7 @@ type RESPONSE_COOKIES = {
       expires?: Date | string;
       httpOnly?: boolean;
       secure?: boolean;
-      sameSite?: "Strict" | "Lax" | "None";
+      sameSite?: 'Strict' | 'Lax' | 'None';
     };
   };
 };

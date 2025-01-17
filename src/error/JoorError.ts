@@ -1,4 +1,4 @@
-import { JOOR_ERROR } from "@/error/type";
+import { JOOR_ERROR } from '@/error/type';
 
 /**
  * Custom class with additional metadata such as error code, message and type.
@@ -9,13 +9,13 @@ class JoorError extends Error {
    * The unique code indentifying the error
    * @type number
    */
-  public errorCode: JOOR_ERROR["code"];
+  public errorCode: JOOR_ERROR['code'];
 
   /**
    * The type of error
    * @type "warn"|"error"|"panic"
    */
-  public type: JOOR_ERROR["type"];
+  public type: JOOR_ERROR['type'];
 
   /**
    * The stack trace of the error, captured at the point of instantiation.
@@ -37,9 +37,9 @@ class JoorError extends Error {
     errorCode,
     type,
   }: {
-    message: JOOR_ERROR["message"];
-    errorCode: JOOR_ERROR["code"];
-    type: JOOR_ERROR["type"];
+    message: JOOR_ERROR['message'];
+    errorCode: JOOR_ERROR['code'];
+    type: JOOR_ERROR['type'];
   }) {
     super(message);
     this.name = this.constructor.name;

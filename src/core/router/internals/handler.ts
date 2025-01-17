@@ -1,10 +1,10 @@
-import { JoorRequest } from "@/core/request/type";
-import JoorResponse from "@/core/response";
-import { INTERNAL_RESPONSE } from "@/core/response/type";
-import Router from "@/core/router";
-import matchRoute from "@/core/router/internals/matcher";
-import { ROUTE_METHOD } from "@/core/router/type";
-import Jrror from "@/error";
+import { JoorRequest } from '@/core/request/type';
+import JoorResponse from '@/core/response';
+import { INTERNAL_RESPONSE } from '@/core/response/type';
+import Router from '@/core/router';
+import matchRoute from '@/core/router/internals/matcher';
+import { ROUTE_METHOD } from '@/core/router/type';
+import Jrror from '@/error';
 
 /**
  * Handles incoming HTTP requests by matching the request path and method to the relevant route,
@@ -61,7 +61,7 @@ async function routeHandler(
     // If no route is found, return a 404 Not Found response
     if (!routeDetail) {
       const response = new JoorResponse();
-      response.setStatus(404).setMessage("Not Found");
+      response.setStatus(404).setMessage('Not Found');
       return response.parseResponse();
     }
 
@@ -70,7 +70,7 @@ async function routeHandler(
       request.params = request.params || {};
       if (routeDetail.type.dynamicParam) {
         request.params[routeDetail.type.dynamicParam] = pathURL
-          .split("/")
+          .split('/')
           .pop(); // Capture the dynamic part of the URL
       }
     }
@@ -87,15 +87,15 @@ async function routeHandler(
 
     // If no handler returns a response, throw an error
     throw new Jrror({
-      code: "handler-return-undefined",
+      code: 'handler-return-undefined',
       message:
-        "All route handlers returned undefined. At least one must return a response.",
-      type: "error",
+        'All route handlers returned undefined. At least one must return a response.',
+      type: 'error',
     });
   } catch (e) {
     console.error(e);
     const response = new JoorResponse();
-    response.setStatus(500).setMessage("Internal Server Error");
+    response.setStatus(500).setMessage('Internal Server Error');
     return response.parseResponse();
   }
 }

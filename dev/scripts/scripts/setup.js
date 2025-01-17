@@ -1,7 +1,7 @@
-import { promisify } from "util";
-import { exec as execCallback } from "child_process";
-import fs from "fs";
-import path from "path";
+import { promisify } from 'util';
+import { exec as execCallback } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 // Promisify exec function to work with async/await
 const exec = promisify(execCallback);
@@ -11,7 +11,7 @@ const isPackageVersionInstalledGlobally = async (packageName, version) => {
   try {
     const result = await exec(`npm list -g ${packageName}`);
     return result.stdout.includes(`${packageName}@${version}`);
-  } catch (error) {
+  } catch{
     return false;
   }
 };
@@ -21,16 +21,16 @@ const isLocalPackageVersionInstalled = async (packageName, version) => {
   try {
     const packageJsonPath = path.join(
       process.cwd(),
-      "node_modules",
+      'node_modules',
       packageName,
-      "package.json"
+      'package.json'
     );
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = require(packageJsonPath);
       return packageJson.version === version;
     }
     return false;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -42,19 +42,19 @@ const installPackage = async (name, version, isGlobal = false) => {
     : await isLocalPackageVersionInstalled(name, version);
 
   if (isInstalled) {
-    console.log(
+    console.info(
       `${name}@${version} is already installed ${
-        isGlobal ? "globally" : "locally"
+        isGlobal ? 'globally' : 'locally'
       }.\n`
     );
     return true;
   } else {
-    const command = `npm i ${isGlobal ? "-g " : ""}${name}@${version}`;
-    console.log(`Installing ${name}@${version}...\n`);
+    const command = `npm i ${isGlobal ? '-g ' : ''}${name}@${version}`;
+    console.info(`Installing ${name}@${version}...\n`);
     try {
       const result = await exec(command);
       if (result.stderr) {
-        console.log(
+        console.info(
           `Failed to install: ${name}@${version}. Try running: '${command}' manually.`
         );
         return false;
@@ -70,20 +70,19 @@ const installPackage = async (name, version, isGlobal = false) => {
 // Main function to set up the development environment
 const main = async () => {
   const toInstallGlobally = [
-    { name: "tsx", version: "3.0.0" },
-    { name: "typescript", version: "5.6.3" },
+    { name: 'tsx', version: '3.0.0' },
+    { name: 'typescript', version: '5.6.3' },
   ];
 
   let totalInstalled = 0;
-
   if (console.clear) {
     console.clear();
   } else {
-    process.stdout.write("\x1Bc");
+    process.stdout.write('\x1Bc');
   }
 
-  console.log("\n\nSetting up the development environment for Joor.\n\n");
-  console.log("\nInstalling Global Packages\n");
+  console.info('\n\nSetting up the development environment for Joor.\n\n');
+  console.info('\nInstalling Global Packages\n');
 
   // Install global packages
   for (const { name, version } of toInstallGlobally) {
@@ -91,29 +90,29 @@ const main = async () => {
     if (success) totalInstalled++;
   }
 
-  console.log(
+  console.info(
     `\nInstalled ${totalInstalled}/${toInstallGlobally.length} global packages successfully.\n`
   );
 
   // Check if local dependencies are already installed
-  const nodeModulesPath = path.join(process.cwd(), "node_modules");
+  const nodeModulesPath = path.join(process.cwd(), 'node_modules');
   if (fs.existsSync(nodeModulesPath)) {
-    console.log("\nLocal dependencies are already installed.\n");
+    console.info('\nLocal dependencies are already installed.\n');
   } else {
     // Install local dependencies if not installed
-    console.log("\nInstalling Joor's local dependencies...\n");
+    console.info("\nInstalling Joor's local dependencies...\n");
     try {
-      const dependenciesResult = await exec("npm i");
+      const dependenciesResult = await exec('npm i');
       if (dependenciesResult.stderr) {
-        console.log(
+        console.info(
           "\nError while installing Joor's dependencies:\n",
           dependenciesResult.stderr
         );
       } else {
-        console.log("\nAll local dependencies installed successfully.");
+        console.info('\nAll local dependencies installed successfully.');
       }
     } catch (error) {
-      console.error("\nError installing dependencies:", error);
+      console.error('\nError installing dependencies:', error);
     }
   }
 };

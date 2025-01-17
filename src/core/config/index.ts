@@ -1,9 +1,9 @@
-import path from "path";
-import fs from "fs";
-import chalk from "chalk";
-import joorData from "@/data/joor";
-import JOOR_CONFIG from "@/core/config/type";
-import Jrror from "@/error";
+import path from 'path';
+import fs from 'fs';
+import chalk from 'chalk';
+import joorData from '@/data/joor';
+import JOOR_CONFIG from '@/core/config/type';
+import Jrror from '@/error';
 
 /**
  * Class to handle application configuration files.
@@ -44,39 +44,39 @@ class Configuration {
   private async loadConfig(): Promise<void> {
     if (Configuration.configData !== null) {
       throw new Jrror({
-        code: "config-loaded-already",
+        code: 'config-loaded-already',
         message:
-          "The configuration data is already loaded. Attempting to load it again is not recommended",
-        type: "warn",
+          'The configuration data is already loaded. Attempting to load it again is not recommended',
+        type: 'warn',
       });
     }
     try {
       const configPath = path.resolve(process.cwd(), Configuration.configFile);
       Configuration.configData = (await JSON.parse(
-        fs.readFileSync(configPath, "utf8")
+        fs.readFileSync(configPath, 'utf8')
       )) as JOOR_CONFIG;
       console.log(
-        chalk.greenBright("Configurations have been loaded successfully")
+        chalk.greenBright('Configurations have been loaded successfully')
       );
     } catch (error: any) {
-      if (error.code === "ENOENT") {
+      if (error.code === 'ENOENT') {
         throw new Jrror({
-          code: "config-not-found",
+          code: 'config-not-found',
           message: `Error: The configuration file '${joorData.configFile}' for Joor app is not found.\nMake sure the file is in the root directory of your project.`,
-          type: "panic",
+          type: 'panic',
         });
       } else if (error instanceof SyntaxError) {
         throw new Jrror({
-          code: "config-invalid-json",
+          code: 'config-invalid-json',
           message: `Error: The configuration file '${joorData.configFile}' for Joor app is not in the proper JSON format.\nPlease check the content and ensure it is valid JSON.`,
-          type: "panic",
+          type: 'panic',
         });
       } else {
         console.error(error);
         throw new Jrror({
-          code: "config-load-failed",
+          code: 'config-load-failed',
           message: `Error occured while loading the configuration file.`,
-          type: "panic",
+          type: 'panic',
         });
       }
     }
@@ -96,9 +96,9 @@ class Configuration {
       await this.loadConfig();
       if (Configuration.configData === null) {
         throw new Jrror({
-          code: "config-load-failed",
+          code: 'config-load-failed',
           message: `Error occured while loading the configuration data from ${joorData.configFile}.`,
-          type: "panic",
+          type: 'panic',
         });
       }
     }

@@ -1,7 +1,7 @@
-import JoorResponse from "@/core/response";
+import JoorResponse from '@/core/response';
 
 type ROUTE_HANDLER = () => Promise<JoorResponse>;
-type ROUTE_METHOD = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
+type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS';
 
 type ROUTE_TYPE = {
   isDynamic: boolean;

@@ -13,11 +13,25 @@
   "scripts": {
     "build": "tsx dev/scripts/build.ts",
     "compile": "tsc",
-    "setup": "node dev/scripts/setup.js"
+    "setup": "node dev/scripts/setup.js",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@types/inquirer": "^9.0.7",
     "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.2",
+    "eslint-plugin-promise": "^7.2.1",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   },

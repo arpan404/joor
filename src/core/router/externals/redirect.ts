@@ -1,4 +1,4 @@
-import JoorResponse from "@/core/response";
+import JoorResponse from '@/core/response';
 
 export default async function redirect(
   path: string,

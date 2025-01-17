@@ -1,11 +1,11 @@
-import Jrror from "@/error";
+import Jrror from '@/error';
 import {
   ROUTE_HANDLER,
   ROUTE_METHOD,
   ROUTE_TYPE,
   ROUTES,
-} from "@/core/router/type";
-import Router from "@/core/router";
+} from '@/core/router/type';
+import Router from '@/core/router';
 
 /**
  * Matches a route handler based on the provided path and HTTP method, and returns the matched route's handlers and type.
@@ -59,15 +59,15 @@ export default function matchRoute(
     // If path is empty or is not string, throw an error
     if (!path) {
       throw new Jrror({
-        code: "path-empty",
-        message: "Path cannot be empty",
-        type: "error",
+        code: 'path-empty',
+        message: 'Path cannot be empty',
+        type: 'error',
       });
-    } else if (typeof path !== "string") {
+    } else if (typeof path !== 'string') {
       throw new Jrror({
-        code: "path-invalid",
+        code: 'path-invalid',
         message: `Path must be of type string but got ${typeof path}`,
-        type: "error",
+        type: 'error',
       });
     }
 
@@ -89,12 +89,12 @@ export default function matchRoute(
     }
 
     // If no exact match, check if the route is registered with dynamic parameters
-    const pathParts = path.split("/");
+    const pathParts = path.split('/');
     const keys = Object.keys(routes);
 
     for (const key of keys) {
       const route = routes[key];
-      const routeParts = key.split("/");
+      const routeParts = key.split('/');
 
       // If the number of segments in the path and route don't match, skip this route
       if (pathParts.length !== routeParts.length) {
@@ -111,8 +111,8 @@ export default function matchRoute(
 
         // If the route part is dynamic (e.g., [id]), skip it
         if (
-          routeParts[i].startsWith("[") &&
-          routeParts[i].endsWith("]") &&
+          routeParts[i].startsWith('[') &&
+          routeParts[i].endsWith(']') &&
           routeParts[i].length > 2
         ) {
           continue;
@@ -134,9 +134,9 @@ export default function matchRoute(
   } catch (e) {
     console.error(e);
     throw new Jrror({
-      code: "match-route-error",
+      code: 'match-route-error',
       message: `Error while matching the route. path: ${path}`,
-      type: "error",
+      type: 'error',
     });
   }
 }

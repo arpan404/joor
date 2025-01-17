@@ -1,7 +1,7 @@
-import joorData from "@/data/joor";
-import JoorError from "@/error/JoorError";
-import { JOOR_ERROR } from "@/error/type";
-import chalk from "chalk";
+import joorData from '@/data/joor';
+import JoorError from '@/error/JoorError';
+import { JOOR_ERROR } from '@/error/type';
+import chalk from 'chalk';
 
 /**
  * Class to work with errors
@@ -47,23 +47,23 @@ class Jrror extends JoorError {
         message: `Instance of Jrror has been created without passing required data. 
               Missing: ${
                 !errorData
-                  ? "errorData"
+                  ? 'errorData'
                   : !errorData.code
-                  ? "error code"
-                  : !errorData.message
-                  ? "message"
-                  : "type"
+                    ? 'error code'
+                    : !errorData.message
+                      ? 'message'
+                      : 'type'
               }`,
         code: `jrror-${
           !errorData
-            ? "e1"
+            ? 'e1'
             : !errorData.code
-            ? "e2"
-            : !errorData.message
-            ? "e3"
-            : "e4"
+              ? 'e2'
+              : !errorData.message
+                ? 'e3'
+                : 'e4'
         }`,
-        type: "error",
+        type: 'error',
       });
     }
     super({
@@ -91,12 +91,12 @@ class Jrror extends JoorError {
   public handle(): void {
     const errorMessage = this.formatMessage();
 
-    if (this.type === "warn") {
+    if (this.type === 'warn') {
       console.warn(chalk.yellowBright(errorMessage));
-    } else if (this.type === "error") {
+    } else if (this.type === 'error') {
       console.error(chalk.redBright(errorMessage));
       console.error(chalk.blueBright(`Stack Trace:\n${this.stackTrace}`));
-    } else if (this.type === "panic") {
+    } else if (this.type === 'panic') {
       console.error(chalk.redBright(errorMessage));
       console.error(chalk.blueBright(`Stack Trace:\n${this.stackTrace}`));
       process.exit(1);
@@ -131,7 +131,7 @@ class Jrror extends JoorError {
           Error Code: ${this.errorCode}
           Message: ${this.message}
           ${chalk.greenBright(
-            "For more information, visit:"
+            'For more information, visit:'
           )} ${chalk.bgGreenBright.whiteBright(docLink)}
           `;
   }
