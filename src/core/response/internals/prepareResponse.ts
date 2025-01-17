@@ -1,6 +1,17 @@
 import { INTERNAL_RESPONSE } from "@/core/response/type";
 import { PREPARED_RESPONSE } from "@/core/server/type";
 
+/**
+ * Prepares the response object to be sent to the client by the HTTP server.
+ *
+ * This function takes a preprocessed response object of type `INTERNAL_RESPONSE`, processes it,
+ * and returns an object of type `PREPARED_RESPONSE` which will be sent to the client.
+ * It extracts necessary details like status, headers, data, and cookies to structure the response
+ * correctly before sending it.
+ *
+ * @param {INTERNAL_RESPONSE} response - The preprocessed response object, containing status, data, message, headers, and cookies.
+ * @returns {PREPARED_RESPONSE} The prepared response object, structured for the HTTP server to send to the client.
+ */
 export default function prepareResponse(
   response: INTERNAL_RESPONSE
 ): PREPARED_RESPONSE {
@@ -11,8 +22,10 @@ export default function prepareResponse(
     cookies: [],
   };
 
+  // Set the response status
   preparedResponse.status = response.status;
 
+  // Format the data based on the type of response
   if (response.data && response.message && response.dataType !== "normal") {
     preparedResponse.data = JSON.stringify({
       message: response.message,
@@ -26,15 +39,19 @@ export default function prepareResponse(
     preparedResponse.data = response.data;
   }
 
+  // Copy the headers from the response
   preparedResponse.headers = { ...response.headers };
 
+  // Process and format cookies if they exist
   if (response.cookies) {
     for (const key in response.cookies) {
       if (response.cookies.hasOwnProperty(key)) {
         const cookie = response.cookies[key];
 
+        // Start forming the cookie string
         let cookieStr = `${key}=${cookie.value}`;
 
+        // Handle cookie options (e.g., expiration)
         if (cookie.options) {
           if (cookie.options.expires instanceof Date) {
             cookie.options.expires = cookie.options.expires.toUTCString();
@@ -54,9 +71,12 @@ export default function prepareResponse(
           }
         }
 
+        // Push the formatted cookie string into the cookies array
         preparedResponse.cookies.push(cookieStr);
       }
     }
   }
+
+  // Return the prepared response object
   return preparedResponse;
 }

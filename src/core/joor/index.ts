@@ -3,6 +3,7 @@ import JOOR_CONFIG from "@/core/config/type";
 import Jrror from "@/error";
 import Server from "@/core/server";
 import Configuration from "@/core/config";
+import loadEnv from "@/core/config/env";
 
 /**
  * Represents the Joor framework server.
@@ -36,6 +37,7 @@ class Joor {
   public async start(): Promise<void> {
     try {
       await this.initialize();
+      loadEnv();
       if (this.configData) {
         const server = new Server();
         await server.listen();
