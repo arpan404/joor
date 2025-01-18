@@ -7,28 +7,25 @@ import {
 import httpCodes from '@/core/http/code';
 
 /**
- * A class whose instance must be returned from a function handling route
+ * A class to construct and manage HTTP responses.
  * @example
  * ```typescript
  * const response = new JoorResponse();
- * response.setStatus(200).setMessage("Ok!")
+ * response.setStatus(200).setMessage("Ok!");
+ * return response;
+ * ```
  *
- * return response
- *```
+ * Available methods:
+ * - setStatus: Sets the HTTP status code (e.g., 200, 404).
+ * - setMessage: Sets the response message.
+ * - setError: Sets an error message or object.
+ * - setCookies: Sets cookies in the response.
+ * - setHeaders: Sets HTTP headers in the response.
+ * - setData: Sets data in the response.
+ * - setDataAsJson: Sets data in the response as JSON.
  *
- * Methods available:
- *
- * - setStatus - to set status code eg. 404, 200 in the response
- * - setMessage - to set message in the response
- * - setError - to set error in the response
- * - setCookies - to set cookies in the response
- * - setHeaders - to set http headers in the response
- * - setData - to set data in the response
- * - setDataAsJson - to set data in the response as json
- *
- * Note - Use setDataAsJson even if you have to send error data. You must provide http status code to indicate the error.
+ * Note: Use `setDataAsJson` for sending JSON data. Provide an HTTP status code to indicate errors.
  */
-
 class JoorResponse {
   private status: RESPONSE['status'];
   private message: RESPONSE['message'];
@@ -39,17 +36,16 @@ class JoorResponse {
   private dataType: RESPONSE_DATA_TYPE = 'normal';
 
   /**
-   * Sets the status of the response.
-   *
-   * @param value - The status value to set. Must be of type number.
+   * Sets the HTTP status code for the response.
+   * @param value - The status code to set (must be a number).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type number.
+   * @throws {Jrror} If the provided value is not a number.
    */
   public setStatus(value: typeof this.status): this {
     if (typeof value !== 'number') {
       throw new Jrror({
         code: 'response-status-invalid',
-        message: `Status can only be of type number but ${typeof value} provided`,
+        message: `Status must be a number, but ${typeof value} was provided.`,
         type: 'error',
       });
     }
@@ -58,18 +54,16 @@ class JoorResponse {
   }
 
   /**
-   * Sets the message of the response.
-   *
-   * @param value - The message value to set. Must be of type string.
+   * Sets the response message.
+   * @param value - The message to set (must be a string).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type string.
+   * @throws {Jrror} If the provided value is not a string.
    */
   public setMessage(value: typeof this.message): this {
-    if (typeof value !== typeof this.message) {
+    if (typeof value !== 'string') {
       throw new Jrror({
         code: 'response-message-invalid',
-        message: `Message can only be of type ${typeof this
-          .message} but ${typeof value} provided`,
+        message: `Message must be a string, but ${typeof value} was provided.`,
         type: 'error',
       });
     }
@@ -78,12 +72,10 @@ class JoorResponse {
   }
 
   /**
-   * Sets the cookies in the response.
-   *
-   * @param value - The cookies value to set. Must be of type object.
+   * Sets cookies in the response.
+   * @param value - The cookies to set (must be an object).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type object.
-   *
+   * @throws {Jrror} If the provided value is not an object or is empty.
    * @example
    * ```typescript
    * response.setCookies({ "cookie1": { value: "value1", options: { domain: "example.com", path: "/", expires: new Date(), httpOnly: true, secure: true, sameSite: "Strict" }});
@@ -93,22 +85,14 @@ class JoorResponse {
     if (!value) {
       throw new Jrror({
         code: 'response-cookies-invalid',
-        message: `Cookies cannot be null or undefined`,
+        message: `Cookies cannot be null or undefined.`,
         type: 'error',
       });
     }
-    if (typeof value !== typeof this.cookies) {
+    if (typeof value !== 'object' || Object.keys(value).length === 0) {
       throw new Jrror({
         code: 'response-cookies-invalid',
-        message: `Cookies can only be of type ${typeof this
-          .cookies} but ${typeof value} provided`,
-        type: 'error',
-      });
-    }
-    if (Object.keys(value).length === 0) {
-      throw new Jrror({
-        code: 'response-cookies-invalid',
-        message: `Cookies cannot be empty`,
+        message: `Cookies must be a non-empty object.`,
         type: 'error',
       });
     }
@@ -117,34 +101,30 @@ class JoorResponse {
   }
 
   /**
-   * Sets the error in the response.
-   *
-   * @param value - The error value to set. Must be of type string or object.
+   * Sets an error message or object in the response.
+   * @param value - The error to set (must be a string or object).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type string or object.
-   *
+   * @throws {Jrror} If the provided value is not a string or object.
    * @example
    * ```typescript
    * response.setError("Error message");
    * // or
    * response.setError({ code: "auth-error", message: "Failed to authorize", data: {"reason":"Invalid user token"}, timestamp: "2025-01-10T08:59:00Z" });
    * ```
-   * Note: If you want to send error as json, use `setDataAsJson` method.
-   * Also, you cannot set both error and data at the same time. The one you set later will override the previous one.
+   * Note: Use `setDataAsJson` for sending error data as JSON. You cannot set both error and data simultaneously.
    */
   public setError(value: typeof this.error): this {
-    if (typeof value !== typeof this.error) {
+    if (typeof value !== 'string' && typeof value !== 'object') {
       throw new Jrror({
         code: 'response-error-invalid',
-        message: `Error can only be of type ${typeof this
-          .error} but ${typeof value} provided`,
+        message: `Error must be a string or object, but ${typeof value} was provided.`,
         type: 'error',
       });
     }
     if (this.data) {
       throw new Jrror({
         code: 'response-data-already-set',
-        message: `Response data has already been set. You cannot set error and data at the same time. The one you set later will override the previous one.`,
+        message: `Data has already been set. You cannot set both error and data simultaneously.`,
         type: 'warn',
       });
     }
@@ -154,75 +134,55 @@ class JoorResponse {
   }
 
   /**
-   * Sets the headers in the response.
-   * @param value - The headers value to set. Must be of type object.
-   * @param override - A boolean value to determine if the headers should be overridden or not. Default is false.
+   * Sets HTTP headers in the response.
+   * @param value - The headers to set (must be an object).
+   * @param override - Whether to override existing headers (default is false).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type object.
+   * @throws {Jrror} If the provided value is not an object.
    * @example
    * ```typescript
-   * response.setHeader{ "Content-Type": "application/json"});
+   * response.setHeaders({ "Content-Type": "application/json", "Authorization": "Bearer token" });
    * ```
-   * - Can be used to set multiple headers at once.
-   * - Can be used multiple times to set different headers.
-   * @example
-   * ```typescript
-   * response.setHeaders({ "Content-Type": "application/json"});
-   * response.setHeaders({ "Authorization":"Bearer token"});
-   * ```
-   * Here, both headers will be set in the response.
-   * - If override is set to true, the headers will be overridden.
-   * @example
-   * ```typescript
-   * response.setHeaders({ "Content-Type": "application/json"}, override = true);
-   * ```
-   * Here, the previous headers will be overridden by the new headers.
    */
-  public setHeader(
-    value: typeof this.headers,
-    override: boolean = false
-  ): this {
-    if (typeof value !== typeof this.headers) {
+  public setHeaders(value: typeof this.headers, override: boolean = false): this {
+    if (typeof value !== 'object') {
       throw new Jrror({
         code: 'response-headers-invalid',
-        message: `Headers can only be of type ${typeof this
-          .headers} but ${typeof value} provided`,
+        message: `Headers must be an object, but ${typeof value} was provided.`,
         type: 'error',
       });
     }
     if (override) {
-      this.headers = value;
-    } else {
       this.headers = { ...value };
+    } else {
+      this.headers = { ...this.headers, ...value };
     }
     return this;
   }
 
   /**
-   * Sets the data to be sent in the response's body.
-   * @param value - The data value to set. Must be of type object.
+   * Sets data in the response body.
+   * @param value - The data to set (must be an object).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type object.
+   * @throws {Jrror} If the provided value is not an object.
    * @example
    * ```typescript
-   * response.setData({ "products": ["product1", "product2"]});
+   * response.setData({ "products": ["product1", "product2"] });
    * ```
-   * - Note: If you want to send data as json, use `setDataAsJson` method.
-   * - Also, you cannot set both error and data at the same time. The one you set later will override the previous one.
+   * Note: Use `setDataAsJson` for sending data as JSON. You cannot set both error and data simultaneously.
    */
   public setData(value: typeof this.data): this {
-    if (typeof value !== typeof this.data) {
+    if (typeof value !== 'object') {
       throw new Jrror({
         code: 'response-data-invalid',
-        message: `Data can only be of type ${typeof this
-          .data} but ${typeof value} provided`,
+        message: `Data must be an object, but ${typeof value} was provided.`,
         type: 'error',
       });
     }
     if (this.error) {
       throw new Jrror({
         code: 'response-error-already-set',
-        message: `Response error has already been set. You cannot set error and data at the same time. The one you set later will override the previous one.`,
+        message: `Error has already been set. You cannot set both error and data simultaneously.`,
         type: 'warn',
       });
     }
@@ -232,29 +192,28 @@ class JoorResponse {
   }
 
   /**
-   * Sets the data to be sent in the response's body as json.
-   * @param value - The data value to set. Must be of type string.
+   * Sets data in the response body as JSON.
+   * @param value - The JSON data to set (must be a string).
    * @returns The current instance of the JoorResponse class.
-   * @throws {Jrror} If the provided value is not of type string.
+   * @throws {Jrror} If the provided value is not a string or cannot be parsed as JSON.
    * @example
    * ```typescript
    * response.setDataAsJson('{"products": ["product1", "product2"]}');
    * ```
-   * - Note: If you want to send data as object or string, use `setData` method.
-   * - Also, you cannot set both error and data at the same time. The one you set later will override the previous one.
+   * Note: Use `setData` for sending data as an object. You cannot set both error and data simultaneously.
    */
   public setDataAsJson(value: typeof this.data): this {
     if (this.data) {
       throw new Jrror({
         code: 'response-data-already-set',
-        message: `Response data has already been set. Use setDataAsJson only if you want to send data as json.`,
+        message: `Data has already been set. Use setDataAsJson only for JSON data.`,
         type: 'warn',
       });
     }
     if (this.error) {
       throw new Jrror({
         code: 'response-error-already-set',
-        message: `Response error has already been set. You cannot set error and json data at the same time. The one you set later will override the previous one.`,
+        message: `Error has already been set. You cannot set both error and JSON data simultaneously.`,
         type: 'warn',
       });
     }
@@ -263,7 +222,7 @@ class JoorResponse {
     } catch (e) {
       throw new Jrror({
         code: 'response-json_data-invalid',
-        message: `Failed to parse the json data in the response object.`,
+        message: `Failed to parse JSON data.`,
         type: 'error',
       });
     }
@@ -288,53 +247,17 @@ class JoorResponse {
    */
   public parseResponse(): INTERNAL_RESPONSE {
     const response = {} as INTERNAL_RESPONSE;
-    if (this.status) {
-      response.status = this.status;
-    } else {
-      if (this.dataType === 'error') {
-        response.status = 500;
-      } else {
-        response.status = 200;
-      }
-    }
+    response.status = this.status || (this.dataType === 'error' ? 500 : 200);
+    response.message = this.message || httpCodes[response.status] || (this.dataType === 'error' ? 'Internal Server Error' : 'OK');
+    response.cookies = this.cookies;
+    response.headers = this.headers;
+    response.data = this.dataType === 'error' ? this.error : this.data || null;
 
-    if (this.message) {
-      response.message = this.message;
-    } else {
-      if (httpCodes[response.status]) {
-        response.message = httpCodes[response.status];
-      } else {
-        if (this.dataType === 'error') {
-          response.message = 'Internal Server Error';
-        } else {
-          response.message = 'OK';
-        }
-      }
-    }
-
-    if (this.cookies) {
-      response.cookies = this.cookies;
-    }
-
-    if (this.headers) {
-      response.headers = this.headers;
-    }
-
-    if (this.dataType === 'error' && this.error) {
-      response.data = this.error;
-    } else if (
-      this.data &&
-      (this.dataType === 'normal' || this.dataType === 'json')
-    ) {
-      response.data = this.data;
-      if (this.dataType === 'json') {
-        response.headers = {
-          ...response.headers,
-          'Content-Type': 'application/json',
-        };
-      }
-    } else {
-      response.data = null;
+    if (this.dataType === 'json') {
+      response.headers = {
+        ...response.headers,
+        'Content-Type': 'application/json',
+      };
     }
 
     return response;

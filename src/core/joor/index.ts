@@ -4,6 +4,8 @@ import Jrror from '@/error';
 import Server from '@/core/server';
 import Configuration from '@/core/config';
 import loadEnv from '@/core/config/env';
+import { GLOBAL_MIDDLEWARES } from './type';
+import { ROUTE_HANDLER } from '../router/type';
 
 /**
  * Represents the Joor framework server.
@@ -20,6 +22,7 @@ import loadEnv from '@/core/config/env';
 class Joor {
   // Private variable to hold configuration data used in the server, initialized as null
   private configData: JOOR_CONFIG | undefined;
+  private globalMiddlewares: GLOBAL_MIDDLEWARES =  []; 
 
   /**
    * Starts a new Joor server.
@@ -52,9 +55,32 @@ class Joor {
       if (error instanceof Jrror) {
         error.handle();
       } else {
-        console.log(chalk.redBright('Unknown Error Occurred.\n') + error);
+        console.info(chalk.redBright('Unknown Error Occurred.\n') + error);
       }
     }
+  }
+ 
+  /**
+   * Method to add global middleares
+   *
+   * @example
+   * ```typecript
+   * const app = Joor()
+   * app.use(middlware1)
+   * ```
+   *
+   * Note: middlware must accept request object of type JoorRequest, and must return JoorResponse to interrupt the request-response cycle. If the request need to processed further, the middleware must return void; nothing else
+   *
+   * */
+  public use(handler:ROUTE_HANDLER):void{
+  if(typeof handler !== "function"){
+      throw new Jrror({
+      code: "middleware-not-function",
+      message: "Could not register a middleware; non function value provided",
+        type:"panic"
+      })
+  }
+  this.globalMiddlewares.push(handler)
   }
 
   /**
@@ -64,12 +90,8 @@ class Joor {
    * @throws {Jrror} Throws a custom error if initialization fails.
    */
   private async initialize(): Promise<void> {
-    try {
       const config = new Configuration();
       this.configData = await config.getConfig();
-    } catch (error: unknown) {
-      throw error;
-    }
   }
 }
 

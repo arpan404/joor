@@ -1,3 +1,5 @@
+import isAsync from '@/core/helpers/isAsync';
+import { GLOBAL_MIDDLEWARES } from '@/core/joor/type';
 import { JoorRequest } from '@/core/request/type';
 import JoorResponse from '@/core/response';
 import { INTERNAL_RESPONSE } from '@/core/response/type';
@@ -49,7 +51,7 @@ import Jrror from '@/error';
  */
 async function routeHandler(
   pathURL: string,
-  request: JoorRequest
+  request: JoorRequest, globalMiddlewares: GLOBAL_MIDDLEWARES
 ): Promise<INTERNAL_RESPONSE> {
   try {
     let method = request.method as ROUTE_METHOD;
@@ -67,21 +69,34 @@ async function routeHandler(
 
     // If the route is dynamic, set the dynamic parameters in the request
     if (routeDetail.type.isDynamic) {
-      request.params = request.params || {};
+      request.params = request.params ?? {};
       if (routeDetail.type.dynamicParam) {
         request.params[routeDetail.type.dynamicParam] = pathURL
           .split('/')
-          .pop(); // Capture the dynamic part of the URL
+          .pop()!; // Capture the dynamic part of the URL
       }
     }
 
     // Execute each route handler and return the response if available
-    const handlers = routeDetail.handlers;
-    let response = new JoorResponse();
+    const handlers = { ...globalMiddlewares,...routeDetail.handlers };
+    let response;
     for (const handler of handlers) {
+      if(isAsync(handler)){
+        response = await handler(request);
+      }
       response = await handler();
       if (response) {
+        if (response instanceof JoorResponse){
+
         return response.parseResponse();
+        }
+        else{
+          throw new Jrror({
+          code: "route-handler-invalid-return",
+            message:"Route handler returned an invalid value which is not an instance of JoorResponse class. The handler and middleware must either return an instance of JoorResponse or undefined",
+            type:"error"
+          })
+        }
       }
     }
 

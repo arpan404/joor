@@ -37,8 +37,7 @@ class Jrror extends JoorError {
   constructor(errorData: JOOR_ERROR) {
     // Validate the error data provided when creating the instance of Jrror class
     if (
-      !errorData ||
-      !errorData.code ||
+      !errorData?.code ||
       !errorData.message ||
       !errorData.type
     ) {

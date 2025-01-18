@@ -107,15 +107,6 @@ class Router {
   }
 
   /**
-   * Registers an OPTIONS route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
-  public options(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
-    this.addRoute('OPTIONS', route, handlers);
-  }
-
-  /**
    * Adds a route with the specified method, path, and handlers.
    * Validates the route and handlers before adding them.
    * @param method - HTTP method for the route.
@@ -129,7 +120,12 @@ class Router {
   ) {
     validateRoute(route);
     handlers.forEach(validateHandler);
-    if (
+    const routeKey = `${method.toUpperCase()}:${route}` // routes will be saved as POST:/api/v1
+    if(Router.routes[routeKey]){
+      console.warn(`${route} with ${method} method has already been regiestered. Trying to register same route will overiride the previous one, and there might be unintended behaviours`)
+    }
+
+       if (
       route.split('/').at(-1)?.startsWith('[') &&
       route.split('/').at(-1)?.endsWith(']')
     ) {
@@ -137,25 +133,20 @@ class Router {
 
       Router.routes = {
         ...Router.routes,
-        [method]: {
-          ...Router.routes[method],
-          [route]: {
+          [routeKey]: {
             handlers,
             type: { isDynamic: true, dynamicParam },
           },
-        },
+        
       };
     } else {
       Router.routes = {
         ...Router.routes,
-        [method]: {
-          ...Router.routes[method],
-          [route]: {
+          [routeKey]: {
             handlers,
             type: { isDynamic: false },
           },
-        },
-      };
+        }
     }
   }
 }

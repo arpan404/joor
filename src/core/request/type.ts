@@ -3,7 +3,7 @@ import { IncomingMessage } from 'http';
 // Extending the http.IncomingMessage interface to add a custom property 'param'
 declare module 'http' {
   interface IncomingMessage {
-    params?: { [key: string]: any }; // The 'params' property is used to store route parameters for the dynamic routes
+    params?: { [key: string]: string }; // The 'params' property is used to store route parameters for the dynamic routes
   }
 }
 

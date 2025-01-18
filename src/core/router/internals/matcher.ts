@@ -75,12 +75,13 @@ export default function matchRoute(
     if (!Router.routes) {
       return null;
     }
-
-    // Get all routes with the provided method (e.g., GET, POST)
-    const routes = routesRegistered[method];
-    if (!routes) {
-      return null;
+    const routeKey = `${method}:${path}`// Route will be stored as key POST:/api/v
+    const route = routesRegistered[routeKey];
+    
+    if (route){
+      return route;
     }
+
 
     // Check if the route is registered with the exact path
     const route = routes[path];
@@ -93,7 +94,7 @@ export default function matchRoute(
     const keys = Object.keys(routes);
 
     for (const key of keys) {
-      const route = routes[key];
+      const currentRoute = routes[key];
       const routeParts = key.split('/');
 
       // If the number of segments in the path and route don't match, skip this route
@@ -125,7 +126,7 @@ export default function matchRoute(
 
       // If the route matches, return the route
       if (match) {
-        return route;
+        return currentRoute;
       }
     }
 

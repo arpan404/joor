@@ -1,6 +1,5 @@
 import Jrror from '@/error';
-import { ROUTE_PATH } from '@/core/router/type';
-import JoorResponse from '@/core/response';
+import { ROUTE_HANDLER, ROUTE_PATH } from '@/core/router/type';
 
 function validateRoute(route: ROUTE_PATH) {
   if (typeof route !== 'string') {
@@ -18,9 +17,17 @@ function validateRoute(route: ROUTE_PATH) {
       type: 'error',
     });
   }
+
+if(!route.startsWith("/")){
+throw new Jrror({
+  code: "route-invalid",
+    message:"Route must starts with /",
+    type: 'error'
+  })
+}
 }
 
-function validateHandler(handler: () => Promise<JoorResponse>) {
+function validateHandler(handler: ROUTE_HANDLER) {
   if (typeof handler !== 'function') {
     throw new Jrror({
       code: 'handler-invalid',

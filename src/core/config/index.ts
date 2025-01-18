@@ -55,11 +55,11 @@ class Configuration {
       Configuration.configData = (await JSON.parse(
         fs.readFileSync(configPath, 'utf8')
       )) as JOOR_CONFIG;
-      console.log(
+      console.info(
         chalk.greenBright('Configurations have been loaded successfully')
       );
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
+    } catch (error: unknown) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         throw new Jrror({
           code: 'config-not-found',
           message: `Error: The configuration file '${joorData.configFile}' for Joor app is not found.\nMake sure the file is in the root directory of your project.`,
