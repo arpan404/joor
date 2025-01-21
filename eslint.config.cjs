@@ -76,11 +76,18 @@ module.exports = [
       'no-shadow': 'off', // Turned off in favor of typescript's no-shadow
       'no-use-before-define': 'off', // Turned off in favor of typescript's no-use-before-define
 
-      // ES6+
+      // ES6+ features
       'arrow-body-style': ['error', 'as-needed'],
       'no-var': 'error',
       'object-shorthand': ['error', 'always'],
       'prefer-arrow-callback': 'error',
+
+      // Formatting and whitespace
+      'no-magic-numbers': ['error', { ignore: [0, 1] }],
+      'prefer-named-capture-group': 'error',
+      'consistent-this': ['error', 'self'],
+      'no-multi-spaces': 'error',
+      'no-mixed-spaces-and-tabs': 'error',
     },
   },
   // TypeScript-specific configuration
@@ -123,6 +130,7 @@ module.exports = [
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
+
     },
   },
   // JavaScript-specific configuration
@@ -130,6 +138,7 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx', '**/*.cjs', '**/*.mjs'],
     rules: {
       // JavaScript-specific rules (if any)
+      'prefer-const': 'error',
     },
   },
   // Test-specific configuration
@@ -145,8 +154,8 @@ module.exports = [
       'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
+      'jest/expect-expect': 'warn', // Enforce expect statements for test cases
     },
   },
-  // Apply Prettier as last to override other formatting rules
   prettier,
 ];

@@ -1,6 +1,6 @@
 import { JoorRequest } from '@/types/request';
 import JoorResponse from '@/core/response';
-import { CORS_OPTIONS } from '@/types/cors';
+import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
 
 /**
  * CORS middleware for Joor application.
@@ -22,15 +22,13 @@ import { CORS_OPTIONS } from '@/types/cors';
  * };
  * app.use(cors(options));
  */
-export default function cors(
-  options: CORS_OPTIONS
-): (request: JoorRequest) => JoorResponse | undefined {
+export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
   return (request: JoorRequest) => {
     const response = new JoorResponse();
-
     // Handle OPTIONS preflight request
     if (request.method === 'OPTIONS') {
-      response.setStatus(204);
+      const status = 204;
+      response.setStatus(status);
 
       // Set headers for preflight response
       if (options.origins) {
@@ -91,6 +89,6 @@ export default function cors(
       response.setHeaders({ 'Access-Control-Allow-Credentials': 'true' });
     }
 
-    return undefined;
+    return;
   };
 }

@@ -64,7 +64,7 @@ class Configuration {
   public async getConfig(): Promise<JOOR_CONFIG> {
     // Load the configuration data if not already loaded
     if (Configuration.configData === null) {
-      this.loadConfig();
+      await this.loadConfig();
     }
     return Configuration.configData as JOOR_CONFIG;
   }

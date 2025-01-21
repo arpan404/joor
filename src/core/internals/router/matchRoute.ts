@@ -87,7 +87,7 @@ const matchRoute = (
       }
 
       // Extract the last segment of the path and route for comparison
-      let paramValue = pathParts.pop() as string;
+      const paramValue = pathParts.pop() as string;
       const paramPlaceholder = routeParts.pop() as string;
 
       // Check if the static parts of the route and path match
