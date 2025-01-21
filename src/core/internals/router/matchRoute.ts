@@ -83,7 +83,7 @@ const matchRoute = (
 
       // Skip routes that do not have the same number of segments
       if (routeParts.length !== pathParts.length) {
-      continue;
+        continue;
       }
 
       // Extract the last segment of the path and route for comparison
@@ -92,23 +92,23 @@ const matchRoute = (
 
       // Check if the static parts of the route and path match
       if (routeParts.join('/') !== pathParts.join('/')) {
-      continue;
+        continue;
       }
 
       // Check if the last segment of the route is a dynamic parameter
       if (
-      paramPlaceholder[0] === '[' &&
-      paramPlaceholder[paramPlaceholder.length - 1] === ']'
+        paramPlaceholder[0] === '[' &&
+        paramPlaceholder[paramPlaceholder.length - 1] === ']'
       ) {
-      const param = paramPlaceholder.replace(/[[\]]/g, '');
-      return {
-        handlers: routes[route].handlers,
-        type: {
-        isDynamic: true,
-        dynamicParam: param,
-        },
-        paramValue,
-      };
+        const param = paramPlaceholder.replace(/[[\]]/g, '');
+        return {
+          handlers: routes[route].handlers,
+          type: {
+            isDynamic: true,
+            dynamicParam: param,
+          },
+          paramValue,
+        };
       }
     }
     return null;
