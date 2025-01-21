@@ -22,7 +22,7 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"],
-      "@helpers/*": ["core/helpers/*"],
+      "@helpers/*": ["helpers/*"],
       "@request/*": ["core/request/*"],
       "@response/*": ["core/response/*"],
       "@router/*": ["core/router/*"],

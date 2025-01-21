@@ -1,4 +1,4 @@
-import isAsync from '@/core/helpers/isAsync';
+import isAsync from '@/helpers/isAsync';
 import { GLOBAL_MIDDLEWARES } from '@/core/joor/type';
 import { JoorRequest } from '@/core/request/type';
 import JoorResponse from '@/core/response';
@@ -81,10 +81,11 @@ async function routeHandler(
     const handlers = { ...globalMiddlewares,...routeDetail.handlers };
     let response;
     for (const handler of handlers) {
-      if(isAsync(handler)){
+      if (isAsync(handler)) {
         response = await handler(request);
+      } else {
+        response = handler(request);
       }
-      response = await handler();
       if (response) {
         if (response instanceof JoorResponse){
 

@@ -6,7 +6,7 @@ export default async function redirect(
 ): Promise<JoorResponse> {
   const response = new JoorResponse();
   response.setStatus(permanent ? 301 : 302);
-  response.setHeader({ Location: path });
+  response.setHeaders({ Location: path });
 
   return response;
 }

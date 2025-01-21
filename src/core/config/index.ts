@@ -1,47 +1,29 @@
-import path from 'path';
-import fs from 'fs';
-import chalk from 'chalk';
-import joorData from '@/data/joor';
-import JOOR_CONFIG from '@/core/config/type';
+import JOOR_CONFIG from './type';
 import Jrror from '@/error';
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
 
 /**
- * Class to handle application configuration files.
- *
- * This class provides methods to load and access configuration data from a file.
- * It ensures that configuration is loaded only once and throws custom errors in case of issues.
- *
- * @example
- * const config = new Configuration()
- * const configData = config.getConfig()
- * console.log(configData)
+ * A class responsible for loading and managing the configuration data.
  */
 class Configuration {
   /**
-   * The relative path to the configuration file.
-   * @type {string}
-   * @private
-   */
-  private static configFile: string = joorData.configFile;
-
-  /**
-   * The loaded configuration data.
-   * Null if the configuration has not yet been loaded.
-   * @type {JOOR_CONFIG | null}
+   * Static variable to hold the configuration data.
    * @private
    */
   private static configData: JOOR_CONFIG | null = null;
 
   /**
-   * Loads the configuration file and parses its contents.
+   * Loads the configuration data from the configuration file (either `joor.config.js` or `joor.config.ts`).
+   * Throws an error if the configuration has already been loaded or if loading fails.
    *
-   * This method reads the configuration file, parses it as JSON, and stores the result
-   * in `Configuration.configData`. It ensures that the configuration is only loaded once.
-   *
-   * @throws {Jrror} Throws:
+   * @throws {Jrror} Throws an error if configuration data is already loaded or if loading fails.
+   * @returns {Promise<void>} A promise that resolves when the configuration is successfully loaded.
    * @private
    */
   private async loadConfig(): Promise<void> {
+    // Check if the configuration data is already loaded
     if (Configuration.configData !== null) {
       throw new Jrror({
         code: 'config-loaded-already',
@@ -50,59 +32,41 @@ class Configuration {
         type: 'warn',
       });
     }
+
     try {
-      const configPath = path.resolve(process.cwd(), Configuration.configFile);
-      Configuration.configData = (await JSON.parse(
-        fs.readFileSync(configPath, 'utf8')
-      )) as JOOR_CONFIG;
+      // Default config file name is joor.config.js or else fallback to joor.config.ts
+      let configFile = 'joor.config.js';
+      if (!fs.existsSync(path.join(process.cwd() + configFile))) {
+        configFile = 'joor.config.ts';
+      }
+      const configPath = path.resolve(process.cwd(), configFile);
+      // Dynamically import the configuration file
+      Configuration.configData = (await import(configPath))
+        .config as JOOR_CONFIG;
       console.info(
         chalk.greenBright('Configurations have been loaded successfully')
       );
-    } catch (error: unknown) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        throw new Jrror({
-          code: 'config-not-found',
-          message: `Error: The configuration file '${joorData.configFile}' for Joor app is not found.\nMake sure the file is in the root directory of your project.`,
-          type: 'panic',
-        });
-      } else if (error instanceof SyntaxError) {
-        throw new Jrror({
-          code: 'config-invalid-json',
-          message: `Error: The configuration file '${joorData.configFile}' for Joor app is not in the proper JSON format.\nPlease check the content and ensure it is valid JSON.`,
-          type: 'panic',
-        });
-      } else {
-        console.error(error);
-        throw new Jrror({
-          code: 'config-load-failed',
-          message: `Error occured while loading the configuration file.`,
-          type: 'panic',
-        });
-      }
+    } catch (error) {
+      throw new Jrror({
+        code: 'config-load-failed',
+        message: `Error occured while loading the configuration file. ${error}`,
+        type: 'panic',
+      });
     }
   }
 
   /**
-   * Retrieves the configuration data.
+   * Retrieves the configuration data. If the configuration data is not already loaded, it will load it.
    *
-   * If the configuration data has not been loaded, it calls `loadConfig` to load it.
-   *
-   * @returns {Promise<JOOR_CONFIG>} The configuration data.
-   * @throws {Jrror} Throws "config-p3" if configuration loading fails unexpectedly.
-   * @protected
+   * @returns {Promise<JOOR_CONFIG>} A promise that resolves with the configuration data.
+   * @throws {Jrror} Throws an error if the configuration cannot be loaded.
    */
   public async getConfig(): Promise<JOOR_CONFIG> {
+    // Load the configuration data if not already loaded
     if (Configuration.configData === null) {
-      await this.loadConfig();
-      if (Configuration.configData === null) {
-        throw new Jrror({
-          code: 'config-load-failed',
-          message: `Error occured while loading the configuration data from ${joorData.configFile}.`,
-          type: 'panic',
-        });
-      }
+      this.loadConfig();
     }
-    return Configuration.configData;
+    return Configuration.configData as JOOR_CONFIG;
   }
 }
 
