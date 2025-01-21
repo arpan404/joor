@@ -1,5 +1,4 @@
-import { INTERNAL_RESPONSE } from '@/types/response';
-import { PREPARED_RESPONSE } from '@/core/server/type';
+import { INTERNAL_RESPONSE, PREPARED_RESPONSE } from '@/types/response';
 
 /**
  * Prepares the response object to be sent to the client.
