@@ -1,5 +1,6 @@
 ## Notice
 
-Under development, releasing alpha version soon!
+This project is currently under active development. We will be releasing the alpha version soon!
 
-Actively being developed by arpan404
+Developed by [arpan404](https://github.com/arpan404). Stay tuned for updates!
+

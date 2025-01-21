@@ -1,4 +1,4 @@
-import { INTERNAL_RESPONSE } from '@/core/response/type';
+import { INTERNAL_RESPONSE } from '@/types/response';
 import { PREPARED_RESPONSE } from '@/core/server/type';
 
 /**
@@ -8,66 +8,70 @@ import { PREPARED_RESPONSE } from '@/core/server/type';
  * @returns {PREPARED_RESPONSE} The prepared response object.
  */
 export default function prepareResponse(
-    response: INTERNAL_RESPONSE
+  response: INTERNAL_RESPONSE
 ): PREPARED_RESPONSE {
-    const preparedResponse: PREPARED_RESPONSE = {
-        headers: {},
-        status: 200,
-        data: null,
-        cookies: [],
-    };
+  const preparedResponse: PREPARED_RESPONSE = {
+    headers: {},
+    status: 200,
+    data: null,
+    cookies: [],
+  };
 
-    // Set the response status
-    preparedResponse.status = response.status;
+  // Set the response status
+  preparedResponse.status = response.status;
 
-    // Format the data based on the type of response
-    if (response.data && response.message && response.dataType !== 'normal') {
-        preparedResponse.data = JSON.stringify({
-            message: response.message,
-            data: response.data,
-        });
-    } else if (response.data && response.message && response.dataType === 'normal') {
-        preparedResponse.data = response.data;
-    }
+  // Format the data based on the type of response
+  if (response.data && response.message && response.dataType !== 'normal') {
+    preparedResponse.data = JSON.stringify({
+      message: response.message,
+      data: response.data,
+    });
+  } else if (
+    response.data &&
+    response.message &&
+    response.dataType === 'normal'
+  ) {
+    preparedResponse.data = response.data;
+  }
 
-    // Copy the headers from the response
-    preparedResponse.headers = { ...response.headers };
+  // Copy the headers from the response
+  preparedResponse.headers = { ...response.headers };
 
-    // Process and format cookies if they exist
-    if (response.cookies) {
-        for (const key in response.cookies) {
-            if (response.cookies.hasOwnProperty(key)) {
-                const cookie = response.cookies[key];
+  // Process and format cookies if they exist
+  if (response.cookies) {
+    for (const key in response.cookies) {
+      if (response.cookies.hasOwnProperty(key)) {
+        const cookie = response.cookies[key];
 
-                // Start forming the cookie string
-                let cookieStr = `${key}=${cookie.value}`;
+        // Start forming the cookie string
+        let cookieStr = `${key}=${cookie.value}`;
 
-                // Handle cookie options (e.g., expiration)
-                if (cookie.options) {
-                    if (cookie.options.expires instanceof Date) {
-                        cookie.options.expires = cookie.options.expires.toUTCString();
-                    }
+        // Handle cookie options (e.g., expiration)
+        if (cookie.options) {
+          if (cookie.options.expires instanceof Date) {
+            cookie.options.expires = cookie.options.expires.toUTCString();
+          }
 
-                    const options = Object.keys(cookie.options)
-                        .map((option) => {
-                            const value = cookie.options
-                                ? cookie.options[option as keyof typeof cookie.options]
-                                : '';
-                            return `${option}=${value}`;
-                        })
-                        .join('; ');
+          const options = Object.keys(cookie.options)
+            .map((option) => {
+              const value = cookie.options
+                ? cookie.options[option as keyof typeof cookie.options]
+                : '';
+              return `${option}=${value}`;
+            })
+            .join('; ');
 
-                    if (options) {
-                        cookieStr += `; ${options}`;
-                    }
-                }
-
-                // Push the formatted cookie string into the cookies array
-                preparedResponse.cookies.push(cookieStr);
-            }
+          if (options) {
+            cookieStr += `; ${options}`;
+          }
         }
-    }
 
-    // Return the prepared response object
-    return preparedResponse;
+        // Push the formatted cookie string into the cookies array
+        preparedResponse.cookies.push(cookieStr);
+      }
+    }
+  }
+
+  // Return the prepared response object
+  return preparedResponse;
 }
