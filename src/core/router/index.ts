@@ -1,18 +1,13 @@
+import { ROUTE_HANDLER, ROUTE_METHOD, ROUTE_PATH, ROUTES } from '@/types/route';
 import {
-  ROUTE_HANDLER,
-  ROUTE_METHOD,
-  ROUTE_PATH,
-  ROUTES,
-} from '@/core/router/type';
-import { validateRoute, validateHandler } from '@/core/router/validators';
+  validateRoute,
+  validateHandler,
+} from '@/core/internals/router/validators';
 
 /**
  * Router Class
- * Manages and defines routes in the application.
- *
- * Usage:
- * Create an instance to define routes with various HTTP methods (GET, POST, etc.).
- * Supports adding middleware and route handlers.
+ * Manages and defines routes with various HTTP methods (GET, POST, etc.).
+ * Supports middleware and route handlers.
  *
  * Example:
  * ```typescript
@@ -26,7 +21,7 @@ import { validateRoute, validateHandler } from '@/core/router/validators';
  *   - `route`: A string representing the route path.
  *   - `handlers`: One or more functions to handle the request.
  *
- * Middleware Support:
+ * Middleware:
  * Middleware functions can preprocess requests. If a middleware returns a `Response`, further processing halts.
  *
  * Example:
@@ -43,9 +38,8 @@ import { validateRoute, validateHandler } from '@/core/router/validators';
  * ```
  *
  * Dynamic Routes:
- * - Dynamic routes must start with `[` and end with `]`, for example: `/user/[id]`.
- * - These routes will be treated as dynamic and the parameter inside the brackets will be extracted.
- * - Dynamic routes parameters can be accessed using `req.params`.
+ * - Must start with `[` and end with `]`, e.g., `/user/[id]`.
+ * - Parameters inside brackets will be extracted and accessible via `req.params`.
  * - Example:
  * ```typescript
  * router.get("/user/[id]", (req) => {
@@ -55,77 +49,48 @@ import { validateRoute, validateHandler } from '@/core/router/validators';
  * ```
  */
 class Router {
-  /**
-   * Set of registered routes.
-   * Uses `Set` to store unique route-method-handler combinations.
-   */
   static routes = {} as ROUTES;
 
-  /**
-   * Registers a GET route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
   public get(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('GET', route, handlers);
   }
 
-  /**
-   * Registers a POST route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
   public post(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('POST', route, handlers);
   }
 
-  /**
-   * Registers a PUT route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
   public put(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('PUT', route, handlers);
   }
 
-  /**
-   * Registers a PATCH route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
   public patch(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('PATCH', route, handlers);
   }
 
-  /**
-   * Registers a DELETE route with the specified handlers.
-   * @param route - The route path.
-   * @param handlers - Middleware or handlers for the route.
-   */
   public delete(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('DELETE', route, handlers);
   }
 
-  /**
-   * Adds a route with the specified method, path, and handlers.
-   * Validates the route and handlers before adding them.
-   * @param method - HTTP method for the route.
-   * @param route - Route path.
-   * @param handlers - Array of middleware or handler functions.
-   */
   private addRoute(
-    method: ROUTE_METHOD,
+    httpMethod: ROUTE_METHOD,
     route: ROUTE_PATH,
     handlers: ROUTE_HANDLER[]
   ) {
     validateRoute(route);
     handlers.forEach(validateHandler);
-    const routeKey = `${method.toUpperCase()}:${route}` // routes will be saved as POST:/api/v1
-    if(Router.routes[routeKey]){
-      console.warn(`${route} with ${method} method has already been regiestered. Trying to register same route will overiride the previous one, and there might be unintended behaviours`)
+
+    // Check if the route already exists
+    // If it does, log a warning
+    // This is to prevent accidental overwrites and ensure that the developer is aware of it
+    if (Router.routes[httpMethod]) {
+      if (Router.routes[httpMethod][route]) {
+        console.warn(
+          `${route} with ${httpMethod} method has already been registered. Trying to register the same route will override the previous one, and there might be unintended behaviors`
+        );
+      }
     }
 
-       if (
+    if (
       route.split('/').at(-1)?.startsWith('[') &&
       route.split('/').at(-1)?.endsWith(']')
     ) {
@@ -133,20 +98,25 @@ class Router {
 
       Router.routes = {
         ...Router.routes,
-          [routeKey]: {
+        [httpMethod]: {
+          ...Router.routes[httpMethod],
+          [route]: {
             handlers,
             type: { isDynamic: true, dynamicParam },
           },
-        
+        },
       };
     } else {
       Router.routes = {
         ...Router.routes,
-          [routeKey]: {
+        [httpMethod]: {
+          ...Router.routes[httpMethod],
+          [route]: {
             handlers,
             type: { isDynamic: false },
           },
-        }
+        },
+      };
     }
   }
 }

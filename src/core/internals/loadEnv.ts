@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
  * @returns {void} This function does not return anything. It loads the environment variables
  * directly into `process.env`.
  */
-export default function loadEnv(): void {
+const loadEnv = (): void => {
   let envPath = '.env.local';
   if (process.env.NODE_ENV === 'production') {
     envPath = '.env.production';
@@ -23,4 +23,6 @@ export default function loadEnv(): void {
     envPath = '.env.testing';
   }
   dotenv.config({ path: envPath });
-}
+};
+
+export default loadEnv;

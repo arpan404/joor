@@ -21,12 +21,7 @@
     "outDir": "./build",
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
-      "@helpers/*": ["helpers/*"],
-      "@request/*": ["core/request/*"],
-      "@response/*": ["core/response/*"],
-      "@router/*": ["core/router/*"],
-      "@data/*": ["data/*"]
+      "@/*": ["*"]
     },
     "rootDir": "src",
     "skipLibCheck": true,

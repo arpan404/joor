@@ -1,4 +1,4 @@
-import { JoorRequest } from '@/core/request/type';
+import { JoorRequest } from '@/types/request';
 import JoorResponse from '@/core/response';
 
 type ROUTE_HANDLER = (
@@ -13,13 +13,13 @@ type ROUTE_TYPE = {
 
 type ROUTE_PATH = string;
 
-type ROUTE_DETAILS = {
-  [key: ROUTE_PATH]: {
-    handlers: ROUTE_HANDLER[];
-    type: ROUTE_TYPE;
+type ROUTES = {
+  [key in ROUTE_METHOD]: {
+    [key: ROUTE_PATH]: {
+      handlers: ROUTE_HANDLER[];
+      type: ROUTE_TYPE;
+    };
   };
 };
-
-type ROUTES = ROUTE_DETAILS;
 
 export { ROUTES, ROUTE_HANDLER, ROUTE_METHOD, ROUTE_TYPE, ROUTE_PATH };

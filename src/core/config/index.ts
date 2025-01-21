@@ -1,4 +1,4 @@
-import JOOR_CONFIG from './type';
+import JOOR_CONFIG from '@/types/config';
 import Jrror from '@/error';
 import fs from 'fs';
 import path from 'path';

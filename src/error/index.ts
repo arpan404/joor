@@ -1,6 +1,6 @@
 import joorData from '@/data/joor';
 import JoorError from '@/error/JoorError';
-import { JOOR_ERROR } from '@/error/type';
+import { JOOR_ERROR } from '@/types/error';
 import chalk from 'chalk';
 
 /**
@@ -36,11 +36,7 @@ import chalk from 'chalk';
 class Jrror extends JoorError {
   constructor(errorData: JOOR_ERROR) {
     // Validate the error data provided when creating the instance of Jrror class
-    if (
-      !errorData?.code ||
-      !errorData.message ||
-      !errorData.type
-    ) {
+    if (!errorData?.code || !errorData.message || !errorData.type) {
       // Throws error code joor-e1 if errorData is not provided, e2 if code is not provided, e3 if message is not provided, e4 if type is not provided
       throw new Jrror({
         message: `Instance of Jrror has been created without passing required data. 

@@ -1,5 +1,5 @@
 import Jrror from '@/error';
-import { ROUTE_HANDLER, ROUTE_PATH } from '@/core/router/type';
+import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 
 function validateRoute(route: ROUTE_PATH) {
   if (typeof route !== 'string') {
@@ -18,13 +18,13 @@ function validateRoute(route: ROUTE_PATH) {
     });
   }
 
-if(!route.startsWith("/")){
-throw new Jrror({
-  code: "route-invalid",
-    message:"Route must starts with /",
-    type: 'error'
-  })
-}
+  if (!route.startsWith('/')) {
+    throw new Jrror({
+      code: 'route-invalid',
+      message: 'Route must starts with /',
+      type: 'error',
+    });
+  }
 }
 
 function validateHandler(handler: ROUTE_HANDLER) {
