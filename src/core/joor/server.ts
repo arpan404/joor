@@ -5,8 +5,8 @@ import Configuration from '@/core/config';
 import Jrror from '@/error';
 import { JoorRequest } from '@/types/request';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
-import handleRoute from '../internals/router/handleRoute';
-import prepareResponse from '../internals/response/prepareResponse';
+import handleRoute from '@/core/internals/router/handleRoute';
+import prepareResponse from '@/core/internals/response/prepareResponse';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
