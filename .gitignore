@@ -17,3 +17,5 @@ old/
 
 # Ignore package lock files
 /package-lock.json
+
+.jest-cache/

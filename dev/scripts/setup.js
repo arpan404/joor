@@ -11,7 +11,7 @@ const isPackageVersionInstalledGlobally = async (packageName, version) => {
   try {
     const result = await exec(`npm list -g ${packageName}`);
     return result.stdout.includes(`${packageName}@${version}`);
-  } catch{
+  } catch {
     return false;
   }
 };

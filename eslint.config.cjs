@@ -130,7 +130,6 @@ module.exports = [
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
-
     },
   },
   // JavaScript-specific configuration

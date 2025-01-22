@@ -12,7 +12,7 @@ import { GLOBAL_MIDDLEWARES } from '@/types/joor';
  * Handles routing for incoming requests by matching the request path and method
  * to the appropriate route handler and executing the associated middlewares.
  *
- * 
+ *
  * @param {JoorRequest} request - The incoming request object.
  * @param {GLOBAL_MIDDLEWARES} globalMiddlewares - An object containing global middleware functions.
  * @param {string} pathURL - The URL path of the incoming request.
