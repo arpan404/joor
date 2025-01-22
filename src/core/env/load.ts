@@ -1,6 +1,7 @@
 import Jrror from '@/error';
 import fs from 'node:fs';
 import * as nodePath from 'node:path';
+import process from 'node:process';
 import parseEnv from '@/core/env/parse';
 /**
  * Loads environment variables from a specified file into `process.env`.

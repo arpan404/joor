@@ -1,7 +1,7 @@
 import JOOR_CONFIG from '@/types/config';
 import Jrror from '@/error';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import chalk from 'chalk';
 
 /**
