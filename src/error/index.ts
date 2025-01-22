@@ -1,7 +1,7 @@
 import joorData from '@/data/joor';
 import JoorError from '@/error/JoorError';
 import { JOOR_ERROR } from '@/types/error';
-import chalk from 'chalk';
+import chalk from '@/core/chalk';
 
 /**
  * Class to work with errors

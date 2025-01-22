@@ -12,14 +12,22 @@ export type Options = {
    * Used to determine color support capability.
    */
   streamIsTTY?: boolean;
+
+  /**
+   * Specify the color support for Chalk.
+   * By default, color support is automatically detected based on the environment.
+   *
+   * Levels:
+   * - 0 - All colors disabled
+   * - 1 - Basic 16 colors support
+   * - 2 - ANSI 256 colors support
+   * - 3 - Truecolor 16 million colors support
+   */
+  readonly level?: ColorSupportLevel;
 };
 
 /**
- * Represents different levels of color support in terminals:
- * - Level 0: No color support
- * - Level 1: Basic 16 colors
- * - Level 2: Extended ANSI 256 colors
- * - Level 3: Full Truecolor (16 million colors)
+ * Represents different levels of color support in terminals
  */
 export type ColorSupportLevel = 0 | 1 | 2 | 3;
 
@@ -27,27 +35,9 @@ export type ColorSupportLevel = 0 | 1 | 2 | 3;
  * Describes the color capabilities of a terminal environment
  */
 export type ColorSupport = {
-  /**
-   * The current color support level (0-3)
-   */
   level: ColorSupportLevel;
-
-  /**
-   * Indicates support for basic 16 colors
-   * Includes both foreground and background colors
-   */
   hasBasic: boolean;
-
-  /**
-   * Indicates support for extended ANSI 256 colors
-   * Provides a broader color palette than basic colors
-   */
   has256: boolean;
-
-  /**
-   * Indicates support for 24-bit Truecolor (RGB)
-   * Allows usage of 16 million distinct colors
-   */
   has16m: boolean;
 };
 
@@ -60,14 +50,7 @@ export type ColorInfo = ColorSupport | false;
  * Represents a pair of ANSI terminal control sequences
  */
 export interface CSPair {
-  /**
-   * The ANSI terminal control sequence for starting a style
-   */
   open: string;
-
-  /**
-   * The ANSI terminal control sequence for ending a style
-   */
   close: string;
 }
 
@@ -75,29 +58,9 @@ export interface CSPair {
  * Base interface for color-related functionality
  */
 export interface ColorBase {
-  /**
-   * The ANSI terminal control sequence for ending this color
-   */
   close: string;
-
-  /**
-   * Generates ANSI color code for basic 16 colors
-   * @param code - ANSI color code (0-15)
-   */
   ansi(code: number): string;
-
-  /**
-   * Generates ANSI color code for extended 256 colors
-   * @param code - ANSI color code (0-255)
-   */
   ansi256(code: number): string;
-
-  /**
-   * Generates ANSI color code for true color (RGB)
-   * @param red - Red component (0-255)
-   * @param green - Green component (0-255)
-   * @param blue - Blue component (0-255)
-   */
   ansi16m(red: number, green: number, blue: number): string;
 }
 
@@ -128,13 +91,8 @@ export interface ForegroundColor {
   readonly cyan: CSPair;
   readonly magenta: CSPair;
   readonly white: CSPair;
-
-  /**
-   * Alias for `blackBright`
-   */
   readonly gray: CSPair;
   readonly grey: CSPair;
-
   readonly blackBright: CSPair;
   readonly redBright: CSPair;
   readonly greenBright: CSPair;
@@ -157,13 +115,8 @@ export interface BackgroundColor {
   readonly bgCyan: CSPair;
   readonly bgMagenta: CSPair;
   readonly bgWhite: CSPair;
-
-  /**
-   * Alias for `bgBlackBright`
-   */
   readonly bgGray: CSPair;
   readonly bgGrey: CSPair;
-
   readonly bgBlackBright: CSPair;
   readonly bgRedBright: CSPair;
   readonly bgGreenBright: CSPair;
@@ -186,24 +139,9 @@ export interface ConvertColor {
   hexToAnsi(hex: string): number;
 }
 
-/**
- * Names of available text style modifiers
- */
 export type ModifierName = keyof Modifier;
-
-/**
- * Names of available foreground colors
- */
 export type ForegroundColorName = keyof ForegroundColor;
-
-/**
- * Names of available background colors
- */
 export type BackgroundColorName = keyof BackgroundColor;
-
-/**
- * Combined type of all available color names
- */
 export type ColorName = ForegroundColorName | BackgroundColorName;
 
 /**
@@ -218,3 +156,69 @@ export type AnsiStyles = {
   BackgroundColor &
   Modifier &
   ConvertColor;
+
+/**
+ * Chalk instance interface with all available methods and properties
+ */
+export interface ChalkInstance {
+  (...text: unknown[]): string;
+  level: ColorSupportLevel;
+  rgb(red: number, green: number, blue: number): ChalkInstance;
+  hex(color: string): ChalkInstance;
+  ansi256(index: number): ChalkInstance;
+  bgRgb(red: number, green: number, blue: number): ChalkInstance;
+  bgHex(color: string): ChalkInstance;
+  bgAnsi256(index: number): ChalkInstance;
+
+  // Modifiers
+  reset: ChalkInstance;
+  bold: ChalkInstance;
+  dim: ChalkInstance;
+  italic: ChalkInstance;
+  underline: ChalkInstance;
+  overline: ChalkInstance;
+  inverse: ChalkInstance;
+  hidden: ChalkInstance;
+  strikethrough: ChalkInstance;
+  visible: ChalkInstance;
+
+  // Foreground colors
+  black: ChalkInstance;
+  red: ChalkInstance;
+  green: ChalkInstance;
+  yellow: ChalkInstance;
+  blue: ChalkInstance;
+  magenta: ChalkInstance;
+  cyan: ChalkInstance;
+  white: ChalkInstance;
+  gray: ChalkInstance;
+  grey: ChalkInstance;
+  blackBright: ChalkInstance;
+  redBright: ChalkInstance;
+  greenBright: ChalkInstance;
+  yellowBright: ChalkInstance;
+  blueBright: ChalkInstance;
+  magentaBright: ChalkInstance;
+  cyanBright: ChalkInstance;
+  whiteBright: ChalkInstance;
+
+  // Background colors
+  bgBlack: ChalkInstance;
+  bgRed: ChalkInstance;
+  bgGreen: ChalkInstance;
+  bgYellow: ChalkInstance;
+  bgBlue: ChalkInstance;
+  bgMagenta: ChalkInstance;
+  bgCyan: ChalkInstance;
+  bgWhite: ChalkInstance;
+  bgGray: ChalkInstance;
+  bgGrey: ChalkInstance;
+  bgBlackBright: ChalkInstance;
+  bgRedBright: ChalkInstance;
+  bgGreenBright: ChalkInstance;
+  bgYellowBright: ChalkInstance;
+  bgBlueBright: ChalkInstance;
+  bgMagentaBright: ChalkInstance;
+  bgCyanBright: ChalkInstance;
+  bgWhiteBright: ChalkInstance;
+}
