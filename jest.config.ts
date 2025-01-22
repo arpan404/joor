@@ -1,27 +1,23 @@
-import type { Config } from '@jest/types';
+import type { Config } from 'jest';
 
-const config: Config.InitialOptions = {
+const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
-  testMatch: ['**/?(*.)+(spec|test).ts'],
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-    '^.+\\.(js|mjs)$': 'babel-jest', 
-  },
-  globals: {
-    'ts-jest': {
-      isolatedModules: true,
-      useESM: true,
-    },
-  },
-  moduleDirectories: ['node_modules', 'src'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+  transform: {
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: 'tsconfig.json',
+      },
+    ],
+  },
   transformIgnorePatterns: ['node_modules/(?!(chalk)/)'],
-  verbose: true,
-  cacheDirectory: '.jest-cache',
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 };
 
 export default config;

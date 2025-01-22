@@ -1,4 +1,3 @@
-import { error } from './../../../node_modules/@commitlint/config-validator/node_modules/ajv/lib/vocabularies/applicator/dependencies';
 import Jrror from '@/error';
 import {
   RESPONSE,
