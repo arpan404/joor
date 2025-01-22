@@ -5,26 +5,51 @@ import {
   ForegroundColor,
   BackgroundColor,
   ColorBase,
-} from '@/types/chalk';
+} from '@/types/marker';
 
+/**
+ * Wraps ANSI code for 16-color palette.
+ * @param {number} offset - The offset to apply to the ANSI code.
+ * @returns {function} A function that takes a code and returns the wrapped ANSI string.
+ */
 const wrapAnsi16 =
   (offset = 0) =>
   (code: number): string =>
     `\u001B[${code + offset}m`;
 
+/**
+ * Wraps ANSI code for 256-color palette.
+ * @param {number} offset - The offset to apply to the ANSI code.
+ * @returns {function} A function that takes a code and returns the wrapped ANSI string.
+ */
 const wrapAnsi256 =
   (offset = 0) =>
   (code: number): string =>
     `\u001B[${38 + offset};5;${code}m`;
 
+/**
+ * Wraps ANSI code for true color (24-bit) palette.
+ * @param {number} offset - The offset to apply to the ANSI code.
+ * @returns {function} A function that takes RGB values and returns the wrapped ANSI string.
+ */
 const wrapAnsi16m =
   (offset = 0) =>
   (red: number, green: number, blue: number): string =>
     `\u001B[${38 + offset};2;${red};${green};${blue}m`;
 
+/**
+ * Assembles the ANSI styles, including modifiers, foreground colors, background colors, and utility functions.
+ * @returns {AnsiStyles} The assembled ANSI styles object.
+ */
 const assembleStyles = (): AnsiStyles => {
   const codes = new Map<number, number>();
 
+  /**
+   * Adds a pair of ANSI codes for opening and closing the style.
+   * @param {number} start - The starting ANSI code.
+   * @param {number} end - The ending ANSI code.
+   * @returns {CSPair} An object with 'open' and 'close' properties containing the ANSI codes.
+   */
   const addPair = (start: number, end: number): CSPair => {
     codes.set(start, end);
     return {
@@ -103,6 +128,13 @@ const assembleStyles = (): AnsiStyles => {
     color,
     bgColor,
     codes,
+    /**
+     * Converts RGB values to ANSI 256 color code.
+     * @param {number} red - The red component (0-255).
+     * @param {number} green - The green component (0-255).
+     * @param {number} blue - The blue component (0-255).
+     * @returns {number} The corresponding ANSI 256 color code.
+     */
     rgbToAnsi256: (red: number, green: number, blue: number): number => {
       if (red === green && green === blue) {
         if (red < 8) return 16;
@@ -116,6 +148,11 @@ const assembleStyles = (): AnsiStyles => {
         Math.round((blue / 255) * 5)
       );
     },
+    /**
+     * Converts a hex color code to an RGB tuple.
+     * @param {number|string} hex - The hex color code.
+     * @returns {[number, number, number]} The RGB values as a tuple.
+     */
     hexToRgb: (hex: number | string): [number, number, number] => {
       const matches = /[a-f\d]{6}|[a-f\d]{3}/i.exec(hex.toString(16));
       if (!matches) return [0, 0, 0];
@@ -126,17 +163,39 @@ const assembleStyles = (): AnsiStyles => {
       const integer = parseInt(colorString, 16);
       return [(integer >> 16) & 0xff, (integer >> 8) & 0xff, integer & 0xff];
     },
+    /**
+     * Converts a hex color code to an ANSI 256 color code.
+     * @param {string} hex - The hex color code.
+     * @returns {number} The corresponding ANSI 256 color code.
+     */
     hexToAnsi256: function (hex: string): number {
       return this.rgbToAnsi256(...this.hexToRgb(hex));
     },
+    /**
+     * Converts an ANSI 256 color code to an ANSI 16 color code.
+     * @param {number} code - The ANSI 256 color code.
+     * @returns {number} The corresponding ANSI 16 color code.
+     */
     ansi256ToAnsi: (code: number): number => {
       if (code < 8) return 30 + code;
       if (code < 16) return 90 + (code - 8);
       return code >= 232 ? 30 : 90;
     },
+    /**
+     * Converts RGB values to an ANSI 16 color code.
+     * @param {number} red - The red component (0-255).
+     * @param {number} green - The green component (0-255).
+     * @param {number} blue - The blue component (0-255).
+     * @returns {number} The corresponding ANSI 16 color code.
+     */
     rgbToAnsi: function (red: number, green: number, blue: number): number {
       return this.ansi256ToAnsi(this.rgbToAnsi256(red, green, blue));
     },
+    /**
+     * Converts a hex color code to an ANSI 16 color code.
+     * @param {string} hex - The hex color code.
+     * @returns {number} The corresponding ANSI 16 color code.
+     */
     hexToAnsi: function (hex: string): number {
       return this.ansi256ToAnsi(this.hexToAnsi256(hex));
     },
@@ -145,15 +204,27 @@ const assembleStyles = (): AnsiStyles => {
   return styles;
 };
 
+// Export the assembled styles
 const ansiStyles = assembleStyles();
 export default ansiStyles;
 
+/**
+ * The list of modifier names available in the ANSI styles.
+ */
 export const modifierNames = Object.keys(ansiStyles.modifier) as Array<
   keyof Modifier
 >;
+
+/**
+ * The list of foreground color names available in the ANSI styles.
+ */
 export const foregroundColorNames = Object.keys(ansiStyles.color) as Array<
   keyof ForegroundColor
 >;
+
+/**
+ * The list of background color names available in the ANSI styles.
+ */
 export const backgroundColorNames = Object.keys(ansiStyles.bgColor) as Array<
   keyof BackgroundColor
 >;

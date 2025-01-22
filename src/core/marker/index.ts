@@ -1,6 +1,6 @@
 import {
   ColorSupportLevel,
-  ChalkInstance,
+  MarkerInstance,
   Options,
   AnsiStyles,
   CSPair,
@@ -20,6 +20,9 @@ const STYLER = Symbol('STYLER');
 const IS_EMPTY = Symbol('IS_EMPTY');
 
 // Internal interfaces
+/**
+ * Represents a styler object with open, close, and parent properties.
+ */
 interface StylerType {
   open: string;
   close: string;
@@ -28,12 +31,18 @@ interface StylerType {
   parent?: StylerType;
 }
 
-interface InternalChalkInstance extends ChalkInstance {
-  [GENERATOR]: InternalChalkInstance;
+/**
+ * Represents the internal marker instance which extends MarkerInstance.
+ */
+interface InternalMarkerInstance extends MarkerInstance {
+  [GENERATOR]: InternalMarkerInstance;
   [STYLER]?: StylerType;
   [IS_EMPTY]: boolean;
 }
 
+/**
+ * Represents a style entry which can either be a CSPair or ColorBase.
+ */
 type StyleEntry = CSPair | ColorBase;
 
 // Level mapping
@@ -44,9 +53,15 @@ type LevelMappingType = (typeof levelMapping)[number];
 // Get stdout and stderr color support
 const { stdout: stdoutColor, stderr: stderrColor } = supportsColor;
 
-// Helper functions
+/**
+ * Applies the provided options to the marker instance.
+ *
+ * @param {InternalMarkerInstance} object - The marker instance to apply options to.
+ * @param {Options} options - Options to configure the marker instance.
+ * @throws {Error} Throws error if level is not a valid integer between 0 and 3.
+ */
 const applyOptions = (
-  object: InternalChalkInstance,
+  object: InternalMarkerInstance,
   options: Options = {}
 ): void => {
   if (
@@ -64,6 +79,14 @@ const applyOptions = (
   object.level = options.level ?? colorLevel;
 };
 
+/**
+ * Creates a new styler with open and close strings, optionally inheriting from a parent styler.
+ *
+ * @param {string} open - The opening string for the style.
+ * @param {string} close - The closing string for the style.
+ * @param {StylerType} [parent] - The parent styler to inherit from.
+ * @returns {StylerType} The created styler.
+ */
 const createStyler = (
   open: string,
   close: string,
@@ -81,6 +104,15 @@ const createStyler = (
   };
 };
 
+/**
+ * Gets the ANSI color string based on the specified model, level, and type.
+ *
+ * @param {string} model - The color model (rgb, hex, etc.).
+ * @param {LevelMappingType} level - The color level (ansi, ansi256, ansi16m).
+ * @param {keyof Pick<AnsiStyles, 'color' | 'bgColor'>} type - The type of style (color or background color).
+ * @param {...[number, number, number]} args - The color values (RGB or HEX).
+ * @returns {string} The corresponding ANSI color string.
+ */
 const getModelAnsi = (
   model: string,
   level: LevelMappingType,
@@ -115,7 +147,14 @@ const getModelAnsi = (
   ](...args);
 };
 
-const applyStyle = (self: InternalChalkInstance, string: string): string => {
+/**
+ * Applies the style to the given string based on the current instance.
+ *
+ * @param {InternalMarkerInstance} self - The current marker instance.
+ * @param {string} string - The string to which the style will be applied.
+ * @returns {string} The styled string.
+ */
+const applyStyle = (self: InternalMarkerInstance, string: string): string => {
   if (self.level <= 0 || !string) {
     return self[IS_EMPTY] ? '' : string;
   }
@@ -142,23 +181,34 @@ const applyStyle = (self: InternalChalkInstance, string: string): string => {
   return openAll + string + closeAll;
 };
 
-// Chalk class and factory
-export class Chalk {
+// Marker class and factory
+/**
+ * Marker class that creates instances of markers that can style text.
+ */
+export class Marker {
   constructor(options?: Options) {
-    return chalkFactory(options);
+    return markerFactory(options);
   }
 }
 
+/**
+ * Creates a new builder for the marker instance.
+ *
+ * @param {InternalMarkerInstance} self - The current marker instance.
+ * @param {StylerType | undefined} _styler - The styler to apply.
+ * @param {boolean} _isEmpty - Whether the marker instance is empty.
+ * @returns {InternalMarkerInstance} The new marker instance.
+ */
 const createBuilder = (
-  self: InternalChalkInstance,
+  self: InternalMarkerInstance,
   _styler: StylerType | undefined,
   _isEmpty: boolean
-): InternalChalkInstance => {
+): InternalMarkerInstance => {
   const builder = ((...args: unknown[]): string =>
     applyStyle(
       builder,
       args.length === 1 ? String(args[0]) : args.join(' ')
-    )) as InternalChalkInstance;
+    )) as InternalMarkerInstance;
 
   Object.setPrototypeOf(builder, proto);
 
@@ -169,25 +219,38 @@ const createBuilder = (
   return builder;
 };
 
-const chalkFactory = (options?: Options): InternalChalkInstance => {
-  const chalk = ((...strings: unknown[]): string =>
-    strings.join(' ')) as InternalChalkInstance;
+/**
+ * Factory function to create a marker instance.
+ *
+ * @param {Options} [options] - Optional configuration options for the marker.
+ * @returns {InternalMarkerInstance} The created marker instance.
+ */
+const markerFactory = (options?: Options): InternalMarkerInstance => {
+  const Marker = ((...strings: unknown[]): string =>
+    strings.join(' ')) as InternalMarkerInstance;
 
-  applyOptions(chalk, options);
-  Object.setPrototypeOf(chalk, createChalk.prototype);
+  applyOptions(Marker, options);
+  Object.setPrototypeOf(Marker, createMarker.prototype);
 
-  return chalk;
+  return Marker;
 };
 
-function createChalk(options?: Options): InternalChalkInstance {
-  return chalkFactory(options);
+/**
+ * Creates a marker with the given options.
+ *
+ * @param {Options} [options] - Optional configuration options for the marker.
+ * @returns {InternalMarkerInstance} The created marker instance.
+ */
+function createMarker(options?: Options): InternalMarkerInstance {
+  return markerFactory(options);
 }
 
-Object.setPrototypeOf(createChalk.prototype, Function.prototype);
+Object.setPrototypeOf(createMarker.prototype, Function.prototype);
 
 // Create styles
 const styles: Record<string, PropertyDescriptor> = {};
 
+// Iterate over available ANSI styles and create properties for each one.
 for (const [styleName, style] of Object.entries(
   ansiStyles as unknown as Record<string, StyleEntry>
 )) {
@@ -196,13 +259,13 @@ for (const [styleName, style] of Object.entries(
     styles[styleName] = {
       get() {
         const builder = createBuilder(
-          this as InternalChalkInstance,
+          this as InternalMarkerInstance,
           createStyler(
             stylePair.open,
             stylePair.close,
-            (this as InternalChalkInstance)[STYLER]
+            (this as InternalMarkerInstance)[STYLER]
           ),
-          (this as InternalChalkInstance)[IS_EMPTY]
+          (this as InternalMarkerInstance)[IS_EMPTY]
         );
         Object.defineProperty(this, styleName, { value: builder });
         return builder;
@@ -216,9 +279,9 @@ const usedModels = ['rgb', 'hex', 'ansi256'] as const;
 
 for (const model of usedModels) {
   styles[model] = {
-    get(this: InternalChalkInstance) {
+    get(this: InternalMarkerInstance) {
       const { level } = this;
-      return (...args: [number, number, number]): InternalChalkInstance => {
+      return (...args: [number, number, number]): InternalMarkerInstance => {
         const styler = createStyler(
           getModelAnsi(model, levelMapping[level], 'color', ...args),
           (ansiStyles.color as ColorBase).close,
@@ -236,18 +299,18 @@ const proto = Object.defineProperties(() => {}, {
   level: {
     enumerable: true,
     get() {
-      return (this as InternalChalkInstance)[GENERATOR].level;
+      return (this as InternalMarkerInstance)[GENERATOR].level;
     },
     set(level: ColorSupportLevel) {
-      (this as InternalChalkInstance)[GENERATOR].level = level;
+      (this as InternalMarkerInstance)[GENERATOR].level = level;
     },
   },
 });
 
 // Create default instances
-const chalk = createChalk();
-export const chalkStderr = createChalk({
+const marker = createMarker();
+export const MarkerStderr = createMarker({
   level: stderrColor ? stderrColor.level : 0,
 });
 
-export default chalk;
+export default marker;

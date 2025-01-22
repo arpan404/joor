@@ -1,39 +1,31 @@
+// Options for controlling color detection and settings
 export type Options = {
   /**
-   * Controls whether to automatically detect color support through command-line flags.
-   * When true, checks process.argv for '--color' and '--no-color' flags.
-   *
+   * Automatically detect color support via command-line flags (e.g., '--color' or '--no-color').
    * @default true
    */
   readonly sniffFlags?: boolean;
 
   /**
-   * Indicates whether the output stream is a TTY (interactive terminal).
-   * Used to determine color support capability.
+   * Indicates if the output stream is a TTY (interactive terminal).
    */
   streamIsTTY?: boolean;
 
   /**
-   * Specify the color support for Chalk.
-   * By default, color support is automatically detected based on the environment.
-   *
+   * Color support level for Chalk.
    * Levels:
-   * - 0 - All colors disabled
-   * - 1 - Basic 16 colors support
-   * - 2 - ANSI 256 colors support
-   * - 3 - Truecolor 16 million colors support
+   * - 0: No colors
+   * - 1: Basic 16 colors
+   * - 2: 256 colors
+   * - 3: Truecolor (16 million colors)
    */
   readonly level?: ColorSupportLevel;
 };
 
-/**
- * Represents different levels of color support in terminals
- */
+// Levels for terminal color support
 export type ColorSupportLevel = 0 | 1 | 2 | 3;
 
-/**
- * Describes the color capabilities of a terminal environment
- */
+// Terminal color capabilities (e.g., 256 colors, truecolor)
 export type ColorSupport = {
   level: ColorSupportLevel;
   hasBasic: boolean;
@@ -41,22 +33,16 @@ export type ColorSupport = {
   has16m: boolean;
 };
 
-/**
- * Represents either color support information or false if colors are not supported
- */
+// Represents color support info or false if unsupported
 export type ColorInfo = ColorSupport | false;
 
-/**
- * Represents a pair of ANSI terminal control sequences
- */
+// ANSI control sequences for text color formatting
 export interface CSPair {
   open: string;
   close: string;
 }
 
-/**
- * Base interface for color-related functionality
- */
+// Base interface for color functionality (e.g., applying color codes)
 export interface ColorBase {
   close: string;
   ansi(code: number): string;
@@ -64,9 +50,7 @@ export interface ColorBase {
   ansi16m(red: number, green: number, blue: number): string;
 }
 
-/**
- * Text style modifiers available in the terminal
- */
+// Terminal text style modifiers (e.g., bold, underline)
 export interface Modifier {
   readonly reset: CSPair;
   readonly bold: CSPair;
@@ -79,9 +63,7 @@ export interface Modifier {
   readonly strikethrough: CSPair;
 }
 
-/**
- * Available foreground colors in the terminal
- */
+// Foreground colors for terminal text (e.g., red, green)
 export interface ForegroundColor {
   readonly black: CSPair;
   readonly red: CSPair;
@@ -103,9 +85,7 @@ export interface ForegroundColor {
   readonly whiteBright: CSPair;
 }
 
-/**
- * Available background colors in the terminal
- */
+// Background colors for terminal text (e.g., bgRed, bgBlue)
 export interface BackgroundColor {
   readonly bgBlack: CSPair;
   readonly bgRed: CSPair;
@@ -127,9 +107,7 @@ export interface BackgroundColor {
   readonly bgWhiteBright: CSPair;
 }
 
-/**
- * Color space conversion utilities
- */
+// Color conversion utilities (e.g., RGB to ANSI)
 export interface ConvertColor {
   rgbToAnsi256(red: number, green: number, blue: number): number;
   hexToRgb(hex: string): [red: number, green: number, blue: number];
@@ -139,14 +117,13 @@ export interface ConvertColor {
   hexToAnsi(hex: string): number;
 }
 
+// Type aliases for color and style names
 export type ModifierName = keyof Modifier;
 export type ForegroundColorName = keyof ForegroundColor;
 export type BackgroundColorName = keyof BackgroundColor;
 export type ColorName = ForegroundColorName | BackgroundColorName;
 
-/**
- * Comprehensive interface representing all color and style options
- */
+// Comprehensive interface for all color and style functionality
 export type AnsiStyles = {
   readonly modifier: Modifier;
   readonly color: ColorBase & ForegroundColor;
@@ -157,68 +134,66 @@ export type AnsiStyles = {
   Modifier &
   ConvertColor;
 
-/**
- * Chalk instance interface with all available methods and properties
- */
-export interface ChalkInstance {
+// Marker instance with methods to apply colors and styles
+export interface MarkerInstance {
   (...text: unknown[]): string;
   level: ColorSupportLevel;
-  rgb(red: number, green: number, blue: number): ChalkInstance;
-  hex(color: string): ChalkInstance;
-  ansi256(index: number): ChalkInstance;
-  bgRgb(red: number, green: number, blue: number): ChalkInstance;
-  bgHex(color: string): ChalkInstance;
-  bgAnsi256(index: number): ChalkInstance;
+  rgb(red: number, green: number, blue: number): MarkerInstance;
+  hex(color: string): MarkerInstance;
+  ansi256(index: number): MarkerInstance;
+  bgRgb(red: number, green: number, blue: number): MarkerInstance;
+  bgHex(color: string): MarkerInstance;
+  bgAnsi256(index: number): MarkerInstance;
 
-  // Modifiers
-  reset: ChalkInstance;
-  bold: ChalkInstance;
-  dim: ChalkInstance;
-  italic: ChalkInstance;
-  underline: ChalkInstance;
-  overline: ChalkInstance;
-  inverse: ChalkInstance;
-  hidden: ChalkInstance;
-  strikethrough: ChalkInstance;
-  visible: ChalkInstance;
+  // Modifier methods (e.g., bold, underline)
+  reset: MarkerInstance;
+  bold: MarkerInstance;
+  dim: MarkerInstance;
+  italic: MarkerInstance;
+  underline: MarkerInstance;
+  overline: MarkerInstance;
+  inverse: MarkerInstance;
+  hidden: MarkerInstance;
+  strikethrough: MarkerInstance;
+  visible: MarkerInstance;
 
-  // Foreground colors
-  black: ChalkInstance;
-  red: ChalkInstance;
-  green: ChalkInstance;
-  yellow: ChalkInstance;
-  blue: ChalkInstance;
-  magenta: ChalkInstance;
-  cyan: ChalkInstance;
-  white: ChalkInstance;
-  gray: ChalkInstance;
-  grey: ChalkInstance;
-  blackBright: ChalkInstance;
-  redBright: ChalkInstance;
-  greenBright: ChalkInstance;
-  yellowBright: ChalkInstance;
-  blueBright: ChalkInstance;
-  magentaBright: ChalkInstance;
-  cyanBright: ChalkInstance;
-  whiteBright: ChalkInstance;
+  // Foreground color methods (e.g., red, blue)
+  black: MarkerInstance;
+  red: MarkerInstance;
+  green: MarkerInstance;
+  yellow: MarkerInstance;
+  blue: MarkerInstance;
+  magenta: MarkerInstance;
+  cyan: MarkerInstance;
+  white: MarkerInstance;
+  gray: MarkerInstance;
+  grey: MarkerInstance;
+  blackBright: MarkerInstance;
+  redBright: MarkerInstance;
+  greenBright: MarkerInstance;
+  yellowBright: MarkerInstance;
+  blueBright: MarkerInstance;
+  magentaBright: MarkerInstance;
+  cyanBright: MarkerInstance;
+  whiteBright: MarkerInstance;
 
-  // Background colors
-  bgBlack: ChalkInstance;
-  bgRed: ChalkInstance;
-  bgGreen: ChalkInstance;
-  bgYellow: ChalkInstance;
-  bgBlue: ChalkInstance;
-  bgMagenta: ChalkInstance;
-  bgCyan: ChalkInstance;
-  bgWhite: ChalkInstance;
-  bgGray: ChalkInstance;
-  bgGrey: ChalkInstance;
-  bgBlackBright: ChalkInstance;
-  bgRedBright: ChalkInstance;
-  bgGreenBright: ChalkInstance;
-  bgYellowBright: ChalkInstance;
-  bgBlueBright: ChalkInstance;
-  bgMagentaBright: ChalkInstance;
-  bgCyanBright: ChalkInstance;
-  bgWhiteBright: ChalkInstance;
+  // Background color methods (e.g., bgRed, bgBlue)
+  bgBlack: MarkerInstance;
+  bgRed: MarkerInstance;
+  bgGreen: MarkerInstance;
+  bgYellow: MarkerInstance;
+  bgBlue: MarkerInstance;
+  bgMagenta: MarkerInstance;
+  bgCyan: MarkerInstance;
+  bgWhite: MarkerInstance;
+  bgGray: MarkerInstance;
+  bgGrey: MarkerInstance;
+  bgBlackBright: MarkerInstance;
+  bgRedBright: MarkerInstance;
+  bgGreenBright: MarkerInstance;
+  bgYellowBright: MarkerInstance;
+  bgBlueBright: MarkerInstance;
+  bgMagentaBright: MarkerInstance;
+  bgCyanBright: MarkerInstance;
+  bgWhiteBright: MarkerInstance;
 }
