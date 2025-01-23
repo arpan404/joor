@@ -1,3 +1,4 @@
+// Marker : Rewritten version of chalk library in TypeScript
 import {
   ColorSupportLevel,
   MarkerInstance,
@@ -14,14 +15,19 @@ import {
   stringEncaseCRLFWithFirstIndex,
 } from '@/core/marker/utilities';
 
-// Symbol declarations
+// Symbol declarations to define private properties.
 const GENERATOR = Symbol('GENERATOR');
 const STYLER = Symbol('STYLER');
 const IS_EMPTY = Symbol('IS_EMPTY');
 
-// Internal interfaces
 /**
- * Represents a styler object with open, close, and parent properties.
+ * Internal interface for the Styler type, which represents the ANSI styling metadata.
+ * @typedef {Object} StylerType
+ * @property {string} open - The opening ANSI escape code.
+ * @property {string} close - The closing ANSI escape code.
+ * @property {string} openAll - All parent opening escape codes concatenated.
+ * @property {string} closeAll - All parent closing escape codes concatenated.
+ * @property {StylerType} [parent] - Reference to the parent Styler, if any.
  */
 interface StylerType {
   open: string;
@@ -32,7 +38,7 @@ interface StylerType {
 }
 
 /**
- * Represents the internal marker instance which extends MarkerInstance.
+ * Internal interface for the Marker instance with extended functionality.
  */
 interface InternalMarkerInstance extends MarkerInstance {
   [GENERATOR]: InternalMarkerInstance;
@@ -41,24 +47,23 @@ interface InternalMarkerInstance extends MarkerInstance {
 }
 
 /**
- * Represents a style entry which can either be a CSPair or ColorBase.
+ * Type representing supported styles.
  */
 type StyleEntry = CSPair | ColorBase;
 
-// Level mapping
+// Mapping color support levels to their corresponding ANSI styling.
 const levelMapping = ['ansi', 'ansi', 'ansi256', 'ansi16m'] as const;
-
 type LevelMappingType = (typeof levelMapping)[number];
 
-// Get stdout and stderr color support
+// Extracting terminal color support levels.
 const { stdout: stdoutColor, stderr: stderrColor } = supportsColor;
 
 /**
- * Applies the provided options to the marker instance.
+ * Apply options to an InternalMarkerInstance object.
  *
- * @param {InternalMarkerInstance} object - The marker instance to apply options to.
- * @param {Options} options - Options to configure the marker instance.
- * @throws {Error} Throws error if level is not a valid integer between 0 and 3.
+ * @param {InternalMarkerInstance} object - The marker instance.
+ * @param {Options} [options={}] - Options for the marker.
+ * @throws {Error} If the level option is not an integer between 0 and 3.
  */
 const applyOptions = (
   object: InternalMarkerInstance,
@@ -80,12 +85,12 @@ const applyOptions = (
 };
 
 /**
- * Creates a new styler with open and close strings, optionally inheriting from a parent styler.
+ * Create a new Styler object.
  *
- * @param {string} open - The opening string for the style.
- * @param {string} close - The closing string for the style.
- * @param {StylerType} [parent] - The parent styler to inherit from.
- * @returns {StylerType} The created styler.
+ * @param {string} open - Opening ANSI escape code.
+ * @param {string} close - Closing ANSI escape code.
+ * @param {StylerType} [parent] - Parent Styler object.
+ * @returns {StylerType} The created Styler object.
  */
 const createStyler = (
   open: string,
@@ -105,13 +110,13 @@ const createStyler = (
 };
 
 /**
- * Gets the ANSI color string based on the specified model, level, and type.
+ * Generate ANSI escape codes for a given color model and level.
  *
- * @param {string} model - The color model (rgb, hex, etc.).
- * @param {LevelMappingType} level - The color level (ansi, ansi256, ansi16m).
- * @param {keyof Pick<AnsiStyles, 'color' | 'bgColor'>} type - The type of style (color or background color).
- * @param {...[number, number, number]} args - The color values (RGB or HEX).
- * @returns {string} The corresponding ANSI color string.
+ * @param {string} model - Color model (`rgb` or `hex`).
+ * @param {LevelMappingType} level - The color support level.
+ * @param {'color' | 'bgColor'} type - Type of ANSI code (foreground or background color).
+ * @param {number[]} args - Arguments representing the color values.
+ * @returns {string} The generated ANSI escape code.
  */
 const getModelAnsi = (
   model: string,
@@ -148,10 +153,10 @@ const getModelAnsi = (
 };
 
 /**
- * Applies the style to the given string based on the current instance.
+ * Apply styling to a string using an InternalMarkerInstance.
  *
- * @param {InternalMarkerInstance} self - The current marker instance.
- * @param {string} string - The string to which the style will be applied.
+ * @param {InternalMarkerInstance} self - The marker instance.
+ * @param {string} string - The string to style.
  * @returns {string} The styled string.
  */
 const applyStyle = (self: InternalMarkerInstance, string: string): string => {
@@ -181,9 +186,8 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
   return openAll + string + closeAll;
 };
 
-// Marker class and factory
 /**
- * Marker class that creates instances of markers that can style text.
+ * Marker class constructor for creating styled text.
  */
 export class Marker {
   constructor(options?: Options) {
@@ -192,12 +196,12 @@ export class Marker {
 }
 
 /**
- * Creates a new builder for the marker instance.
+ * Create a builder function with the specified styler.
  *
- * @param {InternalMarkerInstance} self - The current marker instance.
- * @param {StylerType | undefined} _styler - The styler to apply.
- * @param {boolean} _isEmpty - Whether the marker instance is empty.
- * @returns {InternalMarkerInstance} The new marker instance.
+ * @param {InternalMarkerInstance} self - The marker instance.
+ * @param {StylerType} _styler - The styler object.
+ * @param {boolean} _isEmpty - Flag indicating if the builder is empty.
+ * @returns {InternalMarkerInstance} The created builder function.
  */
 const createBuilder = (
   self: InternalMarkerInstance,
@@ -209,9 +213,7 @@ const createBuilder = (
       builder,
       args.length === 1 ? String(args[0]) : args.join(' ')
     )) as InternalMarkerInstance;
-
   Object.setPrototypeOf(builder, proto);
-
   builder[GENERATOR] = self;
   builder[STYLER] = _styler;
   builder[IS_EMPTY] = _isEmpty;
@@ -220,9 +222,9 @@ const createBuilder = (
 };
 
 /**
- * Factory function to create a marker instance.
+ * Factory function to create a new marker instance.
  *
- * @param {Options} [options] - Optional configuration options for the marker.
+ * @param {Options} [options] - Marker options.
  * @returns {InternalMarkerInstance} The created marker instance.
  */
 const markerFactory = (options?: Options): InternalMarkerInstance => {
@@ -236,9 +238,9 @@ const markerFactory = (options?: Options): InternalMarkerInstance => {
 };
 
 /**
- * Creates a marker with the given options.
+ * Create a new marker instance.
  *
- * @param {Options} [options] - Optional configuration options for the marker.
+ * @param {Options} [options] - Marker options.
  * @returns {InternalMarkerInstance} The created marker instance.
  */
 function createMarker(options?: Options): InternalMarkerInstance {
@@ -247,10 +249,9 @@ function createMarker(options?: Options): InternalMarkerInstance {
 
 Object.setPrototypeOf(createMarker.prototype, Function.prototype);
 
-// Create styles
+// Define styles dynamically based on ansiStyles.
 const styles: Record<string, PropertyDescriptor> = {};
 
-// Iterate over available ANSI styles and create properties for each one.
 for (const [styleName, style] of Object.entries(
   ansiStyles as unknown as Record<string, StyleEntry>
 )) {
@@ -274,7 +275,7 @@ for (const [styleName, style] of Object.entries(
   }
 }
 
-// Add color models
+// Add color model methods.
 const usedModels = ['rgb', 'hex', 'ansi256'] as const;
 
 for (const model of usedModels) {
@@ -293,24 +294,49 @@ for (const model of usedModels) {
   };
 }
 
-// Create prototype
-const proto = Object.defineProperties(() => {}, {
-  ...styles,
-  level: {
-    enumerable: true,
-    get() {
-      return (this as InternalMarkerInstance)[GENERATOR].level;
-    },
-    set(level: ColorSupportLevel) {
-      (this as InternalMarkerInstance)[GENERATOR].level = level;
-    },
+// Define properties for the marker prototype.
+const properties = Object.entries(styles).reduce(
+  (acc, [key, value]) => {
+    acc[key] = {
+      ...value,
+      enumerable: true,
+      configurable: true,
+    };
+    return acc;
   },
-});
+  {} as Record<string, PropertyDescriptor>
+);
 
-// Create default instances
+// Add `level` getter and setter to properties.
+properties.level = {
+  enumerable: true,
+  configurable: true,
+  get(this: InternalMarkerInstance) {
+    return this[GENERATOR].level;
+  },
+  set(this: InternalMarkerInstance, level: ColorSupportLevel) {
+    this[GENERATOR].level = level;
+  },
+};
+
+// Define the prototype for marker instances.
+const proto = Object.defineProperties(
+  Object.create(Function.prototype),
+  properties
+);
+
+// Create the default marker instance.
 const marker = createMarker();
+Object.setPrototypeOf(marker, proto);
+
+/**
+ * Exported marker instance for styled text output to `stdout`.
+ */
+export default marker;
+
+/**
+ * Exported marker instance for styled text output to `stderr`.
+ */
 export const MarkerStderr = createMarker({
   level: stderrColor ? stderrColor.level : 0,
 });
-
-export default marker;
