@@ -23,10 +23,10 @@ import parseEnv from '@/packages/env/parse';
  * loadEnv('custom.env', true);
  * ```
  */
-const loadEnv = (path: string = '.env', override: boolean = false) => {
+const loadEnv = (path: string, override: boolean = false) => {
   try {
     // Resolve the absolute path of the environment file
-    const envPath = nodePath.resolve(process.cwd(), path);
+    const envPath = nodePath.resolve(path);
 
     // Check if the file exists
     if (!fs.existsSync(envPath)) return;
