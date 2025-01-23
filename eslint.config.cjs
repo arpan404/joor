@@ -1,61 +1,67 @@
-const js = require('@eslint/js');
+const globals = require('globals');
 const prettier = require('eslint-config-prettier');
 const typescript = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
+const jest = require('eslint-plugin-jest');
+const path = require('path');
 
 module.exports = [
-  js.configs.recommended,
   {
-    // Base configuration for all files
+    // Ignore patterns
+    ignores: [
+      '**/dist/**',
+      '**/build/**',
+      '**/node_modules/**',
+      '**/.next/**',
+      '**/.cache/**',
+      '**/.turbo/**',
+      '**/.vercel/**',
+      '**/*.d.ts',
+    ],
+  },
+  // Base configuration
+  {
     languageOptions: {
-      ecmaVersion: 2021,
+      ecmaVersion: 'latest',
       sourceType: 'module',
-      parserOptions: {
-        ecmaFeatures: {
-          impliedStrict: true,
-        },
-      },
       globals: {
-        // Node.js globals
-        require: 'readonly',
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        module: 'readonly',
-        exports: 'readonly',
-        console: 'readonly',
-        Buffer: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-        // Test globals
-        describe: 'readonly',
-        it: 'readonly',
-        expect: 'readonly',
-        beforeEach: 'readonly',
-        afterEach: 'readonly',
+        ...globals.node,
+        ...globals.browser,
+        ...globals.jest,
       },
     },
     rules: {
-      // Common rules for both JS and TS
-      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'clear'] }],
+      // Common rules
+      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: true,
+        },
+      ],
+
+      // Error prevention
       'no-return-await': 'error',
       'no-promise-executor-return': 'error',
       'no-template-curly-in-string': 'error',
       'no-unmodified-loop-condition': 'error',
+      'no-unreachable': 'error',
 
       // Best practices
       'array-callback-return': 'error',
       'consistent-return': 'error',
-      curly: ['error', 'all'],
+      curly: ['error', 'multi-line'],
       'default-param-last': 'error',
-      eqeqeq: ['error', 'always'],
+      eqeqeq: ['error', 'smart'],
       'no-eval': 'error',
       'no-implied-eval': 'error',
-      'no-param-reassign': 'error',
+      'no-param-reassign': ['error', { props: false }],
 
-      // Modern JavaScript/TypeScript
+      // Modern JavaScript
       'prefer-const': 'error',
       'prefer-template': 'error',
       'prefer-destructuring': [
@@ -64,6 +70,7 @@ module.exports = [
           array: true,
           object: true,
         },
+        { enforceForRenamedProperties: false },
       ],
       'prefer-rest-params': 'error',
       'prefer-spread': 'error',
@@ -72,39 +79,41 @@ module.exports = [
       'no-throw-literal': 'error',
       'prefer-promise-reject-errors': 'error',
 
-      // Variables
-      'no-shadow': 'off', // Turned off in favor of typescript's no-shadow
-      'no-use-before-define': 'off', // Turned off in favor of typescript's no-use-before-define
-
       // ES6+ features
       'arrow-body-style': ['error', 'as-needed'],
       'no-var': 'error',
-      'object-shorthand': ['error', 'always'],
+      'object-shorthand': ['error', 'always', { avoidQuotes: true }],
       'prefer-arrow-callback': 'error',
-
-      // Formatting and whitespace
-      'prefer-named-capture-group': 'error',
-      'consistent-this': ['error', 'self'],
-      'no-multi-spaces': 'error',
-      'no-mixed-spaces-and-tabs': 'error',
     },
   },
+
   // TypeScript-specific configuration
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
-        project: './tsconfig.json',
+        project: path.join(process.cwd(), 'tsconfig.json'),
+        tsconfigRootDir: process.cwd(),
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.node,
+        ...globals.browser,
       },
     },
     plugins: {
       '@typescript-eslint': typescript,
-      jest: require('eslint-plugin-jest'),
     },
     rules: {
       // TypeScript-specific rules
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': [
+        'warn',
+        {
+          fixToUnknown: true,
+          ignoreRestArgs: true,
+        },
+      ],
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unused-vars': [
@@ -112,6 +121,7 @@ module.exports = [
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
         },
       ],
       '@typescript-eslint/no-shadow': 'error',
@@ -130,16 +140,10 @@ module.exports = [
       '@typescript-eslint/no-unnecessary-type-assertion': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     },
   },
-  // JavaScript-specific configuration
-  {
-    files: ['**/*.js', '**/*.jsx', '**/*.cjs', '**/*.mjs'],
-    rules: {
-      // JavaScript-specific rules (if any)
-      'prefer-const': 'error',
-    },
-  },
+
   // Test-specific configuration
   {
     files: [
@@ -149,11 +153,17 @@ module.exports = [
       '**/*.spec.js',
       'tests/**/*',
     ],
+    plugins: {
+      jest,
+    },
     rules: {
       'no-console': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
-      'jest/expect-expect': 'warn', // Enforce expect statements for test cases
+      'jest/expect-expect': 'warn',
+      'jest/no-disabled-tests': 'warn',
+      'jest/no-focused-tests': 'error',
+      'jest/no-identical-title': 'error',
     },
   },
   prettier,

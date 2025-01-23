@@ -81,7 +81,7 @@ export function stringEncaseCRLFWithFirstIndex(
 
     // Move to next position after line break
     endIndex = index + 1;
-    
+
     // eslint-disable-next-line no-param-reassign
     index = string.indexOf('\n', endIndex);
   } while (index !== -1);

@@ -12,8 +12,8 @@ import { ColorInfo, ColorSupportLevel, Options } from '@/types/marker';
  */
 const hasFlag = (
   flag: string,
-  argv: string[] = (globalThis as any).Deno
-    ? (globalThis as any).Deno.args
+  argv: string[] = (globalThis as unknown as { Deno?: { args: string[] } }).Deno
+    ? (globalThis as unknown as { Deno: { args: string[] } }).Deno.args
     : process.argv
 ): boolean => {
   const prefix = flag.startsWith('-') ? '' : flag.length === 1 ? '-' : '--';
@@ -138,7 +138,7 @@ function _supportsColor(
     return 0; // No color for non-TTY streams
   }
 
-  const min = forceColor || 0;
+  const min = forceColor ?? 0;
 
   if (env.TERM === 'dumb') {
     return min; // No color for dumb terminal
@@ -186,7 +186,7 @@ function _supportsColor(
 
   if ('TERM_PROGRAM' in env) {
     const version = Number.parseInt(
-      (env.TERM_PROGRAM_VERSION || '').split('.')[0],
+      (env.TERM_PROGRAM_VERSION ?? '').split('.')[0],
       10
     );
 

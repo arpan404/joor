@@ -193,6 +193,7 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
  */
 export class Marker {
   constructor(options?: Options) {
+    // eslint-disable-next-line  @typescript-eslint/no-use-before-define
     return markerFactory(options);
   }
 }
@@ -215,6 +216,8 @@ const createBuilder = (
       builder,
       args.length === 1 ? String(args[0]) : args.join(' ')
     )) as InternalMarkerInstance;
+
+  // eslint-disable-next-line  @typescript-eslint/no-use-before-define
   Object.setPrototypeOf(builder, proto);
   builder[GENERATOR] = self;
   builder[STYLER] = _styler;
@@ -230,13 +233,13 @@ const createBuilder = (
  * @returns {InternalMarkerInstance} The created marker instance.
  */
 const markerFactory = (options?: Options): InternalMarkerInstance => {
-  const Marker = ((...strings: unknown[]): string =>
+  const _marker = ((...strings: unknown[]): string =>
     strings.join(' ')) as InternalMarkerInstance;
 
-  applyOptions(Marker, options);
+  applyOptions(_marker, options);
   Object.setPrototypeOf(Marker, createMarker.prototype);
 
-  return Marker;
+  return _marker;
 };
 
 /**

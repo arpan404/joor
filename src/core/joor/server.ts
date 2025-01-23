@@ -7,7 +7,6 @@ import { JoorRequest } from '@/types/request';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import handleRoute from '@/core/internals/router/handleRoute';
 import prepareResponse from '@/core/internals/response/prepareResponse';
-import { parse } from 'node:url';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
@@ -44,9 +43,9 @@ class Server {
         // Create an HTTPS server with credentials
         server = https.createServer(
           credentials,
-          async (req: JoorRequest, res: http.ServerResponse): Promise<void> => {
-            await this.process(req, res, globalMiddlewares);
-            return;
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          async (req: JoorRequest, res: http.ServerResponse) => {
+            await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
           }
         );
       } catch (error: unknown) {
@@ -60,9 +59,9 @@ class Server {
     } else {
       // If no SSL configuration, create an HTTP server
       server = http.createServer(
-        async (req: JoorRequest, res: http.ServerResponse): Promise<void> => {
-          await this.process(req, res, globalMiddlewares);
-          return;
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        async (req: JoorRequest, res: http.ServerResponse) => {
+          await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
         }
       );
     }

@@ -12,14 +12,14 @@
 //   "name": "joor",
 //   "version": "version_placeholder",
 //   "description": "Joor is a full-fledged backend web framework for small to enterprise level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
-//   "main": "./app/index.js", 
+//   "main": "./app/index.js",
 //   "types": "./app/index.d.ts",
 //   "type":"module",
 //   "bin":{
 //     "create-joor": "cli/creator/index.js"
 //   },
 //   "dependencies": ##dependencies##
-// } 
+// }
 // `;
 // const toRemoveDependencies = `"dependencies": ##dependencies##`;
 

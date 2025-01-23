@@ -1,5 +1,5 @@
 // Options for controlling color detection and settings
-export type Options = {
+export interface Options {
   /**
    * Automatically detect color support via command-line flags (e.g., '--color' or '--no-color').
    * @default true
@@ -20,18 +20,18 @@ export type Options = {
    * - 3: Truecolor (16 million colors)
    */
   readonly level?: ColorSupportLevel;
-};
+}
 
 // Levels for terminal color support
 export type ColorSupportLevel = 0 | 1 | 2 | 3;
 
 // Terminal color capabilities (e.g., 256 colors, truecolor)
-export type ColorSupport = {
+export interface ColorSupport {
   level: ColorSupportLevel;
   hasBasic: boolean;
   has256: boolean;
   has16m: boolean;
-};
+}
 
 // Represents color support info or false if unsupported
 export type ColorInfo = ColorSupport | false;
@@ -44,6 +44,7 @@ export interface CSPair {
 
 // Base interface for color functionality (e.g., applying color codes)
 export interface ColorBase {
+  // eslint-non-unused-vars
   close: string;
   ansi(_code: number): string;
   ansi256(_code: number): string;
@@ -109,12 +110,12 @@ export interface BackgroundColor {
 
 // Color conversion utilities (e.g., RGB to ANSI)
 export interface ConvertColor {
-  rgbToAnsi256(red: number, green: number, blue: number): number;
-  hexToRgb(hex: string): [red: number, green: number, blue: number];
-  hexToAnsi256(hex: string): number;
-  ansi256ToAnsi(code: number): number;
-  rgbToAnsi(red: number, green: number, blue: number): number;
-  hexToAnsi(hex: string): number;
+  rgbToAnsi256(_red: number, _green: number, _blue: number): number;
+  hexToRgb(_hex: string): [_red: number, _green: number, _blue: number];
+  hexToAnsi256(_hex: string): number;
+  ansi256ToAnsi(_code: number): number;
+  rgbToAnsi(_red: number, _green: number, _blue: number): number;
+  hexToAnsi(_hex: string): number;
 }
 
 // Type aliases for color and style names
@@ -136,14 +137,14 @@ export type AnsiStyles = {
 
 // Marker instance with methods to apply colors and styles
 export interface MarkerInstance {
-  (...text: unknown[]): string;
+  (..._text: unknown[]): string;
   level: ColorSupportLevel;
-  rgb(red: number, green: number, blue: number): MarkerInstance;
-  hex(color: string): MarkerInstance;
-  ansi256(index: number): MarkerInstance;
-  bgRgb(red: number, green: number, blue: number): MarkerInstance;
-  bgHex(color: string): MarkerInstance;
-  bgAnsi256(index: number): MarkerInstance;
+  rgb(_red: number, _green: number, _blue: number): MarkerInstance;
+  hex(_color: string): MarkerInstance;
+  ansi256(_index: number): MarkerInstance;
+  bgRgb(_red: number, _green: number, _blue: number): MarkerInstance;
+  bgHex(_color: string): MarkerInstance;
+  bgAnsi256(_index: number): MarkerInstance;
 
   // Modifier methods (e.g., bold, underline)
   reset: MarkerInstance;

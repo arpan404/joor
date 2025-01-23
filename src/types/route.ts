@@ -7,10 +7,10 @@ type ROUTE_HANDLER = (
 ) => Promise<JoorResponse | undefined> | JoorResponse | undefined;
 type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-type ROUTE_TYPE = {
+interface ROUTE_TYPE {
   isDynamic: boolean;
   dynamicParam?: string;
-};
+}
 
 type ROUTE_PATH = string;
 
