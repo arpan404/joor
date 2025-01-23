@@ -1,4 +1,4 @@
-import dotenv from '@/core/env';
+import dotenv from '@/packages/env';
 
 /**
  * Loads environment variables from the appropriate .env file based on the NODE_ENV variable.

@@ -2,7 +2,7 @@ import JOOR_CONFIG from '@/types/config';
 import Jrror from '@/core/error';
 import fs from 'node:fs';
 import path from 'node:path';
-import chalk from 'chalk';
+import marker from '@/packages/marker';
 
 /**
  * A class responsible for loading and managing the configuration data.
@@ -44,7 +44,7 @@ class Configuration {
       Configuration.configData = (await import(configPath))
         .config as JOOR_CONFIG;
       console.info(
-        chalk.greenBright('Configurations have been loaded successfully')
+        marker.greenBright('Configurations have been loaded successfully')
       );
     } catch (error) {
       throw new Jrror({
