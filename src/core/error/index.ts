@@ -1,5 +1,5 @@
 import joorData from '@/data/joor';
-import JoorError from '@/error/JoorError';
+import JoorError from '@/core/error/JoorError';
 import { JOOR_ERROR } from '@/types/error';
 import marker from '@/core/marker';
 

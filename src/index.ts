@@ -4,7 +4,7 @@ export default Joor;
 import Router from '@/core/router';
 import JoorResponse from '@/core/response';
 import { JoorRequest } from '@/types/request';
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import cors from '@/core/cors';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 

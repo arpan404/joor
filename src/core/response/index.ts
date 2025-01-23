@@ -1,4 +1,4 @@
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import {
   RESPONSE,
   INTERNAL_RESPONSE,
