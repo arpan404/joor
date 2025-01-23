@@ -250,10 +250,10 @@ class JoorResponse {
    */
   public parseResponse(): INTERNAL_RESPONSE {
     const response = {} as INTERNAL_RESPONSE;
-    response.status = this.status || (this.dataType === 'error' ? 500 : 200);
+    response.status = this.status ?? (this.dataType === 'error' ? 500 : 200);
     response.message =
-      this.message ||
-      httpCodes[response.status] ||
+      this.message ??
+      httpCodes[response.status] ??
       (this.dataType === 'error' ? 'Internal Server Error' : 'OK');
     response.cookies = this.cookies;
     response.headers = this.headers;

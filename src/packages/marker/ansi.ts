@@ -168,7 +168,7 @@ const assembleStyles = (): AnsiStyles => {
      * @param {string} hex - The hex color code.
      * @returns {number} The corresponding ANSI 256 color code.
      */
-    hexToAnsi256: function (hex: string): number {
+    hexToAnsi256(hex: string): number {
       return this.rgbToAnsi256(...this.hexToRgb(hex));
     },
     /**
@@ -188,7 +188,7 @@ const assembleStyles = (): AnsiStyles => {
      * @param {number} blue - The blue component (0-255).
      * @returns {number} The corresponding ANSI 16 color code.
      */
-    rgbToAnsi: function (red: number, green: number, blue: number): number {
+    rgbToAnsi(red: number, green: number, blue: number): number {
       return this.ansi256ToAnsi(this.rgbToAnsi256(red, green, blue));
     },
     /**
@@ -196,7 +196,7 @@ const assembleStyles = (): AnsiStyles => {
      * @param {string} hex - The hex color code.
      * @returns {number} The corresponding ANSI 16 color code.
      */
-    hexToAnsi: function (hex: string): number {
+    hexToAnsi(hex: string): number {
       return this.ansi256ToAnsi(this.hexToAnsi256(hex));
     },
   } as AnsiStyles;

@@ -32,11 +32,7 @@ class Server {
     }
 
     // Check if SSL configuration exists and create the server accordingly
-    if (
-      configData.server.ssl &&
-      configData.server.ssl.key &&
-      configData.server.ssl.cert
-    ) {
+    if (configData.server?.ssl?.cert && configData.server?.ssl?.key) {
       try {
         // Reading SSL credentials from files
         const credentials = {
@@ -47,8 +43,9 @@ class Server {
         // Create an HTTPS server with credentials
         server = https.createServer(
           credentials,
-          (req: JoorRequest, res: http.ServerResponse): void => {
-            this.process(req, res, globalMiddlewares);
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          async (req: JoorRequest, res: http.ServerResponse) => {
+            await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
           }
         );
       } catch (error: unknown) {
@@ -62,8 +59,9 @@ class Server {
     } else {
       // If no SSL configuration, create an HTTP server
       server = http.createServer(
-        (req: JoorRequest, res: http.ServerResponse): void => {
-          this.process(req, res, globalMiddlewares);
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        async (req: JoorRequest, res: http.ServerResponse) => {
+          await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
         }
       );
     }
@@ -92,7 +90,7 @@ class Server {
   ): Promise<void> {
     try {
       // Parse the URL and extract the path
-      const parsedUrl = new URL(req.url || '', `http://${req.headers.host}`);
+      const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
       const pathURL = parsedUrl.pathname;
 
       // Handle the route based on the path and middlewares

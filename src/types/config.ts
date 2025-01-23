@@ -1,4 +1,4 @@
-type JOOR_CONFIG = {
+interface JOOR_CONFIG {
   server: {
     port?: number;
     host?: string;
@@ -8,6 +8,6 @@ type JOOR_CONFIG = {
       cert: string;
     };
   };
-};
+}
 
 export default JOOR_CONFIG;
