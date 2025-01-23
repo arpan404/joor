@@ -77,11 +77,11 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
     // Apply CORS headers to other requests
     if (options.origins) {
       if (options.origins === '*') {
-        response.setHeaders({ 'Access-Control-Allow-Origin': '*' });
+        request.joorHeaders = { 'Access-Control-Allow-Origin': '*' };
       } else if (options.origins.includes(request.headers.origin as string)) {
-        response.setHeaders({
+        request.joorHeaders = {
           'Access-Control-Allow-Origin': request.headers.origin as string,
-        });
+        };
       }
     }
 

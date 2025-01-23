@@ -8,12 +8,12 @@ import {
   ColorBase,
 } from '@/types/marker';
 
-import ansiStyles from '@/core/marker/ansi';
-import supportsColor from '@/core/marker/color';
+import ansiStyles from '@/packages/marker/ansi';
+import supportsColor from '@/packages/marker/color';
 import {
   stringReplaceAll,
   stringEncaseCRLFWithFirstIndex,
-} from '@/core/marker/utilities';
+} from '@/packages/marker/utilities';
 
 // Symbol declarations to define private properties.
 const GENERATOR = Symbol('GENERATOR');

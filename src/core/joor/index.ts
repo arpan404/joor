@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import JOOR_CONFIG from '@/types/config';
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import Server from '@/core/joor/server';
 import Configuration from '@/core/config';
 import loadEnv from '@/core/internals/loadEnv';

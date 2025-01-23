@@ -2,7 +2,7 @@ import http from 'node:http';
 import https from 'node:https';
 import fs from 'node:fs';
 import Configuration from '@/core/config';
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import { JoorRequest } from '@/types/request';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import handleRoute from '@/core/internals/router/handleRoute';
@@ -108,6 +108,9 @@ class Server {
       // Write the response headers
       res.writeHead(parsedResponse.status, parsedResponse.headers);
 
+      if (req.joorHeaders) {
+        res.writeHead(parsedResponse.status, req.joorHeaders);
+      }
       // Set cookies if any are present
       if (parsedResponse.cookies) {
         res.setHeader('Set-Cookie', parsedResponse.cookies);

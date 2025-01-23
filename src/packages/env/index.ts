@@ -1,4 +1,4 @@
-import loadEnv from '@/core/env/load';
+import loadEnv from '@/packages/env/load';
 
 // A class that wraps the loadEnv function for better readability and usage
 class dotenv {

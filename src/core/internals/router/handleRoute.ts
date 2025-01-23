@@ -4,7 +4,7 @@ import { INTERNAL_RESPONSE } from '@/types/response';
 import { ROUTE_METHOD } from '@/types/route';
 import matchRoute from '@/core/internals/router/matchRoute';
 import Router from '@/core/router';
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import isAsync from '@/helpers/isAsync';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 

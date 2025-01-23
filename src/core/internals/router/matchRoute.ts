@@ -1,4 +1,4 @@
-import Jrror from '@/error';
+import Jrror from '@/core/error';
 import { ROUTE_HANDLER, ROUTE_METHOD, ROUTES } from '@/types/route';
 
 /**
