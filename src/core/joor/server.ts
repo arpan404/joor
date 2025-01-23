@@ -51,11 +51,11 @@ class Server {
             this.process(req, res, globalMiddlewares);
           }
         );
-      } catch (error) {
+      } catch (error: unknown) {
         // Throw an error if SSL files cannot be read
         throw new Jrror({
           code: 'ssl-error',
-          message: 'Failed to read SSL files.',
+          message: `Failed to read SSL files.\n${error}`,
           type: 'error',
         });
       }

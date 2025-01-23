@@ -1,4 +1,4 @@
-import { JOOR_ERROR } from '@/error/type';
+import { JOOR_ERROR } from '@/types/error';
 
 /**
  * Custom class with additional metadata such as error code, message and type.

@@ -1,7 +1,7 @@
 import joorData from '@/data/joor';
 import JoorError from '@/error/JoorError';
 import { JOOR_ERROR } from '@/types/error';
-import chalk from 'chalk';
+import marker from '@/core/marker';
 
 /**
  * Class to work with errors
@@ -87,13 +87,13 @@ class Jrror extends JoorError {
     const errorMessage = this.formatMessage();
 
     if (this.type === 'warn') {
-      console.warn(chalk.yellowBright(errorMessage));
+      console.warn(marker.yellowBright(errorMessage));
     } else if (this.type === 'error') {
-      console.error(chalk.redBright(errorMessage));
-      console.error(chalk.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      console.error(marker.redBright(errorMessage));
+      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
     } else if (this.type === 'panic') {
-      console.error(chalk.redBright(errorMessage));
-      console.error(chalk.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      console.error(marker.redBright(errorMessage));
+      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
       process.exit(1);
     }
   }
@@ -125,9 +125,9 @@ class Jrror extends JoorError {
     return `
           Error Code: ${this.errorCode}
           Message: ${this.message}
-          ${chalk.greenBright(
+          ${marker.greenBright(
             'For more information, visit:'
-          )} ${chalk.bgGreenBright.whiteBright(docLink)}
+          )} ${marker.bgGreenBright.whiteBright(docLink)}
           `;
   }
 }

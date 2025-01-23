@@ -13,7 +13,7 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["ESNext"],
-    "module": "CommonJS",
+    "module": "ESNext",
     "moduleResolution": "node",
     "noEmit": false,
     "noUnusedLocals": true,
@@ -23,11 +23,11 @@
     "paths": {
       "@/*": ["*"]
     },
-    "rootDir": "src",
+    "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "ES6"
+    "target": "ESNext"
   },
   "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules"]

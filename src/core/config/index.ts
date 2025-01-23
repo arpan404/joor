@@ -1,7 +1,7 @@
 import JOOR_CONFIG from '@/types/config';
 import Jrror from '@/error';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import chalk from 'chalk';
 
 /**
@@ -64,7 +64,7 @@ class Configuration {
   public async getConfig(): Promise<JOOR_CONFIG> {
     // Load the configuration data if not already loaded
     if (Configuration.configData === null) {
-      this.loadConfig();
+      await this.loadConfig();
     }
     return Configuration.configData as JOOR_CONFIG;
   }

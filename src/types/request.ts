@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http';
+import { IncomingMessage } from 'node:http';
 
 // Extending the http.IncomingMessage interface to add a custom property 'param'
 declare module 'http' {

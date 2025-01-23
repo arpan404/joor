@@ -3,8 +3,8 @@ import {
   RESPONSE,
   INTERNAL_RESPONSE,
   RESPONSE_DATA_TYPE,
-} from '@/core/response/type';
-import httpCodes from '@/core/http/code';
+} from '@/types/response';
+import httpCodes from '@/data/httpCodes';
 
 /**
  * A class to construct and manage HTTP responses.
@@ -144,7 +144,10 @@ class JoorResponse {
    * response.setHeaders({ "Content-Type": "application/json", "Authorization": "Bearer token" });
    * ```
    */
-  public setHeaders(value: typeof this.headers, override: boolean = false): this {
+  public setHeaders(
+    value: typeof this.headers,
+    override: boolean = false
+  ): this {
     if (typeof value !== 'object') {
       throw new Jrror({
         code: 'response-headers-invalid',
@@ -219,10 +222,10 @@ class JoorResponse {
     }
     try {
       this.data = JSON.parse(value as string);
-    } catch (e) {
+    } catch (error) {
       throw new Jrror({
         code: 'response-json_data-invalid',
-        message: `Failed to parse JSON data.`,
+        message: `Failed to parse JSON data.\n${error}`,
         type: 'error',
       });
     }
@@ -248,7 +251,10 @@ class JoorResponse {
   public parseResponse(): INTERNAL_RESPONSE {
     const response = {} as INTERNAL_RESPONSE;
     response.status = this.status || (this.dataType === 'error' ? 500 : 200);
-    response.message = this.message || httpCodes[response.status] || (this.dataType === 'error' ? 'Internal Server Error' : 'OK');
+    response.message =
+      this.message ||
+      httpCodes[response.status] ||
+      (this.dataType === 'error' ? 'Internal Server Error' : 'OK');
     response.cookies = this.cookies;
     response.headers = this.headers;
     response.data = this.dataType === 'error' ? this.error : this.data || null;
