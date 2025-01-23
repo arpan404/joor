@@ -233,7 +233,7 @@ export function createSupportsColor(
   options: Options = {}
 ): ColorInfo {
   const level = _supportsColor(stream as WriteStream, {
-    streamIsTTY: stream && stream.isTTY,
+    streamIsTTY: stream?.isTTY,
     ...options,
   });
 

@@ -45,9 +45,9 @@ export interface CSPair {
 // Base interface for color functionality (e.g., applying color codes)
 export interface ColorBase {
   close: string;
-  ansi(code: number): string;
-  ansi256(code: number): string;
-  ansi16m(red: number, green: number, blue: number): string;
+  ansi(_code: number): string;
+  ansi256(_code: number): string;
+  ansi16m(_red: number, _green: number, _blue: number): string;
 }
 
 // Terminal text style modifiers (e.g., bold, underline)

@@ -39,7 +39,7 @@ export default function prepareResponse(
   // Process and format cookies if they exist
   if (response.cookies) {
     for (const key in response.cookies) {
-      if (response.cookies.hasOwnProperty(key)) {
+      if (response.cookies[key]) {
         const cookie = response.cookies[key];
 
         // Start forming the cookie string

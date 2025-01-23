@@ -7,6 +7,7 @@ import { JoorRequest } from '@/types/request';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import handleRoute from '@/core/internals/router/handleRoute';
 import prepareResponse from '@/core/internals/response/prepareResponse';
+import { parse } from 'node:url';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
@@ -32,11 +33,7 @@ class Server {
     }
 
     // Check if SSL configuration exists and create the server accordingly
-    if (
-      configData.server.ssl &&
-      configData.server.ssl.key &&
-      configData.server.ssl.cert
-    ) {
+    if (configData.server?.ssl?.cert && configData.server?.ssl?.key) {
       try {
         // Reading SSL credentials from files
         const credentials = {
@@ -47,8 +44,9 @@ class Server {
         // Create an HTTPS server with credentials
         server = https.createServer(
           credentials,
-          (req: JoorRequest, res: http.ServerResponse): void => {
-            this.process(req, res, globalMiddlewares);
+          async (req: JoorRequest, res: http.ServerResponse): Promise<void> => {
+            await this.process(req, res, globalMiddlewares);
+            return;
           }
         );
       } catch (error: unknown) {
@@ -62,8 +60,9 @@ class Server {
     } else {
       // If no SSL configuration, create an HTTP server
       server = http.createServer(
-        (req: JoorRequest, res: http.ServerResponse): void => {
-          this.process(req, res, globalMiddlewares);
+        async (req: JoorRequest, res: http.ServerResponse): Promise<void> => {
+          await this.process(req, res, globalMiddlewares);
+          return;
         }
       );
     }
@@ -92,7 +91,7 @@ class Server {
   ): Promise<void> {
     try {
       // Parse the URL and extract the path
-      const parsedUrl = new URL(req.url || '', `http://${req.headers.host}`);
+      const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
       const pathURL = parsedUrl.pathname;
 
       // Handle the route based on the path and middlewares

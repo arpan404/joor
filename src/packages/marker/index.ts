@@ -173,6 +173,7 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
   const { openAll, closeAll } = styler;
   if (string.includes('\u001B')) {
     while (styler !== undefined) {
+      // eslint-disable-next-line no-param-reassign
       string = stringReplaceAll(string, styler.close, styler.open);
       styler = styler.parent;
     }
@@ -180,6 +181,7 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
 
   const lfIndex = string.indexOf('\n');
   if (lfIndex !== -1) {
+    // eslint-disable-next-line no-param-reassign
     string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
   }
 
@@ -256,7 +258,7 @@ for (const [styleName, style] of Object.entries(
   ansiStyles as unknown as Record<string, StyleEntry>
 )) {
   if (typeof style === 'object' && 'open' in style && 'close' in style) {
-    const stylePair = style as CSPair;
+    const stylePair = style;
     styles[styleName] = {
       get() {
         const builder = createBuilder(
@@ -280,6 +282,7 @@ const usedModels = ['rgb', 'hex', 'ansi256'] as const;
 
 for (const model of usedModels) {
   styles[model] = {
+    // eslint-disable-next-line no-unused-vars
     get(this: InternalMarkerInstance) {
       const { level } = this;
       return (...args: [number, number, number]): InternalMarkerInstance => {
@@ -311,6 +314,7 @@ const properties = Object.entries(styles).reduce(
 properties.level = {
   enumerable: true,
   configurable: true,
+  // eslint-disable-next-line no-unused-vars
   get(this: InternalMarkerInstance) {
     return this[GENERATOR].level;
   },

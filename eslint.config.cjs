@@ -83,7 +83,6 @@ module.exports = [
       'prefer-arrow-callback': 'error',
 
       // Formatting and whitespace
-      'no-magic-numbers': ['error', { ignore: [0, 1] }],
       'prefer-named-capture-group': 'error',
       'consistent-this': ['error', 'self'],
       'no-multi-spaces': 'error',
@@ -101,6 +100,7 @@ module.exports = [
     },
     plugins: {
       '@typescript-eslint': typescript,
+      jest: require('eslint-plugin-jest'),
     },
     rules: {
       // TypeScript-specific rules

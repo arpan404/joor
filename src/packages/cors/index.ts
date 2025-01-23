@@ -40,7 +40,7 @@ import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
  */
 
 export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
-  return (request: JoorRequest) => {
+  return (request: JoorRequest): JoorResponse | void => {
     const response = new JoorResponse();
     // Handle OPTIONS preflight request
 
@@ -193,5 +193,6 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
 
     // If the request method is OPTIONS, return the preflight response immediately
     if (request.method === 'OPTIONS') return response;
+    return undefined;
   };
 }
