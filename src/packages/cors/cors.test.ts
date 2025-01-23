@@ -199,6 +199,29 @@ describe('CORS', () => {
     }
   });
 
+  it('should handle GET requests from subdomains', async () => {
+    const request = {
+      method: 'GET',
+      headers: { origin: 'https://sub.example.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://*.example.com'],
+      methods: ['POST'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      console.log(parsedResponse);
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'https://sub.example.com'
+      );
+    } else {
+      expect(request.joorHeaders).toBeDefined();
+      expect(request.joorHeaders!['Access-Control-Allow-Origin']).toBe(
+        'https://sub.example.com'
+      );
+    }
+  });
+
   it('should handle requests with varying protocols (http/https)', async () => {
     const request = {
       method: 'OPTIONS',
