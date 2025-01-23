@@ -52,4 +52,207 @@ describe('CORS', () => {
     })(request);
     expect(response).toBeUndefined();
   });
+
+  it('should handle wildcard origin', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://any-domain.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['*'],
+      methods: ['GET'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers).toBeDefined();
+      if (parsedResponse.headers) {
+        expect(parsedResponse.headers['Access-Control-Allow-Origin']).toBe('*');
+      }
+    }
+  });
+
+  it('should handle multiple allowed origins', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://site2.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://site1.com', 'https://site2.com'],
+      methods: ['GET'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers).toBeDefined();
+      if (parsedResponse.headers) {
+        expect(parsedResponse.headers['Access-Control-Allow-Origin']).toBe(
+          'https://site2.com'
+        );
+      }
+    }
+  });
+
+  it('should handle custom exposed headers', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://example.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com'],
+      exposedHeaders: ['X-Custom-Header'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers).toBeDefined();
+      if (parsedResponse.headers) {
+        expect(parsedResponse.headers['Access-Control-Expose-Headers']).toBe(
+          'X-Custom-Header'
+        );
+      }
+    }
+  });
+
+  it('should handle request without origin header', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: {},
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com'],
+    })(request);
+    expect(response).toBeDefined();
+  });
+
+  it('should handle request without origin header for other requests than GET', async () => {
+    const request = {
+      method: 'GET',
+      headers: {},
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com'],
+    })(request);
+    expect(response).toBeUndefined();
+  });
+
+  it('should handle case-sensitive headers', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: {
+        origin: 'https://example.com',
+        'Content-Type': 'application/json',
+      },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com'],
+      allowedHeaders: ['content-type'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers).toBeDefined();
+      if (parsedResponse.headers) {
+        expect(parsedResponse.headers['Access-Control-Allow-Headers']).toBe(
+          'content-type'
+        );
+      }
+    }
+  });
+  it('should handle complex preflight requests with multiple headers', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: {
+        origin: 'https://example.com',
+        'access-control-request-headers':
+          'content-type,authorization,x-requested-with',
+        'access-control-request-method': 'POST',
+      },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com'],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      allowsCookies: true,
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers).toMatchObject({
+        'Access-Control-Allow-Headers':
+          'Content-Type,Authorization,X-Requested-With',
+        'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE',
+        'Access-Control-Allow-Credentials': 'true',
+      });
+    }
+  });
+
+  it('should handle requests from subdomains', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://sub.example.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://*.example.com'],
+      methods: ['GET'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'https://sub.example.com'
+      );
+    }
+  });
+
+  it('should handle requests with varying protocols (http/https)', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'http://example.com' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://example.com', 'http://example.com'],
+      methods: ['GET'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'http://example.com'
+      );
+    }
+  });
+
+  it('should handle requests with port numbers', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://localhost:3000' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: ['https://localhost:3000'],
+      methods: ['GET'],
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'https://localhost:3000'
+      );
+    }
+  });
+
+  it('should handle development environment with multiple local origins', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'http://localhost:3000' },
+    } as unknown as JoorRequest;
+    const response = cors({
+      origins: [
+        'http://localhost:3000',
+        'http://localhost:8080',
+        'http://127.0.0.1:3000',
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['*'],
+      allowsCookies: true,
+    })(request);
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'http://localhost:3000'
+      );
+    }
+  });
 });
