@@ -8,6 +8,7 @@ type CORS_OPTIONS = {
   allowedHeaders?: Array<string> | '*'; // Allowed headers for CORS requests, for example, ['Content-Type', 'Authorization'] or '*' for all headers
   allowsCookies?: boolean; // Whether to allow cookies (credentials) in CORS requests
   maxAge?: number; // Maximum age for CORS preflight requests
+  exposedHeaders?: Array<string>; // Headers that should be exposed in CORS responses
 };
 
 // eslint-disable-next-line no-unused-vars

@@ -19,11 +19,13 @@ import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
  *   allowedHeaders: ["Content-Type"],
  *   allowsCookies: true,
  *   maxAge: 86400,
+ *   exposedHeaders: ["X-Custom-Header"]
  * };
  * app.use(cors(options));
  */
 export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
   return (request: JoorRequest) => {
+    console.log(options);
     const response = new JoorResponse();
     // Handle OPTIONS preflight request
     if (request.method === 'OPTIONS') {
@@ -32,23 +34,51 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
 
       // Set headers for preflight response
       if (options.origins) {
-        if (options.origins === '*') {
+        if (
+          options.origins === '*' ||
+          (Array.isArray(options.origins) &&
+            options.origins.length === 1 &&
+            options.origins[0] === '*')
+        ) {
           response.setHeaders({ 'Access-Control-Allow-Origin': '*' });
         } else if (options.origins.includes(request.headers.origin as string)) {
           response.setHeaders({
             'Access-Control-Allow-Origin': request.headers.origin as string,
           });
+        } else if (Array.isArray(options.origins)) {
+          const regex = new RegExp(
+            `^${options.origins.map((origin) => origin.replace(/\./g, '\\.').replace(/\*/g, '.*')).join('$|^')}$`
+          );
+          if (regex.test(request.headers.origin as string)) {
+            response.setHeaders({
+              'Access-Control-Allow-Origin': request.headers.origin as string,
+            });
+          }
         }
+      } else {
+        response.setHeaders({ 'Access-Control-Allow-Origin': '*' });
       }
 
       if (options.methods) {
-        response.setHeaders({
-          'Access-Control-Allow-Methods': Array.isArray(options.methods)
-            ? options.methods.join(',')
-            : options.methods,
-        });
+        if (options.methods === '*') {
+          response.setHeaders({ 'Access-Control-Allow-Methods': '*' });
+        } else {
+          response.setHeaders({
+            'Access-Control-Allow-Methods': Array.isArray(options.methods)
+              ? options.methods.join(',')
+              : options.methods,
+          });
+        }
       } else {
         response.setHeaders({ 'Access-Control-Allow-Methods': '*' });
+      }
+
+      if (options.exposedHeaders) {
+        response.setHeaders({
+          'Access-Control-Expose-Headers': Array.isArray(options.exposedHeaders)
+            ? options.exposedHeaders.join(',')
+            : options.exposedHeaders,
+        });
       }
 
       if (options.allowedHeaders) {
@@ -63,11 +93,17 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
 
       if (options.allowsCookies) {
         response.setHeaders({ 'Access-Control-Allow-Credentials': 'true' });
+      } else {
+        response.setHeaders({ 'Access-Control-Allow-Credentials': 'false' });
       }
 
       if (options.maxAge) {
         response.setHeaders({
           'Access-Control-Max-Age': options.maxAge.toString(),
+        });
+      } else {
+        response.setHeaders({
+          'Access-Control-Max-Age': '0',
         });
       }
 
