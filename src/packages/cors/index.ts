@@ -77,7 +77,7 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
     response.setStatus(status);
 
     // Configure "Access-Control-Allow-Origin" header
-    const origin = request.headers.origin;
+    const { origin } = request.headers;
     if (
       (!origin && opt.origins.includes('*')) ||
       (opt.origins.length === 1 && opt.origins[0] === '*')
@@ -99,7 +99,7 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
       if (Array.isArray(options.origins)) {
         const regex = new RegExp(
           `^${opt.origins
-            .map((origin) => origin.replace(/\./g, '\\.').replace(/\*/g, '.*'))
+            .map((org) => org.replace(/\./g, '\\.').replace(/\*/g, '.*'))
             .join('$|^')}$`
         );
         if (regex.test(request.headers.origin as string)) {

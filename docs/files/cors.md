@@ -9,25 +9,25 @@ import { cors } from 'joor';
 The “cors” function accepts an options object with:
 
 1. origins:  
-    • An array of allowed URLs (default: ["*"]).  
-    • Accepts patterns like https://*.example.com for all subdomains.
+   • An array of allowed URLs (default: ["*"]).  
+   • Accepts patterns like https://\*.example.com for all subdomains.
 
 2. methods:  
-    • An array of uppercase HTTP methods (e.g., ["GET", "POST"]).  
-    • Use ["*"] for all methods.
+   • An array of uppercase HTTP methods (e.g., ["GET", "POST"]).  
+   • Use ["*"] for all methods.
 
 3. allowedHeaders:  
-    • An array of acceptable headers (default: ["*"]).  
-    • Must be uppercase for headers.
+   • An array of acceptable headers (default: ["*"]).  
+   • Must be uppercase for headers.
 
 4. exposedHeaders:  
-    • A string or array listing headers exposed to clients.
+   • A string or array listing headers exposed to clients.
 
 5. allowsCookies:  
-    • A boolean indicating whether credentials are allowed (default: false).
+   • A boolean indicating whether credentials are allowed (default: false).
 
 6. maxAge:  
-    • A number (in seconds) that sets how long a preflight response is cached (default: 0).
+   • A number (in seconds) that sets how long a preflight response is cached (default: 0).
 
 If any required array is missing or invalid, Joor reverts to ["*"]. Currently, only global CORS is supported.
 
