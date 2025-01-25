@@ -2,6 +2,25 @@ import { JoorRequest } from '@/types/request';
 import cors from '.';
 
 describe('CORS', () => {
+  it("should handle request with default options if 'options' is not provided", async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://example.com' },
+    } as unknown as JoorRequest;
+    const response = cors()(request);
+    expect(response).toBeDefined();
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.status).toBe(204);
+      expect(parsedResponse.headers).toEqual({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Credentials': 'false',
+        'Access-Control-Max-Age': '0',
+      });
+    }
+  });
   it('should handle preflight requests with valid origin', async () => {
     const request = {
       method: 'OPTIONS',

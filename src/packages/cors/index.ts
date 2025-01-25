@@ -40,8 +40,8 @@ import Jrror from '@/core/error';
  * ```
  */
 
-export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
-  if (typeof options !== 'object') {
+export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
+  if (options && typeof options !== 'object') {
     throw new Jrror({
       code: 'cors-options-invalid',
       message: `CORS options must be an object, but ${typeof options} was provided.`,
@@ -51,12 +51,12 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
   }
 
   const opt = {
-    origins: options.origins ?? ['*'],
-    methods: options.methods ?? ['*'],
-    allowedHeaders: options.allowedHeaders ?? ['*'],
-    allowsCookies: options.allowsCookies ?? false,
-    maxAge: options.maxAge ?? 0,
-    exposedHeaders: options.exposedHeaders ?? undefined,
+    origins: options ? (options.origins ?? ['*']) : ['*'],
+    methods: options ? (options.methods ?? ['*']) : ['*'],
+    allowedHeaders: options ? (options.allowedHeaders ?? ['*']) : ['*'],
+    allowsCookies: options ? (options.allowsCookies ?? false) : false,
+    maxAge: options ? (options.maxAge ?? 0) : 0,
+    exposedHeaders: options ? (options.exposedHeaders ?? undefined) : undefined,
   };
 
   // Ensure configuration options are arrays
@@ -64,10 +64,10 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
   opt.allowedHeaders = Array.isArray(opt.allowedHeaders)
     ? opt.allowedHeaders
     : ['*'];
-  options.methods = Array.isArray(options.methods) ? options.methods : ['*'];
-  options.methods = options.methods.map((method) =>
+  opt.methods = Array.isArray(opt.methods) ? opt.methods : ['*'];
+  opt.methods = opt.methods.map((method) =>
     method.toUpperCase()
-  ) as CORS_OPTIONS['methods'];
+  ) as Array<string>;
 
   return (request: JoorRequest): JoorResponse | void => {
     const response = new JoorResponse();
@@ -96,7 +96,7 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
         'Access-Control-Allow-Origin': request.headers.origin ?? '*',
       };
     } else {
-      if (Array.isArray(options.origins)) {
+      if (Array.isArray(opt.origins)) {
         const regex = new RegExp(
           `^${opt.origins
             .map((org) => org.replace(/\./g, '\\.').replace(/\*/g, '.*'))
@@ -124,17 +124,17 @@ export default function cors(options: CORS_OPTIONS): CORS_RESPONSE {
     };
 
     // Set "Access-Control-Expose-Headers" if specified
-    if (options.exposedHeaders) {
+    if (opt.exposedHeaders) {
       response.setHeaders({
-        'Access-Control-Expose-Headers': Array.isArray(options.exposedHeaders)
-          ? options.exposedHeaders.join(',')
-          : options.exposedHeaders,
+        'Access-Control-Expose-Headers': Array.isArray(opt.exposedHeaders)
+          ? opt.exposedHeaders.join(',')
+          : opt.exposedHeaders,
       });
       request.joorHeaders = {
         ...request.joorHeaders,
-        'Access-Control-Expose-Headers': Array.isArray(options.exposedHeaders)
-          ? options.exposedHeaders.join(',')
-          : options.exposedHeaders,
+        'Access-Control-Expose-Headers': Array.isArray(opt.exposedHeaders)
+          ? opt.exposedHeaders.join(',')
+          : opt.exposedHeaders,
       };
     }
 
