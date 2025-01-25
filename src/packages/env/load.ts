@@ -41,7 +41,7 @@ const loadEnv = (path: string, override: boolean = false) => {
   } catch (error: unknown) {
     throw new Jrror({
       code: 'env-load-failed',
-      message: `Could not load env file: ${error}`,
+      message: `Could not load env file: ${(error as Error).message}`,
       type: 'error',
     });
   }
