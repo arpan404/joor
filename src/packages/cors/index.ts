@@ -65,9 +65,7 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
     ? opt.allowedHeaders
     : ['*'];
   opt.methods = Array.isArray(opt.methods) ? opt.methods : ['*'];
-  opt.methods = opt.methods.map((method) =>
-    method.toUpperCase()
-  ) as Array<string>;
+  opt.methods = opt.methods.map((method) => method.toUpperCase());
 
   return (request: JoorRequest): JoorResponse | void => {
     const response = new JoorResponse();

@@ -10,7 +10,6 @@ To use the CORS functionality in your Joor application, you need to import the `
 import { cors } from 'joor';
 ```
 
-
 The `cors` function takes an options object with these properties:
 
 | Property           | Type                   | Default     | Description                                                                    |
@@ -27,6 +26,7 @@ If any required array is missing or invalid, Joor defaults to `["*"]`. Currently
 ### Pattern Matching in Origins
 
 The `origins` property supports pattern matching to allow multiple subdomains or specific URL patterns. For example:
+
 - `https://*.example.com` allows any subdomain of `example.com`.
 - `http://localhost:*` allows any port on `localhost`.
 
@@ -40,10 +40,10 @@ import { CORS_OPTIONS } from 'joor/types';
 
 const app = new Joor();
 const corsOptions: CORS_OPTIONS = {
-    origins: ['http://localhost:3000'],
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-    allowsCookies: true,
+  origins: ['http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+  allowsCookies: true,
 };
 
 app.use(cors(corsOptions));
@@ -69,12 +69,12 @@ import { CORS_OPTIONS } from 'joor/types';
 
 const app = new Joor();
 const corsOptions: CORS_OPTIONS = {
-    origins: ['https://*.example.com'],
-    methods: ['GET', 'POST', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['X-Custom-Header'],
-    allowsCookies: false,
-    maxAge: 3600,
+  origins: ['https://*.example.com'],
+  methods: ['GET', 'POST', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['X-Custom-Header'],
+  allowsCookies: false,
+  maxAge: 3600,
 };
 
 app.use(cors(corsOptions));
