@@ -65,6 +65,7 @@ class Jrror extends JoorError {
       errorCode: errorData.code,
       message: errorData.message,
       type: errorData.type,
+      docsPath: errorData.docsPath ?? '/',
     });
   }
 
@@ -121,7 +122,7 @@ class Jrror extends JoorError {
    * @returns {string} The formatted error message.
    */
   private formatMessage(): string {
-    const docLink = `${joorData.docs}/${joorData.docsVersion}/errors?errorCode=${this.errorCode}`;
+    const docLink = `${joorData.docs}/${joorData.docsVersion}/${this.docsPath}"?error="+${this.errorCode}`;
     return `
           Error Code: ${this.errorCode}
           Message: ${this.message}

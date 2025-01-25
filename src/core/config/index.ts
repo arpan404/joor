@@ -27,6 +27,7 @@ class Configuration {
     if (Configuration.configData !== null) {
       throw new Jrror({
         code: 'config-loaded-already',
+        docsPath: '/configuration',
         message:
           'The configuration data is already loaded. Attempting to load it again is not recommended',
         type: 'warn',
@@ -51,6 +52,7 @@ class Configuration {
         code: 'config-load-failed',
         message: `Error occured while loading the configuration file. ${error}`,
         type: 'panic',
+        docsPath: '/configuration',
       });
     }
   }

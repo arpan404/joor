@@ -49,6 +49,7 @@ class Joor {
           code: 'config-load-failed',
           message: `Error occured while loading the configuration file.`,
           type: 'panic',
+          docsPath: '/configuration',
         });
       }
     } catch (error: unknown) {
@@ -78,6 +79,7 @@ class Joor {
         code: 'middleware-not-function',
         message: 'Could not register a middleware; non function value provided',
         type: 'panic',
+        docsPath: '/middlewares',
       });
     }
     this.globalMiddlewares.push(handler);

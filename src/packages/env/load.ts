@@ -43,6 +43,7 @@ const loadEnv = (path: string, override: boolean = false) => {
       code: 'env-load-failed',
       message: `Could not load env file: ${(error as Error).message}`,
       type: 'error',
+      docsPath: '/env',
     });
   }
 };
