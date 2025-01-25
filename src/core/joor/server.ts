@@ -28,6 +28,7 @@ class Server {
         code: 'config-not-loaded',
         message: 'Configuration not loaded properly',
         type: 'error',
+        docsPath: '/configuration',
       });
     }
 
@@ -54,6 +55,7 @@ class Server {
           code: 'ssl-error',
           message: `Failed to read SSL files.\n${error}`,
           type: 'error',
+          docsPath: '/joor-server',
         });
       }
     } else {
@@ -67,13 +69,31 @@ class Server {
     }
 
     // Start listening on the configured port
-    server.listen(configData.server.port, () => {
-      console.info(
-        `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
-          configData.server.host ? configData.server.host : 'localhost'
-        }:${configData.server.port}`
-      );
-    });
+    try {
+      server.listen(configData.server.port, () => {
+        console.info(
+          `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
+            configData.server.host ? configData.server.host : 'localhost'
+          }:${configData.server.port}`
+        );
+      });
+    } catch (error: unknown) {
+      if ((error as Error).message.includes('EADDRINUSE')) {
+        throw new Jrror({
+          code: 'server-port-in-use',
+          message: `Port ${configData.server.port} is already in use.`,
+          type: 'error',
+          docsPath: '/joor-server',
+        });
+      } else {
+        throw new Jrror({
+          code: 'server-listen-failed',
+          message: `Failed to start the server. ${error}`,
+          type: 'error',
+          docsPath: '/joor-server',
+        });
+      }
+    }
   }
 
   /**

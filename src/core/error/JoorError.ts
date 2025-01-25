@@ -18,6 +18,12 @@ class JoorError extends Error {
   public type: JOOR_ERROR['type'];
 
   /**
+   * The path to the documentation for the error
+   * @type string
+   */
+  public docsPath: JOOR_ERROR['docsPath'];
+
+  /**
    * The stack trace of the error, captured at the point of instantiation.
    * @type {string | undefined}
    */
@@ -36,15 +42,18 @@ class JoorError extends Error {
     message,
     errorCode,
     type,
+    docsPath,
   }: {
     message: JOOR_ERROR['message'];
     errorCode: JOOR_ERROR['code'];
     type: JOOR_ERROR['type'];
+    docsPath?: JOOR_ERROR['docsPath'];
   }) {
     super(message);
     this.name = this.constructor.name;
     this.errorCode = errorCode;
     this.type = type;
+    this.docsPath = docsPath;
 
     // Capture stack trace if the environment supports it
     if (Error.captureStackTrace) {
