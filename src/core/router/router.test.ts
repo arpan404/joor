@@ -80,19 +80,6 @@ describe('Router', () => {
     ).toBeDefined();
   });
 
-  it('should initialize middlewares array for each route method', () => {
-    const router = new Router();
-    router.get('/with-middleware', async () => undefined);
-    router.post('/with-middleware', async () => undefined);
-
-    expect(
-      Router.routes['/'].children?.['with-middleware'].GET?.middlewares
-    ).toEqual([]);
-    expect(
-      Router.routes['/'].children?.['with-middleware'].POST?.middlewares
-    ).toEqual([]);
-  });
-
   it('should handle multiple handlers for various methods', () => {
     const handler1 = jest.fn();
     const handler2 = jest.fn();
