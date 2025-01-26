@@ -3,6 +3,24 @@ import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
 import Router from './index';
 import Jrror from '@/core/error';
 
+/**
+ * Matches a given route path and method to the registered routes and returns the corresponding handlers.
+ *
+ * @param {ROUTE_PATH} path - The path of the route to match.
+ * @param {ROUTE_METHOD} method - The HTTP method of the route to match.
+ * @param {JoorRequest} request - The request object which may be modified to include query parameters and route parameters.
+ * @returns {{ handlers: ROUTE_HANDLER[] } | null} An object containing the matched route handlers or null if no match is found.
+ *
+ * @throws {Jrror} Throws an error if the path is empty or not a string.
+ *
+ * @example
+ * const handlers = matchRoute('/api/users', 'GET', request);
+ * if (handlers) {
+ *   // Process the handlers
+ * } else {
+ *   // Handle route not found
+ * }
+ */
 const matchRoute = (
   path: ROUTE_PATH,
   method: ROUTE_METHOD,
@@ -12,6 +30,8 @@ const matchRoute = (
 } | null => {
   let handlers = [] as ROUTE_HANDLER[];
   const registeredRoutes: ROUTES = Router.routes;
+
+  // Validate the path
   if (!path) {
     throw new Jrror({
       code: 'path-empty',
@@ -27,12 +47,16 @@ const matchRoute = (
     });
   }
 
+  // Return null if no registered routes
   if (!registeredRoutes) {
     return null;
   }
+
+  // Split the path into parts
   let routeParts = path.split('/');
   const lastElement = routeParts[routeParts.length - 1];
 
+  // Handle query parameters
   if (lastElement.includes('?')) {
     const splitted = lastElement.split('?');
     const [pathPart] = splitted;
@@ -44,12 +68,17 @@ const matchRoute = (
       request.query[key] = value;
     });
   }
+
+  // Handle hash fragments
   if (lastElement.includes('#')) {
     const [pathPart] = lastElement.split('#');
     routeParts[routeParts.length - 1] = pathPart;
   }
+
+  // Remove empty parts
   routeParts = routeParts.filter((part) => part !== '');
 
+  // Handle root path
   if (routeParts.length === 0) {
     if (registeredRoutes['/'] && registeredRoutes['/'][method]) {
       handlers = [
@@ -61,14 +90,20 @@ const matchRoute = (
       return null;
     }
   }
+
+  // Traverse the route tree
   let currentNode = registeredRoutes['/'];
   for (const routePart of routeParts) {
     const currentNodeChildrenPaths = Object.keys(currentNode.children ?? {});
+    
+    // Check for static route match
     if (currentNodeChildrenPaths.includes(routePart)) {
       handlers = [...handlers, ...(currentNode.middlewares ?? [])];
       currentNode = currentNode.children![routePart];
       continue;
     }
+
+    // Check for dynamic route match
     const dynamicNode = currentNodeChildrenPaths.find((childPath) =>
       childPath.startsWith(':')
     );
@@ -82,6 +117,8 @@ const matchRoute = (
       return null;
     }
   }
+
+  // Add middlewares and handlers for the matched route
   handlers = [...handlers, ...(currentNode.middlewares ?? [])];
   if (currentNode[method]) {
     handlers.push(...currentNode[method].handlers);
