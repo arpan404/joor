@@ -1,5 +1,5 @@
 import JoorResponse from '@/core/response';
-import { ROUTE_METHOD } from '@/types/route';
+import { ROUTE_METHOD } from '@/types/tt';
 import { JoorRequest } from '@/types/request';
 
 interface CORS_OPTIONS {

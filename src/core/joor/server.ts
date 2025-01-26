@@ -4,9 +4,8 @@ import fs from 'node:fs';
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
 import { JoorRequest } from '@/types/request';
-import { GLOBAL_MIDDLEWARES } from '@/types/joor';
-import handleRoute from '@/core/internals/router/handleRoute';
 import prepareResponse from '@/core/internals/response/prepareResponse';
+import handleRoute from '@/core/router/handle';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
@@ -17,7 +16,7 @@ class Server {
    * @param {GLOBAL_MIDDLEWARES} globalMiddlewares - The global middlewares to be applied to requests.
    * @returns {Promise<void>} A promise that resolves when the server starts listening.
    */
-  public async listen(globalMiddlewares: GLOBAL_MIDDLEWARES): Promise<void> {
+  public async listen(): Promise<void> {
     const config = new Configuration();
     const configData = await config.getConfig();
     let server: http.Server | https.Server;
@@ -46,7 +45,7 @@ class Server {
           credentials,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           async (req: JoorRequest, res: http.ServerResponse) => {
-            await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
+            await this.process(req, res); // this.process never throws error so no need to use try catch
           }
         );
       } catch (error: unknown) {
@@ -63,7 +62,7 @@ class Server {
       server = http.createServer(
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (req: JoorRequest, res: http.ServerResponse) => {
-          await this.process(req, res, globalMiddlewares); // this.process never throws error so no need to use try catch
+          await this.process(req, res); // this.process never throws error so no need to use try catch
         }
       );
     }
@@ -105,8 +104,7 @@ class Server {
    */
   private async process(
     req: JoorRequest,
-    res: http.ServerResponse,
-    globalMiddlewares: GLOBAL_MIDDLEWARES
+    res: http.ServerResponse
   ): Promise<void> {
     try {
       // Parse the URL and extract the path
@@ -114,11 +112,7 @@ class Server {
       const pathURL = parsedUrl.pathname;
 
       // Handle the route based on the path and middlewares
-      const internalResponse = await handleRoute(
-        req,
-        globalMiddlewares,
-        pathURL
-      );
+      const internalResponse = await handleRoute(req, pathURL);
 
       // Prepare the response by setting the status, headers, and cookies
       const parsedResponse = prepareResponse(internalResponse);

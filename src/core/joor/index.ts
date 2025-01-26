@@ -5,7 +5,7 @@ import Server from '@/core/joor/server';
 import Configuration from '@/core/config';
 import loadEnv from '@/core/internals/loadEnv';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
-import { ROUTE_HANDLER } from '@/types/route';
+import { ROUTE_HANDLER } from '@/types/tt';
 
 /**
  * Represents the Joor framework server.
@@ -43,7 +43,7 @@ class Joor {
       loadEnv();
       if (this.configData) {
         const server = new Server();
-        await server.listen(this.globalMiddlewares);
+        await server.listen();
       } else {
         throw new Jrror({
           code: 'config-load-failed',
