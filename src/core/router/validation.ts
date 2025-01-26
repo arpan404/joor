@@ -1,6 +1,5 @@
 import Jrror from '@/core/error';
-import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/tt';
-
+import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 function validateRoute(route: ROUTE_PATH) {
   if (typeof route !== 'string') {
     throw new Jrror({

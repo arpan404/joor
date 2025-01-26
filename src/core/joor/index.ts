@@ -5,7 +5,7 @@ import Server from '@/core/joor/server';
 import Configuration from '@/core/config';
 import loadEnv from '@/core/internals/loadEnv';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
-import { ROUTE_HANDLER } from '@/types/route';
+import { ROUTE_HANDLER } from '@/types/tt';
 
 /**
  * Represents the Joor framework server.

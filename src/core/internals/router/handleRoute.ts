@@ -1,7 +1,7 @@
 import JoorResponse from '@/core/response';
 import { JoorRequest } from '@/types/request';
 import { INTERNAL_RESPONSE } from '@/types/response';
-import { ROUTE_METHOD } from '@/types/route';
+import { ROUTE_METHOD } from '@/types/tt';
 import matchRoute from '@/core/internals/router/matchRoute';
 import Router from '@/core/router';
 import Jrror from '@/core/error';

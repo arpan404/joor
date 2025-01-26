@@ -2,6 +2,8 @@ import loadEnv from '@/packages/env/load';
 import * as nodePath from 'node:path';
 import fs from 'node:fs';
 import Jrror from '@/core/error';
+
+import JoorError from '@/core/error/JoorError';
 // A class that wraps the loadEnv function for better readability and usage
 class dotenv {
   // Static method to configure environment variables
@@ -20,7 +22,7 @@ class dotenv {
     try {
       loadEnv(absolutePath, override);
     } catch (error: unknown) {
-      if (error instanceof Jrror) {
+      if (error instanceof Jrror || error instanceof JoorError) {
         error.reject();
       }
     }

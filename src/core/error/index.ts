@@ -1,7 +1,5 @@
-import joorData from '@/data/joor';
 import JoorError from '@/core/error/JoorError';
 import { JOOR_ERROR } from '@/types/error';
-import marker from '@/packages/marker';
 
 /**
  * Class to work with errors
@@ -67,69 +65,6 @@ class Jrror extends JoorError {
       type: errorData.type,
       docsPath: errorData.docsPath ?? '/',
     });
-  }
-
-  /**
-   * Method to handle the error by logging it to the console
-   * If the type of error thrown is `panic`, using `handle` method will cause the program to stop
-   *  @example
-   * ```typescript
-   * try{
-   * ...
-   * }
-   * catch(error:unknown){
-   *    if (error instanceof Jrror){
-   *        error.handle()
-   *    }
-   * }
-   *
-   */
-  public handle(): void {
-    const errorMessage = this.formatMessage();
-
-    if (this.type === 'warn') {
-      console.warn(marker.yellowBright(errorMessage));
-    } else if (this.type === 'error') {
-      console.error(marker.redBright(errorMessage));
-      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
-    } else if (this.type === 'panic') {
-      console.error(marker.redBright(errorMessage));
-      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
-      process.exit(1);
-    }
-  }
-
-  /**
-   * Method to reject the error by not logging it console
-   * @example
-   * ```typescript
-   * try{
-   * ...
-   * }
-   * catch(error:unknown){
-   *    if (error instanceof Jrror){
-   *        error.reject()
-   *    }
-   * }
-   *
-   */
-  public reject(): void {
-    return;
-  }
-  /**
-   * Formats the error message for user-friendly display, including the error code, message, and a link to documentation.
-   *
-   * @returns {string} The formatted error message.
-   */
-  private formatMessage(): string {
-    const docLink = `${joorData.docs}/${joorData.docsVersion}/${this.docsPath}"?error="+${this.errorCode}`;
-    return `
-          Error Code: ${this.errorCode}
-          Message: ${this.message}
-          ${marker.greenBright(
-            'For more information, visit:'
-          )} ${marker.bgGreenBright.whiteBright(docLink)}
-          `;
   }
 }
 
