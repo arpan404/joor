@@ -34,7 +34,10 @@ class Router {
     handlers: ROUTE_HANDLER[]
   ) {
     try {
+      // validate if route is valid or not
       validateRoute(route);
+      
+      // validate each handler
       handlers.forEach(validateHandler);
       if (!Object.keys(Router.routes).includes('/')) {
         Router.routes['/'] = {};

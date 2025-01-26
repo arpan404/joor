@@ -6,6 +6,38 @@ describe('Router', () => {
     jest.clearAllMocks();
   });
 
+  it("shoud throw error if route doesn't start with /", () => {
+    const router = new Router();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    router.get('invalid-route', async () => undefined);
+
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  it('show throw error if route is not a string', () => {
+    const router = new Router();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    router.get(123 as any, async () => undefined);
+
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  it('should throw error if handler is not a function', () => {
+    const router = new Router();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    router.get('/invalid-handler', undefined as any);
+
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
+  it('should check multiple handlers for each route', () => {
+    const router = new Router();
+    const handler1 = jest.fn();
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    router.get('/multiple-handlers', handler1, 'handler2' as any);
+    expect(errorSpy).toHaveBeenCalled();
+  });
+
   it('should support route addition for various methods', () => {
     const router = new Router();
     router.get('/fetch', async () => undefined);
@@ -139,7 +171,9 @@ describe('Router', () => {
     const router = new Router();
     router.get('/middleware', middleware1, middleware2, async () => undefined);
 
-    expect(Router.routes['/'].children?.middleware.GET?.handlers).toHaveLength(3);
+    expect(Router.routes['/'].children?.middleware.GET?.handlers).toHaveLength(
+      3
+    );
   });
 
   it('should handle routes with query parameters', () => {
