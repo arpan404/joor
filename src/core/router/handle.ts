@@ -1,11 +1,11 @@
-import { JoorRequest } from '@/types/request';
-import matchRoute from '@/core/router/match';
-import { ROUTE_METHOD } from '@/types/route';
-import { INTERNAL_RESPONSE } from '@/types/response';
-import JoorResponse from '@/core/response';
-import isAsync from '@/helpers/isAsync';
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
+import JoorResponse from '@/core/response';
+import matchRoute from '@/core/router/match';
+import isAsync from '@/helpers/isAsync';
+import { JoorRequest } from '@/types/request';
+import { INTERNAL_RESPONSE } from '@/types/response';
+import { ROUTE_METHOD } from '@/types/route';
 
 /**
  * Handles routing for incoming requests by matching the request path and method
@@ -28,6 +28,7 @@ const handleRoute = async (
 ): Promise<INTERNAL_RESPONSE> => {
   try {
     let method = request.method as ROUTE_METHOD;
+
     if (!method) {
       method = 'GET';
     } else {
@@ -45,6 +46,7 @@ const handleRoute = async (
     }
 
     let response;
+
     for (const handler of routeDetail.handlers) {
       if (isAsync(handler)) {
         response = await handler(request);
@@ -78,6 +80,7 @@ const handleRoute = async (
     if (error instanceof Jrror || error instanceof JoorError) {
       error.handle();
     }
+
     const response = new JoorResponse();
     response.setStatus(500).setMessage('Internal Server Error');
     return response.parseResponse();

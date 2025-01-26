@@ -138,9 +138,12 @@ const assembleStyles = (): AnsiStyles => {
     rgbToAnsi256: (red: number, green: number, blue: number): number => {
       if (red === green && green === blue) {
         if (red < 8) return 16;
+
         if (red > 248) return 231;
+
         return Math.round(((red - 8) / 247) * 24) + 232;
       }
+
       return (
         16 +
         36 * Math.round((red / 255) * 5) +
@@ -155,12 +158,17 @@ const assembleStyles = (): AnsiStyles => {
      */
     hexToRgb: (hex: number | string): [number, number, number] => {
       const matches = /[a-f\d]{6}|[a-f\d]{3}/i.exec(hex.toString(16));
+
       if (!matches) return [0, 0, 0];
+
       let [colorString] = matches;
+
       if (colorString.length === 3) {
         colorString = [...colorString].map((char) => char + char).join('');
       }
+
       const integer = parseInt(colorString, 16);
+
       return [(integer >> 16) & 0xff, (integer >> 8) & 0xff, integer & 0xff];
     },
     /**
@@ -178,7 +186,9 @@ const assembleStyles = (): AnsiStyles => {
      */
     ansi256ToAnsi: (code: number): number => {
       if (code < 8) return 30 + code;
+
       if (code < 16) return 90 + (code - 8);
+
       return code >= 232 ? 30 : 90;
     },
     /**
@@ -206,6 +216,7 @@ const assembleStyles = (): AnsiStyles => {
 
 // Export the assembled styles
 const ansiStyles = assembleStyles();
+
 export default ansiStyles;
 
 /**

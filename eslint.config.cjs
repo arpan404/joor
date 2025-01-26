@@ -1,10 +1,11 @@
-const globals = require('globals');
-const prettier = require('eslint-config-prettier');
-const typescript = require('@typescript-eslint/eslint-plugin');
-const typescriptParser = require('@typescript-eslint/parser');
-const jest = require('eslint-plugin-jest');
 const path = require('path');
 
+const typescript = require('@typescript-eslint/eslint-plugin');
+const typescriptParser = require('@typescript-eslint/parser');
+const prettier = require('eslint-config-prettier');
+const importPlugin = require('eslint-plugin-import');
+const jest = require('eslint-plugin-jest');
+const globals = require('globals');
 module.exports = [
   {
     // Ignore patterns
@@ -19,7 +20,6 @@ module.exports = [
       '**/*.d.ts',
     ],
   },
-  // Base configuration
   {
     languageOptions: {
       ecmaVersion: 'latest',
@@ -30,8 +30,10 @@ module.exports = [
         ...globals.jest,
       },
     },
+    plugins: {
+      import: importPlugin,
+    },
     rules: {
-      // Common rules
       'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
       'no-unused-vars': [
         'error',
@@ -43,15 +45,11 @@ module.exports = [
           ignoreRestSiblings: true,
         },
       ],
-
-      // Error prevention
       'no-return-await': 'error',
       'no-promise-executor-return': 'error',
       'no-template-curly-in-string': 'error',
       'no-unmodified-loop-condition': 'error',
       'no-unreachable': 'error',
-
-      // Best practices
       'array-callback-return': 'error',
       'consistent-return': 'error',
       curly: ['error', 'multi-line'],
@@ -60,8 +58,6 @@ module.exports = [
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-param-reassign': ['error', { props: false }],
-
-      // Modern JavaScript
       'prefer-const': 'error',
       'prefer-template': 'error',
       'prefer-destructuring': [
@@ -74,20 +70,42 @@ module.exports = [
       ],
       'prefer-rest-params': 'error',
       'prefer-spread': 'error',
-
-      // Error handling
       'no-throw-literal': 'error',
       'prefer-promise-reject-errors': 'error',
-
-      // ES6+ features
       'arrow-body-style': ['error', 'as-needed'],
       'no-var': 'error',
       'object-shorthand': ['error', 'always', { avoidQuotes: true }],
       'prefer-arrow-callback': 'error',
+      'import/order': [
+        'error',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+          ],
+          'newlines-between': 'always',
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
+
+      // Add padding before/after blocks, functions, variables, and comments
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: 'block-like', next: '*' },
+        { blankLine: 'always', prev: '*', next: 'block-like' },
+        { blankLine: 'always', prev: '*', next: ['return', 'throw'] },
+        { blankLine: 'never', prev: '*', next: 'expression' }, // No blank lines before expressions
+        { blankLine: 'never', prev: 'expression', next: '*' }, // No blank lines after expressions
+      ],
     },
   },
-
-  // TypeScript-specific configuration
   {
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -106,7 +124,6 @@ module.exports = [
       '@typescript-eslint': typescript,
     },
     rules: {
-      // TypeScript-specific rules
       '@typescript-eslint/no-explicit-any': [
         'warn',
         {
@@ -143,8 +160,6 @@ module.exports = [
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
     },
   },
-
-  // Test-specific configuration
   {
     files: [
       '**/*.test.ts',

@@ -15,10 +15,8 @@ export default function prepareResponse(
     data: null,
     cookies: [],
   };
-
   // Set the response status
   preparedResponse.status = response.status;
-
   // Format the data based on the type of response
   if (response.data && response.message && response.dataType !== 'normal') {
     preparedResponse.data = JSON.stringify({
@@ -32,10 +30,8 @@ export default function prepareResponse(
   ) {
     preparedResponse.data = response.data;
   }
-
   // Copy the headers from the response
   preparedResponse.headers = { ...response.headers };
-
   // Process and format cookies if they exist
   if (response.cookies) {
     for (const key in response.cookies) {
@@ -56,6 +52,7 @@ export default function prepareResponse(
               const value = cookie.options
                 ? cookie.options[option as keyof typeof cookie.options]
                 : '';
+
               return `${option}=${value}`;
             })
             .join('; ');
@@ -64,7 +61,6 @@ export default function prepareResponse(
             cookieStr += `; ${options}`;
           }
         }
-
         // Push the formatted cookie string into the cookies array
         preparedResponse.cookies.push(cookieStr);
       }

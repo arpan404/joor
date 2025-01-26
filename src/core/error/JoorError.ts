@@ -56,13 +56,11 @@ class JoorError extends Error {
     this.errorCode = errorCode;
     this.type = type;
     this.docsPath = docsPath;
-
     // Capture stack trace if the environment supports it
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, JoorError);
     }
     this.stackTrace = this.stack;
-
     // Set the prototype chain correctly for proper inheritance
     Object.setPrototypeOf(this, JoorError.prototype);
   }
@@ -120,6 +118,7 @@ class JoorError extends Error {
    */
   private formatMessage(): string {
     const docLink = `${joorData.docs}/${joorData.docsVersion}${this.docsPath}?error=${this.errorCode}`;
+
     return `
             Error Code: ${this.errorCode}
             Message: ${this.message}

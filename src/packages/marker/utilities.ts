@@ -16,12 +16,15 @@ export function stringReplaceAll(
   }
 
   let index = string.indexOf(substring);
+
   if (index === -1) {
     return string;
   }
 
   const substringLength = substring.length;
+
   let endIndex = 0;
+
   let returnValue = '';
 
   // Iterate through all occurrences of substring
@@ -34,7 +37,6 @@ export function stringReplaceAll(
     endIndex = index + substringLength;
     index = string.indexOf(substring, endIndex);
   } while (index !== -1);
-
   // Add the remaining part of the string
   returnValue += string.slice(endIndex);
   return returnValue;
@@ -61,13 +63,13 @@ export function stringEncaseCRLFWithFirstIndex(
   }
 
   let endIndex = 0;
+
   let returnValue = '';
 
   // Process each line break
   do {
     // Check for CR (Carriage Return) before LF (Line Feed)
     const gotCR = string[index - 1] === '\r';
-
     // Build the new string:
     // 1. Add content up to the line break
     // 2. Add prefix
@@ -78,14 +80,11 @@ export function stringEncaseCRLFWithFirstIndex(
       prefix +
       (gotCR ? '\r\n' : '\n') +
       postfix;
-
     // Move to next position after line break
     endIndex = index + 1;
-
     // eslint-disable-next-line no-param-reassign
     index = string.indexOf('\n', endIndex);
   } while (index !== -1);
-
   // Add remaining content
   returnValue += string.slice(endIndex);
   return returnValue;

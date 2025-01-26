@@ -1,7 +1,8 @@
-import process from 'node:process';
 import os from 'node:os';
+import process from 'node:process';
 import tty from 'node:tty';
 import type { WriteStream } from 'node:tty';
+
 import { ColorInfo, ColorSupportLevel, Options } from '@/types/marker';
 
 /**
@@ -17,8 +18,11 @@ const hasFlag = (
     : process.argv
 ): boolean => {
   const prefix = flag.startsWith('-') ? '' : flag.length === 1 ? '-' : '--';
+
   const position = argv.indexOf(prefix + flag);
+
   const terminatorPosition = argv.indexOf('--');
+
   return (
     position !== -1 &&
     (terminatorPosition === -1 || position < terminatorPosition)
@@ -80,6 +84,7 @@ function translateLevel(level: ColorSupportLevel): ColorInfo {
   if (level === 0) {
     return false;
   }
+
   return {
     level,
     hasBasic: true,
@@ -104,6 +109,7 @@ function _supportsColor(
   }: { streamIsTTY?: boolean; sniffFlags?: boolean } = {}
 ): number {
   const noFlagForceColor = envForceColor();
+
   if (noFlagForceColor !== undefined) {
     flagForceColor = noFlagForceColor;
   }
@@ -146,6 +152,7 @@ function _supportsColor(
 
   if (process.platform === 'win32') {
     const osRelease = os.release().split('.');
+
     if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10_586) {
       return Number(osRelease[2]) >= 14_931 ? 3 : 2; // 16 million or 256 colors on Windows
     }

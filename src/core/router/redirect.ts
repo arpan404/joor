@@ -32,6 +32,7 @@ export default async function redirect(
   permanent: boolean = true
 ): Promise<JoorResponse> {
   const response = new JoorResponse();
+
   const statusCode = permanent ? 301 : 302;
   response.setStatus(statusCode).setHeaders({ Location: path });
   return response;

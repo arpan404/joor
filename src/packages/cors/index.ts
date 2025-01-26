@@ -1,7 +1,7 @@
-import { JoorRequest } from '@/types/request';
+import Jrror from '@/core/error';
 import JoorResponse from '@/core/response';
 import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
-import Jrror from '@/core/error';
+import { JoorRequest } from '@/types/request';
 
 /**
  * Middleware for handling Cross-Origin Resource Sharing (CORS) in Joor applications.
@@ -58,7 +58,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
     maxAge: options ? (options.maxAge ?? 0) : 0,
     exposedHeaders: options ? (options.exposedHeaders ?? undefined) : undefined,
   };
-
   // Ensure configuration options are arrays
   opt.origins = Array.isArray(opt.origins) ? opt.origins : ['*'];
   opt.allowedHeaders = Array.isArray(opt.allowedHeaders)
@@ -66,16 +65,15 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
     : ['*'];
   opt.methods = Array.isArray(opt.methods) ? opt.methods : ['*'];
   opt.methods = opt.methods.map((method) => method.toUpperCase());
-
   return (request: JoorRequest): JoorResponse | void => {
     const response = new JoorResponse();
 
     // Set status code for preflight response
     const status = 204; // No Content
     response.setStatus(status);
-
     // Configure "Access-Control-Allow-Origin" header
     const { origin } = request.headers;
+
     if (
       (!origin && opt.origins.includes('*')) ||
       (opt.origins.length === 1 && opt.origins[0] === '*')
@@ -100,6 +98,7 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
             .map((org) => org.replace(/\./g, '\\.').replace(/\*/g, '.*'))
             .join('$|^')}$`
         );
+
         if (regex.test(request.headers.origin as string)) {
           response.setHeaders({
             'Access-Control-Allow-Origin': request.headers.origin as string,
@@ -111,7 +110,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
         }
       }
     }
-
     // Set "Access-Control-Allow-Methods" header
     response.setHeaders({
       'Access-Control-Allow-Methods': opt.methods.join(','),
@@ -120,7 +118,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
       ...request.joorHeaders,
       'Access-Control-Allow-Methods': opt.methods.join(','),
     };
-
     // Set "Access-Control-Expose-Headers" if specified
     if (opt.exposedHeaders) {
       response.setHeaders({
@@ -135,7 +132,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
           : opt.exposedHeaders,
       };
     }
-
     // Set "Access-Control-Allow-Headers" header
     response.setHeaders({
       'Access-Control-Allow-Headers': opt.allowedHeaders.join(','),
@@ -144,7 +140,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
       ...request.joorHeaders,
       'Access-Control-Allow-Headers': opt.allowedHeaders.join(','),
     };
-
     // Set "Access-Control-Allow-Credentials" header
     response.setHeaders({
       'Access-Control-Allow-Credentials': `${opt.allowsCookies}`,
@@ -153,7 +148,6 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
       ...request.joorHeaders,
       'Access-Control-Allow-Credentials': `${opt.allowsCookies}`,
     };
-
     // Set "Access-Control-Max-Age" header
     response.setHeaders({
       'Access-Control-Max-Age': opt.maxAge.toString(),
@@ -162,9 +156,9 @@ export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
       ...request.joorHeaders,
       'Access-Control-Max-Age': opt.maxAge.toString(),
     };
-
     // Return preflight response for OPTIONS requests
     if (request.method === 'OPTIONS') return response;
+
     return undefined;
   };
 }

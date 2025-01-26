@@ -8,8 +8,11 @@ interface RESPONSE_ERROR {
 
 // Type aliases for various response components
 type RESPONSE_STATUS = number;
+
 type RESPONSE_MESSAGE = string;
+
 type RESPONSE_DATA = unknown;
+
 type RESPONSE_DATA_TYPE = 'json' | 'normal' | 'error';
 
 // Interface for response cookies
@@ -62,4 +65,10 @@ interface PREPARED_RESPONSE {
   cookies: Array<string>;
 }
 
-export { RESPONSE, INTERNAL_RESPONSE, RESPONSE_DATA_TYPE, PREPARED_RESPONSE };
+export {
+  RESPONSE,
+  INTERNAL_RESPONSE,
+  RESPONSE_DATA_TYPE,
+  PREPARED_RESPONSE,
+  RESPONSE_COOKIES,
+};

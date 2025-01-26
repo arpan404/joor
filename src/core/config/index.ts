@@ -1,8 +1,9 @@
-import JOOR_CONFIG from '@/types/config';
-import Jrror from '@/core/error';
 import fs from 'node:fs';
 import path from 'node:path';
+
+import Jrror from '@/core/error';
 import marker from '@/packages/marker';
+import JOOR_CONFIG from '@/types/config';
 
 /**
  * A class responsible for loading and managing the configuration data.
@@ -37,9 +38,11 @@ class Configuration {
     try {
       // Default config file name is joor.config.js or else fallback to joor.config.ts
       let configFile = 'joor.config.js';
+
       if (!fs.existsSync(path.join(process.cwd() + configFile))) {
         configFile = 'joor.config.ts';
       }
+
       const configPath = path.resolve(process.cwd(), configFile);
       // Dynamically import the configuration file
       Configuration.configData = (await import(configPath))
@@ -68,6 +71,7 @@ class Configuration {
     if (Configuration.configData === null) {
       await this.loadConfig();
     }
+
     return Configuration.configData as JOOR_CONFIG;
   }
 }

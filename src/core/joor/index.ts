@@ -1,9 +1,10 @@
 import chalk from 'chalk';
-import JOOR_CONFIG from '@/types/config';
-import Jrror from '@/core/error';
-import Server from '@/core/joor/server';
+
 import Configuration from '@/core/config';
+import Jrror from '@/core/error';
 import loadEnv from '@/core/internals/loadEnv';
+import Server from '@/core/joor/server';
+import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { ROUTE_HANDLER } from '@/types/tt';
 

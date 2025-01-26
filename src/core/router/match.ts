@@ -1,7 +1,8 @@
+import Router from './index';
+
+import Jrror from '@/core/error';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
-import Router from './index';
-import Jrror from '@/core/error';
 
 /**
  * Matches a given route path and method to the registered routes and returns the corresponding handlers.
@@ -29,6 +30,7 @@ const matchRoute = (
   handlers: ROUTE_HANDLER[];
 } | null => {
   let handlers = [] as ROUTE_HANDLER[];
+
   const registeredRoutes: ROUTES = Router.routes;
 
   // Validate the path
@@ -39,6 +41,7 @@ const matchRoute = (
       type: 'error',
     });
   }
+
   if (typeof path !== 'string') {
     throw new Jrror({
       code: 'path-invalid',
@@ -54,11 +57,13 @@ const matchRoute = (
 
   // Split the path into parts
   let routeParts = path.split('/');
+
   const lastElement = routeParts[routeParts.length - 1];
 
   // Handle query parameters
   if (lastElement.includes('?')) {
     const splitted = lastElement.split('?');
+
     const [pathPart] = splitted;
     routeParts[routeParts.length - 1] = pathPart;
     const queryParams = splitted[1].split('&');
@@ -74,10 +79,8 @@ const matchRoute = (
     const [pathPart] = lastElement.split('#');
     routeParts[routeParts.length - 1] = pathPart;
   }
-
   // Remove empty parts
   routeParts = routeParts.filter((part) => part !== '');
-
   // Handle root path
   if (routeParts.length === 0) {
     if (registeredRoutes['/'] && registeredRoutes['/'][method]) {
@@ -93,6 +96,7 @@ const matchRoute = (
 
   // Traverse the route tree
   let currentNode = registeredRoutes['/'];
+
   for (const routePart of routeParts) {
     const currentNodeChildrenPaths = Object.keys(currentNode.children ?? {});
 
@@ -107,6 +111,7 @@ const matchRoute = (
     const dynamicNode = currentNodeChildrenPaths.find((childPath) =>
       childPath.startsWith(':')
     );
+
     if (dynamicNode) {
       handlers = [...handlers, ...(currentNode.middlewares ?? [])];
       currentNode = currentNode.children![dynamicNode];
@@ -117,7 +122,6 @@ const matchRoute = (
       return null;
     }
   }
-
   // Add middlewares and handlers for the matched route
   handlers = [...handlers, ...(currentNode.middlewares ?? [])];
   if (currentNode[method]) {

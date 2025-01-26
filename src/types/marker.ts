@@ -120,8 +120,11 @@ export interface ConvertColor {
 
 // Type aliases for color and style names
 export type ModifierName = keyof Modifier;
+
 export type ForegroundColorName = keyof ForegroundColor;
+
 export type BackgroundColorName = keyof BackgroundColor;
+
 export type ColorName = ForegroundColorName | BackgroundColorName;
 
 // Comprehensive interface for all color and style functionality
