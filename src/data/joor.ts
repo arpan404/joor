@@ -3,4 +3,5 @@ const joorData = {
   currentVersion: '0.1',
   docsVersion: 'v1',
 };
+
 export default joorData;

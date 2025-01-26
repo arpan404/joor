@@ -15,6 +15,7 @@ import dotenv from '@/packages/env';
  */
 const loadEnv = (): void => {
   let envPath = '.env.local';
+
   if (process.env.NODE_ENV === 'production') {
     envPath = '.env.production';
   } else if (process.env.NODE_ENV === 'staging') {

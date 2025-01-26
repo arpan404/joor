@@ -19,17 +19,21 @@
  */
 const parseEnv = (envContent: string): Record<string, string> => {
   const env: Record<string, string> = {};
+
   const lines = envContent.split('\n');
 
   for (const line of lines) {
     const trimmedLine = line.trim();
+
     // Ignore the whitespace line and the comment line
     if (!trimmedLine || trimmedLine.startsWith('#')) {
       continue;
     }
+
     // get first part of the line before the first '=' and the others after '='
     // the value part can contain = so we use the rest operator, and later join them using =
     const [key, ...values] = line.split('=');
+
     if (key && values) {
       env[key.trim()] = values.join('=').trim();
     }

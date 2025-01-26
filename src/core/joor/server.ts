@@ -1,11 +1,12 @@
+import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
-import fs from 'node:fs';
+
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import { JoorRequest } from '@/types/request';
-import prepareResponse from '@/core/internals/response/prepareResponse';
+import prepareResponse from '@/core/response/prepare';
 import handleRoute from '@/core/router/handle';
+import { JoorRequest } from '@/types/request';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
@@ -18,7 +19,9 @@ class Server {
    */
   public async listen(): Promise<void> {
     const config = new Configuration();
+
     const configData = await config.getConfig();
+
     let server: http.Server | https.Server;
 
     // If configuration is not loaded, throw an error
@@ -39,7 +42,6 @@ class Server {
           key: fs.readFileSync(configData.server.ssl.key),
           cert: fs.readFileSync(configData.server.ssl.cert),
         };
-
         // Create an HTTPS server with credentials
         server = https.createServer(
           credentials,
@@ -109,6 +111,7 @@ class Server {
     try {
       // Parse the URL and extract the path
       const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
+
       const pathURL = parsedUrl.pathname;
 
       // Handle the route based on the path and middlewares
@@ -116,13 +119,12 @@ class Server {
 
       // Prepare the response by setting the status, headers, and cookies
       const parsedResponse = prepareResponse(internalResponse);
-
       // Write the response headers
       res.writeHead(parsedResponse.status, parsedResponse.headers);
-
       if (req.joorHeaders) {
         res.writeHead(parsedResponse.status, req.joorHeaders);
       }
+
       // Set cookies if any are present
       if (parsedResponse.cookies) {
         res.setHeader('Set-Cookie', parsedResponse.cookies);
@@ -131,11 +133,11 @@ class Server {
       // Set additional headers if present
       if (parsedResponse.headers) {
         const keys = Object.keys(parsedResponse.headers);
+
         for (const key of keys) {
           res.setHeader(key, parsedResponse.headers[key]);
         }
       }
-
       // Send the response data
       res.end(parsedResponse.data);
       return;
@@ -143,7 +145,6 @@ class Server {
       // If an error occurs, respond with a 500 status and log the error
       res.statusCode = 500;
       res.end('Internal Server Error');
-
       // Handle the error if it's an instance of Jrror
       if (error instanceof Jrror) {
         error.handle();

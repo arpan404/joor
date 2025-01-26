@@ -1,5 +1,5 @@
-import { JoorRequest } from '@/types/request';
 import JoorResponse from '@/core/response';
+import { JoorRequest } from '@/types/request';
 
 // For path name eg. "/path/to/resource"
 type ROUTE_PATH = string;

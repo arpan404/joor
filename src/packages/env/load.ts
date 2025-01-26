@@ -1,8 +1,10 @@
-import Jrror from '@/core/error';
 import fs from 'node:fs';
 import * as nodePath from 'node:path';
 import process from 'node:process';
+
+import Jrror from '@/core/error';
 import parseEnv from '@/packages/env/parse';
+
 /**
  * Loads environment variables from a specified file into `process.env`.
  *
@@ -30,7 +32,9 @@ const loadEnv = (path: string, override: boolean = false) => {
 
     // Check if the file exists
     if (!fs.existsSync(envPath)) return;
+
     const env = fs.readFileSync(envPath, 'utf-8');
+
     const parsedKeyValuePair = parseEnv(env);
 
     // Override or set environment variables

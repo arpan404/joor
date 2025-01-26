@@ -8,8 +8,11 @@ interface RESPONSE_ERROR {
 
 // Type aliases for various response components
 type RESPONSE_STATUS = number;
+
 type RESPONSE_MESSAGE = string;
+
 type RESPONSE_DATA = unknown;
+
 type RESPONSE_DATA_TYPE = 'json' | 'normal' | 'error';
 
 // Interface for response cookies

@@ -1,10 +1,10 @@
 import Jrror from '@/core/error';
+import httpCodes from '@/data/httpCodes';
 import {
   RESPONSE,
   INTERNAL_RESPONSE,
   RESPONSE_DATA_TYPE,
 } from '@/types/response';
-import httpCodes from '@/data/httpCodes';
 
 /**
  * A class to construct and manage HTTP responses.
@@ -89,6 +89,7 @@ class JoorResponse {
         type: 'error',
       });
     }
+
     if (typeof value !== 'object' || Object.keys(value).length === 0) {
       throw new Jrror({
         code: 'response-cookies-invalid',
@@ -121,6 +122,7 @@ class JoorResponse {
         type: 'error',
       });
     }
+
     if (this.data) {
       throw new Jrror({
         code: 'response-data-already-set',
@@ -155,11 +157,13 @@ class JoorResponse {
         type: 'error',
       });
     }
+
     if (override) {
       this.headers = { ...value };
     } else {
       this.headers = { ...this.headers, ...value };
     }
+
     return this;
   }
 
@@ -182,6 +186,7 @@ class JoorResponse {
         type: 'error',
       });
     }
+
     if (this.error) {
       throw new Jrror({
         code: 'response-error-already-set',
@@ -213,6 +218,7 @@ class JoorResponse {
         type: 'warn',
       });
     }
+
     if (this.error) {
       throw new Jrror({
         code: 'response-error-already-set',
@@ -220,6 +226,7 @@ class JoorResponse {
         type: 'warn',
       });
     }
+
     try {
       this.data = JSON.parse(value as string);
     } catch (error) {
@@ -258,7 +265,6 @@ class JoorResponse {
     response.cookies = this.cookies;
     response.headers = this.headers;
     response.data = this.dataType === 'error' ? this.error : this.data || null;
-
     if (this.dataType === 'json') {
       response.headers = {
         ...response.headers,

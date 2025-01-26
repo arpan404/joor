@@ -1,6 +1,6 @@
 import JoorResponse from '@/core/response';
-import { ROUTE_METHOD } from '@/types/tt';
 import { JoorRequest } from '@/types/request';
+import { ROUTE_METHOD } from '@/types/tt';
 
 interface CORS_OPTIONS {
   origins?: Array<string> | ['*']; // Allowed origins for CORS requests, for example, ['https://example.com', 'https://example.org'] or ['*'] and '*' for all origins

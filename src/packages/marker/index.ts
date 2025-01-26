@@ -1,4 +1,11 @@
 // Marker : Rewritten version of chalk library in TypeScript
+
+import ansiStyles from '@/packages/marker/ansi';
+import supportsColor from '@/packages/marker/color';
+import {
+  stringReplaceAll,
+  stringEncaseCRLFWithFirstIndex,
+} from '@/packages/marker/utilities';
 import {
   ColorSupportLevel,
   MarkerInstance,
@@ -8,16 +15,11 @@ import {
   ColorBase,
 } from '@/types/marker';
 
-import ansiStyles from '@/packages/marker/ansi';
-import supportsColor from '@/packages/marker/color';
-import {
-  stringReplaceAll,
-  stringEncaseCRLFWithFirstIndex,
-} from '@/packages/marker/utilities';
-
 // Symbol declarations to define private properties.
 const GENERATOR = Symbol('GENERATOR');
+
 const STYLER = Symbol('STYLER');
+
 const IS_EMPTY = Symbol('IS_EMPTY');
 
 /**
@@ -53,6 +55,7 @@ type StyleEntry = CSPair | ColorBase;
 
 // Mapping color support levels to their corresponding ANSI styling.
 const levelMapping = ['ansi', 'ansi', 'ansi256', 'ansi16m'] as const;
+
 type LevelMappingType = (typeof levelMapping)[number];
 
 // Extracting terminal color support levels.
@@ -98,6 +101,7 @@ const createStyler = (
   parent?: StylerType
 ): StylerType => {
   const openAll = parent ? parent.openAll + open : open;
+
   const closeAll = close + (parent?.closeAll ?? '');
 
   return {
@@ -171,6 +175,7 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
   }
 
   const { openAll, closeAll } = styler;
+
   if (string.includes('\u001B')) {
     while (styler !== undefined) {
       // eslint-disable-next-line no-param-reassign
@@ -180,6 +185,7 @@ const applyStyle = (self: InternalMarkerInstance, string: string): string => {
   }
 
   const lfIndex = string.indexOf('\n');
+
   if (lfIndex !== -1) {
     // eslint-disable-next-line no-param-reassign
     string = stringEncaseCRLFWithFirstIndex(string, closeAll, openAll, lfIndex);
@@ -216,13 +222,11 @@ const createBuilder = (
       builder,
       args.length === 1 ? String(args[0]) : args.join(' ')
     )) as InternalMarkerInstance;
-
   // eslint-disable-next-line  @typescript-eslint/no-use-before-define
   Object.setPrototypeOf(builder, proto);
   builder[GENERATOR] = self;
   builder[STYLER] = _styler;
   builder[IS_EMPTY] = _isEmpty;
-
   return builder;
 };
 
@@ -235,10 +239,8 @@ const createBuilder = (
 const markerFactory = (options?: Options): InternalMarkerInstance => {
   const _marker = ((...strings: unknown[]): string =>
     strings.join(' ')) as InternalMarkerInstance;
-
   applyOptions(_marker, options);
   Object.setPrototypeOf(Marker, createMarker.prototype);
-
   return _marker;
 };
 
@@ -251,9 +253,7 @@ const markerFactory = (options?: Options): InternalMarkerInstance => {
 function createMarker(options?: Options): InternalMarkerInstance {
   return markerFactory(options);
 }
-
 Object.setPrototypeOf(createMarker.prototype, Function.prototype);
-
 // Define styles dynamically based on ansiStyles.
 const styles: Record<string, PropertyDescriptor> = {};
 
@@ -288,12 +288,14 @@ for (const model of usedModels) {
     // eslint-disable-next-line no-unused-vars
     get(this: InternalMarkerInstance) {
       const { level } = this;
+
       return (...args: [number, number, number]): InternalMarkerInstance => {
         const styler = createStyler(
           getModelAnsi(model, levelMapping[level], 'color', ...args),
           (ansiStyles.color as ColorBase).close,
           this[STYLER]
         );
+
         return createBuilder(this, styler, this[IS_EMPTY]);
       };
     },
@@ -312,7 +314,6 @@ const properties = Object.entries(styles).reduce(
   },
   {} as Record<string, PropertyDescriptor>
 );
-
 // Add `level` getter and setter to properties.
 properties.level = {
   enumerable: true,
@@ -325,7 +326,6 @@ properties.level = {
     this[GENERATOR].level = level;
   },
 };
-
 // Define the prototype for marker instances.
 const proto = Object.defineProperties(
   Object.create(Function.prototype),
@@ -335,7 +335,6 @@ const proto = Object.defineProperties(
 // Create the default marker instance.
 const marker = createMarker();
 Object.setPrototypeOf(marker, proto);
-
 /**
  * Exported marker instance for styled text output to `stdout`.
  */

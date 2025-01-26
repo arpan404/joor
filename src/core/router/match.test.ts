@@ -1,31 +1,25 @@
 import Router from '@/core/router';
 import matchRoute from '@/core/router/match';
 import { JoorRequest } from '@/types/request';
-
 describe('Route Matcher', () => {
   const router = new Router();
-
   beforeEach(() => {
     Router.routes = { '/': {} };
     jest.clearAllMocks();
   });
-
   it('should return null if path is empty', () => {
     const request = { params: {} } as JoorRequest;
     expect(() => matchRoute('', 'GET', request)).toThrow();
   });
-
   it('should return null if path is not a string', () => {
     const request = { params: {} } as JoorRequest;
     expect(() => matchRoute(123 as any, 'GET', request)).toThrow();
   });
-
   it('should return null if no routes are registered', () => {
     const request = { params: {} } as JoorRequest;
     Router.routes = undefined as any;
     expect(matchRoute('/', 'GET', request)).toBeNull();
   });
-
   it('should return handlers for registered route', () => {
     const request = { params: {} } as JoorRequest;
     router.get('/', async () => undefined);
@@ -33,18 +27,18 @@ describe('Route Matcher', () => {
       handlers: [expect.any(Function)],
     });
   });
-
   it('should return middlewares for registered route', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
     router.get('/', middleware, async () => undefined);
     expect(matchRoute('/', 'GET', request)).toEqual({
       handlers: [middleware, expect.any(Function)],
     });
   });
-
   it('should return global middleware for a route', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
     Router.routes = {
       '/': {
@@ -56,12 +50,15 @@ describe('Route Matcher', () => {
       handlers: [middleware, expect.any(Function)],
     });
   });
-
   it('should return global middleware for a certain route', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
+
     const localMiddleware = jest.fn();
+
     const worldFunction = jest.fn();
+
     const helloFunction = jest.fn();
     Router.routes = {
       '/': {
@@ -91,11 +88,13 @@ describe('Route Matcher', () => {
       handlers: [middleware, localMiddleware, worldFunction],
     });
   });
-
   it('should handle single level dynamic route', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
+
     const localMiddleware = jest.fn();
+
     const idFunction = jest.fn();
     Router.routes = {
       '/': {
@@ -125,11 +124,13 @@ describe('Route Matcher', () => {
     });
     expect(request.params).toEqual({ id: '123' });
   });
-
   it('should handle multilevel dynamic route', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
+
     const localMiddleware = jest.fn();
+
     const trackFunction = jest.fn();
     Router.routes = {
       '/': {
@@ -167,12 +168,15 @@ describe('Route Matcher', () => {
     });
     expect(request.params).toEqual({ id: '123', trackId: '1bha' });
   });
-
   it('should handle multilevel dynamic route with different routes', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware = jest.fn();
+
     const localMiddleware = jest.fn();
+
     const trackFunction = jest.fn();
+
     const deleteFunction = jest.fn();
     Router.routes = {
       '/': {
@@ -212,16 +216,15 @@ describe('Route Matcher', () => {
       handlers: [middleware, localMiddleware, trackFunction],
     });
     expect(request.params).toEqual({ id: '123', trackId: '1bha' });
-
     request.params = {};
     expect(matchRoute('/user/123', 'DELETE', request)).toEqual({
       handlers: [middleware, localMiddleware, deleteFunction],
     });
     expect(request.params).toEqual({ id: '123' });
   });
-
   it('should handle route with query parameters', () => {
     const request = { params: {}, query: {} } as JoorRequest;
+
     const handler = jest.fn();
     Router.routes = {
       '/': {},
@@ -230,12 +233,11 @@ describe('Route Matcher', () => {
     expect(matchRoute('/?search=test', 'GET', request)).toEqual({
       handlers: [handler],
     });
-
     expect(request.query).toEqual({ search: 'test' });
   });
-
   it('should handle route with hash fragment', () => {
     const request = { params: {} } as JoorRequest;
+
     const handler = jest.fn();
     Router.routes = {
       '/': {},
@@ -245,9 +247,9 @@ describe('Route Matcher', () => {
       handlers: [handler],
     });
   });
-
   it('should handle route with trailing slash', () => {
     const request = { params: {} } as JoorRequest;
+
     const handler = jest.fn();
     Router.routes = {
       '/': {},
@@ -260,11 +262,13 @@ describe('Route Matcher', () => {
       handlers: [handler],
     });
   });
-
   it('should handle route with multiple middlewares', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware1 = jest.fn();
+
     const middleware2 = jest.fn();
+
     const handler = jest.fn();
     Router.routes = {
       '/': {
@@ -276,11 +280,13 @@ describe('Route Matcher', () => {
       handlers: [middleware1, middleware2, handler],
     });
   });
-
   it('should handle route with nested middlewares', () => {
     const request = { params: {} } as JoorRequest;
+
     const middleware1 = jest.fn();
+
     const middleware2 = jest.fn();
+
     const handler = jest.fn();
     Router.routes = {
       '/': {
@@ -297,10 +303,11 @@ describe('Route Matcher', () => {
       handlers: [middleware1, middleware2, handler],
     });
   });
-
   it('should handle route with multiple methods', () => {
     const request = { params: {} } as JoorRequest;
+
     const getHandler = jest.fn();
+
     const postHandler = jest.fn();
     Router.routes = {
       '/': {},
@@ -314,9 +321,9 @@ describe('Route Matcher', () => {
       handlers: [postHandler],
     });
   });
-
   it('should handle route with no matching method', () => {
     const request = { params: {} } as JoorRequest;
+
     const getHandler = jest.fn();
     Router.routes = {
       '/': {
@@ -328,9 +335,9 @@ describe('Route Matcher', () => {
     router.get('/', async () => undefined);
     expect(matchRoute('/', 'POST', request)).toBeNull();
   });
-
   it('should handle route with no matching path', () => {
     const request = { params: {} } as JoorRequest;
+
     const handler = jest.fn();
     Router.routes = {
       '/': {

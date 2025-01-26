@@ -1,12 +1,13 @@
-import { JoorRequest } from '@/types/request';
 import cors from '.';
 
+import { JoorRequest } from '@/types/request';
 describe('CORS', () => {
   it("should handle request with default options if 'options' is not provided", async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://example.com' },
     } as unknown as JoorRequest;
+
     const response = cors()(request);
     expect(response).toBeDefined();
     if (response) {
@@ -26,6 +27,7 @@ describe('CORS', () => {
       method: 'OPTIONS',
       headers: { origin: 'https://example.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
       methods: ['GET', 'POST'],
@@ -33,6 +35,7 @@ describe('CORS', () => {
       allowsCookies: true,
       maxAge: 3600,
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.status).toBe(204);
@@ -45,12 +48,12 @@ describe('CORS', () => {
       });
     }
   });
-
   it('should handle preflight requests with invalid origin', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://invalid.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
     })(request);
@@ -60,27 +63,28 @@ describe('CORS', () => {
       expect(parsedResponse.status).toBe(204);
     }
   });
-
   it('should handle non-preflight requests', async () => {
     const request = {
       method: 'GET',
       headers: { origin: 'https://exampl.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
     })(request);
     expect(response).toBeUndefined();
   });
-
   it('should handle wildcard origin', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://any-domain.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['*'],
       methods: ['GET'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers).toBeDefined();
@@ -89,16 +93,17 @@ describe('CORS', () => {
       }
     }
   });
-
   it('should handle multiple allowed origins', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://site2.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://site1.com', 'https://site2.com'],
       methods: ['GET'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers).toBeDefined();
@@ -109,16 +114,17 @@ describe('CORS', () => {
       }
     }
   });
-
   it('should handle custom exposed headers', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://example.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
       exposedHeaders: ['X-Custom-Header'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers).toBeDefined();
@@ -129,29 +135,28 @@ describe('CORS', () => {
       }
     }
   });
-
   it('should handle request without origin header', async () => {
     const request = {
       method: 'OPTIONS',
       headers: {},
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
     })(request);
     expect(response).toBeDefined();
   });
-
   it('should handle request without origin header for other requests than GET', async () => {
     const request = {
       method: 'GET',
       headers: {},
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
     })(request);
     expect(response).toBeUndefined();
   });
-
   it('should handle case-sensitive headers', async () => {
     const request = {
       method: 'OPTIONS',
@@ -160,10 +165,12 @@ describe('CORS', () => {
         'Content-Type': 'application/json',
       },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
       allowedHeaders: ['content-type'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers).toBeDefined();
@@ -184,12 +191,14 @@ describe('CORS', () => {
         'access-control-request-method': 'POST',
       },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com'],
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
       allowsCookies: true,
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers).toMatchObject({
@@ -200,16 +209,17 @@ describe('CORS', () => {
       });
     }
   });
-
   it('should handle requests from subdomains', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://sub.example.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://*.example.com'],
       methods: ['GET'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
@@ -217,16 +227,17 @@ describe('CORS', () => {
       );
     }
   });
-
   it('should handle GET requests from subdomains', async () => {
     const request = {
       method: 'GET',
       headers: { origin: 'https://sub.example.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://*.example.com'],
       methods: ['POST'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       console.log(parsedResponse);
@@ -240,16 +251,17 @@ describe('CORS', () => {
       );
     }
   });
-
   it('should handle requests with varying protocols (http/https)', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'http://example.com' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://example.com', 'http://example.com'],
       methods: ['GET'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
@@ -257,16 +269,17 @@ describe('CORS', () => {
       );
     }
   });
-
   it('should handle requests with port numbers', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'https://localhost:3000' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: ['https://localhost:3000'],
       methods: ['GET'],
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
@@ -274,12 +287,12 @@ describe('CORS', () => {
       );
     }
   });
-
   it('should handle development environment with multiple local origins', async () => {
     const request = {
       method: 'OPTIONS',
       headers: { origin: 'http://localhost:3000' },
     } as unknown as JoorRequest;
+
     const response = cors({
       origins: [
         'http://localhost:3000',
@@ -290,6 +303,7 @@ describe('CORS', () => {
       allowedHeaders: ['*'],
       allowsCookies: true,
     })(request);
+
     if (response) {
       const parsedResponse = response.parseResponse();
       expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(

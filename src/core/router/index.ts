@@ -1,8 +1,8 @@
-import { ROUTE_HANDLER, ROUTES, ROUTE_METHOD, ROUTE_PATH } from '@/types/route';
-import { validateHandler, validateRoute } from '@/core/router/validation';
 import Jrror from '@/core/error';
-import marker from '@/packages/marker';
 import JoorError from '@/core/error/JoorError';
+import { validateHandler, validateRoute } from '@/core/router/validation';
+import marker from '@/packages/marker';
+import { ROUTE_HANDLER, ROUTES, ROUTE_METHOD, ROUTE_PATH } from '@/types/route';
 
 /**
  * Class representing a Router.
@@ -137,7 +137,6 @@ class Router {
     try {
       validateRoute(route);
       handlers.forEach(validateHandler);
-
       if (!Object.keys(Router.routes).includes('/')) {
         Router.routes['/'] = {};
       }
@@ -152,6 +151,7 @@ class Router {
       }
 
       const routeParts = route.split('/').filter((part) => part !== '');
+
       if (routeParts.length === 0) {
         Router.routes['/'] = {
           ...Router.routes['/'],
@@ -164,19 +164,19 @@ class Router {
       }
 
       let currentNode = Router.routes['/'];
+
       for (const routePart of routeParts) {
         // Remove query params and hash from route
         const [node] = routePart.split('#')[0].split('?');
-
         // check if current node has children
         currentNode.children = currentNode.children ?? {};
-
         // check if current node is dynamic
         if (node.startsWith(':')) {
           // check if current parent node has other dynamic routes
           const keys = Object.keys(currentNode.children).filter(
             (key) => key.startsWith(':') && key !== route
           );
+
           if (keys.length !== 0) {
             throw new Jrror({
               code: 'route-conflict',
@@ -186,13 +186,11 @@ class Router {
             });
           }
         }
-
         // check if current node has the same route, if no create a new node with middlwares
         currentNode.children[node] = currentNode.children[node] ?? {
           // these middlwares will be used by all the children of this node
           middlewares: [],
         };
-
         currentNode = currentNode.children[node];
       }
 
@@ -205,7 +203,6 @@ class Router {
           docsPath: '/routing',
         });
       }
-
       // after all above checks, register the route
       currentNode[httpMethod] = {
         handlers,
