@@ -1,5 +1,5 @@
 import Jrror from '@/core/error';
-import { ROUTE_HANDLER, ROUTE_METHOD, ROUTES } from '@/types/tt';
+import { ROUTE_HANDLER, ROUTE_METHOD, ROUTES } from '@/types/route';
 
 /**
  * Matches a given path and method against a set of registered routes and returns the corresponding route handlers and type information.

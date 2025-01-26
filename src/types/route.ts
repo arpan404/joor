@@ -15,10 +15,10 @@ type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 // Type for route tree
 interface ROUTES {
   [key: ROUTE_PATH]: {
-    middlewares?: Function[];
+    middlewares?: ROUTE_HANDLER[];
   } & {
     [_key in ROUTE_METHOD]?: {
-      handlers: Function[];
+      handlers: ROUTE_HANDLER[];
     };
   } & {
     children?: ROUTES;
