@@ -95,7 +95,7 @@ const matchRoute = (
   let currentNode = registeredRoutes['/'];
   for (const routePart of routeParts) {
     const currentNodeChildrenPaths = Object.keys(currentNode.children ?? {});
-    
+
     // Check for static route match
     if (currentNodeChildrenPaths.includes(routePart)) {
       handlers = [...handlers, ...(currentNode.middlewares ?? [])];

@@ -1,28 +1,29 @@
-import JoorResponse from '@/core/response';
 import { JoorRequest } from '@/types/request';
+import matchRoute from '@/core/router/match';
+import { ROUTE_METHOD } from '@/types/route';
 import { INTERNAL_RESPONSE } from '@/types/response';
-import { ROUTE_METHOD } from '@/types/tt';
-import matchRoute from '@/core/internals/router/matchRoute';
-import Router from '@/core/router';
-import Jrror from '@/core/error';
+import JoorResponse from '@/core/response';
 import isAsync from '@/helpers/isAsync';
-import { GLOBAL_MIDDLEWARES } from '@/types/joor';
+import Jrror from '@/core/error';
+import JoorError from '@/core/error/JoorError';
 
 /**
  * Handles routing for incoming requests by matching the request path and method
- * to the appropriate route handler and executing the associated middlewares.
+ * to the appropriate route handlers and executing them. This function is meant to be used
+ * inside the server of node.js [process method of JoorServer class].
  *
- *
- * @param {JoorRequest} request - The incoming request object.
- * @param {GLOBAL_MIDDLEWARES} globalMiddlewares - An object containing global middleware functions.
- * @param {string} pathURL - The URL path of the incoming request.
+ * @param {JoorRequest} request - The incoming request object containing details such as method and headers.
+ * @param {string} pathURL - The URL path of the request to match against defined routes.
  * @returns {Promise<INTERNAL_RESPONSE>} - A promise that resolves to an internal response object.
  *
  * @throws {Jrror} Throws an error if a route handler returns an invalid value or if all handlers return undefined.
+ *
+ * @example
+ * const response = await handleRoute(request, '/api/data');
+ * console.log(response);
  */
 const handleRoute = async (
   request: JoorRequest,
-  globalMiddlewares: GLOBAL_MIDDLEWARES,
   pathURL: string
 ): Promise<INTERNAL_RESPONSE> => {
   try {
@@ -32,29 +33,29 @@ const handleRoute = async (
     } else {
       method = method.toUpperCase() as ROUTE_METHOD;
     }
-    // Attempt to match the route based on the path and method
-    const routeDetail = matchRoute(pathURL, method, Router.routes);
 
-    // If no route is found, return a 404 Not Found response
-    if (!routeDetail) {
+    // Get the details of the route; handlers to be specific
+    const routeDetail = matchRoute(pathURL, method, request);
+
+    // If no route is matched, return a 404 Not Found response
+    if (
+      !routeDetail?.handlers ||
+      routeDetail.handlers.length === 0
+    ) {
       const response = new JoorResponse();
       response.setStatus(404).setMessage('Not Found');
       return response.parseResponse();
     }
-    if (routeDetail.type.isDynamic) {
-      request.params = request.params ?? {};
-      if (routeDetail.type.dynamicParam) {
-        request.params[routeDetail.type.dynamicParam] = routeDetail.paramValue!;
-      }
-    }
-    const handlers = { ...globalMiddlewares, ...routeDetail.handlers };
+
     let response;
-    for (const handler of handlers) {
+    for (const handler of routeDetail.handlers) {
       if (isAsync(handler)) {
         response = await handler(request);
       } else {
         response = handler(request);
       }
+
+      // If a valid response is returned, parse and return it
       if (response) {
         if (response instanceof JoorResponse) {
           return response.parseResponse();
@@ -68,6 +69,8 @@ const handleRoute = async (
         }
       }
     }
+
+    // If all handlers return undefined, throw an error
     throw new Jrror({
       code: 'handler-return-undefined',
       message:
@@ -75,7 +78,9 @@ const handleRoute = async (
       type: 'error',
     });
   } catch (error: unknown) {
-    console.error(error);
+    if (error instanceof Jrror || error instanceof JoorError) {
+      error.handle();
+    }
     const response = new JoorResponse();
     response.setStatus(500).setMessage('Internal Server Error');
     return response.parseResponse();

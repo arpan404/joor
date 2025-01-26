@@ -43,7 +43,7 @@ class Joor {
       loadEnv();
       if (this.configData) {
         const server = new Server();
-        await server.listen(this.globalMiddlewares);
+        await server.listen();
       } else {
         throw new Jrror({
           code: 'config-load-failed',
