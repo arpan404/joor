@@ -57,16 +57,15 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
       const routePart = routeParts[i];
       // Remove query parameters and hash from the route part.
       const [node] = routePart.split('#')[0].split('?');
-
       // Ensure the current node has children.
       currentNode.children = currentNode.children ?? {};
-
       // Check if the current node is dynamic.
       if (node.startsWith(':')) {
         // Ensure there are no conflicting dynamic routes in the same parent node.
         const keys = Object.keys(currentNode.children).filter(
           (key) => key.startsWith(':') && key !== path
         );
+
         if (keys.length !== 0) {
           throw new Jrror({
             code: 'route-conflict',
@@ -76,7 +75,6 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
           });
         }
       }
-
       // Create a new node with middlewares if it doesn't exist.
       currentNode.children[node] = currentNode.children[node] ?? {
         // These middlewares will be used by all the children of this node.
