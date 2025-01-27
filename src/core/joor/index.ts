@@ -19,7 +19,7 @@ import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
  * await app.start();
  * ```
  * This example starts a new Joor server using the default configuration data from the `joor.config.ts` or `joor.config.js` file.
- * 
+ *
  */
 class Joor {
   // Private variable to hold configuration data used in the server, initialized as null
