@@ -149,6 +149,18 @@ describe('Router', () => {
       3
     );
   });
+  it('should support route addition with middlewares in same order', () => {
+    const middleware1 = jest.fn();
+    const middleware2 = jest.fn();
+    const handler = jest.fn();
+    const router = new Router();
+    router.get('/middleware', middleware1, middleware2, handler);
+    expect(Router.routes['/'].children?.middleware.GET?.handlers).toEqual([
+      middleware1,
+      middleware2,
+      handler,
+    ]);
+  });
   it('should handle routes with query parameters', () => {
     const router = new Router();
     router.get('/search', async () => undefined);

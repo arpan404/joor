@@ -155,7 +155,8 @@ class Router {
       if (routeParts.length === 0) {
         Router.routes['/'] = {
           ...Router.routes['/'],
-          middlewares: Router.routes['/'].middlewares ?? [],
+          localMiddlewares: Router.routes['/'].localMiddlewares ?? [],
+          globalMiddlewares: Router.routes['/'].globalMiddlewares ?? [],
           [httpMethod]: {
             handlers,
           },
@@ -189,7 +190,8 @@ class Router {
         // check if current node has the same route, if no create a new node with middlwares
         currentNode.children[node] = currentNode.children[node] ?? {
           // these middlwares will be used by all the children of this node
-          middlewares: [],
+          globalMiddlewares: currentNode.globalMiddlewares ?? [],
+          localMiddlewares: currentNode.localMiddlewares ?? [],
         };
         currentNode = currentNode.children[node];
       }

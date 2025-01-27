@@ -42,7 +42,7 @@ describe('Route Matcher', () => {
     const middleware = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware],
+        globalMiddlewares: [middleware],
       },
     };
     router.get('/', async () => undefined);
@@ -60,12 +60,14 @@ describe('Route Matcher', () => {
     const worldFunction = jest.fn();
 
     const helloFunction = jest.fn();
+    const globalMiddleware = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware],
+        globalMiddlewares: [middleware],
         children: {
           hello: {
-            middlewares: [localMiddleware],
+            globalMiddlewares: [globalMiddleware],
+            localMiddlewares: [localMiddleware],
             GET: {
               handlers: [helloFunction],
             },
@@ -82,13 +84,13 @@ describe('Route Matcher', () => {
     };
     router.get('/', async () => undefined);
     expect(matchRoute('/hello', 'GET', request)).toEqual({
-      handlers: [middleware, localMiddleware, helloFunction],
+      handlers: [middleware, globalMiddleware, localMiddleware, helloFunction],
     });
     expect(matchRoute('/hello/world', 'GET', request)).toEqual({
-      handlers: [middleware, localMiddleware, worldFunction],
+      handlers: [middleware, globalMiddleware, worldFunction],
     });
   });
-  it('should handle single level dynamic route', () => {
+  it('should handle single level dynamic route with local middleware not applicable to child', () => {
     const request = { params: {} } as JoorRequest;
 
     const middleware = jest.fn();
@@ -98,10 +100,10 @@ describe('Route Matcher', () => {
     const idFunction = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware],
+        globalMiddlewares: [middleware],
         children: {
           user: {
-            middlewares: [localMiddleware],
+            localMiddlewares: [localMiddleware],
             children: {
               ':id': {
                 GET: {
@@ -115,12 +117,12 @@ describe('Route Matcher', () => {
     };
     router.get('/', async () => undefined);
     expect(matchRoute('/user/arpan404', 'GET', request)).toEqual({
-      handlers: [middleware, localMiddleware, idFunction],
+      handlers: [middleware, idFunction],
     });
     expect(request.params).toEqual({ id: 'arpan404' });
     request.params = {};
     expect(matchRoute('/user/123', 'GET', request)).toEqual({
-      handlers: [middleware, localMiddleware, idFunction],
+      handlers: [middleware, idFunction],
     });
     expect(request.params).toEqual({ id: '123' });
   });
@@ -134,10 +136,10 @@ describe('Route Matcher', () => {
     const trackFunction = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware],
+        globalMiddlewares: [middleware],
         children: {
           user: {
-            middlewares: [localMiddleware],
+            globalMiddlewares: [localMiddleware],
             children: {
               ':id': {
                 children: {
@@ -180,10 +182,10 @@ describe('Route Matcher', () => {
     const deleteFunction = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware],
+        globalMiddlewares: [middleware],
         children: {
           user: {
-            middlewares: [localMiddleware],
+            globalMiddlewares: [localMiddleware],
             children: {
               ':id': {
                 DELETE: {
@@ -272,7 +274,7 @@ describe('Route Matcher', () => {
     const handler = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware1, middleware2],
+        localMiddlewares: [middleware1, middleware2],
       },
     };
     router.get('/', handler);
@@ -290,10 +292,10 @@ describe('Route Matcher', () => {
     const handler = jest.fn();
     Router.routes = {
       '/': {
-        middlewares: [middleware1],
+        globalMiddlewares: [middleware1],
         children: {
           nested: {
-            middlewares: [middleware2],
+            localMiddlewares: [middleware2],
           },
         },
       },
@@ -348,5 +350,49 @@ describe('Route Matcher', () => {
     };
     router.get('/', async () => undefined);
     expect(matchRoute('/nonexistent', 'GET', request)).toBeNull();
+  });
+  it('should handle large route', () => {
+    const request = { params: {} } as JoorRequest;
+    const f1 = jest.fn();
+    const f2 = jest.fn();
+    const f3 = jest.fn();
+    const f4 = jest.fn();
+    const f5 = jest.fn();
+    const f6 = jest.fn();
+    const f7 = jest.fn();
+    const f8 = jest.fn();
+    const f9 = jest.fn();
+    Router.routes = {
+      '/': {
+        globalMiddlewares: [f1],
+        localMiddlewares: [f2, f3],
+        children: {
+          user: {
+            localMiddlewares: [f5, f6],
+            globalMiddlewares: [f7],
+            GET: {
+              handlers: [f8],
+            },
+            children: {
+              ':id': {
+                GET: {
+                  handlers: [f9],
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+    router.get('/', f4);
+    expect(matchRoute('/', 'GET', request)).toEqual({
+      handlers: [f1, f2, f3, f4],
+    });
+    expect(matchRoute('/user', 'GET', request)).toEqual({
+      handlers: [f1, f7, f5, f6, f8],
+    });
+    expect(matchRoute('/user/arpan404', 'GET', request)).toEqual({
+      handlers: [f1, f7, f9],
+    });
   });
 });
