@@ -1,11 +1,12 @@
+import addMiddlewares from '../router/addMiddlewares';
+
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
 import loadEnv from '@/core/internals/loadEnv';
 import Server from '@/core/joor/server';
+import marker from '@/packages/marker';
 import JOOR_CONFIG from '@/types/config';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
-import addMiddlewares from '../router/addMiddlewares';
-import marker from '@/packages/marker';
 
 /**
  * Represents the Joor framework server.

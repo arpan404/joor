@@ -55,6 +55,7 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
       isGlobalMiddleware = true;
       routeParts = routeParts.slice(0, routeParts.length - 1);
     }
+
     let currentNode = registeredRoutes['/' as ROUTE_PATH];
 
     // Traverse each part of the route and create a new node if it doesn't exist.
