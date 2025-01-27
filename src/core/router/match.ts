@@ -85,7 +85,8 @@ const matchRoute = (
   if (routeParts.length === 0) {
     if (registeredRoutes['/'] && registeredRoutes['/'][method]) {
       handlers = [
-        ...(registeredRoutes['/'].middlewares ?? []),
+        ...(registeredRoutes['/'].globalMiddlewares ?? []),
+        ...(registeredRoutes['/'].localMiddlewares ?? []),
         ...registeredRoutes['/'][method].handlers,
       ];
       return { handlers: [...handlers] };
@@ -102,7 +103,7 @@ const matchRoute = (
 
     // Check for static route match
     if (currentNodeChildrenPaths.includes(routePart)) {
-      handlers = [...handlers, ...(currentNode.middlewares ?? [])];
+      handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
       currentNode = currentNode.children![routePart];
       continue;
     }
@@ -113,7 +114,7 @@ const matchRoute = (
     );
 
     if (dynamicNode) {
-      handlers = [...handlers, ...(currentNode.middlewares ?? [])];
+      handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
       currentNode = currentNode.children![dynamicNode];
       request.params = request.params ?? {};
       request.params[dynamicNode.slice(1)] = routePart;
@@ -123,7 +124,11 @@ const matchRoute = (
     }
   }
   // Add middlewares and handlers for the matched route
-  handlers = [...handlers, ...(currentNode.middlewares ?? [])];
+  handlers = [
+    ...handlers,
+    ...(currentNode.globalMiddlewares ?? []),
+    ...(currentNode.localMiddlewares ?? []),
+  ];
   if (currentNode[method]) {
     handlers.push(...currentNode[method].handlers);
     return { handlers: [...handlers] };

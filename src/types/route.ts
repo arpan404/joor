@@ -15,7 +15,10 @@ type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 // Type for route tree
 interface ROUTES {
   [key: ROUTE_PATH]: {
-    middlewares?: ROUTE_HANDLER[];
+    // global middleware will apply to all methods and child routes
+    globalMiddlewares?: ROUTE_HANDLER[];
+    // local middlewares will apply to all methods of this route
+    localMiddlewares?: ROUTE_HANDLER[];
   } & {
     [_key in ROUTE_METHOD]?: {
       handlers: ROUTE_HANDLER[];
