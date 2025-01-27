@@ -43,13 +43,18 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
     // Determine if the middleware is global.
     // If the path ends with '*', it is a global middleware.
     // Global middleware will be applied to all methods and sub-routes.
-    const isGlobalMiddleware = path.endsWith('*');
+    let isGlobalMiddleware = false;
 
     if (isGlobalMiddleware) {
       routePath = routePath.slice(0, -1);
     }
 
-    const routeParts = routePath.split('/').filter((part) => part !== '');
+    let routeParts = routePath.split('/').filter((part) => part !== '');
+
+    if (routeParts[routeParts.length - 1] === '*') {
+      isGlobalMiddleware = true;
+      routeParts = routeParts.slice(0, routeParts.length - 1);
+    }
     let currentNode = registeredRoutes['/' as ROUTE_PATH];
 
     // Traverse each part of the route and create a new node if it doesn't exist.
@@ -78,8 +83,8 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
       // Create a new node with middlewares if it doesn't exist.
       currentNode.children[node] = currentNode.children[node] ?? {
         // These middlewares will be used by all the children of this node.
-        globalMiddlewares: currentNode.globalMiddlewares ?? [],
-        localMiddlewares: currentNode.localMiddlewares ?? [],
+        globalMiddlewares: [],
+        localMiddlewares: [],
       };
       currentNode = currentNode.children[node];
     }

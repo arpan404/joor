@@ -143,4 +143,10 @@ describe('addMiddlewares', () => {
     const usersRoute = Router.routes['/']?.children?.api?.children?.users;
     expect(usersRoute?.localMiddlewares).toEqual(middlewares);
   });
+  it('should handle adding global middlewares to routes with trailing slashes', () => {
+    const middlewares = [jest.fn()];
+    addMiddlewares('/api/users/*/', middlewares);
+    const usersRoute = Router.routes['/']?.children?.api?.children?.users;
+    expect(usersRoute?.globalMiddlewares).toEqual(middlewares);
+  });
 });
