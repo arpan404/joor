@@ -4,7 +4,10 @@ import marker from '@/packages/marker';
 jest.mock('node:fs', () => ({
   promises: {
     appendFile: jest.fn().mockResolvedValue(undefined),
+    createDirectory: jest.fn().mockResolvedValue(undefined),
   },
+  existsSync: jest.fn().mockReturnValue(false),
+  stat: jest.fn().mockResolvedValue({ size: 10485760 }),
 }));
 jest.spyOn(console, 'info').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -59,6 +62,13 @@ describe('Logger', () => {
     const fs = require('node:fs');
     logger.info(mockMessage);
     expect(fs.promises.appendFile).not.toHaveBeenCalled();
+  });
+  it("should create the directory if it doesn't exist", async () => {
+    const newLogger = new Logger({
+      name: 'new.logger',
+      path: '/hello/new.log',
+    });
+    newLogger.info(mockMessage);
   });
   it('should log messages with custom format callback', () => {
     const customLogger = new Logger({
