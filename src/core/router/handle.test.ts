@@ -4,6 +4,13 @@ import handleRoute from '@/core/router/handle';
 import { JoorRequest } from '@/types/request';
 describe('Route Handler', () => {
   const router = new Router();
+  let consoleSpy: jest.SpyInstance;
+  beforeAll(() => {
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+  afterAll(() => {
+    consoleSpy.mockRestore();
+  });
   beforeEach(() => {
     Router.routes = { '/': {} };
     jest.clearAllMocks();
