@@ -15,7 +15,8 @@ type LOGGER_FORMAT_CALLBACK = (
 interface LOGGER_CONFIG {
   name: LOGGER_NAME;
   path: LOGGER_PATH;
-  formatCallBack: LOGGER_FORMAT_CALLBACK;
+  formatCallBack?: LOGGER_FORMAT_CALLBACK;
+  flushInterval?: number;
 }
 
 export {

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import * as nodePath from 'node:path';
 
+import convertStringToBoolean from '@/helpers/convertStringToBoolean';
 import marker from '@/packages/marker';
 import {
   LOGGER_CONFIG,
@@ -36,10 +37,22 @@ import {
  * The logger will add the log level and logger name to the formatted message before logging it.
  */
 class Logger {
-  constructor({ name, path, formatCallBack }: LOGGER_CONFIG) {
+  private logBuffer: string[] = []; // Buffer to store log messages
+  private flushInterval: NodeJS.Timeout; // Interval for flushing logs
+
+  constructor({ name, path, formatCallBack, flushInterval }: LOGGER_CONFIG) {
     this.name = name ?? this.name; // Set logger name, default is 'logger'
     this.path = path ?? this.path; // Set log file path, default is 'logs.log' in current directory
     this.formatCallBack = formatCallBack ?? this.formatCallBack; // Custom format callback, default is basic timestamped message
+    // Start interval to flush logs every 10 seconds by default
+    this.flushInterval = setInterval(() => {
+      void this.flushLogs();
+    }, flushInterval ?? 10000);
+    this.flushInterval.unref(); // This ensures that this timer doesn't prevent the process from exiting
+    // Handle process shutdown (clear interval)
+    process.on('exit', () => this.clearFlushInterval());
+    process.on('SIGINT', () => this.clearFlushInterval());
+    process.on('SIGTERM', () => this.clearFlushInterval());
   }
 
   // Default configuration for the logger
@@ -65,19 +78,19 @@ class Logger {
 
     switch (level) {
       case 'INFO':
-        formattedMessage = `${marker.bgGreenBright(' INFO ')} '${this.name}' - ${message}`;
+        formattedMessage = `${marker.bgGreenBright.bold(' INFO ')} '${this.name}' - ${message}`;
         break;
       case 'WARN':
-        formattedMessage = `${marker.bgYellowBright(' WARN ')} '${this.name}' - ${message}`;
+        formattedMessage = `${marker.bgYellowBright.bold(' WARN ')} '${this.name}' - ${message}`;
         break;
       case 'ERROR':
-        formattedMessage = `${marker.bgRedBright(' ERROR ')} '${this.name}' - ${message}`;
+        formattedMessage = `${marker.bgRedBright.bold(' ERROR ')} '${this.name}' - ${message}`;
         break;
       case 'DEBUG':
-        formattedMessage = `${marker.bgBlueBright(' DEBUG ')} '${this.name}' - ${message}`;
+        formattedMessage = `${marker.bgBlueBright.bold(' DEBUG ')} '${this.name}' - ${message}`;
         break;
       default:
-        formattedMessage = `${marker.bgGreenBright(' INFO ')} '${this.name}' - ${message}`;
+        formattedMessage = `${marker.bgGreenBright.bold(' INFO ')} '${this.name}' - ${message}`;
         break;
     }
 
@@ -100,30 +113,41 @@ class Logger {
   }
 
   /**
-   * Write the formatted log message to the file.
-   * This method appends the log message to the log file specified in the configuration.
-   *
-   * @param {LOGGER_MESSAGE_TO_LOG} message - The message to be written to the log file.
+   * Flush the accumulated log messages to the log file.
+   * This method writes the messages in the buffer to the log file and clears the buffer.
    */
-  private writeLog(message: LOGGER_MESSAGE_TO_LOG): void {
-    fs.promises.appendFile(this.path, message).catch((error: unknown) => {
-      // If writing the log file fails, log the error to the console with a formatted message
-      console.error(
-        this.formatConsoleMessage(
-          'ERROR',
-          `Failed to write log to file: ${error}`
-        )
-      );
-    });
+  private async flushLogs(): Promise<void> {
+    if (this.logBuffer.length > 0) {
+      const logsToWrite = this.logBuffer.join('');
+      this.logBuffer = []; // Clear the buffer after flushing
+      try {
+        await fs.promises.appendFile(this.path, logsToWrite);
+      } catch (error) {
+        console.error(
+          this.formatConsoleMessage('ERROR', `Failed to flush logs: ${error}`)
+        );
+      }
+    }
+  }
+
+  /**
+   * Clear the flush interval to stop periodic flushing when the application exits.
+   */
+  private clearFlushInterval(): void {
+    clearInterval(this.flushInterval);
   }
 
   /**
    * Logs the message to both the console and the log file.
+   * It also manages the log buffer and ensures logs are flushed periodically.
    *
    * @param {LOGGER_LEVEL} level - The log level (INFO, WARN, ERROR, DEBUG).
    * @param {LOGGER_MESSAGE} message - The message to be logged.
    */
-  private logMessage(level: LOGGER_LEVEL, message: LOGGER_MESSAGE): void {
+  private async logMessage(
+    level: LOGGER_LEVEL,
+    message: LOGGER_MESSAGE
+  ): Promise<void> {
     const consoleMessage = this.formatConsoleMessage(level, message); // Format message for the console
     const messageToLogInFile = this.formatLogMessage(level, message); // Format message for the file
     const consoleMode = level.toLowerCase() as
@@ -131,8 +155,20 @@ class Logger {
       | 'warn'
       | 'error'
       | 'debug'; // Dynamically map level to corresponding console method
+    // eslint-disable-next-line no-console
     console[consoleMode](consoleMessage); // Log message to console
-    setImmediate(() => this.writeLog(messageToLogInFile)); // Write message to log file using setInterval to use non-blocking I/O
+    // Check if file logging is enabled via the environment variable JOOR_LOGGER_ENABLE_FILE_LOGGING
+    // If enabled, write the log message to the file using setImmediate for non-blocking I/O
+    if (
+      process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING &&
+      convertStringToBoolean(process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING)
+    ) {
+      this.logBuffer.push(messageToLogInFile);
+      if (this.logBuffer.length >= 100) {
+        // Flush if buffer exceeds 100 messages
+        await this.flushLogs();
+      }
+    }
   }
 
   /**
@@ -143,7 +179,7 @@ class Logger {
   public info(message: LOGGER_MESSAGE): void {
     const timeStamp = new Date().toISOString();
     const formattedMessage = this.formatCallBack(timeStamp, message);
-    this.logMessage('INFO', formattedMessage);
+    void this.logMessage('INFO', formattedMessage);
   }
 
   /**
@@ -154,7 +190,7 @@ class Logger {
   public error(message: LOGGER_MESSAGE): void {
     const timeStamp = new Date().toISOString();
     const formattedMessage = this.formatCallBack(timeStamp, message);
-    this.logMessage('ERROR', formattedMessage);
+    void this.logMessage('ERROR', formattedMessage);
   }
 
   /**
@@ -165,7 +201,7 @@ class Logger {
   public warn(message: LOGGER_MESSAGE): void {
     const timeStamp = new Date().toISOString();
     const formattedMessage = this.formatCallBack(timeStamp, message);
-    this.logMessage('WARN', formattedMessage);
+    void this.logMessage('WARN', formattedMessage);
   }
 
   /**
@@ -176,7 +212,7 @@ class Logger {
   public debug(message: LOGGER_MESSAGE): void {
     const timeStamp = new Date().toISOString();
     const formattedMessage = this.formatCallBack(timeStamp, message);
-    this.logMessage('DEBUG', formattedMessage);
+    void this.logMessage('DEBUG', formattedMessage);
   }
 }
 
