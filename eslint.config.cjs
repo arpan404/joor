@@ -34,7 +34,7 @@ module.exports = [
       import: importPlugin,
     },
     rules: {
-      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'no-console': ['warn', { allow: ['warn', 'error', 'info', 'debug'] }],
       'no-unused-vars': [
         'error',
         {

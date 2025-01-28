@@ -1,4 +1,5 @@
 import joorData from '@/data/joor';
+import logger from '@/helpers/joorLogger';
 import marker from '@/packages/marker';
 import { JOOR_ERROR } from '@/types/error';
 
@@ -83,13 +84,11 @@ class JoorError extends Error {
     const errorMessage = this.formatMessage();
 
     if (this.type === 'warn') {
-      console.warn(marker.yellowBright(errorMessage));
+      logger.warn(errorMessage);
     } else if (this.type === 'error') {
-      console.error(marker.redBright(errorMessage));
-      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      logger.error(`${errorMessage}\nStack Trace:\n${this.stackTrace}`);
     } else if (this.type === 'panic') {
-      console.error(marker.redBright(errorMessage));
-      console.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      logger.error(`${errorMessage}\nStack Trace:\n${this.stackTrace}`);
       process.exit(1);
     }
   }

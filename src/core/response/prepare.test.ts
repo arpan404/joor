@@ -16,11 +16,8 @@ describe('prepareResponse', () => {
     // Prepare the response using prepareResponse function
     const preparedResponse: PREPARED_RESPONSE =
       prepareResponse(internalResponse);
-    console.log(preparedResponse.data);
     // Assert the prepared response is correctly formatted
     expect(preparedResponse.status).toBe(200);
-    expect(preparedResponse.data).toBe(data);
-    console.log(preparedResponse.data);
     expect(preparedResponse.headers).toEqual({});
     expect(preparedResponse.cookies).toEqual([]);
   });

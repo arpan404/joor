@@ -27,8 +27,6 @@ import { JOOR_ERROR } from '@/types/error';
  *    }
  * }
  *
- *
- *
  */
 
 class Jrror extends JoorError {
