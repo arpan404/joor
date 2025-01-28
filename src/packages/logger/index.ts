@@ -42,13 +42,22 @@ class Logger {
 
   constructor({ name, path, formatCallBack, flushInterval }: LOGGER_CONFIG) {
     this.name = name ?? this.name; // Set logger name, default is 'logger'
+
     this.path = path ?? this.path; // Set log file path, default is 'logs.log' in current directory
+    if (!this.path.endsWith('.log')) {
+      // Ensure that the log file has a .log extension
+      this.path = this.path + '.log';
+    }
+
     this.formatCallBack = formatCallBack ?? this.formatCallBack; // Custom format callback, default is basic timestamped message
+
     // Start interval to flush logs every 10 seconds by default
     this.flushInterval = setInterval(() => {
       void this.flushLogs();
     }, flushInterval ?? 10000);
+
     this.flushInterval.unref(); // This ensures that this timer doesn't prevent the process from exiting
+
     // Handle process shutdown (clear interval)
     process.on('exit', () => this.clearFlushInterval());
     process.on('SIGINT', () => this.clearFlushInterval());
@@ -121,6 +130,14 @@ class Logger {
       const logsToWrite = this.logBuffer.join('');
       this.logBuffer = []; // Clear the buffer after flushing
       try {
+        const fileStats = await fs.promises.stat(this.path);
+        if (fileStats.size > 10485760) {
+          // if file size exceeds 10MB, write to a new file
+          this.path = this.path.replace(
+            '.log',
+            `-${new Date().toISOString()}.log`
+          );
+        }
         await fs.promises.appendFile(this.path, logsToWrite);
       } catch (error) {
         console.error(
