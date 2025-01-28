@@ -13,8 +13,8 @@ type LOGGER_FORMAT_CALLBACK = (
 
 // config object that logger receives in the constructor must be of this type
 interface LOGGER_CONFIG {
-  name: LOGGER_NAME;
-  path: LOGGER_PATH;
+  name?: LOGGER_NAME;
+  path?: LOGGER_PATH;
   formatCallBack?: LOGGER_FORMAT_CALLBACK;
   flushInterval?: number;
 }

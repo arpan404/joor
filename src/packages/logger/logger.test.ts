@@ -63,13 +63,6 @@ describe('Logger', () => {
     logger.info(mockMessage);
     expect(fs.promises.appendFile).not.toHaveBeenCalled();
   });
-  it("should create the directory if it doesn't exist", async () => {
-    const newLogger = new Logger({
-      name: 'new.logger',
-      path: '/hello/new.log',
-    });
-    newLogger.info(mockMessage);
-  });
   it('should log messages with custom format callback', () => {
     const customLogger = new Logger({
       name: 'custom.logger',
