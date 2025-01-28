@@ -125,6 +125,12 @@ class Logger {
       const logsToWrite = this.logBuffer.join('');
       this.logBuffer = []; // Clear the buffer after flushing
       try {
+        const dirname = nodePath.dirname(this.path);
+
+        if (!fs.existsSync(dirname)) {
+          await fs.promises.mkdir(dirname, { recursive: true });
+        }
+
         const fileStats = await fs.promises.stat(this.path);
 
         if (fileStats.size > 10485760) {

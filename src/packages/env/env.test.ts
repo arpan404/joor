@@ -7,6 +7,7 @@ import loadEnv from '@/packages/env/load';
 import parseEnv from '@/packages/env/parse';
 jest.mock('node:fs');
 jest.mock('node:path');
+jest.mock('@/packages/logger');
 describe('loadEnv', () => {
   const mockReadFileSync = fs.readFileSync as jest.Mock;
 
