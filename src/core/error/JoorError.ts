@@ -84,13 +84,11 @@ class JoorError extends Error {
     const errorMessage = this.formatMessage();
 
     if (this.type === 'warn') {
-      logger.warn(marker.yellowBright(errorMessage));
+      logger.warn(errorMessage);
     } else if (this.type === 'error') {
-      logger.error(marker.redBright(errorMessage));
-      logger.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      logger.error(`${errorMessage}\nStack Trace:\n${this.stackTrace}`);
     } else if (this.type === 'panic') {
-      logger.error(marker.redBright(errorMessage));
-      logger.error(marker.blueBright(`Stack Trace:\n${this.stackTrace}`));
+      logger.error(`${errorMessage}\nStack Trace:\n${this.stackTrace}`);
       process.exit(1);
     }
   }

@@ -1,6 +1,7 @@
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
 import Router from '@/core/router';
+import logger from '@/helpers/joorLogger';
 import marker from '@/packages/marker';
 import { ROUTE_HANDLER, ROUTE_PATH, ROUTES } from '@/types/route';
 
@@ -106,7 +107,7 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
     if (error instanceof Jrror || error instanceof JoorError) {
       error.handle();
     } else {
-      console.error(
+      logger.error(
         marker.bgRedBright.whiteBright('Failed to add middlewares'),
         error
       );

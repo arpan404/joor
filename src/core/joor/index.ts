@@ -4,7 +4,7 @@ import Configuration from '@/core/config';
 import Jrror from '@/core/error';
 import loadEnv from '@/core/internals/loadEnv';
 import Server from '@/core/joor/server';
-import marker from '@/packages/marker';
+import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 
@@ -57,7 +57,7 @@ class Joor {
       if (error instanceof Jrror) {
         error.handle();
       } else {
-        console.info(marker.redBright('Unknown Error Occurred.\n') + error);
+        logger.info(`Unknown Error Occurred.\n${error}`);
       }
     }
   }
@@ -89,8 +89,7 @@ class Joor {
       } else if (typeof d === 'function') {
         middlewares = [...middlewares, d];
       } else {
-        console.warn(
-          marker.bgYellowBright('Warning'),
+        logger.warn(
           `Invalid data type "${typeof d}" passed to use method. Ignoring...`
         );
       }
@@ -103,8 +102,7 @@ class Joor {
         addMiddlewares(path, middlewares);
       }
     } else {
-      console.warn(
-        marker.bgYellowBright('Warning'),
+      logger.warn(
         `Invalid data passed to use method. Ensure both paths and middlewares are provided. Ignoring...`
       );
     }

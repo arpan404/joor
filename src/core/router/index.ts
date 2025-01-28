@@ -1,9 +1,8 @@
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
 import { validateHandler, validateRoute } from '@/core/router/validation';
-import marker from '@/packages/marker';
+import logger from '@/helpers/joorLogger';
 import { ROUTE_HANDLER, ROUTES, ROUTE_METHOD, ROUTE_PATH } from '@/types/route';
-
 /**
  * Class representing a Router.
  *
@@ -145,7 +144,7 @@ class Router {
         Router.routes = {
           '/': Router.routes['/'],
         };
-        console.warn(
+        logger.warn(
           'Multiple root level routes detected. Only the first root level route will be considered. Rest will be ignored.'
         );
       }
@@ -213,7 +212,7 @@ class Router {
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
       } else {
-        console.error(marker.bgRedBright.blackBright('Router Error: '), error);
+        logger.error('Router Error: ', error);
       }
     }
   }

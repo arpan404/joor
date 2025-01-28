@@ -42,22 +42,17 @@ class Logger {
 
   constructor({ name, path, formatCallBack, flushInterval }: LOGGER_CONFIG) {
     this.name = name ?? this.name; // Set logger name, default is 'logger'
-
     this.path = path ?? this.path; // Set log file path, default is 'logs.log' in current directory
     if (!this.path.endsWith('.log')) {
       // Ensure that the log file has a .log extension
-      this.path = this.path + '.log';
+      this.path = `${this.path}.log`;
     }
-
     this.formatCallBack = formatCallBack ?? this.formatCallBack; // Custom format callback, default is basic timestamped message
-
     // Start interval to flush logs every 10 seconds by default
     this.flushInterval = setInterval(() => {
       void this.flushLogs();
     }, flushInterval ?? 10000);
-
     this.flushInterval.unref(); // This ensures that this timer doesn't prevent the process from exiting
-
     // Handle process shutdown (clear interval)
     process.on('exit', () => this.clearFlushInterval());
     process.on('SIGINT', () => this.clearFlushInterval());
@@ -131,6 +126,7 @@ class Logger {
       this.logBuffer = []; // Clear the buffer after flushing
       try {
         const fileStats = await fs.promises.stat(this.path);
+
         if (fileStats.size > 10485760) {
           // if file size exceeds 10MB, write to a new file
           this.path = this.path.replace(
@@ -187,49 +183,60 @@ class Logger {
       }
     }
   }
-
-  /**
-   * Logs an INFO level message to both the console and the log file.
-   *
-   * @param {LOGGER_MESSAGE} message - The message to be logged.
-   */
-  public info(message: LOGGER_MESSAGE): void {
-    const timeStamp = new Date().toISOString();
-    const formattedMessage = this.formatCallBack(timeStamp, message);
-    void this.logMessage('INFO', formattedMessage);
-  }
-
   /**
    * Logs an ERROR level message to both the console and the log file.
    *
-   * @param {LOGGER_MESSAGE} message - The message to be logged.
+   * @param {...any[]} messages - The message(s) to be logged, can be of any type.
    */
-  public error(message: LOGGER_MESSAGE): void {
+  public error(...messages: any[]): void {
     const timeStamp = new Date().toISOString();
-    const formattedMessage = this.formatCallBack(timeStamp, message);
+    const formattedMessage = this.formatCallBack(
+      timeStamp,
+      messages.map((msg) => String(msg)).join(' ')
+    );
     void this.logMessage('ERROR', formattedMessage);
   }
 
   /**
    * Logs a WARN level message to both the console and the log file.
    *
-   * @param {LOGGER_MESSAGE} message - The message to be logged.
+   * @param {...any[]} messages - The message(s) to be logged, can be of any type.
    */
-  public warn(message: LOGGER_MESSAGE): void {
+  public warn(...messages: any[]): void {
     const timeStamp = new Date().toISOString();
-    const formattedMessage = this.formatCallBack(timeStamp, message);
+    const formattedMessage = this.formatCallBack(
+      timeStamp,
+      messages.map((msg) => String(msg)).join(' ')
+    );
     void this.logMessage('WARN', formattedMessage);
   }
 
   /**
    * Logs a DEBUG level message to both the console and the log file.
    *
-   * @param {LOGGER_MESSAGE} message - The message to be logged.
+   * @param {...any[]} messages - The message(s) to be logged, can be of any type.
    */
-  public debug(message: LOGGER_MESSAGE): void {
+  public debug(...messages: any[]): void {
     const timeStamp = new Date().toISOString();
-    const formattedMessage = this.formatCallBack(timeStamp, message);
+    const formattedMessage = this.formatCallBack(
+      timeStamp,
+      messages.map((msg) => String(msg)).join(' ')
+    );
     void this.logMessage('DEBUG', formattedMessage);
+  }
+
+  /**
+   * Logs an INFO level message to both the console and the log file.
+   *
+   * @param {...any[]} messages - The message(s) to be logged, can be of any type.
+   */
+  public info(...messages: any[]): void {
+    const timeStamp = new Date().toISOString();
+    const formattedMessage = this.formatCallBack(
+      timeStamp,
+      messages.map((msg) => String(msg)).join(' ')
+    );
+    void this.logMessage('INFO', formattedMessage);
   }
 }
 
