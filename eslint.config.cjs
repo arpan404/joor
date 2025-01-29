@@ -11,6 +11,7 @@ module.exports = [
     // Ignore patterns
     ignores: [
       '**/dist/**',
+      '**/release/**',
       '**/build/**',
       '**/node_modules/**',
       '**/.next/**',

@@ -15,9 +15,7 @@ const config: Config = {
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!(chalk)/)'],
-  extensionsToTreatAsEsm: ['.ts'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleFileExtensions: ['ts', 'js'],
 };
 
 export default config;

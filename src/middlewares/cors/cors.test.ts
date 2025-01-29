@@ -1,5 +1,4 @@
-import cors from '.';
-
+import cors from '@/middlewares/cors';
 import { JoorRequest } from '@/types/request';
 describe('CORS', () => {
   it("should handle request with default options if 'options' is not provided", async () => {

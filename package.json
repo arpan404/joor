@@ -11,8 +11,8 @@
     "src"
   ],
   "scripts": {
-    "build": "tsx dev/scripts/build.ts",
-    "compile": "tsc",
+    "build": "tsx src/dev/scripts/build.ts",
+    "compile": "tsc --project tsconfig.build.json && tsc-alias",
     "setup": "node dev/scripts/setup.js",
     "format": "prettier --write .",
     "lint": "eslint .",
@@ -54,6 +54,7 @@
     "prettier": "^3.4.2",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.7.3"
   },
   "repository": {
