@@ -37,8 +37,7 @@ const versionRegex =
 // function to create builds using typescript compiler
 async function runBuilds() {
   try {
-    const buildPath =
-      flag + path.join(process.cwd(), 'build')
+    const buildPath = flag + path.join(process.cwd(), 'build');
 
     // deleting build folder, if it exists
     if (fs.existsSync(buildPath)) {
