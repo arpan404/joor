@@ -2,6 +2,12 @@ import JoorResponse from '@/core/response';
 import Router from '@/core/router';
 import handleRoute from '@/core/router/handle';
 import { JoorRequest } from '@/types/request';
+
+jest.spyOn(console, 'info').mockImplementation(() => {});
+jest.spyOn(console, 'warn').mockImplementation(() => {});
+jest.spyOn(console, 'error').mockImplementation(() => {});
+jest.spyOn(console, 'debug').mockImplementation(() => {});
+jest.spyOn(console, 'log').mockImplementation(() => {});
 describe('Route Handler', () => {
   const router = new Router();
   let consoleSpy: jest.SpyInstance;
