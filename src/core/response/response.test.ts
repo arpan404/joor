@@ -1,12 +1,10 @@
 import JoorResponse from '@/core/response';
 import { RESPONSE_COOKIES } from '@/types/response';
-
 jest.spyOn(console, 'info').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'debug').mockImplementation(() => {});
 jest.spyOn(console, 'log').mockImplementation(() => {});
-
 describe('JoorResponse', () => {
   let response: JoorResponse;
   beforeEach(() => {
