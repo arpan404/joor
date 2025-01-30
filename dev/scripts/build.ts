@@ -12,9 +12,9 @@ const packageFileData = `
   "name": "joor",
   "version": "version_placeholder",
   "description": "Joor is a full-fledged backend web framework for small to enterprise level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
-  "main": "./app/index.js",
-  "types": "./app/index.d.ts",
-  "type":"module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "type":"commonjs",
   "bin":{
     "create-joor": "cli/creator/index.js"
   },

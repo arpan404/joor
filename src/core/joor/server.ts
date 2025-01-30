@@ -120,9 +120,19 @@ class Server {
       // Prepare the response by setting the status, headers, and cookies
       const parsedResponse = prepareResponse(internalResponse);
       // Write the response headers
-      res.writeHead(parsedResponse.status, parsedResponse.headers);
+      res.statusCode = parsedResponse.status;
+      for (const [headerName, headerValue] of Object.entries(
+        parsedResponse.headers
+      )) {
+        res.setHeader(headerName, headerValue);
+      }
+
       if (req.joorHeaders) {
-        res.writeHead(parsedResponse.status, req.joorHeaders);
+        for (const [headerName, headerValue] of Object.entries(
+          req.joorHeaders
+        )) {
+          res.setHeader(headerName, headerValue);
+        }
       }
 
       // Set cookies if any are present

@@ -19,6 +19,7 @@ module.exports = [
       '**/.turbo/**',
       '**/.vercel/**',
       '**/*.d.ts',
+      '**/dev/playgrounds/**',
     ],
   },
   {

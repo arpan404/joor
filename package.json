@@ -11,7 +11,7 @@
     "src"
   ],
   "scripts": {
-    "build": "tsx src/dev/scripts/build.ts",
+    "build": "tsx dev/scripts/build.ts",
     "compile": "tsc --project tsconfig.build.json && tsc-alias",
     "setup": "node dev/scripts/setup.js",
     "format": "prettier --write .",
@@ -68,8 +68,5 @@
   "homepage": "https://github.com/arpan404/joor#readme",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "module-alias": "^2.2.3"
   }
 }
