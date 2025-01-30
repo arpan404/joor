@@ -1,34 +1,38 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": false,
-    "allowJs": false,
-    "allowSyntheticDefaultImports": true,
-    "checkJs": false,
-    "composite": false,
-    "declaration": true,
-    "downlevelIteration": false,
-    "emitDeclarationOnly": false,
-    "emitDecoratorMetadata": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ESNext"],
+    /* Previous settings remain the same */
+    "target": "ESNext",
     "module": "ESNext",
+    "lib": ["ESNext"],
     "moduleResolution": "node",
-    "noEmit": false,
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": "./build",
-    "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    },
-    "rootDir": ".",
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "sourceMap": true,
-    "strict": true,
-    "target": "ESNext"
+    "declaration": true,
+    "noEmit": false,
+
+    /* Updated Output and Path Configuration */
+    "outDir": "./build",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "include": ["src/**/*", "tests/**/*", "jest.config.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "jest.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
 }
