@@ -84,7 +84,6 @@ class Joor {
 
     // Separate paths and middleware functions from the provided data
     for (const d of data) {
-      console.info(typeof d);
       if (typeof d === 'string') {
         paths = [...paths, d];
       } else if (typeof d === 'function') {
