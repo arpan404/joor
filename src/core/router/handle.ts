@@ -41,7 +41,7 @@ const handleRoute = async (
     // If no route is matched, return a 404 Not Found response
     if (!routeDetail?.handlers || routeDetail.handlers.length === 0) {
       const response = new JoorResponse();
-      response.setStatus(404).setMessage('Not Found');
+      response.setStatus(404).setData('Not Found');
       return response.parseResponse();
     }
 

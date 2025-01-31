@@ -1,4 +1,12 @@
-import { Joor } from 'joor';
+const express = require('express');
 
-const app = new Joor();
-app.start();
+const app = express();
+const port = 1000;
+
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});

@@ -1,0 +1,10 @@
+config:
+  target: 'http://localhost:1000' # Replace with your API endpoint
+  phases:
+    - duration: 100 # Test duration in seconds
+      arrivalRate: 1000 # Number of requests per second (concurrent users)
+
+scenarios:
+  - flow:
+      - get:
+          url: '/' # Replace with your API's endpoint
