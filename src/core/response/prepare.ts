@@ -23,12 +23,10 @@ export default function prepareResponse(
       message: response.message,
       data: response.data,
     });
-  } else if (
-    response.data &&
-    response.message &&
-    response.dataType === 'normal'
-  ) {
+  } else if (response.data && response.dataType === 'normal') {
     preparedResponse.data = response.data;
+  } else {
+    preparedResponse.data = response.message;
   }
   // Copy the headers from the response
   preparedResponse.headers = { ...response.headers };

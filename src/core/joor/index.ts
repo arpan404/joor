@@ -97,6 +97,10 @@ class Joor {
 
     // Add middlewares to the specified paths
     // console.log(paths, middlewares);
+    if (paths.length === 0) {
+      paths = ['/'];
+    }
+
     if (paths.length > 0 && middlewares.length > 0) {
       for (const path of paths) {
         addMiddlewares(path, middlewares);

@@ -176,6 +176,8 @@ class Logger {
       | 'debug'; // Dynamically map level to corresponding console method
     // eslint-disable-next-line no-console
     console[consoleMode](consoleMessage); // Log message to console
+    // eslint-disable-next-line no-console
+    console.log('\n');
     // Check if file logging is enabled via the environment variable JOOR_LOGGER_ENABLE_FILE_LOGGING
     // If enabled, write the log message to the file using setImmediate for non-blocking I/O
     if (

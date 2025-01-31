@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import Jrror from '@/core/error';
-import marker from '@/packages/marker';
+import Jrror from '@/core/error/index';
+import joorLogger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -39,17 +39,25 @@ class Configuration {
       // Default config file name is joor.config.js or else fallback to joor.config.ts
       let configFile = 'joor.config.js';
 
-      if (!fs.existsSync(path.join(process.cwd() + configFile))) {
+      if (!fs.existsSync(path.resolve(process.cwd(), configFile))) {
         configFile = 'joor.config.ts';
+      }
+
+      if (!fs.existsSync(path.resolve(process.cwd(), configFile))) {
+        throw new Jrror({
+          code: 'config-file-missing',
+          docsPath: '/configuration',
+          message:
+            'The configuration file (joor.config.js or joor.config.ts) is missing in the root directory.',
+          type: 'error',
+        });
       }
 
       const configPath = path.resolve(process.cwd(), configFile);
       // Dynamically import the configuration file
       Configuration.configData = (await import(configPath))
         .config as JOOR_CONFIG;
-      console.info(
-        marker.greenBright('Configurations have been loaded successfully')
-      );
+      joorLogger.info(Configuration.configData);
     } catch (error) {
       throw new Jrror({
         code: 'config-load-failed',

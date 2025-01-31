@@ -83,7 +83,7 @@ const matchRoute = (
   routeParts = routeParts.filter((part) => part !== '');
   // Handle root path
   if (routeParts.length === 0) {
-    if (registeredRoutes['/'] && registeredRoutes['/'][method]) {
+    if (registeredRoutes['/']?.[method]) {
       handlers = [
         ...(registeredRoutes['/'].globalMiddlewares ?? []),
         ...(registeredRoutes['/'].localMiddlewares ?? []),

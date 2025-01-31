@@ -11,6 +11,7 @@ module.exports = [
     // Ignore patterns
     ignores: [
       '**/dist/**',
+      '**/release/**',
       '**/build/**',
       '**/node_modules/**',
       '**/.next/**',
@@ -18,6 +19,7 @@ module.exports = [
       '**/.turbo/**',
       '**/.vercel/**',
       '**/*.d.ts',
+      '**/dev/playgrounds/**',
     ],
   },
   {

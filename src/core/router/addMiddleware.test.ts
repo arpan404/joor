@@ -1,5 +1,10 @@
 import Router from '@/core/router';
 import addMiddlewares from '@/core/router/addMiddlewares';
+jest.spyOn(console, 'info').mockImplementation(() => {});
+jest.spyOn(console, 'warn').mockImplementation(() => {});
+jest.spyOn(console, 'error').mockImplementation(() => {});
+jest.spyOn(console, 'debug').mockImplementation(() => {});
+jest.spyOn(console, 'log').mockImplementation(() => {});
 describe('addMiddlewares', () => {
   beforeEach(() => {
     Router.routes = {
