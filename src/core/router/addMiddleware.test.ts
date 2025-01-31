@@ -11,6 +11,7 @@ describe('addMiddlewares', () => {
       '/': {},
     };
     jest.clearAllMocks();
+    process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   });
   it('should add local middlewares to a specific route', () => {
     const middlewares = [jest.fn(), jest.fn()];

@@ -8,6 +8,7 @@ describe('Router', () => {
   beforeEach(() => {
     Router.routes = { '/': {} };
     jest.clearAllMocks();
+    process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   });
   it("shoud throw error if route doesn't start with /", () => {
     const router = new Router();

@@ -81,7 +81,6 @@ class JoorResponse {
           type: 'error',
         });
       }
-
       if (override) {
         this.headers = { ...headers };
       } else {
@@ -229,7 +228,7 @@ class JoorResponse {
           type: 'error',
         });
       }
-      this.data = JSON.stringify(value);
+      this.data = this.data;
       this.dataType = 'json';
     } catch (error: unknown) {
       if (error instanceof Jrror || error instanceof JoorError) {
