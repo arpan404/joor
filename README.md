@@ -6,31 +6,31 @@ This project is currently under active development. We will be releasing the alp
 
 1. **Fork and Clone the Repo**
 2. **Install Packages**
-    ```sh
-    npm install
-    ```
+   ```sh
+   npm install
+   ```
 3. **Create a Release Version**
-    - You will be asked to enter a version name: use the `0.0.1-ax` pattern or `0.0.1` pattern.
+   - You will be asked to enter a version name: use the `0.0.1-ax` pattern or `0.0.1` pattern.
 4. **Change Directory to Release Folder**
-    ```sh
-    cd release
-    ```
+   ```sh
+   cd release
+   ```
 5. **Run npm link**
-    ```sh
-    npm link
-    ```
+   ```sh
+   npm link
+   ```
 6. **Navigate to Playground**
-    ```sh
-    cd dev/playgrounds/ground1
-    ```
+   ```sh
+   cd dev/playgrounds/ground1
+   ```
 7. **Link joor**
-    ```sh
-    npm link joor
-    ```
+   ```sh
+   npm link joor
+   ```
 8. **Start the Server**
-    ```sh
-    npm start
-    ```
+   ```sh
+   npm start
+   ```
 
 You can explore and test the functionalities of joor. Benchmark it against `ground0` containing Express and report any performance issues if joor is slower than Express.
 

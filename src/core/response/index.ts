@@ -81,6 +81,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (override) {
         this.headers = { ...headers };
       } else {

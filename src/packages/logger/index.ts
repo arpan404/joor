@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import * as nodePath from 'node:path';
+
 import marker from '@/packages/marker';
 import {
   LOGGER_CONFIG,
@@ -133,10 +134,12 @@ class Logger {
 
         let maxFileSize =
           Number(process.env.JOOR_LOGGER_MAX_FILE_SIZE) ?? 10485760; // Default to 10MB
+
         if (maxFileSize < 102400) {
           // minimum users can set is 100KB
           maxFileSize = 102400;
         }
+
         if (fileStats.size > maxFileSize) {
           // if file size exceeds 10MB, write to a new file
           this.path = this.path.replace(
@@ -184,6 +187,7 @@ class Logger {
       // eslint-disable-next-line no-console
       console.log('\n');
     }
+
     // Check if file logging is enabled via the environment variable JOOR_LOGGER_ENABLE_FILE_LOGGING
     // If enabled, write the log message to the file using setImmediate for non-blocking I/O
     if (process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING === 'true') {
