@@ -24,6 +24,7 @@ describe('Logger', () => {
   const mockMessage = 'This is a test message';
   beforeEach(() => {
     process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING = 'true';
+    process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   });
   afterEach(() => {
     jest.clearAllMocks();

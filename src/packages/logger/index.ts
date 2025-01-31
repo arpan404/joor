@@ -1,7 +1,5 @@
 import fs from 'node:fs';
 import * as nodePath from 'node:path';
-
-import convertStringToBoolean from '@/helpers/convertStringToBoolean';
 import marker from '@/packages/marker';
 import {
   LOGGER_CONFIG,
@@ -133,7 +131,13 @@ class Logger {
 
         const fileStats = await fs.promises.stat(this.path);
 
-        if (fileStats.size > 10485760) {
+        let maxFileSize =
+          Number(process.env.JOOR_LOGGER_MAX_FILE_SIZE) ?? 10485760; // Default to 10MB
+        if (maxFileSize < 102400) {
+          // minimum users can set is 100KB
+          maxFileSize = 102400;
+        }
+        if (fileStats.size > maxFileSize) {
           // if file size exceeds 10MB, write to a new file
           this.path = this.path.replace(
             '.log',
@@ -167,23 +171,23 @@ class Logger {
     level: LOGGER_LEVEL,
     message: LOGGER_MESSAGE
   ): Promise<void> {
-    const consoleMessage = this.formatConsoleMessage(level, message); // Format message for the console
-    const messageToLogInFile = this.formatLogMessage(level, message); // Format message for the file
-    const consoleMode = level.toLowerCase() as
-      | 'info'
-      | 'warn'
-      | 'error'
-      | 'debug'; // Dynamically map level to corresponding console method
-    // eslint-disable-next-line no-console
-    console[consoleMode](consoleMessage); // Log message to console
-    // eslint-disable-next-line no-console
-    console.log('\n');
+    // Check if console logging is enabled via the environment variable JOOR_LOGGER_ENABLE_CONSOLE_LOGGING
+    if (process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING === 'true') {
+      const consoleMessage = this.formatConsoleMessage(level, message); // Format message for the console
+      const consoleMode = level.toLowerCase() as
+        | 'info'
+        | 'warn'
+        | 'error'
+        | 'debug'; // Dynamically map level to corresponding console method
+      // eslint-disable-next-line no-console
+      console[consoleMode](consoleMessage); // Log message to console
+      // eslint-disable-next-line no-console
+      console.log('\n');
+    }
     // Check if file logging is enabled via the environment variable JOOR_LOGGER_ENABLE_FILE_LOGGING
     // If enabled, write the log message to the file using setImmediate for non-blocking I/O
-    if (
-      process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING &&
-      convertStringToBoolean(process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING)
-    ) {
+    if (process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING === 'true') {
+      const messageToLogInFile = this.formatLogMessage(level, message); // Format message for the file
       this.logBuffer.push(messageToLogInFile);
       if (this.logBuffer.length >= 100) {
         // Flush if buffer exceeds 100 messages
