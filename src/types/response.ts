@@ -13,7 +13,12 @@ type RESPONSE_MESSAGE = string;
 
 type RESPONSE_DATA = unknown;
 
-type RESPONSE_DATA_TYPE = 'json' | 'normal' | 'error';
+type RESPONSE_DATA_TYPE = {
+  type: 'normal' | 'json' | 'error' | 'binary';
+  isStream: boolean;
+  isFile: boolean;
+  filePath?: string;
+};
 
 // Interface for response cookies
 interface RESPONSE_COOKIES {
@@ -32,7 +37,7 @@ interface RESPONSE_COOKIES {
 
 // Interface for response headers
 interface RESPONSE_HEADERS {
-  [key: string]: string;
+  [key: string]: string | number;
 }
 
 // Interface for the main response structure used by the JoorResponse class
@@ -52,17 +57,17 @@ interface INTERNAL_RESPONSE {
   data: RESPONSE_DATA;
   headers?: RESPONSE_HEADERS;
   cookies?: RESPONSE_COOKIES;
-  dataType?: RESPONSE_DATA_TYPE;
+  dataType: RESPONSE_DATA_TYPE;
 }
 
 // Interface for the final prepared response data to be sent to the client
 interface PREPARED_RESPONSE {
-  headers: {
-    [key: string]: string;
-  };
-  status: number;
+  headers: RESPONSE_HEADERS;
+  status: RESPONSE_STATUS;
   data: unknown;
   cookies: Array<string>;
+  httpMessage: string;
+  dataType: RESPONSE_DATA_TYPE;
 }
 
 export {
