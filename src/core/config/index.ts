@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import Jrror from '@/core/error/index';
-import joorLogger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -57,7 +56,6 @@ class Configuration {
       // Dynamically import the configuration file
       Configuration.configData = (await import(configPath))
         .config as JOOR_CONFIG;
-      joorLogger.info(Configuration.configData);
     } catch (error) {
       throw new Jrror({
         code: 'config-load-failed',

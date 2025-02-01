@@ -322,12 +322,12 @@ class JoorResponse {
    * return response;
    * ```
    */
-  public setDataAsJson(value: typeof this.data): JoorResponse {
+  public setDataAsJson(data: typeof this.data): JoorResponse {
     try {
-      if (typeof value !== 'object') {
+      if (typeof data !== 'object') {
         throw new Jrror({
           code: 'response-json-invalid',
-          message: `JSON data must be an object, but ${typeof value} was provided.`,
+          message: `JSON data must be an object, but ${typeof data} was provided.`,
           type: 'error',
         });
       }
@@ -347,7 +347,7 @@ class JoorResponse {
           type: 'warn',
         });
       }
-      this.data = this.data;
+      this.data = data;
       this.dataType = {
         type: 'json',
         isStream: this.dataType.isStream,
@@ -424,8 +424,13 @@ class JoorResponse {
       this.message ??
       httpCodes[response.status] ??
       (this.dataType.type === 'error' ? 'Internal Server Error' : 'OK');
-    response.data =
-      this.dataType.type === 'error' ? this.error : this.data || undefined;
+
+    if (response.dataType.type === 'error') {
+      response.data = this.error;
+    } else {
+      response.data = this.data;
+    }
+
     response.data = response.data ?? response.message;
     return response;
   }

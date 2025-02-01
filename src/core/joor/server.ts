@@ -7,6 +7,7 @@ import Jrror from '@/core/error';
 import prepareResponse from '@/core/response/prepare';
 import handleRoute from '@/core/router/handle';
 import { JoorRequest } from '@/types/request';
+import logger from '@/helpers/joorLogger';
 
 /**
  * Represents the server class responsible for starting the HTTP(S) server and processing requests.
@@ -72,7 +73,7 @@ class Server {
     // Start listening on the configured port
     try {
       server.listen(configData.server.port, () => {
-        console.info(
+        logger.info(
           `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
             configData.server.host ? configData.server.host : 'localhost'
           }:${configData.server.port}`

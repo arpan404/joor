@@ -22,20 +22,29 @@ export default function prepareResponse(
   // Format the data based on the type of response
   if (response.dataType.type === 'json') {
     if (typeof response.data === 'object') {
-      preparedResponse.headers = { ...preparedResponse.headers };
+      preparedResponse.headers = {
+        ...preparedResponse.headers,
+        'Content-Type': 'application/json',
+      };
       preparedResponse.data = JSON.stringify(response.data);
     } else {
       preparedResponse.data = response.data;
     }
   } else if (response.dataType.type === 'error') {
-    preparedResponse.headers = { ...preparedResponse.headers };
+    preparedResponse.headers = {
+      ...preparedResponse.headers,
+      'Content-Type': 'application/json',
+    };
     preparedResponse.data = JSON.stringify({
       message: response.message,
       data: response.data,
     });
   } else {
     if (typeof response.data === 'object') {
-      preparedResponse.headers = { ...preparedResponse.headers };
+      preparedResponse.headers = {
+        ...preparedResponse.headers,
+        'Content-Type': 'application/json',
+      };
       preparedResponse.data = JSON.stringify(response.data);
     } else {
       preparedResponse.data = response.data;

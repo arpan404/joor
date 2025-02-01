@@ -13,7 +13,9 @@ describe('prepareResponse', () => {
     const preparedResponse: PREPARED_RESPONSE =
       prepareResponse(internalResponse);
     expect(preparedResponse.status).toBe(200);
-    expect(preparedResponse.headers).toEqual({});
+    expect(preparedResponse.headers).toEqual({
+      'Content-Type': 'application/json',
+    });
     expect(preparedResponse.cookies).toEqual([]);
   });
   it('should prepare the response correctly with error data', () => {
@@ -28,7 +30,9 @@ describe('prepareResponse', () => {
     expect(preparedResponse.data).toBe(
       JSON.stringify({ message: 'Bad Request', data: 'Invalid input' })
     );
-    expect(preparedResponse.headers).toEqual({});
+    expect(preparedResponse.headers).toEqual({
+      'Content-Type': 'application/json',
+    });
     expect(preparedResponse.cookies).toEqual([]);
   });
   it('should prepare the response with cookies', () => {
@@ -61,9 +65,11 @@ describe('prepareResponse', () => {
     const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
     const preparedResponse: PREPARED_RESPONSE =
       prepareResponse(internalResponse);
-    expect(preparedResponse.headers).toEqual({
-      'X-Custom-Header': 'HeaderValue',
-    });
+    expect(preparedResponse.headers).toEqual(
+      expect.objectContaining({
+        'X-Custom-Header': 'HeaderValue',
+      })
+    );
   });
   it('should prepare the response with null data correctly', () => {
     joorResponse.setStatus(200).setMessage('Success').setData(null);
