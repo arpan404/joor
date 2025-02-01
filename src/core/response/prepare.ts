@@ -17,10 +17,8 @@ export default function prepareResponse(
     httpMessage: response.message,
     dataType: { ...response.dataType },
   };
-
   // Set the response status
   preparedResponse.status = response.status;
-
   // Format the data based on the type of response
   if (response.dataType.type === 'json') {
     if (typeof response.data === 'object') {
@@ -43,13 +41,11 @@ export default function prepareResponse(
       preparedResponse.data = response.data;
     }
   }
-
   // Copy the headers from the response
   preparedResponse.headers = {
     ...preparedResponse.headers,
     ...response.headers,
   };
-
   // Process and format cookies if they exist
   if (response.cookies) {
     for (const key in response.cookies) {
@@ -79,7 +75,6 @@ export default function prepareResponse(
             cookieStr += `; ${options}`;
           }
         }
-
         // Push the formatted cookie string into the cookies array
         preparedResponse.cookies.push(cookieStr);
       }

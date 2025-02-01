@@ -13,12 +13,12 @@ type RESPONSE_MESSAGE = string;
 
 type RESPONSE_DATA = unknown;
 
-type RESPONSE_DATA_TYPE = {
+interface RESPONSE_DATA_TYPE {
   type: 'normal' | 'json' | 'error' | 'binary';
   isStream: boolean;
   isFile: boolean;
   filePath?: string;
-};
+}
 
 // Interface for response cookies
 interface RESPONSE_COOKIES {

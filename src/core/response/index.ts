@@ -187,6 +187,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (this.message) {
         logger.warn(
           `Message is already set to : ${this.message}. This is going to be overwritten with the new message : ${value}.`
@@ -226,6 +227,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (this.error) {
         throw new Jrror({
           code: 'response-error-already-set',
@@ -233,6 +235,7 @@ class JoorResponse {
           type: 'warn',
         });
       }
+
       if (this.data) {
         throw new Jrror({
           code: 'response-data-already-set',
@@ -280,6 +283,7 @@ class JoorResponse {
           type: 'warn',
         });
       }
+
       if (this.data) {
         throw new Jrror({
           code: 'response-data-already-set',
@@ -327,6 +331,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (this.error) {
         throw new Jrror({
           code: 'response-error-already-set',
@@ -334,6 +339,7 @@ class JoorResponse {
           type: 'warn',
         });
       }
+
       if (this.data) {
         throw new Jrror({
           code: 'response-data-already-set',
@@ -414,15 +420,12 @@ class JoorResponse {
     } as INTERNAL_RESPONSE;
     response.status =
       this.status ?? (this.dataType.type === 'error' ? 500 : 200);
-
     response.message =
       this.message ??
       httpCodes[response.status] ??
       (this.dataType.type === 'error' ? 'Internal Server Error' : 'OK');
-
     response.data =
       this.dataType.type === 'error' ? this.error : this.data || undefined;
-
     response.data = response.data ?? response.message;
     return response;
   }
