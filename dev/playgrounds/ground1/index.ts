@@ -1,7 +1,6 @@
 import Joor, { httpLogger } from 'joor';
 import { cors } from 'joor';
 import { Router, JoorResponse } from 'joor';
-process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
 const app = new Joor();
 const router = new Router();
 router.get('/', (req) => {

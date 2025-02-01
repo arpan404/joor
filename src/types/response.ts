@@ -17,6 +17,7 @@ interface RESPONSE_DATA_TYPE {
   type: 'normal' | 'json' | 'error' | 'binary';
   isStream: boolean;
   isFile: boolean;
+  isDownload?: boolean;
   filePath?: string;
 }
 

@@ -35,6 +35,7 @@
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.14",
+    "@types/mime-types": "^2.1.4",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
@@ -68,5 +69,9 @@
   "homepage": "https://github.com/arpan404/joor#readme",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "mime-type": "^5.0.2",
+    "mime-types": "^2.1.35"
   }
 }

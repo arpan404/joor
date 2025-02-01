@@ -424,13 +424,11 @@ class JoorResponse {
       this.message ??
       httpCodes[response.status] ??
       (this.dataType.type === 'error' ? 'Internal Server Error' : 'OK');
-
     if (response.dataType.type === 'error') {
       response.data = this.error;
     } else {
       response.data = this.data;
     }
-
     response.data = response.data ?? response.message;
     return response;
   }
