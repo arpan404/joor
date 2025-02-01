@@ -110,6 +110,10 @@ class Server {
     try {
       const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
       const pathURL = parsedUrl.pathname;
+      const query = parsedUrl.searchParams;
+
+      req.ip = req.socket.remoteAddress ?? 'unknown';
+      req.query = Object.fromEntries(query.entries());
 
       const internalResponse = await handleRoute(req, pathURL);
 

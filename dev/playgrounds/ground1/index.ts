@@ -1,6 +1,7 @@
 import Joor, { httpLogger } from 'joor';
 import { cors } from 'joor';
 import { Router, JoorResponse } from 'joor';
+process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
 const app = new Joor();
 const router = new Router();
 router.get('/', (req) => {
@@ -21,7 +22,9 @@ app.use(
 router.get('/api/v1/hello', (req) => {
   const response = new JoorResponse();
   response
-    .setDataAsJson({ data: { message: 'Hello from API v1' } })
+    .setDataAsJson({
+      data: { message: 'Hello from API v1', query: "req.query?.hello" },
+    })
     .setStatus(200)
     .setHeaders({ 'Content-Type': 'application/json' });
   return response;
