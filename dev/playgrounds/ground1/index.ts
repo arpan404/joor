@@ -1,4 +1,4 @@
-import Joor, { httpLogger, serveFile } from 'joor';
+import Joor, { httpLogger, serveFile, serveStaticFiles } from 'joor';
 import { cors } from 'joor';
 import { Router, JoorResponse } from 'joor';
 import path from 'path';
@@ -50,5 +50,14 @@ router.get('/file', (req) => {
     download: false,
   });
 });
-
+router.get(
+  '/public/:path',
+  serveStaticFiles({
+    routePath: '/public',
+    folderPath: path.join(__dirname),
+    stream: true,
+    download: false,
+  }),
+);
+console.log(Router.routes['/'].children?.public.children);
 app.start();
