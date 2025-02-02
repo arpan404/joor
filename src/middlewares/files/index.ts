@@ -4,7 +4,6 @@ import JoorResponse from '@/core/response';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_PATH } from '@/types/route';
 
-
 /**
  * Serves static files as middleware in a Joor application.
  *
@@ -27,7 +26,10 @@ export default function serveStaticFiles({
   download: boolean;
 }): (_request: JoorRequest) => Promise<JoorResponse> {
   return async (request: JoorRequest) => {
-    const parsedUrl = new URL(request.url ?? '', `http://${request.headers.host}`);
+    const parsedUrl = new URL(
+      request.url ?? '',
+      `http://${request.headers.host}`
+    );
     const pathURLSegments = parsedUrl.pathname.split('/');
     const routePathSegments = routePath.split('/');
 
@@ -37,7 +39,10 @@ export default function serveStaticFiles({
       }
     }
 
-    const filePath = path.join(folderPath, ...pathURLSegments.slice(routePathSegments.length));
+    const filePath = path.join(
+      folderPath,
+      ...pathURLSegments.slice(routePathSegments.length)
+    );
     const response = new JoorResponse().sendAsFile(filePath).setStatus(200);
 
     if (stream) response.sendAsStream();

@@ -20,11 +20,21 @@ describe('serveStaticFiles', () => {
     mockResponse.sendAsFile = jest.fn().mockReturnThis();
     mockResponse.sendAsStream = jest.fn().mockReturnThis();
     mockResponse.sendAsDownload = jest.fn().mockReturnThis();
-    jest.spyOn(JoorResponse.prototype, 'setStatus').mockImplementation(mockResponse.setStatus);
-    jest.spyOn(JoorResponse.prototype, 'setMessage').mockImplementation(mockResponse.setMessage);
-    jest.spyOn(JoorResponse.prototype, 'sendAsFile').mockImplementation(mockResponse.sendAsFile);
-    jest.spyOn(JoorResponse.prototype, 'sendAsStream').mockImplementation(mockResponse.sendAsStream);
-    jest.spyOn(JoorResponse.prototype, 'sendAsDownload').mockImplementation(mockResponse.sendAsDownload);
+    jest
+      .spyOn(JoorResponse.prototype, 'setStatus')
+      .mockImplementation(mockResponse.setStatus);
+    jest
+      .spyOn(JoorResponse.prototype, 'setMessage')
+      .mockImplementation(mockResponse.setMessage);
+    jest
+      .spyOn(JoorResponse.prototype, 'sendAsFile')
+      .mockImplementation(mockResponse.sendAsFile);
+    jest
+      .spyOn(JoorResponse.prototype, 'sendAsStream')
+      .mockImplementation(mockResponse.sendAsStream);
+    jest
+      .spyOn(JoorResponse.prototype, 'sendAsDownload')
+      .mockImplementation(mockResponse.sendAsDownload);
     // Mocking path.join
     path.join = jest.fn((...args: string[]) => args.join('/'));
   });
