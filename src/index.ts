@@ -3,6 +3,7 @@ import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import Router from '@/core/router';
 import cors from '@/middlewares/cors';
+import serveStaticFiles from '@/middlewares/files';
 import serveFile from '@/middlewares/files/serve';
 import httpLogger from '@/middlewares/httpLogger';
 import JOOR_CONFIG from '@/types/config';
@@ -21,4 +22,5 @@ export {
   JOOR_CONFIG,
   httpLogger,
   serveFile,
+  serveStaticFiles,
 };

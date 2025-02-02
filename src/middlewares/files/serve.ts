@@ -34,7 +34,6 @@ export default function serveFile({
 }): JoorResponse {
   const response = new JoorResponse();
   response.sendAsFile(filePath);
-
   if (stream) {
     response.sendAsStream();
   }

@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import addMiddlewares from '../router/addMiddlewares';
 
 import Configuration from '@/core/config';
@@ -24,6 +26,14 @@ import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 class Joor {
   // Private variable to hold configuration data used in the server, initialized as null
   private configData: JOOR_CONFIG | undefined;
+  public static staticFileDirectories = [
+    {
+      routePath: '/public',
+      folderPath: path.join(__dirname, 'public'),
+      stream: true,
+      download: false,
+    },
+  ];
 
   /**
    * Starts a new Joor server.
@@ -102,8 +112,8 @@ class Joor {
     }
 
     if (paths.length > 0 && middlewares.length > 0) {
-      for (const path of paths) {
-        addMiddlewares(path, middlewares);
+      for (const p of paths) {
+        addMiddlewares(p, middlewares);
       }
     } else {
       logger.warn(

@@ -49,7 +49,7 @@ describe('serveStaticFiles', () => {
       download: false,
     });
 
-    const response = await serveFiles(mockRequest);
+    const response = serveFiles(mockRequest);
     expect(response.setStatus).toHaveBeenCalledWith(404);
     expect(response.setMessage).toHaveBeenCalledWith('Not Found');
   });
@@ -60,7 +60,7 @@ describe('serveStaticFiles', () => {
       stream: true,
       download: false,
     });
-    await serveFiles(mockRequest);
+    serveFiles(mockRequest);
     expect(path.join).toHaveBeenCalledWith('public', 'somefile.txt');
     expect(mockResponse.sendAsFile).toHaveBeenCalledWith('public/somefile.txt');
     expect(mockResponse.setStatus).toHaveBeenCalledWith(200);
@@ -72,7 +72,7 @@ describe('serveStaticFiles', () => {
       stream: true,
       download: false,
     });
-    await serveFiles(mockRequest);
+    serveFiles(mockRequest);
     expect(mockResponse.sendAsStream).toHaveBeenCalled();
   });
   it('should download the file if the download flag is true', async () => {
@@ -82,7 +82,7 @@ describe('serveStaticFiles', () => {
       stream: false,
       download: true,
     });
-    await serveFiles(mockRequest);
+    serveFiles(mockRequest);
     expect(mockResponse.sendAsDownload).toHaveBeenCalled();
   });
   it('should handle both stream and download flags', async () => {
@@ -92,7 +92,7 @@ describe('serveStaticFiles', () => {
       stream: true,
       download: true,
     });
-    await serveFiles(mockRequest);
+    serveFiles(mockRequest);
     expect(mockResponse.sendAsStream).toHaveBeenCalled();
     expect(mockResponse.sendAsDownload).toHaveBeenCalled();
   });

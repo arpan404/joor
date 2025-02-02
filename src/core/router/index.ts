@@ -174,7 +174,7 @@ class Router {
         if (node.startsWith(':')) {
           // check if current parent node has other dynamic routes
           const keys = Object.keys(currentNode.children).filter(
-            (key) => key.startsWith(':') && key !== route
+            (key) => key.startsWith(':') && key !== node
           );
 
           if (keys.length !== 0) {

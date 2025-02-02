@@ -11,16 +11,16 @@ router.get('/', (req) => {
   response.setMessage('Hello Noobie').setStatus(200).sendAsStream();
   return response;
 });
-// app.use(
-//   cors({
-//     origins: ['*'],
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     allowedHeaders: ['Content-Type '],
-//     exposedHeaders: ['Content-Type'],
-//     maxAge: 3600,
-//     allowsCookies: false,
-//   })
-// );
+app.use(
+  cors({
+    origins: ['*'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type '],
+    exposedHeaders: ['Content-Type'],
+    maxAge: 3600,
+    allowsCookies: false,
+  })
+);
 router.get('/api/v1/hello', (req) => {
   const response = new JoorResponse();
   response
@@ -50,14 +50,20 @@ router.get('/file', (req) => {
     download: false,
   });
 });
+app.use(
+  '/file/:path/',
+  async (req) => {
+    console.log(req.params);
+  }
+);
 router.get(
-  '/public/:path',
+  '/file/:path',
   serveStaticFiles({
-    routePath: '/public',
-    folderPath: path.join(__dirname),
+    routePath: '/file',
+    folderPath: __dirname,
     stream: true,
     download: false,
-  }),
+  })
 );
-console.log(Router.routes['/'].children?.public.children);
+console.log(JSON.stringify(Router.routes));
 app.start();
