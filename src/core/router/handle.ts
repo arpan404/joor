@@ -41,12 +41,12 @@ const handleRoute = async (
     const routeDetail = matchRoute(pathURL, method, request);
 
     // If no route is matched, search for files for then return static files or 404
-    if (!routeDetail?.handlers || routeDetail.handlers.length === 0) {
-      const isFileToServe = Joor.staticFileDirectories.map(
-        (dir) =>
-          pathURL.startsWith(dir.routePath) ||
-          pathURL.startsWith(`/${dir.routePath}`)
-      );
+    if (
+      method === 'GET' &&
+      (!routeDetail ||
+        !routeDetail?.handlers ||
+        routeDetail.handlers.length === 0)
+    ) {
       const servingDetail = Joor.staticFileDirectories.find((dir) =>
         pathURL.startsWith(dir.routePath)
       );
@@ -57,22 +57,34 @@ const handleRoute = async (
         return response.parseResponse();
       }
 
-      if (isFileToServe) {
-        const response = serveStaticFiles({
-          routePath: servingDetail.routePath,
-          folderPath: servingDetail.folderPath,
-          stream: servingDetail.stream,
-          download: servingDetail.download,
-        })(request);
 
-        return response.parseResponse();
+      const response = serveStaticFiles({
+        routePath: servingDetail.routePath,
+        folderPath: servingDetail.folderPath,
+        stream: servingDetail.stream,
+        download: servingDetail.download,
+      })(request);
+
+      const parsedResponse = response.parseResponse();
+      if (parsedResponse.status === 200) {
+        return parsedResponse;
       } else {
-        const response = new JoorResponse();
-        response.setStatus(404).setMessage('Not Found');
-        return response.parseResponse();
+        return new JoorResponse()
+          .setStatus(404)
+          .setMessage('Not Found')
+          .parseResponse();
       }
     }
 
+    if (
+      !routeDetail ||
+      !routeDetail?.handlers ||
+      routeDetail.handlers.length === 0
+    ) {
+      const response = new JoorResponse();
+      response.setStatus(404).setMessage('Not Found');
+      return response.parseResponse();
+    }
     let response;
 
     for (const handler of routeDetail.handlers) {
@@ -104,8 +116,9 @@ const handleRoute = async (
       error.handle();
     }
     logger.error(error);
+    console.error(error);
     const response = new JoorResponse();
-    response.setStatus(500).setMessage('Internal Server Error');
+    response.setStatus(500).setMessage('Internal Server Error').setData(error);
     return response.parseResponse();
   }
 };

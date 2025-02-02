@@ -50,12 +50,9 @@ router.get('/file', (req) => {
     download: false,
   });
 });
-app.use(
-  '/file/:path/',
-  async (req) => {
-    console.log(req.params);
-  }
-);
+app.use('/file/:path/', async (req) => {
+  console.log(req.params);
+});
 router.get(
   '/file/:path',
   serveStaticFiles({
@@ -65,5 +62,5 @@ router.get(
     download: false,
   })
 );
-console.log(JSON.stringify(Router.routes));
+
 app.start();

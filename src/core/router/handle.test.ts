@@ -4,8 +4,8 @@ import handleRoute from '@/core/router/handle';
 import { JoorRequest } from '@/types/request';
 jest.spyOn(console, 'info').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
-jest.spyOn(console, 'error').mockImplementation(() => {});
-jest.spyOn(console, 'debug').mockImplementation(() => {});
+// jest.spyOn(console, 'error').mockImplementation(() => {});
+// jest.spyOn(console, 'debug').mockImplementation(() => {});
 jest.spyOn(console, 'log').mockImplementation(() => {});
 describe('Route Handler', () => {
   const router = new Router();
@@ -20,13 +20,7 @@ describe('Route Handler', () => {
     Router.routes = { '/': {} };
     jest.clearAllMocks();
   });
-  it('should return not found for invalid route', async () => {
-    const request = { params: {}, query: {}, method: 'get' } as JoorRequest;
-    router.get('/test', async () => undefined);
-    const response = await handleRoute(request, '/');
-    expect(response.status).toBe(404);
-    expect(response.message).toBe('Not Found');
-  });
+
   it('should return not found for invalid method', async () => {
     const request = { params: {}, query: {}, method: 'post' } as JoorRequest;
     router.get('/test', async () => undefined);

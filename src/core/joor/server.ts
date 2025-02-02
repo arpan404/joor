@@ -238,7 +238,7 @@ class Server {
 
       if (!fileExists) {
         res.statusCode = 404;
-        res.end('File not found');
+        res.end('Not found');
         return;
       }
 
@@ -248,7 +248,7 @@ class Server {
 
       if (!fileStats.isFile()) {
         res.statusCode = 404;
-        res.end('File not found');
+        res.end('Not found');
         return;
       }
 

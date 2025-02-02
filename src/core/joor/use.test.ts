@@ -43,7 +43,8 @@ describe('use method of Joor class', () => {
     const middlewares2 = [jest.fn()];
     app.use('/api/user/settings', ...middlewares);
     app.use('/api/user/settings', ...middlewares2);
-    expect(Router.routes['/'].children?.api?.children?.user?.children?.settings
+    expect(
+      Router.routes['/'].children?.api?.children?.user?.children?.settings
         ?.localMiddlewares
     ).toEqual([...middlewares, ...middlewares2]);
   });
@@ -103,8 +104,7 @@ describe('use method of Joor class', () => {
     const middlewares = [jest.fn()];
     app.use('/api/:id', ...middlewares);
     expect(
-      Router.routes['/'].children?.api?.children?.[':id']
-        ?.localMiddlewares
+      Router.routes['/'].children?.api?.children?.[':id']?.localMiddlewares
     ).toEqual(middlewares);
   });
   it('should handle dynamic routes if middlewares are added separately', () => {
@@ -113,8 +113,7 @@ describe('use method of Joor class', () => {
     app.use('/api/:id', ...middlewares);
     app.use('/api/:id', ...middlewares2);
     expect(
-      Router.routes['/'].children?.api?.children?.[':id']
-        ?.localMiddlewares
+      Router.routes['/'].children?.api?.children?.[':id']?.localMiddlewares
     ).toEqual([...middlewares, ...middlewares2]);
   });
 });

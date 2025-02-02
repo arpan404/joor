@@ -1,4 +1,5 @@
 import path from 'node:path';
+import process from 'node:process';
 
 import addMiddlewares from '../router/addMiddlewares';
 
@@ -28,8 +29,8 @@ class Joor {
   private configData: JOOR_CONFIG | undefined;
   public static staticFileDirectories = [
     {
-      routePath: '/public',
-      folderPath: path.join(__dirname, 'public'),
+      routePath: '/',
+      folderPath: path.join(process.cwd(), 'public'),
       stream: true,
       download: false,
     },
