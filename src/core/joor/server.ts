@@ -165,6 +165,7 @@ class Server {
     parsedResponse: PREPARED_RESPONSE
   ) {
     let chunkSize = Number(process.env.JOOR_RESPONSE_STREAM_CHUNK_SIZE);
+
     if (!chunkSize || chunkSize <= 0 || isNaN(chunkSize)) {
       chunkSize = 1024;
     }
@@ -181,8 +182,10 @@ class Server {
     } else {
       parsedResponse.data = String(parsedResponse.data);
     }
+
     let currentIndex = 0;
     const data = parsedResponse.data as string;
+
     const streamText = () => {
       if (currentIndex < data.length) {
         const chunk = data.slice(currentIndex, currentIndex + chunkSize);
