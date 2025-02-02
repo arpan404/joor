@@ -14,22 +14,47 @@ export default function prepareResponse(
     status: 200,
     data: null,
     cookies: [],
+    httpMessage: response.message,
+    dataType: { ...response.dataType },
   };
   // Set the response status
   preparedResponse.status = response.status;
   // Format the data based on the type of response
-  if (response.data && response.message && response.dataType !== 'normal') {
+  if (response.dataType.type === 'json') {
+    if (typeof response.data === 'object') {
+      preparedResponse.headers = {
+        ...preparedResponse.headers,
+        'Content-Type': 'application/json',
+      };
+      preparedResponse.data = JSON.stringify(response.data);
+    } else {
+      preparedResponse.data = response.data;
+    }
+  } else if (response.dataType.type === 'error') {
+    preparedResponse.headers = {
+      ...preparedResponse.headers,
+      'Content-Type': 'application/json',
+    };
     preparedResponse.data = JSON.stringify({
       message: response.message,
       data: response.data,
     });
-  } else if (response.data && response.dataType === 'normal') {
-    preparedResponse.data = response.data;
   } else {
-    preparedResponse.data = response.message;
+    if (typeof response.data === 'object') {
+      preparedResponse.headers = {
+        ...preparedResponse.headers,
+        'Content-Type': 'application/json',
+      };
+      preparedResponse.data = JSON.stringify(response.data);
+    } else {
+      preparedResponse.data = response.data;
+    }
   }
   // Copy the headers from the response
-  preparedResponse.headers = { ...response.headers };
+  preparedResponse.headers = {
+    ...preparedResponse.headers,
+    ...response.headers,
+  };
   // Process and format cookies if they exist
   if (response.cookies) {
     for (const key in response.cookies) {

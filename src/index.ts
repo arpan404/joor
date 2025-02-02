@@ -3,11 +3,11 @@ import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import Router from '@/core/router';
 import cors from '@/middlewares/cors';
+import serveFile from '@/middlewares/files/serve';
 import httpLogger from '@/middlewares/httpLogger';
 import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { JoorRequest } from '@/types/request';
-
 export default Joor;
 
 export {
@@ -20,4 +20,5 @@ export {
   GLOBAL_MIDDLEWARES,
   JOOR_CONFIG,
   httpLogger,
+  serveFile,
 };

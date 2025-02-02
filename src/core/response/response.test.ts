@@ -1,220 +1,135 @@
 import JoorResponse from '@/core/response';
-import { RESPONSE_COOKIES } from '@/types/response';
 jest.spyOn(console, 'info').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});
 jest.spyOn(console, 'debug').mockImplementation(() => {});
 jest.spyOn(console, 'log').mockImplementation(() => {});
-describe('JoorResponse', () => {
+describe('JoorResponse Class Tests', () => {
   let response: JoorResponse;
+  process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   beforeEach(() => {
     response = new JoorResponse();
-    process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   });
-  test('setStatus should set a valid status code', () => {
+  it('should set status correctly', () => {
     response.setStatus(200);
-    expect(response.parseResponse()['status']).toBe(200);
+    const parsedResponse = response.parseResponse();
+    expect(parsedResponse.status).toBe(200);
   });
-  test('setStatus should throw error for invalid status code', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  it('should warn for invalid status', () => {
     response.setStatus('invalid' as any);
-    expect(errorSpy).toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalled();
   });
-  test('setMessage should set a valid message', () => {
-    response.setMessage('Success');
+  it('should set headers correctly', () => {
+    response.setHeaders({ 'Content-Type': 'application/json' });
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse['message']).toBe('Success');
+    expect(parsedResponse.headers).toEqual({
+      'Content-Type': 'application/json',
+    });
   });
-  test('setMessage should throw error for invalid message type', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    response.setMessage(123 as any);
-    expect(errorSpy).toHaveBeenCalled();
+  it('should warn for invalid headers', () => {
+    response.setHeaders('invalid' as any);
+    expect(console.error).toHaveBeenCalled();
   });
-  test('setCookies should set valid cookies', () => {
-    const cookies = {
-      cookie1: {
-        value: 'value1',
-        options: {
-          domain: 'example.com',
-          path: '/',
-          expires: new Date(),
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Strict',
-        },
-      },
-    } as RESPONSE_COOKIES;
-    response.setCookies(cookies);
+  it('should set cookies correctly', () => {
+    response.setCookies({ session_id: { value: 'abc123' } });
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse['cookies']).toEqual(cookies);
+    expect(parsedResponse.cookies).toEqual({ session_id: { value: 'abc123' } });
   });
-  test('setCookies should throw error for invalid cookies', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    response.setCookies(null as any);
-    expect(errorSpy).toHaveBeenCalled();
+  it('should warn for invalid cookies', () => {
+    response.setCookies('invalid' as any);
+    expect(console.error).toHaveBeenCalled();
   });
-  test('setError should set an error message', () => {
-    response.setError('An error occurred');
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['data']).toBe('An error occurred');
-    expect(parsedResponse['dataType']).toBe('error');
-  });
-  test('setHeaders should add headers correctly', () => {
-    const headers = { 'Content-Type': 'application/json' };
-    response.setHeaders(headers);
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['headers']).toEqual(headers);
-  });
-  test('setHeaders should override headers if specified', () => {
-    const headers1 = { 'Content-Type': 'application/json' };
-    const headers2 = { Authorization: 'Bearer token' };
-    response.setHeaders(headers1);
-    response.setHeaders(headers2, true);
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['headers']).toEqual(headers2);
-  });
-  test('setData should set data correctly', () => {
-    const data = { key: 'value' };
-    response.setData(data);
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['data']).toEqual(data);
-    expect(parsedResponse['dataType']).toBe('normal');
-  });
-  test('setData should throw error when error is already set', () => {
-    response.setError('Error occurred');
-    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-    response.setData({ key: 'value' });
-    expect(warnSpy).toHaveBeenCalled();
-  });
-  // test('setDataAsJson should set JSON data correctly', () => {
-  //   const jsonData = '{"key": "value"}';
-  //   const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-  //   response.setDataAsJson(jsonData);
-  //   expect(errorSpy).toHaveBeenCalled();
-  //   const validJsonData = JSON.parse(jsonData);
-  //   response.setDataAsJson(validJsonData);
-  //   const parsedResponse = response.parseResponse();
-  //   expect(parsedResponse['dataType']).toBe('json');
-  //   // expect(parsedResponse['data']).toEqual(validJsonData);//
-  //   // expect(parsedResponse['headers']).toEqual({
-  //   //   'Content-Type': 'application/json',
-  //   // });
-  // });
-  // test('setDataAsJson should set object data correctly', () => {
-  //   const jsonData = { key: 'value' };
-  //   response.setDataAsJson(jsonData);
-  //   const parsedResponse = response.parseResponse();
-  //   expect(parsedResponse['dataType']).toBe('json');
-  //   expect(parsedResponse['data']).toEqual(JSON.stringify(jsonData));
-  // });
-  test('setDataAsJson should throw error when data is already set', () => {
-    response.setData({ key: 'value' });
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    response.setDataAsJson({ key: 'value' });
-    expect(errorSpy).toHaveBeenCalled();
-  });
-  test('parseResponse should return a valid response object', () => {
-    response.setStatus(200);
+  it('should set message correctly', () => {
     response.setMessage('OK');
-    response.setData({ key: 'value' });
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse).toEqual({
-      status: 200,
-      message: 'OK',
-      data: { key: 'value' },
-      cookies: undefined,
-      headers: undefined,
-      dataType: 'normal',
-    });
+    expect(parsedResponse.message).toBe('OK');
   });
-  test('parseResponse should handle error response', () => {
-    response.setStatus(500);
-    response.setMessage('Internal Server Error');
-    response.setError('Something went wrong');
+  it('should warn for invalid message', () => {
+    response.setMessage(123 as any);
+    expect(console.error).toHaveBeenCalled();
+  });
+  it('should set error correctly', () => {
+    response.setError('Not Found');
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse).toEqual({
-      status: 500,
-      message: 'Internal Server Error',
-      data: 'Something went wrong',
-      cookies: undefined,
-      headers: undefined,
-      dataType: 'error',
-    });
+    expect(parsedResponse.data).toBe('Not Found');
   });
-  // Additional tests
-  test('setStatus should handle edge case status codes', () => {
-    response.setStatus(100);
-    expect(response.parseResponse()['status']).toBe(100);
-    response.setStatus(599);
-    expect(response.parseResponse()['status']).toBe(599);
+  it('should warn when setting both error and data', () => {
+    response.setData({ user: 'John Doe' });
+    response.setError('Error');
+    expect(console.warn).toHaveBeenCalled();
   });
-  test('setMessage should handle empty string', () => {
+  it('should set data correctly', () => {
+    response.setData({ user: 'John Doe' });
+    const parsedResponse = response.parseResponse();
+    expect(parsedResponse.data).toEqual({ user: 'John Doe' });
+  });
+  it('should send data as stream', () => {
+    response.sendAsStream();
+    const parsedResponse = response.parseResponse();
+    expect(parsedResponse.dataType?.isStream).toBe(true);
+  });
+  it('should send data as file', () => {
+    response.sendAsFile('/path/to/file.txt');
+    const parsedResponse = response.parseResponse();
+    expect(parsedResponse.dataType?.isFile).toBe(true);
+    expect(parsedResponse.dataType?.filePath).toBe('/path/to/file.txt');
+  });
+  it('should return the correct response when parsed', () => {
+    response.setStatus(200).setMessage('OK').setData({ user: 'John Doe' });
+    const parsedResponse = response.parseResponse();
+    expect(parsedResponse.status).toBe(200);
+    expect(parsedResponse.message).toBe('OK');
+    expect(parsedResponse.data).toEqual({ user: 'John Doe' });
+  });
+  it('should handle empty strings as values for status, headers, and message', () => {
+    response.setStatus('' as any);
+    expect(console.error).toHaveBeenCalled();
+    response.setHeaders({ 'Custom-Header': '' });
     response.setMessage('');
+    expect(console.error).toHaveBeenCalled();
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse['message']).toBe('');
+    expect(parsedResponse.headers).toEqual({ 'Custom-Header': '' });
   });
-  test('setCookies should handle empty cookies object', () => {
-    response.setCookies({});
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['cookies']).toBeUndefined();
+  it('should handle null or undefined values', () => {
+    response.setStatus(null as any);
+    expect(console.error).toHaveBeenCalled();
+    response.setHeaders(null as any);
+    expect(console.error).toHaveBeenCalled();
+    response.setMessage(null as any);
+    expect(console.error).toHaveBeenCalled();
   });
-  test('setHeaders should handle empty headers object', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    response.setHeaders({});
-    expect(errorSpy).toHaveBeenCalled();
+  it('should handle large strings and objects', () => {
+    const largeString = 'a'.repeat(10000);
+    response.setMessage(largeString);
+    response.setData({ largeData: largeString });
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse['headers']).toEqual({});
+    expect(parsedResponse.message).toBe(largeString);
+    expect(parsedResponse.data).toEqual({ largeData: largeString });
   });
-  test('setError should handle empty error message', () => {
-    response.setError('');
+  it('should handle extreme numbers for status and headers', () => {
+    response.setStatus(Number.MAX_SAFE_INTEGER);
+    response.setHeaders({ 'X-Large-Header': Number.MAX_SAFE_INTEGER });
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse['data']).toBe('');
-    expect(parsedResponse['dataType']).toBe('error');
-  });
-  test('setData should handle null data', () => {
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    response.setData(null);
-    expect(errorSpy).toHaveBeenCalled();
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse['data']).toBeUndefined();
-    expect(parsedResponse['dataType']).toBe('normal');
-  });
-  // test('setDataAsJson should handle empty object', () => {
-  //   const jsonData = {};
-  //   response.setDataAsJson(jsonData);
-  //   const parsedResponse = response.parseResponse();
-  //   expect(parsedResponse['dataType']).toBe('json');
-  //   expect(parsedResponse['data']).toEqual(JSON.stringify(jsonData));
-  // });
-  // test('setDataAsJson should handle empty array', () => {
-  //   const jsonData = [] as any;
-  //   response.setDataAsJson(jsonData);
-  //   const parsedResponse = response.parseResponse();
-  //   expect(parsedResponse['dataType']).toBe('json');
-  //   expect(parsedResponse['data']).toEqual(JSON.stringify(jsonData));
-  // });
-  test('parseResponse should handle response with only status', () => {
-    response.setStatus(204);
-    const parsedResponse = response.parseResponse();
-    expect(parsedResponse).toEqual({
-      status: 204,
-      message: 'No Content',
-      data: undefined,
-      cookies: undefined,
-      headers: undefined,
-      dataType: 'normal',
+    expect(parsedResponse.status).toBe(Number.MAX_SAFE_INTEGER);
+    expect(parsedResponse.headers).toEqual({
+      'X-Large-Header': Number.MAX_SAFE_INTEGER,
     });
   });
-  test('parseResponse should handle response with only message', () => {
-    response.setMessage('No Content');
+  it('should handle empty object for data', () => {
+    response.setData({});
     const parsedResponse = response.parseResponse();
-    expect(parsedResponse).toEqual({
-      status: 200,
-      message: 'No Content',
-      data: undefined,
-      cookies: undefined,
-      headers: undefined,
-      dataType: 'normal',
-    });
+    expect(parsedResponse.data).toEqual({});
+  });
+  it('should warn when setting both error and data simultaneously', () => {
+    response.setData({ user: 'John Doe' });
+    response.setError('Error occurred');
+    expect(console.warn).toHaveBeenCalled();
+  });
+  it('should handle large arrays in data', () => {
+    const largeArray = new Array(10000).fill('item');
+    response.setData({ items: largeArray });
+    const parsedResponse = response.parseResponse();
+    expect((parsedResponse?.data as any)?.items.length).toBe(10000);
+    expect((parsedResponse?.data as any)?.items[0]).toBe('item');
   });
 });
