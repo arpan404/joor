@@ -140,10 +140,15 @@ class Server {
 
       // Handle non-file response or file response
       if (!parsedResponse.dataType.isFile) {
-        res.end(parsedResponse.data);
-        return;
+        // If response is not meant to stream send at once
+        if (!parsedResponse.dataType.isStream) {
+          res.end(parsedResponse.data);
+          return;
+        }
+        await this.handleResponseStream(res, parsedResponse);
+      } else {
+        await this.handleFileRequest(req, res, parsedResponse);
       }
-      await this.handleFileRequest(req, res, parsedResponse);
     } catch (error: unknown) {
       res.statusCode = 500;
       res.end('Internal Server Error');
@@ -153,6 +158,42 @@ class Server {
         logger.error(error);
       }
     }
+  }
+
+  private async handleResponseStream(
+    res: http.ServerResponse,
+    parsedResponse: PREPARED_RESPONSE
+  ) {
+    let chunkSize = Number(process.env.JOOR_RESPONSE_STREAM_CHUNK_SIZE);
+    if (!chunkSize || chunkSize <= 0 || isNaN(chunkSize)) {
+      chunkSize = 1024;
+    }
+
+    if (typeof parsedResponse.data === 'object') {
+      parsedResponse.data = JSON.stringify(parsedResponse.data);
+    } else if (
+      typeof parsedResponse.data === 'number' ||
+      typeof parsedResponse.data === 'boolean' ||
+      typeof parsedResponse.data === 'bigint' ||
+      typeof parsedResponse.data === 'symbol'
+    ) {
+      parsedResponse.data = parsedResponse.data.toString();
+    } else {
+      parsedResponse.data = String(parsedResponse.data);
+    }
+    let currentIndex = 0;
+    const data = parsedResponse.data as string;
+    const streamText = () => {
+      if (currentIndex < data.length) {
+        const chunk = data.slice(currentIndex, currentIndex + chunkSize);
+        res.write(chunk);
+        currentIndex += chunk.length;
+        setImmediate(streamText); // Continue asynchronously
+      } else {
+        res.end();
+      }
+    };
+    streamText();
   }
 
   /**
@@ -181,12 +222,13 @@ class Server {
         .access(filePath)
         .then(() => true)
         .catch(() => false);
-        
+
       if (!fileExists) {
         res.statusCode = 404;
         res.end('File not found');
         return;
       }
+
       const fileStats = await fs.promises.stat(filePath);
       const fileName = filePath.split('/').pop() ?? 'file';
 
@@ -220,6 +262,7 @@ class Server {
 
       const { range } = req.headers;
 
+      // Handle range requests for partial content delivery
       if (range) {
         const fileSize = fileStats.size;
         const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
