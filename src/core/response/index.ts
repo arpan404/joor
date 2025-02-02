@@ -31,6 +31,7 @@ import {
  * - setDataAsJson: Sets data in the response as JSON.
  * - sendAsStream: Marks the response as a stream.
  * - sendAsFile: Marks the response as a file and provides the file path.
+ * - sendAsDownload: Marks the response for file download.
  * - parseResponse: Internal method to parse and return the final response object.
  */
 class JoorResponse {
@@ -398,6 +399,21 @@ class JoorResponse {
     return this;
   }
 
+  /**
+   *  Will send file for download
+   * @returns {JoorResponse} - The current JoorResponse instance.
+   * @example
+   * ```typescript
+   * const response = new JoorResponse();
+   * response.sendAsFile("/path/to/file.txt");
+   * response.sendAsDownload();
+   * return response;
+   * ```
+   */
+  public sendAsDownload(): JoorResponse {
+    this.dataType.isDownload = true;
+    return this;
+  }
   /**
    * Parses the response object for internal use.
    * This method is not intended for external use.

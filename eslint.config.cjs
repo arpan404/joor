@@ -20,6 +20,7 @@ module.exports = [
       '**/.vercel/**',
       '**/*.d.ts',
       '**/dev/playgrounds/**',
+      '**/*.mp4',
     ],
   },
   {

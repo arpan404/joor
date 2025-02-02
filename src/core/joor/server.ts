@@ -111,10 +111,8 @@ class Server {
       const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
       const pathURL = parsedUrl.pathname;
       const query = parsedUrl.searchParams;
-
       req.ip = req.socket.remoteAddress ?? 'unknown';
       req.query = Object.fromEntries(query.entries());
-
       const internalResponse = await handleRoute(req, pathURL);
 
       const parsedResponse = prepareResponse(internalResponse);
@@ -166,7 +164,7 @@ class Server {
    * @throws {Jrror} Throws an error if there is an issue with file processing.
    */
   private async handleFileRequest(
-    _req: JoorRequest,
+    req: JoorRequest,
     res: http.ServerResponse,
     parsedResponse: PREPARED_RESPONSE
   ): Promise<void> {
@@ -179,6 +177,16 @@ class Server {
     }
 
     try {
+      const fileExists = await fs.promises
+        .access(filePath)
+        .then(() => true)
+        .catch(() => false);
+        
+      if (!fileExists) {
+        res.statusCode = 404;
+        res.end('File not found');
+        return;
+      }
       const fileStats = await fs.promises.stat(filePath);
       const fileName = filePath.split('/').pop() ?? 'file';
 
@@ -210,13 +218,32 @@ class Server {
         }
       };
 
-      if (parsedResponse.dataType.isStream) {
-        res.writeHead(200);
+      const { range } = req.headers;
+
+      if (range) {
+        const fileSize = fileStats.size;
+        const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(startStr, 10);
+        const end = endStr ? parseInt(endStr, 10) : fileSize - 1;
+
+        if (start >= fileSize || end >= fileSize) {
+          res.statusCode = 416;
+          res.setHeader('Content-Range', `bytes */${fileSize}`);
+          res.end();
+          return;
+        }
+        res.statusCode = 206;
+        res.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+        res.setHeader('Content-Length', end - start + 1);
+        const fileStream = fs.createReadStream(filePath, { start, end });
+        fileStream.pipe(res);
+      } else if (parsedResponse.dataType.isStream) {
+        res.statusCode = 200;
         setHeaders(parsedResponse.dataType.isDownload ?? false);
         const fileStream = fs.createReadStream(filePath);
         fileStream.pipe(res);
       } else {
-        res.writeHead(200);
+        res.statusCode = 200;
         setHeaders(parsedResponse.dataType.isDownload ?? false);
         const fileData = await fs.promises.readFile(filePath);
         res.end(fileData);
