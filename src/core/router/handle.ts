@@ -3,6 +3,7 @@ import JoorError from '@/core/error/JoorError';
 import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import matchRoute from '@/core/router/match';
+import findBestMatch from '@/helpers/findBestMatch';
 import logger from '@/helpers/joorLogger';
 import serveStaticFiles from '@/middlewares/files';
 import { JoorRequest } from '@/types/request';
@@ -45,11 +46,21 @@ const handleRoute = async (
       method === 'GET' &&
       (!routeDetail?.handlers || routeDetail.handlers.length === 0)
     ) {
-      const servingDetail = Joor.staticFileDirectories.find(
-        (dir) =>
-          pathURL.startsWith(dir.routePath) &&
-          pathURL.slice(dir.routePath.length).startsWith('/')
-      );
+      const servingDetail = (() => {
+        const bestMatch = findBestMatch(
+          Joor.staticFileDirectories.paths,
+          pathURL
+        );
+
+        if (!bestMatch) {
+          return null;
+        }
+
+        return {
+          routePath: bestMatch,
+          details: Joor.staticFileDirectories.details[bestMatch],
+        };
+      })();
 
       if (!servingDetail) {
         const response = new JoorResponse();
@@ -59,9 +70,9 @@ const handleRoute = async (
 
       const response = serveStaticFiles({
         routePath: servingDetail.routePath,
-        folderPath: servingDetail.folderPath,
-        stream: servingDetail.stream,
-        download: servingDetail.download,
+        folderPath: servingDetail.details.folderPath,
+        stream: servingDetail.details.stream,
+        download: servingDetail.details.download,
       })(request);
 
       const parsedResponse = response.parseResponse();

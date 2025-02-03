@@ -1,11 +1,18 @@
 import { ROUTE_HANDLER } from '@/types/route';
 
 type GLOBAL_MIDDLEWARES = Array<ROUTE_HANDLER>;
+interface SERVE_FILES {
+  [key: string]: {
+    folderPath: string;
+    stream: boolean;
+    download: boolean;
+  };
+}
 interface SERVE_FILES_CONFIG {
   routePath: string;
   folderPath: string;
-  stream: boolean;
-  download: boolean;
+  stream?: boolean;
+  download?: boolean;
 }
 
-export { GLOBAL_MIDDLEWARES, SERVE_FILES_CONFIG };
+export { GLOBAL_MIDDLEWARES, SERVE_FILES_CONFIG, SERVE_FILES };

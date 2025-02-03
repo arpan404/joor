@@ -63,17 +63,16 @@ router.get(
   })
 );
 app.serveFiles({
-  routePath: '/public',
-  folderPath: path.join(__dirname, 'public'),
-  stream: true,
-  download: false,
-});
-app.serveFiles({
   routePath: '/public1',
   folderPath: path.join(__dirname, 'public'),
   stream: true,
   download: false,
 });
-console.log(Joor.staticFileDirectories);
+app.serveFiles({
+  routePath: '/',
+  folderPath: path.join(__dirname, 'public/f'),
+  stream: true,
+  download: false,
+});
 
 app.start();

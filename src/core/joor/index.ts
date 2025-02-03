@@ -6,7 +6,7 @@ import loadEnv from '@/core/internals/loadEnv';
 import Server from '@/core/joor/server';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
-import { SERVE_FILES_CONFIG } from '@/types/joor';
+import { SERVE_FILES, SERVE_FILES_CONFIG } from '@/types/joor';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 
 /**
@@ -25,7 +25,10 @@ import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 class Joor {
   // Private variable to hold configuration data used in the server, initialized as null
   private configData: JOOR_CONFIG | undefined;
-  public static staticFileDirectories: Array<SERVE_FILES_CONFIG> = [];
+  public static staticFileDirectories = {
+    paths: [] as Array<string>,
+    details: {} as SERVE_FILES,
+  };
 
   /**
    * Starts a new Joor server.
@@ -133,10 +136,12 @@ class Joor {
     stream = true,
     download = false,
   }: SERVE_FILES_CONFIG): void {
-    Joor.staticFileDirectories = [
-      ...Joor.staticFileDirectories,
-      { routePath, folderPath, stream, download },
-    ];
+    Joor.staticFileDirectories.paths.push(routePath);
+    Joor.staticFileDirectories.details[routePath] = {
+      folderPath,
+      stream,
+      download,
+    };
   }
 
   /**
