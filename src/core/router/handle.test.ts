@@ -20,7 +20,6 @@ describe('Route Handler', () => {
     Router.routes = { '/': {} };
     jest.clearAllMocks();
   });
-
   it('should return not found for invalid method', async () => {
     const request = { params: {}, query: {}, method: 'post' } as JoorRequest;
     router.get('/test', async () => undefined);

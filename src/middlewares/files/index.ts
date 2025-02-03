@@ -45,10 +45,14 @@ export default function serveStaticFiles({
   return (request: JoorRequest) => {
     const parsedUrl = new URL(
       request.url ?? '',
-      `http://${request.headers?.host ?? "localhost"}`
+      `http://${request.headers?.host ?? 'localhost'}`
     );
-    const pathURLSegments = decodeURIComponent(parsedUrl.pathname).split('/').filter((segment) => segment !== '');
-    const routePathSegments = routePath.split('/').filter((segment) => segment !== '');
+    const pathURLSegments = decodeURIComponent(parsedUrl.pathname)
+      .split('/')
+      .filter((segment) => segment !== '');
+    const routePathSegments = routePath
+      .split('/')
+      .filter((segment) => segment !== '');
 
     // Check if the request URL matches the route path
     for (let i = 0; i < routePathSegments.length; i++) {

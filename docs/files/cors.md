@@ -28,14 +28,13 @@ If any required array is missing or invalid, Joor defaults to `["*"]`. Currently
 The `origins` property supports pattern matching to allow multiple subdomains or specific URL patterns. For example:
 
 - `https://*.example.com` allows any subdomain of `example.com`.
-- `http://localhost:*` allows any port on `localhost`.
 
 ### Example Usage
 
 #### Basic Example
 
 ```typescript
-import joor, { cors } from 'joor';
+import Joor, { cors } from 'joor';
 import { CORS_OPTIONS } from 'joor/types';
 
 const app = new Joor();
@@ -53,7 +52,7 @@ app.start();
 #### Example with All Defaults
 
 ```typescript
-import joor, { cors } from 'joor';
+import Joor, { cors } from 'joor';
 
 const app = new Joor();
 
@@ -64,7 +63,7 @@ app.start();
 #### Example with Custom Headers and Methods
 
 ```typescript
-import joor, { cors } from 'joor';
+import Joor, { cors } from 'joor';
 import { CORS_OPTIONS } from 'joor/types';
 
 const app = new Joor();

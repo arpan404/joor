@@ -43,9 +43,7 @@ const handleRoute = async (
     // If no route is matched, search for files for then return static files or 404
     if (
       method === 'GET' &&
-      (!routeDetail ||
-        !routeDetail?.handlers ||
-        routeDetail.handlers.length === 0)
+      (!routeDetail?.handlers || routeDetail.handlers.length === 0)
     ) {
       const servingDetail = Joor.staticFileDirectories.find((dir) =>
         pathURL.startsWith(dir.routePath)
@@ -57,7 +55,6 @@ const handleRoute = async (
         return response.parseResponse();
       }
 
-
       const response = serveStaticFiles({
         routePath: servingDetail.routePath,
         folderPath: servingDetail.folderPath,
@@ -66,6 +63,7 @@ const handleRoute = async (
       })(request);
 
       const parsedResponse = response.parseResponse();
+
       if (parsedResponse.status === 200) {
         return parsedResponse;
       } else {
@@ -76,15 +74,12 @@ const handleRoute = async (
       }
     }
 
-    if (
-      !routeDetail ||
-      !routeDetail?.handlers ||
-      routeDetail.handlers.length === 0
-    ) {
+    if (!routeDetail?.handlers || routeDetail.handlers.length === 0) {
       const response = new JoorResponse();
       response.setStatus(404).setMessage('Not Found');
       return response.parseResponse();
     }
+
     let response;
 
     for (const handler of routeDetail.handlers) {
