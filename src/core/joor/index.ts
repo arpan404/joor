@@ -1,6 +1,3 @@
-import path from 'node:path';
-import process from 'node:process';
-
 import addMiddlewares from '../router/addMiddlewares';
 
 import Configuration from '@/core/config';
@@ -10,6 +7,7 @@ import Server from '@/core/joor/server';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
+import { SERVE_FILES_CONFIG } from '@/types/joor';
 
 /**
  * Represents the Joor framework server.
@@ -27,14 +25,7 @@ import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 class Joor {
   // Private variable to hold configuration data used in the server, initialized as null
   private configData: JOOR_CONFIG | undefined;
-  public static staticFileDirectories = [
-    {
-      routePath: '/',
-      folderPath: path.join(process.cwd(), 'public'),
-      stream: true,
-      download: false,
-    },
-  ];
+  public static staticFileDirectories: Array<SERVE_FILES_CONFIG> = [];
 
   /**
    * Starts a new Joor server.
@@ -122,6 +113,32 @@ class Joor {
       );
     }
   }
+
+  /**
+   * Registers a new route to serve static files.
+   * @example
+   * ```typescript
+   * const app = new Joor();
+   * app.serveFiles({
+   * routePath: "/files",
+   * folderPath: path.join(__dirname, "public"),
+   * stream: true,
+   * download: false,
+   * });
+   */
+
+  public serveFiles({
+    routePath,
+    folderPath,
+    stream = true,
+    download = false,
+  }: SERVE_FILES_CONFIG): void {
+    Joor.staticFileDirectories = [
+      ...Joor.staticFileDirectories,
+      { routePath, folderPath, stream, download },
+    ];
+  }
+
   /**
    * Initializes the configuration for the server.
    * Loads configuration data asynchronously and assigns it to `configData`.
