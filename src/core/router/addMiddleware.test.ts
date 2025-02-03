@@ -32,7 +32,7 @@ describe('addMiddlewares', () => {
     addMiddlewares(null as any, middlewares);
     expect(errorSpy).toHaveBeenCalled();
   });
-  it('should throw an error for conflicting dynamic routes', () => {
+  it('should not throw an error for same dynamic routes', () => {
     Router.routes = {
       '/': {
         children: {
@@ -53,6 +53,29 @@ describe('addMiddlewares', () => {
     const middlewares = [jest.fn()];
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     addMiddlewares('/api/:id', middlewares);
+    expect(errorSpy).not.toHaveBeenCalled();
+  });
+  it('should throw an error for conflicting dynamic routes', () => {
+    Router.routes = {
+      '/': {
+        children: {
+          api: {
+            children: {
+              ':id': {
+                children: {},
+                globalMiddlewares: [],
+                localMiddlewares: [],
+              },
+            },
+            globalMiddlewares: [],
+            localMiddlewares: [],
+          },
+        },
+      },
+    };
+    const middlewares = [jest.fn()];
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    addMiddlewares('/api/:user', middlewares);
     expect(errorSpy).toHaveBeenCalled();
   });
   it('should handle errors gracefully and log them', () => {

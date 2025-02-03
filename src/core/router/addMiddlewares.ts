@@ -70,7 +70,7 @@ const addMiddlewares = (path: ROUTE_PATH, middlewares: ROUTE_HANDLER[]) => {
       if (node.startsWith(':')) {
         // Ensure there are no conflicting dynamic routes in the same parent node.
         const keys = Object.keys(currentNode.children).filter(
-          (key) => key.startsWith(':') && key !== path
+          (key) => key.startsWith(':') && key !== node
         );
 
         if (keys.length !== 0) {

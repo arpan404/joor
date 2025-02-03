@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
+import path from 'node:path';
 
 import mime from 'mime-types';
 
@@ -160,10 +161,19 @@ class Server {
     }
   }
 
+  /**
+   * Handles the response stream for large data.
+   * @param {http.ServerResponse} res - The outgoing response object.
+   * @param {PREPARED_RESPONSE} parsedResponse - The parsed response object containing the data to be streamed.
+   * @returns {Promise<void>} A promise that resolves when the response is sent.
+   * @throws {Jrror} Throws an error if there is an issue with streaming the response.
+   *
+   * This method is responsible for streaming large responses in smaller chunks for faster response time.
+   */
   private async handleResponseStream(
     res: http.ServerResponse,
     parsedResponse: PREPARED_RESPONSE
-  ) {
+  ): Promise<void> {
     let chunkSize = Number(process.env.JOOR_RESPONSE_STREAM_CHUNK_SIZE);
 
     if (!chunkSize || chunkSize <= 0 || isNaN(chunkSize)) {
@@ -228,16 +238,17 @@ class Server {
 
       if (!fileExists) {
         res.statusCode = 404;
-        res.end('File not found');
+        res.end('Not found');
         return;
       }
 
       const fileStats = await fs.promises.stat(filePath);
-      const fileName = filePath.split('/').pop() ?? 'file';
+
+      const fileName = path.basename(filePath);
 
       if (!fileStats.isFile()) {
         res.statusCode = 404;
-        res.end('File not found');
+        res.end('Not found');
         return;
       }
 

@@ -2,6 +2,7 @@ import Joor from '@/core/joor';
 import Router from '@/core/router';
 describe('use method of Joor class', () => {
   let app = new Joor();
+  process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
   beforeEach(() => {
     app = new Joor();
     jest.clearAllMocks();
@@ -39,11 +40,13 @@ describe('use method of Joor class', () => {
   });
   it('should handle nested routes correctly', () => {
     const middlewares = [jest.fn()];
+    const middlewares2 = [jest.fn()];
     app.use('/api/user/settings', ...middlewares);
+    app.use('/api/user/settings', ...middlewares2);
     expect(
       Router.routes['/'].children?.api?.children?.user?.children?.settings
         ?.localMiddlewares
-    ).toEqual(middlewares);
+    ).toEqual([...middlewares, ...middlewares2]);
   });
   it('should not overwrite existing middlewares for a route', () => {
     const initialMiddlewares = [jest.fn()];
@@ -96,5 +99,21 @@ describe('use method of Joor class', () => {
       Router.routes['/'].children?.api?.children?.['user@profile']
         ?.localMiddlewares
     ).toEqual(middlewares);
+  });
+  it('should handle dynamic routes', () => {
+    const middlewares = [jest.fn()];
+    app.use('/api/:id', ...middlewares);
+    expect(
+      Router.routes['/'].children?.api?.children?.[':id']?.localMiddlewares
+    ).toEqual(middlewares);
+  });
+  it('should handle dynamic routes if middlewares are added separately', () => {
+    const middlewares = [jest.fn()];
+    const middlewares2 = [jest.fn()];
+    app.use('/api/:id', ...middlewares);
+    app.use('/api/:id', ...middlewares2);
+    expect(
+      Router.routes['/'].children?.api?.children?.[':id']?.localMiddlewares
+    ).toEqual([...middlewares, ...middlewares2]);
   });
 });

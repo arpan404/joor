@@ -1,4 +1,4 @@
-import Joor, { httpLogger, serveFile } from 'joor';
+import Joor, { httpLogger, serveFile, serveStaticFiles } from 'joor';
 import { cors } from 'joor';
 import { Router, JoorResponse } from 'joor';
 import path from 'path';
@@ -11,16 +11,16 @@ router.get('/', (req) => {
   response.setMessage('Hello Noobie').setStatus(200).sendAsStream();
   return response;
 });
-// app.use(
-//   cors({
-//     origins: ['*'],
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     allowedHeaders: ['Content-Type '],
-//     exposedHeaders: ['Content-Type'],
-//     maxAge: 3600,
-//     allowsCookies: false,
-//   })
-// );
+app.use(
+  cors({
+    origins: ['*'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type '],
+    exposedHeaders: ['Content-Type'],
+    maxAge: 3600,
+    allowsCookies: false,
+  })
+);
 router.get('/api/v1/hello', (req) => {
   const response = new JoorResponse();
   response
@@ -50,5 +50,17 @@ router.get('/file', (req) => {
     download: false,
   });
 });
+app.use('/file/:path/', async (req) => {
+  console.log(req.params);
+});
+router.get(
+  '/file/:path',
+  serveStaticFiles({
+    routePath: '/file',
+    folderPath: __dirname,
+    stream: true,
+    download: false,
+  })
+);
 
 app.start();
