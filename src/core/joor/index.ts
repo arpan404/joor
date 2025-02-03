@@ -6,8 +6,8 @@ import loadEnv from '@/core/internals/loadEnv';
 import Server from '@/core/joor/server';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
-import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 import { SERVE_FILES_CONFIG } from '@/types/joor';
+import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 
 /**
  * Represents the Joor framework server.
