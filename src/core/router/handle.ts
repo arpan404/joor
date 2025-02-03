@@ -45,8 +45,10 @@ const handleRoute = async (
       method === 'GET' &&
       (!routeDetail?.handlers || routeDetail.handlers.length === 0)
     ) {
-      const servingDetail = Joor.staticFileDirectories.find((dir) =>
-        pathURL.startsWith(dir.routePath)
+      const servingDetail = Joor.staticFileDirectories.find(
+        (dir) =>
+          pathURL.startsWith(dir.routePath) &&
+          pathURL.slice(dir.routePath.length).startsWith('/')
       );
 
       if (!servingDetail) {
