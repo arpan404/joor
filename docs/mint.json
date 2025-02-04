@@ -1,10 +1,12 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Joor",
+  "theme": "prism",
   "logo": {
     "dark": "/logo/dark.png",
     "light": "/logo/light.png"
   },
+  "layout": "sidenav",
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#2E77BB",
@@ -15,47 +17,42 @@
       "to": "#90C6FF"
     }
   },
-  "topbarLinks": [
-    {
-      "name": "Support",
-      "url": "mailto:hi@mintlify.com"
-    }
-  ],
   "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "type": "github",
+    "url": "https://github.com/arpan404/joor"
   },
   "tabs": [
     {
-      "name": "Reference",
-      "url": "api-reference"
-    },
-    {
       "name": "References",
-      "url": "api-reference"
+      "url": "reference"
     }
   ],
   "anchors": [
     {
-      "name": "Documentation",
-      "icon": "book-open-cover",
+      "name": "NPM",
+      "icon": "npm",
+      "url": "https://www.npmjs.com/package/joor"
+    },
+
+    {
+      "name": "Github",
+      "icon": "github",
       "url": "https://mintlify.com/docs"
     },
     {
-      "name": "Community",
-      "icon": "slack",
+      "name": "Discord",
+      "icon": "discord",
       "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
     }
   ],
+  "sidebar": {
+    "items": "border"
+  },
   "navigation": [
     {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart", "development"]
+      "group": "Getting Started",
+      "version": "v1",
+      "pages": ["v1/introduction", "v1/quickstart", "v1/development"]
     },
     {
       "group": "Essentials",
@@ -69,20 +66,19 @@
       ]
     },
     {
-      "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
-    },
-    {
-      "group": "Endpoint Examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
-      ]
+      "group": "Reference",
+      "pages": ["reference/cors"]
     }
   ],
   "footerSocials": {
     "x": "https://x.com/joorofficial",
     "github": "https://github.com/arpan404/joor"
-  }
+  },
+
+  "versions": [
+    {
+      "name": "v1",
+      "default": true
+    }
+  ]
 }

@@ -15,4 +15,9 @@ interface SERVE_FILES_CONFIG {
   download?: boolean;
 }
 
-export { GLOBAL_MIDDLEWARES, SERVE_FILES_CONFIG, SERVE_FILES };
+interface WEBSOCKET_CONFIG {
+  route: string;
+  handler: ROUTE_HANDLER;
+}
+
+export { GLOBAL_MIDDLEWARES, SERVE_FILES_CONFIG, SERVE_FILES, WEBSOCKET_CONFIG };
