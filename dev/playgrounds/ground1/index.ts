@@ -1,5 +1,5 @@
 import { Joor, httpLogger, serveFile, serveStaticFiles } from 'joor';
-import { cors } from 'joor';
+
 import { Router, JoorResponse } from 'joor';
 import path from 'node:path';
 process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
@@ -22,6 +22,7 @@ router.get('/', (req) => {
 //   })
 // );
 router.get('/api/v1/hello', async (req) => {
+  console.log(req.query);
   const response = new JoorResponse();
   response.setDataAsJson({ data: { message: 'Hello from API v1' } });
   return response;
@@ -61,12 +62,12 @@ router.get('/api/v1/hello', async (req) => {
 //   stream: true,
 //   download: false,
 // });
-// app.serveFiles({
-//   routePath: '/',
-//   folderPath: path.join(__dirname, 'public/f'),
-//   stream: true,
-//   download: false,
-// });
+app.serveFiles({
+  routePath: '/',
+  folderPath: path.join(__dirname, 'public/f'),
+  stream: true,
+  download: false,
+});
 
 // app.start();
 

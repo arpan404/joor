@@ -224,7 +224,6 @@ describe('Route Matcher', () => {
     });
     expect(request.params).toEqual({ id: '123' });
   });
-
   it('should handle route with hash fragment', () => {
     const request = { params: {} } as JoorRequest;
 

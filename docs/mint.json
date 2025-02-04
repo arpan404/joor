@@ -3,8 +3,8 @@
   "name": "Joor",
   "theme": "prism",
   "logo": {
-    "dark": "/logo/dark.png",
-    "light": "/logo/light.png"
+    "dark": "/logo/dark-transparent.png",
+    "light": "/logo/light-transparent.png"
   },
   "layout": "sidenav",
   "favicon": "/favicon.svg",
@@ -70,6 +70,11 @@
       "pages": ["reference/cors"]
     }
   ],
+  "feedback": {
+    "raiseIssue": true,
+    "suggestEdit": true,
+    "thumbsRating": true
+  },
   "footerSocials": {
     "x": "https://x.com/joorofficial",
     "github": "https://github.com/arpan404/joor"
