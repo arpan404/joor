@@ -1,8 +1,8 @@
 config:
-  target: 'http://localhost:2000' # Replace with your API endpoint
+  target: 'http://localhost:2002' # Replace with your API endpoint
   phases:
-    - duration: 1000 # Test duration in seconds
-      arrivalRate: 1000 # Number of requests per second (concurrent users)
+    - duration: 60 # Test duration in seconds
+      arrivalRate: 5000 # Number of requests per second (concurrent users)
 
 scenarios:
   - flow:

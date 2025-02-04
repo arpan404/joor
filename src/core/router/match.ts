@@ -89,7 +89,7 @@ const matchRoute = (
         ...(registeredRoutes['/'].localMiddlewares ?? []),
         ...registeredRoutes['/'][method].handlers,
       ];
-      return { handlers: [...handlers] };
+      return { handlers };
     } else {
       return null;
     }
