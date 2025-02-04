@@ -29,7 +29,7 @@ class Joor {
     paths: [] as Array<string>,
     details: {} as SERVE_FILES,
   };
-  // public static 
+  // public static
   /**
    * Starts a new Joor server.
    * This method must always be awaited as it is asynchronous.

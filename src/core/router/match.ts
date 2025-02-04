@@ -60,20 +60,6 @@ const matchRoute = (
 
   const lastElement = routeParts[routeParts.length - 1];
 
-  // Handle query parameters
-  if (lastElement.includes('?')) {
-    const splitted = lastElement.split('?');
-
-    const [pathPart] = splitted;
-    routeParts[routeParts.length - 1] = pathPart;
-    const queryParams = splitted[1].split('&');
-    queryParams.forEach((queryParam) => {
-      const [key, value] = queryParam.split('=');
-      request.query = request.query ?? {};
-      request.query[key] = value;
-    });
-  }
-
   // Handle hash fragments
   if (lastElement.includes('#')) {
     const [pathPart] = lastElement.split('#');

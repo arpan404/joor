@@ -109,7 +109,8 @@ class Server {
     res: http.ServerResponse
   ): Promise<void> {
     try {
-      const parsedUrl = new URL(req.url ?? '', `http://${req.headers.host}`);
+      req.url = req.url?.replace(/\/+/g, '/');
+      const parsedUrl = new URL(req.url ?? '', `https://${req.headers.host}`);
       const pathURL = parsedUrl.pathname;
       const query = parsedUrl.searchParams;
       req.ip = req.socket.remoteAddress ?? 'unknown';

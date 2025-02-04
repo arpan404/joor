@@ -224,19 +224,7 @@ describe('Route Matcher', () => {
     });
     expect(request.params).toEqual({ id: '123' });
   });
-  it('should handle route with query parameters', () => {
-    const request = { params: {}, query: {} } as JoorRequest;
 
-    const handler = jest.fn();
-    Router.routes = {
-      '/': {},
-    };
-    router.get('/', handler);
-    expect(matchRoute('/?search=test', 'GET', request)).toEqual({
-      handlers: [handler],
-    });
-    expect(request.query).toEqual({ search: 'test' });
-  });
   it('should handle route with hash fragment', () => {
     const request = { params: {} } as JoorRequest;
 
