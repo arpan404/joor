@@ -4,6 +4,7 @@ import {
   httpLogger,
   serveFile,
   serveStaticFiles,
+  redirect,
 } from 'joor';
 
 import { Router, JoorResponse } from 'joor';
@@ -40,14 +41,38 @@ router.get('/api/v1/hello', async (req) => {
 const print = (req: JoorRequest) => {
   console.log(req.params);
 };
-router.get('/api/v1/hello/:id', print, (req) => {
+router.get('/api/v1/hello/:id/:user', print, (req) => {
   const response = new JoorResponse();
   const id = req.params?.id;
+  console.log(req.params);
+  if (id === '1') {
+    return redirect('/api/v1/hello/2', true);
+  }
   response
     .setMessage(`Hello from API v1 with id ${id}`)
     .setStatus(200)
     .setHeaders({ 'Content-Type': 'application/json' });
   return response;
+});
+
+router.get('/api/files/:type', (req) => {
+  if (req.params?.type === 'json') {
+    return serveFile({
+      filePath: path.join(__dirname, 'public/benchmark.yml'),
+      stream: true,
+      download: false,
+    });
+  } else if (req.params?.type === 'txt') {
+    return serveFile({
+      filePath: path.join(__dirname, 'tes 1 .txt'),
+      stream: true,
+      download: false,
+    });
+  } else {
+    const response = new JoorResponse();
+    response.setMessage('File type not supported').setStatus(400);
+    return response;
+  }
 });
 
 router.get('/file', (req) => {
@@ -69,15 +94,23 @@ router.get(
     download: false,
   })
 );
-// app.serveFiles({
-//   routePath: '/public1',
-//   folderPath: path.join(__dirname, 'public'),
-//   stream: true,
-//   download: false,
-// });
+
+router.get('/public', (req) => {
+  return serveFile({
+    filePath: path.join(__dirname, 'public/benchmark.yml'),
+    stream: true,
+    download: false,
+  });
+});
+app.serveFiles({
+  routePath: '/public1',
+  folderPath: path.join(__dirname, 'public'),
+  stream: true,
+  download: false,
+});
 
 app.serveFiles({
-  routePath: '/',
+  routePath: '/public',
   folderPath: path.join(__dirname, 'public/f'),
   stream: true,
   download: false,

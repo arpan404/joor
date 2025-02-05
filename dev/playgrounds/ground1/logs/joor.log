@@ -1,1 +1,21 @@
 INFO 'Joor' - 2025-02-05T02:04:44.435Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T02:16:40.149Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T04:07:29.883Z: Server listening on http://localhost:3000
+ERROR 'Joor' - 2025-02-05T04:07:40.382Z: 
+            Error Code: handler-return-undefined
+            Message: All route handlers returned undefined. At least one must return a response.
+            [92mFor more information, visit:[39m [102m[97mhttps://joor.xyz/docs/v1/?error=handler-return-undefined[39m[49m
+            
+Stack Trace:
+Jrror: All route handlers returned undefined. At least one must return a response.
+    at new Jrror (/Users/arpanbhandari/Documents/coding/joor/release/src/core/error/index.js:58:9)
+    at handleRoute (/Users/arpanbhandari/Documents/coding/joor/release/src/core/router/handle.js:98:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Server.process (/Users/arpanbhandari/Documents/coding/joor/release/src/core/joor/server.js:107:38)
+    at async Server.<anonymous> (/Users/arpanbhandari/Documents/coding/joor/release/src/core/joor/server.js:65:17)
+ERROR 'Joor' - 2025-02-05T04:07:40.382Z: Jrror: All route handlers returned undefined. At least one must return a response.
+INFO 'Joor' - 2025-02-05T04:11:45.438Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T04:21:04.333Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T04:26:54.032Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T04:31:11.263Z: Server listening on http://localhost:3000
+INFO 'Joor' - 2025-02-05T04:33:25.778Z: Server listening on http://localhost:3000

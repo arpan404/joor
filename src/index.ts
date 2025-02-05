@@ -2,6 +2,7 @@ import Jrror from '@/core/error';
 import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import Router from '@/core/router';
+import redirect from '@/core/router/redirect';
 import cors from '@/middlewares/cors';
 import serveStaticFiles from '@/middlewares/files';
 import serveFile from '@/middlewares/files/serve';
@@ -23,4 +24,5 @@ export {
   httpLogger,
   serveFile,
   serveStaticFiles,
+  redirect,
 };

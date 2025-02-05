@@ -140,6 +140,7 @@ class Logger {
             // minimum users can set is 100KB
             maxFileSize = 102400;
           }
+
           if (fileStats.size > maxFileSize) {
             // if file size exceeds 10MB, write to a new file
             this.path = this.path.replace(
