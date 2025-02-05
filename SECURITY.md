@@ -31,7 +31,7 @@ While Joor provides robust security features, the onus of securing your applicat
 Security patches are frequently released to address vulnerabilities, so keeping Joor and its dependencies up-to-date is critical. Ensure you are using the latest stable version of Joor and all associated libraries to minimize exposure to known vulnerabilities.
 
 - **Stay Informed**: Subscribe to Joor’s GitHub repository to receive notifications about updates and security patches.
-- For the latest updates and patches, visit [Joor Updates](https://joor.socioy.com/updates).
+- For the latest updates and patches, visit [Joor Updates](https://joor.socioy.com/updates) or join the discussion on [Discord](https://discord.gg/eepjRJJD6c).
 
 ### 2. Implement HTTPS for Secure Communication
 
