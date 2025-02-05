@@ -8,47 +8,74 @@ import { JoorRequest } from '@/types/request';
 /**
  * Middleware to log HTTP requests to a file and console.
  *
+ * Can be applied at different levels of routing, similar to other middleware.
+ *
+ * ### Usage
  * @example
  * ```typescript
- * import Joor from 'joor';
- * import httpLogger from '@/middlewares/httpLogger';
- * import cors from 'cors';
- *
+ * import Joor, { httpLogger } from 'joor';
  * const app = new Joor();
+ *
+ * // Apply to all routes and methods
  * app.use(httpLogger());
- * app.use(cors());
- * app.start();
+ *
+ * // Apply to a specific route and method
+ * app.get('/users', httpLogger());
+ *
+ * // Apply to all methods of a specific route
+ * app.use('/users', httpLogger());
+ *
+ * // Apply to a route and its subroutes
+ * app.use('/users/*', httpLogger());
  * ```
+ *
+ * ### Configuration
+ * `httpLogger` can be customized by passing a configuration object.
+ *
  * @example
  * ```typescript
- * import Joor from 'joor';
- * import httpLogger from '@/middlewares/httpLogger';
+ * import Joor, { httpLogger } from 'joor';
  *
+ * // Custom log format
  * const customFormat = (timestamp: string, message: string): string => `${timestamp} :: ${message}`;
+ *
  * const app = new Joor();
- * app.use(httpLogger({ name: 'api.logger', path: 'logs/http.log', formatCallBack: customFormat }));
- * app.start();
+ * const loggerConfig = {
+ *   name: 'api.logger',
+ *   path: 'logs/http.log',
+ *   formatCallBack: customFormat
+ * };
+ *
+ * app.use(httpLogger(loggerConfig)());
  * ```
- * @param {LOGGER_CONFIG} [loggerConfig] - Optional configuration for the logger.
+ *
+ * **Note:** If no configuration object is provided, default values will be used.
+ *
+ * ### Parameters
+ * @param {LOGGER_CONFIG} [loggerConfig] - Optional configuration object for the logger.
  * @param {string} [loggerConfig.name] - Name of the logger.
  * @param {string} [loggerConfig.path] - Path to the log file.
  * @param {Function} [loggerConfig.formatCallBack] - Callback function to format log messages.
  *
- * @returns {(request: JoorRequest) => void} Middleware function to log HTTP requests.
+ * ### Returns
+ * @return {Function} A middleware function that logs HTTP requests.
+ *
+ * **Note:** `httpLogger` is a wrapper function that returns a middleware function.
+ * It must be called when passing it as middleware, as shown in the examples above.
  */
+
 export default function httpLogger(
-  loggerConfig?: LOGGER_CONFIG
+  config?: LOGGER_CONFIG
 ): (_request: JoorRequest) => void {
-  // Set up the logger configuration with defaults
-  const config = {
-    name: loggerConfig?.name ?? 'HTTP',
-    path:
-      loggerConfig?.path ?? nodePath.resolve(process.cwd(), 'logs', 'http.log'),
-    formatCallBack: loggerConfig?.formatCallBack,
+  // Set up the logger configuration based on provided config or default values
+  const loggerConfig = {
+    name: config?.name ?? 'HTTP',
+    path: config?.path ?? nodePath.resolve(process.cwd(), 'logs', 'http.log'),
+    formatCallBack: config?.formatCallBack,
   };
 
   // Initialize the logger with the provided configuration
-  const logger = new Logger(config);
+  const logger = new Logger(loggerConfig);
 
   // Return the middleware function
   return (request: JoorRequest): void => {
