@@ -268,6 +268,24 @@ describe('CORS', () => {
       );
     }
   });
+  it('should handle requests with varying ports when cors is configured with wilcard port address', async () => {
+    const request = {
+      method: 'OPTIONS',
+      headers: { origin: 'https://example.com:3000' },
+    } as unknown as JoorRequest;
+
+    const response = cors({
+      origins: ['https://example.com:*'],
+      methods: ['GET'],
+    })(request);
+
+    if (response) {
+      const parsedResponse = response.parseResponse();
+      expect(parsedResponse.headers?.['Access-Control-Allow-Origin']).toBe(
+        'https://example.com:3000'
+      );
+    }
+  });
   it('should handle requests with port numbers', async () => {
     const request = {
       method: 'OPTIONS',
