@@ -4,11 +4,52 @@ import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
 import { JoorRequest } from '@/types/request';
 
 /**
- * Middleware for handling Cross-Origin Resource Sharing (CORS) in Joor applications.
+ * A middleware function, which returns a function to handle CORS preflight requests in the Joor application.
+ * cors can be applied globally or to specific routes.
  *
- * Processes CORS preflight (OPTIONS) requests and sets necessary Access-Control headers
- * based on the provided configuration. This middleware should be applied globally.
+ * To add cors to the application globally, use the following code:
+ * @example
+ * ```typescript
+ * import Joor, {cors} from 'joor';
+ * const app = new Joor();
+ * app.use(cors());
+ * app.start();
+ * ```
  *
+ * To add cors to a specific route, use the following code:
+ * @example
+ * ```typescript
+ * app.use('/api', cors()); // This will add cors to every method of the /api route
+ * ```
+ *
+ * To add cors to a specific method of a route, use the following code:
+ * @example
+ * ```typescript
+ * app.get('/api/user', cors(), async(request, response) => {
+ *  // Handle the request
+ * })
+ * ```
+ *
+ * To add cors to a specific route and subroute, use the following code:
+ * @example
+ * ```typescript
+ * app.use("/api/*", cors());
+ * ```
+ *
+ * Note: This all will apply cors with default options.
+ *
+ * The cors middleware can be configured by passing an options object to the cors function.
+ *  @example
+ * ```typescript
+ *  const options = {
+ *      origins: ['http://localhost:3000'],
+ *      methods: ['GET', 'POST'],
+ *      allowedHeaders: ['Content-Type'],
+ *      allowsCookies: true,
+ *      maxAge: 3600
+ *  };
+ * app.use(cors(options)());
+ * ```
  * @param {CORS_OPTIONS} options - Configuration for CORS with the following properties:
  * - `origins`: Single origin or array of allowed origins (default: ['*'])
  * - `methods`: Single method or array of allowed HTTP methods (default: ['*'])
@@ -18,26 +59,20 @@ import { JoorRequest } from '@/types/request';
  * - `maxAge`: Duration in seconds to cache preflight responses (default: 0)
  *
  * @returns {CORS_RESPONSE} A middleware function to handle CORS.
- *
+ * 
+ * As this returns a functions that actually handle middlewares, so it must be executed to get the actual middleware.
  * @example
  * ```typescript
+ * import Joor, { cors } from 'joor';
  * const app = new Joor();
- *
- * // Using as a middleware instance
- * app.use(cors({
- *   origins: ['http://localhost:3000'],
- *   methods: ['GET', 'POST'],
- *   allowedHeaders: ['Content-Type'],
- *   allowsCookies: true
- * }));
- *
- * // Using as a middleware function
- * const corsMiddleware = cors({
- *   origins: ['*'],
- *   methods: ['GET', 'POST']
- * });
+ * app.use(cors());
+ * app.start();
+ * 
+ * // or
+ * 
+ * const corsMiddleware = cors();
  * app.use(corsMiddleware);
- * ```
+ * ``` 
  */
 
 export default function cors(options?: CORS_OPTIONS): CORS_RESPONSE {
