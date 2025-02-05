@@ -20,8 +20,7 @@ Security is a shared responsibility. If you discover any vulnerabilities, we ask
   - Coordinate a public disclosure once the issue has been resolved, along with an update on security improvements.
 
 For bugs and non-critical security vulnerabilities, create an issue at [GitHub Issues](https://github.com/socioy/joor/issues).
-
-For detailed reporting information, see the [CONTRIBUTING.md](https://github.com/socioy/joor/blob/pro/CONTRIBUTING.md).
+While creating an issue, follow the styles mentioned in [STYLEGUIDE.md](https://github.com/socioy/joor/blob/pro/STYLEGUIDE.md).
 
 ## Security Best Practices for Using Joor
 
