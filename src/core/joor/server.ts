@@ -74,7 +74,7 @@ class Server {
       server.listen(configData.server.port, () => {
         logger.info(
           `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
-            configData.server.host ??  'localhost'
+            configData.server.host ?? 'localhost'
           }:${configData.server.port}`
         );
       });
