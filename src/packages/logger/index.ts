@@ -130,22 +130,23 @@ class Logger {
           await fs.promises.mkdir(dirname, { recursive: true });
         }
 
-        const fileStats = await fs.promises.stat(this.path);
+        if (fs.existsSync(this.path)) {
+          const fileStats = await fs.promises.stat(this.path);
 
-        let maxFileSize =
-          Number(process.env.JOOR_LOGGER_MAX_FILE_SIZE) ?? 10485760; // Default to 10MB
+          let maxFileSize =
+            Number(process.env.JOOR_LOGGER_MAX_FILE_SIZE) ?? 10485760; // Default to 10MB
 
-        if (maxFileSize < 102400) {
-          // minimum users can set is 100KB
-          maxFileSize = 102400;
-        }
-
-        if (fileStats.size > maxFileSize) {
-          // if file size exceeds 10MB, write to a new file
-          this.path = this.path.replace(
-            '.log',
-            `-${new Date().toISOString()}.log`
-          );
+          if (maxFileSize < 102400) {
+            // minimum users can set is 100KB
+            maxFileSize = 102400;
+          }
+          if (fileStats.size > maxFileSize) {
+            // if file size exceeds 10MB, write to a new file
+            this.path = this.path.replace(
+              '.log',
+              `-${new Date().toISOString()}.log`
+            );
+          }
         }
         await fs.promises.appendFile(this.path, logsToWrite);
       } catch (error) {

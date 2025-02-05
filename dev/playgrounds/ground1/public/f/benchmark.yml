@@ -7,4 +7,4 @@ config:
 scenarios:
   - flow:
       - get:
-          url: '/api/v1/hello' # Replace with your API's endpoint
+          url: '/api/v1/hellso' # Replace with your API's endpoint
