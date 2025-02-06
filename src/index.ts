@@ -1,4 +1,3 @@
-import Jrror from '@/core/error';
 import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import Router from '@/core/router';
@@ -14,7 +13,6 @@ export default Joor;
 
 export {
   Joor,
-  Jrror,
   Router,
   JoorRequest,
   JoorResponse,

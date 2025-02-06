@@ -72,7 +72,9 @@
   },
   "dependencies": {
     "mime-type": "^5.0.2",
-    "mime-types": "^2.1.35"
+    "mime-types": "^2.1.35",
+    "tsx": "^4.19.2",
+    "ws": "^8.18.0"
   },
   "exports": {
     "./middlewares": "./src/middlewares/index.js"
