@@ -106,6 +106,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (typeof headers !== 'object') {
         throw new Jrror({
           code: 'response-headers-invalid',
