@@ -16,15 +16,15 @@ Thank you for your interest in contributing to Joor! This document outlines the 
 
 ## Code of Conduct
 
-Please follow the guidelines in our [CODE_OF_CONDUCT.md](../pro/CODE_OF_CONDUCT.md) located in the pro branch. This document ensures a friendly, respectful, and productive environment for all contributors.
+Please follow the guidelines in our [CODE_OF_CONDUCT.md](https://github.com/socioy/joor/blob/pro/CODE_OF_CONDUCT.md) located in the pro branch. This document ensures a friendly, respectful, and productive environment for all contributors.
 
 ## Reporting Security Vulnerabilities
 
-For any security issues, please refer to our [SECURITY.md](SECURITY.md) file which provides detailed instructions on how to report vulnerabilities responsibly.
+For any security issues, please refer to our [SECURITY.md](https://github.com/socioy/joor/blob/pro/SECURITY.md) file which provides detailed instructions on how to report vulnerabilities responsibly.
 
 ## Style Guide
 
-Contributors must adhere to the guidelines defined in [STYLEGUIDE.md](STYLEGUIDE.md). This document covers:
+Contributors must adhere to the guidelines defined in [STYLEGUIDE.md](https://github.com/socioy/joor/blob/pro/STYLEGUIDE.md). This document covers:
 
 - Code formatting
 - Writing uniform code styles
@@ -87,13 +87,30 @@ To ensure consistency across development environments, please follow these steps
 
 ## Folder Structure
 
-- **README.md**: Introduction and overall information.
-- **CONTRIBUTING.md**: Guidelines for contributing (this document).
-- **CODE_OF_CONDUCT.md**: Code of conduct, available on the pro branch.
-- **SECURITY.md**: Reporting procedures for security vulnerabilities.
-- **STYLEGUIDE.md**: Coding style and contribution standards.
-- **dev/**: Contains playgrounds and testing environments.
-- **release/**: Output directory post-build containing the linked package.
+## Folder Structure
+
+```
+joor/
+├── dev/                        # Development-related files
+│   ├── playgrounds/            # Testing areas for Joor
+│   └── scripts/                # Development scripts (build, setup, etc.)
+├── src/                        # Source code
+│   ├── core/                   # Core functionalities
+│   │   ├── functionality1/
+│   │   └── functionality2/
+│   ├── data/                   # Data files (docs links, HTTP codes, etc.)
+│   ├── helpers/                # Utility helper code
+│   ├── middlewares/            # Middleware functions
+│   │   └── cors.ts             # Example: CORS middleware
+│   ├── packages/               # Reusable packages
+│   │   ├── package1/
+│   │   └── package2/
+│   ├── types/                  # TypeScript type definitions
+│   └── index.ts                # Main entry point; exports all methods, functions, types, etc.
+├── tests/                      # Tests
+│   ├── integration/            # Integration tests
+│   └── unit/                   # Unit tests
+```
 
 ## Branching and Pull Request Process
 
@@ -116,7 +133,7 @@ To maintain a clear and consistent workflow:
 
 - **Project's main documentation:** Refer to [README.md](https://github.com/socioy/joor/blob/pro/README.md) for the full introduction and setup instructions.
 - **Code of Conduct:** Enforced via [CODE_OF_CONDUCT.md](https://github.com/socioy/joor/blob/pro/CODE_OF_CONDUCT.md) in the pro branch.
-- **Security Policies:** See [SECURITY.md](SECURITY.md) for detailed information on reporting vulnerabilities.
+- **Security Policies:** See [SECURITY.md](https://github.com/socioy/joor/blob/pro/SECURITY.md) for detailed information on reporting vulnerabilities.
 
 ## Online Documentation
 
