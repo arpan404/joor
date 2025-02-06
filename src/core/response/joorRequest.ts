@@ -99,6 +99,13 @@ class JoorResponse {
     override: boolean = false
   ): JoorResponse {
     try {
+      if (!headers) {
+        throw new Jrror({
+          code: 'response-headers-invalid',
+          message: `Headers cannot be null or undefined.`,
+          type: 'error',
+        });
+      }
       if (typeof headers !== 'object') {
         throw new Jrror({
           code: 'response-headers-invalid',
@@ -187,10 +194,12 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (value === '') {
         logger.warn(`Empty string is set as 'message'. Ignoring...`);
         return this;
       }
+
       if (this.message) {
         logger.warn(
           `Message is already set to : ${this.message}. This is going to be overwritten with the new message : ${value}.`
@@ -342,6 +351,7 @@ class JoorResponse {
           type: 'error',
         });
       }
+
       if (typeof data !== 'object') {
         throw new Jrror({
           code: 'response-json-invalid',
