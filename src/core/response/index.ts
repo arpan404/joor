@@ -1,3 +1,3 @@
-import JoorResponse from '@/core/response/joorRequest';
+import JoorResponse from '@/core/response/joorResponse';
 
 export default JoorResponse;

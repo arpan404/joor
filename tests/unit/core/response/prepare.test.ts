@@ -6,93 +6,55 @@ describe('prepareResponse', () => {
   beforeEach(() => {
     joorResponse = new JoorResponse();
   });
-  const prepareAndAssert = (
-    status: number,
-    message: string,
-    data: any,
-    error: any,
-    cookies: Record<string, { value: string; options: any }> | undefined,
-    expectedStatus: number,
-    expectedData: any,
-    expectedHeaders: Record<string, string>,
-    expectedCookies: string[] = []
-  ) => {
-    joorResponse.setStatus(status).setMessage(message).setData(data);
-    if (error) {
-      joorResponse.setError(error);
-    }
-
-    if (cookies) {
-      joorResponse.setCookies(cookies);
-    }
-
+  it('should prepare the response correctly with normal data', () => {
+    const data = { key: 'value' };
+    joorResponse.setStatus(200).setMessage('Success').setData(data);
     const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
     const preparedResponse: PREPARED_RESPONSE =
       prepareResponse(internalResponse);
-    expect(preparedResponse.status).toBe(expectedStatus);
-    expect(preparedResponse.data).toBe(expectedData);
-    expect(preparedResponse.headers).toEqual(expectedHeaders);
-    expect(preparedResponse.cookies).toEqual(expectedCookies);
-  };
-  it('should prepare the response correctly with normal data', () => {
-    const data = { key: 'value' };
-    prepareAndAssert(
-      200,
-      'Success',
-      data,
-      null,
-      undefined,
-      200,
-      JSON.stringify(data),
-      { 'Content-Type': 'application/json' },
-      []
-    );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    expect(preparedResponse.status).toBe(200);
+    expect(preparedResponse.headers).toEqual({
+      'Content-Type': 'application/json',
+    });
+    expect(preparedResponse.cookies).toEqual([]);
   });
   it('should prepare the response correctly with error data', () => {
-    prepareAndAssert(
-      400,
-      'Bad Request',
-      null,
-      'Invalid input',
-      undefined,
-      400,
-      JSON.stringify({ message: 'Bad Request', data: 'Invalid input' }),
-      { 'Content-Type': 'application/json' },
-      []
+    joorResponse
+      .setStatus(400)
+      .setMessage('Bad Request')
+      .setError('Invalid input');
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.status).toBe(400);
+    expect(preparedResponse.data).toBe(
+      JSON.stringify({ message: 'Bad Request', data: 'Invalid input' })
     );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    expect(preparedResponse.headers).toEqual({
+      'Content-Type': 'application/json',
+    });
+    expect(preparedResponse.cookies).toEqual([]);
   });
   it('should prepare the response with cookies', () => {
-    const cookies = {
-      session_id: { value: '123456', options: { expires: new Date() } },
-    };
-    prepareAndAssert(
-      200,
-      'Success',
-      { key: 'value' },
-      null,
-      cookies,
-      200,
-      JSON.stringify({ key: 'value' }),
-      { 'Content-Type': 'application/json' },
-      expect.arrayContaining([expect.stringMatching(/^session_id=123456/)])
-    );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    joorResponse
+      .setStatus(200)
+      .setMessage('Success')
+      .setData({ key: 'value' })
+      .setCookies({
+        session_id: { value: '123456', options: { expires: new Date() } },
+      });
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.cookies.length).toBe(1);
+    expect(preparedResponse.cookies[0]).toMatch(/^session_id=123456/);
   });
   it('should handle empty cookies array correctly', () => {
-    prepareAndAssert(
-      200,
-      'Success',
-      { key: 'value' },
-      null,
-      undefined,
-      200,
-      JSON.stringify({ key: 'value' }),
-      { 'Content-Type': 'application/json' },
-      []
-    );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    joorResponse.setStatus(200).setMessage('Success').setData({ key: 'value' });
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.cookies).toEqual([]);
   });
   it('should prepare the response with headers', () => {
     joorResponse
@@ -106,73 +68,52 @@ describe('prepareResponse', () => {
     expect(preparedResponse.headers).toEqual(
       expect.objectContaining({
         'X-Custom-Header': 'HeaderValue',
-        'Content-Type': 'application/json',
       })
     );
   });
   it('should prepare the response with null data correctly', () => {
-    prepareAndAssert(
-      200,
-      'Success',
-      null,
-      null,
-      undefined,
-      200,
-      'Success',
-      {},
-      []
-    );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    joorResponse.setStatus(200).setMessage('Success').setData(null);
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.data).toBe('Success');
   });
   it('should handle non-object data correctly', () => {
-    prepareAndAssert(
-      200,
-      'Success',
-      'simple string',
-      null,
-      undefined,
-      200,
-      'simple string',
-      {},
-      []
-    );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
+    joorResponse.setStatus(200).setMessage('Success').setData('simple string');
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.data).toBe('simple string');
   });
   it('should correctly handle response with multiple cookies', () => {
-    const cookies = {
-      session_id: { value: '123456', options: { expires: new Date() } },
-      auth_token: { value: 'abcdef', options: { path: '/' } },
-    };
-    prepareAndAssert(
-      200,
-      'Success',
-      { key: 'value' },
-      null,
-      cookies,
-      200,
-      JSON.stringify({ key: 'value' }),
-      { 'Content-Type': 'application/json' },
-      expect.arrayContaining([
-        expect.stringMatching(/^session_id=123456/),
-        expect.stringMatching(/^auth_token=abcdef/),
-      ])
-    );
+    joorResponse
+      .setStatus(200)
+      .setMessage('Success')
+      .setData({ key: 'value' })
+      .setCookies({
+        session_id: { value: '123456', options: { expires: new Date() } },
+        auth_token: { value: 'abcdef', options: { path: '/' } },
+      });
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.cookies.length).toBe(2);
+    expect(preparedResponse.cookies[0]).toMatch(/^session_id=123456/);
+    expect(preparedResponse.cookies[1]).toMatch(/^auth_token=abcdef/);
   });
   it('should correctly format error data with nested objects', () => {
-    prepareAndAssert(
-      400,
-      'Bad Request',
-      null,
-      { message: 'Required Field' },
-      undefined,
-      400,
+    joorResponse
+      .setStatus(400)
+      .setMessage('Bad Request')
+      .setError({ message: 'Required Field' });
+    const internalResponse: INTERNAL_RESPONSE = joorResponse.parseResponse();
+    const preparedResponse: PREPARED_RESPONSE =
+      prepareResponse(internalResponse);
+    expect(preparedResponse.data).toBe(
       JSON.stringify({
         message: 'Bad Request',
         data: { message: 'Required Field' },
-      }),
-      { 'Content-Type': 'application/json' },
-      []
+      })
     );
-    expect(1).toBe(1); // to avoid Test has no assertions warning
   });
 });

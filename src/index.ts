@@ -5,7 +5,7 @@ import Router from '@/core/router';
 import redirect from '@/core/router/redirect';
 import cors from '@/middlewares/cors';
 import serveStaticFiles from '@/middlewares/files';
-import serveFile from '@/middlewares/files/serve';
+import serveFile from '@/enhanchers/serveFile';
 import httpLogger from '@/middlewares/httpLogger';
 import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';

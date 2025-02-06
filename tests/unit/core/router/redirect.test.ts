@@ -1,4 +1,4 @@
-import redirect from './redirect';
+import redirect from '@/core/router/redirect';
 describe('redirect', () => {
   it('should return a JoorResponse with status 301 and Location header set to the given path when permanent is true', async () => {
     const path = '/new-path';
