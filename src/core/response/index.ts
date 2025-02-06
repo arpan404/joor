@@ -32,7 +32,6 @@ import {
  * - sendAsStream: Marks the response as a stream.
  * - sendAsFile: Marks the response as a file and provides the file path.
  * - sendAsDownload: Marks the response for file download.
- * - parseResponse: Internal method to parse and return the final response object.
  */
 class JoorResponse {
   private status: RESPONSE['status']; // HTTP status code

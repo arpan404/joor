@@ -118,7 +118,6 @@ class Router {
   public delete(route: ROUTE_PATH, ...handlers: ROUTE_HANDLER[]) {
     this.addRoute('DELETE', route, handlers);
   }
-
   /**
    * Adds a route to the router.
    *
