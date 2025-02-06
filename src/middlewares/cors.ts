@@ -4,38 +4,85 @@ import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
 import { JoorRequest } from '@/types/request';
 
 /**
- * Middleware for handling Cross-Origin Resource Sharing (CORS) in Joor applications.
+ * A middleware function that returns a function to handle CORS preflight requests in the Joor application.
+ * The CORS middleware can be applied globally or to specific routes.
  *
- * Processes CORS preflight (OPTIONS) requests and sets necessary Access-Control headers
- * based on the provided configuration. This middleware should be applied globally.
- *
- * @param {CORS_OPTIONS} options - Configuration for CORS with the following properties:
- * - `origins`: Single origin or array of allowed origins (default: ['*'])
- * - `methods`: Single method or array of allowed HTTP methods (default: ['*'])
- * - `allowedHeaders`: Single header or array of allowed headers (default: ['*'])
- * - `exposedHeaders`: Headers exposed to the client
- * - `allowsCookies`: Enables credentials support (default: false)
- * - `maxAge`: Duration in seconds to cache preflight responses (default: 0)
- *
- * @returns {CORS_RESPONSE} A middleware function to handle CORS.
- *
+ * ### Applying CORS Globally
+ * To enable CORS for the entire application, use:
  * @example
  * ```typescript
+ * import Joor, { cors } from 'joor';
  * const app = new Joor();
+ * app.use(cors());
+ * app.start();
+ * ```
  *
- * // Using as a middleware instance
- * app.use(cors({
+ * ### Applying CORS to Specific Routes
+ * To apply CORS to a particular route:
+ * @example
+ * ```typescript
+ * app.use('/api', cors()); // Applies CORS to all methods of the `/api` route
+ * ```
+ *
+ * To apply CORS to a specific HTTP method of a route:
+ * @example
+ * ```typescript
+ * app.get('/api/user', cors(), async (request, response) => {
+ *   // Handle the request
+ * });
+ * ```
+ *
+ * To apply CORS to a route and its subroutes:
+ * @example
+ * ```typescript
+ * app.use('/api/*', cors()); // Applies CORS to all subroutes under `/api`
+ * ```
+ *
+ * **Note:** By default, CORS will be applied with its default settings.
+ *
+ * ### Configuring CORS
+ * The middleware can be customized by passing an options object:
+ * @example
+ * ```typescript
+ * const options = {
  *   origins: ['http://localhost:3000'],
  *   methods: ['GET', 'POST'],
  *   allowedHeaders: ['Content-Type'],
- *   allowsCookies: true
- * }));
+ *   allowsCookies: true,
+ *   maxAge: 3600
+ * };
+ * app.use(cors(options)());
+ * ```
  *
- * // Using as a middleware function
- * const corsMiddleware = cors({
- *   origins: ['*'],
- *   methods: ['GET', 'POST']
- * });
+ * #### Origin Options:
+ * - You can specify a single origin or an array of allowed origins.
+ * - To allow all subdomains, use a wildcard: `'https://*.example.com'`.
+ * - To allow both the main domain and all subdomains: `'https://example.com, https://*.example.com'`.
+ * - To allow different ports: `'http://localhost:3000, http://localhost:3001'` or `'http://localhost:*'`.
+ *
+ * ### Parameters
+ * @param {CORS_OPTIONS} options - Configuration object for CORS:
+ * - `origins` (string | string[]) - Allowed origins (default: `['*']`).
+ * - `methods` (string | string[]) - Allowed HTTP methods (default: `['*']`).
+ * - `allowedHeaders` (string | string[]) - Allowed headers (default: `['*']`).
+ * - `exposedHeaders` (string | string[]) - Headers exposed to the client.
+ * - `allowsCookies` (boolean) - Enables credentials support (default: `false`).
+ * - `maxAge` (number) - Cache duration for preflight responses in seconds (default: `0`).
+ *
+ * ### Returns
+ * @returns {CORS_RESPONSE} A middleware function that handles CORS.
+ *
+ * **Usage:** Since this function returns a middleware handler, it must be executed before applying it.
+ * @example
+ * ```typescript
+ * import Joor, { cors } from 'joor';
+ * const app = new Joor();
+ * app.use(cors()); // Direct usage
+ * app.start();
+ *
+ * // or
+ *
+ * const corsMiddleware = cors(); // Store middleware in a variable
  * app.use(corsMiddleware);
  * ```
  */
