@@ -28,7 +28,7 @@ const rl = Readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-const flag = "";
+const flag = process.platform === 'win32' ? 'file://' : '';
 
 // regex for checking version
 const versionRegex =
