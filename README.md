@@ -1,44 +1,46 @@
-## Notice
+# Joor
 
-This project is currently under active development. We will be releasing the alpha version soon, before the 2nd week of 2025. Stay tuned! If you want to contribute, you can help by testing and reporting issues.
+**Joor** is a modern, high-performance backend framework built on **Node.js**, designed for **efficiency, scalability, and simplicity**. With **built-in tools** and a **lightweight core**, Joor minimizes dependencies while maximizing performance.
 
-### How to Contribute
+## Why Choose Joor?
 
-1. **Fork and Clone the Repo**
-2. **Install Packages**
-   ```sh
-   npm install
-   ```
-3. **Create a Release Version**
-   - You will be asked to enter a version name: use the `0.0.1-ax` pattern or `0.0.1` pattern.
-4. **Change Directory to Release Folder**
-   ```sh
-   cd release
-   ```
-5. **Run npm link**
-   ```sh
-   npm link
-   ```
-6. **Navigate to Playground**
-   ```sh
-   cd dev/playgrounds/ground1
-   ```
-7. **Link joor**
-   ```sh
-   npm link joor
-   ```
-8. **Start the Server**
-   ```sh
-   npm start
-   ```
+Joor simplifies backend development while ensuring high performance and security. Whether you’re building small projects or enterprise-level applications, Joor provides a robust foundation with minimal complexity.
 
-You can explore and test the functionalities of joor. Benchmark it against `ground0` containing Express and report any performance issues if joor is slower than Express.
+### Key Features
 
-### Reporting Issues and Feature Requests
+- ✅ **Minimal & Intuitive:** Simple API, easy to learn for beginners.
+- ⚡ **High Performance:** Optimized for speed with auto-scaling capabilities.
+- 🛠 **Flexible & Configurable:** Adaptable settings for different project needs.
+- 🔒 **Secure & Reliable:** Built-in security features and rigorous testing.
+- 📦 **Zero Dependency Bloat:** Reduces reliance on third-party packages.
+- 🔷 **Type-Safe:** Built with **TypeScript** for better code quality and maintainability.
 
-- For bugs or issues, create an issue in the repository.
-- For feature requests, include `#FeatureRequest` in the issue title.
-- For benchmark insights, include `#Benchmark` in the issue title.
-- For bug reporting, include `#Bug` in the issue title.
+## Documentation & Support
 
-Thank you for contributing!
+Dive deeper into Joor with our comprehensive documentation and support resources.
+
+- 📖 **Full Documentation:** [Explore the Docs](https://joor.socioy.com) - Everything you need to get started and master Joor.
+
+### Join Our Community
+
+- 💬 **Discord:** [Join the Joor Community](https://discord.gg/eepjRJJD6c)
+- 🐙 **GitHub:** [Contribute to Joor](https://github.com/socioy/joor)
+
+## Contributing
+
+We welcome contributions! To help improve Joor, please read our [CONTRIBUTING.md](https://github.com/socioy/joor/blob/pro/CONTRIBUTING.md).
+
+## Project Resources
+
+Our repository contains important resources to help developers get started and contribute efficiently:
+
+- [CONTRIBUTING.md](https://github.com/socioy/joor/blob/pro/CONTRIBUTING.md) - Guidelines for contributing to Joor.
+- [STYLEGUIDE.md](https://github.com/socioy/joor/blob/pro/STYLEGUIDE.md) - Coding standards and best practices.
+- [SECURITY.md](https://github.com/socioy/joor/blob/pro/SECURITY.md) - Security policies and reporting vulnerabilities.
+- [CODE_OF_CONDUCT.md](https://github.com/socioy/joor/blob/pro/CODE_OF_CONDUCT.md) - Community standards and behavior guidelines.
+
+## License
+
+Joor is open-source and available under the MIT License. See the full license [here](https://github.com/socioy/joor/blob/pro/LICENSE.md).
+
+**Joor is built for modern developers, making backend development effortless without sacrificing power.** Try it today! 🚀
