@@ -1,7 +1,7 @@
 import path from 'node:path';
 
 import JoorResponse from '@/core/response';
-import serveStaticFiles from '@/middlewares/files';
+import serveStaticFiles from '@/middlewares/serveStaticFiles';
 import { JoorRequest } from '@/types/request';
 jest.mock('@/core/response');
 describe('serveStaticFiles', () => {

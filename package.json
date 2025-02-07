@@ -71,7 +71,6 @@
     "access": "public"
   },
   "dependencies": {
-    "mime-type": "^5.0.2",
     "mime-types": "^2.1.35"
   },
   "exports": {
