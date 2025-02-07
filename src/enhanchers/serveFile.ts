@@ -1,7 +1,7 @@
 import JoorResponse from '@/core/response';
 
 /**
- * A utility function to serve files as HTTP responses.
+ * Serves the files as HTTP responses.
  *
  * This function can be used to send files either as a stream or as a complete download,
  * depending on the provided options. It also allows the flexibility to control the file serving behavior.
