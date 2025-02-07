@@ -1,4 +1,4 @@
-import Router from './index';
+import Router from '@/core/router';
 jest.spyOn(console, 'info').mockImplementation(() => {});
 jest.spyOn(console, 'warn').mockImplementation(() => {});
 jest.spyOn(console, 'error').mockImplementation(() => {});

@@ -2,8 +2,8 @@ import addMiddlewares from '../router/addMiddlewares';
 
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import loadEnv from '@/core/internals/loadEnv';
 import Server from '@/core/joor/server';
+import loadEnv from '@/enhanchers/loadEnv';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 import { SERVE_FILES, SERVE_FILES_CONFIG } from '@/types/joor';
