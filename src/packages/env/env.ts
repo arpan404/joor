@@ -3,8 +3,8 @@ import * as nodePath from 'node:path';
 
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
-import loadEnv from '@/packages/env/load';
 import logger from '@/helpers/joorLogger';
+import loadEnv from '@/packages/env/load';
 
 /**
  * `env` class provides methods to manage environment variables.

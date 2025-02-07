@@ -14,12 +14,12 @@ describe('env', () => {
       jest.clearAllMocks();
     });
     it('should call loadEnv with the provided path and override options', () => {
-    //   const path = '.env.test';
-    //   const override = true;
+      //   const path = '.env.test';
+      //   const override = true;
 
-    //   (fs.existsSync as jest.Mock).mockReturnValue(true);
+      //   (fs.existsSync as jest.Mock).mockReturnValue(true);
 
-    //   env.config({ path, override });
+      //   env.config({ path, override });
 
       expect(1).toBe(1);
     });

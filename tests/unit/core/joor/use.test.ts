@@ -125,5 +125,4 @@ describe('use method of Joor class', () => {
       Router.routes['/'].children?.api?.children?.[':id']?.localMiddlewares
     ).toEqual([...middlewares, ...middlewares2]);
   });
-
 });

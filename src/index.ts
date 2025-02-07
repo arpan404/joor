@@ -1,12 +1,10 @@
 import Joor from '@/core/joor';
-import Router from '@/core/router';
 import JoorResponse from '@/core/response';
+import Router from '@/core/router';
 import { loadEnv, redirect, serveFile } from '@/enhanchers';
-
-import marker from '@/packages/marker';
-import Logger from '@/packages/logger';
 import env from '@/packages/env';
-
+import Logger from '@/packages/logger';
+import marker from '@/packages/marker';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_HANDLER } from '@/types/route';
 
