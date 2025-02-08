@@ -1,5 +1,5 @@
-import { JOOR_CONFIG } from 'joor';
-const config: JOOR_CONFIG = {
+// import { JOOR_CONFIG } from 'joor';
+const config = {
   server: {
     port: 3000,
     host: 'localhost',

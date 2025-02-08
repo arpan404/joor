@@ -4,49 +4,44 @@ import https from 'node:https';
 import path from 'node:path';
 
 import mime from 'mime-types';
+import { Server as SocketServer } from 'socket.io';
+
+import JoorError from '../error/JoorError';
+import prepareResponse from '../response/prepare';
+import handleRoute from '../router/handle';
 
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
-import prepareResponse from '@/core/response/prepare';
-import handleRoute from '@/core/router/handle';
 import logger from '@/helpers/joorLogger';
+import JOOR_CONFIG from '@/types/config';
 import { JoorRequest } from '@/types/request';
 import { PREPARED_RESPONSE } from '@/types/response';
 
-/**
- * Represents the server class responsible for starting the HTTP(S) server
- * and processing incoming requests.
- */
-class Server {
-  /**
-   * Starts the server and listens on the configured port.
-   * Handles both HTTP and HTTPS based on the configuration.
-   * @returns {Promise<void>} A promise that resolves when the server starts listening.
-   * @throws {Jrror} Throws an error if the configuration is not loaded or SSL files cannot be read.
-   */
-  public async listen(): Promise<void> {
-    const config = new Configuration();
-    const configData = await config.getConfig();
 
-    if (!configData) {
+
+class Server {
+  private server: http.Server | https.Server = null as unknown as http.Server;
+  private configData: JOOR_CONFIG = null as unknown as JOOR_CONFIG;
+  public sockets = null as unknown as SocketServer;
+  public async initialize(): Promise<void> {
+    const config = new Configuration();
+    this.configData = await config.getConfig();
+    if (!this.configData) {
       throw new Jrror({
         code: 'config-not-loaded',
-        message: 'Configuration not loaded properly',
+        message: 'Configuration not loaded',
         type: 'error',
         docsPath: '/configuration',
       });
     }
 
-    let server: http.Server | https.Server;
-
-    if (configData.server?.ssl?.cert && configData.server?.ssl?.key) {
+    if (this.configData.server?.ssl?.cert && this.configData.server?.ssl?.key) {
       try {
         const credentials = {
-          key: fs.readFileSync(configData.server.ssl.key),
-          cert: fs.readFileSync(configData.server.ssl.cert),
+          key: fs.readFileSync(this.configData.server.ssl.key),
+          cert: fs.readFileSync(this.configData.server.ssl.cert),
         };
-        server = https.createServer(
+        this.server = https.createServer(
           credentials,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           async (req: JoorRequest, res: http.ServerResponse) => {
@@ -62,27 +57,31 @@ class Server {
         });
       }
     } else {
-      server = http.createServer(
+      this.server = http.createServer(
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (req: JoorRequest, res: http.ServerResponse) => {
           await this.process(req, res);
         }
       );
     }
+    this.sockets = new SocketServer(this.server);
+  }
 
+  public async listen(): Promise<void> {
     try {
-      server.listen(configData.server.port, () => {
+      await this.initialize(); // Ensure initialization is complete before listening
+      this.server.listen(this.configData.server.port, () => {
         logger.info(
-          `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
-            configData.server.host ?? 'localhost'
-          }:${configData.server.port}`
+          `Server listening on ${this.configData.server.ssl ? 'https' : 'http'}://${
+            this.configData.server.host ?? 'localhost'
+          }:${this.configData.server.port}`
         );
       });
     } catch (error: unknown) {
       if ((error as Error).message.includes('EADDRINUSE')) {
         throw new Jrror({
           code: 'server-port-in-use',
-          message: `Port ${configData.server.port} is already in use.`,
+          message: `Port ${this.configData.server.port} is already in use.`,
           type: 'error',
           docsPath: '/joor-server',
         });

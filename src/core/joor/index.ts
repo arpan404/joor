@@ -1,3 +1,6 @@
+import { Server as SocketServer } from 'socket.io';
+
+import Router from '../router';
 import addMiddlewares from '../router/addMiddlewares';
 
 import Configuration from '@/core/config';
@@ -17,7 +20,7 @@ import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
  * ```typescript
  * import Joor from "joor";
  * const app = new Joor();
- * await app.start();
+ * app.prepare().start();
  * ```
  * This example starts a new Joor server using the default configuration data from the `joor.config.ts` or `joor.config.js` file.
  *
@@ -29,7 +32,24 @@ class Joor {
     paths: [] as Array<string>,
     details: {} as SERVE_FILES,
   };
-  // public static
+  public sockets = null as unknown as SocketServer;
+  public router = new Router();
+
+  // Re-exports of Router methods for convenience
+  public get = this.router.get;
+  public post = this.router.post;
+  public put = this.router.put;
+  public delete = this.router.delete;
+  public patch = this.router.patch;
+
+  private server: Server = null as unknown as Server;
+  public async prepare(): Promise<Joor> {
+    this.server = new Server();
+    await this.server.initialize();
+    this.sockets = this.server.sockets;
+    return this;
+  }
+
   /**
    * Starts a new Joor server.
    * This method must always be awaited as it is asynchronous.
@@ -48,8 +68,7 @@ class Joor {
       await this.initialize();
       loadEnv();
       if (this.configData) {
-        const server = new Server();
-        await server.listen();
+        await this.server.listen();
       } else {
         throw new Jrror({
           code: 'config-load-failed',
