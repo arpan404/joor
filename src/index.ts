@@ -10,6 +10,7 @@ import httpLogger from '@/middlewares/httpLogger';
 import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { JoorRequest } from '@/types/request';
+import { generateOTP } from './packages/otp/otp';
 export default Joor;
 
 export {
@@ -25,4 +26,5 @@ export {
   serveFile,
   serveStaticFiles,
   redirect,
+  generateOTP,
 };
