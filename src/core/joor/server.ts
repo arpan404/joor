@@ -21,6 +21,11 @@ class Server {
   private configData: JOOR_CONFIG = null as unknown as JOOR_CONFIG;
   private isInitialized = false;
 
+  /**
+   * Initializes the server with SSL if configured, and sets up error handling.
+   * @returns {Promise<void>} A promise that resolves when the server is initialized.
+   * @throws {Jrror} Throws an error if server initialization fails.
+   */
   public async initialize(): Promise<void> {
     try {
       if (this.isInitialized) {
