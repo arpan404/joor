@@ -1,11 +1,10 @@
 import { Server as SocketServer } from 'socket.io';
 
-import Router from '@/core/router';
-import addMiddlewares from '@/core/router/addMiddlewares';
-
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
 import Server from '@/core/joor/server';
+import Router from '@/core/router';
+import addMiddlewares from '@/core/router/addMiddlewares';
 import loadEnv from '@/enhanchers/loadEnv';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
@@ -148,7 +147,7 @@ class Joor {
    */
   public use(...data: Array<ROUTE_PATH | ROUTE_HANDLER>): void {
     let paths: Array<ROUTE_PATH> = [];
-    let middlewares: Array<ROUTE_HANDLER> = [];
+    const middlewares: Array<ROUTE_HANDLER> = [];
 
     for (const d of data) {
       if (typeof d === 'string') {
