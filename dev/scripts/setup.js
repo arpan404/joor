@@ -1,7 +1,7 @@
-import { promisify } from 'util';
 import { exec as execCallback } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { promisify } from 'util';
 
 // Promisify exec function to work with async/await
 const exec = promisify(execCallback);
@@ -10,6 +10,7 @@ const exec = promisify(execCallback);
 const isPackageVersionInstalledGlobally = async (packageName, version) => {
   try {
     const result = await exec(`npm list -g ${packageName}`);
+
     return result.stdout.includes(`${packageName}@${version}`);
   } catch {
     return false;
@@ -25,10 +26,13 @@ const isLocalPackageVersionInstalled = async (packageName, version) => {
       packageName,
       'package.json'
     );
+
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = require(packageJsonPath);
+
       return packageJson.version === version;
     }
+
     return false;
   } catch {
     return false;
@@ -53,12 +57,14 @@ const installPackage = async (name, version, isGlobal = false) => {
     console.info(`Installing ${name}@${version}...\n`);
     try {
       const result = await exec(command);
+
       if (result.stderr) {
         console.info(
           `Failed to install: ${name}@${version}. Try running: '${command}' manually.`
         );
         return false;
       }
+
       return true;
     } catch (error) {
       console.error(`Error installing ${name}@${version}:`, error);
@@ -76,27 +82,25 @@ const main = async () => {
   ];
 
   let totalInstalled = 0;
+
   if (console.clear) {
     console.clear();
   } else {
     process.stdout.write('\x1Bc');
   }
-
   console.info('\n\nSetting up the development environment for Joor.\n\n');
   console.info('\nInstalling Global Packages\n');
-
   // Install global packages
   for (const { name, version } of toInstallGlobally) {
     const success = await installPackage(name, version, true);
     if (success) totalInstalled++;
   }
-
   console.info(
     `\nInstalled ${totalInstalled}/${toInstallGlobally.length} global packages successfully.\n`
   );
-
   // Check if local dependencies are already installed
   const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+
   if (fs.existsSync(nodeModulesPath)) {
     console.info('\nLocal dependencies are already installed.\n');
   } else {
@@ -104,6 +108,7 @@ const main = async () => {
     console.info("\nInstalling Joor's local dependencies...\n");
     try {
       const dependenciesResult = await exec('npm i');
+
       if (dependenciesResult.stderr) {
         console.info(
           "\nError while installing Joor's dependencies:\n",
@@ -117,6 +122,5 @@ const main = async () => {
     }
   }
 };
-
 // Call the main function to start the setup process
 main();
