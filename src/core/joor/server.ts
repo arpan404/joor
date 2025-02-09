@@ -166,6 +166,7 @@ class Server {
         res.statusCode = 500;
         res.end('Internal Server Error');
       }
+
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
       } else {

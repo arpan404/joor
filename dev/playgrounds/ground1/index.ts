@@ -27,22 +27,24 @@ const app = new Joor();
     });
 
     app.use(
-      // httpLogger({
-      //   flushInterval: 120000,
-      // })
+      httpLogger({
+        flushInterval: 120000,
+      })
     );
 
-    const router = app.router;
+    app.router.get('/hello', (req) => {
+      const response = new JoorResponse();
+      response.setMessage('Hello Noobie').setStatus(200);
+      return response;
+    });
 
-    // Route Definitions (as provided in your original code)
-
-    router.get('/', (req) => {
+    app.router.get('/', (req) => {
       const response = new JoorResponse();
       response.setMessage('Hello Noobie').setStatus(200).sendAsStream();
       return response;
     });
 
-    router.get('/api/v1/hello', async (req) => {
+    app.router.get('/api/v1/hello', async (req) => {
       const response = new JoorResponse();
       response.setDataAsJson({ data: { message: 'Hello from API v1' } });
       return response;
@@ -53,7 +55,7 @@ const app = new Joor();
     };
     // app.get('/a', (req) => {});
 
-    router.get('/api/v1/hello/:id/:user', print, (req) => {
+    app.router.get('/api/v1/hello/:id/:user', print, (req) => {
       const response = new JoorResponse();
       const id = req.params?.id;
       console.log(req.params);
@@ -70,7 +72,7 @@ const app = new Joor();
       return response;
     });
 
-    router.get('/api/files/:type', (req) => {
+    app.router.get('/api/files/:type', (req) => {
       if (req.params?.type === 'json') {
         return serveFile({
           filePath: path.join(__dirname, 'public/benchmark.yml'),
@@ -90,7 +92,7 @@ const app = new Joor();
       }
     });
 
-    router.get('/file', (req) => {
+    app.router.get('/file', (req) => {
       return serveFile({
         filePath: path.join(__dirname, 'tes 1 .txt'),
         stream: true,
@@ -102,7 +104,7 @@ const app = new Joor();
       console.log(req.params);
     });
 
-    router.get(
+    app.router.get(
       '/file/:path',
       serveStaticFiles({
         routePath: '/file',
@@ -112,7 +114,7 @@ const app = new Joor();
       })
     );
 
-    router.get('/public', (req) => {
+    app.router.get('/public', (req) => {
       return serveFile({
         filePath: path.join(__dirname, 'public/benchmark.yml'),
         stream: true,

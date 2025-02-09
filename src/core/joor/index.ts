@@ -22,14 +22,6 @@ class Joor {
   private server: Server = null as unknown as Server;
   public sockets = null as unknown as SocketServer;
   public router = new Router();
-
-  // Re-exports of Router methods
-  public get = this.router.get;
-  public post = this.router.post;
-  public put = this.router.put;
-  public delete = this.router.delete;
-  public patch = this.router.patch;
-
   public async prepare(): Promise<Joor> {
     try {
       this.server = new Server();
