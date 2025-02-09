@@ -15,9 +15,6 @@ const packageFileData = `
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "type":"commonjs",
-  "bin":{
-    "create-joor": "cli/creator/index.js"
-  },
   "dependencies": ##dependencies##
 }
 `;
