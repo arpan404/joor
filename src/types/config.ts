@@ -1,3 +1,4 @@
+import { ServerOptions } from 'socket.io';
 interface JOOR_CONFIG {
   server: {
     port?: number;
@@ -7,6 +8,9 @@ interface JOOR_CONFIG {
       key: string;
       cert: string;
     };
+  };
+  socket?: {
+    options: ServerOptions;
   };
 }
 
