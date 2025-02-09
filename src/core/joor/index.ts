@@ -12,115 +12,100 @@ import JOOR_CONFIG from '@/types/config';
 import { SERVE_FILES, SERVE_FILES_CONFIG } from '@/types/joor';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
 
-/**
- * Represents the Joor framework server.
- * This class is used to initiate and start a new Joor server with the provided configuration.
- *
- * @example
- * ```typescript
- * import Joor from "joor";
- * const app = new Joor();
- * app.prepare().start();
- * ```
- * This example starts a new Joor server using the default configuration data from the `joor.config.ts` or `joor.config.js` file.
- *
- */
 class Joor {
-  // Private variable to hold configuration data used in the server, initialized as null
   private configData: JOOR_CONFIG | undefined;
   public static staticFileDirectories = {
     paths: [] as Array<string>,
     details: {} as SERVE_FILES,
   };
+
+  private server: Server = null as unknown as Server;
   public sockets = null as unknown as SocketServer;
   public router = new Router();
 
-  // Re-exports of Router methods for convenience
+  // Re-exports of Router methods
   public get = this.router.get;
   public post = this.router.post;
   public put = this.router.put;
   public delete = this.router.delete;
   public patch = this.router.patch;
 
-  private server: Server = null as unknown as Server;
   public async prepare(): Promise<Joor> {
-    this.server = new Server();
-    await this.server.initialize();
-    this.sockets = this.server.sockets;
-    return this;
+    try {
+      this.server = new Server();
+      await this.server.initialize();
+      await this.initializeSockets();
+      return this;
+    } catch (error) {
+      logger.error('Failed to prepare server:', error);
+      throw new Jrror({
+        code: 'server-preparation-failed',
+        message: `Failed to prepare server: ${error}`,
+        type: 'panic',
+        docsPath: '/joor-server',
+      });
+    }
   }
 
-  /**
-   * Starts a new Joor server.
-   * This method must always be awaited as it is asynchronous.
-   *
-   * @example
-   * ```typescript
-   * const app = new Joor();
-   * await app.start();
-   * ```
-   * This example starts the server with the loaded configuration.
-   *
-   * @throws {Jrror} Throws a custom error if configuration is not found. But also handles it.
-   */
   public async start(): Promise<void> {
     try {
       await this.initialize();
       loadEnv();
-      if (this.configData) {
-        await this.server.listen();
-      } else {
+      if (!this.configData) {
         throw new Jrror({
           code: 'config-load-failed',
-          message: `Error occured while loading the configuration file.`,
+          message: 'Configuration not loaded',
           type: 'panic',
           docsPath: '/configuration',
         });
       }
+      await this.server.listen();
     } catch (error: unknown) {
       if (error instanceof Jrror) {
         error.handle();
       } else {
-        logger.info(`Unknown Error Occurred.\n${error}`);
+        logger.error(`Server start failed:`, error);
+        throw new Jrror({
+          code: 'server-start-failed',
+          message: `Failed to start server: ${error}`,
+          type: 'panic',
+          docsPath: '/joor-server',
+        });
       }
     }
   }
 
-  /**
-   * Adds global middlewares to specified routes.
-   *
-   * @example
-   * ```typescript
-   * const app = new Joor();
-   * app.use("/", middleware1, middleware2); // Adds middleware1 and middleware2 to the route "/" and all its methods.
-   * app.use("/api/*", middleware3); // Adds middleware3 to all routes starting with "/api/".
-   * ```
-   *
-   * @param {...(ROUTE_PATH | ROUTE_HANDLER)[]} data - An array of route paths and middleware functions.
-   *
-   * @remarks
-   * Middleware must accept a request object of type `JoorRequest` and must return `JoorResponse` to interrupt the request-response cycle.
-   * If the request needs to be processed further, the middleware must return `void`.
-   */
+  private async initializeSockets(): Promise<void> {
+    try {
+      this.sockets = new SocketServer(
+        this.server.server,
+        this.configData?.socket?.options
+      );
+    } catch (error) {
+      logger.error('Socket initialization failed:', error);
+      throw new Jrror({
+        code: 'socket-initialization-failed',
+        message: `Failed to initialize Socket.IO: ${error}`,
+        type: 'error',
+        docsPath: '/websockets',
+      });
+    }
+  }
+
   public use(...data: Array<ROUTE_PATH | ROUTE_HANDLER>): void {
     let paths: Array<ROUTE_PATH> = [];
     let middlewares: Array<ROUTE_HANDLER> = [];
 
-    // Separate paths and middleware functions from the provided data
     for (const d of data) {
       if (typeof d === 'string') {
         paths = [...paths, d];
       } else if (typeof d === 'function') {
         middlewares = [...middlewares, d];
       } else {
-        logger.warn(
-          `Invalid data type "${typeof d}" passed to use method. Ignoring...`
-        );
+        logger.warn(`Invalid data type "${typeof d}" passed to use method`);
       }
     }
 
-    // Add middlewares to the specified paths
-    // console.log(paths, middlewares);
     if (paths.length === 0) {
       paths = ['/'];
     }
@@ -130,24 +115,9 @@ class Joor {
         addMiddlewares(p, middlewares);
       }
     } else {
-      logger.warn(
-        `Invalid data passed to use method. Ensure both paths and middlewares are provided. Ignoring...`
-      );
+      logger.warn('Invalid data passed to use method');
     }
   }
-
-  /**
-   * Registers a new route to serve static files.
-   * @example
-   * ```typescript
-   * const app = new Joor();
-   * app.serveFiles({
-   * routePath: "/files",
-   * folderPath: path.join(__dirname, "public"),
-   * stream: true,
-   * download: false,
-   * });
-   */
 
   public serveFiles({
     routePath,
@@ -163,15 +133,21 @@ class Joor {
     };
   }
 
-  /**
-   * Initializes the configuration for the server.
-   * Loads configuration data asynchronously and assigns it to `configData`.
-   *
-   * @throws {Jrror} Throws a custom error if initialization fails.
-   */
   private async initialize(): Promise<void> {
-    const config = new Configuration();
-    this.configData = await config.getConfig();
+    try {
+      const config = new Configuration();
+      this.configData = await config.getConfig();
+      if (!this.configData) {
+        throw new Error('Configuration not loaded');
+      }
+    } catch (error) {
+      throw new Jrror({
+        code: 'initialization-failed',
+        message: `Failed to initialize: ${error}`,
+        type: 'panic',
+        docsPath: '/configuration',
+      });
+    }
   }
 }
 

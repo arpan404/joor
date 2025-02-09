@@ -11,7 +11,7 @@ import { Router, JoorResponse } from 'joor';
 import Joor from 'joor';
 import path from 'node:path';
 
-process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
+process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'false';
 process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING = 'true';
 process.env.JOOR_RESPONSE_STREAM_CHUNK_SIZE = '200000';
 
@@ -27,9 +27,9 @@ const app = new Joor();
     });
 
     app.use(
-      httpLogger({
-        flushInterval: 120000,
-      })
+      // httpLogger({
+      //   flushInterval: 120000,
+      // })
     );
 
     const router = app.router;
@@ -51,6 +51,7 @@ const app = new Joor();
     const print = (req: JoorRequest) => {
       console.log(req.params);
     };
+    // app.get('/a', (req) => {});
 
     router.get('/api/v1/hello/:id/:user', print, (req) => {
       const response = new JoorResponse();
@@ -132,21 +133,20 @@ const app = new Joor();
       stream: true,
       download: false,
     });
-    console.log(app);
-    app.sockets.on('connection', (socket) => {
-      socketLogger.info(`New socket connection: ${socket.id}`);
-      console.log(socket.id);
-      socket.onAny((event, ...args) => {
-        socketLogger.info(`Socket event: ${event}`, args);
-      });
-      socket.on('message', (message) => {
-        socketLogger.info(`Received message from ${socket.id}: ${message}`);
-        socket.send(`Echo: ${message}`);
-      });
-      socket.on('disconnect', () => {
-        socketLogger.info(`Socket disconnected: ${socket.id}`);
-      });
-    });
+    // app.sockets.on('connection', (socket) => {
+    //   console.log(socket.id);
+    //   socketLogger.info(`New socket connection: ${socket.id}`);
+    //   socket.onAny((event, ...args) => {
+    //     socketLogger.info(`Socket event: ${event}`, args);
+    //   });
+    //   socket.on('message', (message) => {
+    //     socketLogger.info(`Received message from ${socket.id}: ${message}`);
+    //     socket.send(`Echo: ${message}`);
+    //   });
+    //   socket.on('disconnect', () => {
+    //     socketLogger.info(`Socket disconnected: ${socket.id}`);
+    //   });
+    // });
 
     app.start();
   } catch (error) {

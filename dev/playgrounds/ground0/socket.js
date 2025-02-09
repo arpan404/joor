@@ -17,7 +17,7 @@ socket.on('connect', () => {
 
   // Send a new message every 3 seconds
   setInterval(() => {
-    socket.emit("message", "Ping from client!");
+    socket.emit('message', 'Ping from client!');
   }, 1000);
 });
 socket.emit('message', 'Hello from client!');
