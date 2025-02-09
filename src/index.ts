@@ -1,3 +1,5 @@
+import { generateOTP } from './packages/otp/otp';
+
 import Jrror from '@/core/error';
 import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
@@ -10,7 +12,6 @@ import httpLogger from '@/middlewares/httpLogger';
 import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { JoorRequest } from '@/types/request';
-import { generateOTP } from './packages/otp/otp';
 export default Joor;
 
 export {
