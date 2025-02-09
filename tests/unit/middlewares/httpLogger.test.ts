@@ -2,7 +2,9 @@ import httpLogger from '@/middlewares/httpLogger';
 import Logger from '@/packages/logger';
 import { LOGGER_CONFIG } from '@/types/logger';
 import { JoorRequest } from '@/types/request';
+import path from 'path';
 jest.mock('@/packages/logger');
+
 describe('httpLogger Middleware', () => {
   let mockedLoggerInstance: { info: jest.Mock };
   beforeEach(() => {
@@ -13,6 +15,7 @@ describe('httpLogger Middleware', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
+
   it('should initialize Logger with default configuration when no config is provided', () => {
     const logRequest = httpLogger();
 
@@ -26,7 +29,7 @@ describe('httpLogger Middleware', () => {
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith({
       name: 'HTTP',
-      path: expect.stringContaining('logs/http.log'),
+      path: expect.stringContaining(path.join('logs', 'http.log')), // ✅ Cross-platform fix
       formatCallBack: undefined,
     });
     expect(mockedLoggerInstance.info).toHaveBeenCalledTimes(1);
@@ -34,6 +37,7 @@ describe('httpLogger Middleware', () => {
       'GET /test-endpoint 1.1'
     );
   });
+
   it('should initialize Logger with provided configuration', () => {
     const customConfig: LOGGER_CONFIG = {
       name: 'CustomLogger',
@@ -57,6 +61,7 @@ describe('httpLogger Middleware', () => {
       'POST /api/data 2.0'
     );
   });
+
   it('should log request details correctly for different HTTP methods and URLs', () => {
     const logRequest = httpLogger();
 
