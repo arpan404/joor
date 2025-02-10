@@ -69,7 +69,7 @@ const validators = {
       value !== null &&
       typeof (value as { key: string; cert: string }).key === 'string' &&
       typeof (value as { key: string; cert: string }).cert === 'string',
-      
+
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
   }),
@@ -128,8 +128,10 @@ const validators = {
       `Invalid 'env.defaults': expected object with optional 'enable' (boolean) and 'file' (string)`,
   }),
 };
+
 const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
   const validatedConfig = JSON.parse(JSON.stringify(defaultConfig));
+
   // Server validation
   if (config.server) {
     if (
@@ -199,6 +201,7 @@ const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
       validatedConfig.env.defaults = config.env.defaults;
     }
   }
+
   return validatedConfig;
 };
 

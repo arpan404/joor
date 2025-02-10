@@ -46,7 +46,7 @@ describe('validateConfig', () => {
         // expect(logger.warn).toHaveBeenCalledWith(
         //   expect.stringContaining("Invalid 'server.host'")
         // );
-        // expect(logger.warn).toHaveBeenCalled()
+        // expect(logger.warn).toHaveBeenCalled();
       });
     });
     it('validates server mode', () => {
