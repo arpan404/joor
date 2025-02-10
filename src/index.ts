@@ -14,6 +14,7 @@ export default Joor;
 
 // export all other methods and functions except TYPES
 export {
+  Joor,
   Router,
   JoorResponse,
   loadEnv,

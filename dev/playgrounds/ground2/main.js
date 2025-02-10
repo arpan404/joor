@@ -187,4 +187,4 @@ router.get('/hello', (_req) => {
   response.message = 'OK';
   return response;
 });
-app.start();
+app.prepare().then(() => app.start());

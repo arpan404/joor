@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import Jrror from '@/core/error/index';
+import validateConfig from '@/helpers/validateConfig';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -54,8 +55,9 @@ class Configuration {
 
       const configPath = path.resolve(process.cwd(), configFile);
       // Dynamically import the configuration file
-      Configuration.configData = (await import(configPath))
-        .config as JOOR_CONFIG;
+      const configData = (await import(configPath)).config as JOOR_CONFIG;
+      Configuration.configData = validateConfig(configData);
+      this.setConfigToEnv();
     } catch (error) {
       throw new Jrror({
         code: 'config-load-failed',
@@ -66,6 +68,20 @@ class Configuration {
     }
   }
 
+  private setConfigToEnv(): void {
+    // File Size for Logger
+    process.env.JOOR_LOGGER_MAX_FILE_SIZE =
+      Configuration.configData?.logger?.maxFileSize?.toString() ?? '10485760';
+    // Logger File Logging
+    process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING =
+      Configuration.configData?.logger?.enable?.file?.toString() ?? 'true';
+    // Logger Console Logging; only enabled in development mode for performance reasons
+    process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING =
+      (Configuration.configData?.logger?.enable?.console?.toString() ??
+      Configuration.configData?.mode === 'development')
+        ? 'true'
+        : 'false';
+  }
   /**
    * Retrieves the configuration data. If the configuration data is not already loaded, it will load it.
    *
