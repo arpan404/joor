@@ -11,10 +11,7 @@ interface OTPConfig {
  * @param config - The configuration options for OTP generation.
  * @returns A string representing the generated OTP.
  */
-export function generateOTP({
-  length,
-  characters = 'numeric',
-}: OTPConfig): string {
+export function OTP({ length, characters = 'numeric' }: OTPConfig): string {
   let charSet: string;
 
   if (
@@ -46,3 +43,39 @@ export function generateOTP({
 
   return otp;
 }
+
+/**
+ * Generates an OTP based on the specified configuration.
+ * @param length - The length of the OTP.
+ * @param charSet - Optional custom character set for OTP generation.
+ * @returns A string representing the generated OTP.
+ */
+function generate(length: number, charSet: string): string {
+  let otp = '';
+
+  for (let i = 0; i < length; i++) {
+    otp += charSet.charAt(Math.floor(Math.random() * charSet.length));
+  }
+
+  return otp;
+}
+
+export const otp = {
+  alphanumeric: {
+    generate: (length: number) =>
+      generate(
+        length,
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+      ),
+  },
+  numeric: {
+    generate: (length: number) => generate(length, '0123456789'),
+  },
+  alphabetic: {
+    generate: (length: number) =>
+      generate(length, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'),
+  },
+  custom: {
+    generate: (length: number, charSet: string) => generate(length, charSet),
+  },
+};

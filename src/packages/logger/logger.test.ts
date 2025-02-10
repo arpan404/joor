@@ -22,12 +22,15 @@ describe('Logger', () => {
   });
 
   const mockMessage = 'This is a test message';
+  const fixedTimestamp = '2025-02-09T23:45:18.775Z'; // Fixed Date for stable tests
   beforeEach(() => {
     process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING = 'true';
     process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'true';
+    jest.useFakeTimers().setSystemTime(new Date(fixedTimestamp)); // ⏳ Freeze Date
   });
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers(); // Restore real Date behavior after each test
   });
   it('should log INFO messages to console', () => {
     logger.info(mockMessage);
@@ -38,10 +41,9 @@ describe('Logger', () => {
     expect(console.warn).toHaveBeenCalled();
   });
   it('should log ERROR messages to console', () => {
-    const mockTimeStamp = new Date().toISOString();
     logger.error(mockMessage);
     expect(console.error).toHaveBeenCalledWith(
-      `${marker.bgRedBright.bold(' ERROR ')} 'test.logger' - ${mockTimeStamp} - ${mockMessage}`
+      `${marker.bgRedBright.bold(' ERROR ')} 'test.logger' - ${fixedTimestamp} - ${mockMessage}`
     );
   });
   it('should log DEBUG messages to console', () => {
@@ -49,14 +51,14 @@ describe('Logger', () => {
     expect(console.debug).toHaveBeenCalled();
   });
   it('should use default formatting if no callback is provided', () => {
-    const mockTimeStamp = new Date().toISOString();
+    console.info = jest.fn();
     const defaultLogger = new Logger({
       name: 'default.logger',
       path: 'default.log',
     });
     defaultLogger.info(mockMessage);
     expect(console.info).toHaveBeenCalledWith(
-      `${marker.bgGreenBright.bold(' INFO ')} 'default.logger' - ${mockTimeStamp}: ${mockMessage}`
+      `${marker.bgGreenBright.bold(' INFO ')} 'default.logger' - ${fixedTimestamp}: ${mockMessage}`
     );
   });
   it('should not log messages to file if file logging is disabled', async () => {
@@ -72,11 +74,9 @@ describe('Logger', () => {
       formatCallBack: (timestamp, message) =>
         `Custom Format: ${timestamp} - ${message}`,
     });
-
-    const mockTimeStamp = new Date().toISOString();
     customLogger.info(mockMessage);
     expect(console.info).toHaveBeenCalledWith(
-      `${marker.bgGreenBright.bold(' INFO ')} 'custom.logger' - Custom Format: ${mockTimeStamp} - ${mockMessage}`
+      `${marker.bgGreenBright.bold(' INFO ')} 'custom.logger' - Custom Format: ${fixedTimestamp} - ${mockMessage}`
     );
   });
 });

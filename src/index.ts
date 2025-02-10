@@ -1,4 +1,4 @@
-import { generateOTP } from './packages/otp/otp';
+import { otp } from './packages/otp/otp';
 
 import Jrror from '@/core/error';
 import Joor from '@/core/joor';
@@ -27,5 +27,5 @@ export {
   serveFile,
   serveStaticFiles,
   redirect,
-  generateOTP,
+  otp,
 };
