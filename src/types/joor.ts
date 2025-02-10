@@ -1,6 +1,11 @@
+import { Socket } from 'socket.io';
+
 import { ROUTE_HANDLER } from '@/types/route';
 
 type GLOBAL_MIDDLEWARES = Array<ROUTE_HANDLER>;
+
+type SOCKET_HANDLER = (_socket: Socket) => void;
+
 interface SERVE_FILES {
   [key: string]: {
     folderPath: string;
@@ -15,14 +20,19 @@ interface SERVE_FILES_CONFIG {
   download?: boolean;
 }
 
-interface WEBSOCKET_CONFIG {
-  route: string;
-  handler: ROUTE_HANDLER;
+interface SOCKET_CONFIG {
+  event: string;
+  handler: SOCKET_HANDLER;
 }
 
+interface SOCKET {
+  [key: string]: SOCKET_HANDLER;
+}
 export {
   GLOBAL_MIDDLEWARES,
   SERVE_FILES_CONFIG,
   SERVE_FILES,
-  WEBSOCKET_CONFIG,
+  SOCKET_CONFIG,
+  SOCKET_HANDLER,
+  SOCKET,
 };

@@ -1,3 +1,5 @@
+import path from 'path';
+
 import httpLogger from '@/middlewares/httpLogger';
 import Logger from '@/packages/logger';
 import { LOGGER_CONFIG } from '@/types/logger';
@@ -29,7 +31,11 @@ describe('httpLogger Middleware', () => {
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith({
       name: 'HTTP',
+
       path: expect.stringContaining(path.join('logs', 'http.log')), // ✅ Cross-platform fix
+=======
+      path: expect.stringContaining(path.normalize('logs/http.log')), // ✅ Fix here
+
       formatCallBack: undefined,
     });
     expect(mockedLoggerInstance.info).toHaveBeenCalledTimes(1);
