@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import Jrror from '@/core/error/index';
-import validateConfig from '@/helpers/validateConfig';
+// import validateConfig from '@/helpers/validateConfig';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -56,7 +56,8 @@ class Configuration {
       const configPath = path.resolve(process.cwd(), configFile);
       // Dynamically import the configuration file
       const configData = (await import(configPath)).config as JOOR_CONFIG;
-      Configuration.configData = validateConfig(configData);
+      // Configuration.configData = validateConfig(configData);
+      console.warn('Configuration file loaded successfully', configData);
       this.setConfigToEnv();
     } catch (error) {
       throw new Jrror({

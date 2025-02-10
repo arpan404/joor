@@ -1,7 +1,7 @@
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 
-const DEFAULT_CONFIG: JOOR_CONFIG = {
+const defaultConfig: JOOR_CONFIG = {
   server: {
     port: 8080,
     host: 'localhost',
@@ -69,6 +69,7 @@ const validators = {
       value !== null &&
       typeof (value as { key: string; cert: string }).key === 'string' &&
       typeof (value as { key: string; cert: string }).cert === 'string',
+      
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
   }),
@@ -120,16 +121,15 @@ const validators = {
       typeof value === 'object' &&
       value !== null &&
       (!('enable' in value) ||
-        typeof (value as unknown).enable === 'boolean') &&
-      (!('file' in value) || typeof (value as unknown).file === 'string'),
+        typeof (value as { enable?: boolean }).enable === 'boolean') &&
+      (!('file' in value) ||
+        typeof (value as { file?: string }).file === 'string'),
     errorMessage: () =>
       `Invalid 'env.defaults': expected object with optional 'enable' (boolean) and 'file' (string)`,
   }),
 };
-
 const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
-  const validatedConfig = { ...DEFAULT_CONFIG };
-
+  const validatedConfig = JSON.parse(JSON.stringify(defaultConfig));
   // Server validation
   if (config.server) {
     if (
@@ -184,7 +184,7 @@ const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
 
   // Environment validation
   if (config.env) {
-    validatedConfig.env = { ...DEFAULT_CONFIG.env };
+    validatedConfig.env = { ...defaultConfig.env };
     if (
       config.env.values &&
       validators.envValues(config.env.values, 'env.values')
@@ -199,7 +199,6 @@ const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
       validatedConfig.env.defaults = config.env.defaults;
     }
   }
-
   return validatedConfig;
 };
 
