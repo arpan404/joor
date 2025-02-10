@@ -60,25 +60,23 @@ describe('validateConfig', () => {
         );
       });
     });
-    // it('validates SSL configuration', () => {
-    //   const invalidSSLConfigs = [
-    //     { key: 123, cert: 'cert' },
-    //     { key: 'key', cert: null },
-    //     { key: '', cert: '' },
-    //     { cert: 'cert' },
-    //     { key: 'key' },
-    //   ];
-    //   invalidSSLConfigs.forEach((ssl) => {
-    //     const config = { server: { ssl } as any };
-    //     console.log(config);
-    //     const validated = validateConfig(config);
-    //     console.log(validated);
-    //     expect(validated.server.ssl).toBeUndefined();
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'server.ssl'")
-    //     );
-    //   });
-    // });
+    it('validates SSL configuration', () => {
+      const invalidSSLConfigs = [
+        { key: 123, cert: 'cert' },
+        { key: 'key', cert: null },
+        { key: '', cert: '' },
+        { cert: 'cert' },
+        { key: 'key' },
+      ];
+      invalidSSLConfigs.forEach((ssl) => {
+        const config = { server: { ssl } as any };
+        const validated = validateConfig(config);
+        expect(validated.server.ssl).toBeUndefined();
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'server.ssl'")
+        );
+      });
+    });
   });
   describe('Socket Configuration', () => {
     it('accepts valid socket configuration', () => {

@@ -67,8 +67,10 @@ const validators = {
     isValid: (value): value is { key: string; cert: string } =>
       typeof value === 'object' &&
       value !== null &&
-      typeof (value as { key: string; cert: string }).key === 'string' &&
-      typeof (value as { key: string; cert: string }).cert === 'string',
+      typeof (value as JOOR_CONFIG['server']['ssl'])?.key === 'string' &&
+      typeof (value as JOOR_CONFIG['server']['ssl'])?.cert === 'string' &&
+      (value as JOOR_CONFIG['server']['ssl'])?.key !== '' &&
+      (value as JOOR_CONFIG['server']['ssl'])?.cert !== '',
 
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
