@@ -30,7 +30,9 @@ interface ValidationRule<T> {
   errorMessage: (_received: unknown) => string;
 }
 
-const createValidator = <T>(rule: ValidationRule<T>) => (value: unknown, _path: string): value is T => {
+const createValidator =
+  <T>(rule: ValidationRule<T>) =>
+  (value: unknown, _path: string): value is T => {
     if (!rule.isValid(value)) {
       logger.warn(rule.errorMessage(value));
       return false;
@@ -65,8 +67,8 @@ const validators = {
     isValid: (value): value is { key: string; cert: string } =>
       typeof value === 'object' &&
       value !== null &&
-      typeof ((value as { key: string; cert: string }).key) === 'string' &&
-      typeof ((value as { key: string; cert: string }).cert) === 'string',
+      typeof (value as { key: string; cert: string }).key === 'string' &&
+      typeof (value as { key: string; cert: string }).cert === 'string',
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
   }),
@@ -82,8 +84,10 @@ const validators = {
     isValid: (value): value is { file: boolean; console: boolean } =>
       typeof value === 'object' &&
       value !== null &&
-      typeof ((value as { file: boolean; console: boolean }).file) === 'boolean' &&
-      typeof ((value as { file: boolean; console: boolean }).console) === 'boolean',
+      typeof (value as { file: boolean; console: boolean }).file ===
+        'boolean' &&
+      typeof (value as { file: boolean; console: boolean }).console ===
+        'boolean',
     errorMessage: () =>
       `Invalid 'logger.enable': expected object with 'file' and 'console' booleans`,
   }),
@@ -115,7 +119,8 @@ const validators = {
     isValid: (value): value is { enable?: boolean; file?: string } =>
       typeof value === 'object' &&
       value !== null &&
-      (!('enable' in value) || typeof (value as unknown).enable === 'boolean') &&
+      (!('enable' in value) ||
+        typeof (value as unknown).enable === 'boolean') &&
       (!('file' in value) || typeof (value as unknown).file === 'string'),
     errorMessage: () =>
       `Invalid 'env.defaults': expected object with optional 'enable' (boolean) and 'file' (string)`,
