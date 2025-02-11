@@ -37,6 +37,7 @@ const createValidator =
       logger.warn(rule.errorMessage(value));
       return false;
     }
+
     return true;
   };
 
@@ -113,6 +114,7 @@ const validators = {
       if (typeof value !== 'object' || value === null) return false;
       const entries = Object.entries(value);
       if (entries.length === 0) return false;
+
       return entries.every(([, val]) => typeof val === 'string');
     },
     errorMessage: (received) =>
@@ -175,18 +177,21 @@ const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
   // Logger validation
   if (config.logger) {
     let isLoggerValid = true;
+
     if ('enable' in config.logger) {
       isLoggerValid = validators.loggerEnable(
         config.logger.enable,
         'logger.enable'
       );
     }
+
     if ('maxFileSize' in config.logger) {
       isLoggerValid = validators.maxFileSize(
         config.logger.maxFileSize,
         'logger.maxFileSize'
       );
     }
+
     if (isLoggerValid) {
       validatedConfig.logger = config.logger;
     }
