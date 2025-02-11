@@ -37,7 +37,6 @@ const createValidator =
       logger.warn(rule.errorMessage(value));
       return false;
     }
-
     return true;
   };
 
@@ -67,11 +66,10 @@ const validators = {
     isValid: (value): value is { key: string; cert: string } =>
       typeof value === 'object' &&
       value !== null &&
-      typeof (value as JOOR_CONFIG['server']['ssl'])?.key === 'string' &&
-      typeof (value as JOOR_CONFIG['server']['ssl'])?.cert === 'string' &&
-      (value as JOOR_CONFIG['server']['ssl'])?.key !== '' &&
-      (value as JOOR_CONFIG['server']['ssl'])?.cert !== '',
-
+      typeof (value as { key: string; cert: string }).key === 'string' &&
+      typeof (value as { key: string; cert: string }).cert === 'string' &&
+      (value as { key: string; cert: string }).key !== '' &&
+      (value as { key: string; cert: string }).cert !== '',
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
   }),
@@ -85,6 +83,7 @@ const validators = {
 
   loggerEnable: createValidator<{ file: boolean; console: boolean }>({
     isValid: (value): value is { file: boolean; console: boolean } =>
+      value !== undefined &&
       typeof value === 'object' &&
       value !== null &&
       typeof (value as { file: boolean; console: boolean }).file ===
@@ -110,10 +109,12 @@ const validators = {
   }),
 
   envValues: createValidator<Record<string, string>>({
-    isValid: (value): value is Record<string, string> =>
-      typeof value === 'object' &&
-      value !== null &&
-      Object.keys(value).length > 0,
+    isValid: (value): value is Record<string, string> => {
+      if (typeof value !== 'object' || value === null) return false;
+      const entries = Object.entries(value);
+      if (entries.length === 0) return false;
+      return entries.every(([, val]) => typeof val === 'string');
+    },
     errorMessage: (received) =>
       `Invalid 'env.values': expected non-empty object with string values, received ${typeof received}`,
   }),
@@ -132,6 +133,7 @@ const validators = {
 };
 
 const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
+  // Deep clone defaultConfig to start with defaults
   const validatedConfig = JSON.parse(JSON.stringify(defaultConfig));
 
   // Server validation
@@ -172,10 +174,19 @@ const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
 
   // Logger validation
   if (config.logger) {
-    const isLoggerValid =
-      validators.loggerEnable(config.logger.enable, 'logger.enable') &&
-      validators.maxFileSize(config.logger.maxFileSize, 'logger.maxFileSize');
-
+    let isLoggerValid = true;
+    if ('enable' in config.logger) {
+      isLoggerValid = validators.loggerEnable(
+        config.logger.enable,
+        'logger.enable'
+      );
+    }
+    if ('maxFileSize' in config.logger) {
+      isLoggerValid = validators.maxFileSize(
+        config.logger.maxFileSize,
+        'logger.maxFileSize'
+      );
+    }
     if (isLoggerValid) {
       validatedConfig.logger = config.logger;
     }

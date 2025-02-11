@@ -13,7 +13,7 @@ interface JOOR_CONFIG {
     options: ServerOptions;
   };
   logger?: {
-    enable: {
+    enable?: {
       file: boolean;
       console: boolean;
     };

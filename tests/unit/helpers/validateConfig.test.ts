@@ -43,10 +43,11 @@ describe('validateConfig', () => {
         const config = { server: { host } as any };
         const validated = validateConfig(config);
         expect(validated.server.host).toBe('localhost');
-        // expect(logger.warn).toHaveBeenCalledWith(
-        //   expect.stringContaining("Invalid 'server.host'")
-        // );
-        // expect(logger.warn).toHaveBeenCalled();
+        if (host === 123) {
+          expect(logger.warn).toHaveBeenCalledWith(
+            expect.stringContaining("Invalid 'server.host'")
+          );
+        }
       });
     });
     it('validates server mode', () => {
@@ -93,18 +94,17 @@ describe('validateConfig', () => {
       expect(validated.socket).toEqual(config.socket);
       expect(logger.warn).not.toHaveBeenCalled();
     });
-    // it('validates socket options', () => {
-    //   const invalidOptions = [null, undefined, '', 123, true];
-    //   invalidOptions.forEach((options) => {
-    //     const config = { socket: { options } as any };
-    //     const validated = validateConfig(config);
-    //     expect(validated.socket).toBeUndefined();
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'socket.options'")
-    //     );
-    //     jest.clearAllMocks();
-    //   });
-    // });
+    it('validates socket options', () => {
+      const invalidOptions = [123, true];
+      invalidOptions.forEach((options) => {
+        const config = { socket: { options } as any };
+        const validated = validateConfig(config);
+        expect(validated.socket).toBeUndefined();
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'socket.options'")
+        );
+      });
+    });
   });
   describe('Logger Configuration', () => {
     it('accepts valid logger configuration', () => {
@@ -117,7 +117,6 @@ describe('validateConfig', () => {
           maxFileSize: 5242880,
         },
       };
-
       const validated = validateConfig(config);
       expect(validated.logger).toEqual(config.logger);
       expect(logger.warn).not.toHaveBeenCalled();
@@ -143,21 +142,19 @@ describe('validateConfig', () => {
         expect(logger.warn).toHaveBeenCalledWith(
           expect.stringContaining("Invalid 'logger.enable'")
         );
-        jest.clearAllMocks();
       });
     });
-    // it('validates maxFileSize', () => {
-    //   const invalidSizes = [-1, 0, null, undefined, 'invalid', true];
-    //   invalidSizes.forEach((maxFileSize) => {
-    //     const config = { logger: { maxFileSize } as any };
-    //     const validated = validateConfig(config);
-    //     expect(validated.logger?.maxFileSize).toBe(10485760);
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'logger.maxFileSize'")
-    //     );
-    //     jest.clearAllMocks();
-    //   });
-    // });
+    it('validates maxFileSize', () => {
+      const invalidSizes = [-1, 0, null, undefined, 'invalid', true];
+      invalidSizes.forEach((maxFileSize) => {
+        const config = { logger: { maxFileSize } as any };
+        const validated = validateConfig(config);
+        expect(validated.logger?.maxFileSize).toBe(10485760);
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'logger.maxFileSize'")
+        );
+      });
+    });
   });
   describe('Mode Configuration', () => {
     it('accepts valid modes', () => {
@@ -174,18 +171,17 @@ describe('validateConfig', () => {
         expect(logger.warn).not.toHaveBeenCalled();
       });
     });
-    // it('validates mode value', () => {
-    //   const invalidModes = ['dev', 'prod', '', null, undefined, 123, true];
-    //   invalidModes.forEach((mode) => {
-    //     const config = { mode } as any;
-    //     const validated = validateConfig(config);
-    //     expect(validated.mode).toBe('development');
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'mode'")
-    //     );
-    //     jest.clearAllMocks();
-    //   });
-    // });
+    it('validates mode value', () => {
+      const invalidModes = ['dev', 'prod', '', null, undefined, 123, true];
+      invalidModes.forEach((mode) => {
+        const config = { mode } as any;
+        const validated = validateConfig(config);
+        expect(validated.mode).toBe('development');
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'mode'")
+        );
+      });
+    });
   });
   describe('Environment Configuration', () => {
     it('accepts valid environment configuration', () => {
@@ -206,40 +202,38 @@ describe('validateConfig', () => {
       expect(validated.env).toEqual(config.env);
       expect(logger.warn).not.toHaveBeenCalled();
     });
-    // it('validates env values', () => {
-    //   const invalidValues = [{}, null, undefined, 123, true, ''];
-    //   invalidValues.forEach((values) => {
-    //     const config = { env: { values } as any };
-    //     const validated = validateConfig(config);
-    //     expect(validated.env?.values).toBeUndefined();
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'env.values'")
-    //     );
-    //     jest.clearAllMocks();
-    //   });
-    // });
-    // it('validates env defaults', () => {
-    //   const invalidDefaults = [
-    //     { enable: 'true' },
-    //     { enable: 1 },
-    //     { file: 123 },
-    //     null,
-    //     undefined,
-    //     123,
-    //     '',
-    //   ];
-    //   invalidDefaults.forEach((defaults) => {
-    //     const config = { env: { defaults } as any };
-    //     const validated = validateConfig(config);
-    //     expect(validated.env?.defaults).toEqual({
-    //       enable: true,
-    //     });
-    //     expect(logger.warn).toHaveBeenCalledWith(
-    //       expect.stringContaining("Invalid 'env.defaults'")
-    //     );
-    //     jest.clearAllMocks();
-    //   });
-    // });
+    it('validates env values', () => {
+      const invalidValues = [{}, null, undefined, 123, true, ''];
+      invalidValues.forEach((values) => {
+        const config = { env: { values } as any };
+        const validated = validateConfig(config);
+        expect(validated.env?.values).toBeUndefined();
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'env.values'")
+        );
+      });
+    });
+    it('validates env defaults', () => {
+      const invalidDefaults = [
+        { enable: 'true' },
+        { enable: 1 },
+        { file: 123 },
+        null,
+        undefined,
+        123,
+        '',
+      ];
+      invalidDefaults.forEach((defaults) => {
+        const config = { env: { defaults } as any };
+        const validated = validateConfig(config);
+        expect(validated.env?.defaults).toEqual({
+          enable: true,
+        });
+        expect(logger.warn).toHaveBeenCalledWith(
+          expect.stringContaining("Invalid 'env.defaults'")
+        );
+      });
+    });
   });
   describe('Default Values and Edge Cases', () => {
     it('returns complete default configuration for empty input', () => {
