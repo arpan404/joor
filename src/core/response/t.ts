@@ -1,8 +1,9 @@
-import { JoorRequest } from '@/types/request';
 import { ServerResponse } from 'node:http';
-import logger from '@/helpers/joorLogger';
+
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
+import logger from '@/helpers/joorLogger';
+import { JoorRequest } from '@/types/request';
 
 /** Extends ServerResponse with added functionality for better DX  */
 class JoorReponse extends ServerResponse {
@@ -19,6 +20,7 @@ class JoorReponse extends ServerResponse {
           docsPath: '/response',
         });
       }
+
       if (code < 100 || code > 599) {
         throw new Jrror({
           code: 'response-status-invalid',
@@ -35,6 +37,7 @@ class JoorReponse extends ServerResponse {
         logger.error(error);
       }
     }
+
     return this;
   }
 
