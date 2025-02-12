@@ -86,7 +86,7 @@ class Configuration {
     process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING =
       (Configuration.configData?.logger?.enable?.console?.toString() ??
       Configuration.configData?.mode === 'development')
-        ? 'true'
+        ? Configuration.configData?.logger?.enable?.console?.toString()
         : 'false';
     if (Configuration.configData?.env?.values) {
       const keys = Object.keys(Configuration.configData.env.values);

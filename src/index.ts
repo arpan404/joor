@@ -8,6 +8,7 @@ import Logger from '@/packages/logger';
 import marker from '@/packages/marker';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_HANDLER } from '@/types/route';
+import JOOR_CONFIG from '@/types/config';
 
 // default export must always be Joor class
 export default Joor;
@@ -29,4 +30,4 @@ export {
 };
 
 // export types
-export { JoorRequest, ROUTE_HANDLER };
+export { JoorRequest, ROUTE_HANDLER, JOOR_CONFIG };
