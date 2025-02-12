@@ -6,9 +6,9 @@ import { httpLogger, cors, serveStaticFiles } from '@/middlewares';
 import env from '@/packages/env';
 import Logger from '@/packages/logger';
 import marker from '@/packages/marker';
+import JOOR_CONFIG from '@/types/config';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_HANDLER } from '@/types/route';
-import JOOR_CONFIG from '@/types/config';
 
 // default export must always be Joor class
 export default Joor;
