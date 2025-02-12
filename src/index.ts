@@ -6,6 +6,7 @@ import { httpLogger, cors, serveStaticFiles } from '@/middlewares';
 import env from '@/packages/env';
 import Logger from '@/packages/logger';
 import marker from '@/packages/marker';
+import JOOR_CONFIG from '@/types/config';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_HANDLER } from '@/types/route';
 
@@ -29,4 +30,4 @@ export {
 };
 
 // export types
-export { JoorRequest, ROUTE_HANDLER };
+export { JoorRequest, ROUTE_HANDLER, JOOR_CONFIG };

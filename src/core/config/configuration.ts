@@ -3,6 +3,8 @@ import path from 'node:path';
 
 import Jrror from '@/core/error/index';
 // import validateConfig from '@/helpers/validateConfig';
+import JoorError from '@/core/error/JoorError';
+import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -84,9 +86,8 @@ class Configuration {
     process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING =
       (Configuration.configData?.logger?.enable?.console?.toString() ??
       Configuration.configData?.mode === 'development')
-        ? 'true'
+        ? Configuration.configData?.logger?.enable?.console?.toString()
         : 'false';
-
     if (Configuration.configData?.env?.values) {
       const keys = Object.keys(Configuration.configData.env.values);
       keys.forEach((key) => {
@@ -103,7 +104,15 @@ class Configuration {
   public async getConfig(): Promise<JOOR_CONFIG> {
     // Load the configuration data if not already loaded
     if (Configuration.configData === null) {
-      await this.loadConfig();
+      try {
+        await this.loadConfig();
+      } catch (error: unknown) {
+        if (error instanceof Jrror || error instanceof JoorError) {
+          error.handle();
+        } else {
+          logger.error(error);
+        }
+      }
     }
 
     return Configuration.configData as JOOR_CONFIG;
