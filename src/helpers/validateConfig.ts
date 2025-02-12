@@ -1,6 +1,6 @@
+import defaultConfig from '@/data/defaultConfig';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
-import defaultConfig from '@/data/defaultConfig';
 
 interface ValidationRule<T> {
   isValid: (value: unknown) => value is T;

@@ -83,11 +83,13 @@ const main = async () => {
 
   let totalInstalled = 0;
 
+  /* eslint-disable no-console */
   if (console.clear) {
     console.clear();
   } else {
     process.stdout.write('\x1Bc');
   }
+  /* eslint-enable no-console */
   console.info('\n\nSetting up the development environment for Joor.\n\n');
   console.info('\nInstalling Global Packages\n');
   // Install global packages
