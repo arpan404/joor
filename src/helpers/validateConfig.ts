@@ -1,29 +1,6 @@
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
-
-const defaultConfig: JOOR_CONFIG = {
-  server: {
-    port: 8080,
-    host: 'localhost',
-    mode: 'http',
-    ssl: undefined,
-  },
-  socket: undefined,
-  logger: {
-    enable: {
-      file: true,
-      console: true,
-    },
-    maxFileSize: 10485760, // 10MB
-  },
-  mode: 'development',
-  env: {
-    values: undefined,
-    defaults: {
-      enable: true,
-    },
-  },
-};
+import defaultConfig from '@/data/defaultConfig';
 
 interface ValidationRule<T> {
   isValid: (value: unknown) => value is T;
@@ -42,35 +19,35 @@ const createValidator =
   };
 
 const validators = {
-  port: createValidator<number>({
-    isValid: (value): value is number =>
+  port: createValidator<JOOR_CONFIG['server']['port']>({
+    isValid: (value): value is JOOR_CONFIG['server']['port'] =>
       typeof value === 'number' && value > 0 && value < 65536,
     errorMessage: (received) =>
       `Invalid 'server.port': expected a number between 1-65535, received ${typeof received}. Using default: 8080`,
   }),
 
-  host: createValidator<string>({
-    isValid: (value): value is string =>
+  host: createValidator<JOOR_CONFIG['server']['host']>({
+    isValid: (value): value is JOOR_CONFIG['server']['host'] =>
       typeof value === 'string' && value.length > 0,
     errorMessage: (received) =>
       `Invalid 'server.host': expected non-empty string, received ${typeof received}. Using default: localhost`,
   }),
 
-  serverMode: createValidator<'tls' | 'http'>({
+  serverMode: createValidator<JOOR_CONFIG['server']['mode']>({
     isValid: (value): value is 'tls' | 'http' =>
       typeof value === 'string' && ['tls', 'http'].includes(value),
     errorMessage: (received) =>
       `Invalid 'server.mode': expected 'tls' or 'http', received ${received}. Using default: http`,
   }),
 
-  ssl: createValidator<{ key: string; cert: string }>({
-    isValid: (value): value is { key: string; cert: string } =>
+  ssl: createValidator<JOOR_CONFIG['server']['ssl']>({
+    isValid: (value): value is JOOR_CONFIG['server']['ssl'] =>
       typeof value === 'object' &&
       value !== null &&
-      typeof (value as { key: string; cert: string }).key === 'string' &&
-      typeof (value as { key: string; cert: string }).cert === 'string' &&
-      (value as { key: string; cert: string }).key !== '' &&
-      (value as { key: string; cert: string }).cert !== '',
+      typeof (value as JOOR_CONFIG['server']['ssl'])?.key === 'string' &&
+      typeof (value as JOOR_CONFIG['server']['ssl'])?.cert === 'string' &&
+      (value as JOOR_CONFIG['server']['ssl'])?.key !== '' &&
+      (value as JOOR_CONFIG['server']['ssl'])?.cert !== '',
     errorMessage: () =>
       `Invalid 'server.ssl': expected object with 'key' and 'cert' strings. SSL disabled`,
   }),
@@ -135,7 +112,6 @@ const validators = {
 };
 
 const validateConfig = (config: Partial<JOOR_CONFIG>): JOOR_CONFIG => {
-  // Deep clone defaultConfig to start with defaults
   const validatedConfig = JSON.parse(JSON.stringify(defaultConfig));
 
   // Server validation
