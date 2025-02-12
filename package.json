@@ -71,7 +71,8 @@
     "access": "public"
   },
   "dependencies": {
-    "mime-types": "^2.1.35"
+    "mime-types": "^2.1.35",
+    "socket.io": "^4.8.1"
   },
   "exports": {
     "./middlewares": "./src/middlewares/index.js"

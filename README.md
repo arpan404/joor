@@ -2,6 +2,8 @@
 
 **Joor** is a modern, high-performance backend framework built on **Node.js**, designed for **efficiency, scalability, and simplicity**. With **built-in tools** and a **lightweight core**, Joor minimizes dependencies while maximizing performance.
 
+**Note**: Joor is in early development; documentation and features may be incomplete.
+
 ## Why Choose Joor?
 
 Joor simplifies backend development while ensuring high performance and security. Whether you’re building small projects or enterprise-level applications, Joor provides a robust foundation with minimal complexity.
