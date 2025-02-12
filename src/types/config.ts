@@ -12,6 +12,21 @@ interface JOOR_CONFIG {
   socket?: {
     options: ServerOptions;
   };
+  logger?: {
+    enable?: {
+      file: boolean;
+      console: boolean;
+    };
+    maxFileSize: number;
+  };
+  mode: 'development' | 'production' | 'testing' | 'staging';
+  env?: {
+    values?: Record<string, string>;
+    defaults?: {
+      enable?: boolean;
+      file?: string;
+    };
+  };
 }
 
 export default JOOR_CONFIG;
