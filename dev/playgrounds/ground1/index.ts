@@ -11,10 +11,6 @@ import { Router, JoorResponse } from 'joor';
 import Joor from 'joor';
 import path from 'node:path';
 
-process.env.JOOR_LOGGER_ENABLE_CONSOLE_LOGGING = 'false';
-process.env.JOOR_LOGGER_ENABLE_FILE_LOGGING = 'true';
-process.env.JOOR_RESPONSE_STREAM_CHUNK_SIZE = '200000';
-
 const app = new Joor();
 
 (async () => {

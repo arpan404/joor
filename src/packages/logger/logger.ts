@@ -46,6 +46,7 @@ class Logger {
       // Ensure that the log file has a .log extension
       this.path = `${this.path}.log`;
     }
+    this.originalPath = this.path;
     this.formatCallBack = formatCallBack ?? this.formatCallBack; // Custom format callback, default is basic timestamped message
     // Start interval to flush logs every 10 seconds by default
     this.flushInterval = setInterval(() => {
@@ -61,6 +62,7 @@ class Logger {
   // Default configuration for the logger
   private name = 'logger'; // Default logger name
   private path = nodePath.resolve(process.cwd(), 'logs.log'); // Default path for the log file
+  private originalPath = this.path; // Store the original path for potential future use
   private formatCallBack: LOGGER_FORMAT_CALLBACK = (
     timestamp: LOGGER_TIMESTAMP,
     message: LOGGER_MESSAGE
@@ -143,7 +145,7 @@ class Logger {
 
           if (fileStats.size > maxFileSize) {
             // if file size exceeds 10MB, write to a new file
-            this.path = this.path.replace(
+            this.path = this.originalPath.replace(
               '.log',
               `-${new Date().toISOString()}.log`
             );
