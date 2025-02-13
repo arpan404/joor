@@ -2,7 +2,9 @@
  * Utility for generating One-Time Passwords (OTPs).
  */
 function generate(length: number, charSet: string): string {
-  return Array.from({ length }, () => charSet.charAt(Math.floor(Math.random() * charSet.length))).join('');
+  return Array.from({ length }, () =>
+    charSet.charAt(Math.floor(Math.random() * charSet.length))
+  ).join('');
 }
 
 export const otp = {
@@ -15,7 +17,11 @@ export const otp = {
    * console.log(otpCode); // Example output: "A1bC3d"
    */
   alphanumeric: {
-      generate: (length: number) => generate(length, '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+    generate: (length: number) =>
+      generate(
+        length,
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+      ),
   },
 
   /**
@@ -27,7 +33,7 @@ export const otp = {
    * console.log(otpCode); // Example output: "123456"
    */
   numeric: {
-      generate: (length: number) => generate(length, '0123456789')
+    generate: (length: number) => generate(length, '0123456789'),
   },
 
   /**
@@ -39,7 +45,8 @@ export const otp = {
    * console.log(otpCode); // Example output: "AbCdEf"
    */
   alphabetic: {
-      generate: (length: number) => generate(length, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
+    generate: (length: number) =>
+      generate(length, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'),
   },
 
   /**
@@ -52,6 +59,6 @@ export const otp = {
    * console.log(otpCode); // Example output: "4!5@6#"
    */
   custom: {
-      generate: (length: number, charSet: string) => generate(length, charSet)
-  }
+    generate: (length: number, charSet: string) => generate(length, charSet),
+  },
 };

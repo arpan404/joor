@@ -7,10 +7,10 @@ import cors from '@/middlewares/cors';
 import serveStaticFiles from '@/middlewares/files';
 import serveFile from '@/middlewares/files/serve';
 import httpLogger from '@/middlewares/httpLogger';
+import { otp } from '@/packages/otp/otp';
 import JOOR_CONFIG from '@/types/config';
 import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { JoorRequest } from '@/types/request';
-import { otp } from '@/packages/otp/otp';
 
 export default Joor;
 
