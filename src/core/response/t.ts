@@ -1,13 +1,15 @@
-import mime from 'mime-types';
+import fs from 'node:fs';
 import { ServerResponse } from 'node:http';
+import path from 'node:path';
+
+import mime from 'mime-types';
 
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
 import logger from '@/helpers/joorLogger';
 import { JoorRequest } from '@/types/request';
 import { RESPONSE_HEADERS, RESPONSE_STATUS } from '@/types/response';
-import fs from 'node:fs';
-import path from 'node:path';
+
 /** Extends ServerResponse with added functionality for better DX  */
 class JoorReponse extends ServerResponse {
   constructor(request: JoorRequest) {
@@ -60,6 +62,7 @@ class JoorReponse extends ServerResponse {
           type: 'error',
         });
       }
+
       for (const [headerName, headerValue] of Object.entries(headers)) {
         this.setHeader(headerName, headerValue);
       }
@@ -83,7 +86,9 @@ class JoorReponse extends ServerResponse {
           docsPath: '/response',
         });
       }
+
       const contentType = this.getHeader('Content-Type') as string | undefined;
+
       if (
         contentType !== undefined &&
         !contentType.includes('application/json')
@@ -106,10 +111,12 @@ class JoorReponse extends ServerResponse {
     if (!this.statusCode) {
       this.status(200);
     }
+
     if (!data) {
       this.end();
       return;
     }
+
     if (typeof data === 'object') {
       if (data) {
         this.json(data);
@@ -139,12 +146,15 @@ class JoorReponse extends ServerResponse {
       const fileStats = await fs.promises.stat(filePath);
 
       const fileName = path.basename(filePath);
+
       if (!fileStats.isFile()) {
         this.statusCode = 404;
         this.end('Not found');
         return;
       }
+
       const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
       const applyHeaders = (isDownload: boolean) => {
         const headers: Record<string, string | number> = {
           'Content-Type': mimeType,
@@ -154,13 +164,13 @@ class JoorReponse extends ServerResponse {
         };
 
         if (isDownload) {
-          headers['Content-Length'] = fileStats.size; // Include Content-Length for downloads
+          headers['Content-Length'] = fileStats.size;
         }
-
         this.set(headers);
       };
 
       const { range } = this.req.headers;
+
       if (range) {
         const fileSize = fileStats.size;
         const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
@@ -192,15 +202,18 @@ class JoorReponse extends ServerResponse {
       }
     }
   }
+  public attachment(filePath: string): void {
+    this.sendFile(filePath, true);
+  }
   public redirect({
-    path,
+    location,
     permanent = true,
   }: {
-    path: string;
+    location: string;
     permanent?: boolean;
   }): void {
     this.status(permanent ? 301 : 302);
-    this.setHeader('Location', path);
+    this.setHeader('Location', location);
     this.end();
   }
 }
