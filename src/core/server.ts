@@ -2,9 +2,9 @@ import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
 
-import JoorError from '../error/JoorError';
+import JoorError from '@/core/error/JoorError';
 // import prepareResponse from '../response/prepare';
-import handleRoute from '../router/handle';
+import handleRoute from '@/core/router/handle';
 
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';

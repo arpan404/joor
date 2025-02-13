@@ -1,74 +1,45 @@
+import fs from 'node:fs';
+import { ServerResponse } from 'node:http';
+import path from 'node:path';
+
+import mime from 'mime-types';
+
 import Jrror from '@/core/error';
 import JoorError from '@/core/error/JoorError';
-import httpCodes from '@/data/httpCodes';
 import logger from '@/helpers/joorLogger';
+import { JoorRequest } from '@/types/request';
 import {
-  INTERNAL_RESPONSE,
-  RESPONSE,
-  RESPONSE_DATA_TYPE,
+  RESPONSE_COOKIES,
+  RESPONSE_HEADERS,
+  RESPONSE_STATUS,
 } from '@/types/response';
+import httpCodes from '@/data/httpCodes';
 
-/**
- * A class to construct and manage HTTP responses.
- *
- * This class provides methods to set the HTTP status, message, error, cookies, headers, and data for the response.
- * Additionally, it allows setting data as JSON, sending data as a stream, or sending data as a file.
- *
- * Example Usage:
- * ```typescript
- * const response = new JoorResponse();
- * response.setStatus(200).setMessage("OK").setData({ user: "John Doe" });
- * return response;
- * ```
- *
- * Available Methods:
- * - setStatus: Sets the HTTP status code (e.g., 200, 404).
- * - setMessage: Sets the response message.
- * - setError: Sets an error message or object.
- * - setCookies: Sets cookies in the response.
- * - setHeaders: Sets HTTP headers in the response.
- * - setData: Sets data in the response.
- * - setDataAsJson: Sets data in the response as JSON.
- * - sendAsStream: Marks the response as a stream.
- * - sendAsFile: Marks the response as a file and provides the file path.
- * - sendAsDownload: Marks the response for file download.
- */
-class JoorResponse {
-  private status: RESPONSE['status']; // HTTP status code
-  private message: RESPONSE['message']; // Response message
-  private error: RESPONSE['error']; // Error message or object
-  private cookies: RESPONSE['cookies']; // Cookies to be included in the response
-  private headers: RESPONSE['headers']; // Response headers
-  private data: RESPONSE['data']; // Response data
-  private dataType: RESPONSE_DATA_TYPE = {
-    type: 'normal',
-    isStream: false,
-    isFile: false,
-  };
-
-  /**
-   * Sets the status code for the response.
-   * @param status The HTTP status code to set.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the status is not a valid number.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setStatus(404);
-   * return response;
-   * ```
-   */
-  public setStatus(status: RESPONSE['status']): JoorResponse {
+/** Extends ServerResponse with added functionality for better DX  */
+class JoorReponse extends ServerResponse {
+  constructor(request: JoorRequest) {
+    super(request);
+  }
+  public status(code: RESPONSE_STATUS): JoorReponse {
     try {
-      if (typeof status !== 'number') {
+      if (!Number.isInteger(code)) {
         throw new Jrror({
           code: 'response-status-invalid',
-          message: `Status must be a number, but ${typeof status} was provided.`,
+          message: `Status must be a integer number, but ${code} is provided.`,
           type: 'error',
+          docsPath: '/response',
         });
       }
-      this.status = status;
+
+      if (code < 100 || code > 999) {
+        throw new Jrror({
+          code: 'response-status-invalid',
+          message: `Status must be between 100 and 999, but ${code} is provided.`,
+          type: 'error',
+          docsPath: '/response',
+        });
+      }
+      this.statusCode = code;
     } catch (error: unknown) {
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
@@ -79,25 +50,7 @@ class JoorResponse {
 
     return this;
   }
-
-  /**
-   * Sets the headers for the response.
-   * @param headers The headers to set.
-   * @param override Whether to override the existing headers. Defaults to false.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the headers are not an object.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setHeaders({ 'Content-Type': 'application/json' });
-   * return response;
-   * ```
-   */
-  public setHeaders(
-    headers: typeof this.headers,
-    override: boolean = false
-  ): JoorResponse {
+  public set(headers: RESPONSE_HEADERS): JoorReponse {
     try {
       if (!headers) {
         throw new Jrror({
@@ -115,10 +68,8 @@ class JoorResponse {
         });
       }
 
-      if (override) {
-        this.headers = { ...headers };
-      } else {
-        this.headers = { ...this.headers, ...headers };
+      for (const [headerName, headerValue] of Object.entries(headers)) {
+        this.setHeader(headerName, headerValue);
       }
     } catch (error: unknown) {
       if (error instanceof Jrror || error instanceof JoorError) {
@@ -130,38 +81,57 @@ class JoorResponse {
 
     return this;
   }
-
-  /**
-   * Sets the cookies for the response.
-   * @param cookies The cookies to set.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the cookies are invalid.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setCookies({ session_id: 'abc123' });
-   * return response;
-   * ```
-   */
-  public setCookies(cookies: typeof this.cookies): JoorResponse {
+  public cookies(cookies: RESPONSE_COOKIES): JoorReponse {
     try {
       if (!cookies) {
         throw new Jrror({
           code: 'response-cookies-invalid',
           message: `Cookies cannot be null or undefined.`,
           type: 'error',
+          docsPath: '/response',
         });
       }
-
-      if (typeof cookies !== 'object' || Object.keys(cookies).length === 0) {
+      if (typeof cookies !== 'object') {
         throw new Jrror({
           code: 'response-cookies-invalid',
-          message: `Cookies must be a non-empty object.`,
+          message: `Cookies must be an object, but ${typeof cookies} was provided.`,
           type: 'error',
+          docsPath: '/response',
         });
       }
-      this.cookies = { ...this.cookies, ...cookies };
+      let cookiesArray: string[] = [];
+      for (const key in cookies) {
+        if (cookies[key]) {
+          const cookie = cookies[key];
+
+          // Start forming the cookie string
+          let cookieStr = `${key}=${cookie.value}`;
+
+          // Handle cookie options (e.g., expiration)
+          if (cookie.options) {
+            if (cookie.options.expires instanceof Date) {
+              cookie.options.expires = cookie.options.expires.toUTCString();
+            }
+
+            const options = Object.keys(cookie.options)
+              .map((option) => {
+                const value = cookie.options
+                  ? cookie.options[option as keyof typeof cookie.options]
+                  : '';
+
+                return `${option}=${value}`;
+              })
+              .join('; ');
+
+            if (options) {
+              cookieStr += `; ${options}`;
+            }
+          }
+          // Push the formatted cookie string into the cookies array
+          cookiesArray.push(cookieStr);
+        }
+      }
+      this.setHeader('Set-Cookie', cookiesArray);
     } catch (error: unknown) {
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
@@ -169,220 +139,31 @@ class JoorResponse {
         logger.error(error);
       }
     }
-
     return this;
   }
-
-  /**
-   * Sets the message for the response.
-   * @param value The message to set.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the message is not a string.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setMessage('OK');
-   * return response;
-   * ```
-   */
-  public setMessage(value: typeof this.message): JoorResponse {
-    try {
-      if (typeof value !== 'string') {
-        throw new Jrror({
-          code: 'response-message-invalid',
-          message: `Message must be a string, but ${typeof value} was provided.`,
-          type: 'error',
-        });
-      }
-
-      if (value === '') {
-        logger.warn(`Empty string is set as 'message'. Ignoring...`);
-        return this;
-      }
-
-      if (this.message) {
-        logger.warn(
-          `Message is already set to : ${this.message}. This is going to be overwritten with the new message : ${value}.`
-        );
-      }
-      this.message = value;
-    } catch (error: unknown) {
-      if (error instanceof Jrror || error instanceof JoorError) {
-        error.handle();
-      } else {
-        logger.error(error);
-      }
-    }
-
-    return this;
-  }
-
-  /**
-   * Sets the error for the response.
-   * @param error The error message or object to set.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the error is not a valid type or if data has already been set.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setError('Not Found');
-   * return response;
-   * ```
-   */
-  public setError(error: typeof this.error): JoorResponse {
-    try {
-      if (typeof error !== 'string' && typeof error !== 'object') {
-        throw new Jrror({
-          code: 'response-error-invalid',
-          message: `Error must be a string or object, but ${typeof error} was provided.`,
-          type: 'error',
-        });
-      }
-
-      if (this.error) {
-        throw new Jrror({
-          code: 'response-error-already-set',
-          message: `Error has already been set. You cannot set twice.`,
-          type: 'warn',
-        });
-      }
-
-      if (this.data) {
-        throw new Jrror({
-          code: 'response-data-already-set',
-          message: `Data has already been set. You cannot set both error and data simultaneously.`,
-          type: 'warn',
-        });
-      }
-      this.error = error;
-      this.dataType = {
-        type: 'error',
-        isStream: this.dataType.isStream,
-        isFile: this.dataType.isFile,
-        filePath: this.dataType.filePath,
-      };
-    } catch (e: unknown) {
-      if (e instanceof Jrror || e instanceof JoorError) {
-        e.handle();
-      } else {
-        logger.error(e);
-      }
-    }
-
-    return this;
-  }
-
-  /**
-   * Sets the data for the response.
-   * @param data The data to set.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if data is not valid or if error has already been set.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setData({ user: "John Doe" });
-   * return response;
-   * ```
-   */
-  public setData(data: typeof this.data): JoorResponse {
+  public json(data: unknown): void {
     try {
       if (!data) {
-        throw new Jrror({
-          code: 'response-data-invalid',
-          message: `Data cannot be null or undefined.`,
-          type: 'error',
-        });
-      }
-
-      if (this.error) {
-        throw new Jrror({
-          code: 'response-error-already-set',
-          message: `Error has already been set. You cannot set both error and data simultaneously.`,
-          type: 'warn',
-        });
-      }
-
-      if (this.data) {
-        throw new Jrror({
-          code: 'response-data-already-set',
-          message: `Data has already been set. You cannot set it twice.`,
-          type: 'warn',
-        });
-      }
-      this.data = data;
-      this.dataType = {
-        type: 'normal',
-        isStream: this.dataType.isStream,
-        isFile: this.dataType.isFile,
-        filePath: this.dataType.filePath,
-      };
-    } catch (error: unknown) {
-      if (error instanceof Jrror || error instanceof JoorError) {
-        error.handle();
-      } else {
-        logger.error(error);
-      }
-    }
-
-    return this;
-  }
-
-  /**
-   * Sets the data as JSON.
-   * @param value The value to be converted to JSON.
-   * @returns The current JoorResponse instance.
-   * @throws Jrror if the value cannot be converted to JSON.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setDataAsJson({ key: 'value' });
-   * return response;
-   * ```
-   */
-  public setDataAsJson(data: typeof this.data): JoorResponse {
-    try {
-      if (!data) {
-        throw new Jrror({
-          code: 'response-data-invalid',
-          message: `Data cannot be null or undefined.`,
-          type: 'error',
-        });
-      }
-
-      if (typeof data !== 'object') {
         throw new Jrror({
           code: 'response-json-invalid',
-          message: `JSON data must be an object, but ${typeof data} was provided.`,
+          message: `When using JoorResponse.json, json data must be provided.`,
           type: 'error',
+          docsPath: '/response',
         });
       }
 
-      if (this.error) {
-        throw new Jrror({
-          code: 'response-error-already-set',
-          message: `Error has already been set. You cannot set both error and data simultaneously.`,
-          type: 'warn',
-        });
-      }
+      const contentType = this.getHeader('Content-Type') as string | undefined;
 
-      if (this.data) {
-        throw new Jrror({
-          code: 'response-data-already-set',
-          message: `Data has already been set. You cannot not set data twice.`,
-          type: 'warn',
-        });
+      if (
+        contentType !== undefined &&
+        !contentType.includes('application/json')
+      ) {
+        logger.warn(
+          `Content-Type header is not application/json. Current value: ${contentType}. Ensure the header is correctly set for JSON responses. Joor will set it to application/json automatically.`
+        );
       }
-      this.data = data;
-      this.dataType = {
-        type: 'json',
-        isStream: this.dataType.isStream,
-        isFile: this.dataType.isFile,
-        filePath: this.dataType.filePath,
-      };
+      this.setHeader('Content-Type', 'application/json');
+      this.end(JSON.stringify(data));
     } catch (error: unknown) {
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
@@ -390,92 +171,121 @@ class JoorResponse {
         logger.error(error);
       }
     }
-
-    return this;
   }
-
-  /**
-   * Will send the response data as a stream.
-   * @returns {JoorResponse} - The current JoorResponse instance.
-   * @example
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setData("Hello World!");
-   * response.sendAsStream();
-   * return response;
-   * ```
-   */
-  public sendAsStream(): JoorResponse {
-    this.dataType.isStream = true;
-    return this;
-  }
-
-  /**
-   * Will send the response data as a file.
-   * Must provide file absolute path to send as a file.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.sendAsFile("/path/to/file.txt");
-   * return response;
-   * ```
-   */
-  public sendAsFile(filePath: string): JoorResponse {
-    this.dataType.isFile = true;
-    this.dataType.filePath = filePath;
-    return this;
-  }
-
-  /**
-   *  Will send file for download
-   * @returns {JoorResponse} - The current JoorResponse instance.
-   * @example
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.sendAsFile("/path/to/file.txt");
-   * response.sendAsDownload();
-   * return response;
-   * ```
-   */
-  public sendAsDownload(): JoorResponse {
-    this.dataType.isDownload = true;
-    return this;
-  }
-  /**
-   * Parses the response object for internal use.
-   * This method is not intended for external use.
-   * @returns {INTERNAL_RESPONSE} - The parsed response object.
-   *
-   * Example Usage:
-   * ```typescript
-   * const response = new JoorResponse();
-   * response.setData({ user: "John" }).parseResponse();
-   * ```
-   */
-  public parseResponse(): INTERNAL_RESPONSE {
-    const response = {
-      status: 200,
-      message: 'OK',
-      data: undefined,
-      headers: this.headers,
-      cookies: this.cookies,
-      dataType: this.dataType,
-    } as INTERNAL_RESPONSE;
-    response.status =
-      this.status ?? (this.dataType.type === 'error' ? 500 : 200);
-    response.message =
-      this.message ??
-      httpCodes[response.status] ??
-      (this.dataType.type === 'error' ? 'Internal Server Error' : 'OK');
-    if (response.dataType.type === 'error') {
-      response.data = this.error;
-    } else {
-      response.data = this.data;
+  public send(data?: unknown): void {
+    if (!this.statusCode) {
+      this.status(200);
     }
-    response.data = response.data ?? response.message;
-    return response;
+
+    if (!data) {
+      this.end();
+      return;
+    }
+
+    if (typeof data === 'object') {
+      if (data) {
+        this.json(data);
+      } else {
+        this.end();
+      }
+    } else {
+      this.end(data);
+    }
+  }
+
+  public async sendFile(
+    filePath: string,
+    asDownload: boolean = false
+  ): Promise<void> {
+    try {
+      const fileExists = await fs.promises
+        .access(filePath)
+        .then(() => true)
+        .catch(() => false);
+
+      if (!fileExists) {
+        this.statusCode = 404;
+        this.end('File not found');
+        return;
+      }
+
+      const fileStats = await fs.promises.stat(filePath);
+
+      const fileName = path.basename(filePath);
+
+      if (!fileStats.isFile()) {
+        this.statusCode = 404;
+        this.end('Not found');
+        return;
+      }
+
+      const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+      const applyHeaders = (isDownload: boolean) => {
+        const headers: Record<string, string | number> = {
+          'Content-Type': mimeType,
+          'Content-Disposition': isDownload
+            ? `attachment; filename="${fileName}"`
+            : `inline; filename="${fileName}"`,
+        };
+
+        if (isDownload) {
+          headers['Content-Length'] = fileStats.size;
+        }
+        this.set(headers);
+      };
+
+      const { range } = this.req.headers;
+
+      if (range) {
+        const fileSize = fileStats.size;
+        const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(startStr, 10);
+        const end = endStr ? parseInt(endStr, 10) : fileSize - 1;
+
+        if (start >= fileSize || end >= fileSize) {
+          this.statusCode = 416;
+          this.setHeader('Content-Range', `bytes */${fileSize}`);
+          this.end();
+          return;
+        }
+        this.statusCode = 206;
+        this.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+        this.setHeader('Content-Length', end - start + 1);
+        const fileStream = fs.createReadStream(filePath, { start, end });
+        fileStream.pipe(this);
+      } else {
+        this.statusCode = 200;
+        applyHeaders(asDownload);
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(this);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Jrror || error instanceof JoorError) {
+        error.handle();
+      } else {
+        logger.error(error);
+      }
+    }
+  }
+  public attachment(filePath: string): void {
+    this.sendFile(filePath, true);
+  }
+  public redirect({
+    location,
+    permanent = true,
+  }: {
+    location: string;
+    permanent?: boolean;
+  }): void {
+    this.status(permanent ? 301 : 302);
+    this.setHeader('Location', location);
+    this.end();
+  }
+  public sendStatus(status: RESPONSE_STATUS): void {
+    this.status(status);
+    this.send(httpCodes[status] ?? String(status));
   }
 }
 
-export default JoorResponse;
+export default JoorReponse;

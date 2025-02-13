@@ -6,7 +6,7 @@ type ROUTE_PATH = string;
 
 // For route handler function, which can be synchronous or asynchronous, this can be used for defining route handlers, including middlewares
 type ROUTE_HANDLER = (
-  _request: JoorRequest
+  _request: JoorRequest, _response: JoorResponse
 ) => Promise<JoorResponse | undefined | void> | JoorResponse | undefined | void;
 
 // For route methods
