@@ -2,7 +2,7 @@ import { Server as SocketServer } from 'socket.io';
 
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import Server from '@/core/joor/server';
+import Server from '@/core/server';
 import Router from '@/core/router';
 import addMiddlewares from '@/core/router/addMiddlewares';
 import loadEnv from '@/enhanchers/loadEnv';

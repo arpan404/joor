@@ -5,7 +5,7 @@ import path from 'node:path';
 import mime from 'mime-types';
 
 import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
+import { JoorError } from '@/core/error';
 import logger from '@/helpers/joorLogger';
 import { JoorRequest } from '@/types/request';
 import {

@@ -1,5 +1,4 @@
-import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
+import Jrror, { JoorError } from '@/core/error';
 import { validateHandler, validateRoute } from '@/core/router/validation';
 import logger from '@/helpers/joorLogger';
 import { ROUTE_HANDLER, ROUTES, ROUTE_METHOD, ROUTE_PATH } from '@/types/route';
