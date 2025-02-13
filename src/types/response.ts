@@ -38,7 +38,7 @@ interface RESPONSE_COOKIES {
 
 // Interface for response headers
 interface RESPONSE_HEADERS {
-  [key: string]: string | number;
+  [key: string]: string | number ;
 }
 
 // Interface for the main response structure used by the JoorResponse class
@@ -78,5 +78,5 @@ export {
   PREPARED_RESPONSE,
   RESPONSE_COOKIES,
   RESPONSE_HEADERS,
-  RESPONSE_STATUS
+  RESPONSE_STATUS,
 };

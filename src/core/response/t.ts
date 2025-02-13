@@ -1,3 +1,4 @@
+import mime from 'mime-types';
 import { ServerResponse } from 'node:http';
 
 import Jrror from '@/core/error';
@@ -5,11 +6,12 @@ import JoorError from '@/core/error/JoorError';
 import logger from '@/helpers/joorLogger';
 import { JoorRequest } from '@/types/request';
 import { RESPONSE_HEADERS, RESPONSE_STATUS } from '@/types/response';
-
+import fs from 'node:fs';
+import path from 'node:path';
 /** Extends ServerResponse with added functionality for better DX  */
 class JoorReponse extends ServerResponse {
-  constructor(req: JoorRequest) {
-    super(req);
+  constructor(request: JoorRequest) {
+    super(request);
   }
   public status(code: RESPONSE_STATUS): JoorReponse {
     try {
@@ -41,8 +43,35 @@ class JoorReponse extends ServerResponse {
 
     return this;
   }
-  public set(headers: RESPONSE_HEADERS, override: boolean = false){
+  public set(headers: RESPONSE_HEADERS): JoorReponse {
+    try {
+      if (!headers) {
+        throw new Jrror({
+          code: 'response-headers-invalid',
+          message: `Headers cannot be null or undefined.`,
+          type: 'error',
+        });
+      }
 
+      if (typeof headers !== 'object') {
+        throw new Jrror({
+          code: 'response-headers-invalid',
+          message: `Headers must be an object, but ${typeof headers} was provided.`,
+          type: 'error',
+        });
+      }
+      for (const [headerName, headerValue] of Object.entries(headers)) {
+        this.setHeader(headerName, headerValue);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Jrror || error instanceof JoorError) {
+        error.handle();
+      } else {
+        logger.error(error);
+      }
+    }
+
+    return this;
   }
   public json(data: unknown): void {
     try {
@@ -89,6 +118,78 @@ class JoorReponse extends ServerResponse {
       }
     } else {
       this.end(data);
+    }
+  }
+  public async sendFile(
+    filePath: string,
+    asDownload: boolean = false
+  ): Promise<void> {
+    try {
+      const fileExists = await fs.promises
+        .access(filePath)
+        .then(() => true)
+        .catch(() => false);
+
+      if (!fileExists) {
+        this.statusCode = 404;
+        this.end('File not found');
+        return;
+      }
+
+      const fileStats = await fs.promises.stat(filePath);
+
+      const fileName = path.basename(filePath);
+      if (!fileStats.isFile()) {
+        this.statusCode = 404;
+        this.end('Not found');
+        return;
+      }
+      const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+      const applyHeaders = (isDownload: boolean) => {
+        const headers: Record<string, string | number> = {
+          'Content-Type': mimeType,
+          'Content-Disposition': isDownload
+            ? `attachment; filename="${fileName}"`
+            : `inline; filename="${fileName}"`,
+        };
+
+        if (isDownload) {
+          headers['Content-Length'] = fileStats.size; // Include Content-Length for downloads
+        }
+
+        this.set(headers);
+      };
+
+      const { range } = this.req.headers;
+      if (range) {
+        const fileSize = fileStats.size;
+        const [startStr, endStr] = range.replace(/bytes=/, '').split('-');
+        const start = parseInt(startStr, 10);
+        const end = endStr ? parseInt(endStr, 10) : fileSize - 1;
+
+        if (start >= fileSize || end >= fileSize) {
+          this.statusCode = 416;
+          this.setHeader('Content-Range', `bytes */${fileSize}`);
+          this.end();
+          return;
+        }
+        this.statusCode = 206;
+        this.setHeader('Content-Range', `bytes ${start}-${end}/${fileSize}`);
+        this.setHeader('Content-Length', end - start + 1);
+        const fileStream = fs.createReadStream(filePath, { start, end });
+        fileStream.pipe(this);
+      } else {
+        this.statusCode = 200;
+        applyHeaders(asDownload);
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(this);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Jrror || error instanceof JoorError) {
+        error.handle();
+      } else {
+        logger.error(error);
+      }
     }
   }
   public redirect({
