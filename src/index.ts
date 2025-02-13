@@ -1,4 +1,3 @@
-import Jrror from '@/core/error';
 import Joor from '@/core/joor';
 import JoorResponse from '@/core/response';
 import Router from '@/core/router';
@@ -8,24 +7,36 @@ import serveStaticFiles from '@/middlewares/files';
 import serveFile from '@/middlewares/files/serve';
 import httpLogger from '@/middlewares/httpLogger';
 import { otp } from '@/packages/otp/otp';
+import { loadEnv, redirect, serveFile } from '@/enhanchers';
+import { httpLogger, cors, serveStaticFiles } from '@/middlewares';
+import env from '@/packages/env';
+import Logger from '@/packages/logger';
+import marker from '@/packages/marker';
 import JOOR_CONFIG from '@/types/config';
-import { GLOBAL_MIDDLEWARES } from '@/types/joor';
 import { JoorRequest } from '@/types/request';
+import { ROUTE_HANDLER } from '@/types/route';
+
+// default export must always be Joor class
 
 export default Joor;
 
+// export all other methods and functions except TYPES
 export {
   Joor,
-  Jrror,
   Router,
-  JoorRequest,
   JoorResponse,
-  cors,
-  GLOBAL_MIDDLEWARES,
-  JOOR_CONFIG,
-  httpLogger,
+  loadEnv,
+  redirect,
   serveFile,
+  marker,
+  Logger,
+  env,
+  httpLogger,
+  cors,
   serveStaticFiles,
   redirect,
   otp,
 };
+
+// export types
+export { JoorRequest, ROUTE_HANDLER, JOOR_CONFIG };

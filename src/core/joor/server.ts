@@ -5,84 +5,99 @@ import path from 'node:path';
 
 import mime from 'mime-types';
 
+import JoorError from '../error/JoorError';
+import prepareResponse from '../response/prepare';
+import handleRoute from '../router/handle';
+
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
-import prepareResponse from '@/core/response/prepare';
-import handleRoute from '@/core/router/handle';
 import logger from '@/helpers/joorLogger';
+import JOOR_CONFIG from '@/types/config';
 import { JoorRequest } from '@/types/request';
 import { PREPARED_RESPONSE } from '@/types/response';
 
-/**
- * Represents the server class responsible for starting the HTTP(S) server
- * and processing incoming requests.
- */
 class Server {
+  public server: http.Server | https.Server = null as unknown as http.Server;
+  private configData: JOOR_CONFIG = null as unknown as JOOR_CONFIG;
+  private isInitialized = false;
+
   /**
-   * Starts the server and listens on the configured port.
-   * Handles both HTTP and HTTPS based on the configuration.
-   * @returns {Promise<void>} A promise that resolves when the server starts listening.
-   * @throws {Jrror} Throws an error if the configuration is not loaded or SSL files cannot be read.
+   * Initializes the server with SSL if configured, and sets up error handling.
+   * @returns {Promise<void>} A promise that resolves when the server is initialized.
+   * @throws {Jrror} Throws an error if server initialization fails.
    */
-  public async listen(): Promise<void> {
-    const config = new Configuration();
-    const configData = await config.getConfig();
+  public async initialize(): Promise<void> {
+    try {
+      if (this.isInitialized) {
+        return;
+      }
 
-    if (!configData) {
-      throw new Jrror({
-        code: 'config-not-loaded',
-        message: 'Configuration not loaded properly',
-        type: 'error',
-        docsPath: '/configuration',
-      });
-    }
+      const config = new Configuration();
+      this.configData = await config.getConfig();
+      if (!this.configData) {
+        throw new Error('Configuration not loaded');
+      }
 
-    let server: http.Server | https.Server;
-
-    if (configData.server?.ssl?.cert && configData.server?.ssl?.key) {
-      try {
+      if (
+        this.configData.server?.ssl?.cert &&
+        this.configData.server?.ssl?.key
+      ) {
         const credentials = {
-          key: fs.readFileSync(configData.server.ssl.key),
-          cert: fs.readFileSync(configData.server.ssl.cert),
+          key: await fs.promises.readFile(this.configData.server.ssl.key),
+          cert: await fs.promises.readFile(this.configData.server.ssl.cert),
         };
-        server = https.createServer(
+        this.server = https.createServer(
           credentials,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           async (req: JoorRequest, res: http.ServerResponse) => {
             await this.process(req, res);
           }
         );
-      } catch (error: unknown) {
+      } else {
+        this.server = http.createServer(
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          async (req: JoorRequest, res: http.ServerResponse) => {
+            await this.process(req, res);
+          }
+        );
+      }
+      // Add server-level error handling
+      this.server.on('error', (error) => {
+        logger.error('Server error:', error);
         throw new Jrror({
-          code: 'ssl-error',
-          message: `Failed to read SSL files.\n${error}`,
+          code: 'server-error',
+          message: `Server error: ${error}`,
           type: 'error',
           docsPath: '/joor-server',
         });
-      }
-    } else {
-      server = http.createServer(
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        async (req: JoorRequest, res: http.ServerResponse) => {
-          await this.process(req, res);
-        }
-      );
+      });
+      this.isInitialized = true;
+    } catch (error) {
+      logger.error('Server initialization failed:', error);
+      throw new Jrror({
+        code: 'server-initialization-failed',
+        message: `Failed to initialize server: ${error}`,
+        type: 'panic',
+        docsPath: '/joor-server',
+      });
     }
+  }
 
+  public async listen(): Promise<void> {
     try {
-      server.listen(configData.server.port, () => {
+      await this.initialize(); // Ensure initialization is complete before listening
+      this.server.listen(this.configData.server.port, () => {
         logger.info(
-          `Server listening on ${configData.server.ssl ? 'https' : 'http'}://${
-            configData.server.host ?? 'localhost'
-          }:${configData.server.port}`
+          `Server listening on ${this.configData.server.ssl ? 'https' : 'http'}://${
+            this.configData.server.host ?? 'localhost'
+          }:${this.configData.server.port}`
         );
       });
     } catch (error: unknown) {
       if ((error as Error).message.includes('EADDRINUSE')) {
         throw new Jrror({
           code: 'server-port-in-use',
-          message: `Port ${configData.server.port} is already in use.`,
+          message: `Port ${this.configData.server.port} is already in use.`,
           type: 'error',
           docsPath: '/joor-server',
         });
@@ -152,8 +167,11 @@ class Server {
         await this.handleFileRequest(req, res, parsedResponse);
       }
     } catch (error: unknown) {
-      res.statusCode = 500;
-      res.end('Internal Server Error');
+      if (!res.headersSent) {
+        res.statusCode = 500;
+        res.end('Internal Server Error');
+      }
+
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
       } else {

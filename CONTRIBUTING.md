@@ -87,8 +87,6 @@ To ensure consistency across development environments, please follow these steps
 
 ## Folder Structure
 
-## Folder Structure
-
 ```
 joor/
 ├── dev/                        # Development-related files
@@ -127,7 +125,7 @@ To maintain a clear and consistent workflow:
    username-new-feature-(short-description)
    ```
 4. Commit your changes following guidelines in the [STYLEGUIDE.md](https://github.com/socioy/joor/blob/pro/STYLEGUIDE.md).
-5. Open a pull request (PR) describing your changes with sufficient context and reference any related issues.
+5. Open a pull request (PR) describing your changes with sufficient context and reference any related issues. Note: you must create PR to `staging` branch.
 
 ## Additional Resources
 

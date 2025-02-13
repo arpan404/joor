@@ -15,9 +15,6 @@ const packageFileData = `
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "type":"commonjs",
-  "bin":{
-    "create-joor": "cli/creator/index.js"
-  },
   "dependencies": ##dependencies##
 }
 `;
@@ -28,7 +25,7 @@ const rl = Readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-const flag = process.platform === 'win32' ? 'file://' : '';
+const flag = '';
 
 // regex for checking version
 const versionRegex =

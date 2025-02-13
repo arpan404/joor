@@ -5,7 +5,7 @@ import JoorResponse from '@/core/response';
 import matchRoute from '@/core/router/match';
 import findBestMatch from '@/helpers/findBestMatch';
 import logger from '@/helpers/joorLogger';
-import serveStaticFiles from '@/middlewares/files';
+import serveStaticFiles from '@/middlewares/serveStaticFiles';
 import { JoorRequest } from '@/types/request';
 import { INTERNAL_RESPONSE } from '@/types/response';
 import { ROUTE_METHOD } from '@/types/route';

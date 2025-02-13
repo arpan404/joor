@@ -1,5 +1,5 @@
 import JoorResponse from '@/core/response';
-import serveFile from '@/middlewares/files/serve';
+import serveFile from '@/enhanchers/serveFile';
 jest.mock('@/core/response');
 describe('serveFile', () => {
   let mockResponse: {
