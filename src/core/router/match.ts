@@ -1,7 +1,7 @@
 import Router from './index';
 
 import Jrror from '@/core/error';
-import { JoorRequest } from '@/types/request';
+import Request from '@/types/request';
 import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
 
 /**
@@ -25,7 +25,7 @@ import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
 const matchRoute = (
   path: ROUTE_PATH,
   method: ROUTE_METHOD,
-  request: JoorRequest
+  request: Request
 ): {
   handlers: ROUTE_HANDLER[];
 } | null => {

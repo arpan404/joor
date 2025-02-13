@@ -2,9 +2,9 @@ import { Server as SocketServer } from 'socket.io';
 
 import Configuration from '@/core/config';
 import Jrror from '@/core/error';
-import Server from '@/core/server';
 import Router from '@/core/router';
 import addMiddlewares from '@/core/router/addMiddlewares';
+import Server from '@/core/server';
 import loadEnv from '@/enhanchers/loadEnv';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';

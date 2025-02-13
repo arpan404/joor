@@ -2,14 +2,15 @@ import fs from 'node:fs';
 import http from 'node:http';
 import https from 'node:https';
 
-import { JoorError } from '@/core/error';
-import handleRoute from '@/core/router/handle';
-
 import Configuration from '@/core/config';
+import { JoorError } from '@/core/error';
 import Jrror from '@/core/error';
+import handleRoute from '@/core/router/handle';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
-import { JoorRequest } from '@/types/request';
+import Request from '@/types/request';
+import Response from '@/types/response';
+import '@/core/reponse';
 
 class Server {
   public server: http.Server | https.Server = null as unknown as http.Server;
@@ -44,14 +45,14 @@ class Server {
         this.server = https.createServer(
           credentials,
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          async (req: JoorRequest, res: http.ServerResponse) => {
+          async (req: Request, res: Response) => {
             await this.process(req, res);
           }
         );
       } else {
         this.server = http.createServer(
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          async (req: JoorRequest, res: http.ServerResponse) => {
+          async (req: Request, res: Response) => {
             await this.process(req, res);
           }
         );
@@ -109,15 +110,12 @@ class Server {
 
   /**
    * Processes incoming HTTP(S) requests, prepares the response, and handles file requests.
-   * @param {JoorRequest} req - The incoming request object.
+   * @param {Request} req - The incoming request object.
    * @param {http.ServerResponse} res - The outgoing response object.
    * @returns {Promise<void>} A promise that resolves when the response is sent.
    * @throws {Jrror} Throws an error if any issues occur while processing the request.
    */
-  private async process(
-    req: JoorRequest,
-    res: http.ServerResponse
-  ): Promise<void> {
+  private async process(req: Request, res: Response): Promise<void> {
     try {
       req.url = req.url?.replace(/\/+/g, '/');
       const parsedUrl = new URL(req.url ?? '', `https://${req.headers.host}`);
@@ -131,6 +129,7 @@ class Server {
         res.statusCode = 500;
         res.end('Internal Server Error');
       }
+
       if (error instanceof Jrror || error instanceof JoorError) {
         error.handle();
       } else {

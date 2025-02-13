@@ -1,5 +1,4 @@
-import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
+import Jrror, {JoorError} from '@/core/error';
 import Router from '@/core/router';
 import logger from '@/helpers/joorLogger';
 import marker from '@/packages/marker';

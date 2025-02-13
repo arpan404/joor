@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/reponse';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_PATH } from '@/types/route';
 

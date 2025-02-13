@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import Jrror, { JoorError } from '@/core/error';
-import validateConfig from '@/helpers/validateConfig';
 import logger from '@/helpers/joorLogger';
+import validateConfig from '@/helpers/validateConfig';
 import JOOR_CONFIG from '@/types/config';
 
 /**

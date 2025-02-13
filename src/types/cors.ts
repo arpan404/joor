@@ -1,4 +1,4 @@
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/reponse';
 import { JoorRequest } from '@/types/request';
 import { ROUTE_METHOD } from '@/types/route';
 

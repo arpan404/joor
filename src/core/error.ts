@@ -1,7 +1,7 @@
-import { JOOR_ERROR } from '@/types/error';
 import joorData from '@/data/joor';
 import logger from '@/helpers/joorLogger';
 import marker from '@/packages/marker';
+import { JOOR_ERROR } from '@/types/error';
 
 /**
  * Custom class with additional metadata such as error code, message and type.

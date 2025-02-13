@@ -1,6 +1,6 @@
 import Router from '@/core/router';
 import matchRoute from '@/core/router/match';
-import { JoorRequest } from '@/types/request';
+import Request from '@/types/request';
 describe('Route Matcher', () => {
   const router = new Router();
   beforeEach(() => {
@@ -8,27 +8,27 @@ describe('Route Matcher', () => {
     jest.clearAllMocks();
   });
   it('should return null if path is empty', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
     expect(() => matchRoute('', 'GET', request)).toThrow();
   });
   it('should return null if path is not a string', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
     expect(() => matchRoute(123 as any, 'GET', request)).toThrow();
   });
   it('should return null if no routes are registered', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
     Router.routes = undefined as any;
     expect(matchRoute('/', 'GET', request)).toBeNull();
   });
   it('should return handlers for registered route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
     router.get('/', async () => undefined);
     expect(matchRoute('/', 'GET', request)).toEqual({
       handlers: [expect.any(Function)],
     });
   });
   it('should return middlewares for registered route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
     router.get('/', middleware, async () => undefined);
@@ -37,7 +37,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should return global middleware for a route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
     Router.routes = {
@@ -51,7 +51,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should return global middleware for a certain route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
 
@@ -91,7 +91,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle single level dynamic route with local middleware not applicable to child', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
 
@@ -127,7 +127,7 @@ describe('Route Matcher', () => {
     expect(request.params).toEqual({ id: '123' });
   });
   it('should handle multilevel dynamic route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
 
@@ -171,7 +171,7 @@ describe('Route Matcher', () => {
     expect(request.params).toEqual({ id: '123', trackId: '1bha' });
   });
   it('should handle multilevel dynamic route with different routes', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware = jest.fn();
 
@@ -225,7 +225,7 @@ describe('Route Matcher', () => {
     expect(request.params).toEqual({ id: '123' });
   });
   it('should handle route with hash fragment', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const handler = jest.fn();
     Router.routes = {
@@ -237,7 +237,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle route with trailing slash', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const handler = jest.fn();
     Router.routes = {
@@ -252,7 +252,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle route with multiple middlewares', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware1 = jest.fn();
 
@@ -270,7 +270,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle route with nested middlewares', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const middleware1 = jest.fn();
 
@@ -293,7 +293,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle route with multiple methods', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const getHandler = jest.fn();
 
@@ -311,7 +311,7 @@ describe('Route Matcher', () => {
     });
   });
   it('should handle route with no matching method', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const getHandler = jest.fn();
     Router.routes = {
@@ -325,7 +325,7 @@ describe('Route Matcher', () => {
     expect(matchRoute('/', 'POST', request)).toBeNull();
   });
   it('should handle route with no matching path', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
 
     const handler = jest.fn();
     Router.routes = {
@@ -339,7 +339,7 @@ describe('Route Matcher', () => {
     expect(matchRoute('/nonexistent', 'GET', request)).toBeNull();
   });
   it('should handle large route', () => {
-    const request = { params: {} } as JoorRequest;
+    const request = { params: {} } as Request;
     const f1 = jest.fn();
     const f2 = jest.fn();
     const f3 = jest.fn();

@@ -1,4 +1,4 @@
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/reponse';
 
 /**
  * Redirects the client to the given path, when returned from a route handler or middleware.

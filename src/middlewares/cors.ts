@@ -1,5 +1,5 @@
 import Jrror from '@/core/error';
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/reponse';
 import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
 import { JoorRequest } from '@/types/request';
 

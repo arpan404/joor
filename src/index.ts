@@ -1,5 +1,5 @@
 import Joor from '@/core/joor';
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/reponse';
 import Router from '@/core/router';
 import { loadEnv, redirect, serveFile } from '@/enhanchers';
 import { httpLogger, cors, serveStaticFiles } from '@/middlewares';
