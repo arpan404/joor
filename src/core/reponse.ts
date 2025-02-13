@@ -1,6 +1,7 @@
+import { ServerResponse } from 'node:http';
+
 import mime from 'mime-types';
 // import fs from 'node:fs';
-import { ServerResponse } from 'node:http';
 // import path from 'node:path';
 
 // import mime from 'mime-types';
@@ -46,7 +47,7 @@ response.status = function (this: ServerResponse, status: RESPONSE_STATUS) {
 response.get = function (this: ServerResponse, name: string) {
   return this.getHeader(name) as string | undefined;
 };
-response.send = function send(body: any) {
+response.send = function send(body: unknown) {
   let chunk = body;
   let encoding: BufferEncoding | undefined;
   const { req } = this;
@@ -71,6 +72,7 @@ response.send = function send(body: any) {
       } else {
         return this.json(chunk);
       }
+
       break;
   }
 
@@ -82,6 +84,7 @@ response.send = function send(body: any) {
   const generateETag = !this.get('ETag') && typeof etagFn === 'function';
 
   let len: number | undefined;
+
   if (chunk !== undefined) {
     if (Buffer.isBuffer(chunk)) {
       len = chunk.length;
@@ -120,7 +123,6 @@ response.links = function (links: Record<string, string>) {
   const newLinks = Object.entries(links)
     .map(([rel, url]) => `<${url}>; rel="${rel}"`)
     .join(', ');
-
   this.set({ Link: existingLink ? `${existingLink}, ${newLinks}` : newLinks });
 };
 response.set = function (this: ServerResponse, headers: RESPONSE_HEADERS) {
@@ -146,6 +148,7 @@ response.set = function (this: ServerResponse, headers: RESPONSE_HEADERS) {
         logger.warn(`Header ${headerName} is undefined. Skipping...`);
         continue;
       }
+
       if (headerName.toLowerCase() === 'content-type') {
         if (Array.isArray(headerValue)) {
           throw new Jrror({

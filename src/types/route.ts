@@ -1,5 +1,5 @@
-import Response from '@/types/response';
 import Request from '@/types/request';
+import Response from '@/types/response';
 
 // For path name eg. "/path/to/resource"
 type ROUTE_PATH = string;

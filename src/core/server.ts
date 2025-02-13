@@ -5,12 +5,12 @@ import https from 'node:https';
 import Configuration from '@/core/config';
 import { JoorError } from '@/core/error';
 import Jrror from '@/core/error';
+import prepare from '@/core/reponse';
 import handleRoute from '@/core/router/handle';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 import Request from '@/types/request';
 import Response from '@/types/response';
-import prepare from '@/core/reponse';
 prepare();
 class Server {
   public server: http.Server | https.Server = null as unknown as http.Server;

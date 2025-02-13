@@ -1,10 +1,10 @@
 import Jrror, { JoorError } from '@/core/error';
 // import Joor from '@/core/joor';
-import Response from '@/types/response';
-import Request from '@/types/request';
 import matchRoute from '@/core/router/match';
 // import findBestMatch from '@/helpers/findBestMatch';
 import logger from '@/helpers/joorLogger';
+import Request from '@/types/request';
+import Response from '@/types/response';
 // import serveStaticFiles from '@/middlewares/serveStaticFiles';
 import { ROUTE_METHOD } from '@/types/route';
 
@@ -94,7 +94,9 @@ const handleRoute = async (
       await handler(request, response);
       // If a valid response is returned, parse and return it
     }
+
     if (response.headersSent) return;
+
     // If all handlers return undefined, throw an error
     throw new Jrror({
       code: 'handler-return-undefined',
