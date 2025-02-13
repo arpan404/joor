@@ -24,13 +24,16 @@ interface RESPONSE_COOKIES {
 
 // Interface for response headers
 interface RESPONSE_HEADERS {
-  [key: string]: string | number;
+  [key: string]: string | string[];
 }
 
 declare module 'http' {
   interface ServerResponse {
     status: (_status: RESPONSE_STATUS) => Response;
+    links: (_links: Record<string, string>) => void;
     set: (_headers: RESPONSE_HEADERS) => Response;
+    get: (_header: string) => string | undefined;
+    header: (_header: string) => string | undefined;
     cookies: (_cookies: RESPONSE_COOKIES) => Response;
     sendStatus: (_status: RESPONSE_STATUS) => Response;
     json: (_data: unknown) => void;
@@ -44,10 +47,12 @@ declare module 'http' {
     }) => void;
     sendFile: (_filePath: string, _asDownload: boolean) => void;
     attachment: (_filePath: string, _filename?: string) => void;
+    location: (_path: string) => void;
   }
 }
 
 interface Response extends ServerResponse {}
+
 export default Response;
 
 export {

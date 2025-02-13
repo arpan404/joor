@@ -1,13 +1,15 @@
-import JoorResponse from '@/core/reponse';
-import { JoorRequest } from '@/types/request';
+import Response from '@/types/response';
+import Request from '@/types/request';
 
 // For path name eg. "/path/to/resource"
 type ROUTE_PATH = string;
 
 // For route handler function, which can be synchronous or asynchronous, this can be used for defining route handlers, including middlewares
 type ROUTE_HANDLER = (
-  _request: JoorRequest, _response: JoorResponse
-) => Promise<JoorResponse | undefined | void> | JoorResponse | undefined | void;
+  _request: Request,
+  _response: Response,
+  _next?: ROUTE_HANDLER
+) => Promise<void> | void;
 
 // For route methods
 type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';

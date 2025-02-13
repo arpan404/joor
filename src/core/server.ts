@@ -10,8 +10,8 @@ import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
 import Request from '@/types/request';
 import Response from '@/types/response';
-import '@/core/reponse';
-
+import prepare from '@/core/reponse';
+prepare();
 class Server {
   public server: http.Server | https.Server = null as unknown as http.Server;
   private configData: JOOR_CONFIG = null as unknown as JOOR_CONFIG;
@@ -123,7 +123,7 @@ class Server {
       const query = parsedUrl.searchParams;
       req.ip = req.socket.remoteAddress ?? 'unknown';
       req.query = Object.fromEntries(query.entries());
-      await handleRoute(req, pathURL);
+      await handleRoute(req, res, pathURL);
     } catch (error: unknown) {
       if (!res.headersSent) {
         res.statusCode = 500;

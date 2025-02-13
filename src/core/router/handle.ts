@@ -1,13 +1,11 @@
-import Jrror from '@/core/error';
-import JoorError from '@/core/error/JoorError';
-import Joor from '@/core/joor';
-import JoorResponse from '@/core/reponse';
+import Jrror, { JoorError } from '@/core/error';
+// import Joor from '@/core/joor';
+import Response from '@/types/response';
+import Request from '@/types/request';
 import matchRoute from '@/core/router/match';
-import findBestMatch from '@/helpers/findBestMatch';
+// import findBestMatch from '@/helpers/findBestMatch';
 import logger from '@/helpers/joorLogger';
-import serveStaticFiles from '@/middlewares/serveStaticFiles';
-import { JoorRequest } from '@/types/request';
-import { INTERNAL_RESPONSE } from '@/types/response';
+// import serveStaticFiles from '@/middlewares/serveStaticFiles';
 import { ROUTE_METHOD } from '@/types/route';
 
 /**
@@ -26,9 +24,10 @@ import { ROUTE_METHOD } from '@/types/route';
  * console.log(response);
  */
 const handleRoute = async (
-  request: JoorRequest,
+  request: Request,
+  response: Response,
   pathURL: string
-): Promise<INTERNAL_RESPONSE> => {
+): Promise<void> => {
   try {
     let method = request.method as ROUTE_METHOD;
 
@@ -42,76 +41,60 @@ const handleRoute = async (
     const routeDetail = matchRoute(pathURL, method, request);
 
     // If no route is matched, search for files for then return static files or 404
-    if (
-      method === 'GET' &&
-      (!routeDetail?.handlers || routeDetail.handlers.length === 0)
-    ) {
-      const servingDetail = (() => {
-        const bestMatch = findBestMatch(
-          Joor.staticFileDirectories.paths,
-          pathURL
-        );
+    // if (
+    //   method === 'GET' &&
+    //   (!routeDetail?.handlers || routeDetail.handlers.length === 0)
+    // ) {
+    //   const servingDetail = (() => {
+    //     const bestMatch = findBestMatch(
+    //       Joor.staticFileDirectories.paths,
+    //       pathURL
+    //     );
 
-        if (!bestMatch) {
-          return null;
-        }
+    //     if (!bestMatch) {
+    //       return null;
+    //     }
 
-        return {
-          routePath: bestMatch,
-          details: Joor.staticFileDirectories.details[bestMatch],
-        };
-      })();
+    //     return {
+    //       routePath: bestMatch,
+    //       details: Joor.staticFileDirectories.details[bestMatch],
+    //     };
+    //   })();
 
-      if (!servingDetail) {
-        const response = new JoorResponse();
-        response.setStatus(404).setMessage('Not Found');
-        return response.parseResponse();
-      }
+    //   if (!servingDetail) {
+    //     const response = new JoorResponse();
+    //     response.setStatus(404).setMessage('Not Found');
+    //     return response.parseResponse();
+    //   }
 
-      const response = serveStaticFiles({
-        routePath: servingDetail.routePath,
-        folderPath: servingDetail.details.folderPath,
-        stream: servingDetail.details.stream,
-        download: servingDetail.details.download,
-      })(request);
+    //   const response = serveStaticFiles({
+    //     routePath: servingDetail.routePath,
+    //     folderPath: servingDetail.details.folderPath,
+    //     stream: servingDetail.details.stream,
+    //     download: servingDetail.details.download,
+    //   })(request);
 
-      const parsedResponse = response.parseResponse();
+    //   const parsedResponse = response.parseResponse();
 
-      if (parsedResponse.status === 200) {
-        return parsedResponse;
-      } else {
-        return new JoorResponse()
-          .setStatus(404)
-          .setMessage('Not Found')
-          .parseResponse();
-      }
-    }
+    //   if (parsedResponse.status === 200) {
+    //     return parsedResponse;
+    //   } else {
+    //     return new JoorResponse()
+    //       .setStatus(404)
+    //       .setMessage('Not Found')
+    //       .parseResponse();
+    //   }
+    // }
 
     if (!routeDetail?.handlers || routeDetail.handlers.length === 0) {
-      const response = new JoorResponse();
-      response.setStatus(404).setMessage('Not Found');
-      return response.parseResponse();
+      return response.status(404).send('Route not found');
     }
-
-    let response;
 
     for (const handler of routeDetail.handlers) {
-      response = await handler(request);
+      await handler(request, response);
       // If a valid response is returned, parse and return it
-      if (response) {
-        if (response instanceof JoorResponse) {
-          return response.parseResponse();
-        } else {
-          throw new Jrror({
-            code: 'route-handler-invalid-return',
-            message:
-              'Route handler returned an invalid value which is not an instance of JoorResponse class. The handler and middleware must either return an instance of JoorResponse or undefined',
-            type: 'error',
-          });
-        }
-      }
     }
-
+    if (response.headersSent) return;
     // If all handlers return undefined, throw an error
     throw new Jrror({
       code: 'handler-return-undefined',
@@ -124,10 +107,10 @@ const handleRoute = async (
       error.handle();
     }
     logger.error(error);
-    console.error(error);
-    const response = new JoorResponse();
-    response.setStatus(500).setMessage('Internal Server Error').setData(error);
-    return response.parseResponse();
+    response.json({
+      message: 'Internal Server Error',
+      status: 500,
+    });
   }
 };
 
