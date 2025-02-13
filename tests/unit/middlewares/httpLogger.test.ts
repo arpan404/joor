@@ -1,20 +1,23 @@
-import path from 'path';
-
+import path from 'node:path'; // Use Node's built-in path module for cross-platform compatibility
 import httpLogger from '@/middlewares/httpLogger';
 import Logger from '@/packages/logger';
-import { LOGGER_CONFIG } from '@/types/logger';
 import { JoorRequest } from '@/types/request';
+
 jest.mock('@/packages/logger');
+
 describe('httpLogger Middleware', () => {
   let mockedLoggerInstance: { info: jest.Mock };
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockedLoggerInstance = { info: jest.fn() };
     (Logger as jest.Mock).mockImplementation(() => mockedLoggerInstance);
   });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
+
   it('should initialize Logger with default configuration when no config is provided', () => {
     const logRequest = httpLogger();
 
@@ -24,20 +27,24 @@ describe('httpLogger Middleware', () => {
       httpVersion: '1.1',
       headers: {},
     } as JoorRequest;
+
     logRequest(fakeRequest);
+
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith({
       name: 'HTTP',
-      path: expect.stringContaining(path.normalize('logs/http.log')), // ✅ Fix here
+      path: expect.stringContaining(path.join('logs', 'http.log')), // OS-independent path handling
       formatCallBack: undefined,
     });
+
     expect(mockedLoggerInstance.info).toHaveBeenCalledTimes(1);
     expect(mockedLoggerInstance.info).toHaveBeenCalledWith(
       'GET /test-endpoint 1.1'
     );
   });
+
   it('should initialize Logger with provided configuration', () => {
-    const customConfig: LOGGER_CONFIG = {
+    const customConfig = {
       name: 'CustomLogger',
       path: '/custom/path/to/http.log',
       formatCallBack: jest.fn(),
@@ -51,7 +58,9 @@ describe('httpLogger Middleware', () => {
       httpVersion: '2.0',
       headers: {},
     } as JoorRequest;
+
     logRequest(fakeRequest);
+
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith(customConfig);
     expect(mockedLoggerInstance.info).toHaveBeenCalledTimes(1);
@@ -59,6 +68,7 @@ describe('httpLogger Middleware', () => {
       'POST /api/data 2.0'
     );
   });
+
   it('should log request details correctly for different HTTP methods and URLs', () => {
     const logRequest = httpLogger();
 
@@ -67,6 +77,7 @@ describe('httpLogger Middleware', () => {
       { method: 'PUT', url: '/api/items/456', httpVersion: '2.0' },
       { method: 'PATCH', url: '/users/profile', httpVersion: '1.1' },
     ];
+
     testCases.forEach(({ method, url, httpVersion }) => {
       const fakeRequest = {
         method,
@@ -74,11 +85,13 @@ describe('httpLogger Middleware', () => {
         httpVersion,
         headers: {},
       } as JoorRequest;
+
       logRequest(fakeRequest);
       expect(mockedLoggerInstance.info).toHaveBeenCalledWith(
         `${method} ${url} ${httpVersion}`
       );
     });
+
     expect(mockedLoggerInstance.info).toHaveBeenCalledTimes(testCases.length);
   });
 });
