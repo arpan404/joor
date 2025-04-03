@@ -7,6 +7,8 @@ type RESPONSE_MESSAGE = string;
 
 type RESPONSE_DATA = unknown;
 
+type RESPONSE_LOCATION_STATUS = 301 | 302 | 303 | 307 | 308;
+
 // Interface for response cookies
 interface RESPONSE_COOKIES {
   [key: string]: {
@@ -61,4 +63,5 @@ export {
   RESPONSE_DATA,
   RESPONSE_COOKIES,
   RESPONSE_HEADERS,
+  RESPONSE_LOCATION_STATUS,
 };

@@ -1,7 +1,7 @@
 import Jrror from '@/core/error';
 import Response from '@/types/response';
 
-const FIEL_NAME_REGEX = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+const FIELD_NAME_REGEX = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 
 const parse = (field: string) => {
   if (!field) return [];
@@ -50,7 +50,7 @@ const append = (header: string, field: unknown): string => {
   const fields = Array.isArray(field) ? field : parse(String(field));
 
   for (let i = 0; i < fields.length; i++) {
-    if (!FIEL_NAME_REGEX.test(fields[i])) {
+    if (!FIELD_NAME_REGEX.test(fields[i])) {
       throw new Jrror({
         code: 'vary-field-invalid',
         message: `Field name "${fields[i]}" contains invalid characters.`,
