@@ -201,20 +201,39 @@ response.sendStatus = function (
   this.send(statusMessage);
 };
 
-
-response.json = function (
-  this: Response,
-  _data: unknown
-): void {
+/**
+ * Sends a JSON response with the specified data.
+ * 
+ * @param {unknown} _data - The data to be sent as JSON.
+ * @returns {void}
+ * @throws {Jrror} Throws an error if the headers have already been sent or if the data is not a valid JSON type.
+ * @remarks This method sets the `Content-Type` header to `application/json` and sends the data as a JSON string.
+ * The data can be of type `null`, `object`, `string`, `number`, or an array. If the data is not of a valid type, an error is thrown.
+ * If the headers have already been sent, an error is thrown.
+ * @example
+ * ```typescript
+ * response.json({ message: 'Hello, world!' });
+ * ```
+ * ```typescript
+ * response.json([1, 2, 3]);
+ * ```
+ * ```typescript
+ * response.json(null);
+ * ```
+ * ```typescript
+ * response.json({ name: 'John', age: 30 });
+ * ```
+ */
+response.json = function (this: Response, _data: unknown): void {
   try {
-    jssert(
-      !this.headersSent,
-      'Headers have already been sent',
-      '/response'
-    );
+    jssert(!this.headersSent, 'Headers have already been sent', '/response');
     this.setHeader('Content-Type', 'application/json');
     jssert(
-      (_data === null || typeof _data === 'object' || typeof _data === 'string' || typeof _data === 'number' || Array.isArray(_data)),
+      _data === null ||
+        typeof _data === 'object' ||
+        typeof _data === 'string' ||
+        typeof _data === 'number' ||
+        Array.isArray(_data),
       'Data must be a null, object, string, number, or array to be JSON stringified',
       '/response'
     );
@@ -222,24 +241,43 @@ response.json = function (
   } catch (error: unknown) {
     handleError(error);
   }
-}
+};
 
+/**
+ * Redirects the response to a specified location.
+ *
+ * The default status code is 301 (Moved Permanently). If the `_permanent` option is set to `false`, the status code will be changed to 302 (Found), indicating a temporary redirect.
+ *
+ * If you need more control over the status code or response, it is recommended to use the `location()` method to set the location, and then manually set the status code and send the response using `end()` or `send()`. This will give you the flexibility to provide a custom redirect HTML page or message.
+ *
+ * @param {string} _location - The URL to which the response should be redirected.
+ * @param {boolean} [_permanent=true] - Whether the redirect is permanent (`301`) or temporary (`302`). Defaults to `true` (permanent).
+ *
+ * @example
+ * ```typescript
+ * response.redirect('https://example.com', false); // Redirects to example.com with a 302 status code (temporary).
+ * ```
+ *
+ * @throws {Jrror} Throws an error if the headers have already been sent or if the `_permanent` option is not a boolean, or _location is not string or is empty.
+ *
+ * @remarks
+ * - This method sets the `Location` header and the appropriate status code for redirection.
+ * - After the headers are set, the response is sent with a basic message indicating the redirection (`"Redirecting..."`), which can be customized.
+ * - To handle the redirection in a more detailed way (e.g., by sending a custom HTML page), you may use the `location()` method for setting the new location and then manually control the response using `status()`, `send()`, or `end()`.
+ *
+ */
 response.redirect = function (
   this: Response,
   {
     _location,
-    _permanent,
+    _permanent = true,
   }: {
     _location: string;
     _permanent?: boolean;
   }
 ): void {
   try {
-    jssert(
-      !this.headersSent,
-      'Headers have already been sent',
-      '/response'
-    );
+    jssert(!this.headersSent, 'Headers have already been sent', '/response');
     jssert(
       typeof _permanent === 'boolean',
       'Permanent must be a boolean',
@@ -247,8 +285,8 @@ response.redirect = function (
     );
     this.location(_location);
     this.status(_permanent ? 301 : 302);
-    this.send("Redirecting..."); // Todo: send a better redirect html page using view engine
+    this.send('Redirecting...'); // Todo: send a more informative redirect HTML page using view engine
   } catch (error: unknown) {
     handleError(error);
   }
-}
+};
