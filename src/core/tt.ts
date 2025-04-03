@@ -15,6 +15,7 @@ import {
 } from '@/types/response';
 const response = ServerResponse.prototype;
 response.status = function (this: ServerResponse, status: RESPONSE_STATUS) {
+  
   try {
     if (!Number.isInteger(status)) {
       throw new Jrror({

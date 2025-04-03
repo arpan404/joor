@@ -1,7 +1,7 @@
 import { Server as SocketServer } from 'socket.io';
 
 import Configuration from '@/core/config';
-import Jrror from '@/core/error';
+import Jrror, { handleError, jssert } from '@/core/error';
 import Router from '@/core/router';
 import addMiddlewares from '@/core/router/addMiddlewares';
 import Server from '@/core/server';
@@ -87,27 +87,10 @@ class Joor {
     try {
       await this.initialize();
       loadEnv();
-      if (!this.configData) {
-        throw new Jrror({
-          code: 'config-load-failed',
-          message: 'Configuration not loaded',
-          type: 'panic',
-          docsPath: '/configuration',
-        });
-      }
+      jssert(!!this.configData, 'Configuration not loaded', '/configuration', "panic");
       await this.server.listen();
     } catch (error: unknown) {
-      if (error instanceof Jrror) {
-        error.handle();
-      } else {
-        logger.error(`Server start failed:`, error);
-        throw new Jrror({
-          code: 'server-start-failed',
-          message: `Failed to start server: ${error}`,
-          type: 'panic',
-          docsPath: '/joor-server',
-        });
-      }
+      handleError(error);
     }
   }
 
@@ -122,14 +105,14 @@ class Joor {
         this.server.server,
         this.configData?.socket?.options
       );
+      jssert(
+        !!this.sockets,
+        'Socket.IO server not initialized',
+        '/socket',
+        'error'
+      );
     } catch (error) {
-      logger.error('Socket initialization failed:', error);
-      throw new Jrror({
-        code: 'socket-initialization-failed',
-        message: `Failed to initialize Socket.IO: ${error}`,
-        type: 'error',
-        docsPath: '/websockets',
-      });
+      handleError(error);
     }
   }
 
