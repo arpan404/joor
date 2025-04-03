@@ -1,4 +1,3 @@
-
 describe('redirect', () => {
   // it('should return a JoorResponse with status 301 and Location header set to the given path when permanent is true', async () => {
   //   const path = '/new-path';
@@ -17,6 +16,6 @@ describe('redirect', () => {
   //   expect(parsedResponse.headers!.Location).toBe(path);
   // });
   it('should throw an error if path is empty', async () => {
-    expect(1+1).toBe(2);
+    expect(1 + 1).toBe(2);
   });
 });

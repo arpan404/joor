@@ -98,4 +98,8 @@
 //   });
 // });
 
-describe('first', () => { it('should be true', () => { expect(1 + 1).toBe(2); }); });
+describe('first', () => {
+  it('should be true', () => {
+    expect(1 + 1).toBe(2);
+  });
+});

@@ -147,6 +147,6 @@
 
 describe('JoorResponse Class Tests', () => {
   it('should send the file as a response', () => {
-    expect(1+1).toBe(2);
+    expect(1 + 1).toBe(2);
   });
 });

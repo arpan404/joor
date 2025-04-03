@@ -122,8 +122,8 @@ class JoorError extends Error {
               Error Code: ${this.errorCode}
               Message: ${this.message}
               ${marker.greenBright(
-      'For more information, visit:'
-    )} ${marker.bgGreenBright.whiteBright(docLink)}
+                'For more information, visit:'
+              )} ${marker.bgGreenBright.whiteBright(docLink)}
               `;
   }
 }
@@ -163,22 +163,24 @@ class Jrror extends JoorError {
       // Throws error code joor-e1 if errorData is not provided, e2 if code is not provided, e3 if message is not provided, e4 if type is not provided
       throw new Jrror({
         message: `Instance of Jrror has been created without passing required data. 
-              Missing: ${!errorData
-            ? 'errorData'
-            : !errorData.code
-              ? 'error code'
-              : !errorData.message
-                ? 'message'
-                : 'type'
-          }`,
-        code: `jrror-${!errorData
+              Missing: ${
+                !errorData
+                  ? 'errorData'
+                  : !errorData.code
+                    ? 'error code'
+                    : !errorData.message
+                      ? 'message'
+                      : 'type'
+              }`,
+        code: `jrror-${
+          !errorData
             ? 'e1'
             : !errorData.code
               ? 'e2'
               : !errorData.message
                 ? 'e3'
                 : 'e4'
-          }`,
+        }`,
         type: 'error',
       });
     }
@@ -196,7 +198,7 @@ class Jrror extends JoorError {
  * If the error is not an instance of Jrror or JoorError, it logs the error.
  *
  * @param {unknown} error - The error to handle.
- * 
+ *
  * Meant to reduce code duplication while handling errors in the codebase.
  */
 function handleError(error: unknown): void {
@@ -208,23 +210,30 @@ function handleError(error: unknown): void {
 }
 
 /**
-* Implicitly asserts that a condition is true. If the condition is false, it throws an error with the provided message and documentation path.
-* Alternative to `assert(condition, message)` from the `node:assert` module.
-* 
-* For naming convention, `jssert` is used to avoid confusion with the `assert` function from the `node:assert` module.
-* 
-* @param {boolean} condition - The condition to assert.
-* @param {string} message - The error message to throw if the assertion fails.
-* @param {string} docsPath - The documentation path for the error.
-*/
-function jssert(condition: boolean, message: string, docsPath: string = "/assertion"): asserts condition {
+ * Implicitly asserts that a condition is true. If the condition is false, it throws an error with the provided message and documentation path.
+ * Alternative to `assert(condition, message)` from the `node:assert` module.
+ *
+ * For naming convention, `jssert` is used to avoid confusion with the `assert` function from the `node:assert` module.
+ *
+ * @param {boolean} condition - The condition to assert.
+ * @param {string} message - The error message to throw if the assertion fails.
+ * @param {string} docsPath - The documentation path for the error.
+ * @param {JOOR_ERROR['type']} type - The type of error to throw ["warn" | "error" | panic]
+ *
+ */
+function jssert(
+  condition: boolean,
+  message: string,
+  docsPath: string = '/assertion',
+  type: JOOR_ERROR['type'] = 'error'
+): asserts condition {
   if (!condition) {
     throw new Jrror({
       code: 'assertion-failed',
       message,
-      type: 'error',
+      type: type,
       docsPath: docsPath,
-    })
+    });
   }
 }
 
