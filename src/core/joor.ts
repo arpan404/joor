@@ -87,7 +87,12 @@ class Joor {
     try {
       await this.initialize();
       loadEnv();
-      jssert(!!this.configData, 'Configuration not loaded', '/configuration', "panic");
+      jssert(
+        !!this.configData,
+        'Configuration not loaded',
+        '/configuration',
+        'panic'
+      );
       await this.server.listen();
     } catch (error: unknown) {
       handleError(error);

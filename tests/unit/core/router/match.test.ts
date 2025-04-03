@@ -1,5 +1,5 @@
 import Router from '@/core/router';
-import matchRoute from '@/core/router/match';
+import matchRoute from '@/core/router/tt';
 import Request from '@/types/request';
 describe('Route Matcher', () => {
   const router = new Router();
