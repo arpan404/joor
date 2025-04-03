@@ -3,7 +3,7 @@ import { jssert } from '@/core/error';
 /**
  * Validates the route path.
  * Uses jssert to check the conditions.
- * 
+ *
  * @param {ROUTE_PATH} route - The route path to validate.
  * @throws {Jrror} If the route path is not a string or is empty.
  */

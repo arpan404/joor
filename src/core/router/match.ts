@@ -1,7 +1,7 @@
-import Router from "@/core/router";
-import Request from "@/types/request";
+import Router from '@/core/router';
+import Request from '@/types/request';
 import { ROUTE_PATH, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
-import { jssert } from "@/core/error";
+import { jssert } from '@/core/error';
 
 /**
  * Matches a given route path and method to the registered routes and returns the corresponding handlers.
@@ -22,96 +22,91 @@ import { jssert } from "@/core/error";
  * }
  */
 function matchRoute(
-    path: ROUTE_PATH,
-    method: ROUTE_METHOD,
-    request: Request
+  path: ROUTE_PATH,
+  method: ROUTE_METHOD,
+  request: Request
 ): { handlers: ROUTE_HANDLER[] } | null {
-    let handlers = [] as ROUTE_HANDLER[];
-    const registeredRoutes = Router.routes;
+  let handlers = [] as ROUTE_HANDLER[];
+  const registeredRoutes = Router.routes;
 
-    // Validate the path
-    jssert(
-        !!path,
-        "Path cannot be empty",
-        "/route",
-        "error"
-    )
-    jssert(
-        typeof path === "string",
-        `Path must be of type string but got ${typeof path}`,
-        "/route",
-        "error"
-    );
-    // Return null if no registered routes
-    if (!registeredRoutes) {
-        return null;
-    }
-
-    // Split the path into parts
-    let routeParts = path.split("/");
-    const lastElement = routeParts[routeParts.length - 1];
-
-    // Handle hash fragments
-    if (lastElement.includes("#")) {
-        const [pathPart] = lastElement.split("#");
-        routeParts[routeParts.length - 1] = pathPart;
-    }
-    // Remove empty parts
-    routeParts = routeParts.filter((part) => part !== '');
-    // Handle root path
-    if (routeParts.length === 0) {
-        if (registeredRoutes['/']?.[method]) {
-            handlers = [
-                ...(registeredRoutes['/'].globalMiddlewares ?? []),
-                ...(registeredRoutes['/'].localMiddlewares ?? []),
-                ...registeredRoutes['/'][method].handlers,
-            ];
-            return { handlers };
-        } else {
-            return null;
-        }
-    }
-
-    // Traverse the route tree
-    let currentNode = registeredRoutes['/'];
-
-    for (const routePart of routeParts) {
-        const currentNodeChildrenPaths = Object.keys(currentNode.children ?? {});
-
-        // Check for static route match
-        if (currentNodeChildrenPaths.includes(routePart)) {
-            handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
-            currentNode = currentNode.children![routePart];
-            continue;
-        }
-
-        // Check for dynamic route match
-        const dynamicNode = currentNodeChildrenPaths.find((childPath) =>
-            childPath.startsWith(':')
-        );
-
-        if (dynamicNode) {
-            handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
-            currentNode = currentNode.children![dynamicNode];
-            request.params = request.params ?? {};
-            request.params[dynamicNode.slice(1)] = routePart;
-            continue;
-        } else {
-            return null;
-        }
-    }
-    // Add middlewares and handlers for the matched route
-    handlers = [
-        ...handlers,
-        ...(currentNode.globalMiddlewares ?? []),
-        ...(currentNode.localMiddlewares ?? []),
-    ];
-    if (currentNode[method]) {
-        handlers.push(...currentNode[method].handlers);
-        return { handlers: [...handlers] };
-    }
-
+  // Validate the path
+  jssert(!!path, 'Path cannot be empty', '/route', 'error');
+  jssert(
+    typeof path === 'string',
+    `Path must be of type string but got ${typeof path}`,
+    '/route',
+    'error'
+  );
+  // Return null if no registered routes
+  if (!registeredRoutes) {
     return null;
+  }
+
+  // Split the path into parts
+  let routeParts = path.split('/');
+  const lastElement = routeParts[routeParts.length - 1];
+
+  // Handle hash fragments
+  if (lastElement.includes('#')) {
+    const [pathPart] = lastElement.split('#');
+    routeParts[routeParts.length - 1] = pathPart;
+  }
+  // Remove empty parts
+  routeParts = routeParts.filter((part) => part !== '');
+  // Handle root path
+  if (routeParts.length === 0) {
+    if (registeredRoutes['/']?.[method]) {
+      handlers = [
+        ...(registeredRoutes['/'].globalMiddlewares ?? []),
+        ...(registeredRoutes['/'].localMiddlewares ?? []),
+        ...registeredRoutes['/'][method].handlers,
+      ];
+      return { handlers };
+    } else {
+      return null;
+    }
+  }
+
+  // Traverse the route tree
+  let currentNode = registeredRoutes['/'];
+
+  for (const routePart of routeParts) {
+    const currentNodeChildrenPaths = Object.keys(currentNode.children ?? {});
+
+    // Check for static route match
+    if (currentNodeChildrenPaths.includes(routePart)) {
+      handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
+      currentNode = currentNode.children![routePart];
+      continue;
+    }
+
+    // Check for dynamic route match
+    const dynamicNode = currentNodeChildrenPaths.find((childPath) =>
+      childPath.startsWith(':')
+    );
+
+    if (dynamicNode) {
+      handlers = [...handlers, ...(currentNode.globalMiddlewares ?? [])];
+      currentNode = currentNode.children![dynamicNode];
+      request.params = request.params ?? {};
+      request.params[dynamicNode.slice(1)] = routePart;
+      continue;
+    } else {
+      return null;
+    }
+  }
+  // Add middlewares and handlers for the matched route
+  handlers = [
+    ...handlers,
+    ...(currentNode.globalMiddlewares ?? []),
+    ...(currentNode.localMiddlewares ?? []),
+  ];
+  if (currentNode[method]) {
+    handlers.push(...currentNode[method].handlers);
+    return { handlers: [...handlers] };
+  }
+
+  return null;
 }
 
 export default matchRoute;

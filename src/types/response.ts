@@ -37,7 +37,7 @@ declare module 'http' {
     get: (_header: string) => string | undefined;
     header: (_header: string) => string | undefined;
     cookies: (_cookies: RESPONSE_COOKIES) => Response;
-    sendStatus: (_status: RESPONSE_STATUS) => Response;
+    sendStatus: (_status: RESPONSE_STATUS) => void;
     json: (_data: unknown) => void;
     send: (_data?: unknown) => void;
     redirect: ({

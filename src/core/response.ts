@@ -3,9 +3,11 @@ import { jssert, handleError } from '@/core/error';
 import Response, {
   RESPONSE_LOCATION_STATUS,
   RESPONSE_HEADERS,
+  RESPONSE_STATUS,
 } from '@/types/response';
 import mime from 'mime-types';
 import logger from '@/helpers/joorLogger';
+import httpCodes from '@/data/httpCodes';
 const response = ServerResponse.prototype as Response;
 
 /**
@@ -173,3 +175,27 @@ response.links = function (
     return this;
   }
 };
+
+response.send = function (_this: Response, data: unknown) {};
+
+/**
+ * Sends a response with the specified status code and message.
+ * @example
+ * ```typescript
+ * response.sendStatus(200);
+ * ```
+ * @param {RESPONSE_STATUS} _status - The HTTP status code to send.
+ * @returns {void}
+ * @throws {Jrror} Throws an error if the status code is invalid or if headers have already been sent.
+ * @remarks This method sets the status code and sends a response with the corresponding status message.
+ * The status message is determined based on the provided status code. If the status code is not recognized, it defaults to the string representation of the status code.
+ */
+response.sendStatus = function (
+  this: Response,
+  _status: RESPONSE_STATUS
+): void {
+  this.status(_status); // Set the status code
+  const statusMessage = httpCodes[_status] || String(_status);
+  this.send(statusMessage);
+};
+
