@@ -5,7 +5,7 @@ import https from 'node:https';
 import Configuration from '@/core/config';
 import { JoorError } from '@/core/error';
 import Jrror from '@/core/error';
-import prepare from '@/core/reponse';
+import prepare from '@/core/tt';
 import handleRoute from '@/core/router/handle';
 import logger from '@/helpers/joorLogger';
 import JOOR_CONFIG from '@/types/config';
