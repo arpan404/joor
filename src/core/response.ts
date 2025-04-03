@@ -176,7 +176,9 @@ response.links = function (
   }
 };
 
-response.send = function (_this: Response, data: unknown) {};
+response.send = function (this: Response, data: unknown) {
+  return;
+};
 
 /**
  * Sends a response with the specified status code and message.
@@ -199,3 +201,54 @@ response.sendStatus = function (
   this.send(statusMessage);
 };
 
+
+response.json = function (
+  this: Response,
+  _data: unknown
+): void {
+  try {
+    jssert(
+      !this.headersSent,
+      'Headers have already been sent',
+      '/response'
+    );
+    this.setHeader('Content-Type', 'application/json');
+    jssert(
+      (_data === null || typeof _data === 'object' || typeof _data === 'string' || typeof _data === 'number' || Array.isArray(_data)),
+      'Data must be a null, object, string, number, or array to be JSON stringified',
+      '/response'
+    );
+    this.send(JSON.stringify(_data));
+  } catch (error: unknown) {
+    handleError(error);
+  }
+}
+
+response.redirect = function (
+  this: Response,
+  {
+    _location,
+    _permanent,
+  }: {
+    _location: string;
+    _permanent?: boolean;
+  }
+): void {
+  try {
+    jssert(
+      !this.headersSent,
+      'Headers have already been sent',
+      '/response'
+    );
+    jssert(
+      typeof _permanent === 'boolean',
+      'Permanent must be a boolean',
+      '/response'
+    );
+    this.location(_location);
+    this.status(_permanent ? 301 : 302);
+    this.send("Redirecting..."); // Todo: send a better redirect html page using view engine
+  } catch (error: unknown) {
+    handleError(error);
+  }
+}
