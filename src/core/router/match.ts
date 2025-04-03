@@ -1,7 +1,7 @@
 import Router from "@/core/router";
 import Request from "@/types/request";
 import { ROUTE_PATH, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
-import { jssert } from "../error";
+import { jssert } from "@/core/error";
 
 /**
  * Matches a given route path and method to the registered routes and returns the corresponding handlers.
