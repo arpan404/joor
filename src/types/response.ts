@@ -35,7 +35,7 @@ declare module 'http' {
     links: (_links: Record<string, string>) => void;
     set: (_headers: RESPONSE_HEADERS) => Response;
     get: (_header: string) => string | undefined;
-    header: (_header: string) => string | undefined;
+    delete: (_header: string) => void;
     cookies: (_cookies: RESPONSE_COOKIES) => Response;
     sendStatus: (_status: RESPONSE_STATUS) => void;
     json: (_data: unknown) => void;

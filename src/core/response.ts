@@ -4,6 +4,7 @@ import Response, {
   RESPONSE_LOCATION_STATUS,
   RESPONSE_HEADERS,
   RESPONSE_STATUS,
+  RESPONSE_COOKIES,
 } from '@/types/response';
 import mime from 'mime-types';
 import logger from '@/helpers/joorLogger';
@@ -88,7 +89,6 @@ response.location = function (
  *
  *
  */
-
 response.set = function (this: Response, headers: RESPONSE_HEADERS): Response {
   try {
     jssert(!this.headersSent, 'Headers have already been sent', '/response');
@@ -203,7 +203,7 @@ response.sendStatus = function (
 
 /**
  * Sends a JSON response with the specified data.
- * 
+ *
  * @param {unknown} _data - The data to be sent as JSON.
  * @returns {void}
  * @throws {Jrror} Throws an error if the headers have already been sent or if the data is not a valid JSON type.
@@ -286,6 +286,114 @@ response.redirect = function (
     this.location(_location);
     this.status(_permanent ? 301 : 302);
     this.send('Redirecting...'); // Todo: send a more informative redirect HTML page using view engine
+  } catch (error: unknown) {
+    handleError(error);
+  }
+};
+
+/**
+ * Sets cookies in the response using the Set-Cookie header.
+ *
+ * @param {RESPONSE_COOKIES} cookies - Object containing cookies to set where keys are cookie names
+ * @param {string} cookies[key].value - The value of the cookie
+ * @param {object} [cookies[key].options] - Optional cookie settings
+ * @param {string} [cookies[key].options.domain] - Domain scope for the cookie
+ * @param {string} [cookies[key].options.path] - Path scope for the cookie (defaults to '/')
+ * @param {Date|string} [cookies[key].options.expires] - Cookie expiration date
+ * @param {number} [cookies[key].options.maxAge] - Maximum age of the cookie in seconds
+ * @param {boolean} [cookies[key].options.httpOnly] - Restricts access from JavaScript
+ * @param {boolean} [cookies[key].options.secure] - Only sent over HTTPS connections
+ * @param {'Strict'|'Lax'|'None'} [cookies[key].options.sameSite] - Controls cross-site request behavior
+ *
+ * @returns {Response} The response object for method chaining
+ *
+ * @throws {Jrror} If headers were already sent or cookies parameter is invalid
+ *
+ * @example
+ * ```typescript
+ * response.cookies({
+ *   sessionId: {
+ *     value: '123456',
+ *     options: {
+ *       httpOnly: true,
+ *       maxAge: 3600,
+ *       sameSite: 'Strict'
+ *     }
+ *   }
+ * });
+ * ```
+ */
+response.cookies = function (
+  this: Response,
+  cookies: RESPONSE_COOKIES
+): Response {
+  try {
+    jssert(!this.headersSent, 'Headers have already been sent', '/response');
+    jssert(
+      typeof cookies === 'object',
+      'Cookies must be an object',
+      '/response'
+    );
+
+    const cookieHeaders: string[] = [];
+
+    for (const [key, cookie] of Object.entries(cookies)) {
+      if (!cookie) continue;
+
+      // Start forming the cookie string
+      let cookieStr = `${key}=${cookie.value}`;
+
+      // Add options if they exist
+      if (cookie.options) {
+        const { options } = cookie;
+
+        // Convert Date to UTC string
+        if (options.expires instanceof Date) {
+          options.expires = options.expires.toUTCString();
+        }
+
+        // Format options string
+        const optionsStr = Object.entries(options)
+          .map(([opt, val]) => `${opt}=${val}`)
+          .join('; ');
+
+        if (optionsStr) {
+          cookieStr += `; ${optionsStr}`;
+        }
+      }
+
+      cookieHeaders.push(cookieStr);
+    }
+
+    // Only set header if we have cookies to set
+    if (cookieHeaders.length > 0) {
+      this.setHeader('Set-Cookie', cookieHeaders);
+    }
+  } catch (error: unknown) {
+    handleError(error);
+  } finally {
+    return this;
+  }
+};
+
+/**
+ * Deletes a specific header from the response.
+ *
+ * @param {string} header - The name of the header to delete.
+ *
+ * @example
+ * ```typescript
+ * response.delete('X-Custom-Header');
+ * ```
+ */
+response.delete = function (this: Response, header: string): void {
+  try {
+    jssert(
+      typeof header === 'string',
+      'Header name must be a string',
+      '/response'
+    );
+    this.removeHeader(header);
   } catch (error: unknown) {
     handleError(error);
   }
