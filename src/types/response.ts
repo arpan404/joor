@@ -1,10 +1,4 @@
-// Interface for error details in a response
-interface RESPONSE_ERROR {
-  code?: string;
-  message?: string;
-  data?: unknown;
-  timeStamp?: Date;
-}
+import { ServerResponse } from 'node:http';
 
 // Type aliases for various response components
 type RESPONSE_STATUS = number;
@@ -13,13 +7,7 @@ type RESPONSE_MESSAGE = string;
 
 type RESPONSE_DATA = unknown;
 
-interface RESPONSE_DATA_TYPE {
-  type: 'normal' | 'json' | 'error' | 'binary';
-  isStream: boolean;
-  isFile: boolean;
-  isDownload?: boolean;
-  filePath?: string;
-}
+type RESPONSE_LOCATION_STATUS = 301 | 302 | 303 | 307 | 308;
 
 // Interface for response cookies
 interface RESPONSE_COOKIES {
@@ -38,43 +26,42 @@ interface RESPONSE_COOKIES {
 
 // Interface for response headers
 interface RESPONSE_HEADERS {
-  [key: string]: string | number;
+  [key: string]: string | string[];
 }
 
-// Interface for the main response structure used by the JoorResponse class
-interface RESPONSE {
-  status?: RESPONSE_STATUS;
-  message?: RESPONSE_MESSAGE;
-  data?: RESPONSE_DATA;
-  error?: string | RESPONSE_ERROR;
-  cookies?: RESPONSE_COOKIES;
-  headers?: RESPONSE_HEADERS;
+declare module 'http' {
+  interface ServerResponse {
+    status: (_status: RESPONSE_STATUS) => Response;
+    links: (_links: Record<string, string>) => void;
+    set: (_headers: RESPONSE_HEADERS) => Response;
+    get: (_header: string) => string | undefined;
+    delete: (_header: string) => void;
+    cookies: (_cookies: RESPONSE_COOKIES) => Response;
+    sendStatus: (_status: RESPONSE_STATUS) => void;
+    json: (_data: unknown) => void;
+    send: (_data?: unknown) => void;
+    redirect: ({
+      _location,
+      _permanent,
+    }: {
+      _location: string;
+      _permanent?: boolean;
+    }) => void;
+    sendFile: (_filePath: string, _asDownload: boolean) => void;
+    attachment: (_filePath: string, _filename?: string) => void;
+    location: (_path: string) => void;
+  }
 }
 
-// Interface for internal response structure used to prepare response data for sending
-interface INTERNAL_RESPONSE {
-  status: RESPONSE_STATUS;
-  message: RESPONSE_MESSAGE;
-  data: RESPONSE_DATA;
-  headers?: RESPONSE_HEADERS;
-  cookies?: RESPONSE_COOKIES;
-  dataType: RESPONSE_DATA_TYPE;
-}
+interface Response extends ServerResponse {}
 
-// Interface for the final prepared response data to be sent to the client
-interface PREPARED_RESPONSE {
-  headers: RESPONSE_HEADERS;
-  status: RESPONSE_STATUS;
-  data: unknown;
-  cookies: Array<string>;
-  httpMessage: string;
-  dataType: RESPONSE_DATA_TYPE;
-}
+export default Response;
 
 export {
-  RESPONSE,
-  INTERNAL_RESPONSE,
-  RESPONSE_DATA_TYPE,
-  PREPARED_RESPONSE,
+  RESPONSE_STATUS,
+  RESPONSE_MESSAGE,
+  RESPONSE_DATA,
   RESPONSE_COOKIES,
+  RESPONSE_HEADERS,
+  RESPONSE_LOCATION_STATUS,
 };

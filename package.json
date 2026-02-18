@@ -1,6 +1,6 @@
 {
   "name": "joor",
-  "version": "0.0.1",
+  "version": "0.0.0-alpha",
   "description": "Joor is a full-fledged backend web framework for small to enterprise-level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
   "author": "Joor",
   "license": "MIT",
@@ -73,8 +73,5 @@
   "dependencies": {
     "mime-types": "^2.1.35",
     "socket.io": "^4.8.1"
-  },
-  "exports": {
-    "./middlewares": "./src/middlewares/index.js"
   }
 }

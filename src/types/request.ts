@@ -12,7 +12,6 @@ declare module 'http' {
 
 // Define a new interface JoorRequest that extends the modified IncomingMessage
 // This JoorRequest interface can be used as a type for the request object in the user's code
-interface JoorRequest extends IncomingMessage {}
+interface Request extends IncomingMessage {}
 
-// Export the JoorRequest interface for use in other parts of the application
-export { JoorRequest };
+export default Request;

@@ -1,8 +1,7 @@
-import Router from './index';
-
-import Jrror from '@/core/error';
-import { JoorRequest } from '@/types/request';
-import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
+import Router from '@/core/router';
+import Request from '@/types/request';
+import { ROUTE_PATH, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
+import { jssert } from '@/core/error';
 
 /**
  * Matches a given route path and method to the registered routes and returns the corresponding handlers.
@@ -22,34 +21,22 @@ import { ROUTE_PATH, ROUTES, ROUTE_METHOD, ROUTE_HANDLER } from '@/types/route';
  *   // Handle route not found
  * }
  */
-const matchRoute = (
+function matchRoute(
   path: ROUTE_PATH,
   method: ROUTE_METHOD,
-  request: JoorRequest
-): {
-  handlers: ROUTE_HANDLER[];
-} | null => {
+  request: Request
+): { handlers: ROUTE_HANDLER[] } | null {
   let handlers = [] as ROUTE_HANDLER[];
-
-  const registeredRoutes: ROUTES = Router.routes;
+  const registeredRoutes = Router.routes;
 
   // Validate the path
-  if (!path) {
-    throw new Jrror({
-      code: 'path-empty',
-      message: 'Path cannot be empty',
-      type: 'error',
-    });
-  }
-
-  if (typeof path !== 'string') {
-    throw new Jrror({
-      code: 'path-invalid',
-      message: `Path must be of type string but got ${typeof path}`,
-      type: 'error',
-    });
-  }
-
+  jssert(!!path, 'Path cannot be empty', '/route', 'error');
+  jssert(
+    typeof path === 'string',
+    `Path must be of type string but got ${typeof path}`,
+    '/route',
+    'error'
+  );
   // Return null if no registered routes
   if (!registeredRoutes) {
     return null;
@@ -57,7 +44,6 @@ const matchRoute = (
 
   // Split the path into parts
   let routeParts = path.split('/');
-
   const lastElement = routeParts[routeParts.length - 1];
 
   // Handle hash fragments
@@ -121,6 +107,6 @@ const matchRoute = (
   }
 
   return null;
-};
+}
 
 export default matchRoute;

@@ -1,4 +1,4 @@
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/tt';
 
 /**
  * Serves the files as HTTP responses.

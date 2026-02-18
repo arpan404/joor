@@ -1,10 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import Jrror from '@/core/error/index';
-// import validateConfig from '@/helpers/validateConfig';
-import JoorError from '@/core/error/JoorError';
-import logger from '@/helpers/joorLogger';
+import { handleError, jssert } from '@/core/error';
+import validateConfig from '@/helpers/validateConfig';
 import JOOR_CONFIG from '@/types/config';
 
 /**
@@ -27,16 +25,12 @@ class Configuration {
    */
   private async loadConfig(): Promise<void> {
     // Check if the configuration data is already loaded
-    if (Configuration.configData !== null) {
-      throw new Jrror({
-        code: 'config-loaded-already',
-        docsPath: '/configuration',
-        message:
-          'The configuration data is already loaded. Attempting to load it again is not recommended',
-        type: 'warn',
-      });
-    }
-
+    jssert(
+      Configuration.configData === null,
+      'Configuration data is already loaded. Attempting to load it again is not recommended.',
+      '/configuration',
+      'warn'
+    );
     try {
       // Default config file name is joor.config.js or else fallback to joor.config.ts
       let configFile = 'joor.config.js';
@@ -45,29 +39,21 @@ class Configuration {
         configFile = 'joor.config.ts';
       }
 
-      if (!fs.existsSync(path.resolve(process.cwd(), configFile))) {
-        throw new Jrror({
-          code: 'config-file-missing',
-          docsPath: '/configuration',
-          message:
-            'The configuration file (joor.config.js or joor.config.ts) is missing in the root directory.',
-          type: 'error',
-        });
-      }
+      // Check if the configuration file exists
+      jssert(
+        fs.existsSync(path.resolve(process.cwd(), configFile)),
+        'The configuration file (joor.config.js or joor.config.ts) is missing in the root directory.',
+        '/configuration',
+        'error'
+      );
 
       const configPath = path.resolve(process.cwd(), configFile);
       // Dynamically import the configuration file
       const configData = (await import(configPath)).config as JOOR_CONFIG;
-      // Configuration.configData = validateConfig(configData);
-      Configuration.configData = configData;
+      Configuration.configData = validateConfig(configData);
       this.setConfigToEnv();
     } catch (error) {
-      throw new Jrror({
-        code: 'config-load-failed',
-        message: `Error occured while loading the configuration file. ${error}`,
-        type: 'panic',
-        docsPath: '/configuration',
-      });
+      handleError(error);
     }
   }
 
@@ -107,11 +93,7 @@ class Configuration {
       try {
         await this.loadConfig();
       } catch (error: unknown) {
-        if (error instanceof Jrror || error instanceof JoorError) {
-          error.handle();
-        } else {
-          logger.error(error);
-        }
+        handleError(error);
       }
     }
 

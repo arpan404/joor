@@ -1,7 +1,7 @@
 import Jrror from '@/core/error';
-import JoorResponse from '@/core/response';
+import JoorResponse from '@/core/tt';
 import { CORS_OPTIONS, CORS_RESPONSE } from '@/types/cors';
-import { JoorRequest } from '@/types/request';
+import Request from '@/types/request';
 
 /**
  * A middleware function that returns a function to handle CORS preflight requests in the Joor application.

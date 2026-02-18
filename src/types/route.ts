@@ -1,13 +1,18 @@
-import JoorResponse from '@/core/response';
-import { JoorRequest } from '@/types/request';
+import Request from '@/types/request';
+import Response from '@/types/response';
 
 // For path name eg. "/path/to/resource"
 type ROUTE_PATH = string;
 
-// For route handler function, which can be synchronous or asynchronous, this can be used for defining route handlers, including middlewares
+/**
+ * For route handler function, which can be synchronous or asynchronous, this can be used for defining route handlers, including middlewares
+ * Middleware function must take 3 arguments: request, response and next. If next is not provided, the middleware will be the last in the chain.
+ */
 type ROUTE_HANDLER = (
-  _request: JoorRequest
-) => Promise<JoorResponse | undefined | void> | JoorResponse | undefined | void;
+  _request: Request,
+  _response: Response,
+  _next?: ROUTE_HANDLER
+) => Promise<void> | void;
 
 // For route methods
 type ROUTE_METHOD = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';

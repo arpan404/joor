@@ -1,40 +1,42 @@
-import Jrror from '@/core/error';
 import { ROUTE_HANDLER, ROUTE_PATH } from '@/types/route';
-
+import { jssert } from '@/core/error';
+/**
+ * Validates the route path.
+ * Uses jssert to check the conditions.
+ *
+ * @param {ROUTE_PATH} route - The route path to validate.
+ * @throws {Jrror} If the route path is not a string or is empty.
+ */
 function validateRoute(route: ROUTE_PATH) {
-  if (typeof route !== 'string') {
-    throw new Jrror({
-      code: 'route-invalid',
-      message: `Route address must be of type string but got ${typeof route}`,
-      type: 'error',
-    });
-  }
-
-  if (route === '') {
-    throw new Jrror({
-      code: 'route-empty',
-      message: `Route cannot be empty. It must be a valid string`,
-      type: 'error',
-    });
-  }
-
-  if (!route.startsWith('/')) {
-    throw new Jrror({
-      code: 'route-invalid',
-      message: 'Route must starts with /',
-      type: 'error',
-    });
-  }
+  jssert(
+    typeof route === 'string',
+    'Route address must be of type string but got ' + typeof route,
+    '/route',
+    'error'
+  );
+  jssert(
+    route !== '',
+    'Route cannot be empty. It must be a valid string',
+    '/route',
+    'error'
+  );
+  jssert(route.startsWith('/'), 'Route must starts with /', '/route', 'error');
 }
 
+/**
+ * Validates the route handler.
+ * Uses jssert to check the conditions.
+ *
+ * @param {ROUTE_HANDLER} handler - The route handler to validate.
+ * @throws {Jrror} If the handler is not a function.
+ */
 function validateHandler(handler: ROUTE_HANDLER) {
-  if (typeof handler !== 'function') {
-    throw new Jrror({
-      code: 'handler-invalid',
-      message: `Handler must be of type function. But got ${typeof handler}`,
-      type: 'error',
-    });
-  }
+  jssert(
+    typeof handler === 'function',
+    'Handler must be of type function. But got ' + typeof handler,
+    '/handler',
+    'error'
+  );
 }
 
 export { validateRoute, validateHandler };

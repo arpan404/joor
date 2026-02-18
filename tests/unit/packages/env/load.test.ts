@@ -4,7 +4,7 @@ import process from 'node:process';
 
 import { jest, describe, it, expect } from '@jest/globals';
 
-import JoorError from '@/core/error/JoorError';
+import { JoorError } from '@/core/error';
 import loadEnv from '@/packages/env/load';
 jest.mock('node:fs');
 jest.mock('node:path');
