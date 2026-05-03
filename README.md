@@ -187,7 +187,27 @@ npm run joor -- doctor
 - `maxBodyBytes` for request body limits
 - `onError` for runtime diagnostics
 
-Fetch is the base runtime. The package also exposes small adapters for Node, Bun, Deno, Cloudflare Workers, Vercel, and Netlify.
+Fetch is the base runtime. The package also exposes small adapters for Node, Bun, Deno, Cloudflare Workers, Next.js, Vercel, and Netlify.
+
+## Next.js API Routes
+
+For the Next.js App Router, create `app/api/rpc/route.ts` and export handlers from the generated manifest:
+
+```ts
+import { createNextRouteHandlers } from 'joor/runtime/next';
+import config from '../../../joor.config';
+import { manifest } from '../../../.joor/manifest';
+
+const handlers = createNextRouteHandlers(manifest, {
+  ...config,
+  path: '/api/rpc',
+});
+
+export const runtime = 'edge';
+export const { GET, POST, OPTIONS } = handlers;
+```
+
+The adapter is Fetch-native, so it works with both Edge-compatible route handlers and standard App Router `Request`/`Response` APIs.
 
 ## Typed Headers
 
@@ -217,6 +237,45 @@ export default defineProcedure({
 ```
 
 `ctx.headers` is the typed, validated request header object. `ctx.rawHeaders` is the original Fetch `Headers` instance for lower-level access. Declared response headers are validated before a success envelope is returned, included on the success envelope, and attached to the HTTP response for single unary calls.
+
+## Auth, Hooks, and Limits
+
+Auth policies are typed and procedure-local. A successful policy return value becomes `ctx.auth`; a `ctx.error(...)` return short-circuits the procedure.
+
+```ts
+import { createAuthPolicy, defineProcedure, t } from 'joor';
+
+const sessionAuth = createAuthPolicy<
+  { users: { findByToken(token: string): { id: string } | null } },
+  { authorization: string },
+  { userId: string }
+>({
+  name: 'session',
+  authenticate(ctx) {
+    const token = ctx.headers.authorization;
+    const user = ctx.services.users.findByToken(token);
+    if (user === null) {
+      return ctx.error('UNAUTHORIZED', { message: 'Unauthorized' });
+    }
+    return { userId: user.id };
+  },
+});
+
+export default defineProcedure({
+  input: t.object({ ok: t.boolean() }),
+  headers: t.object({ authorization: t.string() }),
+  output: t.object({ userId: t.string() }),
+  auth: sessionAuth,
+  meta: {
+    rateLimit: { limit: 60, window: '1m' },
+  },
+  async handler(ctx) {
+    return ctx.ok({ userId: ctx.auth.userId });
+  },
+});
+```
+
+`createJoorHandler` also accepts `hooks` and `middleware` with `beforeRequest`/`afterResponse` callbacks. `meta.rateLimit` is enforced by the runtime with an in-memory window.
 
 ## Development
 

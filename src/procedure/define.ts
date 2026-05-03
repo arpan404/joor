@@ -133,7 +133,15 @@ export interface DefineProcedure<TServices extends object = object> {
       TResponseHeaders,
       TAuth
     >
-  ): Procedure<TInput, Schema, TErrors, TStream, THeaders, TResponseHeaders, TAuth>;
+  ): Procedure<
+    TInput,
+    Schema,
+    TErrors,
+    TStream,
+    THeaders,
+    TResponseHeaders,
+    TAuth
+  >;
 
   withContext<TNextServices extends object>(): DefineProcedure<TNextServices>;
 }

@@ -39,8 +39,11 @@ export interface HandlerOptions {
 }
 
 export interface HandlerHooks {
-  beforeRequest?(request: Request): MaybePromise<Response | void>;
-  afterResponse?(response: Response, request: Request): MaybePromise<Response | void>;
+  beforeRequest?(request: Request): MaybePromise<Response | undefined>;
+  afterResponse?(
+    response: Response,
+    request: Request
+  ): MaybePromise<Response | undefined>;
 }
 
 export interface JoorMiddleware extends HandlerHooks {

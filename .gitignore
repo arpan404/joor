@@ -7,6 +7,7 @@ build/
 release/  
 old/  
 .joor/
+**/.joor/
 
 # Ignore system files  
 .DS_Store  

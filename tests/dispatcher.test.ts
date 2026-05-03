@@ -2,7 +2,12 @@ import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import listPosts from './fixtures/basic-app/rpc/posts/list.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
-import { createJoorHandler, defineProcedure, t } from '../src/index.js';
+import {
+  createAuthPolicy,
+  createJoorHandler,
+  defineProcedure,
+  t,
+} from '../src/index.js';
 
 const manifest = {
   procedures: {
@@ -107,5 +112,104 @@ describe('dispatcher', () => {
 
     expect(successBody.ok).toBe(true);
     expect(successBody.data.tenantId).toBe('tenant-1');
+  });
+
+  it('authenticates procedures and exposes ctx.auth', async () => {
+    const auth = createAuthPolicy({
+      name: 'bearer',
+      authenticate(ctx) {
+        if (ctx.rawHeaders.get('authorization') !== 'Bearer token') {
+          return ctx.error('UNAUTHORIZED', { message: 'Unauthorized' });
+        }
+        return { userId: 'user-1' };
+      },
+    });
+    const protectedProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ userId: t.string() }),
+      auth,
+      async handler(ctx) {
+        return ctx.ok({ userId: ctx.auth.userId });
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { protected: protectedProcedure },
+    });
+    const denied = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'protected', input: { ok: true } }),
+      })
+    );
+    const deniedBody = await denied.json();
+
+    expect(deniedBody.ok).toBe(false);
+    expect(deniedBody.error.code).toBe('UNAUTHORIZED');
+
+    const allowed = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          authorization: 'Bearer token',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'protected', input: { ok: true } }),
+      })
+    );
+    const allowedBody = await allowed.json();
+
+    expect(allowedBody.ok).toBe(true);
+    expect(allowedBody.data.userId).toBe('user-1');
+  });
+
+  it('runs hooks and enforces rate limits', async () => {
+    const limited = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      meta: {
+        rateLimit: {
+          limit: 1,
+          window: '1m',
+        },
+      },
+      async handler(ctx, input) {
+        return ctx.ok({ ok: input.ok });
+      },
+    });
+    const seen: string[] = [];
+    const handler = createJoorHandler(
+      { procedures: { limited } },
+      {
+        hooks: {
+          beforeRequest() {
+            seen.push('before');
+            return undefined;
+          },
+          afterResponse(response) {
+            seen.push('after');
+            return response;
+          },
+        },
+      }
+    );
+    const request = (): Promise<Response> =>
+      handler(
+        new Request('http://localhost/rpc', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-forwarded-for': 'rate-limit-test',
+          },
+          body: JSON.stringify({ id: 'limited', input: { ok: true } }),
+        })
+      );
+
+    expect((await (await request()).json()).ok).toBe(true);
+    const limitedBody = await (await request()).json();
+
+    expect(limitedBody.ok).toBe(false);
+    expect(limitedBody.error.code).toBe('RATE_LIMITED');
+    expect(seen).toEqual(['before', 'after', 'before', 'after']);
   });
 });

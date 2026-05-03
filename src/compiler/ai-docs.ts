@@ -19,6 +19,7 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
     description: entry.procedure.meta.description ?? '',
     tags: entry.procedure.meta.tags ?? [],
     auth: entry.procedure.meta.auth ?? [],
+    authPolicy: entry.procedure.auth?.name ?? null,
     rateLimit: entry.procedure.meta.rateLimit ?? null,
     examples: [],
     headersSchema:

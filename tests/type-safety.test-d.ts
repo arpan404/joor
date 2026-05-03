@@ -1,10 +1,12 @@
 import {
   createPlugin,
+  createAuthPolicy,
   defineConfig,
   defineProcedure,
   t,
   type JoorConfigContext,
   type ProcedureInput,
+  type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
 } from '../src/index.js';
@@ -43,6 +45,33 @@ const procedure = defineProcedure.withContext<Services>()({
     return ctx.ok(user, { 'cache-control': 'private' });
   },
 });
+
+const authPolicy = createAuthPolicy<
+  Services,
+  Record<string, never>,
+  { userId: string }
+>({
+  name: 'session',
+  authenticate(ctx) {
+    ctx.services.users.findById('1');
+    return { userId: '1' };
+  },
+});
+
+const authenticatedProcedure = defineProcedure.withContext<Services>()({
+  input: t.object({ ok: t.boolean() }),
+  output: t.object({ userId: t.string() }),
+  auth: authPolicy,
+  async handler(ctx) {
+    ctx.auth.userId.toUpperCase();
+    return ctx.ok({ userId: ctx.auth.userId });
+  },
+});
+
+const authShape: ProcedureAuth<typeof authenticatedProcedure> = {
+  userId: '1',
+};
+authShape.userId.toUpperCase();
 
 const validInput: ProcedureInput<typeof procedure> = { id: '1' };
 validInput.id.toUpperCase();

@@ -46,6 +46,6 @@
       }
     ]
   },
-  "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["node_modules", "dist", ".joor"]
+  "include": ["src/**/*", "tests/**/*", "examples/**/*"],
+  "exclude": ["node_modules", "dist", ".joor", "**/.joor"]
 }

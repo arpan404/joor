@@ -9,7 +9,12 @@ export interface AuthPolicy<
 > {
   name: string;
   authenticate(
-    ctx: JoorContext<TServices, THeaders, Record<string, never>, Record<string, never>>
+    ctx: JoorContext<
+      TServices,
+      THeaders,
+      Record<string, never>,
+      Record<string, never>
+    >
   ): MaybePromise<TAuth | ProcedureFailure<string>>;
 }
 

@@ -91,6 +91,7 @@ export const createOpenApiDocument = (
       description: entry.procedure.meta.description ?? '',
       tags: entry.procedure.meta.tags ?? [],
       auth: entry.procedure.meta.auth ?? [],
+      authPolicy: entry.procedure.auth?.name ?? null,
       rateLimit: entry.procedure.meta.rateLimit ?? null,
       inputRef: `#/components/schemas/${componentName(entry.id, 'Input')}`,
       headersRef:

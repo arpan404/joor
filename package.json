@@ -48,6 +48,10 @@
       "types": "./dist/runtime/vercel.d.ts",
       "import": "./dist/runtime/vercel.js"
     },
+    "./runtime/next": {
+      "types": "./dist/runtime/next.d.ts",
+      "import": "./dist/runtime/next.js"
+    },
     "./runtime/netlify": {
       "types": "./dist/runtime/netlify.d.ts",
       "import": "./dist/runtime/netlify.js"
@@ -65,25 +69,32 @@
     "format:check": "oxfmt . --check",
     "test": "vitest run",
     "test:watch": "vitest",
+    "benchmark:example": "tsx examples/ai-native-backend/benchmark.ts",
+    "benchmark:frameworks": "tsx examples/ai-native-backend/framework-benchmark.ts",
     "joor": "tsx src/cli/index.ts",
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
-  "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@effect/language-service": "^0.81.0",
+    "@trpc/server": "^11.17.0",
+    "@types/express": "^5.0.6",
     "@types/node": "^20.10.0",
+    "express": "^5.2.1",
     "fast-glob": "^3.3.3",
+    "fastify": "^5.8.5",
+    "hono": "^4.12.16",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.1",
     "oxfmt": "^0.47.0",
     "tsc-alias": "^1.8.10",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3",
-    "vitest": "^4.0.14"
+    "vitest": "^4.0.14",
+    "zod": "^4.4.2"
   },
   "lint-staged": {
     "*.{js,ts}": [
