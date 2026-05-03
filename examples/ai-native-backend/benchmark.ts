@@ -18,6 +18,8 @@ interface BenchmarkResult {
 
 const outDir = new URL('./.joor', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
+const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
+  .href;
 const manifest = {
   procedures: {
     'ai.chat': chat,
@@ -100,10 +102,27 @@ const printResult = (result: BenchmarkResult): void => {
 
 await build({ config: configPath, outDir });
 
-const handler = createJoorHandler(manifest, config);
+const genericHandler = createJoorHandler(manifest, config);
+const compiled = (await import(compiledDispatcherUrl)) as {
+  fetch(request: Request): Promise<Response>;
+};
+const compiledHandler = compiled.fetch;
 
-const warmup = await runBenchmark('warmup', handler, 500, 25);
+const warmup = await runBenchmark('warmup', genericHandler, 500, 25);
 printResult(warmup);
 
-const result = await runBenchmark('users.get unary rpc', handler, 10_000, 100);
-printResult(result);
+const genericResult = await runBenchmark(
+  'users.get unary rpc (generic)',
+  genericHandler,
+  10_000,
+  100
+);
+printResult(genericResult);
+
+const compiledResult = await runBenchmark(
+  'users.get unary rpc (compiled)',
+  compiledHandler,
+  10_000,
+  100
+);
+printResult(compiledResult);

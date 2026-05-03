@@ -31,7 +31,22 @@ describe('compiler', () => {
       ).resolves.toContain('users.get');
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
-      ).resolves.toContain('createJoorHandler');
+      ).resolves.toContain('createCompiledRpcHandler');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('createCompiledRpcTransportBodyResultHandler');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('switch (rpcRequest.id)');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('_validate_input');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('_serialize_success');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('export const transport =');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');

@@ -1,4 +1,8 @@
-import { createContext } from '../context/context.js';
+import {
+  createContext,
+  requestSourceFromRequest,
+  type ContextRequestSource,
+} from '../context/context.js';
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
 import type {
   MaybePromise,
@@ -14,6 +18,16 @@ import {
 import { validate } from '../schema/validate.js';
 import { createSseResponse, encodeSse } from './stream.js';
 import {
+  authenticateOnce,
+  createExecutionState,
+  createProcedureCacheKey,
+  parseDurationMs,
+  readCachedProcedureSuccess,
+  type CachedProcedureSuccess,
+  type ExecutionState,
+  writeCachedProcedureSuccess,
+} from '../runtime/optimization.js';
+import {
   validationDetails,
   type RpcEnvelope,
   type RpcFailure,
@@ -22,6 +36,32 @@ import {
 
 export interface RpcManifest {
   procedures: Record<string, ProcedureRuntime>;
+}
+
+export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;
+
+interface PreparedProcedure {
+  procedure: ProcedureRuntime;
+  headers?: ProcedureRuntime['headers'];
+  responseHeaders?: ProcedureRuntime['responseHeaders'];
+  auth?: ProcedureRuntime['auth'];
+  output?: ProcedureRuntime['output'];
+  headerKeys?: string[];
+  rateLimit?: {
+    limit: number;
+    window: string;
+    windowMs: number;
+  };
+}
+
+interface RuntimeOptions {
+  cors: HeadersInit;
+  enforceRateLimit: boolean;
+  validateHeaders: boolean;
+  validateInput: boolean;
+  validateOutput: boolean;
+  validateResponseHeaders: boolean;
+  rpcPath: string;
 }
 
 export interface HandlerOptions {
@@ -35,6 +75,11 @@ export interface HandlerOptions {
     methods?: string[];
   };
   maxBodyBytes?: number;
+  validateInput?: boolean;
+  validateHeaders?: boolean;
+  validateOutput?: boolean;
+  validateResponseHeaders?: boolean;
+  enforceRateLimit?: boolean;
   onError?(error: Error, request: Request): void;
 }
 
@@ -53,6 +98,8 @@ export interface JoorMiddleware extends HandlerHooks {
 const jsonHeaders = { 'content-type': 'application/json' };
 const defaultMaxBodyBytes = 1024 * 1024;
 const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
+const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
+let traceCounter = 0;
 
 const corsHeaders = (options: HandlerOptions): HeadersInit => {
   if (options.cors === undefined) return {};
@@ -67,8 +114,13 @@ const corsHeaders = (options: HandlerOptions): HeadersInit => {
   };
 };
 
-const traceId = (request: Request, requested?: string): string =>
-  requested ?? request.headers.get('x-request-id') ?? crypto.randomUUID();
+const traceId = (request: ContextRequestSource, requested?: string): string => {
+  if (requested !== undefined) return requested;
+  const headerTrace = request.getHeader('x-request-id');
+  if (headerTrace !== null) return headerTrace;
+  traceCounter += 1;
+  return `trace-${traceCounter}`;
+};
 
 const rpcFailure = (
   id: string,
@@ -112,9 +164,20 @@ const isAsyncIterable = (
   value: ProcedureRuntimeValue
 ): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
 
-const headersToJsonObject = (headers: Headers): JsonObject => {
+const headersToJsonObject = (
+  request: ContextRequestSource,
+  prepared: PreparedProcedure
+): JsonObject => {
   const output: JsonObject = {};
-  for (const [key, value] of headers) output[key.toLowerCase()] = value;
+  if (prepared.headerKeys !== undefined) {
+    for (const key of prepared.headerKeys) {
+      const value = request.getHeader(key);
+      if (value !== null) output[key] = value;
+    }
+    return output;
+  }
+  for (const [key, value] of request.toHeaders())
+    output[key.toLowerCase()] = value;
   return output;
 };
 
@@ -123,28 +186,69 @@ const isProcedureFailure = (
 ): value is { kind: 'error'; error: RpcFailure['error'] } =>
   'kind' in value && value.kind === 'error' && 'error' in value;
 
-const parseWindowMs = (window: string): number => {
-  const match = /^(\d+)(ms|s|m|h)$/.exec(window);
-  if (match === null) return 60_000;
-  const amount = Number(match[1]);
-  const unit = match[2];
-  if (unit === 'ms') return amount;
-  if (unit === 's') return amount * 1_000;
-  if (unit === 'm') return amount * 60_000;
-  return amount * 3_600_000;
+const pathnameFromUrl = (url: string): string => {
+  const protocolIndex = url.indexOf('://');
+  const pathStart =
+    protocolIndex === -1 ? 0 : url.indexOf('/', protocolIndex + 3);
+  if (pathStart === -1) return '/';
+  const queryStart = url.indexOf('?', pathStart);
+  const hashStart = url.indexOf('#', pathStart);
+  if (queryStart === -1 && hashStart === -1) return url.slice(pathStart);
+  if (queryStart === -1) return url.slice(pathStart, hashStart);
+  if (hashStart === -1) return url.slice(pathStart, queryStart);
+  return url.slice(pathStart, Math.min(queryStart, hashStart));
+};
+
+const prepareProcedures = (
+  manifest: RpcManifest
+): Record<string, PreparedProcedure> => {
+  const procedures: Record<string, PreparedProcedure> = Object.create(
+    null
+  ) as Record<string, PreparedProcedure>;
+  for (const [id, procedure] of Object.entries(manifest.procedures)) {
+    const headerKeys =
+      procedure.headers?.kind === 'object'
+        ? Object.keys(procedure.headers.shape)
+        : undefined;
+    const limit = procedure.meta.rateLimit;
+    procedures[id] = {
+      procedure,
+      ...(procedure.headers === undefined
+        ? {}
+        : { headers: procedure.headers }),
+      ...(procedure.responseHeaders === undefined
+        ? {}
+        : { responseHeaders: procedure.responseHeaders }),
+      ...(procedure.auth === undefined ? {} : { auth: procedure.auth }),
+      ...(procedure.output === undefined ? {} : { output: procedure.output }),
+      ...(headerKeys === undefined ? {} : { headerKeys }),
+      ...(limit === undefined
+        ? {}
+        : {
+            rateLimit: {
+              limit: limit.limit,
+              window: limit.window,
+              windowMs: parseDurationMs(limit.window),
+            },
+          }),
+    };
+  }
+  return procedures;
 };
 
 const rateLimitFailure = (
-  procedure: ProcedureRuntime,
+  prepared: PreparedProcedure,
   rpcRequest: RpcRequest,
-  request: Request,
-  trace: string
+  request: ContextRequestSource,
+  trace: string,
+  runtime: RuntimeOptions
 ): RpcFailure | undefined => {
-  const limit = procedure.meta.rateLimit;
+  if (!runtime.enforceRateLimit) return undefined;
+  const limit = prepared.rateLimit;
   if (limit === undefined) return undefined;
   const identity =
-    request.headers.get('x-forwarded-for') ??
-    request.headers.get('cf-connecting-ip') ??
+    request.getHeader('x-forwarded-for') ??
+    request.getHeader('cf-connecting-ip') ??
     'anonymous';
   const key = `${rpcRequest.id}:${identity}`;
   const now = Date.now();
@@ -152,7 +256,7 @@ const rateLimitFailure = (
   if (existing === undefined || existing.resetAt <= now) {
     rateLimitWindows.set(key, {
       count: 1,
-      resetAt: now + parseWindowMs(limit.window),
+      resetAt: now + limit.windowMs,
     });
     return undefined;
   }
@@ -183,20 +287,33 @@ const parseRequestBody = async (
 };
 
 const executeUnary = async (
-  procedure: ProcedureRuntime,
+  prepared: PreparedProcedure,
   rpcRequest: RpcRequest,
-  request: Request,
-  services: object
+  request: ContextRequestSource,
+  services: object,
+  runtime: RuntimeOptions,
+  state: ExecutionState
 ): Promise<RpcEnvelope> => {
+  const procedure = prepared.procedure;
   const trace = traceId(request, rpcRequest.traceId);
-  const limited = rateLimitFailure(procedure, rpcRequest, request, trace);
+  const limited = rateLimitFailure(
+    prepared,
+    rpcRequest,
+    request,
+    trace,
+    runtime
+  );
   if (limited !== undefined) return limited;
   const headerValue =
-    procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
+    prepared.headers === undefined
+      ? {}
+      : headersToJsonObject(request, prepared);
   const headerResult =
-    procedure.headers === undefined
+    prepared.headers === undefined
       ? ({ ok: true, value: {} } as const)
-      : validate(procedure.headers, headerValue, 'headers');
+      : !runtime.validateHeaders
+        ? ({ ok: true, value: headerValue } as const)
+        : validate(prepared.headers, headerValue, 'headers');
   if (!headerResult.ok) {
     return rpcFailure(
       rpcRequest.id,
@@ -207,17 +324,14 @@ const executeUnary = async (
       validationDetails(headerResult.issues)
     );
   }
-  const baseContext = createContext({
+  const ctx = createContext({
     request,
     traceId: trace,
     services,
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult =
-    procedure.auth === undefined
-      ? {}
-      : await procedure.auth.authenticate(baseContext);
+  const authResult = await authenticateOnce(prepared.auth, ctx, state);
   if (isProcedureFailure(authResult)) {
     return {
       ok: false,
@@ -226,7 +340,9 @@ const executeUnary = async (
       error: authResult.error,
     };
   }
-  const inputResult = validate(procedure.input, rpcRequest.input, 'input');
+  const inputResult = !runtime.validateInput
+    ? ({ ok: true, value: rpcRequest.input } as const)
+    : validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
     return rpcFailure(
       rpcRequest.id,
@@ -238,14 +354,42 @@ const executeUnary = async (
     );
   }
 
-  const ctx = createContext({
-    request,
-    traceId: trace,
-    services,
-    headers: headerResult.value as object,
-    auth: authResult,
-  });
-  const result = await procedure.handler(ctx, inputResult.value as JsonValue);
+  ctx.auth = authResult;
+  const cacheConfig =
+    procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
+  const cacheKey =
+    cacheConfig === undefined
+      ? undefined
+      : createProcedureCacheKey(
+          rpcRequest.id,
+          cacheConfig.key,
+          (inputResult.value ?? {}) as JsonValue,
+          headerResult.value as JsonObject,
+          authResult
+        );
+  if (cacheKey !== undefined) {
+    const cached = readCachedProcedureSuccess(procedureSuccessCache, cacheKey);
+    if (cached !== undefined) {
+      return cached.headers === undefined
+        ? {
+            ok: true,
+            id: rpcRequest.id,
+            traceId: trace,
+            data: cached.data,
+          }
+        : {
+            ok: true,
+            id: rpcRequest.id,
+            traceId: trace,
+            data: cached.data,
+            headers: cached.headers,
+          };
+    }
+  }
+  const result = await procedure.handler(
+    ctx,
+    (inputResult.value ?? {}) as JsonValue
+  );
   if (isAsyncIterable(result)) {
     return rpcFailure(
       rpcRequest.id,
@@ -256,8 +400,8 @@ const executeUnary = async (
     );
   }
   if (result.kind === 'success') {
-    if (procedure.output !== undefined) {
-      const outputResult = validate(procedure.output, result.data, 'output');
+    if (prepared.output !== undefined && runtime.validateOutput) {
+      const outputResult = validate(prepared.output, result.data, 'output');
       if (!outputResult.ok) {
         return rpcFailure(
           rpcRequest.id,
@@ -269,9 +413,12 @@ const executeUnary = async (
         );
       }
     }
-    if (procedure.responseHeaders !== undefined) {
+    if (
+      prepared.responseHeaders !== undefined &&
+      runtime.validateResponseHeaders
+    ) {
       const responseHeaderResult = validate(
-        procedure.responseHeaders,
+        prepared.responseHeaders,
         result.headers,
         'responseHeaders'
       );
@@ -293,6 +440,134 @@ const executeUnary = async (
         headers: responseHeaderResult.value as JsonObject,
       };
     }
+    if (result.headers !== undefined) {
+      if (cacheKey !== undefined && cacheConfig !== undefined) {
+        writeCachedProcedureSuccess(
+          procedureSuccessCache,
+          cacheKey,
+          parseDurationMs(cacheConfig.ttl),
+          result.data,
+          result.headers
+        );
+      }
+      return {
+        ok: true,
+        id: rpcRequest.id,
+        traceId: trace,
+        data: result.data,
+        headers: result.headers,
+      };
+    }
+    if (cacheKey !== undefined && cacheConfig !== undefined) {
+      writeCachedProcedureSuccess(
+        procedureSuccessCache,
+        cacheKey,
+        parseDurationMs(cacheConfig.ttl),
+        result.data
+      );
+    }
+    return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
+  }
+  return {
+    ok: false,
+    id: rpcRequest.id,
+    traceId: trace,
+    error: result.error,
+  };
+};
+
+const executeTrustedUnary = async (
+  prepared: PreparedProcedure,
+  rpcRequest: RpcRequest,
+  request: ContextRequestSource,
+  services: object,
+  _runtime: RuntimeOptions,
+  state: ExecutionState
+): Promise<RpcEnvelope> => {
+  const procedure = prepared.procedure;
+  const trace = traceId(request, rpcRequest.traceId);
+  const headerValue =
+    prepared.headers === undefined
+      ? {}
+      : headersToJsonObject(request, prepared);
+  const ctx = createContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerValue,
+    auth: {},
+  });
+  const authResult = await authenticateOnce(prepared.auth, ctx, state);
+  if (isProcedureFailure(authResult)) {
+    return {
+      ok: false,
+      id: rpcRequest.id,
+      traceId: trace,
+      error: authResult.error,
+    };
+  }
+
+  ctx.auth = authResult;
+  const cacheConfig =
+    procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
+  const cacheKey =
+    cacheConfig === undefined
+      ? undefined
+      : createProcedureCacheKey(
+          rpcRequest.id,
+          cacheConfig.key,
+          rpcRequest.input ?? {},
+          headerValue,
+          authResult
+        );
+  if (cacheKey !== undefined) {
+    const cached = readCachedProcedureSuccess(procedureSuccessCache, cacheKey);
+    if (cached !== undefined) {
+      return cached.headers === undefined
+        ? {
+            ok: true,
+            id: rpcRequest.id,
+            traceId: trace,
+            data: cached.data,
+          }
+        : {
+            ok: true,
+            id: rpcRequest.id,
+            traceId: trace,
+            data: cached.data,
+            headers: cached.headers,
+          };
+    }
+  }
+  const result = await procedure.handler(ctx, rpcRequest.input ?? {});
+  if (!('kind' in result)) {
+    return rpcFailure(
+      rpcRequest.id,
+      trace,
+      'STREAM_REQUIRED',
+      'Use streaming transport',
+      400
+    );
+  }
+  if (result.kind === 'success') {
+    if (cacheKey !== undefined && cacheConfig !== undefined) {
+      writeCachedProcedureSuccess(
+        procedureSuccessCache,
+        cacheKey,
+        parseDurationMs(cacheConfig.ttl),
+        result.data,
+        result.headers
+      );
+    }
+    if (result.headers !== undefined) {
+      return {
+        ok: true,
+        id: rpcRequest.id,
+        traceId: trace,
+        data: result.data,
+        headers: result.headers,
+      };
+    }
     return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
   }
   return {
@@ -304,20 +579,33 @@ const executeUnary = async (
 };
 
 const executeStream = async (
-  procedure: ProcedureRuntime,
+  prepared: PreparedProcedure,
   rpcRequest: RpcRequest,
-  request: Request,
-  services: object
+  request: ContextRequestSource,
+  services: object,
+  runtime: RuntimeOptions,
+  state: ExecutionState
 ): Promise<Response> => {
+  const procedure = prepared.procedure;
   const trace = traceId(request, rpcRequest.traceId);
-  const limited = rateLimitFailure(procedure, rpcRequest, request, trace);
+  const limited = rateLimitFailure(
+    prepared,
+    rpcRequest,
+    request,
+    trace,
+    runtime
+  );
   if (limited !== undefined) return toResponse(limited);
   const headerValue =
-    procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
+    prepared.headers === undefined
+      ? {}
+      : headersToJsonObject(request, prepared);
   const headerResult =
-    procedure.headers === undefined
+    prepared.headers === undefined
       ? ({ ok: true, value: {} } as const)
-      : validate(procedure.headers, headerValue, 'headers');
+      : !runtime.validateHeaders
+        ? ({ ok: true, value: headerValue } as const)
+        : validate(prepared.headers, headerValue, 'headers');
   if (!headerResult.ok) {
     return toResponse(
       rpcFailure(
@@ -330,17 +618,14 @@ const executeStream = async (
       )
     );
   }
-  const baseContext = createContext({
+  const ctx = createContext({
     request,
     traceId: trace,
     services,
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult =
-    procedure.auth === undefined
-      ? {}
-      : await procedure.auth.authenticate(baseContext);
+  const authResult = await authenticateOnce(prepared.auth, ctx, state);
   if (isProcedureFailure(authResult)) {
     return toResponse({
       ok: false,
@@ -349,7 +634,9 @@ const executeStream = async (
       error: authResult.error,
     });
   }
-  const inputResult = validate(procedure.input, rpcRequest.input, 'input');
+  const inputResult = !runtime.validateInput
+    ? ({ ok: true, value: rpcRequest.input } as const)
+    : validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
     return toResponse(
       rpcFailure(
@@ -375,14 +662,11 @@ const executeStream = async (
     );
   }
 
-  const ctx = createContext({
-    request,
-    traceId: trace,
-    services,
-    headers: headerResult.value as object,
-    auth: authResult,
-  });
-  const iterable = procedure.handler(ctx, inputResult.value as JsonValue);
+  ctx.auth = authResult;
+  const iterable = procedure.handler(
+    ctx,
+    (inputResult.value ?? {}) as JsonValue
+  );
   if (!isAsyncIterable(iterable)) {
     return toResponse(
       rpcFailure(
@@ -440,44 +724,136 @@ export const createRpcHandler = (
   manifest: RpcManifest,
   options: HandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
+  const handleParsed = createRpcBodyHandler(manifest, options);
+  return async (request: Request): Promise<Response> => {
+    let body: JsonValue;
+    try {
+      body = await parseRequestBody(
+        request,
+        options.maxBodyBytes ?? defaultMaxBodyBytes
+      );
+    } catch (error) {
+      if (error instanceof Error) options.onError?.(error, request);
+      return toResponse(
+        rpcFailure(
+          '',
+          traceId(requestSourceFromRequest(request)),
+          'PARSE_ERROR',
+          'Invalid JSON body',
+          400
+        ),
+        options
+      );
+    }
+    return handleParsed(request, body);
+  };
+};
+
+export const createRpcBodyHandler = (
+  manifest: RpcManifest,
+  options: HandlerOptions = {}
+): ((request: Request, body: JsonValue) => Promise<Response>) => {
+  const handleResult = createRpcBodyResultHandler(manifest, options);
+  return async (request: Request, body: JsonValue): Promise<Response> => {
+    const result = await handleResult(request, body);
+    return result instanceof Response ? result : toResponse(result, options);
+  };
+};
+
+export const createRpcBodyResultHandler = (
+  manifest: RpcManifest,
+  options: HandlerOptions = {}
+): ((request: Request, body: JsonValue) => Promise<RpcBodyResult>) => {
+  const handleTransport = createRpcTransportBodyResultHandler(
+    manifest,
+    options
+  );
+  return (request: Request, body: JsonValue): Promise<RpcBodyResult> =>
+    handleTransport(requestSourceFromRequest(request), body);
+};
+
+export const createRpcTransportBodyResultHandler = (
+  manifest: RpcManifest,
+  options: HandlerOptions = {}
+): ((
+  request: ContextRequestSource,
+  body: JsonValue
+) => Promise<RpcBodyResult>) => {
+  const procedures = prepareProcedures(manifest);
+  const runtime: RuntimeOptions = {
+    cors: corsHeaders(options),
+    enforceRateLimit: options.enforceRateLimit ?? true,
+    validateHeaders: options.validateHeaders ?? true,
+    validateInput: options.validateInput ?? true,
+    validateOutput: options.validateOutput ?? true,
+    validateResponseHeaders: options.validateResponseHeaders ?? true,
+    rpcPath: options.path ?? '/rpc',
+  };
+  const useTrustedUnary =
+    !runtime.enforceRateLimit &&
+    !runtime.validateHeaders &&
+    !runtime.validateInput &&
+    !runtime.validateOutput &&
+    !runtime.validateResponseHeaders;
   const plugins = options.plugins ?? [];
+  let services: object | undefined;
+  const servicesPromise =
+    plugins.length === 0
+      ? Promise.resolve({})
+      : resolvePluginServices(plugins).then((resolved) => {
+          services = resolved;
+          return resolved;
+        });
+  if (plugins.length === 0) services = {};
   const middleware = options.middleware ?? [];
-  const runBefore = async (request: Request): Promise<Response | undefined> => {
-    const hookResult = await options.hooks?.beforeRequest?.(request);
+  const hasBeforeHooks =
+    options.hooks?.beforeRequest !== undefined ||
+    middleware.some((item) => item.beforeRequest !== undefined);
+  const hasAfterHooks =
+    options.hooks?.afterResponse !== undefined ||
+    middleware.some((item) => item.afterResponse !== undefined);
+  const runBefore = async (
+    request: ContextRequestSource
+  ): Promise<Response | undefined> => {
+    const hookRequest = request.toRequest();
+    const hookResult = await options.hooks?.beforeRequest?.(hookRequest);
     if (hookResult instanceof Response) return hookResult;
     for (const item of middleware) {
-      const result = await item.beforeRequest?.(request);
+      const result = await item.beforeRequest?.(hookRequest);
       if (result instanceof Response) return result;
     }
     return undefined;
   };
   const runAfter = async (
     response: Response,
-    request: Request
-  ): Promise<Response> => {
+    request: ContextRequestSource
+  ): Promise<RpcBodyResult> => {
     let next = response;
+    const hookRequest = request.toRequest();
     for (const item of middleware) {
-      const result = await item.afterResponse?.(next, request);
+      const result = await item.afterResponse?.(next, hookRequest);
       if (result instanceof Response) next = result;
     }
-    const hookResult = await options.hooks?.afterResponse?.(next, request);
+    const hookResult = await options.hooks?.afterResponse?.(next, hookRequest);
     return hookResult instanceof Response ? hookResult : next;
   };
-  const handleRequest = async (request: Request): Promise<Response> => {
+  const handleRequest = async (
+    request: ContextRequestSource,
+    body: JsonValue
+  ): Promise<RpcBodyResult> => {
     if (request.method === 'OPTIONS' && options.cors !== undefined) {
-      return new Response(null, { status: 204, headers: corsHeaders(options) });
+      return new Response(null, { status: 204, headers: runtime.cors });
     }
-    const url = new URL(request.url);
-    if ((options.path ?? '/rpc') !== url.pathname) {
-      return new Response(null, { status: 404, headers: corsHeaders(options) });
+    if (runtime.rpcPath !== pathnameFromUrl(request.url)) {
+      return new Response(null, { status: 404, headers: runtime.cors });
     }
     if (request.method !== 'POST') {
       return new Response(null, {
         status: 405,
-        headers: { allow: 'POST', ...corsHeaders(options) },
+        headers: { allow: 'POST', ...runtime.cors },
       });
     }
-    const contentType = request.headers.get('content-type') ?? '';
+    const contentType = request.getHeader('content-type') ?? '';
     if (!contentType.includes('application/json')) {
       return toResponse(
         rpcFailure(
@@ -491,27 +867,8 @@ export const createRpcHandler = (
       );
     }
 
-    let body: JsonValue;
-    try {
-      body = await parseRequestBody(
-        request,
-        options.maxBodyBytes ?? defaultMaxBodyBytes
-      );
-    } catch (error) {
-      if (error instanceof Error) options.onError?.(error, request);
-      return toResponse(
-        rpcFailure(
-          '',
-          traceId(request),
-          'PARSE_ERROR',
-          'Invalid JSON body',
-          400
-        ),
-        options
-      );
-    }
-
-    const services = await resolvePluginServices(plugins);
+    const requestServices = services ?? (await servicesPromise);
+    const state = createExecutionState();
     if (Array.isArray(body)) {
       const responses: RpcEnvelope[] = [];
       for (const item of body) {
@@ -527,7 +884,7 @@ export const createRpcHandler = (
           );
           continue;
         }
-        const procedure = manifest.procedures[item.id];
+        const procedure = procedures[item.id];
         if (procedure === undefined) {
           responses.push(
             rpcFailure(
@@ -540,49 +897,83 @@ export const createRpcHandler = (
           );
           continue;
         }
-        responses.push(await executeUnary(procedure, item, request, services));
+        responses.push(
+          useTrustedUnary
+            ? await executeTrustedUnary(
+                procedure,
+                item,
+                request,
+                requestServices,
+                runtime,
+                state
+              )
+            : await executeUnary(
+                procedure,
+                item,
+                request,
+                requestServices,
+                runtime,
+                state
+              )
+        );
       }
-      return toResponse(responses, options);
+      return responses;
     }
 
     if (!isRpcRequest(body)) {
-      return toResponse(
-        rpcFailure(
-          '',
-          traceId(request),
-          'BAD_REQUEST',
-          'Invalid RPC request',
-          400
-        ),
-        options
+      return rpcFailure(
+        '',
+        traceId(request),
+        'BAD_REQUEST',
+        'Invalid RPC request',
+        400
       );
     }
 
-    const procedure = manifest.procedures[body.id];
+    const procedure = procedures[body.id];
     if (procedure === undefined) {
-      return toResponse(
-        rpcFailure(
-          body.id,
-          traceId(request, body.traceId),
-          'NOT_FOUND',
-          'Procedure not found',
-          404
-        ),
-        options
+      return rpcFailure(
+        body.id,
+        traceId(request, body.traceId),
+        'NOT_FOUND',
+        'Procedure not found',
+        404
       );
     }
 
-    if (request.headers.get('accept')?.includes('text/event-stream') === true) {
-      return executeStream(procedure, body, request, services);
+    if (request.getHeader('accept')?.includes('text/event-stream') === true) {
+      return executeStream(
+        procedure,
+        body,
+        request,
+        requestServices,
+        runtime,
+        state
+      );
     }
-    return toResponse(
-      await executeUnary(procedure, body, request, services),
-      options
-    );
+    return useTrustedUnary
+      ? executeTrustedUnary(
+          procedure,
+          body,
+          request,
+          requestServices,
+          runtime,
+          state
+        )
+      : executeUnary(procedure, body, request, requestServices, runtime, state);
   };
-  return async (request: Request): Promise<Response> => {
-    const early = await runBefore(request);
-    if (early !== undefined) return runAfter(early, request);
-    return runAfter(await handleRequest(request), request);
+  if (!hasBeforeHooks && !hasAfterHooks) return handleRequest;
+  return async (
+    request: ContextRequestSource,
+    body: JsonValue
+  ): Promise<RpcBodyResult> => {
+    const early = hasBeforeHooks ? await runBefore(request) : undefined;
+    if (early !== undefined) {
+      return hasAfterHooks ? runAfter(early, request) : early;
+    }
+    const result = await handleRequest(request, body);
+    if (!hasAfterHooks) return result;
+    if (result instanceof Response) return runAfter(result, request);
+    return runAfter(toResponse(result, options), request);
   };
 };

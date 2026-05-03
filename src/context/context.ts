@@ -1,9 +1,7 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
-import {
-  failure,
-  ok,
-  type ProcedureFailure,
-  type ProcedureSuccess,
+import type {
+  ProcedureFailure,
+  ProcedureSuccess,
 } from '../procedure/result.js';
 import { errorStatus } from '../procedure/errors.js';
 
@@ -30,16 +28,61 @@ export interface JoorContext<
   ): ProcedureFailure<TCode>;
 }
 
+export interface ContextRequestSource {
+  url: string;
+  method: string;
+  signal: AbortSignal;
+  getHeader(name: string): string | null;
+  toHeaders(): Headers;
+  toRequest(): Request;
+}
+
+export const requestSourceFromRequest = (
+  request: Request
+): ContextRequestSource => ({
+  url: request.url,
+  method: request.method,
+  signal: request.signal,
+  getHeader(name) {
+    return request.headers.get(name);
+  },
+  toHeaders() {
+    return request.headers;
+  },
+  toRequest() {
+    return request;
+  },
+});
+
 export interface CreateContextOptions<
   TServices extends object,
   THeaders extends object,
   TAuth extends object,
 > {
-  request: Request;
+  request: ContextRequestSource;
   traceId: string;
   services: TServices;
   headers: THeaders;
   auth: TAuth;
+}
+
+function contextOk<TData extends JsonValue, THeaders extends object>(
+  data: TData,
+  headers?: THeaders
+): ProcedureSuccess<TData> {
+  return headers === undefined
+    ? { kind: 'success', data }
+    : { kind: 'success', data, headers: headers as JsonObject };
+}
+
+function contextError<TCode extends string, TDetails extends JsonValue>(
+  code: TCode,
+  details: TDetails
+): ProcedureFailure<TCode> {
+  return {
+    kind: 'error',
+    error: { code, details, status: errorStatus(code), message: code },
+  };
 }
 
 export const createContext = <
@@ -50,17 +93,17 @@ export const createContext = <
 >(
   options: CreateContextOptions<TServices, THeaders, TAuth>
 ): JoorContext<TServices, THeaders, TResponseHeaders, TAuth> => ({
-  request: options.request,
+  get request() {
+    return options.request.toRequest();
+  },
   traceId: options.traceId,
   signal: options.request.signal,
   headers: options.headers,
-  rawHeaders: options.request.headers,
+  get rawHeaders() {
+    return options.request.toHeaders();
+  },
   services: options.services,
   auth: options.auth,
-  ok(data, headers) {
-    return ok(data, headers as JsonObject | undefined);
-  },
-  error(code, details) {
-    return failure(code, details, errorStatus(code), code);
-  },
+  ok: contextOk,
+  error: contextError,
 });

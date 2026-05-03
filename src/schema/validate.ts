@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue } from './json.js';
+import type { JsonValue } from './json.js';
 import { isJsonObject } from './json.js';
 import type { InferSchema, Schema, ValidationIssue } from './types.js';
 
@@ -115,29 +115,25 @@ export const validate = <TSchema extends Schema>(
           issues: [issue(path, `Expected at most ${schema.maxItems} items`)],
         };
       }
-      const items: JsonValue[] = [];
       const issues: ValidationIssue[] = [];
       for (let index = 0; index < value.length; index += 1) {
         const item = value[index];
         const result = validateObject(schema.item, item, `${path}[${index}]`);
-        if (result.ok) items.push(result.value as JsonValue);
-        else issues.push(...result.issues);
+        if (!result.ok) issues.push(...result.issues);
       }
       if (issues.length > 0) return { ok: false, issues };
-      return { ok: true, value: items as InferSchema<TSchema> };
+      return { ok: true, value: value as InferSchema<TSchema> };
     }
     case 'object': {
       if (value === undefined || !isJsonObject(value)) {
         return { ok: false, issues: [issue(path, 'Expected object')] };
       }
-      const output: JsonObject = {};
       const issues: ValidationIssue[] = [];
       for (const [key, child] of Object.entries(schema.shape)) {
         const childValue = value[key];
         if (child.kind === 'optional' && childValue === undefined) continue;
         const result = validateObject(child, childValue, childPath(path, key));
-        if (result.ok) output[key] = result.value as JsonValue;
-        else issues.push(...result.issues);
+        if (!result.ok) issues.push(...result.issues);
       }
       if (schema.strictObject) {
         for (const key of Object.keys(value)) {
@@ -146,7 +142,7 @@ export const validate = <TSchema extends Schema>(
         }
       }
       if (issues.length > 0) return { ok: false, issues };
-      return { ok: true, value: output as InferSchema<TSchema> };
+      return { ok: true, value: value as InferSchema<TSchema> };
     }
     case 'optional': {
       if (value === undefined)
@@ -182,7 +178,6 @@ export const validate = <TSchema extends Schema>(
       if (value === undefined || !isJsonObject(value)) {
         return { ok: false, issues: [issue(path, 'Expected record')] };
       }
-      const output: JsonObject = {};
       const issues: ValidationIssue[] = [];
       for (const [key, recordValue] of Object.entries(value)) {
         const result = validateObject(
@@ -190,11 +185,10 @@ export const validate = <TSchema extends Schema>(
           recordValue,
           childPath(path, key)
         );
-        if (result.ok) output[key] = result.value as JsonValue;
-        else issues.push(...result.issues);
+        if (!result.ok) issues.push(...result.issues);
       }
       if (issues.length > 0) return { ok: false, issues };
-      return { ok: true, value: output as InferSchema<TSchema> };
+      return { ok: true, value: value as InferSchema<TSchema> };
     }
     case 'json':
       if (value === undefined)

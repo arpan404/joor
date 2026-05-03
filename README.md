@@ -277,6 +277,43 @@ export default defineProcedure({
 
 `createJoorHandler` also accepts `hooks` and `middleware` with `beforeRequest`/`afterResponse` callbacks. `meta.rateLimit` is enforced by the runtime with an in-memory window.
 
+Query procedures can also opt into in-memory response caching:
+
+```ts
+export default defineProcedure({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string(), name: t.string() }),
+  meta: {
+    kind: 'query',
+    cache: {
+      ttl: '30s',
+      key: ['input.id'],
+    },
+  },
+  async handler(ctx, input) {
+    return ctx.ok(await ctx.services.users.findById(input.id));
+  },
+});
+```
+
+## Performance Knobs
+
+The default runtime validates request headers, input, output, response headers, and rate limits. For trusted internal edges or benchmark runs, these can be disabled independently:
+
+```ts
+createJoorHandler(manifest, {
+  validateHeaders: false,
+  validateInput: false,
+  validateOutput: false,
+  validateResponseHeaders: false,
+  enforceRateLimit: false,
+});
+```
+
+The Node runtime also has a parsed-body fast path so it does not need to read the same body twice.
+
+`joor build` emits an AOT dispatcher that imports each procedure directly and switches on literal procedure ids. That keeps generated apps off the generic manifest lookup path while preserving the same envelopes, validation, auth, streaming, and plugin behavior.
+
 ## Development
 
 ```bash

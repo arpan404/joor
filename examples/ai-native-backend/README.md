@@ -47,3 +47,13 @@ npm run benchmark:frameworks
 ```
 
 This compares the same `users.get` workload over local HTTP loopback across raw Node, Joor, Express, Fastify, Hono, and tRPC. The benchmark is useful for local trend tracking, not as a universal claim about every deployment shape.
+
+The Joor benchmark uses the optimized parsed-body Node path with trusted-edge options:
+
+- `enforceRateLimit: false`
+- `validateHeaders: false`
+- `validateInput: false`
+- `validateOutput: false`
+- `validateResponseHeaders: false`
+
+The default framework runtime still keeps validation enabled.

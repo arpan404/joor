@@ -36,6 +36,10 @@
       "types": "./dist/runtime/bun.d.ts",
       "import": "./dist/runtime/bun.js"
     },
+    "./runtime/compiled": {
+      "types": "./dist/runtime/compiled.d.ts",
+      "import": "./dist/runtime/compiled.js"
+    },
     "./runtime/deno": {
       "types": "./dist/runtime/deno.d.ts",
       "import": "./dist/runtime/deno.js"
@@ -71,6 +75,7 @@
     "test:watch": "vitest",
     "benchmark:example": "tsx examples/ai-native-backend/benchmark.ts",
     "benchmark:frameworks": "tsx examples/ai-native-backend/framework-benchmark.ts",
+    "benchmark:bun": "bun examples/ai-native-backend/bun-framework-benchmark.ts",
     "joor": "tsx src/cli/index.ts",
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run test && npm run build"

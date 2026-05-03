@@ -163,6 +163,10 @@ export interface ProcedureMeta {
   description?: string;
   tags?: string[];
   auth?: string[];
+  cache?: {
+    ttl: string;
+    key?: readonly string[];
+  };
   rateLimit?: {
     limit: number;
     window: string;

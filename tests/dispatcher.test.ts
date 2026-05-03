@@ -212,4 +212,92 @@ describe('dispatcher', () => {
     expect(limitedBody.error.code).toBe('RATE_LIMITED');
     expect(seen).toEqual(['before', 'after', 'before', 'after']);
   });
+
+  it('caches successful query responses when meta.cache is configured', async () => {
+    let calls = 0;
+    const cached = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ value: t.number() }),
+      meta: {
+        kind: 'query',
+        cache: {
+          ttl: '1m',
+          key: ['input.id'],
+        },
+      },
+      async handler(ctx) {
+        calls += 1;
+        return ctx.ok({ value: calls });
+      },
+    });
+    const handler = createJoorHandler({ procedures: { cached } });
+    const request = (): Promise<Response> =>
+      handler(
+        new Request('http://localhost/rpc', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: 'cached', input: { id: 'same' } }),
+        })
+      );
+
+    const first = await (await request()).json();
+    const second = await (await request()).json();
+
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    expect(first.data.value).toBe(1);
+    expect(second.data.value).toBe(1);
+    expect(calls).toBe(1);
+  });
+
+  it('memoizes auth within a batch for shared policies', async () => {
+    let authCalls = 0;
+    const auth = createAuthPolicy({
+      name: 'shared-bearer',
+      authenticate(ctx) {
+        authCalls += 1;
+        if (ctx.rawHeaders.get('authorization') !== 'Bearer shared') {
+          return ctx.error('UNAUTHORIZED', { message: 'Unauthorized' });
+        }
+        return { subject: 'user-1' };
+      },
+    });
+    const first = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ subject: t.string() }),
+      auth,
+      async handler(ctx) {
+        return ctx.ok({ subject: ctx.auth.subject });
+      },
+    });
+    const second = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ subject: t.string() }),
+      auth,
+      async handler(ctx) {
+        return ctx.ok({ subject: ctx.auth.subject });
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { first, second },
+    });
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          authorization: 'Bearer shared',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify([
+          { id: 'first', input: { ok: true } },
+          { id: 'second', input: { ok: true } },
+        ]),
+      })
+    );
+    const body = await response.json();
+
+    expect(body[0].ok).toBe(true);
+    expect(body[1].ok).toBe(true);
+    expect(authCalls).toBe(1);
+  });
 });

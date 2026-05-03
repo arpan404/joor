@@ -14,9 +14,12 @@ import type { Context } from 'hono';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { z } from 'zod';
-import config from './joor.config.js';
-import getUser from './rpc/users/get.rpc.js';
-import { createJoorHandler } from '../../src/runtime/fetch.js';
+import { build } from '../../src/compiler/build.js';
+import {
+  createNodeTransportRequestHandler,
+  type NodeRpcRequestHandler,
+  type NodeTransportBodyResultHandler,
+} from '../../src/runtime/node.js';
 import {
   isJsonObject,
   parseJson,
@@ -69,6 +72,10 @@ const trpcPayload = JSON.stringify({
 });
 
 const authHeader = 'Bearer benchmark-token';
+const outDir = new URL('./.joor', import.meta.url).pathname;
+const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
+const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
+  .href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -150,6 +157,38 @@ const startFetchServer = async (
           Object.fromEntries(response.headers)
         );
         outgoing.end(Buffer.from(await response.arrayBuffer()));
+      } catch {
+        outgoing.writeHead(500);
+        outgoing.end();
+      }
+    });
+    server.on('error', reject);
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        reject(new Error('Unable to allocate server port'));
+        return;
+      }
+      resolvePromise({
+        url: `http://127.0.0.1:${address.port}/rpc`,
+        close: () =>
+          new Promise((closeResolve, closeReject) => {
+            server.close((error) => {
+              if (error === undefined) closeResolve();
+              else closeReject(error);
+            });
+          }),
+      });
+    });
+  });
+
+const startNodeHandler = async (
+  handler: NodeRpcRequestHandler
+): Promise<RunningServer> =>
+  new Promise((resolvePromise, reject) => {
+    const server = createServer(async (incoming, outgoing) => {
+      try {
+        await handler(incoming, outgoing);
       } catch {
         outgoing.writeHead(500);
         outgoing.end();
@@ -296,15 +335,13 @@ const startTrpc = async (): Promise<RunningServer> => {
 };
 
 const startJoor = async (): Promise<RunningServer> => {
-  const handler = createJoorHandler(
-    {
-      procedures: {
-        'users.get': getUser,
-      },
-    },
-    config
+  await build({ config: configPath, outDir });
+  const compiled = (await import(compiledDispatcherUrl)) as {
+    transport: NodeTransportBodyResultHandler;
+  };
+  return startNodeHandler(
+    createNodeTransportRequestHandler(compiled.transport, '127.0.0.1')
   );
-  return startFetchServer(handler);
 };
 
 const createRequestInit = (body: string): RequestInit => ({

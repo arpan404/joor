@@ -3,6 +3,7 @@ import { relative, dirname } from 'node:path';
 import type { JoorConfig } from '../config.js';
 import type { CompilerManifest } from './manifest.js';
 import { createAiDocs } from './ai-docs.js';
+import { emitCompiledProcedureSource } from './codegen.js';
 import { createOpenApiDocument } from './openapi.js';
 
 export interface EmitOptions {
@@ -49,20 +50,78 @@ ${entries}
 };
 
 const emitDispatcher = async (
+  manifest: CompilerManifest,
   outDir: string,
   configPath?: string
 ): Promise<void> => {
+  const dispatcherFile = `${outDir}/dispatcher.ts`;
   const configImport =
     configPath === undefined
       ? ''
-      : `import config from '${toImportPath(`${outDir}/dispatcher.ts`, configPath)}';\n`;
-  const configArg = configPath === undefined ? '' : ', config';
+      : `import config from '${toImportPath(dispatcherFile, configPath)}';\n`;
+  const configValue = configPath === undefined ? '{}' : 'config';
+  const imports = manifest.procedures
+    .map((entry) => {
+      const importPath = toImportPath(dispatcherFile, entry.importPath);
+      return `import ${entry.exportName} from '${importPath}';`;
+    })
+    .join('\n');
+  const executors = manifest.procedures
+    .map((entry) => emitCompiledProcedureSource(entry))
+    .filter(Boolean)
+    .join('\n\n');
+  const cases = manifest.procedures
+    .map((entry) =>
+      entry.procedure.output === undefined
+        ? `    case ${JSON.stringify(entry.id)}:
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, serialize);`
+        : `    case ${JSON.stringify(entry.id)}:
+      return ${entry.exportName}_execute(rpcRequest, request, services, runtime, state, serialize);`
+    )
+    .join('\n');
   await writeFile(
-    `${outDir}/dispatcher.ts`,
-    `import { createJoorHandler } from 'joor';
-${configImport}import { manifest } from './manifest.js';
+    dispatcherFile,
+    `import {
+  compiledNotFound,
+  compiledAuthenticate,
+  compiledCreateContext,
+  compiledHeaderObject,
+  createCompiledRpcHandler,
+  createCompiledRpcTransportBodyResultHandler,
+  compiledRateLimitFailure,
+  compiledReadCache,
+  compiledTraceId,
+  compiledValidationDetails,
+  compiledWriteCache,
+  type CompiledSerializedEnvelope,
+  executeCompiledProcedure,
+  type CompiledDispatch,
+} from 'joor/runtime/compiled';
+import type { JsonValue, RpcError } from 'joor';
+${configImport}${imports}
 
-export const fetch = createJoorHandler(manifest${configArg});
+${executors}
+
+const dispatch: CompiledDispatch = (
+  rpcRequest,
+  request,
+  services,
+  runtime,
+  state,
+  serialize
+) => {
+  switch (rpcRequest.id) {
+${cases}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};
+
+export const transport = createCompiledRpcTransportBodyResultHandler(
+  dispatch,
+  ${configValue}
+);
+export const fetch = createCompiledRpcHandler(dispatch, ${configValue});
 `
   );
 };
@@ -176,7 +235,7 @@ export const emitArtifacts = async (
 ): Promise<void> => {
   await mkdir(options.outDir, { recursive: true });
   await emitManifest(manifest, options.outDir);
-  await emitDispatcher(options.outDir, options.configPath);
+  await emitDispatcher(manifest, options.outDir, options.configPath);
   await emitClient(manifest, options.outDir);
   await emitProcedureHelper(options.outDir, options.configPath);
   await writeJson(
