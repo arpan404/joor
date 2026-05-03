@@ -36,8 +36,10 @@ import {
   readJsonRequestBodyWithLimit,
 } from './body.js';
 import {
+  createJsonHeaderRecord,
   isSerializedJsonEnvelope,
   jsonContentHeaders,
+  jsonOkResponseInit,
   rpcEnvelopeToResponse,
   serializedEnvelopeToResponse,
   type SerializedJsonEnvelope,
@@ -68,15 +70,24 @@ export interface CompiledRuntime {
   rateLimit: RateLimitRuntimeOptions;
 }
 
+export interface CompiledRuntimeState {
+  path: string;
+  runtime: CompiledRuntime;
+  getServices(): object | undefined;
+  resolveServices(): Promise<object>;
+}
+
 export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
+export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
 export type CompiledUnaryDispatch = (
   body: JsonObject,
   request: ContextRequestSource,
   services: object,
   runtime: CompiledRuntime,
-  state: ExecutionState
+  state: ExecutionState,
+  serialize: CompiledSerializationMode
 ) => Promise<CompiledBodyResult | undefined>;
 
 export type CompiledDispatch = (
@@ -85,7 +96,7 @@ export type CompiledDispatch = (
   services: object,
   runtime: CompiledRuntime,
   state: ExecutionState,
-  serialize: boolean
+  serialize: CompiledSerializationMode
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
@@ -184,6 +195,9 @@ export const compiledFailure = failure;
 export const compiledValidationDetails = validationDetails;
 export const compiledCreateContext = createRuntimeContext;
 export const compiledEmptyObject = emptyContextObject;
+export const compiledCreateJsonHeaderRecord = createJsonHeaderRecord;
+export const compiledJsonOkResponseInit = jsonOkResponseInit;
+export const compiledUncachedExecutionState = uncachedExecutionState;
 
 const isProcedureFailure = (
   value: object
@@ -429,7 +443,7 @@ export const executeCompiledProcedure = async (
   services: object,
   runtime: CompiledRuntime,
   state: ExecutionState,
-  _serialize: boolean
+  _serialize: CompiledSerializationMode
 ): Promise<RpcEnvelope | Response> => {
   if (request.getHeader('accept')?.includes('text/event-stream') === true) {
     return streamResponse(
@@ -592,7 +606,9 @@ export const compiledNotFound = (
     404
   );
 
-const createCompiledRuntime = (config: JoorConfig = {}) => {
+export const createCompiledRuntimeState = (
+  config: JoorConfig = {}
+): CompiledRuntimeState => {
   const servicesPromise = resolvePluginServices(config.plugins ?? []);
   let services: object | undefined;
   if (config.plugins === undefined || config.plugins.length === 0) {
@@ -638,12 +654,14 @@ export const createCompiledRpcTransportBodyResultHandler = (
   dispatch: CompiledDispatch,
   config: JoorConfig = {},
   unaryDispatch?: CompiledUnaryDispatch,
-  preflight = true
+  preflight = true,
+  serializationMode: CompiledSerializationMode = true,
+  runtimeState?: CompiledRuntimeState
 ): ((
   request: ContextRequestSource,
   body: JsonValue
 ) => Promise<CompiledBodyResult>) => {
-  const compiled = createCompiledRuntime(config);
+  const compiled = runtimeState ?? createCompiledRuntimeState(config);
   return async (
     request: ContextRequestSource,
     body: JsonValue
@@ -660,7 +678,8 @@ export const createCompiledRpcTransportBodyResultHandler = (
         request,
         resolved,
         compiled.runtime,
-        uncachedExecutionState
+        uncachedExecutionState,
+        serializationMode
       );
       if (unary !== undefined) return unary;
     }
@@ -713,7 +732,7 @@ export const createCompiledRpcTransportBodyResultHandler = (
       resolved,
       compiled.runtime,
       uncachedExecutionState,
-      true
+      serializationMode
     );
   };
 };
@@ -744,7 +763,8 @@ export const createCompiledRpcHandler = (
     dispatch,
     config,
     unaryDispatch,
-    false
+    false,
+    'response'
   );
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);

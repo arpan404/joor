@@ -37,6 +37,30 @@ describe('compiler', () => {
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
       ).resolves.toContain('createCompiledRpcTransportBodyResultHandler');
       await expect(
+        readFile(join(outDir, 'fetch.ts'), 'utf8')
+      ).resolves.toContain("from './dispatcher.js'");
+      await expect(
+        readFile(join(outDir, 'node.ts'), 'utf8')
+      ).resolves.toContain('readIncomingBody');
+      await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
+        'readJsonBody'
+      );
+      await expect(
+        readFile(join(outDir, 'deno.ts'), 'utf8')
+      ).resolves.toContain("from './dispatcher.ts'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('export const nativeTransport =');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('export const nativeResponseTransport =');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('export const nativeRuntime =');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('export const nativeUnaryDispatch =');
+      await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
       ).resolves.toContain('const unaryDispatch: CompiledUnaryDispatch');
       await expect(
@@ -92,6 +116,9 @@ describe('compiler', () => {
       expect(safeDispatcher).toContain('_validate_input');
       expect(safeDispatcher).toContain('_validate_headers');
       expect(safeDispatcher).toContain('_validate_output');
+      expect(safeDispatcher).toContain('_response_success');
+      expect(safeDispatcher).toContain("serialize === 'response'");
+      expect(safeDispatcher).toContain('STREAM_REQUIRED');
 
       const trustedOutDir = await mkdtemp(join(tmpdir(), 'joor-'));
       try {
@@ -113,6 +140,9 @@ describe('compiler', () => {
         expect(trustedDispatcher).not.toContain('_validate_headers');
         expect(trustedDispatcher).not.toContain('_validate_output');
         expect(trustedDispatcher).not.toContain('compiledValidationDetails');
+        expect(trustedDispatcher).toContain('result as JsonValue');
+        expect(trustedDispatcher).toContain('_response_success');
+        expect(trustedDispatcher).toContain("serialize === 'response'");
       } finally {
         await rm(trustedOutDir, { recursive: true, force: true });
       }

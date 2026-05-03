@@ -4,6 +4,7 @@ import type { JsonObject } from '../schema/json.js';
 export interface SerializedJsonEnvelope {
   body: string;
   headers?: JsonObject;
+  responseHeaders?: Record<string, string>;
 }
 
 export type TransportBodyResult =
@@ -50,7 +51,7 @@ const isSafeResponseHeader = (name: string, value: string): boolean => {
 export const isSerializedJsonEnvelope = (
   result: TransportBodyResult
 ): result is SerializedJsonEnvelope =>
-  !Array.isArray(result) && 'body' in result && typeof result.body === 'string';
+  'body' in result && typeof result.body === 'string';
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
@@ -119,12 +120,17 @@ export const createJsonHeaderRecord = (
 export const serializedEnvelopeToResponse = (
   result: SerializedJsonEnvelope
 ): Response =>
-  result.headers === undefined
-    ? new Response(result.body, jsonOkResponseInit)
-    : new Response(result.body, {
+  result.responseHeaders !== undefined
+    ? new Response(result.body, {
         status: 200,
-        headers: createJsonHeaderRecord(result.headers),
-      });
+        headers: result.responseHeaders,
+      })
+    : result.headers === undefined
+      ? new Response(result.body, jsonOkResponseInit)
+      : new Response(result.body, {
+          status: 200,
+          headers: createJsonHeaderRecord(result.headers),
+        });
 
 export const rpcEnvelopeToResponse = (
   result: RpcEnvelope | RpcEnvelope[],

@@ -1,10 +1,6 @@
 import { Hono } from 'hono';
 import type { Context } from 'hono';
 import {
-  createDenoTransportRequestHandler,
-  type DenoTransportBodyResultHandler,
-} from 'joor/runtime/deno';
-import {
   benchmarkSample,
   printBenchmarkPlan,
   printBenchmarkSummary,
@@ -74,12 +70,9 @@ const payload = JSON.stringify({
 });
 
 const authHeader = 'Bearer benchmark-token';
-const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
-  .href;
-const trustedDispatcherUrl = new URL(
-  './.joor-trusted/dispatcher.ts',
-  import.meta.url
-).href;
+const compiledFetchUrl = new URL('./.joor/dispatcher.ts', import.meta.url).href;
+const compiledDenoUrl = new URL('./.joor/deno.ts', import.meta.url).href;
+const trustedDenoUrl = new URL('./.joor-trusted/deno.ts', import.meta.url).href;
 
 const isJsonObject = (value: JsonValue): value is JsonObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -155,24 +148,18 @@ const startRawDeno = (): RunningServer =>
     return jsonResponse(createRpcResponse(body));
   });
 
-const startJoorFetch = async (
-  dispatcherUrl: string
-): Promise<RunningServer> => {
-  const compiled = (await import(dispatcherUrl)) as {
+const startJoorFetch = async (fetchUrl: string): Promise<RunningServer> => {
+  const compiled = (await import(fetchUrl)) as {
     fetch(request: Request): Promise<Response>;
   };
   return serve(compiled.fetch);
 };
 
-const startJoorTransport = async (
-  dispatcherUrl: string
-): Promise<RunningServer> => {
-  const compiled = (await import(dispatcherUrl)) as {
-    transport: DenoTransportBodyResultHandler;
+const startJoorDeno = async (denoUrl: string): Promise<RunningServer> => {
+  const compiled = (await import(denoUrl)) as {
+    fetch(request: Request): Promise<Response>;
   };
-  return serve(
-    createDenoTransportRequestHandler(compiled.transport, undefined, false)
-  );
+  return serve(compiled.fetch);
 };
 
 const startHono = (): RunningServer => {
@@ -271,17 +258,17 @@ try {
     {
       name: 'joor deno fetch safe',
       body: payload,
-      start: async () => await startJoorFetch(compiledDispatcherUrl),
+      start: async () => await startJoorFetch(compiledFetchUrl),
     },
     {
-      name: 'joor deno transport safe',
+      name: 'joor deno native safe',
       body: payload,
-      start: async () => await startJoorTransport(compiledDispatcherUrl),
+      start: async () => await startJoorDeno(compiledDenoUrl),
     },
     {
-      name: 'joor deno transport trusted',
+      name: 'joor deno native trusted',
       body: payload,
-      start: async () => await startJoorTransport(trustedDispatcherUrl),
+      start: async () => await startJoorDeno(trustedDenoUrl),
     },
     { name: 'hono deno', body: payload, start: startHono },
   ];

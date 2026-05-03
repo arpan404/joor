@@ -20,18 +20,15 @@ export const createExecutionState = (cacheAuth = false): ExecutionState => ({
   cacheAuth,
 });
 
-const runAuthPolicy = (
-  policy: AuthPolicy<object, object, object>,
+const asAuthContext = (
   ctx: JoorContext<object, object, object, object>
-): AuthResultLike =>
-  policy.authenticate(
-    ctx as JoorContext<
-      object,
-      object,
-      Record<string, never>,
-      Record<string, never>
-    >
-  );
+): JoorContext<object, object, Record<string, never>, Record<string, never>> =>
+  ctx as JoorContext<
+    object,
+    object,
+    Record<string, never>,
+    Record<string, never>
+  >;
 
 export const authenticateOnce = (
   policy: AuthPolicy<object, object, object> | undefined,
@@ -40,13 +37,13 @@ export const authenticateOnce = (
 ): AuthResultLike => {
   if (policy === undefined) return emptyAuthResult;
   if (!state.cacheAuth) {
-    return runAuthPolicy(policy, ctx);
+    return policy.authenticate(asAuthContext(ctx));
   }
   state.authCache ??= new Map();
   const cached = state.authCache.get(policy);
   if (cached instanceof Promise) return cached;
   if (cached !== undefined) return cached;
-  const pending = Promise.resolve(runAuthPolicy(policy, ctx));
+  const pending = Promise.resolve(policy.authenticate(asAuthContext(ctx)));
   state.authCache.set(policy, pending);
   return pending.then((resolved) => {
     state.authCache?.set(policy, resolved);

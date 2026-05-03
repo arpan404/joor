@@ -21,12 +21,9 @@ const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
 const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
   .pathname;
-const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
+const compiledFetchUrl = new URL('./.joor/fetch.ts', import.meta.url).href;
+const trustedFetchUrl = new URL('./.joor-trusted/fetch.ts', import.meta.url)
   .href;
-const trustedDispatcherUrl = new URL(
-  './.joor-trusted/dispatcher.ts',
-  import.meta.url
-).href;
 const manifest = {
   procedures: {
     'ai.chat': chat,
@@ -100,11 +97,11 @@ await build({ config: configPath, outDir });
 await build({ config: trustedConfigPath, outDir: trustedOutDir });
 
 const genericHandler = createJoorHandler(manifest, config);
-const compiled = (await import(compiledDispatcherUrl)) as {
+const compiled = (await import(compiledFetchUrl)) as {
   fetch(request: Request): Promise<Response>;
 };
 const compiledHandler = compiled.fetch;
-const trustedCompiled = (await import(trustedDispatcherUrl)) as {
+const trustedCompiled = (await import(trustedFetchUrl)) as {
   fetch(request: Request): Promise<Response>;
 };
 const trustedCompiledHandler = trustedCompiled.fetch;

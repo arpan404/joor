@@ -15,11 +15,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { z } from 'zod';
 import { build } from '../../src/compiler/build.js';
-import {
-  createNodeTransportRequestHandler,
-  type NodeRpcRequestHandler,
-  type NodeTransportBodyResultHandler,
-} from '../../src/runtime/node.js';
+import type { NodeRpcRequestHandler } from '../../src/runtime/node.js';
 import {
   isJsonObject,
   parseJson,
@@ -77,12 +73,8 @@ const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
 const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
   .pathname;
-const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
-  .href;
-const trustedDispatcherUrl = new URL(
-  './.joor-trusted/dispatcher.ts',
-  import.meta.url
-).href;
+const compiledNodeUrl = new URL('./.joor/node.ts', import.meta.url).href;
+const trustedNodeUrl = new URL('./.joor-trusted/node.ts', import.meta.url).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -344,20 +336,13 @@ const startTrpc = async (): Promise<RunningServer> => {
 const startJoor = async (
   buildConfigPath: string,
   buildOutDir: string,
-  dispatcherUrl: string
+  nodeUrl: string
 ): Promise<RunningServer> => {
   await build({ config: buildConfigPath, outDir: buildOutDir });
-  const compiled = (await import(dispatcherUrl)) as {
-    transport: NodeTransportBodyResultHandler;
+  const compiled = (await import(nodeUrl)) as {
+    handler: NodeRpcRequestHandler;
   };
-  return startNodeHandler(
-    createNodeTransportRequestHandler(
-      compiled.transport,
-      '127.0.0.1',
-      undefined,
-      false
-    )
-  );
+  return startNodeHandler(compiled.handler);
 };
 
 const createRequestInit = (body: string): RequestInit => ({
@@ -426,14 +411,13 @@ try {
     {
       name: 'joor safe',
       body: payload,
-      start: async () =>
-        await startJoor(configPath, outDir, compiledDispatcherUrl),
+      start: async () => await startJoor(configPath, outDir, compiledNodeUrl),
     },
     {
       name: 'joor trusted',
       body: payload,
       start: async () =>
-        await startJoor(trustedConfigPath, trustedOutDir, trustedDispatcherUrl),
+        await startJoor(trustedConfigPath, trustedOutDir, trustedNodeUrl),
     },
     { name: 'express', body: payload, start: startExpress },
     { name: 'fastify', body: payload, start: startFastify },

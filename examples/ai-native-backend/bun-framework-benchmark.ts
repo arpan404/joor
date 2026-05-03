@@ -3,10 +3,6 @@ import { Hono } from 'hono';
 import type { Context } from 'hono';
 import { build } from '../../src/compiler/build.js';
 import {
-  createBunTransportRequestHandler,
-  type BunTransportBodyResultHandler,
-} from '../../src/runtime/bun.js';
-import {
   isJsonObject,
   parseJson,
   type JsonObject,
@@ -77,12 +73,8 @@ const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
 const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
   .pathname;
-const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
-  .href;
-const trustedDispatcherUrl = new URL(
-  './.joor-trusted/dispatcher.ts',
-  import.meta.url
-).href;
+const compiledBunUrl = new URL('./.joor/bun.ts', import.meta.url).href;
+const trustedBunUrl = new URL('./.joor-trusted/bun.ts', import.meta.url).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -156,15 +148,13 @@ const startRawBun = (): RunningServer =>
 const startJoor = async (
   buildConfigPath: string,
   buildOutDir: string,
-  dispatcherUrl: string
+  bunUrl: string
 ): Promise<RunningServer> => {
   await build({ config: buildConfigPath, outDir: buildOutDir });
-  const compiled = (await import(dispatcherUrl)) as {
-    transport: BunTransportBodyResultHandler;
+  const compiled = (await import(bunUrl)) as {
+    fetch(request: Request): Promise<Response>;
   };
-  return serve(
-    createBunTransportRequestHandler(compiled.transport, undefined, false)
-  );
+  return serve(compiled.fetch);
 };
 
 const startHono = (): RunningServer => {
@@ -291,14 +281,13 @@ try {
     {
       name: 'joor bun safe',
       body: payload,
-      start: async () =>
-        await startJoor(configPath, outDir, compiledDispatcherUrl),
+      start: async () => await startJoor(configPath, outDir, compiledBunUrl),
     },
     {
       name: 'joor bun trusted',
       body: payload,
       start: async () =>
-        await startJoor(trustedConfigPath, trustedOutDir, trustedDispatcherUrl),
+        await startJoor(trustedConfigPath, trustedOutDir, trustedBunUrl),
     },
     { name: 'hono bun', body: payload, start: startHono },
   ];
