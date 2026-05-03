@@ -76,6 +76,10 @@ const payload = JSON.stringify({
 const authHeader = 'Bearer benchmark-token';
 const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
   .href;
+const trustedDispatcherUrl = new URL(
+  './.joor-trusted/dispatcher.ts',
+  import.meta.url
+).href;
 
 const isJsonObject = (value: JsonValue): value is JsonObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -151,15 +155,19 @@ const startRawDeno = (): RunningServer =>
     return jsonResponse(createRpcResponse(body));
   });
 
-const startJoorFetch = async (): Promise<RunningServer> => {
-  const compiled = (await import(compiledDispatcherUrl)) as {
+const startJoorFetch = async (
+  dispatcherUrl: string
+): Promise<RunningServer> => {
+  const compiled = (await import(dispatcherUrl)) as {
     fetch(request: Request): Promise<Response>;
   };
   return serve(compiled.fetch);
 };
 
-const startJoorTransport = async (): Promise<RunningServer> => {
-  const compiled = (await import(compiledDispatcherUrl)) as {
+const startJoorTransport = async (
+  dispatcherUrl: string
+): Promise<RunningServer> => {
+  const compiled = (await import(dispatcherUrl)) as {
     transport: DenoTransportBodyResultHandler;
   };
   return serve(createDenoTransportRequestHandler(compiled.transport));
@@ -271,11 +279,20 @@ try {
     start(): RunningServer | Promise<RunningServer>;
   }> = [
     { name: 'raw deno', body: payload, start: startRawDeno },
-    { name: 'joor deno fetch', body: payload, start: startJoorFetch },
     {
-      name: 'joor deno transport',
+      name: 'joor deno fetch safe',
       body: payload,
-      start: startJoorTransport,
+      start: async () => await startJoorFetch(compiledDispatcherUrl),
+    },
+    {
+      name: 'joor deno transport safe',
+      body: payload,
+      start: async () => await startJoorTransport(compiledDispatcherUrl),
+    },
+    {
+      name: 'joor deno transport trusted',
+      body: payload,
+      start: async () => await startJoorTransport(trustedDispatcherUrl),
     },
     { name: 'hono deno', body: payload, start: startHono },
   ];

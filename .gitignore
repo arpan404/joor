@@ -8,6 +8,8 @@ release/
 old/  
 .joor/
 **/.joor/
+.joor-trusted/
+**/.joor-trusted/
 
 # Ignore system files  
 .DS_Store  

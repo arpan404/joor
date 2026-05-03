@@ -6,11 +6,13 @@ import {
   readCachedProcedureSuccess,
   type CachedProcedureSuccess,
   type ExecutionState,
+  uncachedExecutionState,
   writeCachedProcedureSuccess,
 } from './optimization.js';
 import {
-  createContext,
-  requestSourceFromRequest,
+  createFetchRequestSource,
+  createRuntimeContext,
+  emptyContextObject,
   type JoorContext,
   type ContextRequestSource,
 } from '../context/context.js';
@@ -19,6 +21,12 @@ import type { JoorConfig } from '../config.js';
 import type { ProcedureRuntime } from '../procedure/types.js';
 import type { RpcBodyResult } from '../rpc/dispatcher.js';
 import { readJsonRequestBody } from './body.js';
+import {
+  isSerializedJsonEnvelope,
+  rpcEnvelopeToResponse,
+  serializedEnvelopeToResponse,
+  type SerializedJsonEnvelope,
+} from './response.js';
 import {
   isJsonObject,
   parseJson,
@@ -41,10 +49,7 @@ export interface CompiledRuntime {
   enforceRateLimit: boolean;
 }
 
-export interface CompiledSerializedEnvelope {
-  body: string;
-  headers?: JsonObject;
-}
+export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
 export type CompiledUnaryDispatch = (
@@ -64,8 +69,6 @@ export type CompiledDispatch = (
   serialize: boolean
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
-const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
-const jsonResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
 const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 const compiledProcedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
@@ -110,35 +113,6 @@ const failure = (
         error: { code, message, status, details },
       };
 
-const toResponse = (payload: RpcEnvelope | RpcEnvelope[]): Response => {
-  if (Array.isArray(payload) || !payload.ok || payload.headers === undefined) {
-    return new Response(JSON.stringify(payload), jsonResponseInit);
-  }
-  const headers = new Headers(jsonHeaders);
-  for (const [key, value] of Object.entries(payload.headers)) {
-    if (typeof value === 'string') headers.set(key, value);
-  }
-  return new Response(JSON.stringify(payload), { status: 200, headers });
-};
-
-const isSerializedEnvelope = (
-  value: CompiledBodyResult
-): value is CompiledSerializedEnvelope =>
-  !Array.isArray(value) && 'body' in value && typeof value.body === 'string';
-
-const serializedToResponse = (
-  payload: CompiledSerializedEnvelope
-): Response => {
-  if (payload.headers === undefined) {
-    return new Response(payload.body, jsonResponseInit);
-  }
-  const headers = new Headers(jsonHeaders);
-  for (const [key, value] of Object.entries(payload.headers)) {
-    if (typeof value === 'string') headers.set(key, value);
-  }
-  return new Response(payload.body, { status: 200, headers });
-};
-
 const headerObject = (
   request: ContextRequestSource,
   procedure: ProcedureRuntime
@@ -156,7 +130,8 @@ export const compiledTraceId = traceId;
 export const compiledHeaderObject = headerObject;
 export const compiledFailure = failure;
 export const compiledValidationDetails = validationDetails;
-export const compiledCreateContext = createContext;
+export const compiledCreateContext = createRuntimeContext;
+export const compiledEmptyObject = emptyContextObject;
 
 const isProcedureFailure = (
   value: object
@@ -215,7 +190,39 @@ const rateLimitFailure = (
   return undefined;
 };
 
-export const compiledRateLimitFailure = rateLimitFailure;
+export const compiledRateLimitFailureStatic = (
+  id: string,
+  limit: number,
+  window: string,
+  windowMs: number,
+  rpcRequest: RpcRequest,
+  request: ContextRequestSource,
+  trace: string
+): RpcEnvelope | undefined => {
+  const identity =
+    request.getHeader('x-forwarded-for') ??
+    request.getHeader('cf-connecting-ip') ??
+    'anonymous';
+  const key = `${id}:${identity}`;
+  const now = Date.now();
+  const existing = rateLimitWindows.get(key);
+  if (existing === undefined || existing.resetAt <= now) {
+    rateLimitWindows.set(key, { count: 1, resetAt: now + windowMs });
+    return undefined;
+  }
+  if (existing.count >= limit) {
+    return failure(
+      rpcRequest.id,
+      trace,
+      'RATE_LIMITED',
+      'Rate limit exceeded',
+      429,
+      { limit, window }
+    );
+  }
+  existing.count += 1;
+  return undefined;
+};
 
 export const compiledReadCache = (
   id: string,
@@ -272,22 +279,22 @@ const streamResponse = async (
     trace,
     runtime
   );
-  if (limited !== undefined) return toResponse(limited);
+  if (limited !== undefined) return rpcEnvelopeToResponse(limited);
   const headers = headerObject(request, procedure);
-  const ctx = createContext({
+  const ctx = createRuntimeContext(
     request,
-    traceId: trace,
+    trace,
     services,
     headers,
-    auth: {},
-  });
+    emptyContextObject
+  );
   const authResultValue = authenticateOnce(procedure.auth, ctx, state);
   const authResult =
     authResultValue instanceof Promise
       ? await authResultValue
       : authResultValue;
   if (isProcedureFailure(authResult)) {
-    return toResponse({
+    return rpcEnvelopeToResponse({
       ok: false,
       id: rpcRequest.id,
       traceId: trace,
@@ -298,7 +305,7 @@ const streamResponse = async (
     ? ({ ok: true, value: rpcRequest.input } as const)
     : validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
-    return toResponse(
+    return rpcEnvelopeToResponse(
       failure(
         rpcRequest.id,
         trace,
@@ -312,7 +319,7 @@ const streamResponse = async (
   ctx.auth = authResult;
   const schema = procedure.stream;
   if (schema === undefined) {
-    return toResponse(
+    return rpcEnvelopeToResponse(
       failure(
         rpcRequest.id,
         trace,
@@ -327,7 +334,7 @@ const streamResponse = async (
     (inputResult.value ?? {}) as JsonValue
   );
   if (!(Symbol.asyncIterator in Object(iterable))) {
-    return toResponse(
+    return rpcEnvelopeToResponse(
       failure(
         rpcRequest.id,
         trace,
@@ -415,13 +422,13 @@ export const executeCompiledProcedure = async (
       validationDetails(headerResult.issues)
     );
   }
-  const ctx = createContext({
+  const ctx = createRuntimeContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerResult.value as object,
-    auth: {},
-  });
+    headerResult.value as object,
+    emptyContextObject
+  );
   const authResultValue = authenticateOnce(procedure.auth, ctx, state);
   const authResult =
     authResultValue instanceof Promise
@@ -597,13 +604,12 @@ export const createCompiledRpcTransportBodyResultHandler = (
       unaryDispatch !== undefined &&
       isJsonObject(body)
     ) {
-      const state = createExecutionState(false);
       const unary = await unaryDispatch(
         body,
         request,
         resolved,
         compiled.runtime,
-        state
+        uncachedExecutionState
       );
       if (unary !== undefined) return unary;
     }
@@ -634,7 +640,7 @@ export const createCompiledRpcTransportBodyResultHandler = (
         responses.push(
           result instanceof Response
             ? ((await result.json()) as RpcEnvelope)
-            : isSerializedEnvelope(result)
+            : isSerializedJsonEnvelope(result)
               ? (parseJson(result.body) as RpcEnvelope)
               : result
         );
@@ -650,8 +656,14 @@ export const createCompiledRpcTransportBodyResultHandler = (
         400
       );
     }
-    const state = createExecutionState(false);
-    return dispatch(body, request, resolved, compiled.runtime, state, true);
+    return dispatch(
+      body,
+      request,
+      resolved,
+      compiled.runtime,
+      uncachedExecutionState,
+      true
+    );
   };
 };
 
@@ -666,7 +678,7 @@ export const createCompiledRpcBodyResultHandler = (
     unaryDispatch
   );
   return (request: Request, body: JsonValue): Promise<CompiledBodyResult> =>
-    handleTransport(requestSourceFromRequest(request), body);
+    handleTransport(createFetchRequestSource(request), body);
 };
 
 export const createCompiledRpcHandler = (
@@ -680,19 +692,19 @@ export const createCompiledRpcHandler = (
     unaryDispatch
   );
   return async (request: Request): Promise<Response> => {
-    const source = requestSourceFromRequest(request);
+    const source = createFetchRequestSource(request);
     let body: JsonValue;
     try {
       body = await readJsonRequestBody(request);
     } catch {
-      return toResponse(
+      return rpcEnvelopeToResponse(
         failure('', traceId(source), 'PARSE_ERROR', 'Invalid JSON body', 400)
       );
     }
     const result = await handleTransport(source, body);
     if (result instanceof Response) return result;
-    return isSerializedEnvelope(result)
-      ? serializedToResponse(result)
-      : toResponse(result);
+    return isSerializedJsonEnvelope(result)
+      ? serializedEnvelopeToResponse(result)
+      : rpcEnvelopeToResponse(result);
   };
 };

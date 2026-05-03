@@ -9,6 +9,8 @@
       "!node_modules",
       "!.joor",
       "!**/.joor",
+      "!.joor-trusted",
+      "!**/.joor-trusted",
       "!.cache",
       "!.turbo",
       "!.vercel",

@@ -30,6 +30,7 @@ interface RunningServer {
 
 interface BunServer {
   url: URL;
+  fetch(request: Request): Response | Promise<Response>;
   stop(closeActiveConnections?: boolean): void;
 }
 
@@ -72,9 +73,16 @@ const payload = JSON.stringify({
 
 const authHeader = 'Bearer benchmark-token';
 const outDir = new URL('./.joor', import.meta.url).pathname;
+const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
+const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
+  .pathname;
 const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
   .href;
+const trustedDispatcherUrl = new URL(
+  './.joor-trusted/dispatcher.ts',
+  import.meta.url
+).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -145,9 +153,13 @@ const startRawBun = (): RunningServer =>
     return jsonResponse(createRpcResponse(body));
   });
 
-const startJoor = async (): Promise<RunningServer> => {
-  await build({ config: configPath, outDir });
-  const compiled = (await import(compiledDispatcherUrl)) as {
+const startJoor = async (
+  buildConfigPath: string,
+  buildOutDir: string,
+  dispatcherUrl: string
+): Promise<RunningServer> => {
+  await build({ config: buildConfigPath, outDir: buildOutDir });
+  const compiled = (await import(dispatcherUrl)) as {
     transport: BunTransportBodyResultHandler;
   };
   return serve(createBunTransportRequestHandler(compiled.transport));
@@ -167,7 +179,18 @@ const startHono = (): RunningServer => {
   return serve((request) => app.fetch(request));
 };
 
-const createRequestInit = (body: string): RequestInit => ({
+const createRequest = (body: string): Request =>
+  new Request('http://localhost/rpc', {
+    method: 'POST',
+    headers: {
+      authorization: authHeader,
+      'content-type': 'application/json',
+      'x-forwarded-for': `benchmark-${crypto.randomUUID()}`,
+    },
+    body,
+  });
+
+const createNetworkRequestInit = (body: string): RequestInit => ({
   method: 'POST',
   headers: {
     authorization: authHeader,
@@ -179,7 +202,7 @@ const createRequestInit = (body: string): RequestInit => ({
 
 const runBenchmark = async (
   name: string,
-  url: string,
+  server: BunServer,
   body: string,
   requests: number,
   concurrency: number
@@ -193,7 +216,7 @@ const runBenchmark = async (
       next += 1;
       if (index >= requests) return;
       const requestStarted = performance.now();
-      const response = await fetch(url, createRequestInit(body));
+      const response = await server.fetch(createRequest(body));
       const text = await response.text();
       if (!response.ok) {
         throw new Error(`${name} returned HTTP ${response.status}: ${text}`);
@@ -219,6 +242,18 @@ const runBenchmark = async (
   };
 };
 
+const runNetworkSmoke = async (
+  name: string,
+  url: string,
+  body: string
+): Promise<void> => {
+  const response = await fetch(url, createNetworkRequestInit(body));
+  const text = await response.text();
+  if (!response.ok) {
+    throw new Error(`${name} returned HTTP ${response.status}: ${text}`);
+  }
+};
+
 const printResults = (results: readonly BenchmarkResult[]): void => {
   console.info(
     '| framework | requests | concurrency | duration ms | req/s | avg latency ms |'
@@ -231,13 +266,17 @@ const printResults = (results: readonly BenchmarkResult[]): void => {
   }
 };
 
-const waitForServer = async (url: string, body: string): Promise<void> => {
+const waitForServer = async (
+  name: string,
+  url: string,
+  body: string
+): Promise<void> => {
   await new Promise<void>((resolve) => {
     setTimeout(resolve, 500);
   });
   for (let attempt = 0; attempt < 80; attempt += 1) {
     try {
-      await fetch(url, createRequestInit(body));
+      await runNetworkSmoke(name, url, body);
       return;
     } catch {
       await new Promise<void>((resolve) => {
@@ -245,6 +284,7 @@ const waitForServer = async (url: string, body: string): Promise<void> => {
       });
     }
   }
+  throw new Error(`${name} did not accept connections at ${url}`);
 };
 
 const requests = 5_000;
@@ -259,19 +299,36 @@ try {
     start(): RunningServer | Promise<RunningServer>;
   }> = [
     { name: 'raw bun', body: payload, start: startRawBun },
-    { name: 'joor bun', body: payload, start: startJoor },
+    {
+      name: 'joor bun safe',
+      body: payload,
+      start: async () =>
+        await startJoor(configPath, outDir, compiledDispatcherUrl),
+    },
+    {
+      name: 'joor bun trusted',
+      body: payload,
+      start: async () =>
+        await startJoor(trustedConfigPath, trustedOutDir, trustedDispatcherUrl),
+    },
     { name: 'hono bun', body: payload, start: startHono },
   ];
 
   for (const entry of entries) {
     const server = await entry.start();
     servers.push(server);
-    await waitForServer(server.url, entry.body);
-    await runBenchmark(`${entry.name} warmup`, server.url, entry.body, 250, 25);
+    await waitForServer(entry.name, server.url, entry.body);
+    await runBenchmark(
+      `${entry.name} warmup`,
+      server.server,
+      entry.body,
+      250,
+      25
+    );
     results.push(
       await runBenchmark(
         entry.name,
-        server.url,
+        server.server,
         entry.body,
         requests,
         concurrency

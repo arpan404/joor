@@ -7,8 +7,13 @@ import type {
   RpcManifest,
 } from '../rpc/dispatcher.js';
 import { createRpcTransportBodyResultHandler } from '../rpc/dispatcher.js';
-import { parseJson, type JsonObject, type JsonValue } from '../schema/json.js';
-import type { CompiledSerializedEnvelope } from './compiled.js';
+import { parseJson, type JsonValue } from '../schema/json.js';
+import {
+  appendJsonStringHeaders,
+  createJsonHeaderRecord,
+  isSerializedJsonEnvelope,
+  type SerializedJsonEnvelope,
+} from './response.js';
 
 const defaultMaxBodyBytes = 1024 * 1024;
 
@@ -22,9 +27,7 @@ export type NodeRpcRequestHandler = (
   outgoing: ServerResponse<IncomingMessage>
 ) => Promise<void>;
 
-export type NodeTransportBodyResult =
-  | RpcBodyResult
-  | CompiledSerializedEnvelope;
+export type NodeTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type NodeTransportBodyResultHandler = (
   request: ContextRequestSource,
   body: JsonValue
@@ -53,58 +56,48 @@ const headersFromIncoming = (incoming: IncomingMessage): Headers => {
   return headers;
 };
 
+class IncomingRequestSource implements ContextRequestSource {
+  readonly method: string;
+  readonly url: string;
+  readonly signal = neverAbortedSignal;
+  private headers?: Headers;
+  private request?: Request;
+
+  constructor(
+    private readonly incoming: IncomingMessage,
+    hostname: string
+  ) {
+    this.method = incoming.method ?? 'GET';
+    this.url = `http://${incoming.headers.host ?? hostname}${incoming.url ?? '/rpc'}`;
+  }
+
+  getHeader(name: string): string | null {
+    return getIncomingHeader(this.incoming, name);
+  }
+
+  toHeaders(): Headers {
+    this.headers ??= headersFromIncoming(this.incoming);
+    return this.headers;
+  }
+
+  toRequest(): Request {
+    const headers = this.toHeaders();
+    this.request ??= new Request(this.url, { headers, method: this.method });
+    return this.request;
+  }
+}
+
 const requestSourceFromIncoming = (
   incoming: IncomingMessage,
   hostname: string
-): ContextRequestSource => {
-  const method = incoming.method ?? 'GET';
-  const url = `http://${incoming.headers.host ?? hostname}${incoming.url ?? '/rpc'}`;
-  let headers: Headers | undefined;
-  let request: Request | undefined;
-  return {
-    url,
-    method,
-    signal: neverAbortedSignal,
-    getHeader(name) {
-      return getIncomingHeader(incoming, name);
-    },
-    toHeaders() {
-      headers ??= headersFromIncoming(incoming);
-      return headers;
-    },
-    toRequest() {
-      headers ??= headersFromIncoming(incoming);
-      request ??= new Request(url, { headers, method });
-      return request;
-    },
-  };
-};
-
-const isCompiledSerializedEnvelope = (
-  result: NodeTransportBodyResult
-): result is CompiledSerializedEnvelope =>
-  !Array.isArray(result) && 'body' in result && typeof result.body === 'string';
-
-const appendStringHeaders = (
-  target: Record<string, string>,
-  source: JsonObject
-): void => {
-  for (const [key, value] of Object.entries(source)) {
-    if (typeof value === 'string') target[key] = value;
-  }
-};
+): ContextRequestSource => new IncomingRequestSource(incoming, hostname);
 
 const writeResult = async (
   outgoing: ServerResponse<IncomingMessage>,
   result: NodeTransportBodyResult
 ): Promise<void> => {
-  if (isCompiledSerializedEnvelope(result)) {
-    const headers: Record<string, string> = {
-      'content-type': 'application/json',
-    };
-    if (result.headers !== undefined)
-      appendStringHeaders(headers, result.headers);
-    outgoing.writeHead(200, headers);
+  if (isSerializedJsonEnvelope(result)) {
+    outgoing.writeHead(200, createJsonHeaderRecord(result.headers));
     outgoing.end(result.body);
     return;
   }
@@ -117,11 +110,9 @@ const writeResult = async (
     outgoing.end(Buffer.from(await result.arrayBuffer()));
     return;
   }
-  const headers: Record<string, string> = {
-    'content-type': 'application/json',
-  };
+  const headers = createJsonHeaderRecord();
   if (!Array.isArray(result) && result.ok && result.headers !== undefined) {
-    appendStringHeaders(headers, result.headers);
+    appendJsonStringHeaders(headers, result.headers);
   }
   outgoing.writeHead(200, headers);
   outgoing.end(JSON.stringify(result));

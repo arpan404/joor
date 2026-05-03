@@ -1,6 +1,8 @@
 import {
-  createContext,
-  requestSourceFromRequest,
+  createFetchRequestSource,
+  createRuntimeContext,
+  emptyContextObject,
+  emptyJsonObject,
   type ContextRequestSource,
 } from '../context/context.js';
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
@@ -24,6 +26,7 @@ import {
   readCachedProcedureSuccess,
   type CachedProcedureSuccess,
   type ExecutionState,
+  uncachedExecutionState,
   writeCachedProcedureSuccess,
 } from '../runtime/optimization.js';
 import {
@@ -33,6 +36,7 @@ import {
   type RpcRequest,
 } from './protocol.js';
 import { readJsonRequestBody } from '../runtime/body.js';
+import { rpcEnvelopeToResponse } from '../runtime/response.js';
 
 export interface RpcManifest {
   procedures: Record<string, ProcedureRuntime>;
@@ -95,8 +99,6 @@ export interface JoorMiddleware extends HandlerHooks {
   name: string;
 }
 
-const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
-const jsonResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
 const defaultMaxBodyBytes = 1024 * 1024;
 const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
@@ -143,22 +145,11 @@ const rpcFailure = (
 const toResponse = (
   payload: RpcEnvelope | RpcEnvelope[],
   options: HandlerOptions = {}
-): Response => {
-  if (
-    options.cors === undefined &&
-    (Array.isArray(payload) || !payload.ok || payload.headers === undefined)
-  ) {
-    return new Response(JSON.stringify(payload), jsonResponseInit);
-  }
-  const headers = new Headers({ ...jsonHeaders, ...corsHeaders(options) });
-  if (Array.isArray(payload) || !payload.ok || payload.headers === undefined) {
-    return new Response(JSON.stringify(payload), { status: 200, headers });
-  }
-  for (const [key, value] of Object.entries(payload.headers)) {
-    if (typeof value === 'string') headers.set(key, value);
-  }
-  return new Response(JSON.stringify(payload), { status: 200, headers });
-};
+): Response =>
+  rpcEnvelopeToResponse(
+    payload,
+    options.cors === undefined ? undefined : corsHeaders(options)
+  );
 
 const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   isJsonObject(value) &&
@@ -296,7 +287,7 @@ const executeUnary = async (
   if (limited !== undefined) return limited;
   const headerValue =
     prepared.headers === undefined
-      ? {}
+      ? emptyJsonObject
       : headersToJsonObject(request, prepared);
   const headerResult =
     prepared.headers === undefined
@@ -314,13 +305,13 @@ const executeUnary = async (
       validationDetails(headerResult.issues)
     );
   }
-  const ctx = createContext({
+  const ctx = createRuntimeContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerResult.value as object,
-    auth: {},
-  });
+    headerResult.value as object,
+    emptyContextObject
+  );
   const authResultValue = authenticateOnce(prepared.auth, ctx, state);
   const authResult =
     authResultValue instanceof Promise
@@ -482,15 +473,15 @@ const executeTrustedUnary = async (
   const trace = traceId(request, rpcRequest.traceId);
   const headerValue =
     prepared.headers === undefined
-      ? {}
+      ? emptyJsonObject
       : headersToJsonObject(request, prepared);
-  const ctx = createContext({
+  const ctx = createRuntimeContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerValue,
-    auth: {},
-  });
+    headerValue,
+    emptyContextObject
+  );
   const authResultValue = authenticateOnce(prepared.auth, ctx, state);
   const authResult =
     authResultValue instanceof Promise
@@ -616,13 +607,13 @@ const executeStream = async (
       )
     );
   }
-  const ctx = createContext({
+  const ctx = createRuntimeContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerResult.value as object,
-    auth: {},
-  });
+    headerResult.value as object,
+    emptyContextObject
+  );
   const authResultValue = authenticateOnce(prepared.auth, ctx, state);
   const authResult =
     authResultValue instanceof Promise
@@ -739,7 +730,7 @@ export const createRpcHandler = (
       return toResponse(
         rpcFailure(
           '',
-          traceId(requestSourceFromRequest(request)),
+          traceId(createFetchRequestSource(request)),
           'PARSE_ERROR',
           'Invalid JSON body',
           400
@@ -771,7 +762,7 @@ export const createRpcBodyResultHandler = (
     options
   );
   return (request: Request, body: JsonValue): Promise<RpcBodyResult> =>
-    handleTransport(requestSourceFromRequest(request), body);
+    handleTransport(createFetchRequestSource(request), body);
 };
 
 export const createRpcTransportBodyResultHandler = (
@@ -870,8 +861,8 @@ export const createRpcTransportBodyResultHandler = (
     }
 
     const requestServices = services ?? (await servicesPromise);
-    const state = createExecutionState(Array.isArray(body));
     if (Array.isArray(body)) {
+      const state = createExecutionState(true);
       const responses: RpcEnvelope[] = [];
       for (const item of body) {
         if (!isRpcRequest(item)) {
@@ -950,7 +941,7 @@ export const createRpcTransportBodyResultHandler = (
         request,
         requestServices,
         runtime,
-        state
+        uncachedExecutionState
       );
     }
     return useTrustedUnary
@@ -960,9 +951,16 @@ export const createRpcTransportBodyResultHandler = (
           request,
           requestServices,
           runtime,
-          state
+          uncachedExecutionState
         )
-      : executeUnary(procedure, body, request, requestServices, runtime, state);
+      : executeUnary(
+          procedure,
+          body,
+          request,
+          requestServices,
+          runtime,
+          uncachedExecutionState
+        );
   };
   if (!hasBeforeHooks && !hasAfterHooks) return handleRequest;
   return async (

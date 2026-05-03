@@ -3,7 +3,10 @@ import { relative, dirname } from 'node:path';
 import type { JoorConfig } from '../config.js';
 import type { CompilerManifest } from './manifest.js';
 import { createAiDocs } from './ai-docs.js';
-import { emitCompiledProcedureSource } from './codegen.js';
+import {
+  emitCompiledProcedureSource,
+  type CompiledProcedureGenerationOptions,
+} from './codegen.js';
 import { createOpenApiDocument } from './openapi.js';
 
 export interface EmitOptions {
@@ -52,6 +55,7 @@ ${entries}
 const emitDispatcher = async (
   manifest: CompilerManifest,
   outDir: string,
+  config: JoorConfig | undefined,
   configPath?: string
 ): Promise<void> => {
   const dispatcherFile = `${outDir}/dispatcher.ts`;
@@ -66,8 +70,63 @@ const emitDispatcher = async (
       return `import ${entry.exportName} from '${importPath}';`;
     })
     .join('\n');
+  const generationOptions: CompiledProcedureGenerationOptions = {
+    enforceRateLimit: config?.enforceRateLimit ?? true,
+    validateHeaders: config?.validateHeaders ?? true,
+    validateInput: config?.validateInput ?? true,
+    validateOutput: config?.validateOutput ?? true,
+    validateResponseHeaders: config?.validateResponseHeaders ?? true,
+  };
+  const compiledEntries = manifest.procedures.filter(
+    (entry) => entry.procedure.output !== undefined
+  );
+  const hasCompiledProcedures = compiledEntries.length > 0;
+  const hasGenericFallback = manifest.procedures.some(
+    (entry) => entry.procedure.output === undefined
+  );
+  const usesAuth = compiledEntries.some(
+    (entry) => entry.procedure.auth !== undefined
+  );
+  const usesCache = compiledEntries.some(
+    (entry) =>
+      entry.procedure.meta.kind === 'query' &&
+      entry.procedure.meta.cache !== undefined
+  );
+  const usesRateLimit =
+    generationOptions.enforceRateLimit &&
+    compiledEntries.some(
+      (entry) => entry.procedure.meta.rateLimit !== undefined
+    );
+  const usesValidationDetails = compiledEntries.some(
+    (entry) =>
+      generationOptions.validateInput ||
+      generationOptions.validateOutput ||
+      (generationOptions.validateHeaders &&
+        entry.procedure.headers !== undefined) ||
+      (generationOptions.validateResponseHeaders &&
+        entry.procedure.responseHeaders !== undefined)
+  );
+  const compiledImports = [
+    'compiledNotFound',
+    ...(usesAuth ? ['compiledAuthenticate'] : []),
+    ...(hasCompiledProcedures
+      ? ['compiledCreateContext', 'compiledEmptyObject', 'compiledTraceId']
+      : []),
+    'createCompiledRpcHandler',
+    'createCompiledRpcTransportBodyResultHandler',
+    ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
+    ...(usesValidationDetails ? ['compiledValidationDetails'] : []),
+    ...(usesCache ? ['compiledReadCache', 'compiledWriteCache'] : []),
+    ...(hasCompiledProcedures ? ['type CompiledSerializedEnvelope'] : []),
+    'type CompiledUnaryDispatch',
+    ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
+    'type CompiledDispatch',
+  ];
+  const joorTypeImport = hasCompiledProcedures
+    ? "import type { JsonValue, RpcError } from 'joor';\n"
+    : '';
   const executors = manifest.procedures
-    .map((entry) => emitCompiledProcedureSource(entry))
+    .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
     .join('\n\n');
   const cases = manifest.procedures
@@ -91,24 +150,9 @@ const emitDispatcher = async (
   await writeFile(
     dispatcherFile,
     `import {
-  compiledNotFound,
-  compiledAuthenticate,
-  compiledCreateContext,
-  compiledHeaderObject,
-  createCompiledRpcHandler,
-  createCompiledRpcTransportBodyResultHandler,
-  compiledRateLimitFailure,
-  compiledReadCache,
-  compiledTraceId,
-  compiledValidationDetails,
-  compiledWriteCache,
-  type CompiledSerializedEnvelope,
-  type CompiledUnaryDispatch,
-  executeCompiledProcedure,
-  type CompiledDispatch,
+  ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-import type { JsonValue, RpcError } from 'joor';
-${configImport}${imports}
+${joorTypeImport}${configImport}${imports}
 
 ${executors}
 
@@ -268,7 +312,12 @@ export const emitArtifacts = async (
 ): Promise<void> => {
   await mkdir(options.outDir, { recursive: true });
   await emitManifest(manifest, options.outDir);
-  await emitDispatcher(manifest, options.outDir, options.configPath);
+  await emitDispatcher(
+    manifest,
+    options.outDir,
+    options.config,
+    options.configPath
+  );
   await emitClient(manifest, options.outDir);
   await emitProcedureHelper(options.outDir, options.configPath);
   await writeJson(

@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
+import { emitArtifacts } from '../src/compiler/emit.js';
 import { loadProcedures } from '../src/compiler/load.js';
 
 const fixture = new URL('./fixtures/basic-app/rpc', import.meta.url).pathname;
@@ -71,6 +72,50 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'ai-docs.json'), 'utf8')
       ).resolves.toContain('users.get');
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('prunes disabled safety checks from compiled artifacts', async () => {
+    const manifest = await loadProcedures(fixture);
+    const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
+    try {
+      await emitArtifacts(manifest, {
+        outDir,
+        config: {},
+      });
+      const safeDispatcher = await readFile(
+        join(outDir, 'dispatcher.ts'),
+        'utf8'
+      );
+      expect(safeDispatcher).toContain('_validate_input');
+      expect(safeDispatcher).toContain('_validate_headers');
+      expect(safeDispatcher).toContain('_validate_output');
+
+      const trustedOutDir = await mkdtemp(join(tmpdir(), 'joor-'));
+      try {
+        await emitArtifacts(manifest, {
+          outDir: trustedOutDir,
+          config: {
+            enforceRateLimit: false,
+            validateHeaders: false,
+            validateInput: false,
+            validateOutput: false,
+            validateResponseHeaders: false,
+          },
+        });
+        const trustedDispatcher = await readFile(
+          join(trustedOutDir, 'dispatcher.ts'),
+          'utf8'
+        );
+        expect(trustedDispatcher).not.toContain('_validate_input');
+        expect(trustedDispatcher).not.toContain('_validate_headers');
+        expect(trustedDispatcher).not.toContain('_validate_output');
+        expect(trustedDispatcher).not.toContain('compiledValidationDetails');
+      } finally {
+        await rm(trustedOutDir, { recursive: true, force: true });
+      }
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

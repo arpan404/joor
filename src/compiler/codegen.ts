@@ -1,6 +1,14 @@
 import type { LoadedProcedure } from './manifest.js';
 import type { Schema } from '../schema/types.js';
 
+export interface CompiledProcedureGenerationOptions {
+  enforceRateLimit: boolean;
+  validateHeaders: boolean;
+  validateInput: boolean;
+  validateOutput: boolean;
+  validateResponseHeaders: boolean;
+}
+
 const validatorName = (base: string, suffix: string): string =>
   `${base}_${suffix}`.replace(/[^a-zA-Z0-9_$]/g, '_');
 
@@ -19,6 +27,17 @@ const renderEnumMiss = (
     : values
         .map((value) => `${valueExpression} !== ${JSON.stringify(value)}`)
         .join(' && ');
+
+const parseDurationMsLiteral = (duration: string): number => {
+  const match = /^(\d+)(ms|s|m|h)$/.exec(duration);
+  if (match === null) return 60_000;
+  const amount = Number(match[1]);
+  const unit = match[2];
+  if (unit === 'ms') return amount;
+  if (unit === 's') return amount * 1_000;
+  if (unit === 'm') return amount * 60_000;
+  return amount * 3_600_000;
+};
 
 const canEmitJsonSerializer = (
   schema: Schema,
@@ -55,7 +74,7 @@ const emitValidatorFunction = (
     return;
   }
   const invalid = (message: string): string =>
-    `return { ok: false as const, issues: [{ path, message: ${JSON.stringify(message)} }] };`;
+    `return { path, message: ${JSON.stringify(message)} };`;
 
   switch (schema.kind) {
     case 'string': {
@@ -77,31 +96,31 @@ const emitValidatorFunction = (
     schema.minLength === undefined
       ? ''
       : `if (value.length < ${schema.minLength}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at least ${schema.minLength} characters`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at least ${schema.minLength} characters`)} };
   }`
   }
   ${
     schema.maxLength === undefined
       ? ''
       : `if (value.length > ${schema.maxLength}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at most ${schema.maxLength} characters`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at most ${schema.maxLength} characters`)} };
   }`
   }
   ${
     schema.format !== 'email'
       ? ''
       : `if (!${name}_emailRegex.test(value)) {
-    return { ok: false as const, issues: [{ path, message: 'Expected email' }] };
+    return { path, message: 'Expected email' };
   }`
   }
   ${
     schema.format !== 'uuid'
       ? ''
       : `if (!${name}_uuidRegex.test(value)) {
-    return { ok: false as const, issues: [{ path, message: 'Expected uuid' }] };
+    return { path, message: 'Expected uuid' };
   }`
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     }
@@ -114,24 +133,24 @@ const emitValidatorFunction = (
     schema.integer !== true
       ? ''
       : `if (!Number.isInteger(value)) {
-    return { ok: false as const, issues: [{ path, message: 'Expected integer' }] };
+    return { path, message: 'Expected integer' };
   }`
   }
   ${
     schema.minimum === undefined
       ? ''
       : `if (value < ${schema.minimum}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at least ${schema.minimum}`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at least ${schema.minimum}`)} };
   }`
   }
   ${
     schema.maximum === undefined
       ? ''
       : `if (value > ${schema.maximum}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at most ${schema.maximum}`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at most ${schema.maximum}`)} };
   }`
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     }
@@ -140,7 +159,7 @@ const emitValidatorFunction = (
   if (typeof value !== 'boolean') {
     ${invalid('Expected boolean')}
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     case 'literal':
@@ -148,7 +167,7 @@ const emitValidatorFunction = (
   if (value !== ${JSON.stringify(schema.value)}) {
     ${invalid('Expected literal')}
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     case 'enum':
@@ -156,7 +175,7 @@ const emitValidatorFunction = (
   if (typeof value !== 'string' || (${renderEnumMiss('value', [...schema.values])})) {
     ${invalid('Expected enum value')}
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     case 'optional': {
@@ -164,7 +183,7 @@ const emitValidatorFunction = (
       emitValidatorFunction(innerName, schema.inner, definitions);
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
   if (value === undefined) {
-    return { ok: true as const, value: undefined };
+    return undefined;
   }
   return ${innerName}(value, path);
 };`);
@@ -175,7 +194,7 @@ const emitValidatorFunction = (
       emitValidatorFunction(innerName, schema.inner, definitions);
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
   if (value === null) {
-    return { ok: true as const, value: null };
+    return undefined;
   }
   return ${innerName}(value, path);
 };`);
@@ -192,23 +211,23 @@ const emitValidatorFunction = (
     schema.minItems === undefined
       ? ''
       : `if (value.length < ${schema.minItems}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at least ${schema.minItems} items`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at least ${schema.minItems} items`)} };
   }`
   }
   ${
     schema.maxItems === undefined
       ? ''
       : `if (value.length > ${schema.maxItems}) {
-    return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at most ${schema.maxItems} items`)} }] };
+    return { path, message: ${JSON.stringify(`Expected at most ${schema.maxItems} items`)} };
   }`
   }
   for (let index = 0; index < value.length; index += 1) {
     const result = ${itemName}(value[index], ${renderArrayPath('path')});
-    if (!result.ok) {
+    if (result !== undefined) {
       return result;
     }
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     }
@@ -217,19 +236,20 @@ const emitValidatorFunction = (
       const checks = Object.entries(schema.shape)
         .map(([key, child], index) => {
           const childName = validatorName(name, `${key}_${index}`);
+          const pathExpression = renderPath('path', key);
           emitValidatorFunction(childName, child, childDefinitions);
           return `  {
     const childValue = objectValue[${JSON.stringify(key)}];
     ${
       child.kind === 'optional'
         ? `if (childValue !== undefined) {
-      const result = ${childName}(childValue, ${renderPath('path', key)});
-      if (!result.ok) {
+      const result = ${childName}(childValue, ${pathExpression});
+      if (result !== undefined) {
         return result;
       }
     }`
-        : `const result = ${childName}(childValue, ${renderPath('path', key)});
-    if (!result.ok) {
+        : `const result = ${childName}(childValue, ${pathExpression});
+    if (result !== undefined) {
       return result;
     }`
     }
@@ -248,16 +268,13 @@ ${checks}
       ? `for (const key of Object.keys(objectValue)) {
     if (${JSON.stringify(Object.keys(schema.shape))}.includes(key)) continue;
     return {
-      ok: false as const,
-      issues: [{
-        path: path === '' ? key : \`${'${'}path${'}'}.\${key}\`,
-        message: 'Unexpected property',
-      }],
+      path: path === '' ? key : \`${'${'}path${'}'}.\${key}\`,
+      message: 'Unexpected property',
     };
   }`
       : ''
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     }
@@ -273,15 +290,13 @@ ${checks}
             childName,
             index
           ) => `  const result${index} = ${childName}(value, path);
-  if (result${index}.ok) return result${index};`
+  if (result${index} === undefined) return undefined;`
         )
         .join('\n');
-      const issues = variantNames
-        .map((_, index) => `...result${index}.issues`)
-        .join(', ');
+      const firstIssue = variantNames.length === 0 ? undefined : 'result0';
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
 ${checks}
-  return { ok: false as const, issues: [${issues}] };
+  return ${firstIssue ?? "{ path, message: 'Expected union' }"};
 };`);
       return;
     }
@@ -295,11 +310,11 @@ ${checks}
   const objectValue = value as Record<string, JsonValue | undefined>;
   for (const key of Object.keys(objectValue)) {
     const result = ${valueName}(objectValue[key], path === '' ? key : \`${'${'}path${'}'}.\${key}\`);
-    if (!result.ok) {
+    if (result !== undefined) {
       return result;
     }
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
     }
@@ -308,7 +323,7 @@ ${checks}
   if (value === undefined) {
     ${invalid('Expected JSON value')}
   }
-  return { ok: true as const, value };
+  return undefined;
 };`);
       return;
   }
@@ -534,7 +549,10 @@ ${entries}
   }`;
 };
 
-export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
+export const emitCompiledProcedureSource = (
+  entry: LoadedProcedure,
+  options: CompiledProcedureGenerationOptions
+): string => {
   if (entry.procedure.output === undefined) return '';
   const base = entry.exportName;
   const hasAuth = entry.procedure.auth !== undefined;
@@ -543,70 +561,109 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
     entry.procedure.meta.cache !== undefined;
   const hasRateLimit = entry.procedure.meta.rateLimit !== undefined;
   const validators: string[] = [];
-  emitValidatorFunction(
-    `${base}_validate_input`,
-    entry.procedure.input,
-    validators
-  );
-  if (entry.procedure.headers !== undefined) {
+  if (options.validateInput) {
+    emitValidatorFunction(
+      `${base}_validate_input`,
+      entry.procedure.input,
+      validators
+    );
+  }
+  if (entry.procedure.headers !== undefined && options.validateHeaders) {
     emitValidatorFunction(
       `${base}_validate_headers`,
       entry.procedure.headers,
       validators
     );
   }
-  emitValidatorFunction(
-    `${base}_validate_output`,
-    entry.procedure.output,
-    validators
-  );
-  if (entry.procedure.responseHeaders !== undefined) {
+  if (options.validateOutput) {
+    emitValidatorFunction(
+      `${base}_validate_output`,
+      entry.procedure.output,
+      validators
+    );
+  }
+  if (
+    entry.procedure.responseHeaders !== undefined &&
+    options.validateResponseHeaders
+  ) {
     emitValidatorFunction(
       `${base}_validate_response_headers`,
       entry.procedure.responseHeaders,
       validators
     );
   }
-  const headerValidation =
+  const headerValueBlock =
     entry.procedure.headers === undefined
-      ? `const headerResult = { ok: true as const, value: {} };`
-      : `const headerValue = ${emitHeaderValueExpression(entry)};
-  const headerResult = !runtime.validateHeaders
-    ? { ok: true as const, value: headerValue }
-    : ${base}_validate_headers(headerValue, 'headers');`;
-  const responseHeaderValidation =
-    entry.procedure.responseHeaders === undefined
+      ? 'const headerValue = compiledEmptyObject;'
+      : `const headerValue = ${emitHeaderValueExpression(entry)};`;
+  const headerValidationBlock =
+    entry.procedure.headers === undefined || !options.validateHeaders
       ? ''
-      : `if (runtime.validateResponseHeaders) {
-    const responseHeaderResult = ${base}_validate_response_headers(result.headers, 'responseHeaders');
-    if (!responseHeaderResult.ok) {
+      : `const headerIssue = ${base}_validate_headers(headerValue, 'headers');
+  if (headerIssue !== undefined) {
+    const error = {
+      code: 'HEADER_VALIDATION_ERROR',
+      message: 'Header validation failed',
+      status: 400,
+      details: compiledValidationDetails([headerIssue]),
+    };
+    return serialize
+      ? ${base}_serialize_error(trace, error)
+      : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
+  }`;
+  const inputValidationBlock = options.validateInput
+    ? `const inputIssue = ${base}_validate_input(rpcRequest.input, 'input');
+  if (inputIssue !== undefined) {
+    const error = {
+      code: 'VALIDATION_ERROR',
+      message: 'Validation failed',
+      status: 400,
+      details: compiledValidationDetails([inputIssue]),
+    };
+    return serialize
+      ? ${base}_serialize_error(trace, error)
+      : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
+  }`
+    : '';
+  const responseHeaderValidation =
+    entry.procedure.responseHeaders === undefined ||
+    !options.validateResponseHeaders
+      ? ''
+      : `{
+    const responseHeaderIssue = ${base}_validate_response_headers(result.headers, 'responseHeaders');
+    if (responseHeaderIssue !== undefined) {
       const error = {
         code: 'RESPONSE_HEADER_VALIDATION_ERROR',
         message: 'Handler returned invalid response headers',
         status: 500,
-        details: compiledValidationDetails(responseHeaderResult.issues),
+        details: compiledValidationDetails([responseHeaderIssue]),
       };
       return serialize
         ? ${base}_serialize_error(trace, error)
         : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
     }
   }`;
-  const rateLimitBlock = hasRateLimit
-    ? `const limited = compiledRateLimitFailure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, trace, runtime);
+  const rateLimitBlock =
+    hasRateLimit && options.enforceRateLimit
+      ? `const limited = compiledRateLimitFailureStatic(${JSON.stringify(entry.id)}, ${entry.procedure.meta.rateLimit?.limit ?? 0}, ${JSON.stringify(entry.procedure.meta.rateLimit?.window ?? '1m')}, ${parseDurationMsLiteral(entry.procedure.meta.rateLimit?.window ?? '1m')}, rpcRequest, request, trace);
   if (limited !== undefined) {
     return serialize
       ? ${base}_serialize_error(trace, limited.error)
       : limited;
   }`
+      : '';
+  const authValueDeclaration = hasCache
+    ? `
+  const authValue = authResult;`
     : '';
   const authBlock = hasAuth
-    ? `const ctx = compiledCreateContext({
+    ? `const ctx = compiledCreateContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerResult.value as object,
-    auth: {},
-  });
+    headerValue as object,
+    compiledEmptyObject
+  );
   const authResultValue = compiledAuthenticate(${entry.exportName}.auth, ctx, state);
   const authResult = authResultValue instanceof Promise ? await authResultValue : authResultValue;
   if ('kind' in authResult && authResult.kind === 'error') {
@@ -615,15 +672,16 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
       : { ok: false as const, id: rpcRequest.id, traceId: trace, error: authResult.error };
   }
   ctx.auth = authResult;
-  const authValue = authResult;`
-    : 'const authValue = {};';
+  ${authValueDeclaration}`
+    : '';
+  const authValueExpression = hasAuth ? 'authValue' : 'compiledEmptyObject';
   const cacheReadBlock = hasCache
     ? `const cached = compiledReadCache(
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
-    headerResult.value as Record<string, JsonValue>,
-    authValue
+    headerValue as Record<string, JsonValue>,
+    ${authValueExpression}
   );
   if (cached !== undefined) {
     return serialize
@@ -638,21 +696,22 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
-    headerResult.value as Record<string, JsonValue>,
-    authValue,
+    headerValue as Record<string, JsonValue>,
+    ${authValueExpression},
     result.data,
     result.headers
   );`
     : '';
   const contextCreationBlock = hasAuth
     ? ''
-    : `const ctx = compiledCreateContext({
+    : `const ctx = compiledCreateContext(
     request,
-    traceId: trace,
+    trace,
     services,
-    headers: headerResult.value as object,
-    auth: {},
-  });`;
+    headerValue as object,
+    compiledEmptyObject
+  );`;
+  const stateParameter = hasAuth ? 'state' : '_state';
   return `${validators.join('\n\n')}
 
 ${emitSerializerFunctions(entry, base)}
@@ -661,40 +720,17 @@ const ${base}_execute: CompiledDispatch = async (
   rpcRequest,
   request,
   services,
-  runtime,
-  state,
+  _runtime,
+  ${stateParameter},
   serialize
 ) => {
   const trace = compiledTraceId(request, rpcRequest.traceId);
   ${rateLimitBlock}
-  ${headerValidation}
-  if (!headerResult.ok) {
-    const error = {
-      code: 'HEADER_VALIDATION_ERROR',
-      message: 'Header validation failed',
-      status: 400,
-      details: compiledValidationDetails(headerResult.issues),
-    };
-    return serialize
-      ? ${base}_serialize_error(trace, error)
-      : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
-  }
+  ${headerValueBlock}
+  ${headerValidationBlock}
   ${authBlock}
-  const inputResult = !runtime.validateInput
-    ? { ok: true as const, value: rpcRequest.input }
-    : ${base}_validate_input(rpcRequest.input, 'input');
-  if (!inputResult.ok) {
-    const error = {
-      code: 'VALIDATION_ERROR',
-      message: 'Validation failed',
-      status: 400,
-      details: compiledValidationDetails(inputResult.issues),
-    };
-    return serialize
-      ? ${base}_serialize_error(trace, error)
-      : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
-  }
-  const inputValue = (inputResult.value ?? {}) as JsonValue;
+  ${inputValidationBlock}
+  const inputValue = (rpcRequest.input ?? {}) as JsonValue;
   ${cacheReadBlock}
   ${contextCreationBlock}
   const result = await ${entry.exportName}.handler(ctx, inputValue);
@@ -713,19 +749,23 @@ const ${base}_execute: CompiledDispatch = async (
       ? ${base}_serialize_error(trace, result.error)
       : { ok: false as const, id: rpcRequest.id, traceId: trace, error: result.error };
   }
-  if (runtime.validateOutput) {
-    const outputResult = ${base}_validate_output(result.data, 'output');
-    if (!outputResult.ok) {
+  ${
+    options.validateOutput
+      ? `{
+    const outputIssue = ${base}_validate_output(result.data, 'output');
+    if (outputIssue !== undefined) {
       const error = {
         code: 'OUTPUT_VALIDATION_ERROR',
         message: 'Handler returned invalid output',
         status: 500,
-        details: compiledValidationDetails(outputResult.issues),
+        details: compiledValidationDetails([outputIssue]),
       };
       return serialize
         ? ${base}_serialize_error(trace, error)
         : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
     }
+  }`
+      : ''
   }
   ${responseHeaderValidation}
   ${cacheWriteBlock}

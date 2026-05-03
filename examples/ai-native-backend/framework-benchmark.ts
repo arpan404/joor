@@ -73,9 +73,16 @@ const trpcPayload = JSON.stringify({
 
 const authHeader = 'Bearer benchmark-token';
 const outDir = new URL('./.joor', import.meta.url).pathname;
+const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
+const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
+  .pathname;
 const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
   .href;
+const trustedDispatcherUrl = new URL(
+  './.joor-trusted/dispatcher.ts',
+  import.meta.url
+).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -334,9 +341,13 @@ const startTrpc = async (): Promise<RunningServer> => {
   };
 };
 
-const startJoor = async (): Promise<RunningServer> => {
-  await build({ config: configPath, outDir });
-  const compiled = (await import(compiledDispatcherUrl)) as {
+const startJoor = async (
+  buildConfigPath: string,
+  buildOutDir: string,
+  dispatcherUrl: string
+): Promise<RunningServer> => {
+  await build({ config: buildConfigPath, outDir: buildOutDir });
+  const compiled = (await import(dispatcherUrl)) as {
     transport: NodeTransportBodyResultHandler;
   };
   return startNodeHandler(
@@ -420,7 +431,18 @@ try {
     start(): Promise<RunningServer>;
   }> = [
     { name: 'raw node', body: payload, start: startRawNode },
-    { name: 'joor', body: payload, start: startJoor },
+    {
+      name: 'joor safe',
+      body: payload,
+      start: async () =>
+        await startJoor(configPath, outDir, compiledDispatcherUrl),
+    },
+    {
+      name: 'joor trusted',
+      body: payload,
+      start: async () =>
+        await startJoor(trustedConfigPath, trustedOutDir, trustedDispatcherUrl),
+    },
     { name: 'express', body: payload, start: startExpress },
     { name: 'fastify', body: payload, start: startFastify },
     { name: 'hono', body: payload, start: startHono },

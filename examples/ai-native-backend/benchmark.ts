@@ -17,9 +17,16 @@ interface BenchmarkResult {
 }
 
 const outDir = new URL('./.joor', import.meta.url).pathname;
+const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
+const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
+  .pathname;
 const compiledDispatcherUrl = new URL('./.joor/dispatcher.ts', import.meta.url)
   .href;
+const trustedDispatcherUrl = new URL(
+  './.joor-trusted/dispatcher.ts',
+  import.meta.url
+).href;
 const manifest = {
   procedures: {
     'ai.chat': chat,
@@ -101,12 +108,17 @@ const printResult = (result: BenchmarkResult): void => {
 };
 
 await build({ config: configPath, outDir });
+await build({ config: trustedConfigPath, outDir: trustedOutDir });
 
 const genericHandler = createJoorHandler(manifest, config);
 const compiled = (await import(compiledDispatcherUrl)) as {
   fetch(request: Request): Promise<Response>;
 };
 const compiledHandler = compiled.fetch;
+const trustedCompiled = (await import(trustedDispatcherUrl)) as {
+  fetch(request: Request): Promise<Response>;
+};
+const trustedCompiledHandler = trustedCompiled.fetch;
 
 const warmup = await runBenchmark('warmup', genericHandler, 500, 25);
 printResult(warmup);
@@ -120,9 +132,17 @@ const genericResult = await runBenchmark(
 printResult(genericResult);
 
 const compiledResult = await runBenchmark(
-  'users.get unary rpc (compiled)',
+  'users.get unary rpc (compiled safe)',
   compiledHandler,
   10_000,
   100
 );
 printResult(compiledResult);
+
+const trustedCompiledResult = await runBenchmark(
+  'users.get unary rpc (compiled trusted)',
+  trustedCompiledHandler,
+  10_000,
+  100
+);
+printResult(trustedCompiledResult);

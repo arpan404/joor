@@ -12,15 +12,19 @@ export const readJsonRequestBody = async (
   request: Request,
   maxBodyBytes?: number
 ): Promise<JsonValue> => {
+  if (maxBodyBytes === undefined) {
+    const text = await request.text();
+    return text.length === 0 ? {} : parseJson(text);
+  }
   const contentLength = parseContentLength(request);
   if (contentLength === 0) return {};
-  if (maxBodyBytes !== undefined && contentLength !== undefined) {
+  if (contentLength !== undefined) {
     if (contentLength > maxBodyBytes) {
       throw new Error('Request body exceeds maxBodyBytes');
     }
   }
   const text = await request.text();
-  if (maxBodyBytes !== undefined && text.length > maxBodyBytes) {
+  if (text.length > maxBodyBytes) {
     throw new Error('Request body exceeds maxBodyBytes');
   }
   if (text.length === 0) return {};

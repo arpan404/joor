@@ -17,6 +17,10 @@ export interface ExecutionState {
   authCache?: Map<AuthPolicy<object, object, object>, AuthResultLike>;
 }
 
+export const uncachedExecutionState: ExecutionState = Object.freeze({
+  cacheAuth: false,
+});
+
 interface CacheKeySource {
   auth: object;
   headers: JsonObject;
