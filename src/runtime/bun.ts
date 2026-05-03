@@ -9,9 +9,14 @@ import type {
 } from '../rpc/dispatcher.js';
 import { createRpcBodyResultHandler } from '../rpc/dispatcher.js';
 import type { JsonValue } from '../schema/json.js';
-import { readJsonRequestBody } from './body.js';
+import {
+  DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError,
+  readJsonRequestBody,
+} from './body.js';
 import { createJoorHandler } from './fetch.js';
 import {
+  jsonContentHeaders,
   transportResultToResponse,
   type SerializedJsonEnvelope,
 } from './response.js';
@@ -27,6 +32,25 @@ export type BunTransportBodyResultHandler = (
   body: JsonValue
 ) => Promise<BunTransportBodyResult>;
 
+const bodyReadFailure = (request: Request, error: object): Response => {
+  const payloadTooLarge = isBodySizeLimitError(error);
+  const status = payloadTooLarge ? 413 : 400;
+  const body = {
+    ok: false,
+    id: '',
+    traceId: request.headers.get('x-request-id') ?? 'trace-body-error',
+    error: {
+      code: payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+      message: payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
+      status,
+    },
+  };
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: jsonContentHeaders,
+  });
+};
+
 export const createBunFetch = (
   manifest: RpcManifest,
   options?: HandlerOptions
@@ -34,14 +58,16 @@ export const createBunFetch = (
   createJoorHandler(manifest, options);
 
 export const createBunTransportRequestHandler = (
-  handler: BunTransportBodyResultHandler
+  handler: BunTransportBodyResultHandler,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): ((request: Request) => Promise<Response>) => {
   return async (request: Request): Promise<Response> => {
     let body: JsonValue;
     try {
-      body = await readJsonRequestBody(request);
-    } catch {
-      body = {};
+      body = await readJsonRequestBody(request, maxBodyBytes);
+    } catch (error) {
+      if (!(error instanceof Error)) throw error;
+      return bodyReadFailure(request, error);
     }
     return transportResultToResponse(
       await handler(createFetchRequestSource(request), body)
@@ -54,8 +80,9 @@ export const createBunRpcRequestHandler = (
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) => {
   const handler = createRpcBodyResultHandler(manifest, options);
-  return createBunTransportRequestHandler((request, body) =>
-    handler(request.toRequest(), body)
+  return createBunTransportRequestHandler(
+    (request, body) => handler(request.toRequest(), body),
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
 };
 

@@ -32,6 +32,7 @@ export interface ContextRequestSource {
   url: string;
   method: string;
   signal: AbortSignal;
+  remoteAddress: string | undefined;
   getHeader(name: string): string | null;
   toHeaders(): Headers;
   toRequest(): Request;
@@ -44,6 +45,7 @@ class FetchRequestSource implements ContextRequestSource {
   readonly url: string;
   readonly method: string;
   readonly signal: AbortSignal;
+  readonly remoteAddress = undefined;
 
   constructor(private readonly request: Request) {
     this.url = request.url;

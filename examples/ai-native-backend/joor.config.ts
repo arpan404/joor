@@ -52,7 +52,7 @@ const config = defineConfig({
   plugins: [appPlugin] as const,
   path: '/rpc',
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
   },
   maxBodyBytes: 64 * 1024,
 });

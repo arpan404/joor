@@ -65,7 +65,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.build.json && tsc-alias",
+    "build": "tsc --project tsconfig.build.json",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "lint": "biome lint . && npm run typecheck",
     "lint:fix": "biome lint . --write && oxfmt . --write",
@@ -90,22 +90,13 @@
     "@types/express": "^5.0.6",
     "@types/node": "^20.10.0",
     "express": "^5.2.1",
-    "fast-glob": "^3.3.3",
     "fastify": "^5.8.5",
     "hono": "^4.12.16",
     "husky": "^9.1.7",
-    "lint-staged": "^15.4.1",
     "oxfmt": "^0.47.0",
-    "tsc-alias": "^1.8.10",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3",
     "vitest": "^4.0.14",
     "zod": "^4.4.2"
-  },
-  "lint-staged": {
-    "*.{js,ts}": [
-      "biome lint --write",
-      "oxfmt --write"
-    ]
   }
 }

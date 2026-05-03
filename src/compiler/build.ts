@@ -11,6 +11,32 @@ export interface BuildOptions {
   outDir?: string;
 }
 
+const disabledSafetyOptions = (config: JoorConfig): string[] => {
+  const disabled: string[] = [];
+  if (config.enforceRateLimit === false) disabled.push('enforceRateLimit');
+  if (config.validateHeaders === false) disabled.push('validateHeaders');
+  if (config.validateInput === false) disabled.push('validateInput');
+  if (config.validateOutput === false) disabled.push('validateOutput');
+  if (config.validateResponseHeaders === false) {
+    disabled.push('validateResponseHeaders');
+  }
+  return disabled;
+};
+
+const warnUnsafeBuildOptions = (config: JoorConfig): void => {
+  const disabled = disabledSafetyOptions(config);
+  if (disabled.length > 0) {
+    console.warn(
+      `[joor] safety checks disabled in generated runtime: ${disabled.join(', ')}. Use this only behind a trusted internal boundary.`
+    );
+  }
+  if (config.cors?.origin === '*') {
+    console.warn(
+      '[joor] CORS origin is "*". Prefer an explicit origin for browser-facing deployments.'
+    );
+  }
+};
+
 export const build = async (options: BuildOptions): Promise<void> => {
   const cwd = resolve(options.cwd ?? process.cwd());
   const configPath =
@@ -18,6 +44,7 @@ export const build = async (options: BuildOptions): Promise<void> => {
       ? findConfigFile(cwd)
       : resolve(options.config);
   const config: JoorConfig = await loadConfig(cwd, configPath);
+  warnUnsafeBuildOptions(config);
   const configDir = configPath === undefined ? cwd : dirname(configPath);
   const entry =
     options.entry === undefined

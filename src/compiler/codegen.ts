@@ -1,5 +1,6 @@
 import type { LoadedProcedure } from './manifest.js';
 import type { Schema } from '../schema/types.js';
+import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledProcedureGenerationOptions {
   enforceRateLimit: boolean;
@@ -27,17 +28,6 @@ const renderEnumMiss = (
     : values
         .map((value) => `${valueExpression} !== ${JSON.stringify(value)}`)
         .join(' && ');
-
-const parseDurationMsLiteral = (duration: string): number => {
-  const match = /^(\d+)(ms|s|m|h)$/.exec(duration);
-  if (match === null) return 60_000;
-  const amount = Number(match[1]);
-  const unit = match[2];
-  if (unit === 'ms') return amount;
-  if (unit === 's') return amount * 1_000;
-  if (unit === 'm') return amount * 60_000;
-  return amount * 3_600_000;
-};
 
 const canEmitJsonSerializer = (
   schema: Schema,
@@ -645,7 +635,7 @@ export const emitCompiledProcedureSource = (
   }`;
   const rateLimitBlock =
     hasRateLimit && options.enforceRateLimit
-      ? `const limited = compiledRateLimitFailureStatic(${JSON.stringify(entry.id)}, ${entry.procedure.meta.rateLimit?.limit ?? 0}, ${JSON.stringify(entry.procedure.meta.rateLimit?.window ?? '1m')}, ${parseDurationMsLiteral(entry.procedure.meta.rateLimit?.window ?? '1m')}, rpcRequest, request, trace);
+      ? `const limited = compiledRateLimitFailureStatic(${JSON.stringify(entry.id)}, ${entry.procedure.meta.rateLimit?.limit ?? 0}, ${JSON.stringify(entry.procedure.meta.rateLimit?.window ?? '1m')}, ${parseDurationMs(entry.procedure.meta.rateLimit?.window ?? '1m')}, rpcRequest, request, trace, runtime);
   if (limited !== undefined) {
     return serialize
       ? ${base}_serialize_error(trace, limited.error)
@@ -712,6 +702,8 @@ export const emitCompiledProcedureSource = (
     compiledEmptyObject
   );`;
   const stateParameter = hasAuth ? 'state' : '_state';
+  const runtimeParameter =
+    hasRateLimit && options.enforceRateLimit ? 'runtime' : '_runtime';
   return `${validators.join('\n\n')}
 
 ${emitSerializerFunctions(entry, base)}
@@ -720,7 +712,7 @@ const ${base}_execute: CompiledDispatch = async (
   rpcRequest,
   request,
   services,
-  _runtime,
+  ${runtimeParameter},
   ${stateParameter},
   serialize
 ) => {

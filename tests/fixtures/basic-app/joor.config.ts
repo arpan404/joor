@@ -35,7 +35,7 @@ const config = defineConfig({
   outDir: './.joor',
   plugins: [usersPlugin] as const,
   cors: {
-    origin: '*',
+    origin: 'http://localhost:3000',
   },
 });
 

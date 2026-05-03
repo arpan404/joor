@@ -74,7 +74,7 @@ const config = defineConfig({
   entry: './rpc',
   outDir: './.joor',
   plugins: [usersPlugin] as const,
-  cors: { origin: '*' },
+  cors: { origin: 'http://localhost:3000' },
 });
 
 type AppContext = JoorConfigContext<typeof config>;
@@ -275,7 +275,7 @@ export default defineProcedure({
 });
 ```
 
-`createJoorHandler` also accepts `hooks` and `middleware` with `beforeRequest`/`afterResponse` callbacks. `meta.rateLimit` is enforced by the runtime with an in-memory window.
+`createJoorHandler` also accepts `hooks` and `middleware` with `beforeRequest`/`afterResponse` callbacks. `meta.rateLimit` is enforced by the runtime with a bounded in-memory window. Forwarded client IP headers are ignored by default; enable `rateLimit.trustProxy` only behind a proxy that strips and rewrites those headers.
 
 Query procedures can also opt into in-memory response caching:
 
@@ -295,6 +295,16 @@ export default defineProcedure({
   },
 });
 ```
+
+Default cache keys include input, typed request headers, and auth context. If you provide `cache.key`, include every tenant/user dimension that can affect the response, such as `auth.subject` or `headers.x-tenant-id`.
+
+## Security Defaults
+
+All runtime adapters enforce `maxBodyBytes` by default. Oversized request bodies return a `PAYLOAD_TOO_LARGE` RPC error with HTTP status `413`.
+
+CORS is disabled unless `cors` is configured. Enabling CORS without an explicit `origin` does not emit `Access-Control-Allow-Origin`; use a concrete origin or intentionally configure your own gateway policy.
+
+`joor build` imports config and procedure files to inspect them, so run the compiler only for code you trust. The compiler warns when generated runtime safety checks are disabled or when wildcard CORS is configured.
 
 ## Performance Knobs
 

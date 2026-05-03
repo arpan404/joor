@@ -21,22 +21,40 @@ import { createSseResponse, encodeSse } from './stream.js';
 import {
   authenticateOnce,
   createExecutionState,
-  createProcedureCacheKey,
-  parseDurationMs,
-  readCachedProcedureSuccess,
-  type CachedProcedureSuccess,
   type ExecutionState,
   uncachedExecutionState,
+} from '../runtime/internal/auth-execution.js';
+import {
+  createProcedureCacheKey,
+  DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
+  readCachedProcedureSuccess,
+  type CachedProcedureSuccess,
   writeCachedProcedureSuccess,
-} from '../runtime/optimization.js';
+} from '../runtime/internal/procedure-cache.js';
+import {
+  createRateLimitKey,
+  DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+  reserveRateLimitSlot,
+  type RateLimitIdentityResolver,
+  type RateLimitRuntimeOptions,
+  type RateLimitWindow,
+} from '../runtime/internal/rate-limit.js';
 import {
   validationDetails,
   type RpcEnvelope,
   type RpcFailure,
   type RpcRequest,
 } from './protocol.js';
-import { readJsonRequestBody } from '../runtime/body.js';
-import { rpcEnvelopeToResponse } from '../runtime/response.js';
+import { parseDurationMs } from '../internal/duration.js';
+import {
+  DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError,
+  readJsonRequestBody,
+} from '../runtime/body.js';
+import {
+  jsonContentHeaders,
+  rpcEnvelopeToResponse,
+} from '../runtime/response.js';
 
 export interface RpcManifest {
   procedures: Record<string, ProcedureRuntime>;
@@ -60,7 +78,9 @@ interface PreparedProcedure {
 
 interface RuntimeOptions {
   cors: HeadersInit;
+  cacheMaxEntries: number;
   enforceRateLimit: boolean;
+  rateLimit: RateLimitRuntimeOptions;
   validateHeaders: boolean;
   validateInput: boolean;
   validateOutput: boolean;
@@ -79,6 +99,14 @@ export interface HandlerOptions {
     methods?: string[];
   };
   maxBodyBytes?: number;
+  cache?: {
+    maxEntries?: number;
+  };
+  rateLimit?: {
+    trustProxy?: boolean;
+    maxEntries?: number;
+    identity?: RateLimitIdentityResolver;
+  };
   validateInput?: boolean;
   validateHeaders?: boolean;
   validateOutput?: boolean;
@@ -99,15 +127,15 @@ export interface JoorMiddleware extends HandlerHooks {
   name: string;
 }
 
-const defaultMaxBodyBytes = 1024 * 1024;
-const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
+const rateLimitWindows = new Map<string, RateLimitWindow>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
 
 const corsHeaders = (options: HandlerOptions): Record<string, string> => {
   if (options.cors === undefined) return {};
+  if (options.cors.origin === undefined) return {};
   return {
-    'access-control-allow-origin': options.cors.origin ?? '*',
+    'access-control-allow-origin': options.cors.origin,
     'access-control-allow-methods': (
       options.cors.methods ?? ['POST', 'OPTIONS']
     ).join(', '),
@@ -239,21 +267,14 @@ const rateLimitFailure = (
   if (!runtime.enforceRateLimit) return undefined;
   const limit = prepared.rateLimit;
   if (limit === undefined) return undefined;
-  const identity =
-    request.getHeader('x-forwarded-for') ??
-    request.getHeader('cf-connecting-ip') ??
-    'anonymous';
-  const key = `${rpcRequest.id}:${identity}`;
-  const now = Date.now();
-  const existing = rateLimitWindows.get(key);
-  if (existing === undefined || existing.resetAt <= now) {
-    rateLimitWindows.set(key, {
-      count: 1,
-      resetAt: now + limit.windowMs,
-    });
-    return undefined;
-  }
-  if (existing.count >= limit.limit) {
+  const allowed = reserveRateLimitSlot(
+    rateLimitWindows,
+    createRateLimitKey(rpcRequest.id, request, runtime.rateLimit),
+    limit.limit,
+    limit.windowMs,
+    runtime.rateLimit.maxEntries
+  );
+  if (!allowed) {
     return rpcFailure(
       rpcRequest.id,
       trace,
@@ -263,7 +284,6 @@ const rateLimitFailure = (
       { limit: limit.limit, window: limit.window }
     );
   }
-  existing.count += 1;
   return undefined;
 };
 
@@ -432,7 +452,8 @@ const executeUnary = async (
           cacheKey,
           parseDurationMs(cacheConfig.ttl),
           result.data,
-          result.headers
+          result.headers,
+          runtime.cacheMaxEntries
         );
       }
       return {
@@ -448,7 +469,9 @@ const executeUnary = async (
         procedureSuccessCache,
         cacheKey,
         parseDurationMs(cacheConfig.ttl),
-        result.data
+        result.data,
+        undefined,
+        runtime.cacheMaxEntries
       );
     }
     return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
@@ -466,7 +489,7 @@ const executeTrustedUnary = async (
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
   services: object,
-  _runtime: RuntimeOptions,
+  runtime: RuntimeOptions,
   state: ExecutionState
 ): Promise<RpcEnvelope> => {
   const procedure = prepared.procedure;
@@ -545,7 +568,8 @@ const executeTrustedUnary = async (
         cacheKey,
         parseDurationMs(cacheConfig.ttl),
         result.data,
-        result.headers
+        result.headers,
+        runtime.cacheMaxEntries
       );
     }
     if (result.headers !== undefined) {
@@ -723,20 +747,27 @@ export const createRpcHandler = (
     try {
       body = await readJsonRequestBody(
         request,
-        options.maxBodyBytes ?? defaultMaxBodyBytes
+        options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
       );
     } catch (error) {
       if (error instanceof Error) options.onError?.(error, request);
-      return toResponse(
-        rpcFailure(
-          '',
-          traceId(createFetchRequestSource(request)),
-          'PARSE_ERROR',
-          'Invalid JSON body',
-          400
-        ),
-        options
+      const payloadTooLarge =
+        error instanceof Error && isBodySizeLimitError(error);
+      const status = payloadTooLarge ? 413 : 400;
+      const body = rpcFailure(
+        '',
+        traceId(createFetchRequestSource(request)),
+        payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+        payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
+        status
       );
+      return new Response(JSON.stringify(body), {
+        status,
+        headers: {
+          ...jsonContentHeaders,
+          ...(options.cors === undefined ? {} : corsHeaders(options)),
+        },
+      });
     }
     return handleParsed(request, body);
   };
@@ -775,7 +806,17 @@ export const createRpcTransportBodyResultHandler = (
   const procedures = prepareProcedures(manifest);
   const runtime: RuntimeOptions = {
     cors: corsHeaders(options),
+    cacheMaxEntries:
+      options.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
     enforceRateLimit: options.enforceRateLimit ?? true,
+    rateLimit: {
+      trustProxy: options.rateLimit?.trustProxy ?? false,
+      maxEntries:
+        options.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+      ...(options.rateLimit?.identity === undefined
+        ? {}
+        : { identity: options.rateLimit.identity }),
+    },
     validateHeaders: options.validateHeaders ?? true,
     validateInput: options.validateInput ?? true,
     validateOutput: options.validateOutput ?? true,

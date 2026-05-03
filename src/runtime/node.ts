@@ -9,13 +9,16 @@ import type {
 import { createRpcTransportBodyResultHandler } from '../rpc/dispatcher.js';
 import { parseJson, type JsonValue } from '../schema/json.js';
 import {
+  BodySizeLimitError,
+  DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError,
+} from './body.js';
+import {
   appendJsonStringHeaders,
   createJsonHeaderRecord,
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
 } from './response.js';
-
-const defaultMaxBodyBytes = 1024 * 1024;
 
 export interface ListenOptions extends HandlerOptions {
   port?: number;
@@ -60,6 +63,7 @@ class IncomingRequestSource implements ContextRequestSource {
   readonly method: string;
   readonly url: string;
   readonly signal = neverAbortedSignal;
+  readonly remoteAddress: string | undefined;
   private headers?: Headers;
   private request?: Request;
 
@@ -69,6 +73,7 @@ class IncomingRequestSource implements ContextRequestSource {
   ) {
     this.method = incoming.method ?? 'GET';
     this.url = `http://${incoming.headers.host ?? hostname}${incoming.url ?? '/rpc'}`;
+    this.remoteAddress = incoming.socket.remoteAddress;
   }
 
   getHeader(name: string): string | null {
@@ -129,7 +134,7 @@ const readIncomingBody = async (
   if (typeof contentLength === 'string') {
     const parsed = Number(contentLength);
     if (Number.isFinite(parsed) && parsed > maxBodyBytes) {
-      throw new Error('Request body exceeds maxBodyBytes');
+      throw new BodySizeLimitError(maxBodyBytes);
     }
   }
   let first: Buffer | undefined;
@@ -139,7 +144,7 @@ const readIncomingBody = async (
     const buffer = chunkToBuffer(chunk);
     total += buffer.byteLength;
     if (total > maxBodyBytes) {
-      throw new Error('Request body exceeds maxBodyBytes');
+      throw new BodySizeLimitError(maxBodyBytes);
     }
     if (first === undefined) first = buffer;
     else chunks.push(buffer);
@@ -153,7 +158,7 @@ const readIncomingBody = async (
 export const createNodeTransportRequestHandler = (
   handler: NodeTransportBodyResultHandler,
   hostname = '0.0.0.0',
-  maxBodyBytes = defaultMaxBodyBytes
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): NodeRpcRequestHandler => {
   return async (incoming, outgoing) => {
     const request = requestSourceFromIncoming(incoming, hostname);
@@ -161,8 +166,25 @@ export const createNodeTransportRequestHandler = (
     try {
       const body = await readIncomingBody(incoming, maxBodyBytes);
       json = body.length === 0 ? {} : parseJson(body.toString('utf8'));
-    } catch {
-      json = {};
+    } catch (error) {
+      const payloadTooLarge =
+        error instanceof Error && isBodySizeLimitError(error);
+      outgoing.writeHead(payloadTooLarge ? 413 : 400, createJsonHeaderRecord());
+      outgoing.end(
+        JSON.stringify({
+          ok: false,
+          id: '',
+          traceId: request.getHeader('x-request-id') ?? 'trace-body-error',
+          error: {
+            code: payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+            message: payloadTooLarge
+              ? 'Request body too large'
+              : 'Invalid JSON body',
+            status: payloadTooLarge ? 413 : 400,
+          },
+        })
+      );
+      return;
     }
     await writeResult(outgoing, await handler(request, json));
   };
@@ -188,6 +210,6 @@ export const createNodeRpcRequestHandler = (
   return createNodeTransportRequestHandler(
     handler,
     hostname,
-    options.maxBodyBytes ?? defaultMaxBodyBytes
+    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
 };

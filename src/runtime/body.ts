@@ -1,5 +1,18 @@
 import { parseJson, type JsonValue } from '../schema/json.js';
 
+export const DEFAULT_MAX_BODY_BYTES = 1024 * 1024;
+
+export class BodySizeLimitError extends Error {
+  constructor(readonly limit: number) {
+    super(`Request body exceeds ${limit} bytes`);
+    this.name = 'BodySizeLimitError';
+  }
+}
+
+export const isBodySizeLimitError = (
+  error: object
+): error is BodySizeLimitError => error instanceof BodySizeLimitError;
+
 const parseContentLength = (request: Request): number | undefined => {
   const value = request.headers.get('content-length');
   if (value === null) return undefined;
@@ -10,22 +23,18 @@ const parseContentLength = (request: Request): number | undefined => {
 
 export const readJsonRequestBody = async (
   request: Request,
-  maxBodyBytes?: number
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): Promise<JsonValue> => {
-  if (maxBodyBytes === undefined) {
-    const text = await request.text();
-    return text.length === 0 ? {} : parseJson(text);
-  }
   const contentLength = parseContentLength(request);
   if (contentLength === 0) return {};
   if (contentLength !== undefined) {
     if (contentLength > maxBodyBytes) {
-      throw new Error('Request body exceeds maxBodyBytes');
+      throw new BodySizeLimitError(maxBodyBytes);
     }
   }
   const text = await request.text();
   if (text.length > maxBodyBytes) {
-    throw new Error('Request body exceeds maxBodyBytes');
+    throw new BodySizeLimitError(maxBodyBytes);
   }
   if (text.length === 0) return {};
   return parseJson(text);

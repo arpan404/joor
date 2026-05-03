@@ -1,14 +1,23 @@
 import {
   authenticateOnce,
   createExecutionState,
-  createProcedureCacheKey,
-  parseDurationMs,
-  readCachedProcedureSuccess,
-  type CachedProcedureSuccess,
   type ExecutionState,
   uncachedExecutionState,
+} from './internal/auth-execution.js';
+import {
+  createProcedureCacheKey,
+  DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
+  readCachedProcedureSuccess,
+  type CachedProcedureSuccess,
   writeCachedProcedureSuccess,
-} from './optimization.js';
+} from './internal/procedure-cache.js';
+import {
+  createRateLimitKey,
+  DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+  reserveRateLimitSlot,
+  type RateLimitRuntimeOptions,
+  type RateLimitWindow,
+} from './internal/rate-limit.js';
 import {
   createFetchRequestSource,
   createRuntimeContext,
@@ -20,9 +29,14 @@ import { resolvePluginServices } from '../context/plugin.js';
 import type { JoorConfig } from '../config.js';
 import type { ProcedureRuntime } from '../procedure/types.js';
 import type { RpcBodyResult } from '../rpc/dispatcher.js';
-import { readJsonRequestBody } from './body.js';
+import {
+  DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError,
+  readJsonRequestBody,
+} from './body.js';
 import {
   isSerializedJsonEnvelope,
+  jsonContentHeaders,
   rpcEnvelopeToResponse,
   serializedEnvelopeToResponse,
   type SerializedJsonEnvelope,
@@ -40,6 +54,7 @@ import {
   type RpcRequest,
 } from '../rpc/protocol.js';
 import { createSseResponse, encodeSse } from '../rpc/stream.js';
+import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledRuntime {
   validateInput: boolean;
@@ -47,6 +62,9 @@ export interface CompiledRuntime {
   validateOutput: boolean;
   validateResponseHeaders: boolean;
   enforceRateLimit: boolean;
+  cacheMaxEntries: number;
+  maxBodyBytes: number;
+  rateLimit: RateLimitRuntimeOptions;
 }
 
 export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
@@ -69,7 +87,7 @@ export type CompiledDispatch = (
   serialize: boolean
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
-const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
+const rateLimitWindows = new Map<string, RateLimitWindow>();
 const compiledProcedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
 
@@ -161,19 +179,15 @@ const rateLimitFailure = (
   if (!runtime.enforceRateLimit) return undefined;
   const limit = procedure.meta.rateLimit;
   if (limit === undefined) return undefined;
-  const identity =
-    request.getHeader('x-forwarded-for') ??
-    request.getHeader('cf-connecting-ip') ??
-    'anonymous';
-  const key = `${id}:${identity}`;
-  const now = Date.now();
-  const existing = rateLimitWindows.get(key);
   const windowMs = parseDurationMs(limit.window);
-  if (existing === undefined || existing.resetAt <= now) {
-    rateLimitWindows.set(key, { count: 1, resetAt: now + windowMs });
-    return undefined;
-  }
-  if (existing.count >= limit.limit) {
+  const allowed = reserveRateLimitSlot(
+    rateLimitWindows,
+    createRateLimitKey(id, request, runtime.rateLimit),
+    limit.limit,
+    windowMs,
+    runtime.rateLimit.maxEntries
+  );
+  if (!allowed) {
     return failure(
       rpcRequest.id,
       trace,
@@ -186,7 +200,6 @@ const rateLimitFailure = (
       }
     );
   }
-  existing.count += 1;
   return undefined;
 };
 
@@ -197,20 +210,18 @@ export const compiledRateLimitFailureStatic = (
   windowMs: number,
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
-  trace: string
+  trace: string,
+  runtime: CompiledRuntime
 ): RpcEnvelope | undefined => {
-  const identity =
-    request.getHeader('x-forwarded-for') ??
-    request.getHeader('cf-connecting-ip') ??
-    'anonymous';
-  const key = `${id}:${identity}`;
-  const now = Date.now();
-  const existing = rateLimitWindows.get(key);
-  if (existing === undefined || existing.resetAt <= now) {
-    rateLimitWindows.set(key, { count: 1, resetAt: now + windowMs });
-    return undefined;
-  }
-  if (existing.count >= limit) {
+  if (!runtime.enforceRateLimit) return undefined;
+  const allowed = reserveRateLimitSlot(
+    rateLimitWindows,
+    createRateLimitKey(id, request, runtime.rateLimit),
+    limit,
+    windowMs,
+    runtime.rateLimit.maxEntries
+  );
+  if (!allowed) {
     return failure(
       rpcRequest.id,
       trace,
@@ -220,7 +231,6 @@ export const compiledRateLimitFailureStatic = (
       { limit, window }
     );
   }
-  existing.count += 1;
   return undefined;
 };
 
@@ -257,7 +267,8 @@ export const compiledWriteCache = (
     createProcedureCacheKey(id, cacheConfig.key, input, headers, auth),
     parseDurationMs(cacheConfig.ttl),
     data,
-    responseHeaders
+    responseHeaders,
+    DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES
   );
 };
 
@@ -565,6 +576,17 @@ const createCompiledRuntime = (config: JoorConfig = {}) => {
     validateOutput: config.validateOutput ?? true,
     validateResponseHeaders: config.validateResponseHeaders ?? true,
     enforceRateLimit: config.enforceRateLimit ?? true,
+    cacheMaxEntries:
+      config.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
+    maxBodyBytes: config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    rateLimit: {
+      trustProxy: config.rateLimit?.trustProxy ?? false,
+      maxEntries:
+        config.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+      ...(config.rateLimit?.identity === undefined
+        ? {}
+        : { identity: config.rateLimit.identity }),
+    },
   };
   return {
     path,
@@ -695,10 +717,25 @@ export const createCompiledRpcHandler = (
     const source = createFetchRequestSource(request);
     let body: JsonValue;
     try {
-      body = await readJsonRequestBody(request);
-    } catch {
-      return rpcEnvelopeToResponse(
-        failure('', traceId(source), 'PARSE_ERROR', 'Invalid JSON body', 400)
+      body = await readJsonRequestBody(
+        request,
+        config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+      );
+    } catch (error) {
+      const payloadTooLarge =
+        error instanceof Error && isBodySizeLimitError(error);
+      const status = payloadTooLarge ? 413 : 400;
+      return new Response(
+        JSON.stringify(
+          failure(
+            '',
+            traceId(source),
+            payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+            payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
+            status
+          )
+        ),
+        { status, headers: jsonContentHeaders }
       );
     }
     const result = await handleTransport(source, body);
