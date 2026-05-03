@@ -3,7 +3,6 @@
 ## General Code Conventions
 
 1. **Types**:
-
    - Type names must be in **UPPERCASE**.  
      Example:
      ```typescript
@@ -11,7 +10,6 @@
      ```
 
 2. **Variables**:
-
    - Variable names should be written in **camelCase**.  
      Example:
      ```typescript
@@ -20,7 +18,6 @@
      ```
 
 3. **Constants**:
-
    - Constants should be written in **camelCase**.  
      Example:
      ```typescript
@@ -29,7 +26,6 @@
      ```
 
 4. **Function and Method Names**:
-
    - Functions and methods should be in **camelCase**.  
      Example:
      ```typescript
@@ -37,7 +33,6 @@
      ```
 
 5. **Class Names**:
-
    - Class names must be written in **PascalCase**.  
      Example:
      ```typescript
@@ -45,7 +40,6 @@
      ```
 
 6. **Export**:
-
    - **Exports** should always be placed at the **end** of the file.  
      Example:
      ```typescript
@@ -54,7 +48,6 @@
      ```
 
 7. **Indentation**:
-
    - Use **2 spaces** for indentation, no tabs.  
      Example:
      ```typescript
@@ -64,11 +57,9 @@
      ```
 
 8. **Line Length**:
-
    - Lines should not exceed **80 characters** to enhance readability, except for long URLs or import statements.
 
 9. **Comments**:
-
    - Use **single-line comments** for short explanations and **multi-line comments** for detailed descriptions.  
      Example:
 
@@ -84,7 +75,6 @@
      ```
 
 10. **Arrow Functions**:
-
     - **Prefer using arrow functions** for most work, as they are more concise and provide a consistent `this` behavior.  
       Example:
 
@@ -103,7 +93,6 @@
 Following a consistent format for commit messages helps improve the clarity and maintainability of the project.
 
 1. **Commit Message Format**:
-
    - Use **imperative mood** in your commit messages (e.g., "Add feature" instead of "Added feature").
    - **Tag** the commit type, such as:
      - `feat:` for new features
@@ -124,9 +113,7 @@ Following a consistent format for commit messages helps improve the clarity and 
    ```
 
 2. **Bug and Issue Tags**:
-
    - For issues, always prefix with **#Bug** or **#Issue** to provide clarity. Additionally, use specific tags when applicable to further classify the issue. Here are some common tags and their examples:
-
      - **#Bug**: Issues related to errors or malfunctions in the application.
        ```text
        #Bug: Fixed error with user login
@@ -178,37 +165,30 @@ Following a consistent format for commit messages helps improve the clarity and 
 When submitting a pull request (PR), please follow these guidelines to ensure a smooth review process:
 
 - **Title & Description**:
-
   - Provide a clear and concise title for your PR.
   - Include a detailed description of the changes, referencing any related issues (e.g., `#Bug`, `#Feature`, etc.).
 
 - **Scope**:
-
   - Keep pull requests small and focused on a single task or feature.
   - Avoid bundling unrelated changes together.
 
 - **Rebasing & Squashing**:
-
   - **Rebase your branch** on the latest version of the base branch to resolve conflicts and ensure your PR is up-to-date.
   - **Squash your commits** so that only one meaningful commit is present in the final pull request. This helps maintain a clean and readable commit history.
 
 - **Testing**:
-
   - Ensure that your changes pass all existing tests.
   - Add new tests if your PR introduces new functionality or fixes a bug.
 
 - **Documentation**:
-
   - Update documentation as needed to reflect your changes.
   - Include any additional information or context in the PR description.
 
 - **Style & Conventions**:
-
   - Ensure your code adheres to the **Joor Style Guide**.
-  - Remember that formatting is handled automatically by **ESLint** and **Prettier**.
+  - Remember that linting and formatting are handled automatically by **Biome** and **oxfmt**.
 
 - **Review & Feedback**:
-
   - Be open to feedback and ready to make necessary adjustments.
   - Address all comments from reviewers before merging your PR.
 

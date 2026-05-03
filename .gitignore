@@ -38,3 +38,6 @@ pnpm-debug.log*
 .env.local  
 .env.*  
 .npmrc  
+
+.src/
+src_old/
