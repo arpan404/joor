@@ -95,7 +95,8 @@ export interface JoorMiddleware extends HandlerHooks {
   name: string;
 }
 
-const jsonHeaders = { 'content-type': 'application/json' };
+const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
+const jsonResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
 const defaultMaxBodyBytes = 1024 * 1024;
 const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
@@ -143,6 +144,12 @@ const toResponse = (
   payload: RpcEnvelope | RpcEnvelope[],
   options: HandlerOptions = {}
 ): Response => {
+  if (
+    options.cors === undefined &&
+    (Array.isArray(payload) || !payload.ok || payload.headers === undefined)
+  ) {
+    return new Response(JSON.stringify(payload), jsonResponseInit);
+  }
   const headers = new Headers({ ...jsonHeaders, ...corsHeaders(options) });
   if (Array.isArray(payload) || !payload.ok || payload.headers === undefined) {
     return new Response(JSON.stringify(payload), { status: 200, headers });
@@ -184,17 +191,14 @@ const isProcedureFailure = (
 ): value is { kind: 'error'; error: RpcFailure['error'] } =>
   'kind' in value && value.kind === 'error' && 'error' in value;
 
-const pathnameFromUrl = (url: string): string => {
+const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
   const pathStart =
     protocolIndex === -1 ? 0 : url.indexOf('/', protocolIndex + 3);
-  if (pathStart === -1) return '/';
-  const queryStart = url.indexOf('?', pathStart);
-  const hashStart = url.indexOf('#', pathStart);
-  if (queryStart === -1 && hashStart === -1) return url.slice(pathStart);
-  if (queryStart === -1) return url.slice(pathStart, hashStart);
-  if (hashStart === -1) return url.slice(pathStart, queryStart);
-  return url.slice(pathStart, Math.min(queryStart, hashStart));
+  if (pathStart === -1) return path === '/';
+  if (!url.startsWith(path, pathStart)) return false;
+  const next = url[pathStart + path.length];
+  return next === undefined || next === '?' || next === '#';
 };
 
 const prepareProcedures = (
@@ -317,7 +321,11 @@ const executeUnary = async (
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult = await authenticateOnce(prepared.auth, ctx, state);
+  const authResultValue = authenticateOnce(prepared.auth, ctx, state);
+  const authResult =
+    authResultValue instanceof Promise
+      ? await authResultValue
+      : authResultValue;
   if (isProcedureFailure(authResult)) {
     return {
       ok: false,
@@ -483,7 +491,11 @@ const executeTrustedUnary = async (
     headers: headerValue,
     auth: {},
   });
-  const authResult = await authenticateOnce(prepared.auth, ctx, state);
+  const authResultValue = authenticateOnce(prepared.auth, ctx, state);
+  const authResult =
+    authResultValue instanceof Promise
+      ? await authResultValue
+      : authResultValue;
   if (isProcedureFailure(authResult)) {
     return {
       ok: false,
@@ -611,7 +623,11 @@ const executeStream = async (
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult = await authenticateOnce(prepared.auth, ctx, state);
+  const authResultValue = authenticateOnce(prepared.auth, ctx, state);
+  const authResult =
+    authResultValue instanceof Promise
+      ? await authResultValue
+      : authResultValue;
   if (isProcedureFailure(authResult)) {
     return toResponse({
       ok: false,
@@ -830,7 +846,7 @@ export const createRpcTransportBodyResultHandler = (
     if (request.method === 'OPTIONS' && options.cors !== undefined) {
       return new Response(null, { status: 204, headers: runtime.cors });
     }
-    if (runtime.rpcPath !== pathnameFromUrl(request.url)) {
+    if (!matchesPath(request.url, runtime.rpcPath)) {
       return new Response(null, { status: 404, headers: runtime.cors });
     }
     if (request.method !== 'POST') {

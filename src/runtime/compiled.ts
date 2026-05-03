@@ -64,7 +64,8 @@ export type CompiledDispatch = (
   serialize: boolean
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
-const jsonHeaders = { 'content-type': 'application/json' };
+const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
+const jsonResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
 const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 const compiledProcedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
@@ -82,17 +83,14 @@ const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   typeof value['id'] === 'string' &&
   (value['traceId'] === undefined || typeof value['traceId'] === 'string');
 
-const pathnameFromUrl = (url: string): string => {
+const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
   const pathStart =
     protocolIndex === -1 ? 0 : url.indexOf('/', protocolIndex + 3);
-  if (pathStart === -1) return '/';
-  const queryStart = url.indexOf('?', pathStart);
-  const hashStart = url.indexOf('#', pathStart);
-  if (queryStart === -1 && hashStart === -1) return url.slice(pathStart);
-  if (queryStart === -1) return url.slice(pathStart, hashStart);
-  if (hashStart === -1) return url.slice(pathStart, queryStart);
-  return url.slice(pathStart, Math.min(queryStart, hashStart));
+  if (pathStart === -1) return path === '/';
+  if (!url.startsWith(path, pathStart)) return false;
+  const next = url[pathStart + path.length];
+  return next === undefined || next === '?' || next === '#';
 };
 
 const failure = (
@@ -113,11 +111,12 @@ const failure = (
       };
 
 const toResponse = (payload: RpcEnvelope | RpcEnvelope[]): Response => {
+  if (Array.isArray(payload) || !payload.ok || payload.headers === undefined) {
+    return new Response(JSON.stringify(payload), jsonResponseInit);
+  }
   const headers = new Headers(jsonHeaders);
-  if (!Array.isArray(payload) && payload.ok && payload.headers !== undefined) {
-    for (const [key, value] of Object.entries(payload.headers)) {
-      if (typeof value === 'string') headers.set(key, value);
-    }
+  for (const [key, value] of Object.entries(payload.headers)) {
+    if (typeof value === 'string') headers.set(key, value);
   }
   return new Response(JSON.stringify(payload), { status: 200, headers });
 };
@@ -125,19 +124,17 @@ const toResponse = (payload: RpcEnvelope | RpcEnvelope[]): Response => {
 const isSerializedEnvelope = (
   value: CompiledBodyResult
 ): value is CompiledSerializedEnvelope =>
-  !Array.isArray(value) &&
-  !(value instanceof Response) &&
-  'body' in value &&
-  typeof value.body === 'string';
+  !Array.isArray(value) && 'body' in value && typeof value.body === 'string';
 
 const serializedToResponse = (
   payload: CompiledSerializedEnvelope
 ): Response => {
+  if (payload.headers === undefined) {
+    return new Response(payload.body, jsonResponseInit);
+  }
   const headers = new Headers(jsonHeaders);
-  if (payload.headers !== undefined) {
-    for (const [key, value] of Object.entries(payload.headers)) {
-      if (typeof value === 'string') headers.set(key, value);
-    }
+  for (const [key, value] of Object.entries(payload.headers)) {
+    if (typeof value === 'string') headers.set(key, value);
   }
   return new Response(payload.body, { status: 200, headers });
 };
@@ -284,7 +281,11 @@ const streamResponse = async (
     headers,
     auth: {},
   });
-  const authResult = await authenticateOnce(procedure.auth, ctx, state);
+  const authResultValue = authenticateOnce(procedure.auth, ctx, state);
+  const authResult =
+    authResultValue instanceof Promise
+      ? await authResultValue
+      : authResultValue;
   if (isProcedureFailure(authResult)) {
     return toResponse({
       ok: false,
@@ -421,7 +422,11 @@ export const executeCompiledProcedure = async (
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult = await authenticateOnce(procedure.auth, ctx, state);
+  const authResultValue = authenticateOnce(procedure.auth, ctx, state);
+  const authResult =
+    authResultValue instanceof Promise
+      ? await authResultValue
+      : authResultValue;
   if (isProcedureFailure(authResult)) {
     return {
       ok: false,
@@ -582,7 +587,7 @@ export const createCompiledRpcTransportBodyResultHandler = (
     if (request.method !== 'POST') {
       return new Response(null, { status: 405, headers: { allow: 'POST' } });
     }
-    if (pathnameFromUrl(request.url) !== compiled.path) {
+    if (!matchesPath(request.url, compiled.path)) {
       return new Response(null, { status: 404 });
     }
     const resolved =

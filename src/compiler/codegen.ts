@@ -329,7 +329,7 @@ const emitJsonSerializerFunction = (
     case 'string':
     case 'enum':
       definitions.push(
-        `const ${name} = (value: JsonValue): string => JSON.stringify(value);`
+        `const ${name} = (value: JsonValue): string => typeof value === 'string' ? JSON.stringify(value) : 'null';`
       );
       return;
     case 'number':
@@ -607,7 +607,8 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult = await compiledAuthenticate(${entry.exportName}.auth, ctx, state);
+  const authResultValue = compiledAuthenticate(${entry.exportName}.auth, ctx, state);
+  const authResult = authResultValue instanceof Promise ? await authResultValue : authResultValue;
   if ('kind' in authResult && authResult.kind === 'error') {
     return serialize
       ? ${base}_serialize_error(trace, authResult.error)

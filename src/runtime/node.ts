@@ -10,6 +10,8 @@ import { createRpcTransportBodyResultHandler } from '../rpc/dispatcher.js';
 import { parseJson, type JsonObject, type JsonValue } from '../schema/json.js';
 import type { CompiledSerializedEnvelope } from './compiled.js';
 
+const defaultMaxBodyBytes = 1024 * 1024;
+
 export interface ListenOptions extends HandlerOptions {
   port?: number;
   hostname?: string;
@@ -81,10 +83,7 @@ const requestSourceFromIncoming = (
 const isCompiledSerializedEnvelope = (
   result: NodeTransportBodyResult
 ): result is CompiledSerializedEnvelope =>
-  !(result instanceof Response) &&
-  !Array.isArray(result) &&
-  'body' in result &&
-  typeof result.body === 'string';
+  !Array.isArray(result) && 'body' in result && typeof result.body === 'string';
 
 const appendStringHeaders = (
   target: Record<string, string>,
@@ -128,17 +127,48 @@ const writeResult = async (
   outgoing.end(JSON.stringify(result));
 };
 
+const chunkToBuffer = (chunk: string | Buffer): Buffer =>
+  typeof chunk === 'string' ? Buffer.from(chunk) : chunk;
+
+const readIncomingBody = async (
+  incoming: IncomingMessage,
+  maxBodyBytes: number
+): Promise<Buffer> => {
+  const contentLength = incoming.headers['content-length'];
+  if (typeof contentLength === 'string') {
+    const parsed = Number(contentLength);
+    if (Number.isFinite(parsed) && parsed > maxBodyBytes) {
+      throw new Error('Request body exceeds maxBodyBytes');
+    }
+  }
+  let first: Buffer | undefined;
+  const chunks: Buffer[] = [];
+  let total = 0;
+  for await (const chunk of incoming) {
+    const buffer = chunkToBuffer(chunk);
+    total += buffer.byteLength;
+    if (total > maxBodyBytes) {
+      throw new Error('Request body exceeds maxBodyBytes');
+    }
+    if (first === undefined) first = buffer;
+    else chunks.push(buffer);
+  }
+  if (first === undefined) return Buffer.alloc(0);
+  if (chunks.length === 0) return first;
+  chunks.unshift(first);
+  return Buffer.concat(chunks, total);
+};
+
 export const createNodeTransportRequestHandler = (
   handler: NodeTransportBodyResultHandler,
-  hostname = '0.0.0.0'
+  hostname = '0.0.0.0',
+  maxBodyBytes = defaultMaxBodyBytes
 ): NodeRpcRequestHandler => {
   return async (incoming, outgoing) => {
-    const chunks: Uint8Array[] = [];
-    for await (const chunk of incoming) chunks.push(chunk as Uint8Array);
-    const body = Buffer.concat(chunks);
     const request = requestSourceFromIncoming(incoming, hostname);
     let json: JsonValue;
     try {
+      const body = await readIncomingBody(incoming, maxBodyBytes);
       json = body.length === 0 ? {} : parseJson(body.toString('utf8'));
     } catch {
       json = {};
@@ -164,5 +194,9 @@ export const createNodeRpcRequestHandler = (
   hostname = '0.0.0.0'
 ): NodeRpcRequestHandler => {
   const handler = createRpcTransportBodyResultHandler(manifest, options);
-  return createNodeTransportRequestHandler(handler, hostname);
+  return createNodeTransportRequestHandler(
+    handler,
+    hostname,
+    options.maxBodyBytes ?? defaultMaxBodyBytes
+  );
 };

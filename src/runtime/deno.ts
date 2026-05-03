@@ -45,10 +45,7 @@ export const createDenoFetch = (
 const isCompiledSerializedEnvelope = (
   result: DenoTransportBodyResult
 ): result is CompiledSerializedEnvelope =>
-  !(result instanceof Response) &&
-  !Array.isArray(result) &&
-  'body' in result &&
-  typeof result.body === 'string';
+  !Array.isArray(result) && 'body' in result && typeof result.body === 'string';
 
 const appendStringHeaders = (
   target: Record<string, string>,
