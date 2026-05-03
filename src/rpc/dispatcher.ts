@@ -25,9 +25,31 @@ export interface RpcManifest {
 
 export interface HandlerOptions {
   plugins?: readonly JoorPlugin<object>[];
+  path?: string;
+  cors?: {
+    origin?: string;
+    headers?: string[];
+    methods?: string[];
+  };
+  maxBodyBytes?: number;
+  onError?(error: Error, request: Request): void;
 }
 
 const jsonHeaders = { 'content-type': 'application/json' };
+const defaultMaxBodyBytes = 1024 * 1024;
+
+const corsHeaders = (options: HandlerOptions): HeadersInit => {
+  if (options.cors === undefined) return {};
+  return {
+    'access-control-allow-origin': options.cors.origin ?? '*',
+    'access-control-allow-methods': (
+      options.cors.methods ?? ['POST', 'OPTIONS']
+    ).join(', '),
+    'access-control-allow-headers': (
+      options.cors.headers ?? ['content-type', 'accept', 'x-request-id']
+    ).join(', '),
+  };
+};
 
 const traceId = (request: Request, requested?: string): string =>
   requested ?? request.headers.get('x-request-id') ?? crypto.randomUUID();
@@ -49,8 +71,14 @@ const rpcFailure = (
       : { code, message, status, details },
 });
 
-const toResponse = (payload: RpcEnvelope | RpcEnvelope[]): Response =>
-  new Response(JSON.stringify(payload), { status: 200, headers: jsonHeaders });
+const toResponse = (
+  payload: RpcEnvelope | RpcEnvelope[],
+  options: HandlerOptions = {}
+): Response =>
+  new Response(JSON.stringify(payload), {
+    status: 200,
+    headers: { ...jsonHeaders, ...corsHeaders(options) },
+  });
 
 const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   isJsonObject(value) &&
@@ -61,8 +89,14 @@ const isAsyncIterable = (
   value: ProcedureRuntimeValue
 ): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
 
-const parseRequestBody = async (request: Request): Promise<JsonValue> => {
+const parseRequestBody = async (
+  request: Request,
+  maxBodyBytes: number
+): Promise<JsonValue> => {
   const body = await request.text();
+  if (body.length > maxBodyBytes) {
+    throw new Error('Request body exceeds maxBodyBytes');
+  }
   if (body.length === 0) return {};
   return parseJson(body);
 };
@@ -215,14 +249,41 @@ export const createRpcHandler = (
 ): ((request: Request) => Promise<Response>) => {
   const plugins = options.plugins ?? [];
   return async (request: Request): Promise<Response> => {
+    if (request.method === 'OPTIONS' && options.cors !== undefined) {
+      return new Response(null, { status: 204, headers: corsHeaders(options) });
+    }
+    const url = new URL(request.url);
+    if ((options.path ?? '/rpc') !== url.pathname) {
+      return new Response(null, { status: 404, headers: corsHeaders(options) });
+    }
     if (request.method !== 'POST') {
-      return new Response(null, { status: 405, headers: { allow: 'POST' } });
+      return new Response(null, {
+        status: 405,
+        headers: { allow: 'POST', ...corsHeaders(options) },
+      });
+    }
+    const contentType = request.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      return toResponse(
+        rpcFailure(
+          '',
+          traceId(request),
+          'UNSUPPORTED_MEDIA_TYPE',
+          'Content-Type must be application/json',
+          415
+        ),
+        options
+      );
     }
 
     let body: JsonValue;
     try {
-      body = await parseRequestBody(request);
-    } catch {
+      body = await parseRequestBody(
+        request,
+        options.maxBodyBytes ?? defaultMaxBodyBytes
+      );
+    } catch (error) {
+      if (error instanceof Error) options.onError?.(error, request);
       return toResponse(
         rpcFailure(
           '',
@@ -230,7 +291,8 @@ export const createRpcHandler = (
           'PARSE_ERROR',
           'Invalid JSON body',
           400
-        )
+        ),
+        options
       );
     }
 
@@ -265,7 +327,7 @@ export const createRpcHandler = (
         }
         responses.push(await executeUnary(procedure, item, request, services));
       }
-      return toResponse(responses);
+      return toResponse(responses, options);
     }
 
     if (!isRpcRequest(body)) {
@@ -276,7 +338,8 @@ export const createRpcHandler = (
           'BAD_REQUEST',
           'Invalid RPC request',
           400
-        )
+        ),
+        options
       );
     }
 
@@ -289,13 +352,17 @@ export const createRpcHandler = (
           'NOT_FOUND',
           'Procedure not found',
           404
-        )
+        ),
+        options
       );
     }
 
     if (request.headers.get('accept')?.includes('text/event-stream') === true) {
       return executeStream(procedure, body, request, services);
     }
-    return toResponse(await executeUnary(procedure, body, request, services));
+    return toResponse(
+      await executeUnary(procedure, body, request, services),
+      options
+    );
   };
 };

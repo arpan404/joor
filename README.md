@@ -46,10 +46,58 @@ export default defineProcedure({
 });
 ```
 
+For plugin-provided services, define app config and bind the generated context type:
+
+```ts
+import {
+  createPlugin,
+  defineConfig,
+  defineProcedure,
+  t,
+  type JoorConfigContext,
+} from 'joor';
+
+const usersPlugin = createPlugin({
+  name: 'users',
+  setup() {
+    return {
+      users: {
+        findById(id: string) {
+          return { id, name: 'Ada' };
+        },
+      },
+    };
+  },
+});
+
+const config = defineConfig({
+  entry: './rpc',
+  outDir: './.joor',
+  plugins: [usersPlugin] as const,
+  cors: { origin: '*' },
+});
+
+type AppContext = JoorConfigContext<typeof config>;
+
+export const procedure = defineProcedure.withContext<AppContext>()({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string(), name: t.string() }),
+  async handler(ctx, input) {
+    return ctx.ok(ctx.services.users.findById(input.id));
+  },
+});
+```
+
 Build generated artifacts:
 
 ```bash
 npm run joor -- build --entry ./rpc --out ./.joor
+```
+
+Or use config:
+
+```bash
+npm run joor -- build --config ./joor.config.ts
 ```
 
 Generated output:
@@ -104,6 +152,30 @@ rpc/users/get.rpc.ts -> users.get
 rpc/users/watch.rpc.ts -> users.watch
 rpc/admin/users/list.rpc.ts -> admin.users.list
 ```
+
+## CLI
+
+```bash
+npm run joor -- build
+npm run joor -- dev
+npm run joor -- typecheck
+npm run joor -- openapi
+npm run joor -- doctor
+```
+
+`build` emits `.joor/` artifacts, `dev` watches and rebuilds, `openapi` refreshes docs output, and `doctor` runs format, lint, tests, and package build.
+
+## Runtime Options
+
+`createJoorHandler` accepts:
+
+- `plugins` for typed context services
+- `path` to move the RPC endpoint away from `/rpc`
+- `cors` for preflight and response headers
+- `maxBodyBytes` for request body limits
+- `onError` for runtime diagnostics
+
+Fetch is the base runtime. The package also exposes small adapters for Node, Bun, Deno, Cloudflare Workers, Vercel, and Netlify.
 
 ## Development
 

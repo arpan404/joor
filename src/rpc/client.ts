@@ -17,6 +17,14 @@ export interface PendingRpcRequest<TProcedure = never> {
   input: ProcedureInput<TProcedure>;
 }
 
+export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
+  [TIndex in keyof TRequests]: TRequests[TIndex] extends PendingRpcRequest<
+    infer TProcedure
+  >
+    ? RpcEnvelope<ProcedureOutput<TProcedure> & JsonValue>
+    : never;
+};
+
 export interface RpcTransportClient {
   call<TProcedure>(
     id: string,
@@ -28,7 +36,7 @@ export interface RpcTransportClient {
   ): PendingRpcRequest<TProcedure>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
-  ): Promise<RpcEnvelope[]>;
+  ): Promise<BatchResults<TRequests>>;
   stream<TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>
@@ -54,11 +62,20 @@ const parseSse = async function* <TEvent extends JsonValue>(
     const chunks = buffer.split('\n\n');
     buffer = chunks.pop() ?? '';
     for (const chunk of chunks) {
+      const eventLine = chunk
+        .split('\n')
+        .find((line) => line.startsWith('event: '));
+      const eventName = eventLine?.slice(7);
+      if (eventName === 'done') return;
       const dataLine = chunk
         .split('\n')
         .find((line) => line.startsWith('data: '));
       if (dataLine !== undefined) {
-        yield JSON.parse(dataLine.slice(6)) as TEvent;
+        const parsed = JSON.parse(dataLine.slice(6)) as JsonValue;
+        if (eventName === 'error') {
+          throw new Error(JSON.stringify(parsed));
+        }
+        yield parsed as TEvent;
       }
     }
   }
@@ -89,7 +106,7 @@ export const createClient = (options: ClientOptions): RpcTransportClient => {
   ): PendingRpcRequest<TProcedure> => ({ id, input });
   const batch = async <const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
-  ): Promise<RpcEnvelope[]> => {
+  ): Promise<BatchResults<TRequests>> => {
     const body: RpcRequest[] = requests.map((pending) => ({
       id: pending.id,
       input: pending.input as JsonValue,
@@ -101,7 +118,7 @@ export const createClient = (options: ClientOptions): RpcTransportClient => {
         body: JSON.stringify(body),
       })
     );
-    return (await response.json()) as RpcEnvelope[];
+    return (await response.json()) as BatchResults<TRequests>;
   };
   const stream = <TProcedure>(
     id: string,

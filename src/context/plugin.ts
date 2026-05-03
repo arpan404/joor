@@ -13,8 +13,11 @@ type UnionToIntersection<TValue> = (
   ? TResult
   : never;
 
+type PluginOutput<TPlugin> =
+  TPlugin extends JoorPlugin<infer TServices> ? TServices : never;
+
 export type PluginServices<TPlugins extends readonly JoorPlugin<object>[]> =
-  UnionToIntersection<Awaited<ReturnType<TPlugins[number]['setup']>>>;
+  UnionToIntersection<PluginOutput<TPlugins[number]>>;
 
 export const resolvePluginServices = async (
   plugins: readonly JoorPlugin<object>[]

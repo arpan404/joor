@@ -1,6 +1,7 @@
 import { defineProcedure, t } from '../../../../../src/index.js';
+import type { AppContext } from '../../joor.config.js';
 
-export default defineProcedure({
+export default defineProcedure.withContext<AppContext>()({
   input: t.object({
     userId: t.string(),
   }),
@@ -12,13 +13,9 @@ export default defineProcedure({
     summary: 'Watch user updates',
     tags: ['users'],
   },
-  async *handler(
-    _ctx,
-    input
-  ): AsyncIterable<{ type: 'user.updated'; userId: string }> {
-    yield {
-      type: 'user.updated',
-      userId: input.userId,
-    };
+  async *handler(ctx, input) {
+    for await (const event of ctx.services.users.watch(input.userId)) {
+      yield event;
+    }
   },
 });

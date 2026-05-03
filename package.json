@@ -27,6 +27,30 @@
     "./client": {
       "types": "./dist/rpc/client.d.ts",
       "import": "./dist/rpc/client.js"
+    },
+    "./runtime/node": {
+      "types": "./dist/runtime/node.d.ts",
+      "import": "./dist/runtime/node.js"
+    },
+    "./runtime/bun": {
+      "types": "./dist/runtime/bun.d.ts",
+      "import": "./dist/runtime/bun.js"
+    },
+    "./runtime/deno": {
+      "types": "./dist/runtime/deno.d.ts",
+      "import": "./dist/runtime/deno.js"
+    },
+    "./runtime/cloudflare": {
+      "types": "./dist/runtime/cloudflare.d.ts",
+      "import": "./dist/runtime/cloudflare.js"
+    },
+    "./runtime/vercel": {
+      "types": "./dist/runtime/vercel.d.ts",
+      "import": "./dist/runtime/vercel.js"
+    },
+    "./runtime/netlify": {
+      "types": "./dist/runtime/netlify.d.ts",
+      "import": "./dist/runtime/netlify.js"
     }
   },
   "publishConfig": {

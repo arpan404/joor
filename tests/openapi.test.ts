@@ -19,11 +19,13 @@ describe('openapi and ai docs', () => {
     const document = createOpenApiDocument(manifest);
 
     expect(document['openapi']).toBe('3.1.0');
+    expect(document['components']).toBeTypeOf('object');
   });
 
   it('generates ai docs', () => {
     const document = createAiDocs(manifest);
 
     expect(document['framework']).toBe('joor');
+    expect(document['schemaVersion']).toBe('0.1.0');
   });
 });

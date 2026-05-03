@@ -1,0 +1,23 @@
+import type { JoorPlugin, PluginServices } from './context/plugin.js';
+import type { HandlerOptions } from './rpc/dispatcher.js';
+
+export type JoorConfig<
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = Omit<HandlerOptions, 'plugins'> & {
+  entry?: string;
+  outDir?: string;
+  plugins?: TPlugins;
+};
+
+export type JoorConfigContext<TConfig> = TConfig extends {
+  plugins: infer TPlugins extends readonly JoorPlugin<object>[];
+}
+  ? PluginServices<TPlugins>
+  : Record<string, never>;
+
+export const defineConfig = <
+  const TConfig extends JoorConfig<readonly JoorPlugin<object>[]>,
+>(
+  config: TConfig
+): TConfig => config;

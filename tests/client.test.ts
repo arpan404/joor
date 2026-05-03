@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
+import config from './fixtures/basic-app/joor.config.js';
 import { createClient, createJoorHandler } from '../src/index.js';
 
 describe('client', () => {
   it('calls a local fetch handler', async () => {
-    const handler = createJoorHandler({ procedures: { 'users.get': getUser } });
+    const handler = createJoorHandler(
+      { procedures: { 'users.get': getUser } },
+      config
+    );
     const client = createClient({
       url: 'http://localhost/rpc',
       fetch: handler,

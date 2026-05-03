@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import listPosts from './fixtures/basic-app/rpc/posts/list.rpc.js';
+import config from './fixtures/basic-app/joor.config.js';
 import { createJoorHandler } from '../src/index.js';
 
 const manifest = {
@@ -11,7 +12,7 @@ const manifest = {
 };
 
 const call = (body: object): Promise<Response> => {
-  const handler = createJoorHandler(manifest);
+  const handler = createJoorHandler(manifest, config);
   return handler(
     new Request('http://localhost/rpc', {
       method: 'POST',

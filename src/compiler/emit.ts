@@ -1,11 +1,14 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { relative, dirname } from 'node:path';
+import type { JoorConfig } from '../config.js';
 import type { CompilerManifest } from './manifest.js';
 import { createAiDocs } from './ai-docs.js';
 import { createOpenApiDocument } from './openapi.js';
 
 export interface EmitOptions {
   outDir: string;
+  config?: JoorConfig;
+  configPath?: string;
 }
 
 const toImportPath = (fromFile: string, targetFile: string): string => {
@@ -45,13 +48,21 @@ ${entries}
   await writeFile(manifestFile, source);
 };
 
-const emitDispatcher = async (outDir: string): Promise<void> => {
+const emitDispatcher = async (
+  outDir: string,
+  configPath?: string
+): Promise<void> => {
+  const configImport =
+    configPath === undefined
+      ? ''
+      : `import config from '${toImportPath(`${outDir}/dispatcher.ts`, configPath)}';\n`;
+  const configArg = configPath === undefined ? '' : ', config';
   await writeFile(
     `${outDir}/dispatcher.ts`,
     `import { createJoorHandler } from 'joor';
-import { manifest } from './manifest.js';
+${configImport}import { manifest } from './manifest.js';
 
-export const fetch = createJoorHandler(manifest);
+export const fetch = createJoorHandler(manifest${configArg});
 `
   );
 };
@@ -60,46 +71,74 @@ const emitClient = async (
   manifest: CompilerManifest,
   outDir: string
 ): Promise<void> => {
-  const groups = new Map<string, string[]>();
-  for (const entry of manifest.procedures) {
-    const [group, name] = entry.id.split('.');
-    if (group === undefined || name === undefined) continue;
-    const list = groups.get(group) ?? [];
-    list.push(entry.id);
-    groups.set(group, list);
+  interface ClientTree {
+    procedures: string[];
+    children: Map<string, ClientTree>;
   }
-  const groupBlocks = [...groups.entries()]
-    .map(([group, ids]) => {
-      const methods = ids
-        .map((id) => {
-          const name = id.split('.').at(-1);
-          if (name === undefined) return '';
-          const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
-          return `    ${name}: {
-      call: (input: ProcedureInput<${typeRef}>) => transport.call<${typeRef}>(${JSON.stringify(id)}, input),
-      request: (input: ProcedureInput<${typeRef}>) => transport.request<${typeRef}>(${JSON.stringify(id)}, input),
-      stream: (input: ProcedureInput<${typeRef}>) => transport.stream<${typeRef}>(${JSON.stringify(id)}, input),
-    },`;
-        })
-        .join('\n');
-      return `  ${group}: {
-${methods}
-  },`;
-    })
-    .join('\n');
+  const createNode = (): ClientTree => ({
+    procedures: [],
+    children: new Map(),
+  });
+  const tree = createNode();
+  for (const entry of manifest.procedures) {
+    const parts = entry.id.split('.');
+    const methodName = parts.pop();
+    if (methodName === undefined) continue;
+    let node = tree;
+    for (const part of parts) {
+      const child = node.children.get(part) ?? createNode();
+      node.children.set(part, child);
+      node = child;
+    }
+    node.procedures.push(entry.id);
+  }
+  const renderNode = (node: ClientTree, depth: number): string => {
+    const indent = '  '.repeat(depth);
+    const childIndent = '  '.repeat(depth + 1);
+    const childBlocks = [...node.children.entries()]
+      .map(
+        ([name, child]) => `${indent}${name}: {
+${renderNode(child, depth + 1)}
+${indent}},`
+      )
+      .join('\n');
+    const procedureBlocks = node.procedures
+      .map((id) => {
+        const name = id.split('.').at(-1);
+        if (name === undefined) return '';
+        const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
+        return `${indent}${name}: {
+${childIndent}call: (input: ProcedureInput<${typeRef}>) =>
+${childIndent}  transport.call<${typeRef}>(${JSON.stringify(id)}, input),
+${childIndent}request: (input: ProcedureInput<${typeRef}>) =>
+${childIndent}  transport.request<${typeRef}>(${JSON.stringify(id)}, input),
+${childIndent}stream: (input: ProcedureInput<${typeRef}>) =>
+${childIndent}  transport.stream<${typeRef}>(${JSON.stringify(id)}, input),
+${indent}},`;
+      })
+      .join('\n');
+    return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
+  };
+  const clientBody = renderNode(tree, 2);
   await writeFile(
     `${outDir}/client.ts`,
     `import { createClient as createTransportClient } from 'joor/client';
-import type { ProcedureInput } from 'joor';
+import type { ProcedureInput, ProcedureOutput, RpcEnvelope, StreamEvent } from 'joor';
 import { manifest } from './manifest.js';
+
+export type Manifest = typeof manifest;
+export type Result<TId extends keyof Manifest['procedures']> = RpcEnvelope<ProcedureOutput<Manifest['procedures'][TId]>>;
+export type Stream<TId extends keyof Manifest['procedures']> = StreamEvent<Manifest['procedures'][TId]>;
 
 export const createClient = (options: Parameters<typeof createTransportClient>[0]) => {
   const transport = createTransportClient(options);
   return {
-${groupBlocks}
+${clientBody}
     batch: transport.batch,
   };
 };
+
+export const client = createClient({ url: '/rpc' });
 `
   );
 };
@@ -110,7 +149,7 @@ export const emitArtifacts = async (
 ): Promise<void> => {
   await mkdir(options.outDir, { recursive: true });
   await emitManifest(manifest, options.outDir);
-  await emitDispatcher(options.outDir);
+  await emitDispatcher(options.outDir, options.configPath);
   await emitClient(manifest, options.outDir);
   await writeJson(
     `${options.outDir}/openapi.json`,

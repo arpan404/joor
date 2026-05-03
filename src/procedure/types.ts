@@ -71,9 +71,15 @@ export type StreamEvent<TProcedure> = TProcedure extends {
   : never;
 
 export interface ProcedureMeta {
+  kind?: 'query' | 'mutation' | 'subscription';
   summary?: string;
   description?: string;
   tags?: string[];
+  auth?: string[];
+  rateLimit?: {
+    limit: number;
+    window: string;
+  };
 }
 
 export type RpcError = {

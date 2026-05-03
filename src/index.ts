@@ -1,11 +1,14 @@
 export { createPlugin } from './context/plugin.js';
+export { defineConfig } from './config.js';
 export { defineProcedure } from './procedure/define.js';
 export { createClient } from './rpc/client.js';
 export { createJoorHandler } from './runtime/fetch.js';
+export { listen } from './runtime/node.js';
 export { t } from './schema/builder.js';
 
 export type { JoorContext } from './context/context.js';
 export type { JoorPlugin } from './context/plugin.js';
+export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   Procedure,
   ProcedureInput,

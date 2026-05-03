@@ -4,11 +4,23 @@ import type { CompilerManifest } from './manifest.js';
 
 export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
   framework: 'joor',
+  schemaVersion: '0.1.0',
+  transport: {
+    endpoint: '/rpc',
+    methods: ['POST'],
+    streaming: 'text/event-stream',
+  },
   procedures: manifest.procedures.map((entry) => ({
     id: entry.id,
+    kind:
+      entry.procedure.meta.kind ??
+      (entry.procedure.stream === undefined ? 'query' : 'subscription'),
     summary: entry.procedure.meta.summary ?? entry.id,
     description: entry.procedure.meta.description ?? '',
     tags: entry.procedure.meta.tags ?? [],
+    auth: entry.procedure.meta.auth ?? [],
+    rateLimit: entry.procedure.meta.rateLimit ?? null,
+    examples: [],
     inputSchema: toJsonSchema(entry.procedure.input),
     outputSchema:
       entry.procedure.output === undefined
