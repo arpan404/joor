@@ -5,13 +5,18 @@ import type {
   HandlerOptions,
   RpcBodyResult,
   RpcManifest,
+  RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
-import { createRpcTransportBodyResultHandler } from '../rpc/dispatcher.js';
+import {
+  createRpcRequestPreflight,
+  createRpcTransportBodyResultHandler,
+} from '../rpc/dispatcher.js';
 import { parseJson, type JsonValue } from '../schema/json.js';
 import {
   BodySizeLimitError,
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
+  normalizeMaxBodyBytes,
 } from './body.js';
 import {
   appendJsonStringHeaders,
@@ -97,6 +102,53 @@ const requestSourceFromIncoming = (
   hostname: string
 ): ContextRequestSource => new IncomingRequestSource(incoming, hostname);
 
+const writeResponseChunk = (
+  outgoing: ServerResponse<IncomingMessage>,
+  chunk: Uint8Array
+): Promise<void> =>
+  new Promise((resolvePromise, reject) => {
+    const buffer = Buffer.from(
+      chunk.buffer,
+      chunk.byteOffset,
+      chunk.byteLength
+    );
+    if (outgoing.write(buffer)) {
+      resolvePromise();
+      return;
+    }
+    const cleanup = (): void => {
+      outgoing.off('drain', onDrain);
+      outgoing.off('error', onError);
+    };
+    const onDrain = (): void => {
+      cleanup();
+      resolvePromise();
+    };
+    const onError = (error: Error): void => {
+      cleanup();
+      reject(error);
+    };
+    outgoing.once('drain', onDrain);
+    outgoing.once('error', onError);
+  });
+
+const writeWebResponseBody = async (
+  outgoing: ServerResponse<IncomingMessage>,
+  body: ReadableStream<Uint8Array>
+): Promise<void> => {
+  const reader = body.getReader();
+  try {
+    for (;;) {
+      const read = await reader.read();
+      if (read.done) break;
+      await writeResponseChunk(outgoing, read.value);
+    }
+  } finally {
+    reader.releaseLock();
+    outgoing.end();
+  }
+};
+
 const writeResult = async (
   outgoing: ServerResponse<IncomingMessage>,
   result: NodeTransportBodyResult
@@ -112,7 +164,7 @@ const writeResult = async (
       outgoing.end();
       return;
     }
-    outgoing.end(Buffer.from(await result.arrayBuffer()));
+    await writeWebResponseBody(outgoing, result.body);
     return;
   }
   const headers = createJsonHeaderRecord();
@@ -128,13 +180,16 @@ const chunkToBuffer = (chunk: string | Buffer): Buffer =>
 
 const readIncomingBody = async (
   incoming: IncomingMessage,
-  maxBodyBytes: number
+  limit: number
 ): Promise<Buffer> => {
   const contentLength = incoming.headers['content-length'];
+  if (Array.isArray(contentLength)) {
+    throw new Error('Multiple Content-Length headers');
+  }
   if (typeof contentLength === 'string') {
     const parsed = Number(contentLength);
-    if (Number.isFinite(parsed) && parsed > maxBodyBytes) {
-      throw new BodySizeLimitError(maxBodyBytes);
+    if (Number.isFinite(parsed) && parsed > limit) {
+      throw new BodySizeLimitError(limit);
     }
   }
   let first: Buffer | undefined;
@@ -143,8 +198,8 @@ const readIncomingBody = async (
   for await (const chunk of incoming) {
     const buffer = chunkToBuffer(chunk);
     total += buffer.byteLength;
-    if (total > maxBodyBytes) {
-      throw new BodySizeLimitError(maxBodyBytes);
+    if (total > limit) {
+      throw new BodySizeLimitError(limit);
     }
     if (first === undefined) first = buffer;
     else chunks.push(buffer);
@@ -158,13 +213,24 @@ const readIncomingBody = async (
 export const createNodeTransportRequestHandler = (
   handler: NodeTransportBodyResultHandler,
   hostname = '0.0.0.0',
-  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false
 ): NodeRpcRequestHandler => {
+  const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  const requestPreflight =
+    preflight === false
+      ? undefined
+      : (preflight ?? createRpcRequestPreflight());
   return async (incoming, outgoing) => {
     const request = requestSourceFromIncoming(incoming, hostname);
+    const early = requestPreflight?.(request);
+    if (early !== undefined) {
+      await writeResult(outgoing, early);
+      return;
+    }
     let json: JsonValue;
     try {
-      const body = await readIncomingBody(incoming, maxBodyBytes);
+      const body = await readIncomingBody(incoming, bodyLimit);
       json = body.length === 0 ? {} : parseJson(body.toString('utf8'));
     } catch (error) {
       const payloadTooLarge =
@@ -206,10 +272,11 @@ export const createNodeRpcRequestHandler = (
   options: HandlerOptions = {},
   hostname = '0.0.0.0'
 ): NodeRpcRequestHandler => {
-  const handler = createRpcTransportBodyResultHandler(manifest, options);
+  const handler = createRpcTransportBodyResultHandler(manifest, options, false);
   return createNodeTransportRequestHandler(
     handler,
     hostname,
-    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options)
   );
 };

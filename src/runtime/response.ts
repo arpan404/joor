@@ -21,27 +21,97 @@ export const jsonOkResponseInit: ResponseInit = {
   headers: jsonContentHeaders,
 };
 
+const headerNamePattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+const blockedResponseHeaders = new Set([
+  'connection',
+  'content-length',
+  'content-type',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade',
+]);
+
+const hasInvalidHeaderValue = (value: string): boolean =>
+  value.includes('\0') || value.includes('\r') || value.includes('\n');
+
+const isSafeResponseHeader = (name: string, value: string): boolean => {
+  if (hasInvalidHeaderValue(value)) return false;
+  if (name === 'cache-control' || name === 'etag') return true;
+  return (
+    headerNamePattern.test(name) &&
+    !blockedResponseHeaders.has(name.toLowerCase())
+  );
+};
+
 export const isSerializedJsonEnvelope = (
   result: TransportBodyResult
 ): result is SerializedJsonEnvelope =>
-  !(result instanceof Response) &&
-  !Array.isArray(result) &&
-  'body' in result &&
-  typeof result.body === 'string';
+  !Array.isArray(result) && 'body' in result && typeof result.body === 'string';
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
   source: JsonObject
 ): void => {
-  for (const [key, value] of Object.entries(source)) {
-    if (typeof value === 'string') target[key] = value;
+  const cacheControl = source['cache-control'];
+  if (
+    Object.hasOwn(source, 'cache-control') &&
+    typeof cacheControl === 'string' &&
+    !hasInvalidHeaderValue(cacheControl)
+  ) {
+    target['cache-control'] = cacheControl;
+  }
+  for (const key in source) {
+    if (key === 'cache-control') continue;
+    if (!Object.hasOwn(source, key)) continue;
+    const value = source[key];
+    if (typeof value === 'string' && isSafeResponseHeader(key, value)) {
+      target[key] = value;
+    }
+  }
+};
+
+const appendHeaders = (
+  target: Headers,
+  source: Record<string, string>
+): void => {
+  for (const key in source) {
+    if (!Object.hasOwn(source, key)) continue;
+    const value = source[key];
+    if (value !== undefined && isSafeResponseHeader(key, value)) {
+      target.set(key, value);
+    }
+  }
+};
+
+const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
+  const cacheControl = source['cache-control'];
+  if (
+    Object.hasOwn(source, 'cache-control') &&
+    typeof cacheControl === 'string' &&
+    !hasInvalidHeaderValue(cacheControl)
+  ) {
+    target.set('cache-control', cacheControl);
+  }
+  for (const key in source) {
+    if (key === 'cache-control') continue;
+    if (!Object.hasOwn(source, key)) continue;
+    const value = source[key];
+    if (typeof value === 'string' && isSafeResponseHeader(key, value)) {
+      target.set(key, value);
+    }
   }
 };
 
 export const createJsonHeaderRecord = (
   source?: JsonObject
 ): Record<string, string> => {
-  const headers: Record<string, string> = { ...jsonContentHeaders };
+  const headers: Record<string, string> = {
+    'content-type': 'application/json',
+  };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
   return headers;
 };
@@ -66,14 +136,10 @@ export const rpcEnvelopeToResponse = (
   ) {
     return new Response(JSON.stringify(result), jsonOkResponseInit);
   }
-  const headers = new Headers({
-    ...jsonContentHeaders,
-    ...(extraHeaders ?? {}),
-  });
+  const headers = new Headers(jsonContentHeaders);
+  if (extraHeaders !== undefined) appendHeaders(headers, extraHeaders);
   if (!Array.isArray(result) && result.ok && result.headers !== undefined) {
-    for (const [key, value] of Object.entries(result.headers)) {
-      if (typeof value === 'string') headers.set(key, value);
-    }
+    appendJsonHeaders(headers, result.headers);
   }
   return new Response(JSON.stringify(result), { status: 200, headers });
 };
@@ -81,8 +147,8 @@ export const rpcEnvelopeToResponse = (
 export const transportResultToResponse = (
   result: TransportBodyResult
 ): Response => {
-  if (result instanceof Response) return result;
   if (isSerializedJsonEnvelope(result))
     return serializedEnvelopeToResponse(result);
+  if (result instanceof Response) return result;
   return rpcEnvelopeToResponse(result);
 };

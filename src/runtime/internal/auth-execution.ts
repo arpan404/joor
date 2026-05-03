@@ -10,6 +10,8 @@ export interface ExecutionState {
   authCache?: Map<AuthPolicy<object, object, object>, AuthResultLike>;
 }
 
+const emptyAuthResult: object = Object.freeze({});
+
 export const uncachedExecutionState: ExecutionState = Object.freeze({
   cacheAuth: false,
 });
@@ -36,7 +38,7 @@ export const authenticateOnce = (
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
 ): AuthResultLike => {
-  if (policy === undefined) return {};
+  if (policy === undefined) return emptyAuthResult;
   if (!state.cacheAuth) {
     return runAuthPolicy(policy, ctx);
   }

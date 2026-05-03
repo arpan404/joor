@@ -43,6 +43,110 @@ describe('security defaults', () => {
     expect(body.error.code).toBe('PAYLOAD_TOO_LARGE');
   });
 
+  it('rejects streamed request bodies over the limit without content-length', async () => {
+    const echo = defineProcedure({
+      input: t.object({ value: t.string() }),
+      output: t.object({ value: t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const handler = createJoorHandler(
+      { procedures: { echo } },
+      { maxBodyBytes: 32 }
+    );
+    const body = new Blob([
+      JSON.stringify({ id: 'echo', input: { value: 'x'.repeat(64) } }),
+    ]);
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body,
+      })
+    );
+    const parsed = await response.json();
+
+    expect(response.status).toBe(413);
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error.code).toBe('PAYLOAD_TOO_LARGE');
+  });
+
+  it('does not trust a forged small content-length header', async () => {
+    const echo = defineProcedure({
+      input: t.object({ value: t.string() }),
+      output: t.object({ value: t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const handler = createJoorHandler(
+      { procedures: { echo } },
+      { maxBodyBytes: 32 }
+    );
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          'content-length': '1',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'echo', input: { value: 'x'.repeat(64) } }),
+      })
+    );
+    const parsed = await response.json();
+
+    expect(response.status).toBe(413);
+    expect(parsed.ok).toBe(false);
+    expect(parsed.error.code).toBe('PAYLOAD_TOO_LARGE');
+  });
+
+  it('rejects wrong-path requests before parsing the body', async () => {
+    const echo = defineProcedure({
+      input: t.object({ value: t.string() }),
+      output: t.object({ value: t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const handler = createJoorHandler({ procedures: { echo } });
+
+    const response = await handler(
+      new Request('http://localhost/not-rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: 'not-json',
+      })
+    );
+
+    expect(response.status).toBe(404);
+  });
+
+  it('rejects unsupported media types before parsing the body', async () => {
+    const echo = defineProcedure({
+      input: t.object({ value: t.string() }),
+      output: t.object({ value: t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const handler = createJoorHandler({ procedures: { echo } });
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'text/plain' },
+        body: 'not-json',
+      })
+    );
+    const body = await response.json();
+
+    expect(body.ok).toBe(false);
+    expect(body.error.code).toBe('UNSUPPORTED_MEDIA_TYPE');
+  });
+
   it('does not trust forwarded rate-limit identity headers by default', async () => {
     const limited = defineProcedure({
       input: t.object({ ok: t.boolean() }),
@@ -157,6 +261,88 @@ describe('security defaults', () => {
     expect(secondBody.ok).toBe(true);
     expect(firstBody.data.subject).toBe('subject-a');
     expect(secondBody.data.subject).toBe('subject-b');
+  });
+
+  it('keeps auth and headers in cache scope when custom cache keys are configured', async () => {
+    const auth = createAuthPolicy({
+      name: 'subject-with-custom-cache-key',
+      authenticate(ctx) {
+        const subject = ctx.rawHeaders.get('authorization');
+        if (subject === null) {
+          return ctx.error('UNAUTHORIZED', { message: 'Missing subject' });
+        }
+        return { subject };
+      },
+    });
+    const cached = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ subject: t.string() }),
+      auth,
+      meta: {
+        kind: 'query',
+        cache: {
+          ttl: '1m',
+          key: ['input.id'],
+        },
+      },
+      async handler(ctx) {
+        return ctx.ok({ subject: ctx.auth.subject });
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { customSecureCached: cached },
+    });
+    const body = JSON.stringify({
+      id: 'customSecureCached',
+      input: { id: 'same-input' },
+    });
+
+    const first = await handler(postJson(body, { authorization: 'subject-a' }));
+    const second = await handler(
+      postJson(body, { authorization: 'subject-b' })
+    );
+    const firstBody = await first.json();
+    const secondBody = await second.json();
+
+    expect(firstBody.ok).toBe(true);
+    expect(secondBody.ok).toBe(true);
+    expect(firstBody.data.subject).toBe('subject-a');
+    expect(secondBody.data.subject).toBe('subject-b');
+  });
+
+  it('filters unsafe response headers before writing HTTP headers', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      responseHeaders: t.object({
+        'content-type': t.string(),
+        connection: t.string(),
+        'x-bad': t.string(),
+        'x-safe': t.string(),
+      }),
+      async handler(ctx, input) {
+        return ctx.ok(input, {
+          'content-type': 'text/plain',
+          connection: 'close',
+          'x-bad': 'bad\r\nx-injected: yes',
+          'x-safe': 'ok',
+        });
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { unsafeHeaders: procedure },
+    });
+
+    const response = await handler(
+      postJson(JSON.stringify({ id: 'unsafeHeaders', input: { ok: true } }))
+    );
+    const body = await response.json();
+
+    expect(body.ok).toBe(true);
+    expect(response.headers.get('content-type')).toContain('application/json');
+    expect(response.headers.get('connection')).toBeNull();
+    expect(response.headers.get('x-bad')).toBeNull();
+    expect(response.headers.get('x-safe')).toBe('ok');
   });
 
   it('does not emit wildcard CORS headers when origin is omitted', async () => {

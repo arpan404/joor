@@ -7,6 +7,19 @@ import {
   defineProcedure,
   t,
 } from '../src/index.js';
+import type { JsonValue } from '../src/index.js';
+
+type StreamTestProcedure = {
+  types?: {
+    input: { ok: boolean };
+    output: JsonValue;
+    stream: { ok: boolean };
+    errors: string;
+    headers: Record<string, never>;
+    responseHeaders: Record<string, never>;
+    auth: Record<string, never>;
+  };
+};
 
 describe('client', () => {
   it('calls a local fetch handler', async () => {
@@ -48,5 +61,27 @@ describe('client', () => {
     );
 
     expect(result.ok).toBe(true);
+  });
+
+  it('bounds SSE event buffering', async () => {
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      maxStreamEventBytes: 32,
+      async fetch() {
+        return new Response(`event: data\ndata: ${'x'.repeat(64)}`, {
+          headers: { 'content-type': 'text/event-stream' },
+        });
+      },
+    });
+
+    const consume = async (): Promise<void> => {
+      for await (const _event of client.stream<StreamTestProcedure>('stream', {
+        ok: true,
+      })) {
+        void _event;
+      }
+    };
+
+    await expect(consume()).rejects.toThrow('SSE event exceeds');
   });
 });

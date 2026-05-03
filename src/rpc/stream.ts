@@ -19,6 +19,5 @@ export const createSseResponse = (
     headers: {
       'content-type': 'text/event-stream',
       'cache-control': 'no-cache',
-      connection: 'keep-alive',
     },
   });

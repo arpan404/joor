@@ -49,7 +49,8 @@ import { parseDurationMs } from '../internal/duration.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
-  readJsonRequestBody,
+  normalizeMaxBodyBytes,
+  readJsonRequestBodyWithLimit,
 } from '../runtime/body.js';
 import {
   jsonContentHeaders,
@@ -85,7 +86,6 @@ interface RuntimeOptions {
   validateInput: boolean;
   validateOutput: boolean;
   validateResponseHeaders: boolean;
-  rpcPath: string;
 }
 
 export interface HandlerOptions {
@@ -179,6 +179,10 @@ const toResponse = (
     options.cors === undefined ? undefined : corsHeaders(options)
   );
 
+export type RpcRequestPreflight = (
+  request: ContextRequestSource
+) => Response | undefined;
+
 const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   isJsonObject(value) &&
   typeof value['id'] === 'string' &&
@@ -218,6 +222,49 @@ const matchesPath = (url: string, path: string): boolean => {
   if (!url.startsWith(path, pathStart)) return false;
   const next = url[pathStart + path.length];
   return next === undefined || next === '?' || next === '#';
+};
+
+const isJsonContentType = (value: string): boolean => {
+  if (value === 'application/json') return true;
+  const semicolonIndex = value.indexOf(';');
+  const type = semicolonIndex === -1 ? value : value.slice(0, semicolonIndex);
+  const normalized = type.trim().toLowerCase();
+  return normalized === 'application/json' || normalized.endsWith('+json');
+};
+
+export const createRpcRequestPreflight = (
+  options: HandlerOptions = {}
+): RpcRequestPreflight => {
+  const cors = corsHeaders(options);
+  const rpcPath = options.path ?? '/rpc';
+  return (request: ContextRequestSource): Response | undefined => {
+    if (!matchesPath(request.url, rpcPath)) {
+      return new Response(null, { status: 404, headers: cors });
+    }
+    if (request.method === 'OPTIONS' && options.cors !== undefined) {
+      return new Response(null, { status: 204, headers: cors });
+    }
+    if (request.method !== 'POST') {
+      return new Response(null, {
+        status: 405,
+        headers: { allow: 'POST', ...cors },
+      });
+    }
+    const contentType = request.getHeader('content-type') ?? '';
+    if (!isJsonContentType(contentType)) {
+      return toResponse(
+        rpcFailure(
+          '',
+          traceId(request),
+          'UNSUPPORTED_MEDIA_TYPE',
+          'Content-Type must be application/json',
+          415
+        ),
+        options
+      );
+    }
+    return undefined;
+  };
 };
 
 const prepareProcedures = (
@@ -741,14 +788,18 @@ export const createRpcHandler = (
   manifest: RpcManifest,
   options: HandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
-  const handleParsed = createRpcBodyHandler(manifest, options);
+  const handleParsed = createRpcBodyHandler(manifest, options, false);
+  const preflight = createRpcRequestPreflight(options);
+  const bodyLimit = normalizeMaxBodyBytes(
+    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+  );
   return async (request: Request): Promise<Response> => {
+    const source = createFetchRequestSource(request);
+    const early = preflight(source);
+    if (early !== undefined) return early;
     let body: JsonValue;
     try {
-      body = await readJsonRequestBody(
-        request,
-        options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
-      );
+      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (error instanceof Error) options.onError?.(error, request);
       const payloadTooLarge =
@@ -756,7 +807,7 @@ export const createRpcHandler = (
       const status = payloadTooLarge ? 413 : 400;
       const body = rpcFailure(
         '',
-        traceId(createFetchRequestSource(request)),
+        traceId(source),
         payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
         payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
         status
@@ -775,9 +826,10 @@ export const createRpcHandler = (
 
 export const createRpcBodyHandler = (
   manifest: RpcManifest,
-  options: HandlerOptions = {}
+  options: HandlerOptions = {},
+  preflight = true
 ): ((request: Request, body: JsonValue) => Promise<Response>) => {
-  const handleResult = createRpcBodyResultHandler(manifest, options);
+  const handleResult = createRpcBodyResultHandler(manifest, options, preflight);
   return async (request: Request, body: JsonValue): Promise<Response> => {
     const result = await handleResult(request, body);
     return result instanceof Response ? result : toResponse(result, options);
@@ -786,11 +838,13 @@ export const createRpcBodyHandler = (
 
 export const createRpcBodyResultHandler = (
   manifest: RpcManifest,
-  options: HandlerOptions = {}
+  options: HandlerOptions = {},
+  preflight = true
 ): ((request: Request, body: JsonValue) => Promise<RpcBodyResult>) => {
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
-    options
+    options,
+    preflight
   );
   return (request: Request, body: JsonValue): Promise<RpcBodyResult> =>
     handleTransport(createFetchRequestSource(request), body);
@@ -798,12 +852,16 @@ export const createRpcBodyResultHandler = (
 
 export const createRpcTransportBodyResultHandler = (
   manifest: RpcManifest,
-  options: HandlerOptions = {}
+  options: HandlerOptions = {},
+  preflight = true
 ): ((
   request: ContextRequestSource,
   body: JsonValue
 ) => Promise<RpcBodyResult>) => {
   const procedures = prepareProcedures(manifest);
+  const requestPreflight = preflight
+    ? createRpcRequestPreflight(options)
+    : undefined;
   const runtime: RuntimeOptions = {
     cors: corsHeaders(options),
     cacheMaxEntries:
@@ -821,7 +879,6 @@ export const createRpcTransportBodyResultHandler = (
     validateInput: options.validateInput ?? true,
     validateOutput: options.validateOutput ?? true,
     validateResponseHeaders: options.validateResponseHeaders ?? true,
-    rpcPath: options.path ?? '/rpc',
   };
   const useTrustedUnary =
     !runtime.enforceRateLimit &&
@@ -875,31 +932,8 @@ export const createRpcTransportBodyResultHandler = (
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<RpcBodyResult> => {
-    if (request.method === 'OPTIONS' && options.cors !== undefined) {
-      return new Response(null, { status: 204, headers: runtime.cors });
-    }
-    if (!matchesPath(request.url, runtime.rpcPath)) {
-      return new Response(null, { status: 404, headers: runtime.cors });
-    }
-    if (request.method !== 'POST') {
-      return new Response(null, {
-        status: 405,
-        headers: { allow: 'POST', ...runtime.cors },
-      });
-    }
-    const contentType = request.getHeader('content-type') ?? '';
-    if (!contentType.includes('application/json')) {
-      return toResponse(
-        rpcFailure(
-          '',
-          traceId(request),
-          'UNSUPPORTED_MEDIA_TYPE',
-          'Content-Type must be application/json',
-          415
-        ),
-        options
-      );
-    }
+    const early = requestPreflight?.(request);
+    if (early !== undefined) return early;
 
     const requestServices = services ?? (await servicesPromise);
     if (Array.isArray(body)) {

@@ -76,7 +76,9 @@
     "benchmark:example": "tsx examples/ai-native-backend/benchmark.ts",
     "benchmark:frameworks": "tsx examples/ai-native-backend/framework-benchmark.ts",
     "benchmark:bun": "bun examples/ai-native-backend/bun-framework-benchmark.ts",
-    "benchmark:deno": "npm run build && npm run joor -- build --config examples/ai-native-backend/joor.config.ts --out examples/ai-native-backend/.joor && npm run joor -- build --config examples/ai-native-backend/joor.trusted.config.ts --out examples/ai-native-backend/.joor-trusted && deno run --allow-net --allow-read examples/ai-native-backend/deno-framework-benchmark.ts",
+    "benchmark:deno": "npm run build && npm run joor -- build --config examples/ai-native-backend/joor.config.ts --out examples/ai-native-backend/.joor && npm run joor -- build --config examples/ai-native-backend/joor.trusted.config.ts --out examples/ai-native-backend/.joor-trusted && deno run --allow-net --allow-read --allow-env examples/ai-native-backend/deno-framework-benchmark.ts",
+    "benchmark:matrix:5": "BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:example && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:frameworks && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:bun && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:deno",
+    "benchmark:matrix:10": "BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:example && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:frameworks && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:bun && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:deno",
     "joor": "tsx src/cli/index.ts",
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run test && npm run build"

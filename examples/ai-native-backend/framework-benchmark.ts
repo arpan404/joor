@@ -26,15 +26,15 @@ import {
   type JsonObject,
   type JsonValue,
 } from '../../src/schema/json.js';
-
-interface BenchmarkResult {
-  name: string;
-  requests: number;
-  concurrency: number;
-  durationMs: number;
-  requestsPerSecond: number;
-  averageLatencyMs: number;
-}
+import {
+  benchmarkSample,
+  printBenchmarkPlan,
+  printBenchmarkSummary,
+  readBenchmarkRuns,
+  readBenchmarkSettings,
+  type BenchmarkSample,
+  type BenchmarkSetting,
+} from './benchmark-stats.js';
 
 interface RunningServer {
   url: string;
@@ -351,7 +351,12 @@ const startJoor = async (
     transport: NodeTransportBodyResultHandler;
   };
   return startNodeHandler(
-    createNodeTransportRequestHandler(compiled.transport, '127.0.0.1')
+    createNodeTransportRequestHandler(
+      compiled.transport,
+      '127.0.0.1',
+      undefined,
+      false
+    )
   );
 };
 
@@ -359,6 +364,7 @@ const createRequestInit = (body: string): RequestInit => ({
   method: 'POST',
   headers: {
     authorization: authHeader,
+    'content-length': String(body.length),
     'content-type': 'application/json',
     'x-forwarded-for': `benchmark-${crypto.randomUUID()}`,
   },
@@ -369,9 +375,9 @@ const runBenchmark = async (
   name: string,
   url: string,
   body: string,
-  requests: number,
-  concurrency: number
-): Promise<BenchmarkResult> => {
+  setting: BenchmarkSetting,
+  run: number
+): Promise<BenchmarkSample> => {
   let next = 0;
   const latencies: number[] = [];
   const started = performance.now();
@@ -379,7 +385,7 @@ const runBenchmark = async (
     for (;;) {
       const index = next;
       next += 1;
-      if (index >= requests) return;
+      if (index >= setting.requests) return;
       const requestStarted = performance.now();
       const response = await fetch(url, createRequestInit(body));
       const text = await response.text();
@@ -390,39 +396,25 @@ const runBenchmark = async (
     }
   };
   await Promise.all(
-    Array.from({ length: concurrency }, async () => {
+    Array.from({ length: setting.concurrency }, async () => {
       await worker();
     })
   );
   const durationMs = performance.now() - started;
-  const averageLatencyMs =
-    latencies.reduce((total, value) => total + value, 0) / latencies.length;
-  return {
+  return benchmarkSample({
     name,
-    requests,
-    concurrency,
+    setting,
+    run,
     durationMs,
-    requestsPerSecond: (requests / durationMs) * 1_000,
-    averageLatencyMs,
-  };
+    latenciesMs: latencies,
+  });
 };
 
-const printResults = (results: readonly BenchmarkResult[]): void => {
-  console.info(
-    '| framework | requests | concurrency | duration ms | req/s | avg latency ms |'
-  );
-  console.info('| --- | ---: | ---: | ---: | ---: | ---: |');
-  for (const result of results) {
-    console.info(
-      `| ${result.name} | ${result.requests} | ${result.concurrency} | ${result.durationMs.toFixed(2)} | ${result.requestsPerSecond.toFixed(0)} | ${result.averageLatencyMs.toFixed(3)} |`
-    );
-  }
-};
-
-const requests = 5_000;
-const concurrency = 100;
+const runs = readBenchmarkRuns();
+const settings = readBenchmarkSettings();
 const servers: RunningServer[] = [];
-const results: BenchmarkResult[] = [];
+const samples: BenchmarkSample[] = [];
+printBenchmarkPlan('node framework benchmark', runs, settings);
 
 try {
   const entries: Array<{
@@ -452,18 +444,22 @@ try {
   for (const entry of entries) {
     const server = await entry.start();
     servers.push(server);
-    await runBenchmark(`${entry.name} warmup`, server.url, entry.body, 250, 25);
-    results.push(
-      await runBenchmark(
-        entry.name,
-        server.url,
-        entry.body,
-        requests,
-        concurrency
-      )
+    await runBenchmark(
+      `${entry.name} warmup`,
+      server.url,
+      entry.body,
+      { requests: 250, concurrency: 25 },
+      0
     );
+    for (const setting of settings) {
+      for (let run = 1; run <= runs; run += 1) {
+        samples.push(
+          await runBenchmark(entry.name, server.url, entry.body, setting, run)
+        );
+      }
+    }
   }
-  printResults(results);
+  printBenchmarkSummary(samples);
 } finally {
   await Promise.all(servers.map((server) => server.close()));
 }

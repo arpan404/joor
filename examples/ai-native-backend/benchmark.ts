@@ -6,15 +6,15 @@ import chat from './rpc/ai/chat.rpc.js';
 import check from './rpc/health/check.rpc.js';
 import getUser from './rpc/users/get.rpc.js';
 import searchUsers from './rpc/users/search.rpc.js';
-
-interface BenchmarkResult {
-  name: string;
-  requests: number;
-  concurrency: number;
-  durationMs: number;
-  requestsPerSecond: number;
-  averageLatencyMs: number;
-}
+import {
+  benchmarkSample,
+  printBenchmarkPlan,
+  printBenchmarkSummary,
+  readBenchmarkRuns,
+  readBenchmarkSettings,
+  type BenchmarkSample,
+  type BenchmarkSetting,
+} from './benchmark-stats.js';
 
 const outDir = new URL('./.joor', import.meta.url).pathname;
 const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
@@ -48,6 +48,7 @@ const createRequest = (): Request =>
     method: 'POST',
     headers: {
       authorization: 'Bearer benchmark-token',
+      'content-length': String(payload.length),
       'content-type': 'application/json',
       'x-forwarded-for': `benchmark-${crypto.randomUUID()}`,
     },
@@ -57,9 +58,9 @@ const createRequest = (): Request =>
 const runBenchmark = async (
   name: string,
   handler: (request: Request) => Promise<Response>,
-  requests: number,
-  concurrency: number
-): Promise<BenchmarkResult> => {
+  setting: BenchmarkSetting,
+  run: number
+): Promise<BenchmarkSample> => {
   let next = 0;
   const latencies: number[] = [];
   const started = performance.now();
@@ -67,7 +68,7 @@ const runBenchmark = async (
     for (;;) {
       const index = next;
       next += 1;
-      if (index >= requests) return;
+      if (index >= setting.requests) return;
       const requestStarted = performance.now();
       const response = await handler(createRequest());
       if (!response.ok) {
@@ -81,30 +82,18 @@ const runBenchmark = async (
     }
   };
   await Promise.all(
-    Array.from({ length: concurrency }, async () => {
+    Array.from({ length: setting.concurrency }, async () => {
       await worker();
     })
   );
   const durationMs = performance.now() - started;
-  const averageLatencyMs =
-    latencies.reduce((total, value) => total + value, 0) / latencies.length;
-  return {
+  return benchmarkSample({
     name,
-    requests,
-    concurrency,
+    setting,
+    run,
     durationMs,
-    requestsPerSecond: (requests / durationMs) * 1_000,
-    averageLatencyMs,
-  };
-};
-
-const printResult = (result: BenchmarkResult): void => {
-  console.info(`${result.name}`);
-  console.info(`  requests: ${result.requests}`);
-  console.info(`  concurrency: ${result.concurrency}`);
-  console.info(`  duration: ${result.durationMs.toFixed(2)} ms`);
-  console.info(`  throughput: ${result.requestsPerSecond.toFixed(0)} req/s`);
-  console.info(`  avg latency: ${result.averageLatencyMs.toFixed(3)} ms`);
+    latenciesMs: latencies,
+  });
 };
 
 await build({ config: configPath, outDir });
@@ -120,29 +109,37 @@ const trustedCompiled = (await import(trustedDispatcherUrl)) as {
 };
 const trustedCompiledHandler = trustedCompiled.fetch;
 
-const warmup = await runBenchmark('warmup', genericHandler, 500, 25);
-printResult(warmup);
+const runs = readBenchmarkRuns();
+const settings = readBenchmarkSettings([
+  { requests: 10_000, concurrency: 100 },
+]);
+const samples: BenchmarkSample[] = [];
+printBenchmarkPlan('direct benchmark', runs, settings);
 
-const genericResult = await runBenchmark(
-  'users.get unary rpc (generic)',
-  genericHandler,
-  10_000,
-  100
-);
-printResult(genericResult);
+const entries: Array<{
+  name: string;
+  handler(request: Request): Promise<Response>;
+}> = [
+  { name: 'users.get unary rpc (generic)', handler: genericHandler },
+  { name: 'users.get unary rpc (compiled safe)', handler: compiledHandler },
+  {
+    name: 'users.get unary rpc (compiled trusted)',
+    handler: trustedCompiledHandler,
+  },
+];
 
-const compiledResult = await runBenchmark(
-  'users.get unary rpc (compiled safe)',
-  compiledHandler,
-  10_000,
-  100
-);
-printResult(compiledResult);
+for (const entry of entries) {
+  await runBenchmark(
+    entry.name,
+    entry.handler,
+    { requests: 500, concurrency: 25 },
+    0
+  );
+  for (const setting of settings) {
+    for (let run = 1; run <= runs; run += 1) {
+      samples.push(await runBenchmark(entry.name, entry.handler, setting, run));
+    }
+  }
+}
 
-const trustedCompiledResult = await runBenchmark(
-  'users.get unary rpc (compiled trusted)',
-  trustedCompiledHandler,
-  10_000,
-  100
-);
-printResult(trustedCompiledResult);
+printBenchmarkSummary(samples);

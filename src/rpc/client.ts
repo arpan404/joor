@@ -11,6 +11,7 @@ export interface ClientOptions {
   url: string;
   fetch?: (request: Request) => Promise<Response>;
   headers?: Record<string, string>;
+  maxStreamEventBytes?: number;
 }
 
 export interface PendingRpcRequest<TProcedure = never> {
@@ -73,8 +74,16 @@ const createHeaders = (
   return output;
 };
 
+const defaultMaxStreamEventBytes = 1024 * 1024;
+
+const normalizeMaxStreamEventBytes = (value: number | undefined): number =>
+  value === undefined || !Number.isFinite(value) || value < 0
+    ? defaultMaxStreamEventBytes
+    : Math.floor(value);
+
 const parseSse = async function* <TEvent extends JsonValue>(
-  response: Response
+  response: Response,
+  maxEventBytes: number
 ): AsyncIterable<TEvent> {
   if (response.body === null) return;
   const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
@@ -83,9 +92,15 @@ const parseSse = async function* <TEvent extends JsonValue>(
     const read = await reader.read();
     if (read.done) break;
     buffer += read.value;
+    if (buffer.length > maxEventBytes) {
+      throw new Error('SSE event exceeds maxStreamEventBytes');
+    }
     const chunks = buffer.split('\n\n');
     buffer = chunks.pop() ?? '';
     for (const chunk of chunks) {
+      if (chunk.length > maxEventBytes) {
+        throw new Error('SSE event exceeds maxStreamEventBytes');
+      }
       const eventLine = chunk
         .split('\n')
         .find((line) => line.startsWith('event: '));
@@ -109,6 +124,9 @@ export const createClient = (options: ClientOptions): RpcTransportClient => {
   const fetcher =
     options.fetch ??
     ((request: Request): Promise<Response> => globalThis.fetch(request));
+  const maxStreamEventBytes = normalizeMaxStreamEventBytes(
+    options.maxStreamEventBytes
+  );
   const call = async <TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>,
@@ -194,9 +212,10 @@ export const createClient = (options: ClientOptions): RpcTransportClient => {
           body: JSON.stringify({ id, input }),
         })
       );
-      yield* parseSse<JsonValue>(response) as AsyncIterable<
-        StreamEvent<TProcedure> & JsonValue
-      >;
+      yield* parseSse<JsonValue>(
+        response,
+        maxStreamEventBytes
+      ) as AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
     },
   });
   return {

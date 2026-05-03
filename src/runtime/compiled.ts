@@ -32,7 +32,8 @@ import type { RpcBodyResult } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
-  readJsonRequestBody,
+  normalizeMaxBodyBytes,
+  readJsonRequestBodyWithLimit,
 } from './body.js';
 import {
   isSerializedJsonEnvelope,
@@ -112,6 +113,39 @@ const matchesPath = (url: string, path: string): boolean => {
   if (!url.startsWith(path, pathStart)) return false;
   const next = url[pathStart + path.length];
   return next === undefined || next === '?' || next === '#';
+};
+
+const isJsonContentType = (value: string): boolean => {
+  if (value === 'application/json') return true;
+  const semicolonIndex = value.indexOf(';');
+  const type = semicolonIndex === -1 ? value : value.slice(0, semicolonIndex);
+  const normalized = type.trim().toLowerCase();
+  return normalized === 'application/json' || normalized.endsWith('+json');
+};
+
+const requestPreflight = (
+  request: ContextRequestSource,
+  path: string
+): Response | undefined => {
+  if (!matchesPath(request.url, path)) {
+    return new Response(null, { status: 404 });
+  }
+  if (request.method !== 'POST') {
+    return new Response(null, { status: 405, headers: { allow: 'POST' } });
+  }
+  const contentType = request.getHeader('content-type') ?? '';
+  if (!isJsonContentType(contentType)) {
+    return rpcEnvelopeToResponse(
+      failure(
+        '',
+        traceId(request),
+        'UNSUPPORTED_MEDIA_TYPE',
+        'Content-Type must be application/json',
+        415
+      )
+    );
+  }
+  return undefined;
 };
 
 const failure = (
@@ -603,7 +637,8 @@ const createCompiledRuntime = (config: JoorConfig = {}) => {
 export const createCompiledRpcTransportBodyResultHandler = (
   dispatch: CompiledDispatch,
   config: JoorConfig = {},
-  unaryDispatch?: CompiledUnaryDispatch
+  unaryDispatch?: CompiledUnaryDispatch,
+  preflight = true
 ): ((
   request: ContextRequestSource,
   body: JsonValue
@@ -613,19 +648,13 @@ export const createCompiledRpcTransportBodyResultHandler = (
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
-    if (request.method !== 'POST') {
-      return new Response(null, { status: 405, headers: { allow: 'POST' } });
-    }
-    if (!matchesPath(request.url, compiled.path)) {
-      return new Response(null, { status: 404 });
+    if (preflight) {
+      const early = requestPreflight(request, compiled.path);
+      if (early !== undefined) return early;
     }
     const resolved =
       compiled.getServices() ?? (await compiled.resolveServices());
-    if (
-      !Array.isArray(body) &&
-      unaryDispatch !== undefined &&
-      isJsonObject(body)
-    ) {
+    if (unaryDispatch !== undefined && isJsonObject(body)) {
       const unary = await unaryDispatch(
         body,
         request,
@@ -708,19 +737,22 @@ export const createCompiledRpcHandler = (
   config: JoorConfig = {},
   unaryDispatch?: CompiledUnaryDispatch
 ): ((request: Request) => Promise<Response>) => {
+  const bodyLimit = normalizeMaxBodyBytes(
+    config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+  );
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
     config,
-    unaryDispatch
+    unaryDispatch,
+    false
   );
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
+    const early = requestPreflight(source, config.path ?? '/rpc');
+    if (early !== undefined) return early;
     let body: JsonValue;
     try {
-      body = await readJsonRequestBody(
-        request,
-        config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
-      );
+      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       const payloadTooLarge =
         error instanceof Error && isBodySizeLimitError(error);

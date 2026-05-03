@@ -2,8 +2,12 @@ import type {
   HandlerOptions,
   RpcBodyResult,
   RpcManifest,
+  RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
-import { createRpcBodyResultHandler } from '../rpc/dispatcher.js';
+import {
+  createRpcBodyResultHandler,
+  createRpcRequestPreflight,
+} from '../rpc/dispatcher.js';
 import {
   createFetchRequestSource,
   type ContextRequestSource,
@@ -12,7 +16,8 @@ import type { JsonValue } from '../schema/json.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
-  readJsonRequestBody,
+  normalizeMaxBodyBytes,
+  readJsonRequestBodyWithLimit,
 } from './body.js';
 import { createJoorHandler } from './fetch.js';
 import {
@@ -60,19 +65,26 @@ export const createDenoFetch = (
 
 export const createDenoTransportRequestHandler = (
   handler: DenoTransportBodyResultHandler,
-  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false
 ): ((request: Request) => Promise<Response>) => {
+  const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  const requestPreflight =
+    preflight === false
+      ? undefined
+      : (preflight ?? createRpcRequestPreflight());
   return async (request: Request): Promise<Response> => {
+    const source = createFetchRequestSource(request);
+    const early = requestPreflight?.(source);
+    if (early !== undefined) return early;
     let body: JsonValue;
     try {
-      body = await readJsonRequestBody(request, maxBodyBytes);
+      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
       return bodyReadFailure(request, error);
     }
-    return transportResultToResponse(
-      await handler(createFetchRequestSource(request), body)
-    );
+    return transportResultToResponse(await handler(source, body));
   };
 };
 
@@ -80,10 +92,11 @@ export const createDenoRpcRequestHandler = (
   manifest: RpcManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) => {
-  const handler = createRpcBodyResultHandler(manifest, options);
+  const handler = createRpcBodyResultHandler(manifest, options, false);
   return createDenoTransportRequestHandler(
     (request, body) => handler(request.toRequest(), body),
-    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options)
   );
 };
 

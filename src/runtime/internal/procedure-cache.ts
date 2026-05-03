@@ -59,6 +59,9 @@ const defaultCacheKey = (
 ): string =>
   `${id}:input=${stringifyCachePart(input)}|headers=${stringifyCachePart(headers)}|auth=${stringifyCachePart(auth)}`;
 
+const cacheScopeKey = (headers: JsonObject, auth: object): string =>
+  `headers=${stringifyCachePart(headers)}|auth=${stringifyCachePart(auth)}`;
+
 export const createProcedureCacheKey = (
   id: string,
   keyPaths: readonly string[] | undefined,
@@ -79,7 +82,7 @@ export const createProcedureCacheKey = (
     const value = readPath(source[root], segments);
     return `${path}=${stringifyCachePart(value ?? null)}`;
   });
-  return `${id}:${parts.join('|')}`;
+  return `${id}:${cacheScopeKey(headers, auth)}|${parts.join('|')}`;
 };
 
 const pruneExpiredCacheEntries = (
