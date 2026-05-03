@@ -7,11 +7,15 @@ import {
 } from '../procedure/result.js';
 import { errorStatus } from '../procedure/errors.js';
 
-export interface JoorContext<TServices extends object = Record<string, never>> {
+export interface JoorContext<
+  TServices extends object = Record<string, never>,
+  THeaders extends object = Record<string, never>,
+> {
   request: Request;
   traceId: string;
   signal: AbortSignal;
-  headers: Headers;
+  headers: THeaders;
+  rawHeaders: Headers;
   services: TServices;
   ok<TData extends JsonValue>(data: TData): ProcedureSuccess<TData>;
   error<TCode extends string, TDetails extends JsonValue>(
@@ -20,19 +24,27 @@ export interface JoorContext<TServices extends object = Record<string, never>> {
   ): ProcedureFailure<TCode>;
 }
 
-export interface CreateContextOptions<TServices extends object> {
+export interface CreateContextOptions<
+  TServices extends object,
+  THeaders extends object,
+> {
   request: Request;
   traceId: string;
   services: TServices;
+  headers: THeaders;
 }
 
-export const createContext = <TServices extends object>(
-  options: CreateContextOptions<TServices>
-): JoorContext<TServices> => ({
+export const createContext = <
+  TServices extends object,
+  THeaders extends object,
+>(
+  options: CreateContextOptions<TServices, THeaders>
+): JoorContext<TServices, THeaders> => ({
   request: options.request,
   traceId: options.traceId,
   signal: options.request.signal,
-  headers: options.request.headers,
+  headers: options.headers,
+  rawHeaders: options.request.headers,
   services: options.services,
   ok,
   error(code, details) {

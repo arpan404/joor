@@ -21,6 +21,10 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
     auth: entry.procedure.meta.auth ?? [],
     rateLimit: entry.procedure.meta.rateLimit ?? null,
     examples: [],
+    headersSchema:
+      entry.procedure.headers === undefined
+        ? {}
+        : toJsonSchema(entry.procedure.headers),
     inputSchema: toJsonSchema(entry.procedure.input),
     outputSchema:
       entry.procedure.output === undefined

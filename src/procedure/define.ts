@@ -16,13 +16,20 @@ export interface UnaryProcedureConfig<
   TOutput extends Schema,
   TErrors extends ErrorSchemas,
   TServices extends object,
+  THeaders extends Schema | undefined,
 > {
   input: TInput;
+  headers?: THeaders;
   output: TOutput;
   errors?: TErrors;
   meta?: ProcedureMeta;
   handler(
-    ctx: JoorContext<TServices>,
+    ctx: JoorContext<
+      TServices,
+      THeaders extends Schema
+        ? InferSchema<THeaders> & object
+        : Record<string, never>
+    >,
     input: InferSchema<TInput>
   ): MaybePromise<
     ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
@@ -34,13 +41,20 @@ export interface StreamProcedureConfig<
   TStream extends Schema,
   TErrors extends ErrorSchemas,
   TServices extends object,
+  THeaders extends Schema | undefined,
 > {
   input: TInput;
+  headers?: THeaders;
   stream: TStream;
   errors?: TErrors;
   meta?: ProcedureMeta;
   handler(
-    ctx: JoorContext<TServices>,
+    ctx: JoorContext<
+      TServices,
+      THeaders extends Schema
+        ? InferSchema<THeaders> & object
+        : Record<string, never>
+    >,
     input: InferSchema<TInput>
   ): AsyncIterable<InferSchema<TStream> & JsonValue>;
 }
@@ -50,17 +64,19 @@ export interface DefineProcedure<TServices extends object = object> {
     TInput extends Schema,
     TOutput extends Schema,
     TErrors extends ErrorSchemas = Record<string, never>,
+    THeaders extends Schema | undefined = undefined,
   >(
-    config: UnaryProcedureConfig<TInput, TOutput, TErrors, TServices>
-  ): Procedure<TInput, TOutput, TErrors, undefined>;
+    config: UnaryProcedureConfig<TInput, TOutput, TErrors, TServices, THeaders>
+  ): Procedure<TInput, TOutput, TErrors, undefined, THeaders>;
 
   <
     TInput extends Schema,
     TStream extends Schema,
     TErrors extends ErrorSchemas = Record<string, never>,
+    THeaders extends Schema | undefined = undefined,
   >(
-    config: StreamProcedureConfig<TInput, TStream, TErrors, TServices>
-  ): Procedure<TInput, Schema, TErrors, TStream>;
+    config: StreamProcedureConfig<TInput, TStream, TErrors, TServices, THeaders>
+  ): Procedure<TInput, Schema, TErrors, TStream, THeaders>;
 
   withContext<TNextServices extends object>(): DefineProcedure<TNextServices>;
 }
@@ -73,16 +89,22 @@ const createDefineProcedure = <
     TOutput extends Schema,
     TErrors extends ErrorSchemas,
     TStream extends Schema,
+    THeaders extends Schema | undefined,
   >(
     config:
-      | UnaryProcedureConfig<TInput, TOutput, TErrors, TServices>
-      | StreamProcedureConfig<TInput, TStream, TErrors, TServices>
+      | UnaryProcedureConfig<TInput, TOutput, TErrors, TServices, THeaders>
+      | StreamProcedureConfig<TInput, TStream, TErrors, TServices, THeaders>
   ): Procedure => {
     const handler = (
-      ctx: JoorContext<object>,
+      ctx: JoorContext<object, object>,
       input: JsonValue
     ): ProcedureRuntimeValue => {
-      const typedContext = ctx as JoorContext<TServices>;
+      const typedContext = ctx as JoorContext<
+        TServices,
+        THeaders extends Schema
+          ? InferSchema<THeaders> & object
+          : Record<string, never>
+      >;
       if ('stream' in config) {
         return config.handler(
           typedContext,
@@ -96,6 +118,7 @@ const createDefineProcedure = <
     };
     return {
       input: config.input,
+      ...(config.headers === undefined ? {} : { headers: config.headers }),
       ...('output' in config ? { output: config.output } : {}),
       ...('stream' in config ? { stream: config.stream } : {}),
       errors: config.errors ?? {},

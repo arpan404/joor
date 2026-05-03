@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import listPosts from './fixtures/basic-app/rpc/posts/list.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
-import { createJoorHandler } from '../src/index.js';
+import { createJoorHandler, defineProcedure, t } from '../src/index.js';
 
 const manifest = {
   procedures: {
@@ -57,5 +57,47 @@ describe('dispatcher', () => {
     expect(body).toHaveLength(2);
     expect(body[0].id).toBe('users.get');
     expect(body[1].id).toBe('posts.list');
+  });
+
+  it('validates typed procedure headers', async () => {
+    const protectedProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      headers: t.object({
+        'x-tenant-id': t.string().min(1),
+      }),
+      output: t.object({ tenantId: t.string() }),
+      async handler(ctx) {
+        return ctx.ok({ tenantId: ctx.headers['x-tenant-id'] });
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { protected: protectedProcedure },
+    });
+    const missingHeader = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'protected', input: { ok: true } }),
+      })
+    );
+    const missingBody = await missingHeader.json();
+
+    expect(missingBody.ok).toBe(false);
+    expect(missingBody.error.code).toBe('HEADER_VALIDATION_ERROR');
+
+    const success = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-tenant-id': 'tenant-1',
+        },
+        body: JSON.stringify({ id: 'protected', input: { ok: true } }),
+      })
+    );
+    const successBody = await success.json();
+
+    expect(successBody.ok).toBe(true);
+    expect(successBody.data.tenantId).toBe('tenant-1');
   });
 });

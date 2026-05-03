@@ -89,6 +89,12 @@ const isAsyncIterable = (
   value: ProcedureRuntimeValue
 ): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
 
+const headersToJsonObject = (headers: Headers): JsonObject => {
+  const output: JsonObject = {};
+  for (const [key, value] of headers) output[key.toLowerCase()] = value;
+  return output;
+};
+
 const parseRequestBody = async (
   request: Request,
   maxBodyBytes: number
@@ -108,6 +114,22 @@ const executeUnary = async (
   services: object
 ): Promise<RpcEnvelope> => {
   const trace = traceId(request, rpcRequest.traceId);
+  const headerValue =
+    procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
+  const headerResult =
+    procedure.headers === undefined
+      ? ({ ok: true, value: {} } as const)
+      : validate(procedure.headers, headerValue, 'headers');
+  if (!headerResult.ok) {
+    return rpcFailure(
+      rpcRequest.id,
+      trace,
+      'HEADER_VALIDATION_ERROR',
+      'Header validation failed',
+      400,
+      validationDetails(headerResult.issues)
+    );
+  }
   const inputResult = validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
     return rpcFailure(
@@ -120,7 +142,12 @@ const executeUnary = async (
     );
   }
 
-  const ctx = createContext({ request, traceId: trace, services });
+  const ctx = createContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+  });
   const result = await procedure.handler(ctx, inputResult.value as JsonValue);
   if (isAsyncIterable(result)) {
     return rpcFailure(
@@ -162,6 +189,24 @@ const executeStream = async (
   services: object
 ): Promise<Response> => {
   const trace = traceId(request, rpcRequest.traceId);
+  const headerValue =
+    procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
+  const headerResult =
+    procedure.headers === undefined
+      ? ({ ok: true, value: {} } as const)
+      : validate(procedure.headers, headerValue, 'headers');
+  if (!headerResult.ok) {
+    return toResponse(
+      rpcFailure(
+        rpcRequest.id,
+        trace,
+        'HEADER_VALIDATION_ERROR',
+        'Header validation failed',
+        400,
+        validationDetails(headerResult.issues)
+      )
+    );
+  }
   const inputResult = validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
     return toResponse(
@@ -188,7 +233,12 @@ const executeStream = async (
     );
   }
 
-  const ctx = createContext({ request, traceId: trace, services });
+  const ctx = createContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+  });
   const iterable = procedure.handler(ctx, inputResult.value as JsonValue);
   if (!isAsyncIterable(iterable)) {
     return toResponse(

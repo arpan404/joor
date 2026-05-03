@@ -26,8 +26,14 @@ type Services = JoorConfigContext<typeof config>;
 
 const procedure = defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
+  headers: t.object({
+    authorization: t.optional(t.string()),
+    'x-tenant-id': t.string(),
+  }),
   output: t.object({ id: t.string(), name: t.string() }),
   async handler(ctx, input) {
+    ctx.headers['x-tenant-id'].toUpperCase();
+    ctx.headers.authorization?.toUpperCase();
     const user = ctx.services.users.findById(input.id);
     return ctx.ok(user);
   },
@@ -63,6 +69,8 @@ defineProcedure({
     input.id.toUpperCase();
     // @ts-expect-error no plugin context is available without withContext().
     ctx.services.users.findById(input.id);
+    // @ts-expect-error no typed headers are available unless declared.
+    ctx.headers.authorization.toUpperCase();
     return ctx.ok({ id: input.id });
   },
 });

@@ -81,8 +81,15 @@ type AppContext = JoorConfigContext<typeof config>;
 
 export const procedure = defineProcedure.withContext<AppContext>()({
   input: t.object({ id: t.string() }),
+  headers: t.object({
+    authorization: t.optional(t.string().min(1)),
+    'x-tenant-id': t.string().min(1),
+  }),
   output: t.object({ id: t.string(), name: t.string() }),
   async handler(ctx, input) {
+    ctx.headers['x-tenant-id'];
+    ctx.headers.authorization;
+    ctx.rawHeaders.get('authorization');
     return ctx.ok(ctx.services.users.findById(input.id));
   },
 });
@@ -176,6 +183,29 @@ npm run joor -- doctor
 - `onError` for runtime diagnostics
 
 Fetch is the base runtime. The package also exposes small adapters for Node, Bun, Deno, Cloudflare Workers, Vercel, and Netlify.
+
+## Typed Headers
+
+Procedures can declare headers with the same schema DSL used for input/output. Header names are normalized to lowercase before validation, so HTTP names like `X-Tenant-Id` are declared as `'x-tenant-id'`.
+
+```ts
+export default defineProcedure({
+  input: t.object({ id: t.string() }),
+  headers: t.object({
+    authorization: t.optional(t.string()),
+    'x-tenant-id': t.string(),
+  }),
+  output: t.object({ id: t.string(), tenantId: t.string() }),
+  async handler(ctx, input) {
+    return ctx.ok({
+      id: input.id,
+      tenantId: ctx.headers['x-tenant-id'],
+    });
+  },
+});
+```
+
+`ctx.headers` is the typed, validated object. `ctx.rawHeaders` is the original Fetch `Headers` instance for lower-level access.
 
 ## Development
 

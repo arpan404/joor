@@ -17,11 +17,13 @@ export interface ProcedureTypes<
   TOutput,
   TStream,
   TErrors extends string,
+  THeaders,
 > {
   input: TInput;
   output: TOutput;
   stream: TStream;
   errors: TErrors;
+  headers: THeaders;
 }
 
 export type ProcedureRuntimeValue =
@@ -31,11 +33,15 @@ export type ProcedureRuntimeValue =
 export interface ProcedureRuntime {
   id?: string;
   input: Schema;
+  headers?: Schema;
   output?: Schema;
   stream?: Schema;
   errors: ErrorSchemas;
   meta: ProcedureMeta;
-  handler(ctx: JoorContext<object>, input: JsonValue): ProcedureRuntimeValue;
+  handler(
+    ctx: JoorContext<object, object>,
+    input: JsonValue
+  ): ProcedureRuntimeValue;
 }
 
 export interface Procedure<
@@ -43,31 +49,45 @@ export interface Procedure<
   TOutput extends Schema = Schema,
   TErrors extends ErrorSchemas = ErrorSchemas,
   TStream extends Schema | undefined = Schema | undefined,
+  THeaders extends Schema | undefined = Schema | undefined,
 > extends ProcedureRuntime {
   types?: ProcedureTypes<
     InferSchema<TInput>,
     InferSchema<TOutput>,
     TStream extends Schema ? InferSchema<TStream> : never,
-    ErrorCode<TErrors>
+    ErrorCode<TErrors>,
+    THeaders extends Schema ? InferSchema<THeaders> : Record<string, never>
   >;
 }
 
 export type ProcedureInput<TProcedure> = TProcedure extends {
-  types?: ProcedureTypes<infer TInput, JsonValue, JsonValue, string>;
+  types?: ProcedureTypes<infer TInput, JsonValue, JsonValue, string, object>;
 }
   ? TInput
   : never;
 
 export type ProcedureOutput<TProcedure> = TProcedure extends {
-  types?: ProcedureTypes<JsonValue, infer TOutput, JsonValue, string>;
+  types?: ProcedureTypes<JsonValue, infer TOutput, JsonValue, string, object>;
 }
   ? TOutput
   : never;
 
 export type StreamEvent<TProcedure> = TProcedure extends {
-  types?: ProcedureTypes<JsonValue, JsonValue, infer TStream, string>;
+  types?: ProcedureTypes<JsonValue, JsonValue, infer TStream, string, object>;
 }
   ? TStream
+  : never;
+
+export type ProcedureHeaders<TProcedure> = TProcedure extends {
+  types?: ProcedureTypes<
+    JsonValue,
+    JsonValue,
+    JsonValue,
+    string,
+    infer THeaders
+  >;
+}
+  ? THeaders
   : never;
 
 export interface ProcedureMeta {

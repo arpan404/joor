@@ -5,6 +5,9 @@ export default defineProcedure.withContext<AppContext>()({
   input: t.object({
     id: t.string().uuid(),
   }),
+  headers: t.object({
+    authorization: t.optional(t.string().min(1)),
+  }),
   output: t.object({
     id: t.string(),
     name: t.string(),
@@ -19,6 +22,7 @@ export default defineProcedure.withContext<AppContext>()({
     tags: ['users'],
   },
   async handler(ctx, input) {
+    ctx.headers.authorization?.toUpperCase();
     const user = await ctx.services.users.findById(input.id);
     if (user === null) {
       return ctx.error('NOT_FOUND', { message: 'User not found' });

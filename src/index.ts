@@ -11,6 +11,7 @@ export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   Procedure,
+  ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
   ProcedureResult,
