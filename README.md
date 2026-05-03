@@ -85,12 +85,17 @@ export const procedure = defineProcedure.withContext<AppContext>()({
     authorization: t.optional(t.string().min(1)),
     'x-tenant-id': t.string().min(1),
   }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
   output: t.object({ id: t.string(), name: t.string() }),
   async handler(ctx, input) {
     ctx.headers['x-tenant-id'];
     ctx.headers.authorization;
     ctx.rawHeaders.get('authorization');
-    return ctx.ok(ctx.services.users.findById(input.id));
+    return ctx.ok(ctx.services.users.findById(input.id), {
+      'cache-control': 'private, max-age=60',
+    });
   },
 });
 ```
@@ -186,7 +191,7 @@ Fetch is the base runtime. The package also exposes small adapters for Node, Bun
 
 ## Typed Headers
 
-Procedures can declare headers with the same schema DSL used for input/output. Header names are normalized to lowercase before validation, so HTTP names like `X-Tenant-Id` are declared as `'x-tenant-id'`.
+Procedures can declare request and response headers with the same schema DSL used for input/output. Request header names are normalized to lowercase before validation, so HTTP names like `X-Tenant-Id` are declared as `'x-tenant-id'`.
 
 ```ts
 export default defineProcedure({
@@ -195,17 +200,23 @@ export default defineProcedure({
     authorization: t.optional(t.string()),
     'x-tenant-id': t.string(),
   }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
   output: t.object({ id: t.string(), tenantId: t.string() }),
   async handler(ctx, input) {
-    return ctx.ok({
-      id: input.id,
-      tenantId: ctx.headers['x-tenant-id'],
-    });
+    return ctx.ok(
+      {
+        id: input.id,
+        tenantId: ctx.headers['x-tenant-id'],
+      },
+      { 'cache-control': 'private' }
+    );
   },
 });
 ```
 
-`ctx.headers` is the typed, validated object. `ctx.rawHeaders` is the original Fetch `Headers` instance for lower-level access.
+`ctx.headers` is the typed, validated request header object. `ctx.rawHeaders` is the original Fetch `Headers` instance for lower-level access. Declared response headers are validated before a success envelope is returned, included on the success envelope, and attached to the HTTP response for single unary calls.
 
 ## Development
 

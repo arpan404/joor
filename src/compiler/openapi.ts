@@ -60,6 +60,11 @@ export const createOpenApiDocument = (
         entry.procedure.headers
       );
     }
+    if (entry.procedure.responseHeaders !== undefined) {
+      schemas[componentName(entry.id, 'ResponseHeaders')] = toJsonSchema(
+        entry.procedure.responseHeaders
+      );
+    }
     if (entry.procedure.output !== undefined) {
       schemas[componentName(entry.id, 'Output')] = toJsonSchema(
         entry.procedure.output
@@ -92,6 +97,10 @@ export const createOpenApiDocument = (
         entry.procedure.headers === undefined
           ? null
           : `#/components/schemas/${componentName(entry.id, 'Headers')}`,
+      responseHeadersRef:
+        entry.procedure.responseHeaders === undefined
+          ? null
+          : `#/components/schemas/${componentName(entry.id, 'ResponseHeaders')}`,
       outputRef:
         entry.procedure.output === undefined
           ? null

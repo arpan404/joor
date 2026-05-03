@@ -36,6 +36,9 @@ describe('compiler', () => {
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
       await expect(
+        readFile(join(outDir, 'procedure.ts'), 'utf8')
+      ).resolves.toContain('defineProcedure.withContext');
+      await expect(
         readFile(join(outDir, 'openapi.json'), 'utf8')
       ).resolves.toContain('/rpc');
       await expect(

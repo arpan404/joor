@@ -15,6 +15,7 @@ export interface RpcSuccess<
   ok: true;
   id: string;
   data: TData;
+  headers?: JsonObject;
   traceId: string;
 }
 

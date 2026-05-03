@@ -108,12 +108,12 @@ ${indent}},`
         if (name === undefined) return '';
         const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
         return `${indent}${name}: {
-${childIndent}call: (input: ProcedureInput<${typeRef}>) =>
-${childIndent}  transport.call<${typeRef}>(${JSON.stringify(id)}, input),
-${childIndent}request: (input: ProcedureInput<${typeRef}>) =>
-${childIndent}  transport.request<${typeRef}>(${JSON.stringify(id)}, input),
-${childIndent}stream: (input: ProcedureInput<${typeRef}>) =>
-${childIndent}  transport.stream<${typeRef}>(${JSON.stringify(id)}, input),
+${childIndent}call: (...args: ClientArgs<${typeRef}>) =>
+${childIndent}  transport.call<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}request: (...args: ClientArgs<${typeRef}>) =>
+${childIndent}  transport.request<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}stream: (...args: ClientArgs<${typeRef}>) =>
+${childIndent}  transport.stream<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
 ${indent}},`;
       })
       .join('\n');
@@ -123,12 +123,19 @@ ${indent}},`;
   await writeFile(
     `${outDir}/client.ts`,
     `import { createClient as createTransportClient } from 'joor/client';
-import type { ProcedureInput, ProcedureOutput, RpcEnvelope, StreamEvent } from 'joor';
+import type { ClientRequestOptions } from 'joor/client';
+import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcEnvelope, StreamEvent } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
 export type Result<TId extends keyof Manifest['procedures']> = RpcEnvelope<ProcedureOutput<Manifest['procedures'][TId]>>;
 export type Stream<TId extends keyof Manifest['procedures']> = StreamEvent<Manifest['procedures'][TId]>;
+export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
+  ? [input: ProcedureInput<TProcedure>, options?: ClientRequestOptions<TProcedure>]
+  : [input: ProcedureInput<TProcedure>, options: ClientRequestOptions<TProcedure>];
+
+const optionalOptions = <TProcedure>(options: ClientRequestOptions<TProcedure> | undefined) =>
+  options === undefined ? [] : [options] as const;
 
 export const createClient = (options: Parameters<typeof createTransportClient>[0]) => {
   const transport = createTransportClient(options);
@@ -143,6 +150,26 @@ export const client = createClient({ url: '/rpc' });
   );
 };
 
+const emitProcedureHelper = async (
+  outDir: string,
+  configPath?: string
+): Promise<void> => {
+  const configImport =
+    configPath === undefined
+      ? ''
+      : `import config from '${toImportPath(`${outDir}/procedure.ts`, configPath)}';\n`;
+  const contextType =
+    configPath === undefined ? 'object' : 'JoorConfigContext<typeof config>';
+  await writeFile(
+    `${outDir}/procedure.ts`,
+    `import { defineProcedure } from 'joor';
+import type { JoorConfigContext } from 'joor';
+${configImport}
+export const procedure = defineProcedure.withContext<${contextType}>();
+`
+  );
+};
+
 export const emitArtifacts = async (
   manifest: CompilerManifest,
   options: EmitOptions
@@ -151,6 +178,7 @@ export const emitArtifacts = async (
   await emitManifest(manifest, options.outDir);
   await emitDispatcher(options.outDir, options.configPath);
   await emitClient(manifest, options.outDir);
+  await emitProcedureHelper(options.outDir, options.configPath);
   await writeJson(
     `${options.outDir}/openapi.json`,
     createOpenApiDocument(manifest)

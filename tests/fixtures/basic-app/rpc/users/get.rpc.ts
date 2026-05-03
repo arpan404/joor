@@ -8,6 +8,9 @@ export default defineProcedure.withContext<AppContext>()({
   headers: t.object({
     authorization: t.optional(t.string().min(1)),
   }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
   output: t.object({
     id: t.string(),
     name: t.string(),
@@ -27,6 +30,6 @@ export default defineProcedure.withContext<AppContext>()({
     if (user === null) {
       return ctx.error('NOT_FOUND', { message: 'User not found' });
     }
-    return ctx.ok(user);
+    return ctx.ok(user, { 'cache-control': 'private, max-age=60' });
   },
 });

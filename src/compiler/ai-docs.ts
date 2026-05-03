@@ -25,6 +25,10 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
       entry.procedure.headers === undefined
         ? {}
         : toJsonSchema(entry.procedure.headers),
+    responseHeadersSchema:
+      entry.procedure.responseHeaders === undefined
+        ? {}
+        : toJsonSchema(entry.procedure.responseHeaders),
     inputSchema: toJsonSchema(entry.procedure.input),
     outputSchema:
       entry.procedure.output === undefined

@@ -1,3 +1,4 @@
+export { createAuthPolicy } from './auth/policy.js';
 export { createPlugin } from './context/plugin.js';
 export { defineConfig } from './config.js';
 export { defineProcedure } from './procedure/define.js';
@@ -6,14 +7,17 @@ export { createJoorHandler } from './runtime/fetch.js';
 export { listen } from './runtime/node.js';
 export { t } from './schema/builder.js';
 
+export type { AuthPolicy } from './auth/policy.js';
 export type { JoorContext } from './context/context.js';
 export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   Procedure,
+  ProcedureAuth,
   ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
+  ProcedureResponseHeaders,
   ProcedureResult,
   RpcEnvelope,
   RpcError,

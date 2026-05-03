@@ -34,6 +34,8 @@ describe('dispatcher', () => {
 
     expect(body.ok).toBe(true);
     expect(body.traceId).toBe('trace-1');
+    expect(body.headers['cache-control']).toBe('private, max-age=60');
+    expect(response.headers.get('cache-control')).toBe('private, max-age=60');
   });
 
   it('handles validation failure', async () => {
@@ -66,8 +68,14 @@ describe('dispatcher', () => {
         'x-tenant-id': t.string().min(1),
       }),
       output: t.object({ tenantId: t.string() }),
+      responseHeaders: t.object({
+        'x-result': t.string(),
+      }),
       async handler(ctx) {
-        return ctx.ok({ tenantId: ctx.headers['x-tenant-id'] });
+        return ctx.ok(
+          { tenantId: ctx.headers['x-tenant-id'] },
+          { 'x-result': 'ok' }
+        );
       },
     });
     const handler = createJoorHandler({

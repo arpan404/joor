@@ -1,8 +1,9 @@
-import type { JsonValue } from '../schema/json.js';
+import type { JsonObject, JsonValue } from '../schema/json.js';
 
 export interface ProcedureSuccess<TData extends JsonValue> {
   kind: 'success';
   data: TData;
+  headers?: JsonObject;
 }
 
 export interface ProcedureFailure<TCode extends string> {
@@ -20,10 +21,12 @@ export type ProcedureResult<TData extends JsonValue, TCode extends string> =
   | ProcedureFailure<TCode>;
 
 export const ok = <TData extends JsonValue>(
-  data: TData
+  data: TData,
+  headers?: JsonObject
 ): ProcedureSuccess<TData> => ({
   kind: 'success',
   data,
+  ...(headers === undefined ? {} : { headers }),
 });
 
 export const failure = <TCode extends string>(

@@ -1,6 +1,7 @@
 import { createContext } from '../context/context.js';
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
 import type {
+  MaybePromise,
   ProcedureRuntime,
   ProcedureRuntimeValue,
 } from '../procedure/types.js';
@@ -25,6 +26,8 @@ export interface RpcManifest {
 
 export interface HandlerOptions {
   plugins?: readonly JoorPlugin<object>[];
+  middleware?: readonly JoorMiddleware[];
+  hooks?: HandlerHooks;
   path?: string;
   cors?: {
     origin?: string;
@@ -35,8 +38,18 @@ export interface HandlerOptions {
   onError?(error: Error, request: Request): void;
 }
 
+export interface HandlerHooks {
+  beforeRequest?(request: Request): MaybePromise<Response | void>;
+  afterResponse?(response: Response, request: Request): MaybePromise<Response | void>;
+}
+
+export interface JoorMiddleware extends HandlerHooks {
+  name: string;
+}
+
 const jsonHeaders = { 'content-type': 'application/json' };
 const defaultMaxBodyBytes = 1024 * 1024;
+const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 
 const corsHeaders = (options: HandlerOptions): HeadersInit => {
   if (options.cors === undefined) return {};
@@ -74,11 +87,18 @@ const rpcFailure = (
 const toResponse = (
   payload: RpcEnvelope | RpcEnvelope[],
   options: HandlerOptions = {}
-): Response =>
-  new Response(JSON.stringify(payload), {
+): Response => {
+  const headers = new Headers({ ...jsonHeaders, ...corsHeaders(options) });
+  if (!Array.isArray(payload) && payload.ok && payload.headers !== undefined) {
+    for (const [key, value] of Object.entries(payload.headers)) {
+      if (typeof value === 'string') headers.set(key, value);
+    }
+  }
+  return new Response(JSON.stringify(payload), {
     status: 200,
-    headers: { ...jsonHeaders, ...corsHeaders(options) },
+    headers,
   });
+};
 
 const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   isJsonObject(value) &&
@@ -93,6 +113,58 @@ const headersToJsonObject = (headers: Headers): JsonObject => {
   const output: JsonObject = {};
   for (const [key, value] of headers) output[key.toLowerCase()] = value;
   return output;
+};
+
+const isProcedureFailure = (
+  value: object
+): value is { kind: 'error'; error: RpcFailure['error'] } =>
+  'kind' in value && value.kind === 'error' && 'error' in value;
+
+const parseWindowMs = (window: string): number => {
+  const match = /^(\d+)(ms|s|m|h)$/.exec(window);
+  if (match === null) return 60_000;
+  const amount = Number(match[1]);
+  const unit = match[2];
+  if (unit === 'ms') return amount;
+  if (unit === 's') return amount * 1_000;
+  if (unit === 'm') return amount * 60_000;
+  return amount * 3_600_000;
+};
+
+const rateLimitFailure = (
+  procedure: ProcedureRuntime,
+  rpcRequest: RpcRequest,
+  request: Request,
+  trace: string
+): RpcFailure | undefined => {
+  const limit = procedure.meta.rateLimit;
+  if (limit === undefined) return undefined;
+  const identity =
+    request.headers.get('x-forwarded-for') ??
+    request.headers.get('cf-connecting-ip') ??
+    'anonymous';
+  const key = `${rpcRequest.id}:${identity}`;
+  const now = Date.now();
+  const existing = rateLimitWindows.get(key);
+  if (existing === undefined || existing.resetAt <= now) {
+    rateLimitWindows.set(key, {
+      count: 1,
+      resetAt: now + parseWindowMs(limit.window),
+    });
+    return undefined;
+  }
+  if (existing.count >= limit.limit) {
+    return rpcFailure(
+      rpcRequest.id,
+      trace,
+      'RATE_LIMITED',
+      'Rate limit exceeded',
+      429,
+      { limit: limit.limit, window: limit.window }
+    );
+  }
+  existing.count += 1;
+  return undefined;
 };
 
 const parseRequestBody = async (
@@ -114,6 +186,8 @@ const executeUnary = async (
   services: object
 ): Promise<RpcEnvelope> => {
   const trace = traceId(request, rpcRequest.traceId);
+  const limited = rateLimitFailure(procedure, rpcRequest, request, trace);
+  if (limited !== undefined) return limited;
   const headerValue =
     procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
   const headerResult =
@@ -129,6 +203,25 @@ const executeUnary = async (
       400,
       validationDetails(headerResult.issues)
     );
+  }
+  const baseContext = createContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+    auth: {},
+  });
+  const authResult =
+    procedure.auth === undefined
+      ? {}
+      : await procedure.auth.authenticate(baseContext);
+  if (isProcedureFailure(authResult)) {
+    return {
+      ok: false,
+      id: rpcRequest.id,
+      traceId: trace,
+      error: authResult.error,
+    };
   }
   const inputResult = validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
@@ -147,6 +240,7 @@ const executeUnary = async (
     traceId: trace,
     services,
     headers: headerResult.value as object,
+    auth: authResult,
   });
   const result = await procedure.handler(ctx, inputResult.value as JsonValue);
   if (isAsyncIterable(result)) {
@@ -172,6 +266,30 @@ const executeUnary = async (
         );
       }
     }
+    if (procedure.responseHeaders !== undefined) {
+      const responseHeaderResult = validate(
+        procedure.responseHeaders,
+        result.headers,
+        'responseHeaders'
+      );
+      if (!responseHeaderResult.ok) {
+        return rpcFailure(
+          rpcRequest.id,
+          trace,
+          'RESPONSE_HEADER_VALIDATION_ERROR',
+          'Handler returned invalid response headers',
+          500,
+          validationDetails(responseHeaderResult.issues)
+        );
+      }
+      return {
+        ok: true,
+        id: rpcRequest.id,
+        traceId: trace,
+        data: result.data,
+        headers: responseHeaderResult.value as JsonObject,
+      };
+    }
     return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
   }
   return {
@@ -189,6 +307,8 @@ const executeStream = async (
   services: object
 ): Promise<Response> => {
   const trace = traceId(request, rpcRequest.traceId);
+  const limited = rateLimitFailure(procedure, rpcRequest, request, trace);
+  if (limited !== undefined) return toResponse(limited);
   const headerValue =
     procedure.headers === undefined ? {} : headersToJsonObject(request.headers);
   const headerResult =
@@ -206,6 +326,25 @@ const executeStream = async (
         validationDetails(headerResult.issues)
       )
     );
+  }
+  const baseContext = createContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+    auth: {},
+  });
+  const authResult =
+    procedure.auth === undefined
+      ? {}
+      : await procedure.auth.authenticate(baseContext);
+  if (isProcedureFailure(authResult)) {
+    return toResponse({
+      ok: false,
+      id: rpcRequest.id,
+      traceId: trace,
+      error: authResult.error,
+    });
   }
   const inputResult = validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
@@ -238,6 +377,7 @@ const executeStream = async (
     traceId: trace,
     services,
     headers: headerResult.value as object,
+    auth: authResult,
   });
   const iterable = procedure.handler(ctx, inputResult.value as JsonValue);
   if (!isAsyncIterable(iterable)) {
@@ -298,7 +438,29 @@ export const createRpcHandler = (
   options: HandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
   const plugins = options.plugins ?? [];
-  return async (request: Request): Promise<Response> => {
+  const middleware = options.middleware ?? [];
+  const runBefore = async (request: Request): Promise<Response | undefined> => {
+    const hookResult = await options.hooks?.beforeRequest?.(request);
+    if (hookResult instanceof Response) return hookResult;
+    for (const item of middleware) {
+      const result = await item.beforeRequest?.(request);
+      if (result instanceof Response) return result;
+    }
+    return undefined;
+  };
+  const runAfter = async (
+    response: Response,
+    request: Request
+  ): Promise<Response> => {
+    let next = response;
+    for (const item of middleware) {
+      const result = await item.afterResponse?.(next, request);
+      if (result instanceof Response) next = result;
+    }
+    const hookResult = await options.hooks?.afterResponse?.(next, request);
+    return hookResult instanceof Response ? hookResult : next;
+  };
+  const handleRequest = async (request: Request): Promise<Response> => {
     if (request.method === 'OPTIONS' && options.cors !== undefined) {
       return new Response(null, { status: 204, headers: corsHeaders(options) });
     }
@@ -414,5 +576,10 @@ export const createRpcHandler = (
       await executeUnary(procedure, body, request, services),
       options
     );
+  };
+  return async (request: Request): Promise<Response> => {
+    const early = await runBefore(request);
+    if (early !== undefined) return runAfter(early, request);
+    return runAfter(await handleRequest(request), request);
   };
 };

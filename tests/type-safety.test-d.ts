@@ -6,7 +6,9 @@ import {
   type JoorConfigContext,
   type ProcedureInput,
   type ProcedureOutput,
+  type ProcedureResponseHeaders,
 } from '../src/index.js';
+import { createClient } from '../src/rpc/client.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -31,11 +33,14 @@ const procedure = defineProcedure.withContext<Services>()({
     'x-tenant-id': t.string(),
   }),
   output: t.object({ id: t.string(), name: t.string() }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
   async handler(ctx, input) {
     ctx.headers['x-tenant-id'].toUpperCase();
     ctx.headers.authorization?.toUpperCase();
     const user = ctx.services.users.findById(input.id);
-    return ctx.ok(user);
+    return ctx.ok(user, { 'cache-control': 'private' });
   },
 });
 
@@ -51,6 +56,20 @@ const validOutput: ProcedureOutput<typeof procedure> = {
   name: 'Ada',
 };
 validOutput.name.toUpperCase();
+
+const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
+  'cache-control': 'private',
+};
+responseHeaders['cache-control'].toUpperCase();
+
+const client = createClient({ url: '/rpc' });
+client.call<typeof procedure>(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+// @ts-expect-error x-tenant-id is required by the procedure header schema.
+client.call<typeof procedure>('users.get', { id: '1' });
 
 defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
