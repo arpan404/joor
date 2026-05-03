@@ -11,7 +11,6 @@ import type {
 } from '../procedure/types.js';
 import {
   isJsonObject,
-  parseJson,
   type JsonObject,
   type JsonValue,
 } from '../schema/json.js';
@@ -33,6 +32,7 @@ import {
   type RpcFailure,
   type RpcRequest,
 } from './protocol.js';
+import { readJsonRequestBody } from '../runtime/body.js';
 
 export interface RpcManifest {
   procedures: Record<string, ProcedureRuntime>;
@@ -101,7 +101,7 @@ const rateLimitWindows = new Map<string, { count: number; resetAt: number }>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
 
-const corsHeaders = (options: HandlerOptions): HeadersInit => {
+const corsHeaders = (options: HandlerOptions): Record<string, string> => {
   if (options.cors === undefined) return {};
   return {
     'access-control-allow-origin': options.cors.origin ?? '*',
@@ -144,15 +144,13 @@ const toResponse = (
   options: HandlerOptions = {}
 ): Response => {
   const headers = new Headers({ ...jsonHeaders, ...corsHeaders(options) });
-  if (!Array.isArray(payload) && payload.ok && payload.headers !== undefined) {
-    for (const [key, value] of Object.entries(payload.headers)) {
-      if (typeof value === 'string') headers.set(key, value);
-    }
+  if (Array.isArray(payload) || !payload.ok || payload.headers === undefined) {
+    return new Response(JSON.stringify(payload), { status: 200, headers });
   }
-  return new Response(JSON.stringify(payload), {
-    status: 200,
-    headers,
-  });
+  for (const [key, value] of Object.entries(payload.headers)) {
+    if (typeof value === 'string') headers.set(key, value);
+  }
+  return new Response(JSON.stringify(payload), { status: 200, headers });
 };
 
 const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
@@ -272,18 +270,6 @@ const rateLimitFailure = (
   }
   existing.count += 1;
   return undefined;
-};
-
-const parseRequestBody = async (
-  request: Request,
-  maxBodyBytes: number
-): Promise<JsonValue> => {
-  const body = await request.text();
-  if (body.length > maxBodyBytes) {
-    throw new Error('Request body exceeds maxBodyBytes');
-  }
-  if (body.length === 0) return {};
-  return parseJson(body);
 };
 
 const executeUnary = async (
@@ -728,7 +714,7 @@ export const createRpcHandler = (
   return async (request: Request): Promise<Response> => {
     let body: JsonValue;
     try {
-      body = await parseRequestBody(
+      body = await readJsonRequestBody(
         request,
         options.maxBodyBytes ?? defaultMaxBodyBytes
       );
@@ -868,7 +854,7 @@ export const createRpcTransportBodyResultHandler = (
     }
 
     const requestServices = services ?? (await servicesPromise);
-    const state = createExecutionState();
+    const state = createExecutionState(Array.isArray(body));
     if (Array.isArray(body)) {
       const responses: RpcEnvelope[] = [];
       for (const item of body) {

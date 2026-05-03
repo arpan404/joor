@@ -9,13 +9,12 @@ export interface CachedProcedureSuccess {
   expiresAt: number;
 }
 
+export type AuthResult = object | ProcedureFailure<string>;
+export type AuthResultLike = AuthResult | Promise<AuthResult>;
+
 export interface ExecutionState {
-  authCache: Map<
-    AuthPolicy<object, object, object>,
-    | object
-    | ProcedureFailure<string>
-    | Promise<object | ProcedureFailure<string>>
-  >;
+  cacheAuth: boolean;
+  authCache?: Map<AuthPolicy<object, object, object>, AuthResultLike>;
 }
 
 interface CacheKeySource {
@@ -32,6 +31,8 @@ const isCachePathObject = (
   value: JsonValue | object | undefined
 ): value is CachePathObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const durationCache = new Map<string, number>();
 
 const readPath = (
   value: JsonValue | object | undefined,
@@ -54,43 +55,63 @@ const readPath = (
 };
 
 export const parseDurationMs = (duration: string): number => {
+  const cached = durationCache.get(duration);
+  if (cached !== undefined) return cached;
   const match = /^(\d+)(ms|s|m|h)$/.exec(duration);
-  if (match === null) return 60_000;
+  if (match === null) {
+    durationCache.set(duration, 60_000);
+    return 60_000;
+  }
   const amount = Number(match[1]);
   const unit = match[2];
-  if (unit === 'ms') return amount;
-  if (unit === 's') return amount * 1_000;
-  if (unit === 'm') return amount * 60_000;
-  return amount * 3_600_000;
+  const value =
+    unit === 'ms'
+      ? amount
+      : unit === 's'
+        ? amount * 1_000
+        : unit === 'm'
+          ? amount * 60_000
+          : amount * 3_600_000;
+  durationCache.set(duration, value);
+  return value;
 };
 
-export const createExecutionState = (): ExecutionState => ({
-  authCache: new Map(),
+export const createExecutionState = (cacheAuth = false): ExecutionState => ({
+  cacheAuth,
 });
 
-export const authenticateOnce = async (
+const runAuthPolicy = (
+  policy: AuthPolicy<object, object, object>,
+  ctx: JoorContext<object, object, object, object>
+): AuthResultLike =>
+  policy.authenticate(
+    ctx as JoorContext<
+      object,
+      object,
+      Record<string, never>,
+      Record<string, never>
+    >
+  );
+
+export const authenticateOnce = (
   policy: AuthPolicy<object, object, object> | undefined,
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
-): Promise<object | ProcedureFailure<string>> => {
+): AuthResultLike => {
   if (policy === undefined) return {};
+  if (!state.cacheAuth) {
+    return runAuthPolicy(policy, ctx);
+  }
+  state.authCache ??= new Map();
   const cached = state.authCache.get(policy);
   if (cached instanceof Promise) return cached;
   if (cached !== undefined) return cached;
-  const pending = Promise.resolve(
-    policy.authenticate(
-      ctx as JoorContext<
-        object,
-        object,
-        Record<string, never>,
-        Record<string, never>
-      >
-    )
-  );
+  const pending = Promise.resolve(runAuthPolicy(policy, ctx));
   state.authCache.set(policy, pending);
-  const resolved = await pending;
-  state.authCache.set(policy, resolved);
-  return resolved;
+  return pending.then((resolved) => {
+    state.authCache?.set(policy, resolved);
+    return resolved;
+  });
 };
 
 export const createProcedureCacheKey = (

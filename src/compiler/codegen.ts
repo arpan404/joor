@@ -10,6 +10,16 @@ const renderPath = (base: string, key: string): string =>
 const renderArrayPath = (base: string): string =>
   `\`${'${'}${base}${'}'}[\${index}]\``;
 
+const renderEnumMiss = (
+  valueExpression: string,
+  values: readonly string[]
+): string =>
+  values.length === 0
+    ? 'true'
+    : values
+        .map((value) => `${valueExpression} !== ${JSON.stringify(value)}`)
+        .join(' && ');
+
 const canEmitJsonSerializer = (
   schema: Schema,
   allowOptional = false
@@ -49,6 +59,16 @@ const emitValidatorFunction = (
 
   switch (schema.kind) {
     case 'string': {
+      if (schema.format === 'email') {
+        definitions.push(
+          `const ${name}_emailRegex = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/;`
+        );
+      }
+      if (schema.format === 'uuid') {
+        definitions.push(
+          `const ${name}_uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;`
+        );
+      }
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
   if (typeof value !== 'string') {
     ${invalid('Expected string')}
@@ -70,14 +90,14 @@ const emitValidatorFunction = (
   ${
     schema.format !== 'email'
       ? ''
-      : `if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(value)) {
+      : `if (!${name}_emailRegex.test(value)) {
     return { ok: false as const, issues: [{ path, message: 'Expected email' }] };
   }`
   }
   ${
     schema.format !== 'uuid'
       ? ''
-      : `if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)) {
+      : `if (!${name}_uuidRegex.test(value)) {
     return { ok: false as const, issues: [{ path, message: 'Expected uuid' }] };
   }`
   }
@@ -133,7 +153,7 @@ const emitValidatorFunction = (
       return;
     case 'enum':
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
-  if (typeof value !== 'string' || !${JSON.stringify([...schema.values])}.includes(value)) {
+  if (typeof value !== 'string' || (${renderEnumMiss('value', [...schema.values])})) {
     ${invalid('Expected enum value')}
   }
   return { ok: true as const, value };
@@ -182,14 +202,13 @@ const emitValidatorFunction = (
     return { ok: false as const, issues: [{ path, message: ${JSON.stringify(`Expected at most ${schema.maxItems} items`)} }] };
   }`
   }
-  const issues: { path: string; message: string }[] = [];
   for (let index = 0; index < value.length; index += 1) {
     const result = ${itemName}(value[index], ${renderArrayPath('path')});
     if (!result.ok) {
-      issues.push(...result.issues);
+      return result;
     }
   }
-  return issues.length > 0 ? { ok: false as const, issues } : { ok: true as const, value };
+  return { ok: true as const, value };
 };`);
       return;
     }
@@ -206,12 +225,12 @@ const emitValidatorFunction = (
         ? `if (childValue !== undefined) {
       const result = ${childName}(childValue, ${renderPath('path', key)});
       if (!result.ok) {
-        issues.push(...result.issues);
+        return result;
       }
     }`
         : `const result = ${childName}(childValue, ${renderPath('path', key)});
     if (!result.ok) {
-      issues.push(...result.issues);
+      return result;
     }`
     }
   }`;
@@ -223,20 +242,22 @@ const emitValidatorFunction = (
     ${invalid('Expected object')}
   }
   const objectValue = value as Record<string, JsonValue | undefined>;
-  const issues: { path: string; message: string }[] = [];
 ${checks}
   ${
     schema.strictObject
       ? `for (const key of Object.keys(objectValue)) {
     if (${JSON.stringify(Object.keys(schema.shape))}.includes(key)) continue;
-    issues.push({
-      path: path === '' ? key : \`${'${'}path${'}'}.\${key}\`,
-      message: 'Unexpected property',
-    });
+    return {
+      ok: false as const,
+      issues: [{
+        path: path === '' ? key : \`${'${'}path${'}'}.\${key}\`,
+        message: 'Unexpected property',
+      }],
+    };
   }`
       : ''
   }
-  return issues.length > 0 ? { ok: false as const, issues } : { ok: true as const, value };
+  return { ok: true as const, value };
 };`);
       return;
     }
@@ -272,14 +293,13 @@ ${checks}
     ${invalid('Expected record')}
   }
   const objectValue = value as Record<string, JsonValue | undefined>;
-  const issues: { path: string; message: string }[] = [];
   for (const key of Object.keys(objectValue)) {
     const result = ${valueName}(objectValue[key], path === '' ? key : \`${'${'}path${'}'}.\${key}\`);
     if (!result.ok) {
-      issues.push(...result.issues);
+      return result;
     }
   }
-  return issues.length > 0 ? { ok: false as const, issues } : { ok: true as const, value };
+  return { ok: true as const, value };
 };`);
       return;
     }
@@ -497,6 +517,23 @@ const ${base}_serialize_error = (
 });`;
 };
 
+const emitHeaderValueExpression = (entry: LoadedProcedure): string => {
+  const headers = entry.procedure.headers;
+  if (headers === undefined) return '{}';
+  if (headers.kind !== 'object') {
+    return `compiledHeaderObject(request, ${entry.exportName})`;
+  }
+  const entries = Object.keys(headers.shape)
+    .map((key) => {
+      const serializedKey = JSON.stringify(key);
+      return `    ${serializedKey}: request.getHeader(${serializedKey}) ?? undefined,`;
+    })
+    .join('\n');
+  return `{
+${entries}
+  }`;
+};
+
 export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
   if (entry.procedure.output === undefined) return '';
   const base = entry.exportName;
@@ -533,7 +570,7 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
   const headerValidation =
     entry.procedure.headers === undefined
       ? `const headerResult = { ok: true as const, value: {} };`
-      : `const headerValue = compiledHeaderObject(request, ${entry.exportName});
+      : `const headerValue = ${emitHeaderValueExpression(entry)};
   const headerResult = !runtime.validateHeaders
     ? { ok: true as const, value: headerValue }
     : ${base}_validate_headers(headerValue, 'headers');`;
@@ -563,7 +600,14 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
   }`
     : '';
   const authBlock = hasAuth
-    ? `const authResult = await compiledAuthenticate(${entry.exportName}.auth, ctx, state);
+    ? `const ctx = compiledCreateContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+    auth: {},
+  });
+  const authResult = await compiledAuthenticate(${entry.exportName}.auth, ctx, state);
   if ('kind' in authResult && authResult.kind === 'error') {
     return serialize
       ? ${base}_serialize_error(trace, authResult.error)
@@ -571,7 +615,7 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
   }
   ctx.auth = authResult;
   const authValue = authResult;`
-    : 'const authValue = ctx.auth;';
+    : 'const authValue = {};';
   const cacheReadBlock = hasCache
     ? `const cached = compiledReadCache(
     ${JSON.stringify(entry.id)},
@@ -599,6 +643,15 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
     result.headers
   );`
     : '';
+  const contextCreationBlock = hasAuth
+    ? ''
+    : `const ctx = compiledCreateContext({
+    request,
+    traceId: trace,
+    services,
+    headers: headerResult.value as object,
+    auth: {},
+  });`;
   return `${validators.join('\n\n')}
 
 ${emitSerializerFunctions(entry, base)}
@@ -625,13 +678,6 @@ const ${base}_execute: CompiledDispatch = async (
       ? ${base}_serialize_error(trace, error)
       : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
   }
-  const ctx = compiledCreateContext({
-    request,
-    traceId: trace,
-    services,
-    headers: headerResult.value as object,
-    auth: {},
-  });
   ${authBlock}
   const inputResult = !runtime.validateInput
     ? { ok: true as const, value: rpcRequest.input }
@@ -649,6 +695,7 @@ const ${base}_execute: CompiledDispatch = async (
   }
   const inputValue = (inputResult.value ?? {}) as JsonValue;
   ${cacheReadBlock}
+  ${contextCreationBlock}
   const result = await ${entry.exportName}.handler(ctx, inputValue);
   if (!('kind' in result)) {
     const error = {

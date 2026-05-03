@@ -18,6 +18,7 @@ import { resolvePluginServices } from '../context/plugin.js';
 import type { JoorConfig } from '../config.js';
 import type { ProcedureRuntime } from '../procedure/types.js';
 import type { RpcBodyResult } from '../rpc/dispatcher.js';
+import { readJsonRequestBody } from './body.js';
 import {
   isJsonObject,
   parseJson,
@@ -46,6 +47,13 @@ export interface CompiledSerializedEnvelope {
 }
 
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledUnaryDispatch = (
+  body: JsonObject,
+  request: ContextRequestSource,
+  services: object,
+  runtime: CompiledRuntime,
+  state: ExecutionState
+) => Promise<CompiledBodyResult | undefined>;
 
 export type CompiledDispatch = (
   rpcRequest: RpcRequest,
@@ -168,17 +176,7 @@ export const compiledAuthenticate = (
   policy: ProcedureRuntime['auth'],
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
-): Promise<
-  | object
-  | {
-      kind: 'error';
-      error: RpcEnvelope extends infer TEnvelope
-        ? TEnvelope extends { ok: false; error: infer TError }
-          ? TError
-          : never
-        : never;
-    }
-> => authenticateOnce(policy, ctx, state);
+): ReturnType<typeof authenticateOnce> => authenticateOnce(policy, ctx, state);
 
 const rateLimitFailure = (
   id: string,
@@ -559,6 +557,9 @@ const createCompiledRuntime = (config: JoorConfig = {}) => {
   return {
     path,
     runtime,
+    getServices(): object | undefined {
+      return services;
+    },
     async resolveServices(): Promise<object> {
       return services ?? (await servicesPromise);
     },
@@ -567,7 +568,8 @@ const createCompiledRuntime = (config: JoorConfig = {}) => {
 
 export const createCompiledRpcTransportBodyResultHandler = (
   dispatch: CompiledDispatch,
-  config: JoorConfig = {}
+  config: JoorConfig = {},
+  unaryDispatch?: CompiledUnaryDispatch
 ): ((
   request: ContextRequestSource,
   body: JsonValue
@@ -577,15 +579,31 @@ export const createCompiledRpcTransportBodyResultHandler = (
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
-    const state = createExecutionState();
     if (request.method !== 'POST') {
       return new Response(null, { status: 405, headers: { allow: 'POST' } });
     }
     if (pathnameFromUrl(request.url) !== compiled.path) {
       return new Response(null, { status: 404 });
     }
+    const resolved =
+      compiled.getServices() ?? (await compiled.resolveServices());
+    if (
+      !Array.isArray(body) &&
+      unaryDispatch !== undefined &&
+      isJsonObject(body)
+    ) {
+      const state = createExecutionState(false);
+      const unary = await unaryDispatch(
+        body,
+        request,
+        resolved,
+        compiled.runtime,
+        state
+      );
+      if (unary !== undefined) return unary;
+    }
     if (Array.isArray(body)) {
-      const resolved = await compiled.resolveServices();
+      const state = createExecutionState(true);
       const responses: RpcEnvelope[] = [];
       for (const item of body) {
         if (!isRpcRequest(item)) {
@@ -627,24 +645,20 @@ export const createCompiledRpcTransportBodyResultHandler = (
         400
       );
     }
-    return dispatch(
-      body,
-      request,
-      await compiled.resolveServices(),
-      compiled.runtime,
-      state,
-      true
-    );
+    const state = createExecutionState(false);
+    return dispatch(body, request, resolved, compiled.runtime, state, true);
   };
 };
 
 export const createCompiledRpcBodyResultHandler = (
   dispatch: CompiledDispatch,
-  config: JoorConfig = {}
+  config: JoorConfig = {},
+  unaryDispatch?: CompiledUnaryDispatch
 ): ((request: Request, body: JsonValue) => Promise<CompiledBodyResult>) => {
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
-    config
+    config,
+    unaryDispatch
   );
   return (request: Request, body: JsonValue): Promise<CompiledBodyResult> =>
     handleTransport(requestSourceFromRequest(request), body);
@@ -652,18 +666,19 @@ export const createCompiledRpcBodyResultHandler = (
 
 export const createCompiledRpcHandler = (
   dispatch: CompiledDispatch,
-  config: JoorConfig = {}
+  config: JoorConfig = {},
+  unaryDispatch?: CompiledUnaryDispatch
 ): ((request: Request) => Promise<Response>) => {
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
-    config
+    config,
+    unaryDispatch
   );
   return async (request: Request): Promise<Response> => {
     const source = requestSourceFromRequest(request);
     let body: JsonValue;
     try {
-      const text = await request.text();
-      body = text.length === 0 ? {} : parseJson(text);
+      body = await readJsonRequestBody(request);
     } catch {
       return toResponse(
         failure('', traceId(source), 'PARSE_ERROR', 'Invalid JSON body', 400)

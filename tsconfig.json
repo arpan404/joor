@@ -38,6 +38,7 @@
     "paths": {
       "joor": ["./src/index.ts"],
       "joor/client": ["./src/rpc/client.ts"],
+      "joor/runtime/*": ["./src/runtime/*.ts"],
       "@/*": ["./src/*"]
     },
     "plugins": [

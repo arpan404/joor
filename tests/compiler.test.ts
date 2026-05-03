@@ -37,6 +37,9 @@ describe('compiler', () => {
       ).resolves.toContain('createCompiledRpcTransportBodyResultHandler');
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain('const unaryDispatch: CompiledUnaryDispatch');
+      await expect(
+        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
       ).resolves.toContain('switch (rpcRequest.id)');
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')

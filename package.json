@@ -76,6 +76,7 @@
     "benchmark:example": "tsx examples/ai-native-backend/benchmark.ts",
     "benchmark:frameworks": "tsx examples/ai-native-backend/framework-benchmark.ts",
     "benchmark:bun": "bun examples/ai-native-backend/bun-framework-benchmark.ts",
+    "benchmark:deno": "npm run build && npm run joor -- build --config examples/ai-native-backend/joor.config.ts --out examples/ai-native-backend/.joor && deno run --allow-net --allow-read examples/ai-native-backend/deno-framework-benchmark.ts",
     "joor": "tsx src/cli/index.ts",
     "prepare": "husky",
     "prepublishOnly": "npm run lint && npm run test && npm run build"

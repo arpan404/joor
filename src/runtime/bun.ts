@@ -8,7 +8,8 @@ import type {
   RpcManifest,
 } from '../rpc/dispatcher.js';
 import { createRpcBodyResultHandler } from '../rpc/dispatcher.js';
-import { parseJson, type JsonObject, type JsonValue } from '../schema/json.js';
+import type { JsonObject, JsonValue } from '../schema/json.js';
+import { readJsonRequestBody } from './body.js';
 import type { CompiledSerializedEnvelope } from './compiled.js';
 import { createJoorHandler } from './fetch.js';
 
@@ -76,24 +77,13 @@ const writeResult = (result: BunTransportBodyResult): Response => {
   return new Response(JSON.stringify(result), { status: 200, headers });
 };
 
-const readRequestBody = async (request: Request): Promise<JsonValue> => {
-  const contentLength = request.headers.get('content-length');
-  if (contentLength === '0') return {};
-  const contentType = request.headers.get('content-type') ?? '';
-  if (contentType.includes('application/json')) {
-    return await request.json();
-  }
-  const text = await request.text();
-  return text.length === 0 ? {} : parseJson(text);
-};
-
 export const createBunTransportRequestHandler = (
   handler: BunTransportBodyResultHandler
 ): ((request: Request) => Promise<Response>) => {
   return async (request: Request): Promise<Response> => {
     let body: JsonValue;
     try {
-      body = await readRequestBody(request);
+      body = await readJsonRequestBody(request);
     } catch {
       body = {};
     }

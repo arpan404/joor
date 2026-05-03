@@ -79,6 +79,15 @@ const emitDispatcher = async (
       return ${entry.exportName}_execute(rpcRequest, request, services, runtime, state, serialize);`
     )
     .join('\n');
+  const unaryCases = manifest.procedures
+    .map((entry) =>
+      entry.procedure.output === undefined
+        ? `    case ${JSON.stringify(entry.id)}:
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, true);`
+        : `    case ${JSON.stringify(entry.id)}:
+      return ${entry.exportName}_execute(rpcRequest, request, services, runtime, state, true);`
+    )
+    .join('\n');
   await writeFile(
     dispatcherFile,
     `import {
@@ -94,6 +103,7 @@ const emitDispatcher = async (
   compiledValidationDetails,
   compiledWriteCache,
   type CompiledSerializedEnvelope,
+  type CompiledUnaryDispatch,
   executeCompiledProcedure,
   type CompiledDispatch,
 } from 'joor/runtime/compiled';
@@ -117,11 +127,34 @@ ${cases}
   }
 };
 
+const unaryDispatch: CompiledUnaryDispatch = (
+  body,
+  request,
+  services,
+  runtime,
+  state
+) => {
+  const traceIdValue = body['traceId'];
+  if (
+    typeof body['id'] !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return Promise.resolve(undefined);
+  }
+  const rpcRequest = body;
+  switch (rpcRequest.id) {
+${unaryCases}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};
+
 export const transport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
-  ${configValue}
+  ${configValue},
+  unaryDispatch
 );
-export const fetch = createCompiledRpcHandler(dispatch, ${configValue});
+export const fetch = createCompiledRpcHandler(dispatch, ${configValue}, unaryDispatch);
 `
   );
 };
