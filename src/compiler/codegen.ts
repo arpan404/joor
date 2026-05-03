@@ -500,6 +500,11 @@ const ${base}_serialize_error = (
 export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
   if (entry.procedure.output === undefined) return '';
   const base = entry.exportName;
+  const hasAuth = entry.procedure.auth !== undefined;
+  const hasCache =
+    entry.procedure.meta.kind === 'query' &&
+    entry.procedure.meta.cache !== undefined;
+  const hasRateLimit = entry.procedure.meta.rateLimit !== undefined;
   const validators: string[] = [];
   emitValidatorFunction(
     `${base}_validate_input`,
@@ -549,6 +554,51 @@ export const emitCompiledProcedureSource = (entry: LoadedProcedure): string => {
         : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
     }
   }`;
+  const rateLimitBlock = hasRateLimit
+    ? `const limited = compiledRateLimitFailure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, trace, runtime);
+  if (limited !== undefined) {
+    return serialize
+      ? ${base}_serialize_error(trace, limited.error)
+      : limited;
+  }`
+    : '';
+  const authBlock = hasAuth
+    ? `const authResult = await compiledAuthenticate(${entry.exportName}.auth, ctx, state);
+  if ('kind' in authResult && authResult.kind === 'error') {
+    return serialize
+      ? ${base}_serialize_error(trace, authResult.error)
+      : { ok: false as const, id: rpcRequest.id, traceId: trace, error: authResult.error };
+  }
+  ctx.auth = authResult;
+  const authValue = authResult;`
+    : 'const authValue = ctx.auth;';
+  const cacheReadBlock = hasCache
+    ? `const cached = compiledReadCache(
+    ${JSON.stringify(entry.id)},
+    ${entry.exportName},
+    inputValue,
+    headerResult.value as Record<string, JsonValue>,
+    authValue
+  );
+  if (cached !== undefined) {
+    return serialize
+      ? ${base}_serialize_success(trace, cached.data, cached.headers)
+      : cached.headers === undefined
+        ? { ok: true as const, id: rpcRequest.id, traceId: trace, data: cached.data }
+        : { ok: true as const, id: rpcRequest.id, traceId: trace, data: cached.data, headers: cached.headers };
+  }`
+    : '';
+  const cacheWriteBlock = hasCache
+    ? `compiledWriteCache(
+    ${JSON.stringify(entry.id)},
+    ${entry.exportName},
+    inputValue,
+    headerResult.value as Record<string, JsonValue>,
+    authValue,
+    result.data,
+    result.headers
+  );`
+    : '';
   return `${validators.join('\n\n')}
 
 ${emitSerializerFunctions(entry, base)}
@@ -562,12 +612,7 @@ const ${base}_execute: CompiledDispatch = async (
   serialize
 ) => {
   const trace = compiledTraceId(request, rpcRequest.traceId);
-  const limited = compiledRateLimitFailure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, trace, runtime);
-  if (limited !== undefined) {
-    return serialize
-      ? ${base}_serialize_error(trace, limited.error)
-      : limited;
-  }
+  ${rateLimitBlock}
   ${headerValidation}
   if (!headerResult.ok) {
     const error = {
@@ -587,12 +632,7 @@ const ${base}_execute: CompiledDispatch = async (
     headers: headerResult.value as object,
     auth: {},
   });
-  const authResult = await compiledAuthenticate(${entry.exportName}.auth, ctx, state);
-  if ('kind' in authResult && authResult.kind === 'error') {
-    return serialize
-      ? ${base}_serialize_error(trace, authResult.error)
-      : { ok: false as const, id: rpcRequest.id, traceId: trace, error: authResult.error };
-  }
+  ${authBlock}
   const inputResult = !runtime.validateInput
     ? { ok: true as const, value: rpcRequest.input }
     : ${base}_validate_input(rpcRequest.input, 'input');
@@ -607,22 +647,8 @@ const ${base}_execute: CompiledDispatch = async (
       ? ${base}_serialize_error(trace, error)
       : { ok: false as const, id: rpcRequest.id, traceId: trace, error };
   }
-  ctx.auth = authResult;
   const inputValue = (inputResult.value ?? {}) as JsonValue;
-  const cached = compiledReadCache(
-    ${JSON.stringify(entry.id)},
-    ${entry.exportName},
-    inputValue,
-    headerResult.value as Record<string, JsonValue>,
-    authResult
-  );
-  if (cached !== undefined) {
-    return serialize
-      ? ${base}_serialize_success(trace, cached.data, cached.headers)
-      : cached.headers === undefined
-        ? { ok: true as const, id: rpcRequest.id, traceId: trace, data: cached.data }
-        : { ok: true as const, id: rpcRequest.id, traceId: trace, data: cached.data, headers: cached.headers };
-  }
+  ${cacheReadBlock}
   const result = await ${entry.exportName}.handler(ctx, inputValue);
   if (!('kind' in result)) {
     const error = {
@@ -654,15 +680,7 @@ const ${base}_execute: CompiledDispatch = async (
     }
   }
   ${responseHeaderValidation}
-  compiledWriteCache(
-    ${JSON.stringify(entry.id)},
-    ${entry.exportName},
-    inputValue,
-    headerResult.value as Record<string, JsonValue>,
-    authResult,
-    result.data,
-    result.headers
-  );
+  ${cacheWriteBlock}
   return serialize
     ? ${base}_serialize_success(trace, result.data, result.headers)
     : result.headers === undefined

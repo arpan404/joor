@@ -76,14 +76,24 @@ const writeResult = (result: BunTransportBodyResult): Response => {
   return new Response(JSON.stringify(result), { status: 200, headers });
 };
 
+const readRequestBody = async (request: Request): Promise<JsonValue> => {
+  const contentLength = request.headers.get('content-length');
+  if (contentLength === '0') return {};
+  const contentType = request.headers.get('content-type') ?? '';
+  if (contentType.includes('application/json')) {
+    return await request.json();
+  }
+  const text = await request.text();
+  return text.length === 0 ? {} : parseJson(text);
+};
+
 export const createBunTransportRequestHandler = (
   handler: BunTransportBodyResultHandler
 ): ((request: Request) => Promise<Response>) => {
   return async (request: Request): Promise<Response> => {
     let body: JsonValue;
     try {
-      const text = await request.text();
-      body = text.length === 0 ? {} : parseJson(text);
+      body = await readRequestBody(request);
     } catch {
       body = {};
     }

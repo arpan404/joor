@@ -47,6 +47,15 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
       ).resolves.toContain('export const transport =');
+      const dispatcher = await readFile(join(outDir, 'dispatcher.ts'), 'utf8');
+      const postsListMatch = dispatcher.match(
+        /const posts_list_execute: CompiledDispatch = async \([\s\S]*?const users_get_execute: CompiledDispatch = async \(/
+      );
+      expect(postsListMatch?.[0]).toBeDefined();
+      expect(postsListMatch?.[0]).not.toContain('compiledAuthenticate');
+      expect(postsListMatch?.[0]).not.toContain('compiledReadCache');
+      expect(postsListMatch?.[0]).not.toContain('compiledWriteCache');
+      expect(postsListMatch?.[0]).not.toContain('compiledRateLimitFailure');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
