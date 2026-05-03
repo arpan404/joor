@@ -7,12 +7,10 @@
       "!build",
       "!release",
       "!node_modules",
+      "!.joor",
       "!.cache",
       "!.turbo",
       "!.vercel",
-      "!dev/playgrounds",
-      "!.src/**/*.js",
-      "!.src/**/*.d.ts",
       "!**/*.mp4"
     ]
   },
@@ -33,7 +31,8 @@
       "recommended": true,
       "complexity": {
         "noBannedTypes": "error",
-        "noUselessTypeConstraint": "error"
+        "noUselessTypeConstraint": "error",
+        "useLiteralKeys": "off"
       },
       "correctness": {
         "noConstAssign": "error",
@@ -81,9 +80,6 @@
           "level": "error",
           "options": {
             "types": {
-              "unknown": {
-                "message": "Model the value with a specific union, generic, or schema-derived type."
-              },
               "Function": {
                 "message": "Use a specific callable signature instead."
               },
@@ -110,7 +106,6 @@
     "globals": [
       "Bun",
       "Deno",
-      "jest",
       "describe",
       "it",
       "expect",

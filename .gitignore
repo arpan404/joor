@@ -6,6 +6,7 @@ dist/
 build/  
 release/  
 old/  
+.joor/
 
 # Ignore system files  
 .DS_Store  
@@ -19,11 +20,7 @@ Thumbs.db
 # Ignore package manager lock files  
 package-lock.json  
 yarn.lock  
-bun.lock  
 **/package-lock.json  
-
-# Ignore Jest cache  
-.jest-cache/  
 
 # Ignore log files in any subdirectory  
 logs/  
@@ -39,5 +36,4 @@ pnpm-debug.log*
 .env.*  
 .npmrc  
 
-.src/
 src_old/

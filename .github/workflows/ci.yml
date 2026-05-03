@@ -8,28 +8,29 @@ on:
       - staging
 
 jobs:
-  lint-test-compile-format:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '22.13.0'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Lint code
-        run: npm run lint:fix
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint and typecheck
+        run: npm run lint
 
       - name: Run tests
-        run: npm test
+        run: npm run test
 
-      - name: Compile TypeScript
-        run: npm run compile
-
-      - name: Format code
-        run: npm run format
+      - name: Build package
+        run: npm run build

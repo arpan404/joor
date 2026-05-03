@@ -1,48 +1,125 @@
 # Joor
 
-**Joor** is a modern, high-performance backend framework built on **Node.js** (compatible with runtimes like Bun and Deno), designed for **efficiency, scalability, and simplicity**. Featuring **built-in tools** and a **lightweight core**, Joor minimizes dependencies while maximizing performance.
+Joor is a Fetch-native, AOT-generated, type-safe RPC backend framework for AI-native TypeScript systems.
 
-**Note**: Joor is in early development; documentation and features may be incomplete.
+The first vertical slice is intentionally small and strict:
 
-## Why Choose Joor?
+- file-routed procedures with one `*.rpc.ts` file per operation
+- ahead-of-time manifest, dispatcher, typed client, OpenAPI JSON, and AI docs JSON
+- O(1) procedure dispatch through generated manifest lookup
+- unary RPC, batch RPC, and typed SSE streaming
+- Joor-owned schema DSL with interpreted validation and OpenAPI conversion
+- layered typed context through plugins
+- Biome lint, oxfmt formatting, strict `tsc`, and Vitest
 
-Joor simplifies backend development while ensuring high performance and security. Whether you’re building small projects or enterprise-level applications, Joor provides a robust foundation with minimal complexity.
+## Quickstart
 
-### Key Features
+Create a procedure:
 
-- ✅ **Minimal & Intuitive:** Simple API, easy to learn for beginners.
-- ⚡ **High Performance:** Optimized for speed with auto-scaling capabilities.
-- 🛠 **Flexible & Configurable:** Adaptable settings for different project needs.
-- 🔒 **Secure & Reliable:** Built-in security features and rigorous testing.
-- 📦 **Zero Dependency Bloat:** Reduces reliance on third-party packages.
-- 🔷 **Type-Safe:** Built with **TypeScript** for better code quality and maintainability.
+```ts
+import { defineProcedure, t } from 'joor';
 
-## Documentation & Support
+export default defineProcedure({
+  input: t.object({
+    id: t.string().uuid(),
+  }),
+  output: t.object({
+    id: t.string(),
+    name: t.string(),
+  }),
+  errors: {
+    NOT_FOUND: t.object({
+      message: t.string(),
+    }),
+  },
+  meta: {
+    summary: 'Get a user',
+    tags: ['users'],
+  },
+  async handler(ctx, input) {
+    const user = await ctx.services.users.findById(input.id);
+    if (!user) {
+      return ctx.error('NOT_FOUND', { message: 'User not found' });
+    }
+    return ctx.ok(user);
+  },
+});
+```
 
-Dive deeper into Joor with our comprehensive documentation and support resources.
+Build generated artifacts:
 
-- 📖 **Full Documentation:** [Explore the Docs](https://joor.socioy.com) - Everything you need to get started and master Joor.
+```bash
+npm run joor -- build --entry ./rpc --out ./.joor
+```
 
-### Join Our Community
+Generated output:
 
-- 💬 **Discord:** [Join the Joor Community](https://discord.gg/eepjRJJD6c)
-- 🐙 **GitHub:** [Contribute to Joor](https://github.com/socioy/joor)
+```txt
+.joor/
+  manifest.ts
+  dispatcher.ts
+  client.ts
+  openapi.json
+  ai-docs.json
+```
 
-## Contributing
+Use the generated Fetch dispatcher:
 
-We welcome contributions! To help improve Joor, please read our [CONTRIBUTING.md](https://github.com/socioy/joor/blob/pro/CONTRIBUTING.md).
+```ts
+import { fetch } from './.joor/dispatcher.js';
 
-## Project Resources
+export default { fetch };
+```
 
-Our repository contains important resources to help developers get started and contribute efficiently:
+Use the generated typed client:
 
-- [CONTRIBUTING.md](https://github.com/socioy/joor/blob/pro/CONTRIBUTING.md) - Guidelines for contributing to Joor.
-- [STYLEGUIDE.md](https://github.com/socioy/joor/blob/pro/STYLEGUIDE.md) - Coding standards and best practices.
-- [SECURITY.md](https://github.com/socioy/joor/blob/pro/SECURITY.md) - Security policies and reporting vulnerabilities.
-- [CODE_OF_CONDUCT.md](https://github.com/socioy/joor/blob/pro/CODE_OF_CONDUCT.md) - Community standards and behavior guidelines.
+```ts
+import { client } from './.joor/client.js';
+
+const result = await client.users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
+
+if (result.ok) {
+  result.data.name;
+} else {
+  result.error.code;
+}
+```
+
+## RPC Model
+
+All RPC calls go through:
+
+```txt
+POST /rpc
+```
+
+The dispatcher accepts a single request or a batch. Streaming procedures use the same endpoint with `Accept: text/event-stream` and emit `data`, `error`, and `done` SSE events.
+
+Procedure ids are derived from file paths:
+
+```txt
+rpc/users/get.rpc.ts -> users.get
+rpc/users/watch.rpc.ts -> users.watch
+rpc/admin/users/list.rpc.ts -> admin.users.list
+```
+
+## Development
+
+```bash
+npm run format:check
+npm run lint
+npm run test
+npm run build
+```
+
+`npm run lint` runs Biome and strict TypeScript. `npm run format` formats the repository with oxfmt.
+
+## Status
+
+Joor is pre-release. The current implementation is the safe RPC foundation: schema validation, procedure definition, compiler output, Fetch runtime, typed client, OpenAPI, and AI-readable docs.
 
 ## License
 
-Joor is open-source and available under the MIT License. See the full license [here](https://github.com/socioy/joor/blob/pro/LICENSE.md).
-
-**Joor is built for modern developers, making backend development effortless without sacrificing power.** Try it today! 🚀
+MIT. See [LICENSE.md](./LICENSE.md).

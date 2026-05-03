@@ -33,10 +33,12 @@
     "declarationMap": true,
     "noEmit": true,
     "outDir": "./dist",
-    "rootDir": "./.src",
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./.src/*"]
+      "joor": ["./src/index.ts"],
+      "joor/client": ["./src/rpc/client.ts"],
+      "@/*": ["./src/*"]
     },
     "plugins": [
       {
@@ -44,6 +46,6 @@
       }
     ]
   },
-  "include": [".src/**/*"],
-  "exclude": ["node_modules", "dist", "src_old", "tests", "dev"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist", ".joor"]
 }
