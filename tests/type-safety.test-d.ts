@@ -380,6 +380,21 @@ const procedure = defineProcedure.withContext<Services>()({
   },
 });
 
+defineProcedure.withContext<Services>()({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string(), name: t.string() }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
+  // @ts-expect-error manual success results must include declared response headers.
+  handler(_ctx, input) {
+    return {
+      kind: 'success' as const,
+      data: { id: input.id, name: 'Ada' },
+    };
+  },
+});
+
 const authPolicy = createAuthPolicy<
   Services,
   Record<string, never>,

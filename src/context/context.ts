@@ -26,7 +26,7 @@ export interface JoorContext<
   auth: TAuth;
   ok<TData extends JsonValue>(
     ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
-  ): ProcedureSuccess<TData>;
+  ): ProcedureSuccess<TData, TResponseHeaders>;
   error<TCode extends Extract<keyof TErrors, string>>(
     code: TCode,
     details: TErrors[TCode]
@@ -118,11 +118,17 @@ class RuntimeJoorContext<
 
   ok<TData extends JsonValue>(
     ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
-  ): ProcedureSuccess<TData> {
+  ): ProcedureSuccess<TData, TResponseHeaders> {
     const [data, headers] = args;
-    return headers === undefined
-      ? { kind: 'success', data }
-      : { kind: 'success', data, headers: headers as JsonObject };
+    return (
+      headers === undefined
+        ? { kind: 'success', data }
+        : {
+            kind: 'success',
+            data,
+            headers: headers as TResponseHeaders & JsonObject,
+          }
+    ) as ProcedureSuccess<TData, TResponseHeaders>;
   }
 
   error<TCode extends Extract<keyof TErrors, string>>(

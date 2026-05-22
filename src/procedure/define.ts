@@ -21,8 +21,9 @@ import type {
 type ProcedureConfigResult<
   TOutput extends JsonValue,
   TErrors extends ErrorSchemas,
+  TResponseHeaders extends object,
 > =
-  | ProcedureSuccess<TOutput>
+  | ProcedureSuccess<TOutput, TResponseHeaders>
   | {
       [TCode in ErrorCode<TErrors>]: ProcedureFailure<
         TCode,
@@ -66,7 +67,13 @@ export interface UnaryProcedureConfig<
     >,
     input: InferSchema<TInput>
   ): MaybePromise<
-    | ProcedureConfigResult<InferSchema<TOutput> & JsonValue, TErrors>
+    | ProcedureConfigResult<
+        InferSchema<TOutput> & JsonValue,
+        TErrors,
+        TResponseHeaders extends Schema
+          ? InferSchema<TResponseHeaders> & object
+          : Record<string, never>
+      >
     | (InferSchema<TOutput> & JsonValue)
   >;
 }
@@ -84,7 +91,11 @@ export interface ContextlessUnaryProcedureConfig<
   handler(
     input: InferSchema<TInput>
   ): MaybePromise<
-    | ProcedureConfigResult<InferSchema<TOutput> & JsonValue, TErrors>
+    | ProcedureConfigResult<
+        InferSchema<TOutput> & JsonValue,
+        TErrors,
+        Record<string, never>
+      >
     | (InferSchema<TOutput> & JsonValue)
   >;
 }

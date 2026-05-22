@@ -1,10 +1,17 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
 
-export interface ProcedureSuccess<TData extends JsonValue> {
+type ProcedureSuccessHeaders<THeaders extends object> =
+  Record<string, never> extends THeaders
+    ? { headers?: THeaders & JsonObject }
+    : { headers: THeaders & JsonObject };
+
+export type ProcedureSuccess<
+  TData extends JsonValue,
+  THeaders extends object = JsonObject,
+> = {
   kind: 'success';
   data: TData;
-  headers?: JsonObject;
-}
+} & ProcedureSuccessHeaders<THeaders>;
 
 export interface ProcedureFailure<
   TCode extends string,
@@ -24,7 +31,8 @@ export type ProcedureResult<
   TData extends JsonValue,
   TCode extends string,
   TDetails extends JsonValue = JsonValue,
-> = ProcedureSuccess<TData> | ProcedureFailure<TCode, TDetails>;
+  THeaders extends object = JsonObject,
+> = ProcedureSuccess<TData, THeaders> | ProcedureFailure<TCode, TDetails>;
 
 export const ok = <TData extends JsonValue>(
   data: TData,
