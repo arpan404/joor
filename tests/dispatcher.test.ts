@@ -6,9 +6,11 @@ import {
   createAuthPolicy,
   createJoorHandler,
   createPlugin,
+  defineConfig,
   defineProcedure,
   t,
 } from '../src/index.js';
+import { createCompiledRpcBodyResultHandler } from '../src/runtime/compiled.js';
 
 const manifest = {
   procedures: {
@@ -225,6 +227,60 @@ describe('dispatcher', () => {
     expect(limitedBody.ok).toBe(false);
     expect(limitedBody.error.code).toBe('RATE_LIMITED');
     expect(seen).toEqual(['before', 'after', 'before', 'after']);
+  });
+
+  it('runs compiled runtime hooks with plugin services', async () => {
+    const seen: string[] = [];
+    const hooksPlugin = createPlugin({
+      name: 'compiled-hooks',
+      setup() {
+        return {
+          hooks: {
+            record(value: string) {
+              seen.push(value);
+            },
+          },
+        };
+      },
+    });
+    const compiledConfig = defineConfig({
+      plugins: [hooksPlugin] as const,
+      hooks: {
+        beforeRequest(_request, context) {
+          context.services.hooks.record('before');
+          return undefined;
+        },
+        afterResponse(response, _request, context) {
+          context.services.hooks.record('after');
+          return response;
+        },
+      },
+    });
+    const handler = createCompiledRpcBodyResultHandler(
+      async (body) => ({
+        ok: true,
+        id: body.id,
+        data: { ok: true },
+        traceId: 'trace-compiled',
+      }),
+      compiledConfig
+    );
+
+    const result = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+      }),
+      { id: 'compiled', input: { ok: true } }
+    );
+
+    expect(result).toBeInstanceOf(Response);
+    expect(await (result as Response).json()).toMatchObject({
+      ok: true,
+      id: 'compiled',
+      data: { ok: true },
+    });
+    expect(seen).toEqual(['before', 'after']);
   });
 
   it('caches successful query responses when meta.cache is configured', async () => {

@@ -34,7 +34,7 @@ import type {
   ProcedureServices,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
-import type { RpcBodyResult } from '../rpc/dispatcher.js';
+import type { HandlerHookContext, RpcBodyResult } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
@@ -49,6 +49,7 @@ import {
   jsonOkResponseInit,
   rpcEnvelopeToResponse,
   serializedEnvelopeToResponse,
+  transportResultToResponse,
   type SerializedJsonEnvelope,
 } from './response.js';
 import {
@@ -754,7 +755,53 @@ export const createCompiledRpcTransportBodyResultHandler = <
     createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
     JoorConfigContext<TConfig>
   >;
-  return async (
+  const middleware = handlerConfig.middleware ?? [];
+  const hasBeforeHooks =
+    handlerConfig.hooks?.beforeRequest !== undefined ||
+    middleware.some((item) => item.beforeRequest !== undefined);
+  const hasAfterHooks =
+    handlerConfig.hooks?.afterResponse !== undefined ||
+    middleware.some((item) => item.afterResponse !== undefined);
+  const createHookContext = async (): Promise<
+    HandlerHookContext<JoorConfigContext<TConfig>>
+  > => ({
+    services: compiled.services ?? (await compiled.resolveServices()),
+  });
+  const runBefore = async (
+    request: ContextRequestSource
+  ): Promise<Response | undefined> => {
+    const hookRequest = request.toRequest();
+    const context = await createHookContext();
+    const hookResult = await handlerConfig.hooks?.beforeRequest?.(
+      hookRequest,
+      context
+    );
+    if (hookResult instanceof Response) return hookResult;
+    for (const item of middleware) {
+      const result = await item.beforeRequest?.(hookRequest, context);
+      if (result instanceof Response) return result;
+    }
+    return undefined;
+  };
+  const runAfter = async (
+    response: Response,
+    request: ContextRequestSource
+  ): Promise<Response> => {
+    let next = response;
+    const hookRequest = request.toRequest();
+    const context = await createHookContext();
+    for (const item of middleware) {
+      const result = await item.afterResponse?.(next, hookRequest, context);
+      if (result instanceof Response) next = result;
+    }
+    const hookResult = await handlerConfig.hooks?.afterResponse?.(
+      next,
+      hookRequest,
+      context
+    );
+    return hookResult instanceof Response ? hookResult : next;
+  };
+  const execute = async (
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
@@ -825,6 +872,18 @@ export const createCompiledRpcTransportBodyResultHandler = <
       uncachedExecutionState,
       serializationMode
     );
+  };
+  if (!hasBeforeHooks && !hasAfterHooks) return execute;
+  return async (
+    request: ContextRequestSource,
+    body: JsonValue
+  ): Promise<CompiledBodyResult> => {
+    const early = hasBeforeHooks ? await runBefore(request) : undefined;
+    if (early !== undefined)
+      return hasAfterHooks ? await runAfter(early, request) : early;
+    const result = await execute(request, body);
+    if (!hasAfterHooks) return result;
+    return runAfter(transportResultToResponse(result), request);
   };
 };
 
