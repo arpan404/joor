@@ -7,6 +7,7 @@ import type {
   ProcedureResponseHeaders,
   ProcedureError,
   ProcedureErrorCode,
+  ProcedureRuntime,
   StreamEvent,
 } from '../procedure/types.js';
 import type {
@@ -26,7 +27,7 @@ export interface ClientOptions<
   maxStreamEventBytes?: number;
 }
 
-export type RpcRouteMap = Record<string, unknown>;
+export type RpcRouteMap = Record<string, ProcedureRuntime>;
 
 export type RpcRouteId<TRoutes extends RpcRouteMap> = Extract<
   keyof TRoutes,

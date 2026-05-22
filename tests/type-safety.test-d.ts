@@ -319,6 +319,9 @@ unaryRouteId.toUpperCase();
 const streamRouteId: RpcStreamRouteId<Routes> = 'users.watch';
 streamRouteId.toUpperCase();
 
+// @ts-expect-error route maps require procedure runtimes.
+createClient<{ broken: { input: string } }>({ url: '/rpc' });
+
 // @ts-expect-error stream routes are not unary route ids.
 const _wrongUnaryRouteId: RpcUnaryRouteId<Routes> = 'users.watch';
 
