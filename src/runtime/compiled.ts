@@ -88,15 +88,15 @@ export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
-export type CompiledRpcTransportBodyResultHandler<TBody = JsonValue> = (
-  request: ContextRequestSource,
-  body: TBody
-) => Promise<CompiledBodyResult>;
+export type CompiledRpcTransportBodyResultHandler<
+  TBody = JsonValue,
+  TResult extends CompiledBodyResult = CompiledBodyResult,
+> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
 
-export type CompiledRpcBodyResultHandler<TBody = JsonValue> = (
-  request: Request,
-  body: TBody
-) => Promise<CompiledBodyResult>;
+export type CompiledRpcBodyResultHandler<
+  TBody = JsonValue,
+  TResult extends CompiledBodyResult = CompiledBodyResult,
+> = (request: Request, body: TBody) => Promise<TResult>;
 
 export type CompiledUnaryDispatch = (
   body: JsonObject,

@@ -69,16 +69,24 @@ describe('compiler', () => {
       ).resolves.not.toContain('_execute_response');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeTransport:');
+      ).resolves.toContain('export const nativeTransport =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export type NativeBody');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('CompiledRpcTransportBodyResultHandler<NativeBody>');
+      ).resolves.toContain('export type NativeBodyResult');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeResponseTransport:');
+      ).resolves.toContain('export type NativeTransportResult');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain(
+        'CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>'
+      );
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export const nativeResponseTransport =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeRuntime =');
@@ -107,7 +115,7 @@ describe('compiler', () => {
       ).resolves.toContain('compiledHasInvalidHeaderValue');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const transport:');
+      ).resolves.toContain('export const transport =');
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
@@ -300,7 +308,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
-import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -388,11 +396,21 @@ const nativeStreamBody: NativeStreamProtocolRequest = {
   input: { userId: '1' },
 };
 const nativeBody: NativeBody = nativeUnaryBody;
+const nativeBodyResult: NativeBodyResult = routeBodyResult;
+const nativeTransportResult: NativeTransportResult = nativeBodyResult;
 const nativeRouteRequest: NativeRouteRequest<'users.get'> = nativeUnaryBody;
 const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
 nativeTransport(source, nativeBody);
 nativeTransport(source, nativeStreamBody);
-nativeTransport(source, nativeBatchBody);
+nativeTransport(source, nativeBatchBody).then((result) => {
+  const exact: NativeTransportResult = result;
+  if (!(exact instanceof Response) && !Array.isArray(exact) && !('body' in exact) && exact.ok) {
+    exact.id.toUpperCase();
+  }
+});
+if (!(nativeTransportResult instanceof Response) && !Array.isArray(nativeTransportResult) && !('body' in nativeTransportResult) && nativeTransportResult.ok) {
+  nativeTransportResult.id.toUpperCase();
+}
 nativeRouteRequest.id.toUpperCase();
 
 // @ts-expect-error generated clients reject unknown route leaves.

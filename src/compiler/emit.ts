@@ -131,6 +131,7 @@ const emitProfileDispatcher = async (
     ...(usesCache ? ['compiledReadCache', 'compiledWriteCache'] : []),
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
+    'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
     'type CompiledRpcTransportBodyResultHandler',
@@ -138,6 +139,7 @@ const emitProfileDispatcher = async (
   const joorTypeImports = [
     ...(hasCompiledProcedures ? ['JsonValue', 'RpcError'] : []),
     'JoorManifestRouteBody',
+    'JoorManifestRouteBodyResult',
     'JoorManifestRouteId',
     'JoorManifestRouteProtocolRequest',
     'JoorManifestRouteProtocolRequestUnion',
@@ -166,7 +168,9 @@ export type NativeUnaryProtocolRequest =
 export type NativeStreamProtocolRequest =
   JoorManifestRouteStreamProtocolRequestUnion<NativeManifest>;
 export type NativeBatchBody = NativeUnaryProtocolRequest[];
-export type NativeBody = JoorManifestRouteBody<NativeManifest>;`;
+export type NativeBody = JoorManifestRouteBody<NativeManifest>;
+export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
+export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
@@ -361,30 +365,30 @@ const dispatch: CompiledDispatch = ${transportDispatchName};
 export const nativeUnaryDispatch = ${nativeUnaryDispatchName};
 export const nativeResponseUnaryDispatch = ${nativeResponseUnaryDispatchName};
 export const nativeRuntime = createCompiledRuntimeState(${configValue});
-export const nativeTransport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
+export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
   false,
   ${transportModeLiteral},
   nativeRuntime
-);
-export const nativeResponseTransport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
+) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
+export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
   ${configValue},
   nativeResponseUnaryDispatch,
   false,
   'response',
   nativeRuntime
-);
-export const transport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
+) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
+export const transport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
   true,
   ${transportModeLiteral},
   nativeRuntime
-);
+) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
 export const fetch = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
   );
@@ -1382,7 +1386,7 @@ export const createHandler = (options: NodeNativeOptions = {}) => {
         compiledUncachedExecutionState
       );
       if (result !== undefined) {
-        await writeResult(outgoing, result);
+        await writeResult(outgoing, result as NativeTransportResult);
         return;
       }
     }
@@ -1833,7 +1837,9 @@ export const createFetch = (options: BunNativeOptions = {}) => {
         nativeRuntime.runtime,
         compiledUncachedExecutionState
       );
-      if (result !== undefined) return transportResultToResponse(result);
+      if (result !== undefined) {
+        return transportResultToResponse(result as NativeTransportResult);
+      }
     }
     return transportResultToResponse(
       await nativeTransport(source, body as Parameters<typeof nativeTransport>[1])
