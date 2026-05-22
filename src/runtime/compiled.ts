@@ -1,5 +1,6 @@
 import {
   authenticateOnce,
+  authenticateUncached,
   createExecutionState,
   type ExecutionState,
   uncachedExecutionState,
@@ -27,7 +28,11 @@ import {
 } from '../context/context.js';
 import { resolvePluginServices } from '../context/plugin.js';
 import type { JoorConfig } from '../config.js';
-import type { ProcedureRuntime } from '../procedure/types.js';
+import type {
+  ProcedureRuntime,
+  ProcedureRuntimeValue,
+} from '../procedure/types.js';
+import type { ProcedureResult } from '../procedure/result.js';
 import type { RpcBodyResult } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -37,6 +42,7 @@ import {
 } from './body.js';
 import {
   createJsonHeaderRecord,
+  hasInvalidHeaderValue,
   isSerializedJsonEnvelope,
   jsonContentHeaders,
   jsonOkResponseInit,
@@ -73,6 +79,7 @@ export interface CompiledRuntime {
 export interface CompiledRuntimeState {
   path: string;
   runtime: CompiledRuntime;
+  services: object | undefined;
   getServices(): object | undefined;
   resolveServices(): Promise<object>;
 }
@@ -90,6 +97,14 @@ export type CompiledUnaryDispatch = (
   serialize: CompiledSerializationMode
 ) => Promise<CompiledBodyResult | undefined>;
 
+export type CompiledFixedUnaryDispatch = (
+  body: JsonObject,
+  request: ContextRequestSource,
+  services: object,
+  runtime: CompiledRuntime,
+  state: ExecutionState
+) => Promise<CompiledBodyResult | undefined>;
+
 export type CompiledDispatch = (
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
@@ -97,6 +112,14 @@ export type CompiledDispatch = (
   runtime: CompiledRuntime,
   state: ExecutionState,
   serialize: CompiledSerializationMode
+) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
+
+export type CompiledFixedDispatch = (
+  rpcRequest: RpcRequest,
+  request: ContextRequestSource,
+  services: object,
+  runtime: CompiledRuntime,
+  state: ExecutionState
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
@@ -196,6 +219,7 @@ export const compiledValidationDetails = validationDetails;
 export const compiledCreateContext = createRuntimeContext;
 export const compiledEmptyObject = emptyContextObject;
 export const compiledCreateJsonHeaderRecord = createJsonHeaderRecord;
+export const compiledHasInvalidHeaderValue = hasInvalidHeaderValue;
 export const compiledJsonOkResponseInit = jsonOkResponseInit;
 export const compiledUncachedExecutionState = uncachedExecutionState;
 
@@ -210,11 +234,28 @@ const isProcedureFailure = (
     : never;
 } => 'kind' in value && value.kind === 'error' && 'error' in value;
 
+const isProcedureResult = (
+  value: JsonValue | ProcedureResult<JsonValue, string>
+): value is ProcedureResult<JsonValue, string> =>
+  typeof value === 'object' &&
+  value !== null &&
+  'kind' in value &&
+  (value.kind === 'success' || value.kind === 'error');
+
+const isAsyncIterable = (
+  value: ProcedureRuntimeValue
+): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
+
 export const compiledAuthenticate = (
   policy: ProcedureRuntime['auth'],
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
 ): ReturnType<typeof authenticateOnce> => authenticateOnce(policy, ctx, state);
+
+export const compiledAuthenticateUncached = (
+  policy: ProcedureRuntime['auth'],
+  ctx: JoorContext<object, object, object, object>
+): ReturnType<typeof authenticateUncached> => authenticateUncached(policy, ctx);
 
 const rateLimitFailure = (
   id: string,
@@ -535,7 +576,7 @@ export const executeCompiledProcedure = async (
         };
   }
   const result = await procedure.handler(ctx, inputValue);
-  if (!('kind' in result)) {
+  if (isAsyncIterable(result)) {
     return failure(
       rpcRequest.id,
       trace,
@@ -544,13 +585,39 @@ export const executeCompiledProcedure = async (
       400
     );
   }
+  if (!isProcedureResult(result)) {
+    if (procedure.output !== undefined && runtime.validateOutput) {
+      const outputResult = validate(procedure.output, result, 'output');
+      if (!outputResult.ok) {
+        return failure(
+          rpcRequest.id,
+          trace,
+          'OUTPUT_VALIDATION_ERROR',
+          'Handler returned invalid output',
+          500,
+          validationDetails(outputResult.issues)
+        );
+      }
+    }
+    compiledWriteCache(
+      id,
+      procedure,
+      inputValue,
+      headerResult.value as JsonObject,
+      authResult,
+      result
+    );
+    return { ok: true, id: rpcRequest.id, traceId: trace, data: result };
+  }
   if (result.kind === 'error') {
-    return {
-      ok: false,
-      id: rpcRequest.id,
-      traceId: trace,
-      error: result.error,
-    };
+    return failure(
+      rpcRequest.id,
+      trace,
+      result.error.code,
+      result.error.message,
+      result.error.status,
+      result.error.details
+    );
   }
   if (procedure.output !== undefined && runtime.validateOutput) {
     const outputResult = validate(procedure.output, result.data, 'output');
@@ -613,11 +680,6 @@ export const createCompiledRuntimeState = (
   let services: object | undefined;
   if (config.plugins === undefined || config.plugins.length === 0) {
     services = {};
-  } else {
-    servicesPromise.then((resolved) => {
-      services = resolved;
-      return resolved;
-    });
   }
   const path = config.path ?? '/rpc';
   const runtime: CompiledRuntime = {
@@ -638,16 +700,24 @@ export const createCompiledRuntimeState = (
         : { identity: config.rateLimit.identity }),
     },
   };
-  return {
+  const state: CompiledRuntimeState = {
     path,
     runtime,
+    services,
     getServices(): object | undefined {
-      return services;
+      return state.services;
     },
     async resolveServices(): Promise<object> {
-      return services ?? (await servicesPromise);
+      return state.services ?? (await servicesPromise);
     },
   };
+  if (services === undefined) {
+    servicesPromise.then((resolved) => {
+      state.services = resolved;
+      return resolved;
+    });
+  }
+  return state;
 };
 
 export const createCompiledRpcTransportBodyResultHandler = (
@@ -670,8 +740,7 @@ export const createCompiledRpcTransportBodyResultHandler = (
       const early = requestPreflight(request, compiled.path);
       if (early !== undefined) return early;
     }
-    const resolved =
-      compiled.getServices() ?? (await compiled.resolveServices());
+    const resolved = compiled.services ?? (await compiled.resolveServices());
     if (unaryDispatch !== undefined && isJsonObject(body)) {
       const unary = await unaryDispatch(
         body,

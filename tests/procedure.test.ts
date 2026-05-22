@@ -24,6 +24,38 @@ describe('procedure', () => {
     expect(procedure.meta).toEqual({});
   });
 
+  it('allows raw success returns', () => {
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ ok: t.boolean() }),
+      handler(_ctx, input) {
+        expectTypeOf(input.id).toEqualTypeOf<string>();
+        return { ok: true };
+      },
+    });
+
+    expect(procedure.output?.kind).toBe('object');
+  });
+
+  it('allows contextless procedures', async () => {
+    const procedure = defineProcedure({
+      context: false,
+      input: t.object({ count: t.number().int() }),
+      output: t.object({ count: t.number().int() }),
+      handler(input) {
+        return { count: input.count + 1 };
+      },
+    });
+
+    const contextlessHandler = procedure.contextlessHandler;
+    if (contextlessHandler === undefined) {
+      throw new Error('Expected contextless handler');
+    }
+    const result = await contextlessHandler({ count: 1 });
+
+    expect(result).toEqual({ count: 2 });
+  });
+
   it('types plugin services through context', () => {
     const plugin = createPlugin({
       name: 'math',

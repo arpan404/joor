@@ -10,6 +10,7 @@ import type {
   MaybePromise,
   Procedure,
   ProcedureMeta,
+  ProcedureRuntime,
   ProcedureRuntimeValue,
 } from './types.js';
 
@@ -49,7 +50,26 @@ export interface UnaryProcedureConfig<
     >,
     input: InferSchema<TInput>
   ): MaybePromise<
-    ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
+    | ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
+    | (InferSchema<TOutput> & JsonValue)
+  >;
+}
+
+export interface ContextlessUnaryProcedureConfig<
+  TInput extends Schema,
+  TOutput extends Schema,
+  TErrors extends ErrorSchemas,
+> {
+  context: false;
+  input: TInput;
+  output: TOutput;
+  errors?: TErrors;
+  meta?: ProcedureMeta;
+  handler(
+    input: InferSchema<TInput>
+  ): MaybePromise<
+    | ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
+    | (InferSchema<TOutput> & JsonValue)
   >;
 }
 
@@ -92,6 +112,14 @@ export interface StreamProcedureConfig<
 }
 
 export interface DefineProcedure<TServices extends object = object> {
+  <
+    TInput extends Schema,
+    TOutput extends Schema,
+    TErrors extends ErrorSchemas = Record<string, never>,
+  >(
+    config: ContextlessUnaryProcedureConfig<TInput, TOutput, TErrors>
+  ): Procedure<TInput, TOutput, TErrors, undefined, undefined, undefined>;
+
   <
     TInput extends Schema,
     TOutput extends Schema,
@@ -162,6 +190,7 @@ const createDefineProcedure = <
     TAuth extends object,
   >(
     config:
+      | ContextlessUnaryProcedureConfig<TInput, TOutput, TErrors>
       | UnaryProcedureConfig<
           TInput,
           TOutput,
@@ -181,44 +210,38 @@ const createDefineProcedure = <
           TAuth
         >
   ): Procedure => {
-    const handler = (
-      ctx: JoorContext<object, object, object, object>,
-      input: JsonValue
-    ): ProcedureRuntimeValue => {
-      const typedContext = ctx as JoorContext<
-        TServices,
-        THeaders extends Schema
-          ? InferSchema<THeaders> & object
-          : Record<string, never>,
-        TResponseHeaders extends Schema
-          ? InferSchema<TResponseHeaders> & object
-          : Record<string, never>,
-        TAuth
-      >;
-      if ('stream' in config) {
-        return config.handler(
-          typedContext,
-          input as InferSchema<TInput>
-        ) as AsyncIterable<JsonValue>;
-      }
-      return config.handler(
-        typedContext,
-        input as InferSchema<TInput>
-      ) as MaybePromise<ProcedureResult<JsonValue, string>>;
-    };
+    const headers = 'headers' in config ? config.headers : undefined;
+    const responseHeaders =
+      'responseHeaders' in config ? config.responseHeaders : undefined;
+    const auth = 'auth' in config ? config.auth : undefined;
+    const contextlessHandler =
+      'context' in config && config.context === false
+        ? (input: JsonValue) =>
+            config.handler(input as InferSchema<TInput>) as MaybePromise<
+              ProcedureResult<JsonValue, string> | JsonValue
+            >
+        : undefined;
+    const handler: ProcedureRuntime['handler'] =
+      contextlessHandler === undefined
+        ? (config.handler as ProcedureRuntime['handler'])
+        : (
+            _ctx: JoorContext<object, object, object, object>,
+            input: JsonValue
+          ): ProcedureRuntimeValue => contextlessHandler(input);
     return {
       input: config.input,
-      ...(config.headers === undefined ? {} : { headers: config.headers }),
-      ...(config.responseHeaders === undefined
+      ...(headers === undefined ? {} : { headers }),
+      ...(responseHeaders === undefined ? {} : { responseHeaders }),
+      ...(auth === undefined
         ? {}
-        : { responseHeaders: config.responseHeaders }),
-      ...(config.auth === undefined
-        ? {}
-        : { auth: config.auth as AuthPolicy<object, object, object> }),
+        : { auth: auth as AuthPolicy<object, object, object> }),
       ...('output' in config ? { output: config.output } : {}),
       ...('stream' in config ? { stream: config.stream } : {}),
       errors: config.errors ?? {},
       meta: config.meta ?? {},
+      ...(contextlessHandler === undefined
+        ? {}
+        : { context: 'none' as const, contextlessHandler }),
       handler,
     };
   };

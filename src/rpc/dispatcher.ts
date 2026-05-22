@@ -11,6 +11,7 @@ import type {
   ProcedureRuntime,
   ProcedureRuntimeValue,
 } from '../procedure/types.js';
+import type { ProcedureResult } from '../procedure/result.js';
 import {
   isJsonObject,
   type JsonObject,
@@ -218,6 +219,14 @@ const isProcedureFailure = (
   value: object
 ): value is { kind: 'error'; error: RpcFailure['error'] } =>
   'kind' in value && value.kind === 'error' && 'error' in value;
+
+const isProcedureResult = (
+  value: JsonValue | ProcedureResult<JsonValue, string>
+): value is ProcedureResult<JsonValue, string> =>
+  typeof value === 'object' &&
+  value !== null &&
+  'kind' in value &&
+  (value.kind === 'success' || value.kind === 'error');
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
@@ -456,84 +465,80 @@ const executeUnary = async (
       400
     );
   }
-  if (result.kind === 'success') {
-    if (prepared.output !== undefined && runtime.validateOutput) {
-      const outputResult = validate(prepared.output, result.data, 'output');
-      if (!outputResult.ok) {
-        return rpcFailure(
-          rpcRequest.id,
-          trace,
-          'OUTPUT_VALIDATION_ERROR',
-          'Handler returned invalid output',
-          500,
-          validationDetails(outputResult.issues)
-        );
-      }
-    }
-    if (
-      prepared.responseHeaders !== undefined &&
-      runtime.validateResponseHeaders
-    ) {
-      const responseHeaderResult = validate(
-        prepared.responseHeaders,
-        result.headers,
-        'responseHeaders'
+  if (isProcedureResult(result) && result.kind === 'error') {
+    return {
+      ok: false,
+      id: rpcRequest.id,
+      traceId: trace,
+      error: result.error,
+    };
+  }
+  const data = isProcedureResult(result) ? result.data : result;
+  const headers = isProcedureResult(result) ? result.headers : undefined;
+  if (prepared.output !== undefined && runtime.validateOutput) {
+    const outputResult = validate(prepared.output, data, 'output');
+    if (!outputResult.ok) {
+      return rpcFailure(
+        rpcRequest.id,
+        trace,
+        'OUTPUT_VALIDATION_ERROR',
+        'Handler returned invalid output',
+        500,
+        validationDetails(outputResult.issues)
       );
-      if (!responseHeaderResult.ok) {
-        return rpcFailure(
-          rpcRequest.id,
-          trace,
-          'RESPONSE_HEADER_VALIDATION_ERROR',
-          'Handler returned invalid response headers',
-          500,
-          validationDetails(responseHeaderResult.issues)
-        );
-      }
-      return {
-        ok: true,
-        id: rpcRequest.id,
-        traceId: trace,
-        data: result.data,
-        headers: responseHeaderResult.value as JsonObject,
-      };
     }
-    if (result.headers !== undefined) {
-      if (cacheKey !== undefined && cacheConfig !== undefined) {
-        writeCachedProcedureSuccess(
-          procedureSuccessCache,
-          cacheKey,
-          parseDurationMs(cacheConfig.ttl),
-          result.data,
-          result.headers,
-          runtime.cacheMaxEntries
-        );
-      }
-      return {
-        ok: true,
-        id: rpcRequest.id,
-        traceId: trace,
-        data: result.data,
-        headers: result.headers,
-      };
+  }
+  if (
+    prepared.responseHeaders !== undefined &&
+    runtime.validateResponseHeaders
+  ) {
+    const responseHeaderResult = validate(
+      prepared.responseHeaders,
+      headers,
+      'responseHeaders'
+    );
+    if (!responseHeaderResult.ok) {
+      return rpcFailure(
+        rpcRequest.id,
+        trace,
+        'RESPONSE_HEADER_VALIDATION_ERROR',
+        'Handler returned invalid response headers',
+        500,
+        validationDetails(responseHeaderResult.issues)
+      );
     }
+    return {
+      ok: true,
+      id: rpcRequest.id,
+      traceId: trace,
+      data,
+      headers: responseHeaderResult.value as JsonObject,
+    };
+  }
+  if (headers !== undefined) {
     if (cacheKey !== undefined && cacheConfig !== undefined) {
       writeCachedProcedureSuccess(
         procedureSuccessCache,
         cacheKey,
         parseDurationMs(cacheConfig.ttl),
-        result.data,
-        undefined,
+        data,
+        headers,
         runtime.cacheMaxEntries
       );
     }
-    return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
+    return { ok: true, id: rpcRequest.id, traceId: trace, data, headers };
   }
-  return {
-    ok: false,
-    id: rpcRequest.id,
-    traceId: trace,
-    error: result.error,
-  };
+  if (cacheKey !== undefined && cacheConfig !== undefined) {
+    writeCachedProcedureSuccess(
+      procedureSuccessCache,
+      cacheKey,
+      parseDurationMs(cacheConfig.ttl),
+      data,
+      undefined,
+      runtime.cacheMaxEntries
+    );
+  }
+  return { ok: true, id: rpcRequest.id, traceId: trace, data };
 };
 
 const executeTrustedUnary = async (
@@ -604,7 +609,7 @@ const executeTrustedUnary = async (
     }
   }
   const result = await procedure.handler(ctx, rpcRequest.input ?? {});
-  if (!('kind' in result)) {
+  if (isAsyncIterable(result)) {
     return rpcFailure(
       rpcRequest.id,
       trace,
@@ -613,34 +618,29 @@ const executeTrustedUnary = async (
       400
     );
   }
-  if (result.kind === 'success') {
-    if (cacheKey !== undefined && cacheConfig !== undefined) {
-      writeCachedProcedureSuccess(
-        procedureSuccessCache,
-        cacheKey,
-        parseDurationMs(cacheConfig.ttl),
-        result.data,
-        result.headers,
-        runtime.cacheMaxEntries
-      );
-    }
-    if (result.headers !== undefined) {
-      return {
-        ok: true,
-        id: rpcRequest.id,
-        traceId: trace,
-        data: result.data,
-        headers: result.headers,
-      };
-    }
-    return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
+  if (isProcedureResult(result) && result.kind === 'error') {
+    return {
+      ok: false,
+      id: rpcRequest.id,
+      traceId: trace,
+      error: result.error,
+    };
   }
-  return {
-    ok: false,
-    id: rpcRequest.id,
-    traceId: trace,
-    error: result.error,
-  };
+  const data = isProcedureResult(result) ? result.data : result;
+  const headers = isProcedureResult(result) ? result.headers : undefined;
+  if (cacheKey !== undefined && cacheConfig !== undefined) {
+    writeCachedProcedureSuccess(
+      procedureSuccessCache,
+      cacheKey,
+      parseDurationMs(cacheConfig.ttl),
+      data,
+      headers,
+      runtime.cacheMaxEntries
+    );
+  }
+  return headers === undefined
+    ? { ok: true, id: rpcRequest.id, traceId: trace, data }
+    : { ok: true, id: rpcRequest.id, traceId: trace, data, headers };
 };
 
 const executeStream = async (

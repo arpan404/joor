@@ -36,7 +36,7 @@ const blockedResponseHeaders = new Set([
   'upgrade',
 ]);
 
-const hasInvalidHeaderValue = (value: string): boolean =>
+export const hasInvalidHeaderValue = (value: string): boolean =>
   value.includes('\0') || value.includes('\r') || value.includes('\n');
 
 const isSafeResponseHeader = (name: string, value: string): boolean => {

@@ -50,3 +50,11 @@ export const authenticateOnce = (
     return resolved;
   });
 };
+
+export const authenticateUncached = (
+  policy: AuthPolicy<object, object, object> | undefined,
+  ctx: JoorContext<object, object, object, object>
+): AuthResultLike => {
+  if (policy === undefined) return emptyAuthResult;
+  return policy.authenticate(asAuthContext(ctx));
+};

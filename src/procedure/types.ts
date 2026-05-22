@@ -36,8 +36,12 @@ export interface ProcedureTypes<
 }
 
 export type ProcedureRuntimeValue =
-  | MaybePromise<ProcedureResult<JsonValue, string>>
+  | MaybePromise<ProcedureResult<JsonValue, string> | JsonValue>
   | AsyncIterable<JsonValue>;
+
+export type ContextlessProcedureHandler = (
+  input: JsonValue
+) => MaybePromise<ProcedureResult<JsonValue, string> | JsonValue>;
 
 export interface ProcedureRuntime {
   id?: string;
@@ -49,6 +53,8 @@ export interface ProcedureRuntime {
   stream?: Schema;
   errors: ErrorSchemas;
   meta: ProcedureMeta;
+  context?: 'none';
+  contextlessHandler?: ContextlessProcedureHandler;
   handler(
     ctx: JoorContext<object, object, object, object>,
     input: JsonValue
