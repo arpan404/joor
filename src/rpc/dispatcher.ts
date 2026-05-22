@@ -5,7 +5,12 @@ import {
   emptyJsonObject,
   type ContextRequestSource,
 } from '../context/context.js';
-import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
+import {
+  resolvePluginServices,
+  type JoorPlugin,
+  type PluginServices,
+  type UnionToIntersection,
+} from '../context/plugin.js';
 import type {
   MaybePromise,
   ProcedureError,
@@ -15,6 +20,7 @@ import type {
   ProcedureRuntime,
   ProcedureResponseHeaders,
   ProcedureRuntimeValue,
+  ProcedureServices,
   StreamEvent,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
@@ -95,6 +101,21 @@ export type RpcManifestStreamRouteId<TManifest extends RpcManifest> = Exclude<
   RpcManifestRouteId<TManifest>,
   RpcManifestUnaryRouteId<TManifest>
 >;
+
+export type RpcManifestRouteServices<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureServices<RpcManifestRoutes<TManifest>[TId]>;
+
+export type RpcManifestRequiredServices<TManifest extends RpcManifest> =
+  UnionToIntersection<
+    {
+      [TId in RpcManifestRouteId<TManifest>]: RpcManifestRouteServices<
+        TManifest,
+        TId
+      >;
+    }[RpcManifestRouteId<TManifest>]
+  >;
 
 export type RpcManifestProcedureFrameworkError<TProcedure> = RpcError<
   Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
@@ -249,8 +270,11 @@ interface RuntimeOptions {
   validateResponseHeaders: boolean;
 }
 
-export interface HandlerOptions {
-  plugins?: readonly JoorPlugin<object>[];
+export interface HandlerOptions<
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> {
+  plugins?: TPlugins;
   middleware?: readonly JoorMiddleware[];
   hooks?: HandlerHooks;
   path?: string;
@@ -275,6 +299,11 @@ export interface HandlerOptions {
   enforceRateLimit?: boolean;
   onError?(error: Error, request: Request): void;
 }
+
+export type HandlerOptionServices<TOptions> =
+  TOptions extends HandlerOptions<infer TPlugins>
+    ? PluginServices<TPlugins>
+    : Record<string, never>;
 
 export interface HandlerHooks {
   beforeRequest?(request: Request): MaybePromise<Response | undefined>;

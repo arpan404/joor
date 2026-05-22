@@ -118,7 +118,16 @@ export interface DefineProcedure<TServices extends object = object> {
     TErrors extends ErrorSchemas = Record<string, never>,
   >(
     config: ContextlessUnaryProcedureConfig<TInput, TOutput, TErrors>
-  ): Procedure<TInput, TOutput, TErrors, undefined, undefined, undefined>;
+  ): Procedure<
+    TInput,
+    TOutput,
+    TErrors,
+    undefined,
+    undefined,
+    undefined,
+    Record<string, never>,
+    Record<string, never>
+  >;
 
   <
     TInput extends Schema,
@@ -144,7 +153,8 @@ export interface DefineProcedure<TServices extends object = object> {
     undefined,
     THeaders,
     TResponseHeaders,
-    TAuth
+    TAuth,
+    TServices
   >;
 
   <
@@ -171,7 +181,8 @@ export interface DefineProcedure<TServices extends object = object> {
     TStream,
     THeaders,
     TResponseHeaders,
-    TAuth
+    TAuth,
+    TServices
   >;
 
   withContext<TNextServices extends object>(): DefineProcedure<TNextServices>;
@@ -249,7 +260,7 @@ const createDefineProcedure = <
     withContext<TNextServices extends object>() {
       return createDefineProcedure<TNextServices>();
     },
-  });
+  }) as DefineProcedure<TServices>;
 };
 
 export const defineProcedure = createDefineProcedure<object>();

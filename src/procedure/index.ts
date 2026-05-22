@@ -28,6 +28,7 @@ export type {
   ProcedureResponseHeaders,
   ProcedureRuntime,
   ProcedureRuntimeValue,
+  ProcedureServices,
   ProcedureTypes,
   RpcEnvelope,
   RpcError,

@@ -18,6 +18,7 @@ type StreamTestProcedure = {
     headers: Record<string, never>;
     responseHeaders: Record<string, never>;
     auth: Record<string, never>;
+    services: Record<string, never>;
   };
 };
 

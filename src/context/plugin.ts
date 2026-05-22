@@ -7,7 +7,7 @@ export const createPlugin = <TServices extends object>(
   plugin: JoorPlugin<TServices>
 ): JoorPlugin<TServices> => plugin;
 
-type UnionToIntersection<TValue> = (
+export type UnionToIntersection<TValue> = (
   TValue extends TValue ? (value: TValue) => void : never
 ) extends (value: infer TResult) => void
   ? TResult

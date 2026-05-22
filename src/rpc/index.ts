@@ -49,6 +49,7 @@ export type {
 } from './client.js';
 export type {
   HandlerHooks,
+  HandlerOptionServices,
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,
@@ -66,6 +67,8 @@ export type {
   RpcManifestRouteId,
   RpcManifestRouteProtocolRequest,
   RpcManifestRouteProtocolRequestUnion,
+  RpcManifestRequiredServices,
+  RpcManifestRouteServices,
   RpcManifestRouteStreamProtocolRequest,
   RpcManifestRouteStreamProtocolRequestUnion,
   RpcManifestRouteUnaryProtocolRequest,

@@ -114,6 +114,7 @@ export type {
 } from './rpc/client.js';
 export type {
   HandlerHooks,
+  HandlerOptionServices,
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,
@@ -131,6 +132,8 @@ export type {
   RpcManifestRouteId,
   RpcManifestRouteProtocolRequest,
   RpcManifestRouteProtocolRequestUnion,
+  RpcManifestRequiredServices,
+  RpcManifestRouteServices,
   RpcManifestRoutes,
   RpcManifestRouteStreamProtocolRequest,
   RpcManifestRouteStreamProtocolRequestUnion,
@@ -162,6 +165,7 @@ export type {
   ProcedureOutput,
   ProcedureResponseHeaders,
   ProcedureResult,
+  ProcedureServices,
   RpcEnvelope,
   RpcError,
   StreamEvent,

@@ -35,6 +35,7 @@ import {
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
+  type HandlerOptionServices,
   type HandlerOptions,
   type JoorConfigContext,
   type JoorManifestRouteBody,
@@ -70,6 +71,7 @@ import {
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type ProcedureServices,
   type RpcBatchRequest,
   type RpcBodyResult,
   type RpcFailure,
@@ -84,6 +86,8 @@ import {
   type RpcManifestRouteId,
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
+  type RpcManifestRequiredServices,
+  type RpcManifestRouteServices,
   type RpcManifestRoutes,
   type RpcManifestRouteStreamProtocolRequest,
   type RpcManifestRouteStreamProtocolRequestUnion,
@@ -359,6 +363,14 @@ authShape.userId.toUpperCase();
 
 const validInput: ProcedureInput<typeof procedure> = { id: '1' };
 validInput.id.toUpperCase();
+const procedureServices: ProcedureServices<typeof procedure> = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+  },
+};
+procedureServices.users.findById('1').name.toUpperCase();
 
 // @ts-expect-error id is required and must be a string.
 const _invalidInput: ProcedureInput<typeof procedure> = { id: 1 };
@@ -591,6 +603,14 @@ const manifest = defineManifest({
   },
 });
 type ManifestRoutes = JoorManifestRoutes<typeof manifest>;
+const manifestRequiredServices: RpcManifestRequiredServices<typeof manifest> =
+  procedureServices;
+manifestRequiredServices.users.findById('1').id.toUpperCase();
+const manifestRouteServices: RpcManifestRouteServices<
+  typeof manifest,
+  'users.get'
+> = procedureServices;
+manifestRouteServices.users.findById('1');
 const manifestFromSubpath = defineManifestSubpath({
   procedures: {
     'users.get': procedure,
@@ -1021,7 +1041,13 @@ function createFetchRequestSourceForTypes() {
   };
 }
 
-const handlerOptions: HandlerOptions = { path: '/rpc' };
+const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+};
+const handlerOptionServices: HandlerOptionServices<typeof handlerOptions> =
+  procedureServices;
+handlerOptionServices.users.findById('1').name.toUpperCase();
 const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);
