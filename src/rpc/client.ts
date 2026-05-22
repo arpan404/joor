@@ -239,23 +239,23 @@ export type BatchResults<TRequests extends readonly unknown[]> = {
 };
 
 export interface LegacyRpcTransportClient {
-  call<TProcedure>(
-    id: string,
+  call<TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
   ): Promise<
     RpcEnvelope<
       ProcedureOutput<RpcUnaryProcedure<TProcedure>> & JsonValue,
-      string,
+      TId,
       ProcedureResponseHeaders<RpcUnaryProcedure<TProcedure>> & JsonObject,
       RpcProcedureError<RpcUnaryProcedure<TProcedure>>
     >
   >;
-  request<TProcedure>(
-    id: string,
+  request<TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
-  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, string>;
+  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
   ): Promise<BatchResults<TRequests>>;
@@ -368,8 +368,8 @@ export function createClient(
   const maxStreamEventBytes = normalizeMaxStreamEventBytes(
     options.maxStreamEventBytes
   );
-  const call = async <TProcedure>(
-    id: string,
+  const call = async <TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<TProcedure>,
     ...requestOptions: Record<
       string,
@@ -380,7 +380,7 @@ export function createClient(
   ): Promise<
     RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
-      string,
+      TId,
       ProcedureResponseHeaders<TProcedure> & JsonObject,
       RpcProcedureError<TProcedure>
     >
@@ -395,13 +395,13 @@ export function createClient(
     );
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
-      string,
+      TId,
       ProcedureResponseHeaders<TProcedure> & JsonObject,
       RpcProcedureError<TProcedure>
     >;
   };
-  const request = <TProcedure>(
-    id: string,
+  const request = <TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<TProcedure>,
     ...requestOptions: Record<
       string,
@@ -409,7 +409,7 @@ export function createClient(
     > extends ProcedureHeaders<TProcedure>
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
-  ): PendingRpcRequest<TProcedure> => ({
+  ): PendingRpcRequest<TProcedure, TId> => ({
     id,
     input,
     ...(requestOptions[0]?.headers === undefined

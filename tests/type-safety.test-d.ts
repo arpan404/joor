@@ -808,6 +808,34 @@ rootExplicitManifestClient.call('users.authenticated', { ok: true });
 // @ts-expect-error root explicit manifest clients keep route id safety.
 rootExplicitManifestClient.stream('users.get', { id: '1' });
 
+const legacyClient = createClient({ url: '/rpc' });
+const legacyRequest = legacyClient.request<typeof procedure, 'users.get'>(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const legacyRequestId: 'users.get' = legacyRequest.id;
+legacyRequestId.toUpperCase();
+// @ts-expect-error legacy client requests preserve explicit route id literals.
+const _wrongLegacyRequestId: 'users.authenticated' = legacyRequest.id;
+legacyClient
+  .call<typeof procedure, 'users.get'>(
+    'users.get',
+    { id: '1' },
+    { headers: { 'x-tenant-id': 'tenant-1' } }
+  )
+  .then((result) => {
+    const legacyResultId: 'users.get' = result.id;
+    legacyResultId.toUpperCase();
+  });
+const rootLegacyClient = createRootClient({ url: '/rpc' });
+const rootLegacyRequest = rootLegacyClient.request<
+  typeof procedure,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const rootLegacyRequestId: 'users.get' = rootLegacyRequest.id;
+rootLegacyRequestId.toUpperCase();
+
 const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
 manifestRouteId.toUpperCase();
 const manifestUnaryRouteId: JoorManifestUnaryRouteId<typeof manifest> =
