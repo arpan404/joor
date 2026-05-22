@@ -9,12 +9,14 @@ import {
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type RpcRouteError,
   type RpcRouteEnvelope,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
   type RpcStreamRouteId,
   type RpcUnaryRouteId,
+  type JsonValue,
 } from '../src/index.js';
 import { createClient } from '../src/rpc/client.js';
 
@@ -44,6 +46,9 @@ const procedure = defineProcedure.withContext<Services>()({
   responseHeaders: t.object({
     'cache-control': t.string(),
   }),
+  errors: {
+    NOT_FOUND: t.object({ message: t.string() }),
+  },
   async handler(ctx, input) {
     ctx.headers['x-tenant-id'].toUpperCase();
     ctx.headers.authorization?.toUpperCase();
@@ -108,11 +113,6 @@ const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
 };
 responseHeaders['cache-control'].toUpperCase();
 
-const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
-  'cache-control': 'private',
-};
-routeResponseHeaders['cache-control'].toUpperCase();
-
 const client = createClient({ url: '/rpc' });
 client.call<typeof procedure>(
   'users.get',
@@ -127,6 +127,21 @@ type Routes = {
   'users.authenticated': typeof authenticatedProcedure;
   'users.watch': typeof streamProcedure;
 };
+
+const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
+  'cache-control': 'private',
+};
+routeResponseHeaders['cache-control'].toUpperCase();
+
+const routeNotFoundError: RpcRouteError<Routes, 'users.get'> = {
+  code: 'NOT_FOUND',
+  message: 'Not found',
+  status: 404,
+  details: { message: 'User not found' },
+};
+if (routeNotFoundError.code === 'NOT_FOUND') {
+  routeNotFoundError.details?.message.toUpperCase();
+}
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const unaryRouteId: RpcUnaryRouteId<Routes> = 'users.get';
@@ -187,6 +202,16 @@ routeClient
 
       // @ts-expect-error route response headers preserve the declared shape.
       result.headers?.missing;
+    }
+    if (!result.ok && result.error.code === 'NOT_FOUND') {
+      result.error.details?.message.toUpperCase();
+
+      // @ts-expect-error route errors preserve declared detail schemas.
+      result.error.details?.missing;
+    }
+    if (!result.ok && result.error.code === 'VALIDATION_ERROR') {
+      const _runtimeDetails: JsonValue | undefined = result.error.details;
+      _runtimeDetails;
     }
 
     // @ts-expect-error envelopes preserve the selected route literal.
@@ -257,11 +282,39 @@ if (routeEnvelope.ok) {
   routeEnvelope.headers?.missing;
 }
 
+const routeErrorEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace-1',
+  error: {
+    code: 'NOT_FOUND',
+    message: 'Not found',
+    status: 404,
+    details: { message: 'User not found' },
+  },
+};
+if (!routeErrorEnvelope.ok && routeErrorEnvelope.error.code === 'NOT_FOUND') {
+  routeErrorEnvelope.error.details?.message.toUpperCase();
+}
+
 // @ts-expect-error typed route envelopes require the matching route id.
 const _wrongRouteEnvelopeId: RpcRouteEnvelope<
   Routes,
   'users.get'
 >['id'] = 'users.authenticated';
+
+// @ts-expect-error typed route errors reject invalid declared details.
+const _wrongRouteErrorEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace-1',
+  error: {
+    code: 'NOT_FOUND',
+    message: 'Not found',
+    status: 404,
+    details: { reason: 'missing' },
+  },
+};
 
 // @ts-expect-error route-map clients only accept known procedure ids.
 routeClient.call('users.missing', { id: '1' });

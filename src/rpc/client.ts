@@ -4,9 +4,16 @@ import type {
   ProcedureOutput,
   ProcedureHeaders,
   ProcedureResponseHeaders,
+  ProcedureError,
+  ProcedureErrorCode,
   StreamEvent,
 } from '../procedure/types.js';
-import type { RpcEnvelope, RpcRequest } from './protocol.js';
+import type {
+  RpcEnvelope,
+  RpcError,
+  RpcFrameworkErrorCode,
+  RpcRequest,
+} from './protocol.js';
 
 export interface ClientOptions {
   url: string;
@@ -47,6 +54,20 @@ export type RpcRouteResponseHeaders<
   TId extends RpcRouteId<TRoutes>,
 > = ProcedureResponseHeaders<RpcRouteProcedure<TRoutes, TId>> & JsonObject;
 
+export type RpcProcedureFrameworkError<TProcedure> = RpcError<
+  Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
+  JsonValue
+>;
+
+export type RpcProcedureError<TProcedure> =
+  | ProcedureError<TProcedure>
+  | RpcProcedureFrameworkError<TProcedure>;
+
+export type RpcRouteError<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = RpcProcedureError<RpcRouteProcedure<TRoutes, TId>>;
+
 export type RpcRouteStreamEvent<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
@@ -71,7 +92,8 @@ export type RpcRouteEnvelope<
 > = RpcEnvelope<
   RpcRouteOutput<TRoutes, TId> & JsonValue,
   TId,
-  RpcRouteResponseHeaders<TRoutes, TId>
+  RpcRouteResponseHeaders<TRoutes, TId>,
+  RpcRouteError<TRoutes, TId>
 >;
 
 type PendingRpcRequestHeaders<TProcedure> = Record<
@@ -131,7 +153,8 @@ export type BatchResults<TRequests extends readonly unknown[]> = {
     ? RpcEnvelope<
         ProcedureOutput<TProcedure> & JsonValue,
         TId,
-        ProcedureResponseHeaders<TProcedure> & JsonObject
+        ProcedureResponseHeaders<TProcedure> & JsonObject,
+        RpcProcedureError<TProcedure>
       >
     : never;
 };
@@ -145,7 +168,8 @@ export interface LegacyRpcTransportClient {
     RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
       string,
-      ProcedureResponseHeaders<TProcedure> & JsonObject
+      ProcedureResponseHeaders<TProcedure> & JsonObject,
+      RpcProcedureError<TProcedure>
     >
   >;
   request<TProcedure>(
@@ -272,7 +296,8 @@ export const createClient = <TRoutes extends RpcRouteMap = never>(
     RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
       string,
-      ProcedureResponseHeaders<TProcedure> & JsonObject
+      ProcedureResponseHeaders<TProcedure> & JsonObject,
+      RpcProcedureError<TProcedure>
     >
   > => {
     const [callOptions] = requestOptions;
@@ -286,7 +311,8 @@ export const createClient = <TRoutes extends RpcRouteMap = never>(
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
       string,
-      ProcedureResponseHeaders<TProcedure> & JsonObject
+      ProcedureResponseHeaders<TProcedure> & JsonObject,
+      RpcProcedureError<TProcedure>
     >;
   };
   const request = <TProcedure>(

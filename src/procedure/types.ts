@@ -163,6 +163,44 @@ export type ProcedureAuth<TProcedure> = TProcedure extends {
     : never
   : never;
 
+export type ProcedureErrorCode<TProcedure> = TProcedure extends {
+  types?: ProcedureTypes<
+    unknown,
+    unknown,
+    unknown,
+    infer TErrors,
+    unknown,
+    unknown,
+    unknown
+  >;
+}
+  ? TErrors
+  : never;
+
+export type ProcedureErrorDetails<
+  TProcedure,
+  TCode extends ProcedureErrorCode<TProcedure>,
+> = TProcedure extends Procedure<
+  Schema,
+  Schema,
+  infer TErrors,
+  Schema | undefined,
+  Schema | undefined,
+  Schema | undefined,
+  object
+>
+  ? TCode extends keyof TErrors
+    ? InferSchema<TErrors[TCode]>
+    : never
+  : never;
+
+export type ProcedureError<TProcedure> = {
+  [TCode in ProcedureErrorCode<TProcedure>]: RpcError<
+    TCode,
+    ProcedureErrorDetails<TProcedure, TCode> & JsonValue
+  >;
+}[ProcedureErrorCode<TProcedure>];
+
 export interface ProcedureMeta {
   kind?: 'query' | 'mutation' | 'subscription';
   summary?: string;
@@ -179,16 +217,20 @@ export interface ProcedureMeta {
   };
 }
 
-export type RpcError = {
-  code: string;
+export type RpcError<
+  TCode extends string = string,
+  TDetails extends JsonValue = JsonValue,
+> = {
+  code: TCode;
   message: string;
   status: number;
-  details?: JsonValue;
+  details?: TDetails;
 };
 
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,
   THeaders extends JsonObject = JsonObject,
+  TError extends RpcError = RpcError,
 > =
   | {
       ok: true;
@@ -200,7 +242,7 @@ export type RpcEnvelope<
   | {
       ok: false;
       id: string;
-      error: RpcError;
+      error: TError;
       traceId: string;
     };
 
