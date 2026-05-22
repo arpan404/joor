@@ -198,20 +198,26 @@ export type RpcManifestRouteBatchRequest<
     readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = TRequests;
 
+type RpcManifestRouteBatchResultRequest<TManifest extends RpcManifest> =
+  | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>
+  | RpcManifestRoutePendingRequestUnion<TManifest>;
+
 type RpcManifestRouteBatchResultFor<
   TManifest extends RpcManifest,
   TRequest,
 > = TRequest extends {
   id: infer TId extends RpcManifestUnaryRouteId<TManifest>;
 }
-  ? TRequest extends RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
+  ? TRequest extends
+      | RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
+      | RpcManifestRoutePendingRequest<TManifest, TId>
     ? RpcManifestRouteEnvelope<TManifest, TId>
     : never
   : never;
 
 export type RpcManifestRouteBatchResults<
   TManifest extends RpcManifest,
-  TRequests extends readonly unknown[],
+  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[],
 > = {
   [TIndex in keyof TRequests]: RpcManifestRouteBatchResultFor<
     TManifest,
@@ -252,6 +258,13 @@ type RpcManifestRoutePendingRequest<
   ? { headers?: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> }
   : { headers: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> });
 
+type RpcManifestRoutePendingRequestUnion<TManifest extends RpcManifest> = {
+  [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRoutePendingRequest<
+    TManifest,
+    TId
+  >;
+}[RpcManifestUnaryRouteId<TManifest>];
+
 type RpcManifestProtocolBodyResultFor<
   TManifest extends RpcManifest,
   TBody,
@@ -275,7 +288,9 @@ export type RpcManifestBodyResultFor<
   TManifest extends RpcManifest,
   TBody,
 > = TBody extends readonly unknown[]
-  ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
+  ? TBody extends readonly RpcManifestRouteBatchResultRequest<TManifest>[]
+    ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
+    : never
   : RpcManifestProtocolBodyResultFor<TManifest, TBody>;
 
 export type RpcBodyResultHandler<TManifest extends RpcManifest> = <

@@ -555,6 +555,10 @@ batchFunction([request] as const).then((results) => {
   const exact: RouteBatchResults<readonly [typeof request]> = results;
   if (exact[0].ok) exact[0].data.name.toUpperCase();
 });
+type _WrongRouteBatchResults = RouteBatchResults<
+  // @ts-expect-error generated route batch result helpers reject invalid request tuples.
+  readonly [{ id: 'users.get'; input: { ok: true }; headers: { 'x-tenant-id': 'tenant-1' } }]
+>;
 
 async function consumeStream() {
   for await (const event of client.users.watch({ userId: '1' })) {

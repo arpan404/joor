@@ -229,7 +229,9 @@ export type RpcRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
   TBody,
 > = TBody extends readonly unknown[]
-  ? RpcRouteBatchResults<TRoutes, TBody> | Response
+  ? TBody extends readonly RpcRouteBatchResultRequest<TRoutes>[]
+    ? RpcRouteBatchResults<TRoutes, TBody> | Response
+    : never
   : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
 
 type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
@@ -265,6 +267,10 @@ export type RpcRouteRequestUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteRequest<TRoutes, TId>;
 }[RpcUnaryRouteId<TRoutes>];
 
+type RpcRouteBatchResultRequest<TRoutes extends RpcRouteMap> =
+  | RpcRouteRequestUnion<TRoutes>
+  | RpcRouteUnaryProtocolRequestUnion<TRoutes>;
+
 type RpcRouteBatchResultFor<
   TRoutes extends RpcRouteMap,
   TRequest,
@@ -280,7 +286,7 @@ type RpcRouteBatchResultFor<
 
 export type RpcRouteBatchResults<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly unknown[],
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[],
 > = {
   [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
     TRoutes,
@@ -318,7 +324,7 @@ type BatchResultFor<TRequest> =
       ? RpcEnvelope<JsonValue, TId, JsonObject, RpcError>
       : never;
 
-export type BatchResults<TRequests extends readonly unknown[]> = {
+export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
   [TIndex in keyof TRequests]: BatchResultFor<TRequests[TIndex]>;
 };
 

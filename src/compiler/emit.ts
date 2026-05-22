@@ -2063,7 +2063,7 @@ export type RouteErrorDetails<TId extends RouteId, TCode extends RouteErrorCode<
 export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Manifest, TId>;
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
 export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[]> = TRequests;
-export type RouteBatchResults<TRequests extends readonly unknown[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
+export type RouteBatchResults<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteProtocolRequest<TId extends RouteId> = JoorManifestRouteProtocolRequest<Manifest, TId>;
 export type RouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<Manifest>;
 export type RouteUnaryProtocolRequest<TId extends UnaryRouteId> = JoorManifestRouteUnaryProtocolRequest<Manifest, TId>;

@@ -162,7 +162,10 @@ export type JoorManifestRouteRequestUnion<TManifest> = RpcRouteRequestUnion<
 
 export type JoorManifestRouteBatchResults<
   TManifest,
-  TRequests extends readonly unknown[],
+  TRequests extends readonly (
+    | JoorManifestRouteRequestUnion<TManifest>
+    | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
+  )[],
 > = RpcRouteBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestRouteStreamEvent<

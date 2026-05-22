@@ -1743,15 +1743,14 @@ const _wrongManifestBatchRequest: JoorManifestRouteBatchRequest<
   [typeof manifestStreamProtocolRequest]
 > = [manifestStreamProtocolRequest];
 
+// @ts-expect-error manifest batch result inference rejects invalid request tuples.
 const _wrongManifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   readonly [InvalidManifestUnaryProtocolRequest]
-> = [
-  // @ts-expect-error manifest batch result inference validates request input by route id.
-  manifestRouteEnvelope,
-];
-const _wrongManifestRouteBatchResults: JoorManifestRouteBatchResults<
+> = [manifestRouteEnvelope];
+type _WrongManifestRouteBatchResults = JoorManifestRouteBatchResults<
   typeof manifest,
+  // @ts-expect-error manifest route batch results reject invalid request tuples.
   readonly [
     {
       id: 'users.get';
@@ -1759,10 +1758,7 @@ const _wrongManifestRouteBatchResults: JoorManifestRouteBatchResults<
       headers: { 'x-tenant-id': 'tenant-1' };
     },
   ]
-> = [
-  // @ts-expect-error manifest route batch results validate pending request input by route id.
-  manifestRouteEnvelope,
-];
+>;
 
 // @ts-expect-error manifests only accept procedure runtimes.
 defineManifest({ procedures: { broken: { input: t.string() } } });
@@ -1832,13 +1828,11 @@ const publicManifestBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
   typeof publicManifestProtocolRequest
 > = publicManifestEnvelopeUnion;
+// @ts-expect-error public manifest batch result inference rejects invalid request tuples.
 const _wrongPublicManifestBatchBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
   readonly [InvalidManifestUnaryProtocolRequest]
-> = [
-  // @ts-expect-error public manifest batch result inference validates request input by route id.
-  publicManifestEnvelopeUnion,
-];
+> = [publicManifestEnvelopeUnion];
 // @ts-expect-error public manifest body result inference validates request input by route id.
 const _wrongPublicManifestSingleBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
