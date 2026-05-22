@@ -1110,6 +1110,8 @@ rpcHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching handler plugins.
 createRpcHandler(manifest);
 const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
+// @ts-expect-error service-dependent manifests require matching body handler plugins.
+createRpcBodyHandler(manifest);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
@@ -1123,6 +1125,8 @@ const rpcBodyResultHandler = createRpcBodyResultHandler(
   manifest,
   handlerOptions
 );
+// @ts-expect-error service-dependent manifests require matching body result handler plugins.
+createRpcBodyResultHandler(manifest);
 rpcBodyResultHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
@@ -1164,6 +1168,8 @@ const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
   manifest,
   handlerOptions
 );
+// @ts-expect-error service-dependent manifests require matching transport handler plugins.
+createRpcTransportBodyResultHandler(manifest);
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
   input: { id: '1' },

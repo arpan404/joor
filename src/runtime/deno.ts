@@ -169,7 +169,11 @@ export const createDenoRpcRequestHandler = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) => {
-  const handler = createRpcBodyResultHandler(manifest, options, false);
+  const handler = createRpcBodyResultHandler(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>,
+    false
+  );
   return createDenoTransportRequestHandler(
     (request, body) =>
       handler(request.toRequest(), body as RpcManifestBody<TManifest>),

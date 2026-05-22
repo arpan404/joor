@@ -4,6 +4,7 @@ import type { ContextRequestSource } from '../context/context.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
+  HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
   RpcRequestPreflight,
@@ -285,7 +286,11 @@ export const createNodeRpcRequestHandler = <TManifest extends JoorManifest>(
   options: HandlerOptions = {},
   hostname = '0.0.0.0'
 ): NodeRpcRequestHandler => {
-  const handler = createRpcTransportBodyResultHandler(manifest, options, false);
+  const handler = createRpcTransportBodyResultHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>,
+    false
+  );
   return createNodeTransportRequestHandler(
     (request, body) => handler(request, body as RpcManifestBody<TManifest>),
     hostname,

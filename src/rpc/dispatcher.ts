@@ -335,6 +335,15 @@ export type HandlerOptionsArgs<
     ? [options?: HandlerOptionsFor<TManifest, TPlugins>]
     : [options: HandlerOptionsFor<TManifest, TPlugins>];
 
+export type HandlerOptionsWithPreflightArgs<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> =
+  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+    ? [options?: HandlerOptionsFor<TManifest, TPlugins>, preflight?: boolean]
+    : [options: HandlerOptionsFor<TManifest, TPlugins>, preflight?: boolean];
+
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
 >(
@@ -1032,7 +1041,11 @@ export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {}
 ): (request: Request) => Promise<Response> {
-  const handleParsed = createRpcBodyHandler(manifest, options, false);
+  const handleParsed = createRpcBodyHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>,
+    false
+  );
   const preflight = createRpcRequestPreflight(options);
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
@@ -1068,15 +1081,23 @@ export function createRpcHandler<TManifest extends RpcManifest>(
   };
 }
 
-export const createRpcBodyHandler = <TManifest extends RpcManifest>(
+export function createRpcBodyHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+): (request: Request, body: RpcManifestBody<TManifest>) => Promise<Response>;
+export function createRpcBodyHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((
-  request: Request,
-  body: RpcManifestBody<TManifest>
-) => Promise<Response>) => {
-  const handleResult = createRpcBodyResultHandler(manifest, options, preflight);
+): (request: Request, body: RpcManifestBody<TManifest>) => Promise<Response> {
+  const handleResult = createRpcBodyResultHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>,
+    preflight
+  );
   return async (
     request: Request,
     body: RpcManifestBody<TManifest>
@@ -1084,16 +1105,23 @@ export const createRpcBodyHandler = <TManifest extends RpcManifest>(
     const result = await handleResult(request, body);
     return result instanceof Response ? result : toResponse(result, options);
   };
-};
+}
 
-export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
+export function createRpcBodyResultHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+): RpcBodyResultHandler<TManifest>;
+export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): RpcBodyResultHandler<TManifest> => {
+): RpcBodyResultHandler<TManifest> {
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
-    options,
+    options as HandlerOptionsFor<TManifest>,
     preflight
   );
   return (<const TBody extends RpcManifestBody<TManifest>>(
@@ -1104,15 +1132,22 @@ export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
       createFetchRequestSource(request),
       body
     )) as RpcBodyResultHandler<TManifest>;
-};
+}
 
-export const createRpcTransportBodyResultHandler = <
+export function createRpcTransportBodyResultHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+): RpcTransportBodyResultHandler<TManifest>;
+export function createRpcTransportBodyResultHandler<
   TManifest extends RpcManifest,
 >(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): RpcTransportBodyResultHandler<TManifest> => {
+): RpcTransportBodyResultHandler<TManifest> {
   const procedures = prepareProcedures(manifest);
   const requestPreflight = preflight
     ? createRpcRequestPreflight(options)
@@ -1323,4 +1358,4 @@ export const createRpcTransportBodyResultHandler = <
       request
     )) as RpcManifestBodyResultFor<TManifest, TBody>;
   }) as RpcTransportBodyResultHandler<TManifest>;
-};
+}
