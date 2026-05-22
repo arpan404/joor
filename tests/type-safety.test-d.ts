@@ -2,6 +2,7 @@ import {
   createPlugin,
   createAuthPolicy,
   defineConfig,
+  defineConfigFor,
   defineManifest,
   defineProcedure,
   resolvePluginServices,
@@ -59,6 +60,7 @@ import {
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
+  type DefineConfigFor,
   type HandlerHookContext,
   type HandlerHookContextFor,
   type HandlerHooks,
@@ -69,6 +71,7 @@ import {
   type JoorMiddleware,
   type JoorMiddlewareFor,
   type JoorConfig,
+  type JoorConfigFor,
   type JoorConfigContext,
   type JoorContext,
   type PluginServices,
@@ -209,9 +212,12 @@ import {
   createAuthPolicy as createContextSubpathAuthPolicy,
   createPlugin as createContextSubpathPlugin,
   defineConfig as defineContextSubpathConfig,
+  defineConfigFor as defineContextSubpathConfigFor,
   resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
+  type DefineConfigFor as ContextSubpathDefineConfigFor,
   type JoorConfig as ContextSubpathConfig,
+  type JoorConfigFor as ContextSubpathConfigFor,
   type JoorConfigContext as ContextSubpathConfigContext,
   type JoorContext as ContextSubpathJoorContext,
   type PluginServices as ContextSubpathPluginServices,
@@ -1317,6 +1323,50 @@ const manifestFromSubpath = defineManifestSubpath({
     'users.watch': streamProcedure,
   },
 });
+const manifestAwareConfig = defineConfigFor(manifest)({
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(_request, context) {
+      context.services.users.findById('1').name.toUpperCase();
+      if (
+        context.body !== undefined &&
+        !('length' in context.body) &&
+        context.body.id === 'users.get'
+      ) {
+        context.body.input.id.toUpperCase();
+        // @ts-expect-error manifest-aware configs keep route input exact.
+        context.body.input.ok;
+      }
+      return undefined;
+    },
+  },
+});
+const manifestAwareConfigShape: JoorConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestAwareConfig;
+manifestAwareConfigShape.plugins?.[0]?.name.toUpperCase();
+const manifestAwareConfigFactory: DefineConfigFor<typeof manifest> =
+  defineConfigFor(manifest);
+manifestAwareConfigFactory({ plugins: [usersPlugin] as const });
+defineConfigFor(manifest)({
+  // @ts-expect-error manifest-aware configs reject missing service plugins.
+  plugins: [] as const,
+});
+const contextSubpathManifestAwareConfig = defineContextSubpathConfigFor(
+  manifest
+)({
+  plugins: [usersPlugin] as const,
+});
+const contextSubpathManifestAwareConfigShape: ContextSubpathConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = contextSubpathManifestAwareConfig;
+contextSubpathManifestAwareConfigShape.plugins?.[0]?.setup;
+const contextSubpathManifestAwareConfigFactory: ContextSubpathDefineConfigFor<
+  typeof manifest
+> = defineContextSubpathConfigFor(manifest);
+contextSubpathManifestAwareConfigFactory({ plugins: [usersPlugin] as const });
 type ManifestSubpathRoutes = JoorSubpathManifestRoutes<
   typeof manifestFromSubpath
 >;

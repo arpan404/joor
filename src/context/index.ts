@@ -1,5 +1,5 @@
 export { createAuthPolicy } from '../auth/policy.js';
-export { defineConfig } from '../config.js';
+export { defineConfig, defineConfigFor } from '../config.js';
 export {
   createFetchRequestSource,
   createRuntimeContext,
@@ -17,6 +17,11 @@ export type {
   DefineContextAuthPolicy,
   DefineAuthPolicy,
 } from '../auth/policy.js';
-export type { JoorConfig, JoorConfigContext } from '../config.js';
+export type {
+  DefineConfigFor,
+  JoorConfig,
+  JoorConfigFor,
+  JoorConfigContext,
+} from '../config.js';
 export type { ContextRequestSource, JoorContext } from './context.js';
 export type { JoorPlugin, PluginServices } from './plugin.js';

@@ -1,6 +1,6 @@
 export { createAuthPolicy } from './auth/policy.js';
 export { createPlugin, resolvePluginServices } from './context/plugin.js';
-export { defineConfig } from './config.js';
+export { defineConfig, defineConfigFor } from './config.js';
 export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
 export { createClient, createManifestClient } from './rpc/client.js';
@@ -58,7 +58,12 @@ export type {
 } from './auth/policy.js';
 export type { JoorContext } from './context/context.js';
 export type { JoorPlugin, PluginServices } from './context/plugin.js';
-export type { JoorConfig, JoorConfigContext } from './config.js';
+export type {
+  DefineConfigFor,
+  JoorConfig,
+  JoorConfigFor,
+  JoorConfigContext,
+} from './config.js';
 export type {
   JoorManifest,
   JoorManifestRouteBody,
