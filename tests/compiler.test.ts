@@ -244,7 +244,7 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type RouteErrorDetails');
       expect(clientSource).toContain('export type RouteRequestOptions');
       expect(clientSource).toContain(
-        "import type { ClientOptions, RpcRouteClientArgs, RpcRouteRequestOptions } from 'joor/client';"
+        "import type { ClientOptions } from 'joor/client';"
       );
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')

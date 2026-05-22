@@ -14,6 +14,7 @@ import type {
   RpcRouteBodyResultFor,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
+  RpcRouteClientArgs,
   RpcRouteEnvelope,
   RpcRouteError,
   RpcRouteErrorCode,
@@ -28,6 +29,7 @@ import type {
   RpcRouteProtocolRequest,
   RpcRouteProtocolRequestUnion,
   RpcRouteRequest,
+  RpcRouteRequestOptions,
   RpcRouteRequestUnion,
   RpcRouteResponseHeaders,
   RpcRouteRequiresHeaders,
@@ -216,6 +218,16 @@ export type JoorManifestRouteBatchRequest<
   TRequests extends
     readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type JoorManifestRouteRequestOptions<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = RpcRouteRequestOptions<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteClientArgs<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = RpcRouteClientArgs<JoorManifestRoutes<TManifest>, TId>;
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(
   manifest: JoorManifest<TProcedures>

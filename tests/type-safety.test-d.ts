@@ -93,6 +93,7 @@ import {
   type JoorManifestRouteBodyResultFor,
   type JoorManifestRouteBatchRequest,
   type JoorManifestRouteBatchResults,
+  type JoorManifestRouteClientArgs,
   type JoorManifestRouteEnvelope,
   type JoorManifestRouteError,
   type JoorManifestRouteErrorCode,
@@ -107,6 +108,7 @@ import {
   type JoorManifestRouteProtocolRequest,
   type JoorManifestRouteProtocolRequestUnion,
   type JoorManifestRouteRequest,
+  type JoorManifestRouteRequestOptions,
   type JoorManifestRouteRequestUnion,
   type JoorManifestRouteResponseHeaders,
   type JoorManifestRouteRequiresHeaders,
@@ -274,10 +276,12 @@ import {
   defineManifest as defineManifestSubpath,
   type JoorManifestRouteBody as JoorSubpathManifestRouteBody,
   type JoorManifestRouteBodyResultFor as JoorSubpathManifestRouteBodyResultFor,
+  type JoorManifestRouteClientArgs as JoorSubpathManifestRouteClientArgs,
   type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
+  type JoorManifestRouteRequestOptions as JoorSubpathManifestRouteRequestOptions,
   type JoorManifestRequiredServices as JoorSubpathManifestRequiredServices,
   type JoorManifestRouteServices as JoorSubpathManifestRouteServices,
   type JoorManifestRouteStreamProtocolRequest as JoorSubpathManifestRouteStreamProtocolRequest,
@@ -1812,6 +1816,41 @@ const manifestRouteRequest: JoorManifestRouteRequest<
   headers: { 'x-tenant-id': 'tenant-1' },
 };
 manifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+const manifestRouteRequestOptions: JoorManifestRouteRequestOptions<
+  typeof manifest,
+  'users.get'
+> = { headers: { 'x-tenant-id': 'tenant-1' } };
+manifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
+const manifestRouteClientArgs: JoorManifestRouteClientArgs<
+  typeof manifest,
+  'users.get'
+> = [{ id: '1' }, manifestRouteRequestOptions];
+manifestRouteClientArgs[0].id.toUpperCase();
+const optionalManifestRouteClientArgs: JoorManifestRouteClientArgs<
+  typeof manifest,
+  'users.authenticated'
+> = [{ ok: true }];
+optionalManifestRouteClientArgs[0].ok.valueOf();
+const manifestSubpathRouteRequestOptions: JoorSubpathManifestRouteRequestOptions<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestRouteRequestOptions;
+const manifestSubpathRouteClientArgs: JoorSubpathManifestRouteClientArgs<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestRouteClientArgs;
+manifestSubpathRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
+manifestSubpathRouteClientArgs[0].id.toUpperCase();
+const _wrongManifestRouteRequestOptions: JoorManifestRouteRequestOptions<
+  typeof manifest,
+  'users.get'
+> = {
+  headers: {
+    // @ts-expect-error manifest route request options preserve declared header value types.
+    'x-tenant-id': 1,
+  },
+};
+_wrongManifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
 const manifestRouteRequestUnion: JoorManifestRouteRequestUnion<
   typeof manifest
 > = manifestRouteRequest;
