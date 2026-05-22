@@ -257,6 +257,12 @@ import {
   type PluginServices as ContextSubpathPluginServices,
 } from '../src/context/index.js';
 import {
+  defineConfigFor as defineConfigSubpathFor,
+  type DefineConfigFor as ConfigSubpathDefineConfigFor,
+  type JoorConfigFor as ConfigSubpathConfigFor,
+  type JoorConfigContext as ConfigSubpathConfigContext,
+} from '../src/config.js';
+import {
   build as buildCompilerSubpath,
   createAiDocs as createCompilerSubpathAiDocs,
   createOpenApiDocument as createCompilerSubpathOpenApiDocument,
@@ -1442,6 +1448,27 @@ const contextSubpathManifestAwareConfigFactory: ContextSubpathDefineConfigFor<
   typeof manifest
 > = defineContextSubpathConfigFor(manifest);
 contextSubpathManifestAwareConfigFactory({ plugins: [usersPlugin] as const });
+const configSubpathManifestAwareConfig = defineConfigSubpathFor(manifest)({
+  plugins: [usersPlugin] as const,
+});
+const configSubpathManifestAwareConfigShape: ConfigSubpathConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = configSubpathManifestAwareConfig;
+configSubpathManifestAwareConfigShape.plugins?.[0]?.setup;
+const configSubpathManifestAwareConfigFactory: ConfigSubpathDefineConfigFor<
+  typeof manifest
+> = defineConfigSubpathFor(manifest);
+configSubpathManifestAwareConfigFactory({ plugins: [usersPlugin] as const });
+type ConfigSubpathServices = ConfigSubpathConfigContext<
+  typeof configSubpathManifestAwareConfig
+>;
+const configSubpathServices: ConfigSubpathServices = procedureServices;
+configSubpathServices.users.findById('1').name.toUpperCase();
+defineConfigSubpathFor(manifest)({
+  // @ts-expect-error config subpath manifest-aware configs reject missing service plugins.
+  plugins: [] as const,
+});
 type ManifestSubpathRoutes = JoorSubpathManifestRoutes<
   typeof manifestFromSubpath
 >;

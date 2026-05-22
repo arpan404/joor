@@ -52,6 +52,10 @@
       "types": "./dist/context/index.d.ts",
       "import": "./dist/context/index.js"
     },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    },
     "./runtime": {
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.js"
