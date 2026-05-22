@@ -204,6 +204,7 @@ describe('compiler', () => {
       expect(clientSource).toContain("from 'joor/manifest'");
       expect(clientSource).toContain('export type UnaryRouteFunction');
       expect(clientSource).toContain('export type StreamRouteFunction');
+      expect(clientSource).toContain('export type BatchFunction');
       expect(clientSource).toContain('export type GeneratedClient');
       expect(clientSource).toContain('export type Client');
       expect(clientSource).toContain('export type RouteHasHeaders');
@@ -379,7 +380,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -458,6 +459,7 @@ const requestId: 'users.get' = request.id;
 requestId.toUpperCase();
 const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
+const batchFunction: BatchFunction = client.batch;
 const tenantHeaders: RouteHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
 tenantHeaders['x-tenant-id'].toUpperCase();
 const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
@@ -540,6 +542,10 @@ configured.batch([request] as const).then((results) => {
   const exact: RouteBatchResults<readonly [typeof request]> = results;
   const firstId: 'users.get' = exact[0].id;
   firstId.toUpperCase();
+  if (exact[0].ok) exact[0].data.name.toUpperCase();
+});
+batchFunction([request] as const).then((results) => {
+  const exact: RouteBatchResults<readonly [typeof request]> = results;
   if (exact[0].ok) exact[0].data.name.toUpperCase();
 });
 

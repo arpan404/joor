@@ -2089,6 +2089,9 @@ export type StreamRouteFunction<TId extends StreamRouteId> = {
   (...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
+export type BatchFunction = <const TRequests extends readonly RouteRequestUnion[]>(
+  requests: TRequests
+) => Promise<RouteBatchResults<TRequests>>;
 export type GeneratedClientOptions = Omit<ClientOptions<Manifest>, 'manifest' | 'url'> & {
   url?: string;
 };
@@ -2121,9 +2124,10 @@ export const createClient = (options: GeneratedClientOptions = {}) => {
       routeTransport.stream(id, ...args);
     return Object.assign(stream, { stream });
   };
+  const batch: BatchFunction = (requests) => transport.batch(requests);
   return {
 ${clientBody}
-    batch: transport.batch,
+    batch,
   };
 };
 
