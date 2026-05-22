@@ -9,6 +9,7 @@ import type {
   HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResultFor,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -55,6 +56,14 @@ export type NodeTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
 > = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+
+export type NodeTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
+  <const TBody extends RpcManifestBody<TManifest>>(
+    request: ContextRequestSource,
+    body: TBody
+  ) => Promise<
+    RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope
+  >;
 
 const neverAbortedSignal = new AbortController().signal;
 

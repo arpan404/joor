@@ -232,6 +232,7 @@ export type {
   BunServeOptions,
   BunTransportBodyResult,
   BunTransportBodyResultHandler,
+  BunTransportBodyResultHandlerFor,
 } from './runtime/bun.js';
 export type { CloudflareWorker } from './runtime/cloudflare.js';
 export type {
@@ -252,6 +253,7 @@ export type {
   DenoServeOptions,
   DenoTransportBodyResult,
   DenoTransportBodyResultHandler,
+  DenoTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
 export type { NextRouteHandlers } from './runtime/next.js';
 export type {
@@ -260,6 +262,7 @@ export type {
   NodeRpcRequestHandler,
   NodeTransportBodyResult,
   NodeTransportBodyResultHandler,
+  NodeTransportBodyResultHandlerFor,
 } from './runtime/node.js';
 export type {
   ArrayChain,

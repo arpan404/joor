@@ -50,6 +50,7 @@ import {
   type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
+  type BunTransportBodyResultHandlerFor,
   type ClientHeaderValues,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
@@ -60,6 +61,7 @@ import {
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
+  type DenoTransportBodyResultHandlerFor,
   type DefineConfigFor,
   type HandlerHookContext,
   type HandlerHookContextFor,
@@ -119,6 +121,7 @@ import {
   type NextRouteHandlers,
   type NodeTransportBodyResult,
   type NodeTransportBodyResultHandler,
+  type NodeTransportBodyResultHandlerFor,
   type PendingRpcRequest,
   type Procedure,
   type ProcedureError,
@@ -301,6 +304,7 @@ import {
   type DenoServeOptions as StandaloneDenoServeOptions,
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
+  type DenoTransportBodyResultHandlerFor as StandaloneDenoTransportBodyResultHandlerFor,
 } from '../src/runtime/deno-transport.js';
 import { createDenoCompiledTransportRequestHandlerWithPath } from '../src/runtime/deno-compiled-transport.js';
 import {
@@ -329,9 +333,12 @@ import {
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
+  type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
   type DenoTransportBodyResult as RuntimeSubpathDenoTransportBodyResult,
+  type DenoTransportBodyResultHandlerFor as RuntimeSubpathDenoTransportBodyResultHandlerFor,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
+  type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
 } from '../src/runtime/index.js';
 
 const usersPlugin = createPlugin({
@@ -2422,6 +2429,34 @@ createDenoTransportRequestHandlerWithPath(
   routeTypedDenoTransportHandler,
   '/rpc'
 );
+const manifestDenoTransportHandler: DenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+    // @ts-expect-error manifest-aware Deno handlers keep route input exact.
+    body.input.ok;
+  }
+  return {
+    body: '{"ok":true}',
+    headers: { 'cache-control': 'private' },
+    responseHeaders: { 'cache-control': 'private' },
+  };
+};
+createDenoTransportRequestHandler(manifestDenoTransportHandler);
+manifestDenoTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteRequest
+).then((result) => {
+  if (!(result instanceof Response) && 'ok' in result && result.ok) {
+    result.data.name.toUpperCase();
+  }
+});
+// @ts-expect-error manifest-aware Deno handlers validate body input by route id.
+manifestDenoTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { ok: true },
+});
 // @ts-expect-error typed Deno transport handlers validate body input by route id.
 routeTypedDenoTransportHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
@@ -2438,6 +2473,15 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   return manifestRouteBodyResult;
 };
 createBunTransportRequestHandler(routeTypedBunTransportHandler);
+const manifestBunTransportHandler: BunTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoTransportHandler;
+createBunTransportRequestHandler(manifestBunTransportHandler);
+manifestBunTransportHandler(createFetchRequestSourceForTypes(), {
+  // @ts-expect-error manifest-aware Bun handlers reject unknown body route ids.
+  id: 'users.missing',
+  input: { id: '1' },
+});
 routeTypedBunTransportHandler(createFetchRequestSourceForTypes(), {
   // @ts-expect-error typed Bun transport handlers reject missing route ids.
   id: 'users.missing',
@@ -2469,6 +2513,16 @@ createStandaloneDenoTransportRequestHandlerWithPath(
   routeTypedStandaloneDenoTransportHandler,
   '/rpc'
 );
+const manifestStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoTransportHandler;
+createStandaloneDenoTransportRequestHandler(
+  manifestStandaloneDenoTransportHandler
+);
+manifestStandaloneDenoTransportHandler(createFetchRequestSourceForTypes(), [
+  // @ts-expect-error manifest-aware standalone Deno handlers reject stream requests in batches.
+  { id: 'users.watch', input: { userId: '1' } },
+]);
 const compiledSerializedEnvelope: CompiledSerializedEnvelope = {
   body: '{"ok":true}',
   headers: { 'cache-control': 'private' },
@@ -2698,6 +2752,18 @@ const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
+const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoTransportHandler;
+createNodeTransportRequestHandler(manifestNodeTransportHandler);
+manifestNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.authenticated',
+  input: { ok: true },
+}).then((result) => {
+  if (!(result instanceof Response) && 'ok' in result && result.ok) {
+    result.data.userId.toUpperCase();
+  }
+});
 routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [
   // @ts-expect-error typed Node transport handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
@@ -2723,12 +2789,30 @@ createRuntimeSubpathBunTransportRequestHandler(
 createRuntimeSubpathDenoTransportRequestHandler(
   runtimeSubpathBunTransportHandler
 );
+const runtimeSubpathManifestBunTransportHandler: RuntimeSubpathBunTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoTransportHandler;
+const runtimeSubpathManifestDenoTransportHandler: RuntimeSubpathDenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestBunTransportHandler;
+createRuntimeSubpathBunTransportRequestHandler(
+  runtimeSubpathManifestBunTransportHandler
+);
+createRuntimeSubpathDenoTransportRequestHandler(
+  runtimeSubpathManifestDenoTransportHandler
+);
 const runtimeSubpathNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultHandler<
   typeof manifestRouteRequest,
   JoorManifestRouteBodyResultFor<typeof manifest, typeof manifestRouteRequest>
 > = runtimeSubpathBunTransportHandler;
 createRuntimeSubpathNodeTransportRequestHandler(
   runtimeSubpathNodeTransportHandler
+);
+const runtimeSubpathManifestNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestBunTransportHandler;
+createRuntimeSubpathNodeTransportRequestHandler(
+  runtimeSubpathManifestNodeTransportHandler
 );
 runtimeSubpathNodeTransportHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',

@@ -11,6 +11,7 @@ import type {
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResultFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -50,6 +51,15 @@ export type BunTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends BunTransportBodyResult = BunTransportBodyResult,
 > = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+
+export type BunTransportBodyResultHandlerFor<TManifest extends JoorManifest> = <
+  const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<
+  RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope
+>;
 
 const bodyReadFailure = (request: Request, error: object): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
