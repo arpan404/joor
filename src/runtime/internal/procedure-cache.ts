@@ -1,8 +1,9 @@
-import type { JsonObject, JsonValue } from '../../schema/json.js';
+import type { JsonValue } from '../../schema/json.js';
 
 export const DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES = 10_000;
 
 export type CachedProcedureHeaders = Record<string, string>;
+export type ProcedureCacheHeaderValues = Record<string, string>;
 
 export interface CachedProcedureSuccess {
   data: JsonValue;
@@ -12,7 +13,7 @@ export interface CachedProcedureSuccess {
 
 interface CacheKeySource {
   auth: object;
-  headers: JsonObject;
+  headers: ProcedureCacheHeaderValues;
   input: JsonValue;
 }
 
@@ -56,19 +57,22 @@ const stringifyCachePart = (value: JsonValue | object): string => {
 const defaultCacheKey = (
   id: string,
   input: JsonValue,
-  headers: JsonObject,
+  headers: ProcedureCacheHeaderValues,
   auth: object
 ): string =>
   `${id}:input=${stringifyCachePart(input)}|headers=${stringifyCachePart(headers)}|auth=${stringifyCachePart(auth)}`;
 
-const cacheScopeKey = (headers: JsonObject, auth: object): string =>
+const cacheScopeKey = (
+  headers: ProcedureCacheHeaderValues,
+  auth: object
+): string =>
   `headers=${stringifyCachePart(headers)}|auth=${stringifyCachePart(auth)}`;
 
 export const createProcedureCacheKey = (
   id: string,
   keyPaths: readonly string[] | undefined,
   input: JsonValue,
-  headers: JsonObject,
+  headers: ProcedureCacheHeaderValues,
   auth: object
 ): string => {
   if (keyPaths === undefined || keyPaths.length === 0) {

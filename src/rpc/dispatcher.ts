@@ -44,6 +44,7 @@ import {
   DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
   readCachedProcedureSuccess,
   type CachedProcedureSuccess,
+  type ProcedureCacheHeaderValues,
   writeCachedProcedureSuccess,
 } from '../runtime/internal/procedure-cache.js';
 import {
@@ -541,8 +542,8 @@ const isAsyncIterable = (
 const headersToJsonObject = (
   request: ContextRequestSource,
   prepared: PreparedProcedure
-): JsonObject => {
-  const output: JsonObject = {};
+): ProcedureCacheHeaderValues => {
+  const output: ProcedureCacheHeaderValues = {};
   if (prepared.headerKeys !== undefined) {
     for (const key of prepared.headerKeys) {
       const value = request.getHeader(key);
@@ -770,7 +771,7 @@ const executeUnary = async (
           rpcRequest.id,
           cacheConfig.key,
           (inputResult.value ?? {}) as JsonValue,
-          headerResult.value as JsonObject,
+          headerResult.value as ProcedureCacheHeaderValues,
           authResult
         );
   if (cacheKey !== undefined) {
@@ -926,7 +927,7 @@ const executeTrustedUnary = async (
           rpcRequest.id,
           cacheConfig.key,
           rpcRequest.input ?? {},
-          headerValue,
+          headerValue as ProcedureCacheHeaderValues,
           authResult
         );
   if (cacheKey !== undefined) {

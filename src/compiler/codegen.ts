@@ -873,7 +873,7 @@ export const emitCompiledProcedureSource = (
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
-    headerValue as Record<string, JsonValue>,
+    headerValue as Record<string, string>,
     ${authValueExpression}
   );
   if (cached !== undefined) {
@@ -896,7 +896,7 @@ export const emitCompiledProcedureSource = (
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
-    headerValue as Record<string, JsonValue>,
+    headerValue as Record<string, string>,
     ${authValueExpression},
     ${dataExpression}${headersExpression === undefined ? '' : `,\n    ${headersExpression}`}
   );`

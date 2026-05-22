@@ -11,6 +11,7 @@ import {
   readCachedProcedureSuccess,
   type CachedProcedureHeaders,
   type CachedProcedureSuccess,
+  type ProcedureCacheHeaderValues,
   writeCachedProcedureSuccess,
 } from './internal/procedure-cache.js';
 import {
@@ -215,8 +216,8 @@ const failure = (
 const headerObject = (
   request: ContextRequestSource,
   procedure: ProcedureRuntime
-): JsonObject => {
-  const output: JsonObject = {};
+): ProcedureCacheHeaderValues => {
+  const output: ProcedureCacheHeaderValues = {};
   if (procedure.headers?.kind !== 'object') return output;
   for (const key of Object.keys(procedure.headers.shape)) {
     const value = request.getHeader(key);
@@ -340,7 +341,7 @@ export const compiledReadCache = (
   id: string,
   procedure: ProcedureRuntime,
   input: JsonValue,
-  headers: JsonObject,
+  headers: ProcedureCacheHeaderValues,
   auth: object
 ): CachedProcedureSuccess | undefined => {
   const cacheConfig =
@@ -356,7 +357,7 @@ export const compiledWriteCache = (
   id: string,
   procedure: ProcedureRuntime,
   input: JsonValue,
-  headers: JsonObject,
+  headers: ProcedureCacheHeaderValues,
   auth: object,
   data: JsonValue,
   responseHeaders?: CachedProcedureHeaders
@@ -576,7 +577,7 @@ export const executeCompiledProcedure = async <
     id,
     procedure,
     inputValue,
-    headerResult.value as JsonObject,
+    headerResult.value as ProcedureCacheHeaderValues,
     authResult
   );
   if (cached !== undefined) {
@@ -618,7 +619,7 @@ export const executeCompiledProcedure = async <
       id,
       procedure,
       inputValue,
-      headerResult.value as JsonObject,
+      headerResult.value as ProcedureCacheHeaderValues,
       authResult,
       result
     );
@@ -652,7 +653,7 @@ export const executeCompiledProcedure = async <
       id,
       procedure,
       inputValue,
-      headerResult.value as JsonObject,
+      headerResult.value as ProcedureCacheHeaderValues,
       authResult,
       result.data,
       result.headers
@@ -669,7 +670,7 @@ export const executeCompiledProcedure = async <
     id,
     procedure,
     inputValue,
-    headerResult.value as JsonObject,
+    headerResult.value as ProcedureCacheHeaderValues,
     authResult,
     result.data
   );

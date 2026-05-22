@@ -292,9 +292,11 @@ import {
   createCompiledRuntimeState,
   type executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
-import type {
-  CachedProcedureHeaders,
-  CachedProcedureSuccess,
+import {
+  createProcedureCacheKey,
+  type CachedProcedureHeaders,
+  type CachedProcedureSuccess,
+  type ProcedureCacheHeaderValues,
 } from '../src/runtime/internal/procedure-cache.js';
 import type {
   CompiledDispatch,
@@ -2255,6 +2257,27 @@ const cachedProcedureHeaders: CachedProcedureHeaders = {
   'cache-control': 'private',
 };
 cachedProcedureHeaders['cache-control']?.toUpperCase();
+const procedureCacheHeaderValues: ProcedureCacheHeaderValues = {
+  authorization: 'Bearer token',
+};
+procedureCacheHeaderValues['authorization']?.toUpperCase();
+createProcedureCacheKey(
+  'users.get',
+  ['headers.authorization'],
+  { id: '1' },
+  procedureCacheHeaderValues,
+  {}
+).toUpperCase();
+createProcedureCacheKey(
+  'users.get',
+  ['headers.authorization'],
+  { id: '1' },
+  {
+    // @ts-expect-error procedure cache request headers must be HTTP string values.
+    authorization: 1,
+  },
+  {}
+);
 const cachedProcedureSuccess: CachedProcedureSuccess = {
   data: { ok: true },
   headers: cachedProcedureHeaders,
