@@ -1525,25 +1525,25 @@ ${indent}},`;
   const clientBody = renderNode(tree, 2);
   await writeFile(
     `${outDir}/client.ts`,
-    `import { createClient as createTransportClient } from 'joor/client';
-import type { ClientRequestOptions } from 'joor/client';
-import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, ProcedureResponseHeaders, RpcRouteEnvelope, RpcRouteError, RpcRouteRequest, RpcStreamRouteId, RpcUnaryRouteId, StreamEvent } from 'joor';
+    `import { createManifestClient as createTransportClient } from 'joor/client';
+import type { ClientOptions, ClientRequestOptions } from 'joor/client';
+import type { JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId, ProcedureHeaders, ProcedureInput } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
-export type RouteId = keyof Manifest['procedures'] & string;
-export type UnaryRouteId = RpcUnaryRouteId<Manifest['procedures']>;
-export type StreamRouteId = RpcStreamRouteId<Manifest['procedures']>;
+export type RouteId = JoorManifestRouteId<Manifest>;
+export type UnaryRouteId = JoorManifestUnaryRouteId<Manifest>;
+export type StreamRouteId = JoorManifestStreamRouteId<Manifest>;
 export type RouteProcedure<TId extends RouteId> = Manifest['procedures'][TId];
-export type RouteInput<TId extends RouteId> = ProcedureInput<RouteProcedure<TId>>;
-export type RouteOutput<TId extends UnaryRouteId> = ProcedureOutput<RouteProcedure<TId>>;
-export type RouteHeaders<TId extends RouteId> = ProcedureHeaders<RouteProcedure<TId>>;
-export type RouteResponseHeaders<TId extends UnaryRouteId> = ProcedureResponseHeaders<RouteProcedure<TId>>;
-export type RouteError<TId extends UnaryRouteId> = RpcRouteError<Manifest['procedures'], TId>;
-export type RouteRequest<TId extends UnaryRouteId> = RpcRouteRequest<Manifest['procedures'], TId>;
-export type RouteResult<TId extends UnaryRouteId> = RpcRouteEnvelope<Manifest['procedures'], TId>;
+export type RouteInput<TId extends RouteId> = JoorManifestRouteInput<Manifest, TId>;
+export type RouteOutput<TId extends UnaryRouteId> = JoorManifestRouteOutput<Manifest, TId>;
+export type RouteHeaders<TId extends RouteId> = JoorManifestRouteHeaders<Manifest, TId>;
+export type RouteResponseHeaders<TId extends UnaryRouteId> = JoorManifestRouteResponseHeaders<Manifest, TId>;
+export type RouteError<TId extends RouteId> = JoorManifestRouteError<Manifest, TId>;
+export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Manifest, TId>;
+export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
-export type Stream<TId extends StreamRouteId> = StreamEvent<RouteProcedure<TId>>;
+export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;
 export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
   ? [input: ProcedureInput<TProcedure>, options?: ClientRequestOptions<TProcedure>]
   : [input: ProcedureInput<TProcedure>, options: ClientRequestOptions<TProcedure>];
@@ -1551,8 +1551,8 @@ export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHead
 const optionalOptions = <TProcedure>(options: ClientRequestOptions<TProcedure> | undefined) =>
   options === undefined ? [] : [options] as const;
 
-export const createClient = (options: Parameters<typeof createTransportClient>[0]) => {
-  const transport = createTransportClient<Manifest['procedures']>(options);
+export const createClient = (options: Omit<ClientOptions<Manifest>, 'manifest'>) => {
+  const transport = createTransportClient(manifest, options);
   return {
 ${clientBody}
     batch: transport.batch,

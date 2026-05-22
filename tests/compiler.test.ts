@@ -99,7 +99,10 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
-      ).resolves.toContain('RpcRouteEnvelope<Manifest');
+      ).resolves.toContain('JoorManifestRouteEnvelope<Manifest');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('createManifestClient');
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
       const watchClientMatch = clientSource.match(
         /"watch": \{[\s\S]*?\n {4}\},/
