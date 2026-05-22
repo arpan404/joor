@@ -40,6 +40,10 @@
       "types": "./dist/procedure/index.d.ts",
       "import": "./dist/procedure/index.js"
     },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.js"
+    },
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"

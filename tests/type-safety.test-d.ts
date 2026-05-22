@@ -149,6 +149,18 @@ import {
   type StreamEvent as SubpathStreamEvent,
 } from '../src/procedure/index.js';
 import {
+  isJsonObject as isSchemaSubpathJsonObject,
+  t as schemaSubpathT,
+  toJsonSchema as toSchemaSubpathJsonSchema,
+  validate as validateSchemaSubpath,
+  type Infer as SchemaSubpathInfer,
+  type JsonObject as SchemaSubpathJsonObject,
+  type JsonValue as SchemaSubpathJsonValue,
+  type OpenApiSchema as SchemaSubpathOpenApiSchema,
+  type Schema as SchemaSubpathSchema,
+  type ValidationResult as SchemaSubpathValidationResult,
+} from '../src/schema/index.js';
+import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
@@ -295,6 +307,62 @@ const subpathProcedureFailure = procedureFailureSubpath(
 if (subpathProcedureFailure.kind === 'error') {
   subpathProcedureFailure.error.details?.message.toUpperCase();
 }
+
+const schemaSubpathUserSchema = schemaSubpathT.object({
+  id: schemaSubpathT.string(),
+  email: schemaSubpathT.string().email(),
+  roles: schemaSubpathT.array(schemaSubpathT.enum(['admin', 'member'])),
+  nickname: schemaSubpathT.string().optional(),
+});
+const schemaSubpathSchema: SchemaSubpathSchema = schemaSubpathUserSchema;
+schemaSubpathSchema.kind.toUpperCase();
+const schemaSubpathUser: SchemaSubpathInfer<typeof schemaSubpathUserSchema> = {
+  id: '1',
+  email: 'ada@example.com',
+  roles: ['admin'],
+};
+schemaSubpathUser.roles[0]?.toUpperCase();
+const schemaSubpathJson: SchemaSubpathJsonValue = schemaSubpathUser;
+if (isSchemaSubpathJsonObject(schemaSubpathJson)) {
+  const schemaSubpathObject: SchemaSubpathJsonObject = schemaSubpathJson;
+  schemaSubpathObject['id'];
+}
+const schemaSubpathValidation: SchemaSubpathValidationResult<
+  SchemaSubpathInfer<typeof schemaSubpathUserSchema>
+> = validateSchemaSubpath(schemaSubpathUserSchema, schemaSubpathJson);
+if (schemaSubpathValidation.ok) {
+  schemaSubpathValidation.value.email.toUpperCase();
+}
+const schemaSubpathJsonSchema: SchemaSubpathOpenApiSchema =
+  toSchemaSubpathJsonSchema(schemaSubpathUserSchema);
+schemaSubpathJsonSchema['type'];
+const schemaSubpathProcedure = defineProcedureSubpath({
+  input: schemaSubpathT.object({ id: schemaSubpathT.string() }),
+  output: schemaSubpathT.object({ user: schemaSubpathUserSchema }),
+  handler(ctx, input) {
+    return ctx.ok({
+      user: {
+        id: input.id,
+        email: 'ada@example.com',
+        roles: ['member'],
+      },
+    });
+  },
+});
+const schemaSubpathProcedureInput: SubpathProcedureInput<
+  typeof schemaSubpathProcedure
+> = { id: '1' };
+schemaSubpathProcedureInput.id.toUpperCase();
+const schemaSubpathProcedureOutput: SubpathProcedureOutput<
+  typeof schemaSubpathProcedure
+> = {
+  user: {
+    id: '1',
+    email: 'ada@example.com',
+    roles: ['member'],
+  },
+};
+schemaSubpathProcedureOutput.user.email.toUpperCase();
 
 const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
   'cache-control': 'private',
