@@ -486,6 +486,22 @@ const streamProcedure = defineProcedure({
     yield { type: 'user.updated' as const, userId: input.userId };
   },
 });
+defineProcedure({
+  input: t.object({ userId: t.string() }),
+  // @ts-expect-error stream procedures cannot declare response headers.
+  responseHeaders: t.object({ 'cache-control': t.string() }),
+  stream: t.object({
+    type: t.literal('user.updated'),
+    userId: t.string(),
+  }),
+  async *handler(_ctx, input) {
+    yield { type: 'user.updated' as const, userId: input.userId };
+  },
+});
+const _streamProcedureResponseHeaders: ProcedureResponseHeaders<
+  typeof streamProcedure
+> = {};
+_streamProcedureResponseHeaders;
 const subpathStreamEvent: SubpathStreamEvent<typeof streamProcedure> = {
   type: 'user.updated',
   userId: '1',

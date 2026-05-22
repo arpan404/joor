@@ -106,12 +106,10 @@ export interface StreamProcedureConfig<
   TErrors extends ErrorSchemas,
   TServices extends object,
   THeaders extends Schema | undefined,
-  TResponseHeaders extends Schema | undefined,
   TAuth extends object,
 > {
   input: TInput;
   headers?: THeaders;
-  responseHeaders?: TResponseHeaders;
   auth?: AuthPolicy<
     TServices,
     THeaders extends Schema
@@ -128,9 +126,7 @@ export interface StreamProcedureConfig<
       THeaders extends Schema
         ? InferSchema<THeaders> & object
         : Record<string, never>,
-      TResponseHeaders extends Schema
-        ? InferSchema<TResponseHeaders> & object
-        : Record<string, never>,
+      Record<string, never>,
       TAuth,
       ErrorDetails<TErrors>
     >,
@@ -191,7 +187,6 @@ export interface DefineProcedure<
     TStream extends Schema,
     TErrors extends ErrorSchemas = Record<string, never>,
     THeaders extends Schema | undefined = undefined,
-    TResponseHeaders extends Schema | undefined = undefined,
     TAuth extends object = Record<string, never>,
   >(
     config: StreamProcedureConfig<
@@ -200,7 +195,6 @@ export interface DefineProcedure<
       TErrors,
       TServices,
       THeaders,
-      TResponseHeaders,
       TAuth
     >
   ): Procedure<
@@ -209,7 +203,7 @@ export interface DefineProcedure<
     TErrors,
     TStream,
     THeaders,
-    TResponseHeaders,
+    undefined,
     TAuth,
     TServices
   >;
@@ -246,13 +240,16 @@ const createDefineProcedure = <
           TErrors,
           TServices,
           THeaders,
-          TResponseHeaders,
           TAuth
         >
   ): Procedure => {
     const headers = 'headers' in config ? config.headers : undefined;
     const responseHeaders =
-      'responseHeaders' in config ? config.responseHeaders : undefined;
+      'stream' in config
+        ? undefined
+        : 'responseHeaders' in config
+          ? config.responseHeaders
+          : undefined;
     const auth = 'auth' in config ? config.auth : undefined;
     const contextlessHandler =
       'context' in config && config.context === false
