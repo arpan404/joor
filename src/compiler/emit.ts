@@ -2110,7 +2110,9 @@ const emitProcedureHelper = async (
       ? ''
       : `import config from '${toImportPath(`${outDir}/procedure.ts`, configPath)}';\n`;
   const contextType =
-    configPath === undefined ? 'object' : 'JoorConfigContext<typeof config>';
+    configPath === undefined
+      ? 'Record<string, never>'
+      : 'JoorConfigContext<typeof config>';
   await writeFile(
     `${outDir}/procedure.ts`,
     `import { defineProcedure } from 'joor/procedure';

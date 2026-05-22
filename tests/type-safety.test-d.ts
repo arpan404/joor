@@ -80,6 +80,7 @@ import {
   type NextRouteHandlers,
   type NodeTransportBodyResult,
   type NodeTransportBodyResultHandler,
+  type Procedure,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
@@ -267,6 +268,9 @@ rootPluginServices.users.findById('1').name.toUpperCase();
 resolvePluginServices([usersPlugin] as const).then((services) => {
   services.users.findById('1').name.toUpperCase();
 });
+const defaultProcedureServices: ProcedureServices<Procedure> = {};
+// @ts-expect-error default procedure types do not expose plugin services.
+defaultProcedureServices.users;
 const annotatedConfig: JoorConfig<readonly [typeof usersPlugin]> = {
   plugins: [usersPlugin] as const,
 };

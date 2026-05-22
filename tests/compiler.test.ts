@@ -210,6 +210,11 @@ describe('compiler', () => {
       ).resolves.toContain('defineProcedure.withContext');
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
+      ).resolves.toContain(
+        'defineProcedure.withContext<Record<string, never>>()'
+      );
+      await expect(
+        readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain("from 'joor/procedure'");
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
@@ -294,6 +299,11 @@ describe('compiler', () => {
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
         'export type NativeServices = JoorConfigContext<typeof config>'
+      );
+      await expect(
+        readFile(join(outDir, 'procedure.ts'), 'utf8')
+      ).resolves.toContain(
+        'defineProcedure.withContext<JoorConfigContext<typeof config>>()'
       );
     } finally {
       await rm(outDir, { recursive: true, force: true });

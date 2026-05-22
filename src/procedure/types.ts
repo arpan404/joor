@@ -71,7 +71,7 @@ export interface Procedure<
   THeaders extends Schema | undefined = Schema | undefined,
   TResponseHeaders extends Schema | undefined = Schema | undefined,
   TAuth extends object = Record<string, never>,
-  TServices extends object = object,
+  TServices extends object = Record<string, never>,
 > extends ProcedureRuntime {
   types?: ProcedureTypes<
     InferSchema<TInput>,
