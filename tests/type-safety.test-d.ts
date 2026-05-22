@@ -226,6 +226,7 @@ import {
   createCompiledRpcHandler,
   createCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState,
+  type executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
 import type {
   CompiledDispatch,
@@ -425,6 +426,14 @@ const procedureServices: ProcedureServices<typeof procedure> = {
   },
 };
 procedureServices.users.findById('1').name.toUpperCase();
+const executeCompiledProcedureServices: Parameters<
+  typeof executeCompiledProcedure<typeof procedure>
+>[4] = procedureServices;
+executeCompiledProcedureServices.users.findById('1');
+// @ts-expect-error compiled procedure execution requires selected procedure services.
+const _missingExecuteCompiledProcedureServices: Parameters<
+  typeof executeCompiledProcedure<typeof procedure>
+>[4] = {};
 
 // @ts-expect-error id is required and must be a string.
 const _invalidInput: ProcedureInput<typeof procedure> = { id: 1 };

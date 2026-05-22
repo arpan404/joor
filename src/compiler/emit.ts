@@ -151,7 +151,7 @@ const emitProfileDispatcher = async (
     ? "import type { JsonValue } from 'joor/schema';\n"
     : '';
   const procedureTypeImport = hasCompiledProcedures
-    ? "import type { RpcError } from 'joor/procedure';\n"
+    ? "import type { ProcedureServices, RpcError } from 'joor/procedure';\n"
     : '';
   const manifestTypeImport = `import type { ${manifestTypeImports.join(', ')} } from 'joor/manifest';\n`;
   const serviceTypeImport =
@@ -213,7 +213,7 @@ export type NativeTransportHandler = <const TBody extends NativeBody>(
           mode === 'response' ? "'response'" : mode === 'serialized';
         return entry.procedure.output === undefined
           ? `    case ${JSON.stringify(entry.id)}:
-      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, ${serialize});`
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services as ProcedureServices<typeof ${entry.exportName}>, runtime, state, ${serialize});`
           : `    case ${JSON.stringify(entry.id)}:
       return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
       })
@@ -273,7 +273,7 @@ ${dispatchCaseForMode('response')}
           mode === 'response' ? "'response'" : mode === 'serialized';
         return entry.procedure.output === undefined
           ? `    case ${JSON.stringify(entry.id)}:
-      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, ${serialize});`
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services as ProcedureServices<typeof ${entry.exportName}>, runtime, state, ${serialize});`
           : `    case ${JSON.stringify(entry.id)}:
       return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
       })

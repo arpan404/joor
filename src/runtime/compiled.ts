@@ -31,6 +31,7 @@ import type { JoorConfig, JoorConfigContext } from '../config.js';
 import type {
   ProcedureRuntime,
   ProcedureRuntimeValue,
+  ProcedureServices,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
 import type { RpcBodyResult } from '../rpc/dispatcher.js';
@@ -371,12 +372,12 @@ export const compiledWriteCache = (
   );
 };
 
-const streamResponse = async (
+const streamResponse = async <TProcedure extends ProcedureRuntime>(
   id: string,
-  procedure: ProcedureRuntime,
+  procedure: TProcedure,
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
-  services: object,
+  services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
   state: ExecutionState
 ): Promise<Response> => {
@@ -486,12 +487,14 @@ const streamResponse = async (
   return createSseResponse(stream);
 };
 
-export const executeCompiledProcedure = async (
+export const executeCompiledProcedure = async <
+  TProcedure extends ProcedureRuntime,
+>(
   id: string,
-  procedure: ProcedureRuntime,
+  procedure: TProcedure,
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
-  services: object,
+  services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
   state: ExecutionState,
   _serialize: CompiledSerializationMode
