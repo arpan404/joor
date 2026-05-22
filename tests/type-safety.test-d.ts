@@ -86,6 +86,7 @@ import {
   type ProcedureOutput,
   type ProcedureResponseHeaders,
   type ProcedureServices,
+  type RpcEnvelope,
   type RpcBatchRequest,
   type RpcBodyResult,
   type RpcFailure,
@@ -197,6 +198,7 @@ import {
   type ProcedureOutput as SubpathProcedureOutput,
   type ProcedureResult as SubpathProcedureResult,
   type ProcedureResponseHeaders as SubpathProcedureResponseHeaders,
+  type RpcEnvelope as SubpathProcedureRpcEnvelope,
   type StreamEvent as SubpathStreamEvent,
 } from '../src/procedure/index.js';
 import {
@@ -444,6 +446,19 @@ const validOutput: ProcedureOutput<typeof procedure> = {
   name: 'Ada',
 };
 validOutput.name.toUpperCase();
+const procedureEnvelope: RpcEnvelope<
+  { id: string; name: string },
+  'users.get'
+> = {
+  ok: true,
+  id: 'users.get',
+  data: validOutput,
+  traceId: 'trace-1',
+};
+const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
+procedureEnvelopeId.toUpperCase();
+// @ts-expect-error procedure envelopes preserve route id literals.
+const _wrongProcedureEnvelopeId: 'users.authenticated' = procedureEnvelope.id;
 const subpathProcedure = defineProcedureSubpath({
   input: t.object({ id: t.string() }),
   output: t.object({ id: t.string(), name: t.string() }),
@@ -474,6 +489,17 @@ const subpathProcedureResult: SubpathProcedureResult<
 if (subpathProcedureResult.kind === 'success') {
   subpathProcedureResult.data.name.toUpperCase();
 }
+const subpathProcedureEnvelope: SubpathProcedureRpcEnvelope<
+  { id: string; name: string },
+  'users.get'
+> = {
+  ok: true,
+  id: 'users.get',
+  data: { id: '1', name: 'Ada' },
+  traceId: 'trace-1',
+};
+const subpathProcedureEnvelopeId: 'users.get' = subpathProcedureEnvelope.id;
+subpathProcedureEnvelopeId.toUpperCase();
 const subpathProcedureFailure = procedureFailureSubpath(
   'NOT_FOUND',
   subpathProcedureErrorDetails
