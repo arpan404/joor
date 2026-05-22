@@ -498,6 +498,7 @@ const isNativeResultArray = (
 ): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);
 const nativeRouteRequest: NativeRouteRequest<'users.get'> = nativeUnaryBody;
 const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
+const nativeReadonlyBatchBody: NativeBatchBody = [nativeUnaryBody] as const;
 const nativeExactBatchBody = [nativeUnaryBody] as const;
 nativeUnaryRequestUnion.id.toUpperCase();
 nativeTransport(source, nativeBody);
@@ -509,6 +510,7 @@ nativeTransport(source, nativeUnaryBody).then((result) => {
   }
 });
 nativeTransport(source, nativeBatchBody);
+nativeTransport(source, nativeReadonlyBatchBody);
 nativeTransport(source, nativeExactBatchBody).then((result) => {
   const exact: NativeTransportResultFor<typeof nativeExactBatchBody> = result;
   if (!(exact instanceof Response) && !('body' in exact)) {

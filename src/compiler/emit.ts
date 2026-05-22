@@ -141,6 +141,7 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteBody',
     'JoorManifestRouteBodyResultFor',
     'JoorManifestRouteBodyResult',
+    'JoorManifestRouteBatchRequest',
     'JoorManifestRouteId',
     'JoorManifestRouteProtocolRequest',
     'JoorManifestRouteProtocolRequestUnion',
@@ -183,7 +184,8 @@ export type NativeUnaryProtocolRequest =
   JoorManifestRouteUnaryProtocolRequestUnion<NativeManifest>;
 export type NativeStreamProtocolRequest =
   JoorManifestRouteStreamProtocolRequestUnion<NativeManifest>;
-export type NativeBatchBody = NativeUnaryProtocolRequest[];
+export type NativeBatchBody =
+  JoorManifestRouteBatchRequest<NativeManifest, readonly NativeUnaryProtocolRequest[]>;
 export type NativeBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
 export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
