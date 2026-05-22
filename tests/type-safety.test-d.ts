@@ -356,6 +356,8 @@ import {
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
+  type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
   type DenoTransportBodyResult as RuntimeSubpathDenoTransportBodyResult,
   type DenoTransportBodyResultHandlerFor as RuntimeSubpathDenoTransportBodyResultHandlerFor,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
@@ -2801,20 +2803,28 @@ const typedStandaloneDenoCompiledHandler: DenoCompiledTransportRequestHandler =
   standaloneDenoCompiledHandler;
 const rootTypedStandaloneDenoCompiledHandler: RootDenoCompiledTransportRequestHandler =
   typedStandaloneDenoCompiledHandler;
+const runtimeSubpathTypedStandaloneDenoCompiledHandler: RuntimeSubpathDenoCompiledTransportRequestHandler =
+  rootTypedStandaloneDenoCompiledHandler;
 const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
 const rootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
+const runtimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestDenoCompiledTransportHandler;
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
-  rootManifestDenoCompiledTransportHandler,
+  runtimeSubpathManifestDenoCompiledTransportHandler,
   _serviceTypedCompiledUnaryDispatch,
   '/rpc'
 );
 standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 rootTypedStandaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
+runtimeSubpathTypedStandaloneDenoCompiledHandler(
+  new Request('https://example.com/rpc')
+);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
   manifest,
   handlerOptions
