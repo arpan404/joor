@@ -33,9 +33,9 @@ export interface BunServeOptions extends HandlerOptions {
 }
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type BunTransportBodyResultHandler = (
+export type BunTransportBodyResultHandler<TBody = JsonValue> = (
   request: ContextRequestSource,
-  body: JsonValue
+  body: TBody
 ) => Promise<BunTransportBodyResult>;
 
 const bodyReadFailure = (request: Request, error: object): Response => {
@@ -63,8 +63,8 @@ export const createBunFetch = <TManifest extends JoorManifest>(
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
 
-export const createBunTransportRequestHandler = (
-  handler: BunTransportBodyResultHandler,
+export const createBunTransportRequestHandler = <TBody = JsonValue>(
+  handler: BunTransportBodyResultHandler<TBody>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
 ): ((request: Request) => Promise<Response>) => {
@@ -84,7 +84,7 @@ export const createBunTransportRequestHandler = (
       if (!(error instanceof Error)) throw error;
       return bodyReadFailure(request, error);
     }
-    return transportResultToResponse(await handler(source, body));
+    return transportResultToResponse(await handler(source, body as TBody));
   };
 };
 

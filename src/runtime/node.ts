@@ -37,9 +37,9 @@ export type NodeRpcRequestHandler = (
 ) => Promise<void>;
 
 export type NodeTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type NodeTransportBodyResultHandler = (
+export type NodeTransportBodyResultHandler<TBody = JsonValue> = (
   request: ContextRequestSource,
-  body: JsonValue
+  body: TBody
 ) => Promise<NodeTransportBodyResult>;
 
 const neverAbortedSignal = new AbortController().signal;
@@ -211,8 +211,8 @@ const readIncomingBody = async (
   return Buffer.concat(chunks, total);
 };
 
-export const createNodeTransportRequestHandler = (
-  handler: NodeTransportBodyResultHandler,
+export const createNodeTransportRequestHandler = <TBody = JsonValue>(
+  handler: NodeTransportBodyResultHandler<TBody>,
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
@@ -253,7 +253,7 @@ export const createNodeTransportRequestHandler = (
       );
       return;
     }
-    await writeResult(outgoing, await handler(request, json));
+    await writeResult(outgoing, await handler(request, json as TBody));
   };
 };
 

@@ -34,9 +34,9 @@ export interface DenoServeOptions extends HandlerOptions {
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 
-export type DenoTransportBodyResultHandler = (
+export type DenoTransportBodyResultHandler<TBody = JsonValue> = (
   request: ContextRequestSource,
-  body: JsonValue
+  body: TBody
 ) => Promise<DenoTransportBodyResult>;
 
 const matchesPath = (url: string, path: string): boolean => {
@@ -112,8 +112,8 @@ export const createDenoFetch = <TManifest extends JoorManifest>(
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
 
-export const createDenoTransportRequestHandler = (
-  handler: DenoTransportBodyResultHandler,
+export const createDenoTransportRequestHandler = <TBody = JsonValue>(
+  handler: DenoTransportBodyResultHandler<TBody>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
 ): ((request: Request) => Promise<Response>) => {
@@ -133,12 +133,12 @@ export const createDenoTransportRequestHandler = (
       if (!(error instanceof Error)) throw error;
       return bodyReadFailure(request, error);
     }
-    return transportResultToResponse(await handler(source, body));
+    return transportResultToResponse(await handler(source, body as TBody));
   };
 };
 
-export const createDenoTransportRequestHandlerWithPath = (
-  handler: DenoTransportBodyResultHandler,
+export const createDenoTransportRequestHandlerWithPath = <TBody = JsonValue>(
+  handler: DenoTransportBodyResultHandler<TBody>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): ((request: Request) => Promise<Response>) => {
@@ -154,7 +154,7 @@ export const createDenoTransportRequestHandlerWithPath = (
       if (!(error instanceof Error)) throw error;
       return bodyReadFailure(request, error);
     }
-    return transportResultToResponse(await handler(source, body));
+    return transportResultToResponse(await handler(source, body as TBody));
   };
 };
 

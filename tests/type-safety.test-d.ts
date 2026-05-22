@@ -5,6 +5,7 @@ import {
   defineManifest,
   defineProcedure,
   createBunFetch,
+  createBunTransportRequestHandler,
   createCloudflareWorker,
   createDenoFetch,
   createDenoRpcRequestHandler,
@@ -25,6 +26,8 @@ import {
   createRpcTransportBodyResultHandler,
   t,
   type BunServeOptions,
+  type BunTransportBodyResult,
+  type BunTransportBodyResultHandler,
   type CloudflareWorker,
   type DenoServeOptions,
   type DenoTransportBodyResult,
@@ -55,6 +58,8 @@ import {
   type JoorManifestUnaryRouteId,
   type ListenOptions,
   type NextRouteHandlers,
+  type NodeTransportBodyResult,
+  type NodeTransportBodyResultHandler,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
@@ -107,9 +112,7 @@ import {
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
 } from '../src/runtime/deno-transport.js';
-import {
-  createDenoCompiledTransportRequestHandlerWithPath,
-} from '../src/runtime/deno-compiled-transport.js';
+import { createDenoCompiledTransportRequestHandlerWithPath } from '../src/runtime/deno-compiled-transport.js';
 import type {
   CompiledFixedUnaryDispatch,
   CompiledRuntimeState,
@@ -311,10 +314,8 @@ manifestUnaryRouteId.toUpperCase();
 const manifestStreamRouteId: JoorManifestStreamRouteId<typeof manifest> =
   'users.watch';
 manifestStreamRouteId.toUpperCase();
-const manifestRouteInput: JoorManifestRouteInput<
-  typeof manifest,
-  'users.get'
-> = { id: '1' };
+const manifestRouteInput: JoorManifestRouteInput<typeof manifest, 'users.get'> =
+  { id: '1' };
 manifestRouteInput.id.toUpperCase();
 const manifestRouteOutput: JoorManifestRouteOutput<
   typeof manifest,
@@ -594,6 +595,40 @@ const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
 createDenoTransportRequestHandler(denoTransportHandler);
 createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+const routeTypedDenoTransportHandler: DenoTransportBodyResultHandler<
+  JoorManifestRouteBody<typeof manifest>
+> = async (_request, body) => {
+  if (!Array.isArray(body) && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+  }
+  return denoTransportResult;
+};
+createDenoTransportRequestHandler(routeTypedDenoTransportHandler);
+createDenoTransportRequestHandlerWithPath(
+  routeTypedDenoTransportHandler,
+  '/rpc'
+);
+// @ts-expect-error typed Deno transport handlers validate body input by route id.
+routeTypedDenoTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { ok: true },
+});
+const bunTransportResult: BunTransportBodyResult = denoTransportResult;
+const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
+  JoorManifestRouteBody<typeof manifest>
+> = async (_request, body) => {
+  if (!Array.isArray(body) && body.id === 'users.authenticated') {
+    body.input.ok.valueOf();
+  }
+  return bunTransportResult;
+};
+createBunTransportRequestHandler(routeTypedBunTransportHandler);
+routeTypedBunTransportHandler(createFetchRequestSourceForTypes(), {
+  // @ts-expect-error typed Bun transport handlers reject missing route ids.
+  id: 'users.missing',
+  // @ts-expect-error typed Bun transport handlers reject missing route inputs.
+  input: {},
+});
 const standaloneDenoTransportResult: StandaloneDenoTransportBodyResult =
   denoTransportResult;
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
@@ -601,6 +636,21 @@ const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
 createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 createStandaloneDenoTransportRequestHandlerWithPath(
   standaloneDenoTransportHandler,
+  '/rpc'
+);
+const routeTypedStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler<
+  JoorManifestRouteBody<typeof manifest>
+> = async (_request, body) => {
+  if (!Array.isArray(body) && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+  }
+  return standaloneDenoTransportResult;
+};
+createStandaloneDenoTransportRequestHandler(
+  routeTypedStandaloneDenoTransportHandler
+);
+createStandaloneDenoTransportRequestHandlerWithPath(
+  routeTypedStandaloneDenoTransportHandler,
   '/rpc'
 );
 const compiledRuntimeState: CompiledRuntimeState = {
@@ -627,7 +677,7 @@ const compiledUnaryDispatch: CompiledFixedUnaryDispatch = async () => undefined;
 const standaloneDenoCompiledHandler =
   createDenoCompiledTransportRequestHandlerWithPath(
     compiledRuntimeState,
-    standaloneDenoTransportHandler,
+    routeTypedStandaloneDenoTransportHandler,
     compiledUnaryDispatch,
     '/rpc'
   );
@@ -649,6 +699,24 @@ const transportResult: RpcBodyResult = {
   data: {},
 };
 createNodeTransportRequestHandler(async () => transportResult);
+const nodeTransportResult: NodeTransportBodyResult = transportResult;
+const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
+  JoorManifestRouteBody<typeof manifest>
+> = async (_request, body) => {
+  if (!Array.isArray(body) && body.id === 'users.watch') {
+    body.input.userId.toUpperCase();
+  }
+  return nodeTransportResult;
+};
+createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
+routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [
+  {
+    // @ts-expect-error typed Node transport handlers reject stream requests in batches.
+    id: 'users.watch',
+    // @ts-expect-error typed Node transport handlers reject stream request inputs in batches.
+    input: { userId: '1' },
+  },
+]);
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
 const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
@@ -747,10 +815,8 @@ streamOnlyProtocolRequest.input.userId.toUpperCase();
 const streamProtocolRequestUnion: RpcRouteStreamProtocolRequestUnion<Routes> =
   streamOnlyProtocolRequest;
 streamProtocolRequestUnion.input.userId.toUpperCase();
-const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<
-  Routes,
-  'users.get'
-> = routeProtocolRequest;
+const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<Routes, 'users.get'> =
+  routeProtocolRequest;
 unaryProtocolRequest.input.id.toUpperCase();
 const unaryProtocolRequestUnion: RpcRouteUnaryProtocolRequestUnion<Routes> =
   unaryProtocolRequest;
@@ -761,10 +827,7 @@ const routeBatchRequest: RpcRouteBatchRequest<
 > = [routeProtocolRequest];
 routeBatchRequest[0].input.id.toUpperCase();
 
-const _wrongRouteProtocolRequest: RpcRouteProtocolRequest<
-  Routes,
-  'users.get'
-> =
+const _wrongRouteProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> =
   // @ts-expect-error route protocol requests validate input by id.
   { id: 'users.get', input: { ok: true } };
 
@@ -944,10 +1007,8 @@ if (!routeErrorEnvelope.ok && routeErrorEnvelope.error.code === 'NOT_FOUND') {
 }
 
 // @ts-expect-error typed route envelopes require the matching route id.
-const _wrongRouteEnvelopeId: RpcRouteEnvelope<
-  Routes,
-  'users.get'
->['id'] = 'users.authenticated';
+const _wrongRouteEnvelopeId: RpcRouteEnvelope<Routes, 'users.get'>['id'] =
+  'users.authenticated';
 
 // @ts-expect-error typed route errors reject invalid declared details.
 const _wrongRouteErrorEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
