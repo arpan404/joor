@@ -11,6 +11,10 @@ const fixtureConfig = new URL(
   './fixtures/basic-app/joor.config.ts',
   import.meta.url
 ).pathname;
+const contextlessFixtureConfig = new URL(
+  './fixtures/contextless-app/joor.config.ts',
+  import.meta.url
+).pathname;
 
 describe('compiler', () => {
   it('loads procedure files and derives ids', async () => {
@@ -33,13 +37,16 @@ describe('compiler', () => {
       ).resolves.toContain('users.get');
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+      ).resolves.toContain("from './dispatcher.safe.ts'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('createCompiledRpcHandler');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('createCompiledRpcTransportBodyResultHandler');
       await expect(
         readFile(join(outDir, 'fetch.ts'), 'utf8')
-      ).resolves.toContain("from './dispatcher.js'");
+      ).resolves.toContain("from './dispatcher.safe.js'");
       await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.toContain('readIncomingBody');
@@ -48,43 +55,63 @@ describe('compiler', () => {
       );
       await expect(
         readFile(join(outDir, 'deno.ts'), 'utf8')
-      ).resolves.toContain("from './dispatcher.ts'");
+      ).resolves.toContain("from './deno-dispatcher.ts'");
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'deno-dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('_execute_serialized');
+      await expect(
+        readFile(join(outDir, 'deno-dispatcher.safe.ts'), 'utf8')
+      ).resolves.not.toContain('_execute_response');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeTransport =');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeResponseTransport =');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeRuntime =');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeUnaryDispatch =');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
-      ).resolves.toContain('const unaryDispatch: CompiledUnaryDispatch');
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain(
+        'const serializedUnaryDispatch: CompiledFixedUnaryDispatch'
+      );
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('switch (rpcRequest.id)');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('_validate_input');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('_serialize_success');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('_response_header_record');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('compiledHasInvalidHeaderValue');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const transport =');
-      const dispatcher = await readFile(join(outDir, 'dispatcher.ts'), 'utf8');
+      const dispatcher = await readFile(
+        join(outDir, 'dispatcher.safe.ts'),
+        'utf8'
+      );
       const postsListMatch = dispatcher.match(
-        /const posts_list_execute: CompiledDispatch = async \([\s\S]*?const users_get_execute: CompiledDispatch = async \(/
+        /const posts_list_execute_serialized: CompiledFixedDispatch = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch = async \(/
       );
       expect(postsListMatch?.[0]).toBeDefined();
       expect(postsListMatch?.[0]).not.toContain('compiledAuthenticate');
       expect(postsListMatch?.[0]).not.toContain('compiledReadCache');
       expect(postsListMatch?.[0]).not.toContain('compiledWriteCache');
       expect(postsListMatch?.[0]).not.toContain('compiledRateLimitFailure');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('const dispatchSerialized: CompiledDispatch');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
@@ -137,15 +164,17 @@ describe('compiler', () => {
         config: {},
       });
       const safeDispatcher = await readFile(
-        join(outDir, 'dispatcher.ts'),
+        join(outDir, 'dispatcher.safe.ts'),
         'utf8'
       );
       expect(safeDispatcher).toContain('_validate_input');
       expect(safeDispatcher).toContain('_validate_headers');
       expect(safeDispatcher).toContain('_validate_output');
-      expect(safeDispatcher).toContain('_response_success');
-      expect(safeDispatcher).toContain("serialize === 'response'");
-      expect(safeDispatcher).toContain('STREAM_REQUIRED');
+      expect(safeDispatcher).toContain('_serialize_success');
+      expect(safeDispatcher).not.toContain('_response_success');
+      expect(safeDispatcher).toContain(
+        'const outputValue = result as JsonValue'
+      );
 
       const trustedOutDir = await mkdtemp(join(tmpdir(), 'joor-'));
       try {
@@ -160,7 +189,7 @@ describe('compiler', () => {
           },
         });
         const trustedDispatcher = await readFile(
-          join(trustedOutDir, 'dispatcher.ts'),
+          join(trustedOutDir, 'dispatcher.trusted.ts'),
           'utf8'
         );
         expect(trustedDispatcher).not.toContain('_validate_input');
@@ -168,8 +197,8 @@ describe('compiler', () => {
         expect(trustedDispatcher).not.toContain('_validate_output');
         expect(trustedDispatcher).not.toContain('compiledValidationDetails');
         expect(trustedDispatcher).toContain('result as JsonValue');
-        expect(trustedDispatcher).toContain('_response_success');
-        expect(trustedDispatcher).toContain("serialize === 'response'");
+        expect(trustedDispatcher).toContain('_serialize_success');
+        expect(trustedDispatcher).not.toContain('_response_success');
       } finally {
         await rm(trustedOutDir, { recursive: true, force: true });
       }
@@ -186,8 +215,28 @@ describe('compiler', () => {
         readFile(join(outDir, 'manifest.ts'), 'utf8')
       ).resolves.toContain('users.watch');
       await expect(
-        readFile(join(outDir, 'dispatcher.ts'), 'utf8')
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('joor.config.ts');
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('emits Bun fast path for unsafe contextless procedures', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
+    try {
+      await build({ config: contextlessFixtureConfig, outDir });
+      const bunTarget = await readFile(join(outDir, 'bun.ts'), 'utf8');
+      const dispatcher = await readFile(
+        join(outDir, 'dispatcher.safe.ts'),
+        'utf8'
+      );
+
+      expect(bunTarget).toContain('fastContextlessUnary');
+      expect(bunTarget).toContain('contextlessHandler');
+      expect(bunTarget).toContain('checkContentType = false');
+      expect(dispatcher).toContain('contextlessHandler(inputValue)');
+      expect(dispatcher).not.toContain('const ctx = compiledCreateContext');
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

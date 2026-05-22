@@ -4,11 +4,16 @@ import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledProcedureGenerationOptions {
   enforceRateLimit: boolean;
+  includeDispatchWrapper?: boolean;
+  modes?: readonly CompiledProcedureMode[];
+  skipAuth?: boolean;
   validateHeaders: boolean;
   validateInput: boolean;
   validateOutput: boolean;
   validateResponseHeaders: boolean;
 }
+
+export type CompiledProcedureMode = 'body' | 'serialized' | 'response';
 
 const validatorName = (base: string, suffix: string): string =>
   `${base}_${suffix}`.replace(/[^a-zA-Z0-9_$]/g, '_');
@@ -58,6 +63,61 @@ const canEmitResponseHeadersSerializer = (schema: Schema): boolean => {
   return Object.values(schema.shape).every((child) =>
     canEmitJsonSerializer(child, true)
   );
+};
+
+const blockedResponseHeaderNames = new Set([
+  'connection',
+  'content-length',
+  'content-type',
+  'keep-alive',
+  'proxy-authenticate',
+  'proxy-authorization',
+  'te',
+  'trailer',
+  'transfer-encoding',
+  'upgrade',
+]);
+
+const headerNamePattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
+const isCompileSafeResponseHeaderName = (name: string): boolean =>
+  headerNamePattern.test(name) && !blockedResponseHeaderNames.has(name);
+
+const unwrapOptionalStringSchema = (schema: Schema): Schema | undefined =>
+  schema.kind === 'optional' ? schema.inner : schema;
+
+const canEmitResponseHeaderRecord = (schema: Schema): boolean =>
+  schema.kind === 'object' &&
+  Object.values(schema.shape).every((child) => {
+    const inner = unwrapOptionalStringSchema(child);
+    return inner?.kind === 'string';
+  });
+
+const emitResponseHeaderRecordFunction = (
+  name: string,
+  schema: Schema,
+  definitions: string[]
+): boolean => {
+  if (!canEmitResponseHeaderRecord(schema) || schema.kind !== 'object') {
+    return false;
+  }
+  const checks = Object.keys(schema.shape)
+    .filter((key) => isCompileSafeResponseHeaderName(key.toLowerCase()))
+    .map((key, index) => {
+      const valueName = `value${index}`;
+      const serializedKey = JSON.stringify(key);
+      return `  const ${valueName} = headers[${serializedKey}];
+  if (typeof ${valueName} === 'string' && !compiledHasInvalidHeaderValue(${valueName})) {
+    output[${serializedKey}] = ${valueName};
+  }`;
+    })
+    .join('\n');
+  definitions.push(`const ${name} = (headers: Record<string, JsonValue>): Record<string, string> => {
+  const output: Record<string, string> = { 'content-type': 'application/json' };
+${checks}
+  return output;
+};`);
+  return true;
 };
 
 const emitValidatorFunction = (
@@ -439,9 +499,12 @@ ${steps}
 
 const emitSerializerFunctions = (
   entry: LoadedProcedure,
-  base: string
+  base: string,
+  modes: readonly CompiledProcedureMode[]
 ): string => {
   const definitions: string[] = [];
+  const needsSerialized = modes.includes('serialized');
+  const needsResponse = modes.includes('response');
   const outputSchema = entry.procedure.output;
   if (outputSchema === undefined) return '';
   const outputSerializerName = canEmitJsonSerializer(outputSchema)
@@ -455,6 +518,11 @@ const emitSerializerFunctions = (
     canEmitResponseHeadersSerializer(entry.procedure.responseHeaders)
       ? `${base}_serialize_headers`
       : undefined;
+  const headerRecordName =
+    entry.procedure.responseHeaders !== undefined &&
+    canEmitResponseHeaderRecord(entry.procedure.responseHeaders)
+      ? `${base}_response_header_record`
+      : undefined;
   if (
     headerSerializerName !== undefined &&
     entry.procedure.responseHeaders !== undefined
@@ -465,6 +533,14 @@ const emitSerializerFunctions = (
       definitions
     );
   }
+  const hasHeaderRecordFunction =
+    headerRecordName !== undefined &&
+    entry.procedure.responseHeaders !== undefined &&
+    emitResponseHeaderRecordFunction(
+      headerRecordName,
+      entry.procedure.responseHeaders,
+      definitions
+    );
   const dataSerialization =
     outputSerializerName === undefined
       ? 'JSON.stringify(data)'
@@ -473,6 +549,10 @@ const emitSerializerFunctions = (
     headerSerializerName === undefined
       ? 'JSON.stringify(headers)'
       : `${headerSerializerName}(headers)`;
+  const responseHeaderRecord =
+    hasHeaderRecordFunction && headerRecordName !== undefined
+      ? `${headerRecordName}(headers)`
+      : 'compiledCreateJsonHeaderRecord(headers)';
   return `${definitions.join('\n\n')}
 
 const ${base}_success_prefix = ${JSON.stringify(
@@ -485,6 +565,9 @@ const ${base}_error_prefix = ${JSON.stringify(
   )};
 const ${base}_error_data_prefix = ${JSON.stringify(',"error":')};
 
+${
+  needsSerialized
+    ? `
 const ${base}_serialize_success = (
   traceId: string,
   data: JsonValue,
@@ -503,7 +586,7 @@ const ${base}_serialize_success = (
     };
   }
   const headersBody = ${headerSerialization};
-  const responseHeaders = compiledCreateJsonHeaderRecord(headers);
+  const responseHeaders = ${responseHeaderRecord};
   return {
     body:
       ${base}_success_prefix +
@@ -517,7 +600,13 @@ const ${base}_serialize_success = (
     responseHeaders,
   };
 };
+`
+    : ''
+}
 
+${
+  needsResponse
+    ? `
 const ${base}_response_success = (
   traceId: string,
   data: JsonValue,
@@ -536,7 +625,7 @@ const ${base}_response_success = (
     );
   }
   const headersBody = ${headerSerialization};
-  const responseHeaders = compiledCreateJsonHeaderRecord(headers);
+  const responseHeaders = ${responseHeaderRecord};
   return new Response(
     ${base}_success_prefix +
       traceBody +
@@ -548,7 +637,13 @@ const ${base}_response_success = (
     { status: 200, headers: responseHeaders }
   );
 };
+`
+    : ''
+}
 
+${
+  needsSerialized
+    ? `
 const ${base}_serialize_error = (
   traceId: string,
   error: RpcError
@@ -560,7 +655,13 @@ const ${base}_serialize_error = (
     JSON.stringify(error) +
     '}',
 });
+`
+    : ''
+}
 
+${
+  needsResponse
+    ? `
 const ${base}_response_error = (
   traceId: string,
   error: RpcError
@@ -572,7 +673,10 @@ const ${base}_response_error = (
       JSON.stringify(error) +
       '}',
     compiledJsonOkResponseInit
-  );`;
+  );
+`
+    : ''
+}`;
 };
 
 const emitHeaderValueExpression = (entry: LoadedProcedure): string => {
@@ -597,38 +701,49 @@ export const emitCompiledProcedureSource = (
   options: CompiledProcedureGenerationOptions
 ): string => {
   if (entry.procedure.output === undefined) return '';
+  const modes = options.modes ?? (['body', 'serialized', 'response'] as const);
   const base = entry.exportName;
   const hasAuth = entry.procedure.auth !== undefined;
+  const needsAuth = hasAuth && options.skipAuth !== true;
+  const isContextless =
+    entry.procedure.context === 'none' &&
+    entry.procedure.contextlessHandler !== undefined &&
+    !needsAuth;
   const hasCache =
     entry.procedure.meta.kind === 'query' &&
     entry.procedure.meta.cache !== undefined;
   const hasRateLimit = entry.procedure.meta.rateLimit !== undefined;
+  const needsInputValidation = options.validateInput;
+  const needsHeaderValidation =
+    entry.procedure.headers !== undefined && options.validateHeaders;
+  const needsOutputValidation = options.validateOutput;
+  const needsResponseHeaderValidation =
+    entry.procedure.responseHeaders !== undefined &&
+    options.validateResponseHeaders;
+  const needsRateLimit = hasRateLimit && options.enforceRateLimit;
   const validators: string[] = [];
-  if (options.validateInput) {
+  if (needsInputValidation) {
     emitValidatorFunction(
       `${base}_validate_input`,
       entry.procedure.input,
       validators
     );
   }
-  if (entry.procedure.headers !== undefined && options.validateHeaders) {
+  if (needsHeaderValidation && entry.procedure.headers !== undefined) {
     emitValidatorFunction(
       `${base}_validate_headers`,
       entry.procedure.headers,
       validators
     );
   }
-  if (options.validateOutput) {
+  if (needsOutputValidation) {
     emitValidatorFunction(
       `${base}_validate_output`,
       entry.procedure.output,
       validators
     );
   }
-  if (
-    entry.procedure.responseHeaders !== undefined &&
-    options.validateResponseHeaders
-  ) {
+  if (needsResponseHeaderValidation && entry.procedure.responseHeaders !== undefined) {
     emitValidatorFunction(
       `${base}_validate_response_headers`,
       entry.procedure.responseHeaders,
@@ -640,14 +755,20 @@ export const emitCompiledProcedureSource = (
       ? 'const headerValue = compiledEmptyObject;'
       : `const headerValue = ${emitHeaderValueExpression(entry)};`;
   const errorReturn = (
+    mode: 'body' | 'serialized' | 'response',
     errorExpression: string,
     fallbackExpression: string
-  ): string => `return serialize === 'response'
-      ? ${base}_response_error(trace, ${errorExpression})
-      : serialize
-        ? ${base}_serialize_error(trace, ${errorExpression})
-        : ${fallbackExpression};`;
+  ): string => {
+    if (mode === 'response') {
+      return `return ${base}_response_error(trace, ${errorExpression});`;
+    }
+    if (mode === 'serialized') {
+      return `return ${base}_serialize_error(trace, ${errorExpression});`;
+    }
+    return `return ${fallbackExpression};`;
+  };
   const successReturn = (
+    mode: 'body' | 'serialized' | 'response',
     dataExpression: string,
     headersExpression: string | undefined,
     fallbackExpression: string
@@ -656,14 +777,16 @@ export const emitCompiledProcedureSource = (
       headersExpression === undefined
         ? `trace, ${dataExpression}`
         : `trace, ${dataExpression}, ${headersExpression}`;
-    return `return serialize === 'response'
-      ? ${base}_response_success(${args})
-      : serialize
-        ? ${base}_serialize_success(${args})
-        : ${fallbackExpression};`;
+    if (mode === 'response') {
+      return `return ${base}_response_success(${args});`;
+    }
+    if (mode === 'serialized') {
+      return `return ${base}_serialize_success(${args});`;
+    }
+    return `return ${fallbackExpression};`;
   };
-  const headerValidationBlock =
-    entry.procedure.headers === undefined || !options.validateHeaders
+  const headerValidationBlock = (mode: 'body' | 'serialized' | 'response') =>
+    entry.procedure.headers === undefined || !needsHeaderValidation
       ? ''
       : `const headerIssue = ${base}_validate_headers(headerValue, 'headers');
   if (headerIssue !== undefined) {
@@ -673,10 +796,11 @@ export const emitCompiledProcedureSource = (
       status: 400,
       details: compiledValidationDetails([headerIssue]),
     };
-    ${errorReturn('error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
+    ${errorReturn(mode, 'error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
   }`;
-  const inputValidationBlock = options.validateInput
-    ? `const inputIssue = ${base}_validate_input(rpcRequest.input, 'input');
+  const inputValidationBlock = (mode: 'body' | 'serialized' | 'response') =>
+    needsInputValidation
+      ? `const inputIssue = ${base}_validate_input(rpcRequest.input, 'input');
   if (inputIssue !== undefined) {
     const error = {
       code: 'VALIDATION_ERROR',
@@ -684,15 +808,18 @@ export const emitCompiledProcedureSource = (
       status: 400,
       details: compiledValidationDetails([inputIssue]),
     };
-    ${errorReturn('error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
+    ${errorReturn(mode, 'error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
   }`
-    : '';
-  const responseHeaderValidation =
+      : '';
+  const responseHeaderValidation = (
+    mode: 'body' | 'serialized' | 'response',
+    headersExpression = 'result.headers'
+  ) =>
     entry.procedure.responseHeaders === undefined ||
-    !options.validateResponseHeaders
+    !needsResponseHeaderValidation
       ? ''
       : `{
-    const responseHeaderIssue = ${base}_validate_response_headers(result.headers, 'responseHeaders');
+    const responseHeaderIssue = ${base}_validate_response_headers(${headersExpression}, 'responseHeaders');
     if (responseHeaderIssue !== undefined) {
       const error = {
         code: 'RESPONSE_HEADER_VALIDATION_ERROR',
@@ -700,39 +827,43 @@ export const emitCompiledProcedureSource = (
         status: 500,
         details: compiledValidationDetails([responseHeaderIssue]),
       };
-      ${errorReturn('error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
+      ${errorReturn(mode, 'error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
     }
   }`;
-  const rateLimitBlock =
-    hasRateLimit && options.enforceRateLimit
+  const rateLimitBlock = (mode: 'body' | 'serialized' | 'response') =>
+    needsRateLimit
       ? `const limited = compiledRateLimitFailureStatic(${JSON.stringify(entry.id)}, ${entry.procedure.meta.rateLimit?.limit ?? 0}, ${JSON.stringify(entry.procedure.meta.rateLimit?.window ?? '1m')}, ${parseDurationMs(entry.procedure.meta.rateLimit?.window ?? '1m')}, rpcRequest, request, trace, runtime);
   if (limited !== undefined) {
-    ${errorReturn('limited.error', 'limited')}
+    ${errorReturn(mode, 'limited.error', 'limited')}
   }`
       : '';
   const authValueDeclaration = hasCache
     ? `
   const authValue = authResult;`
     : '';
-  const authBlock = hasAuth
-    ? `const ctx = compiledCreateContext(
+  const authBlock = (mode: 'body' | 'serialized' | 'response') =>
+    needsAuth
+      ? `const ctx = compiledCreateContext(
     request,
     trace,
     services,
     headerValue as object,
     compiledEmptyObject
   );
-  const authResultValue = compiledAuthenticate(${entry.exportName}.auth, ctx, state);
+  const authResultValue = ${
+    mode === 'body' ? 'compiledAuthenticate' : 'compiledAuthenticateUncached'
+  }(${entry.exportName}.auth, ctx${mode === 'body' ? ', state' : ''});
   const authResult = authResultValue instanceof Promise ? await authResultValue : authResultValue;
   if ('kind' in authResult && authResult.kind === 'error') {
-    ${errorReturn('authResult.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: authResult.error }')}
+    ${errorReturn(mode, 'authResult.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: authResult.error }')}
   }
   ctx.auth = authResult;
   ${authValueDeclaration}`
-    : '';
-  const authValueExpression = hasAuth ? 'authValue' : 'compiledEmptyObject';
-  const cacheReadBlock = hasCache
-    ? `const cached = compiledReadCache(
+      : '';
+  const authValueExpression = needsAuth ? 'authValue' : 'compiledEmptyObject';
+  const cacheReadBlock = (mode: 'body' | 'serialized' | 'response') =>
+    hasCache
+      ? `const cached = compiledReadCache(
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
@@ -741,6 +872,7 @@ export const emitCompiledProcedureSource = (
   );
   if (cached !== undefined) {
     ${successReturn(
+      mode,
       'cached.data',
       'cached.headers',
       `cached.headers === undefined
@@ -748,76 +880,45 @@ export const emitCompiledProcedureSource = (
         : { ok: true as const, id: rpcRequest.id, traceId: trace, data: cached.data, headers: cached.headers }`
     )}
   }`
-    : '';
-  const cacheWriteBlock = hasCache
-    ? `compiledWriteCache(
+      : '';
+  const cacheWriteBlockFor = (
+    dataExpression: string,
+    headersExpression?: string
+  ): string =>
+    hasCache
+      ? `compiledWriteCache(
     ${JSON.stringify(entry.id)},
     ${entry.exportName},
     inputValue,
     headerValue as Record<string, JsonValue>,
     ${authValueExpression},
-    result.data,
-    result.headers
+    ${dataExpression}${headersExpression === undefined ? '' : `,\n    ${headersExpression}`}
   );`
-    : '';
-  const contextCreationBlock = hasAuth
-    ? ''
-    : `const ctx = compiledCreateContext(
+      : '';
+  const contextCreationBlock =
+    needsAuth || isContextless
+      ? ''
+      : `const ctx = compiledCreateContext(
     request,
     trace,
     services,
     headerValue as object,
     compiledEmptyObject
   );`;
-  const stateParameter = hasAuth ? 'state' : '_state';
+  const handlerCall = isContextless
+    ? `${entry.exportName}.contextlessHandler(inputValue)`
+    : `${entry.exportName}.handler(ctx, inputValue)`;
+  const stateParameter = (mode: 'body' | 'serialized' | 'response'): string =>
+    needsAuth && mode === 'body' ? 'state' : '_state';
   const runtimeParameter =
-    hasRateLimit && options.enforceRateLimit ? 'runtime' : '_runtime';
-  const resultShapeBlock = options.validateOutput
-    ? `if (typeof result !== 'object' || result === null || !('kind' in result)) {
-    const error = {
-      code: 'STREAM_REQUIRED',
-      message: 'Use streaming transport',
-      status: 400,
-    };
-    ${errorReturn('error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
-  }`
-    : `if (typeof result !== 'object' || result === null || !('kind' in result)) {
-    ${successReturn(
-      'result as JsonValue',
-      undefined,
-      '{ ok: true as const, id: rpcRequest.id, traceId: trace, data: result as JsonValue }'
-    )}
-  }`;
-  return `${validators.join('\n\n')}
-
-${emitSerializerFunctions(entry, base)}
-
-const ${base}_execute: CompiledDispatch = async (
-  rpcRequest,
-  request,
-  services,
-  ${runtimeParameter},
-  ${stateParameter},
-  serialize
-) => {
-  const trace = compiledTraceId(request, rpcRequest.traceId);
-  ${rateLimitBlock}
-  ${headerValueBlock}
-  ${headerValidationBlock}
-  ${authBlock}
-  ${inputValidationBlock}
-  const inputValue = (rpcRequest.input ?? {}) as JsonValue;
-  ${cacheReadBlock}
-  ${contextCreationBlock}
-  const result = await ${entry.exportName}.handler(ctx, inputValue);
-  ${resultShapeBlock}
-  if (result.kind === 'error') {
-    ${errorReturn('result.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: result.error }')}
-  }
-  ${
-    options.validateOutput
+    needsRateLimit ? 'runtime' : '_runtime';
+  const outputValidationFor = (
+    mode: 'body' | 'serialized' | 'response',
+    dataExpression: string
+  ): string =>
+    needsOutputValidation
       ? `{
-    const outputIssue = ${base}_validate_output(result.data, 'output');
+    const outputIssue = ${base}_validate_output(${dataExpression}, 'output');
     if (outputIssue !== undefined) {
       const error = {
         code: 'OUTPUT_VALIDATION_ERROR',
@@ -825,14 +926,51 @@ const ${base}_execute: CompiledDispatch = async (
         status: 500,
         details: compiledValidationDetails([outputIssue]),
       };
-      ${errorReturn('error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
+      ${errorReturn(mode, 'error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error }')}
     }
   }`
-      : ''
+      : '';
+  const resultShapeBlock = (mode: 'body' | 'serialized' | 'response') =>
+    `if (typeof result !== 'object' || result === null || !('kind' in result)) {
+    const outputValue = result as JsonValue;
+    ${outputValidationFor(mode, 'outputValue')}
+    ${responseHeaderValidation(mode, 'undefined')}
+    ${cacheWriteBlockFor('outputValue')}
+    ${successReturn(
+      mode,
+      'outputValue',
+      undefined,
+      '{ ok: true as const, id: rpcRequest.id, traceId: trace, data: outputValue }'
+    )}
+  }`;
+  const emitExecutor = (
+    mode: 'body' | 'serialized' | 'response'
+  ): string => `${mode === 'body' ? '' : '\n'}const ${base}_execute_${mode}: CompiledFixedDispatch = async (
+  rpcRequest,
+  request,
+  services,
+  ${runtimeParameter},
+  ${stateParameter(mode)}
+) => {
+  const trace = compiledTraceId(request, rpcRequest.traceId);
+  ${rateLimitBlock(mode)}
+  ${headerValueBlock}
+  ${headerValidationBlock(mode)}
+  ${authBlock(mode)}
+  ${inputValidationBlock(mode)}
+  const inputValue = (rpcRequest.input ?? compiledEmptyObject) as JsonValue;
+  ${cacheReadBlock(mode)}
+  ${contextCreationBlock}
+  const result = await ${handlerCall};
+  ${resultShapeBlock(mode)}
+  if (result.kind === 'error') {
+    ${errorReturn(mode, 'result.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: result.error }')}
   }
-  ${responseHeaderValidation}
-  ${cacheWriteBlock}
+  ${outputValidationFor(mode, 'result.data')}
+  ${responseHeaderValidation(mode)}
+  ${cacheWriteBlockFor('result.data', 'result.headers')}
   ${successReturn(
+    mode,
     'result.data',
     'result.headers',
     `result.headers === undefined
@@ -840,4 +978,37 @@ const ${base}_execute: CompiledDispatch = async (
       : { ok: true as const, id: rpcRequest.id, traceId: trace, data: result.data, headers: result.headers }`
   )}
 };`;
+  const dispatchWrapper =
+    options.includeDispatchWrapper === false || modes.length === 1
+      ? ''
+      : `
+const ${base}_execute: CompiledDispatch = async (
+  rpcRequest,
+  request,
+  services,
+  runtime,
+  state,
+  serialize
+) =>
+  serialize === 'response'
+    ? ${base}_execute_response(rpcRequest, request, services, runtime, state)
+    : serialize
+      ? ${base}_execute_serialized(rpcRequest, request, services, runtime, state)
+      : ${base}_execute_body(rpcRequest, request, services, runtime, state);`;
+  const procedureMetadata = `const ${base}_metadata = {
+  needsInputValidation: ${needsInputValidation ? 'true' : 'false'},
+  needsOutputValidation: ${needsOutputValidation ? 'true' : 'false'},
+  needsHeaderValidation: ${needsHeaderValidation ? 'true' : 'false'},
+  hasRateLimit: ${needsRateLimit ? 'true' : 'false'},
+  needsAuth: ${needsAuth ? 'true' : 'false'},
+} as const;`;
+  return `${validators.join('\n\n')}
+
+${procedureMetadata}
+
+${emitSerializerFunctions(entry, base, modes)}
+
+${modes.map((mode) => emitExecutor(mode)).join('\n')}
+
+${dispatchWrapper}`;
 };

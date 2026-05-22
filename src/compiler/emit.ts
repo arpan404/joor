@@ -6,6 +6,7 @@ import { createAiDocs } from './ai-docs.js';
 import {
   emitCompiledProcedureSource,
   type CompiledProcedureGenerationOptions,
+  type CompiledProcedureMode,
 } from './codegen.js';
 import { createOpenApiDocument } from './openapi.js';
 
@@ -52,31 +53,32 @@ ${entries}
   await writeFile(manifestFile, source);
 };
 
-const emitDispatcher = async (
+const emitProfileDispatcher = async (
   manifest: CompilerManifest,
-  outDir: string,
-  config: JoorConfig | undefined,
-  configPath?: string
+  _outDir: string,
+  _config: JoorConfig | undefined,
+  configPath: string | undefined,
+  profileFile: string,
+  profileOptions: CompiledProcedureGenerationOptions,
+  modes: readonly CompiledProcedureMode[]
 ): Promise<void> => {
-  const dispatcherFile = `${outDir}/dispatcher.ts`;
+  const dispatcherFile = profileFile;
   const configImport =
     configPath === undefined
       ? ''
       : `import config from '${toImportPath(dispatcherFile, configPath)}';\n`;
   const configValue = configPath === undefined ? '{}' : 'config';
+  const generationOptions: CompiledProcedureGenerationOptions = {
+    ...profileOptions,
+    includeDispatchWrapper: false,
+    modes,
+  };
   const imports = manifest.procedures
     .map((entry) => {
       const importPath = toImportPath(dispatcherFile, entry.importPath);
       return `import ${entry.exportName} from '${importPath}';`;
     })
     .join('\n');
-  const generationOptions: CompiledProcedureGenerationOptions = {
-    enforceRateLimit: config?.enforceRateLimit ?? true,
-    validateHeaders: config?.validateHeaders ?? true,
-    validateInput: config?.validateInput ?? true,
-    validateOutput: config?.validateOutput ?? true,
-    validateResponseHeaders: config?.validateResponseHeaders ?? true,
-  };
   const compiledEntries = manifest.procedures.filter(
     (entry) => entry.procedure.output !== undefined
   );
@@ -108,23 +110,26 @@ const emitDispatcher = async (
   );
   const compiledImports = [
     'compiledNotFound',
-    ...(usesAuth ? ['compiledAuthenticate'] : []),
+    ...(usesAuth
+      ? ['compiledAuthenticate', 'compiledAuthenticateUncached']
+      : []),
     ...(hasCompiledProcedures
       ? [
           'compiledCreateContext',
           'compiledCreateJsonHeaderRecord',
           'compiledEmptyObject',
-          'compiledJsonOkResponseInit',
+          'compiledHasInvalidHeaderValue',
           'compiledTraceId',
         ]
       : []),
-    'createCompiledRpcHandler',
     'createCompiledRuntimeState',
+    'createCompiledRpcHandler',
     'createCompiledRpcTransportBodyResultHandler',
     ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
     ...(usesValidationDetails ? ['compiledValidationDetails'] : []),
     ...(usesCache ? ['compiledReadCache', 'compiledWriteCache'] : []),
-    'type CompiledUnaryDispatch',
+    ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
+    'type CompiledFixedUnaryDispatch',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
   ];
@@ -135,55 +140,90 @@ const emitDispatcher = async (
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
     .join('\n\n');
-  const cases = manifest.procedures
-    .map((entry) =>
-      entry.procedure.output === undefined
-        ? `    case ${JSON.stringify(entry.id)}:
-      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, serialize);`
-        : `    case ${JSON.stringify(entry.id)}:
-      return ${entry.exportName}_execute(rpcRequest, request, services, runtime, state, serialize);`
-    )
-    .join('\n');
-  const unaryCases = manifest.procedures
-    .map((entry) =>
-      entry.procedure.output === undefined
-        ? `    case ${JSON.stringify(entry.id)}:
-      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, serialize);`
-        : `    case ${JSON.stringify(entry.id)}:
-      return ${entry.exportName}_execute(rpcRequest, request, services, runtime, state, serialize);`
-    )
-    .join('\n');
-  await writeFile(
-    dispatcherFile,
-    `import {
-  ${compiledImports.join(',\n  ')},
-} from 'joor/runtime/compiled';
-${joorTypeImport}${configImport}${imports}
-
-${executors}
-
-const dispatch: CompiledDispatch = (
+  const hasBodyMode = modes.includes('body');
+  const hasSerializedMode = modes.includes('serialized');
+  const hasResponseMode = modes.includes('response');
+  const dispatchCaseForMode = (
+    mode: 'body' | 'serialized' | 'response'
+  ): string =>
+    manifest.procedures
+      .map((entry) => {
+        const serialize =
+          mode === 'response' ? "'response'" : mode === 'serialized';
+        return entry.procedure.output === undefined
+          ? `    case ${JSON.stringify(entry.id)}:
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, ${serialize});`
+          : `    case ${JSON.stringify(entry.id)}:
+      return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
+      })
+      .join('\n');
+  const dispatchBody = hasBodyMode
+    ? `const dispatchBody: CompiledDispatch = (
   rpcRequest,
   request,
   services,
   runtime,
   state,
-  serialize
+  _serialize
 ) => {
   switch (rpcRequest.id) {
-${cases}
+${dispatchCaseForMode('body')}
     default:
       return Promise.resolve(compiledNotFound(rpcRequest, request));
   }
-};
-
-const unaryDispatch: CompiledUnaryDispatch = (
-  body,
+};`
+    : '';
+  const dispatchSerialized = hasSerializedMode
+    ? `const dispatchSerialized: CompiledDispatch = (
+  rpcRequest,
   request,
   services,
   runtime,
   state,
-  serialize
+  _serialize
+) => {
+  switch (rpcRequest.id) {
+${dispatchCaseForMode('serialized')}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};`
+    : '';
+  const dispatchResponse = hasResponseMode
+    ? `const dispatchResponse: CompiledDispatch = (
+  rpcRequest,
+  request,
+  services,
+  runtime,
+  state,
+  _serialize
+) => {
+  switch (rpcRequest.id) {
+${dispatchCaseForMode('response')}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};`
+    : '';
+  const unaryCases = (mode: 'body' | 'serialized' | 'response'): string =>
+    manifest.procedures
+      .map((entry) => {
+        const serialize =
+          mode === 'response' ? "'response'" : mode === 'serialized';
+        return entry.procedure.output === undefined
+          ? `    case ${JSON.stringify(entry.id)}:
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services, runtime, state, ${serialize});`
+          : `    case ${JSON.stringify(entry.id)}:
+      return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
+      })
+      .join('\n');
+  const bodyUnaryDispatch = hasBodyMode
+    ? `const bodyUnaryDispatch: CompiledFixedUnaryDispatch = (
+  body,
+  request,
+  services,
+  runtime,
+  state
 ) => {
   const traceIdValue = body['traceId'];
   if (
@@ -194,44 +234,346 @@ const unaryDispatch: CompiledUnaryDispatch = (
   }
   const rpcRequest = body;
   switch (rpcRequest.id) {
-${unaryCases}
+${unaryCases('body')}
     default:
       return Promise.resolve(compiledNotFound(rpcRequest, request));
   }
-};
+};`
+    : '';
+  const serializedUnaryDispatch = hasSerializedMode
+    ? `const serializedUnaryDispatch: CompiledFixedUnaryDispatch = (
+  body,
+  request,
+  services,
+  runtime,
+  state
+) => {
+  const traceIdValue = body['traceId'];
+  if (
+    typeof body['id'] !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return Promise.resolve(undefined);
+  }
+  const rpcRequest = body;
+  switch (rpcRequest.id) {
+${unaryCases('serialized')}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};`
+    : '';
+  const responseUnaryDispatch = hasResponseMode
+    ? `const responseUnaryDispatch: CompiledFixedUnaryDispatch = (
+  body,
+  request,
+  services,
+  runtime,
+  state
+) => {
+  const traceIdValue = body['traceId'];
+  if (
+    typeof body['id'] !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return Promise.resolve(undefined);
+  }
+  const rpcRequest = body;
+  switch (rpcRequest.id) {
+${unaryCases('response')}
+    default:
+      return Promise.resolve(compiledNotFound(rpcRequest, request));
+  }
+};`
+    : '';
+  const transportDispatchName = hasSerializedMode
+    ? 'dispatchSerialized'
+    : hasBodyMode
+      ? 'dispatchBody'
+      : 'dispatchResponse';
+  const nativeUnaryDispatchName = hasSerializedMode
+    ? 'serializedUnaryDispatch'
+    : hasBodyMode
+      ? 'bodyUnaryDispatch'
+      : 'responseUnaryDispatch';
+  const responseDispatchName = hasResponseMode
+    ? 'dispatchResponse'
+    : transportDispatchName;
+  const nativeResponseUnaryDispatchName = hasResponseMode
+    ? 'responseUnaryDispatch'
+    : nativeUnaryDispatchName;
+  const transportModeLiteral = hasSerializedMode
+    ? 'true'
+    : hasBodyMode
+      ? 'false'
+      : "'response'";
+  await writeFile(
+    dispatcherFile,
+    `import {
+  ${compiledImports.join(',\n  ')},
+} from 'joor/runtime/compiled';
+${joorTypeImport}${configImport}${imports}
 
+${executors}
+
+${dispatchBody}
+${dispatchSerialized}
+${dispatchResponse}
+
+${bodyUnaryDispatch}
+${serializedUnaryDispatch}
+${responseUnaryDispatch}
+
+const dispatch: CompiledDispatch = ${transportDispatchName};
+export const nativeUnaryDispatch = ${nativeUnaryDispatchName};
+export const nativeResponseUnaryDispatch = ${nativeResponseUnaryDispatchName};
 export const nativeRuntime = createCompiledRuntimeState(${configValue});
-export const nativeUnaryDispatch = unaryDispatch;
-export const transport = createCompiledRpcTransportBodyResultHandler(
-  dispatch,
-  ${configValue},
-  unaryDispatch,
-  true,
-  true,
-  nativeRuntime
-);
 export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
-  unaryDispatch,
+  nativeUnaryDispatch,
   false,
-  true,
+  ${transportModeLiteral},
   nativeRuntime
 );
 export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandler(
-  dispatch,
+  ${responseDispatchName},
   ${configValue},
-  unaryDispatch,
+  nativeResponseUnaryDispatch,
   false,
   'response',
   nativeRuntime
 );
-export const fetch = createCompiledRpcHandler(dispatch, ${configValue}, unaryDispatch);
+export const transport = createCompiledRpcTransportBodyResultHandler(
+  dispatch,
+  ${configValue},
+  nativeUnaryDispatch,
+  true,
+  ${transportModeLiteral},
+  nativeRuntime
+);
+export const fetch = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
   );
 };
 
+const emitDispatcher = async (
+  manifest: CompilerManifest,
+  outDir: string,
+  config: JoorConfig | undefined,
+  configPath?: string
+): Promise<void> => {
+  const toModuleSpecifier = (filePath: string): string => {
+    const segments = filePath.split(/[/\\]/);
+    const module = segments.at(-1) ?? '';
+    return `./${module}`;
+  };
+  const baseModes = ['serialized'] as const;
+  const baseOptions: CompiledProcedureGenerationOptions = {
+    enforceRateLimit: config?.enforceRateLimit ?? true,
+    includeDispatchWrapper: false,
+    validateHeaders: config?.validateHeaders ?? true,
+    validateInput: config?.validateInput ?? true,
+    validateOutput: config?.validateOutput ?? true,
+    validateResponseHeaders: config?.validateResponseHeaders ?? true,
+  };
+  const trustedOptions: CompiledProcedureGenerationOptions = {
+    ...baseOptions,
+    enforceRateLimit: false,
+    skipAuth: true,
+    validateHeaders: false,
+    validateInput: false,
+    validateOutput: false,
+    validateResponseHeaders: false,
+  };
+  const bareOptions: CompiledProcedureGenerationOptions = {
+    ...trustedOptions,
+    includeDispatchWrapper: false,
+    modes: ['serialized'],
+  };
+  const unsafeFastPath =
+    config?.enforceRateLimit === false &&
+    config.validateHeaders === false &&
+    config.validateInput === false &&
+    config.validateOutput === false &&
+    config.validateResponseHeaders === false;
+  const hasAuthProcedure = manifest.procedures.some(
+    (entry) => entry.procedure.auth !== undefined
+  );
+  const useBareDispatcher = unsafeFastPath &&
+    manifest.procedures.every(
+      (entry) =>
+        entry.procedure.output !== undefined &&
+        entry.procedure.context === 'none' &&
+        entry.procedure.contextlessHandler !== undefined &&
+        entry.procedure.auth === undefined &&
+        entry.procedure.headers === undefined &&
+        entry.procedure.responseHeaders === undefined &&
+        entry.procedure.meta.cache === undefined &&
+        entry.procedure.meta.rateLimit === undefined
+    );
+  const dispatcherSafe = `${outDir}/dispatcher.safe.ts`;
+  const dispatcherTrusted = `${outDir}/dispatcher.trusted.ts`;
+  const dispatcherBare = `${outDir}/dispatcher.bare.ts`;
+  const selectedDispatcher = unsafeFastPath
+    ? hasAuthProcedure
+      ? dispatcherSafe
+      : useBareDispatcher
+        ? dispatcherBare
+        : dispatcherTrusted
+    : dispatcherSafe;
+  await writeFile(
+    `${outDir}/dispatcher.ts`,
+    `export * from '${toModuleSpecifier(selectedDispatcher)}';\n`
+  );
+  await emitProfileDispatcher(
+    manifest,
+    outDir,
+    config,
+    configPath,
+    `${outDir}/dispatcher.safe.ts`,
+    baseOptions,
+    baseModes
+  );
+  if (unsafeFastPath && !hasAuthProcedure) {
+    if (useBareDispatcher) {
+      await emitProfileDispatcher(
+        manifest,
+        outDir,
+        config,
+        configPath,
+        `${outDir}/dispatcher.bare.ts`,
+        bareOptions,
+        ['serialized']
+      );
+    } else {
+      await emitProfileDispatcher(
+        manifest,
+        outDir,
+        config,
+        configPath,
+        `${outDir}/dispatcher.trusted.ts`,
+        trustedOptions,
+        baseModes
+      );
+    }
+  }
+  await emitProfileDispatcher(
+    manifest,
+    outDir,
+    config,
+    configPath,
+    `${outDir}/dispatcher.streaming.ts`,
+    { ...baseOptions, includeDispatchWrapper: false },
+    ['response']
+  );
+};
+
+const emitDenoDispatcher = async (
+  manifest: CompilerManifest,
+  outDir: string,
+  config: JoorConfig | undefined,
+  configPath?: string
+): Promise<void> => {
+  const baseModes = ['serialized'] as const;
+  const generationOptions: CompiledProcedureGenerationOptions = {
+    includeDispatchWrapper: false,
+    modes: baseModes,
+    enforceRateLimit: config?.enforceRateLimit ?? true,
+    validateHeaders: config?.validateHeaders ?? true,
+    validateInput: config?.validateInput ?? true,
+    validateOutput: config?.validateOutput ?? true,
+    validateResponseHeaders: config?.validateResponseHeaders ?? true,
+  };
+  const trustedOptions: CompiledProcedureGenerationOptions = {
+    ...generationOptions,
+    enforceRateLimit: false,
+    skipAuth: true,
+    validateHeaders: false,
+    validateInput: false,
+    validateOutput: false,
+    validateResponseHeaders: false,
+  };
+  const bareOptions: CompiledProcedureGenerationOptions = {
+    ...trustedOptions,
+    modes: baseModes,
+  };
+  const unsafeFastPath =
+    config?.enforceRateLimit === false &&
+    config.validateHeaders === false &&
+    config.validateInput === false &&
+    config.validateOutput === false &&
+    config.validateResponseHeaders === false;
+  const hasAuthProcedure = manifest.procedures.some(
+    (entry) => entry.procedure.auth !== undefined
+  );
+  const useBareDispatcher = unsafeFastPath &&
+    manifest.procedures.every(
+      (entry) =>
+        entry.procedure.output !== undefined &&
+        entry.procedure.context === 'none' &&
+        entry.procedure.contextlessHandler !== undefined &&
+        entry.procedure.auth === undefined &&
+        entry.procedure.headers === undefined &&
+        entry.procedure.responseHeaders === undefined &&
+        entry.procedure.meta.cache === undefined &&
+        entry.procedure.meta.rateLimit === undefined
+    );
+  const safePath = `${outDir}/deno-dispatcher.safe.ts`;
+  const trustedPath = `${outDir}/deno-dispatcher.trusted.ts`;
+  const barePath = `${outDir}/deno-dispatcher.bare.ts`;
+  const selectedPath = unsafeFastPath
+    ? hasAuthProcedure
+      ? safePath
+      : useBareDispatcher
+        ? barePath
+        : trustedPath
+    : safePath;
+  const toModuleSpecifier = (filePath: string): string => {
+    const segments = filePath.split(/[/\\]/);
+    const module = segments.at(-1) ?? '';
+    return `./${module}`;
+  };
+  await emitProfileDispatcher(
+    manifest,
+    outDir,
+    config,
+    configPath,
+    safePath,
+    generationOptions,
+    baseModes
+  );
+  if (unsafeFastPath && hasAuthProcedure === false) {
+    if (useBareDispatcher) {
+      await emitProfileDispatcher(
+        manifest,
+        outDir,
+        config,
+        configPath,
+        barePath,
+        bareOptions,
+        baseModes
+      );
+    } else {
+      await emitProfileDispatcher(
+        manifest,
+        outDir,
+        config,
+        configPath,
+        trustedPath,
+        trustedOptions,
+        baseModes
+      );
+    }
+  }
+  await writeFile(
+    `${outDir}/deno-dispatcher.ts`,
+    `export * from '${toModuleSpecifier(selectedPath)}';\n`
+  );
+};
+
 const emitRuntimeTargets = async (
+  manifest: CompilerManifest,
   outDir: string,
   config?: JoorConfig
 ): Promise<void> => {
@@ -242,11 +584,233 @@ const emitRuntimeTargets = async (
     config.maxBodyBytes >= 0
       ? Math.floor(config.maxBodyBytes)
       : 1024 * 1024;
+  const unsafeFastPath =
+    config?.enforceRateLimit === false &&
+    config.validateHeaders === false &&
+    config.validateInput === false &&
+    config.validateOutput === false &&
+    config.validateResponseHeaders === false;
+  const hasAuthProcedure = manifest.procedures.some(
+    (entry) => entry.procedure.auth !== undefined
+  );
+  const useBareDispatcher = unsafeFastPath &&
+    manifest.procedures.every(
+      (entry) =>
+        entry.procedure.output !== undefined &&
+        entry.procedure.context === 'none' &&
+        entry.procedure.contextlessHandler !== undefined &&
+        entry.procedure.auth === undefined &&
+        entry.procedure.headers === undefined &&
+        entry.procedure.responseHeaders === undefined &&
+        entry.procedure.meta.cache === undefined &&
+        entry.procedure.meta.rateLimit === undefined
+    );
+  const dispatcherImport = unsafeFastPath
+    ? hasAuthProcedure
+      ? './dispatcher.safe.js'
+      : useBareDispatcher
+        ? './dispatcher.bare.js'
+        : './dispatcher.trusted.js'
+    : './dispatcher.safe.js';
+  const bunFastEntries = unsafeFastPath
+    ? manifest.procedures.filter(
+        (entry) =>
+          entry.procedure.output !== undefined &&
+          entry.procedure.context === 'none' &&
+          entry.procedure.contextlessHandler !== undefined &&
+          entry.procedure.auth === undefined &&
+          entry.procedure.headers === undefined &&
+          entry.procedure.responseHeaders === undefined &&
+          entry.procedure.meta.cache === undefined &&
+          entry.procedure.meta.rateLimit === undefined
+      )
+    : [];
+  const bunFastImports = bunFastEntries
+    .map((entry) => {
+      const importPath = toImportPath(`${outDir}/bun.ts`, entry.importPath);
+      return `import ${entry.exportName}_fast from '${importPath}';`;
+    })
+    .join('\n');
+  const nodeFastImports = bunFastEntries
+    .map((entry) => {
+      const importPath = toImportPath(`${outDir}/node.ts`, entry.importPath);
+      return `import ${entry.exportName}_fast from '${importPath}';`;
+    })
+    .join('\n');
+  const bunFastHandlerConstants = bunFastEntries
+    .map(
+      (entry) =>
+        `const ${entry.exportName}_fast_handler = ${entry.exportName}_fast.contextlessHandler;`
+    )
+    .join('\n');
+  const nodeFastHandlerConstants = bunFastHandlerConstants;
+  const bunFastCases = bunFastEntries
+    .map(
+      (entry) => `    case ${JSON.stringify(entry.id)}: {
+      if (${entry.exportName}_fast_handler === undefined) return undefined;
+      const trace = traceIdValue === undefined ? traceIdFromRequest(request) : traceIdValue;
+      const result = ${entry.exportName}_fast_handler(body['input'] ?? {});
+      return result instanceof Promise
+        ? result.then((resolved) =>
+            fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved)
+          )
+        : fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, result);
+    }`
+    )
+    .join('\n');
+  const nodeFastCases = bunFastEntries
+    .map(
+      (entry) => `    case ${JSON.stringify(entry.id)}: {
+      if (${entry.exportName}_fast_handler === undefined) return false;
+      const trace = typeof traceIdValue === 'string'
+        ? traceIdValue
+        : traceIdFromIncoming(incoming);
+      const result = ${entry.exportName}_fast_handler(body['input'] ?? {});
+      if (result instanceof Promise) {
+        await result.then((resolved) =>
+          writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved)
+        );
+        return true;
+      }
+      writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, result);
+      return true;
+    }`
+    )
+    .join('\n');
+  const bunFastContextlessUnary =
+    bunFastEntries.length === 0
+      ? `const fastContextlessUnary = (
+  _body: JsonObject,
+  _request: Request
+): Promise<Response | undefined> | Response | undefined => undefined;`
+      : `const fastContextlessResultToResponse = (
+  idBody: string,
+  trace: string,
+  result: JsonValue
+): Response => {
+  if (
+    typeof result === 'object' &&
+    result !== null &&
+    !Array.isArray(result) &&
+    'kind' in result
+  ) {
+    if (result.kind === 'error') {
+      return new Response(
+        failureBodyFromIdBody(idBody, trace, result.error.code, result.error.message, result.error.status),
+        jsonOkResponseInit
+      );
+    }
+    return result.headers === undefined
+      ? new Response(successBody(idBody, trace, result.data), jsonOkResponseInit)
+      : new Response(successBody(idBody, trace, result.data, result.headers), {
+          status: 200,
+          headers: createJsonHeaderRecord(result.headers),
+        });
+  }
+  return new Response(successBody(idBody, trace, result), jsonOkResponseInit);
+};
+
+const fastContextlessUnary = (
+  body: JsonObject,
+  request: Request
+): Promise<Response | undefined> | Response | undefined => {
+  const id = body['id'];
+  const traceIdValue = body['traceId'];
+  if (
+    typeof id !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return undefined;
+  }
+  switch (id) {
+${bunFastCases}
+    default:
+      return undefined;
+  }
+};`;
+  const nodeFastContextlessUnary =
+    bunFastEntries.length === 0
+      ? `const fastContextlessUnary = (
+  _body: JsonObject,
+  _incoming: IncomingMessage,
+  _outgoing: ServerResponse<IncomingMessage>
+): Promise<boolean> | boolean => false;`
+      : `const writeFastContextlessResult = (
+  outgoing: ServerResponse<IncomingMessage>,
+  idBody: string,
+  trace: string,
+  result: JsonValue
+): void => {
+  if (
+    typeof result === 'object' &&
+    result !== null &&
+    !Array.isArray(result) &&
+    'kind' in result
+  ) {
+    if (result.kind === 'error') {
+      outgoing.writeHead(200, jsonHeaders);
+      outgoing.end(
+        failureBodyFromIdBody(idBody, trace, result.error.code, result.error.message, result.error.status)
+      );
+      return;
+    }
+    if (result.headers === undefined) {
+      outgoing.writeHead(200, jsonHeaders);
+      outgoing.end(successBody(idBody, trace, result.data));
+      return;
+    }
+    outgoing.writeHead(200, createJsonHeaderRecord(result.headers));
+    outgoing.end(successBody(idBody, trace, result.data, result.headers));
+    return;
+  }
+  outgoing.writeHead(200, jsonHeaders);
+  outgoing.end(successBody(idBody, trace, result));
+};
+
+const fastContextlessUnary = async (
+  body: JsonObject,
+  incoming: IncomingMessage,
+  outgoing: ServerResponse<IncomingMessage>
+): Promise<boolean> => {
+  const id = body['id'];
+  const traceIdValue = body['traceId'];
+  if (
+    typeof id !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return false;
+  }
+  switch (id) {
+${nodeFastCases}
+    default:
+      return false;
+  }
+};`;
+  const denoUseCompiledUnaryFastPath = useBareDispatcher;
+  const denoTransportImport = denoUseCompiledUnaryFastPath
+    ? "import { createDenoCompiledTransportRequestHandlerWithPath } from 'joor/runtime/deno-compiled-transport';"
+    : "import { createDenoTransportRequestHandlerWithPath } from 'joor/runtime/deno-transport';";
+  const denoDispatcherImport = denoUseCompiledUnaryFastPath
+    ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './deno-dispatcher.ts';"
+    : "import { nativeTransport } from './deno-dispatcher.ts';";
+  const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
+    ? `return createDenoCompiledTransportRequestHandlerWithPath(
+    nativeRuntime,
+    nativeTransport,
+    nativeUnaryDispatch,
+    configuredPath,
+    bodyLimit
+  );`
+    : `return createDenoTransportRequestHandlerWithPath(
+    nativeTransport,
+    configuredPath,
+    bodyLimit
+  );`;
 
   const fetchFile = `${outDir}/fetch.ts`;
   await writeFile(
     fetchFile,
-    `import { fetch } from './dispatcher.js';
+    `import { fetch } from '${dispatcherImport}';
 
 export { fetch };
 export default fetch;
@@ -260,7 +824,8 @@ export default fetch;
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { JsonValue } from 'joor';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './dispatcher.js';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
+${nodeFastImports}
 
 interface JsonObject {
   [key: string]: JsonValue;
@@ -286,6 +851,7 @@ type NativeTransportResult = Awaited<ReturnType<typeof nativeTransport>>;
 
 const configuredPath = ${configuredPath};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
+const checkContentType = ${bunFastEntries.length === 0 ? 'true' : 'false'};
 const defaultMaxBodyBytes = 1024 * 1024;
 const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
 const neverAbortedSignal = new AbortController().signal;
@@ -447,6 +1013,52 @@ const traceId = (request: RequestSource, requested?: string): string => {
   return 'trace-' + traceCounter;
 };
 
+const traceIdFromIncoming = (incoming: IncomingMessage): string => {
+  const headerTrace = getIncomingHeader(incoming, 'x-request-id');
+  if (headerTrace !== null) return headerTrace;
+  traceCounter += 1;
+  return 'trace-' + traceCounter;
+};
+
+const successBody = (
+  idBody: string,
+  trace: string,
+  data: JsonValue,
+  headers?: JsonObject
+): string =>
+  headers === undefined
+    ? '{"ok":true,"id":' +
+      idBody +
+      ',"traceId":' +
+      JSON.stringify(trace) +
+      ',"data":' +
+      JSON.stringify(data) +
+      '}'
+    : '{"ok":true,"id":' +
+      idBody +
+      ',"traceId":' +
+      JSON.stringify(trace) +
+      ',"data":' +
+      JSON.stringify(data) +
+      ',"headers":' +
+      JSON.stringify(headers) +
+      '}';
+
+const failureBodyFromIdBody = (
+  idBody: string,
+  trace: string,
+  code: string,
+  message: string,
+  status: number
+): string =>
+  '{"ok":false,"id":' +
+  idBody +
+  ',"traceId":' +
+  JSON.stringify(trace) +
+  ',"error":' +
+  JSON.stringify({ code, message, status }) +
+  '}';
+
 const failureBody = (
   id: string,
   trace: string,
@@ -471,8 +1083,10 @@ const preflight = (
   if (request.method !== 'POST') {
     return new Response(null, { status: 405, headers: { allow: 'POST' } });
   }
-  const contentType = request.getHeader('content-type') ?? '';
-  if (!isJsonContentType(contentType)) {
+  const contentType = checkContentType
+    ? (request.getHeader('content-type') ?? '')
+    : 'application/json';
+  if (checkContentType && !isJsonContentType(contentType)) {
     return {
       body: failureBody(
         '',
@@ -484,6 +1098,41 @@ const preflight = (
     };
   }
   return undefined;
+};
+
+const writeIncomingPreflightFailure = (
+  outgoing: ServerResponse<IncomingMessage>,
+  incoming: IncomingMessage,
+  path: string
+): boolean => {
+  const url = incoming.url ?? '/rpc';
+  if (!matchesPath(url, path)) {
+    outgoing.writeHead(404);
+    outgoing.end();
+    return true;
+  }
+  if ((incoming.method ?? 'GET') !== 'POST') {
+    outgoing.writeHead(405, { allow: 'POST' });
+    outgoing.end();
+    return true;
+  }
+  if (checkContentType) {
+    const contentType = getIncomingHeader(incoming, 'content-type') ?? '';
+    if (!isJsonContentType(contentType)) {
+      outgoing.writeHead(200, jsonHeaders);
+      outgoing.end(
+        failureBody(
+          '',
+          traceIdFromIncoming(incoming),
+          'UNSUPPORTED_MEDIA_TYPE',
+          'Content-Type must be application/json',
+          415
+        )
+      );
+      return true;
+    }
+  }
+  return false;
 };
 
 const chunkToBuffer = (chunk: string | Buffer): Buffer =>
@@ -619,6 +1268,28 @@ const writeBodyReadFailure = (
   );
 };
 
+const writeIncomingBodyReadFailure = (
+  outgoing: ServerResponse<IncomingMessage>,
+  incoming: IncomingMessage,
+  error: object
+): void => {
+  const payloadTooLarge = error instanceof BodySizeLimitError;
+  const status = payloadTooLarge ? 413 : 400;
+  outgoing.writeHead(status, jsonHeaders);
+  outgoing.end(
+    failureBody(
+      '',
+      getIncomingHeader(incoming, 'x-request-id') ?? 'trace-body-error',
+      payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+      payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
+      status
+    )
+  );
+};
+
+${nodeFastHandlerConstants}
+${nodeFastContextlessUnary}
+
 export interface NodeNativeOptions {
   hostname?: string;
   maxBodyBytes?: number;
@@ -638,11 +1309,16 @@ export const createHandler = (options: NodeNativeOptions = {}) => {
     incoming: IncomingMessage,
     outgoing: ServerResponse<IncomingMessage>
   ): Promise<void> => {
-    const request = new IncomingRequestSource(incoming, hostname);
+    let request: IncomingRequestSource | undefined;
+    ${
+      bunFastEntries.length === 0
+        ? `request = new IncomingRequestSource(incoming, hostname);
     const early = preflight(request, path);
     if (early !== undefined) {
       await writeResult(outgoing, early);
       return;
+    }`
+        : `if (writeIncomingPreflightFailure(outgoing, incoming, path)) return;`
     }
     let body: JsonValue;
     try {
@@ -650,25 +1326,29 @@ export const createHandler = (options: NodeNativeOptions = {}) => {
       body = buffer.length === 0 ? {} : parseJson(buffer.toString('utf8'));
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      writeBodyReadFailure(outgoing, request, error);
+      if (request === undefined) writeIncomingBodyReadFailure(outgoing, incoming, error);
+      else writeBodyReadFailure(outgoing, request, error);
       return;
     }
-    const services =
-      nativeRuntime.getServices() ?? (await nativeRuntime.resolveServices());
     if (isJsonObject(body)) {
+      const handled = await fastContextlessUnary(body, incoming, outgoing);
+      if (handled) return;
+      request ??= new IncomingRequestSource(incoming, hostname);
+      const services =
+        nativeRuntime.services ?? (await nativeRuntime.resolveServices());
       const result = await nativeUnaryDispatch(
         body,
         request,
         services,
         nativeRuntime.runtime,
-        compiledUncachedExecutionState,
-        true
+        compiledUncachedExecutionState
       );
       if (result !== undefined) {
         await writeResult(outgoing, result);
         return;
       }
     }
+    request ??= new IncomingRequestSource(incoming, hostname);
     await writeResult(outgoing, await nativeTransport(request, body));
   };
 };
@@ -692,7 +1372,8 @@ export const listen = (options: NodeListenOptions = {}) => {
     bunFile,
     `import type { JsonValue } from 'joor';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './dispatcher.js';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
+${bunFastImports}
 
 interface JsonObject {
   [key: string]: JsonValue;
@@ -708,6 +1389,7 @@ type NativeTransportResult = Awaited<ReturnType<typeof nativeTransport>>;
 
 const configuredPath = ${configuredPath};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
+const checkContentType = ${bunFastEntries.length === 0 ? 'true' : 'false'};
 const defaultMaxBodyBytes = 1024 * 1024;
 const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
 const jsonOkResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
@@ -930,6 +1612,11 @@ const readJsonBody = async (
   return text.length === 0 ? {} : parseJson(text);
 };
 
+const readJsonBodyUnchecked = async (request: Request): Promise<JsonValue> => {
+  const text = await request.text();
+  return text.length === 0 ? {} : parseJson(text);
+};
+
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
   const pathStart =
@@ -956,6 +1643,52 @@ const traceId = (request: FetchRequestSource, requested?: string): string => {
   return 'trace-' + traceCounter;
 };
 
+const traceIdFromRequest = (request: Request): string => {
+  const headerTrace = request.headers.get('x-request-id');
+  if (headerTrace !== null) return headerTrace;
+  traceCounter += 1;
+  return 'trace-' + traceCounter;
+};
+
+const successBody = (
+  idBody: string,
+  trace: string,
+  data: JsonValue,
+  headers?: JsonObject
+): string =>
+  headers === undefined
+    ? '{"ok":true,"id":' +
+      idBody +
+      ',"traceId":' +
+      JSON.stringify(trace) +
+      ',"data":' +
+      JSON.stringify(data) +
+      '}'
+    : '{"ok":true,"id":' +
+      idBody +
+      ',"traceId":' +
+      JSON.stringify(trace) +
+      ',"data":' +
+      JSON.stringify(data) +
+      ',"headers":' +
+      JSON.stringify(headers) +
+      '}';
+
+const failureBodyFromIdBody = (
+  idBody: string,
+  trace: string,
+  code: string,
+  message: string,
+  status: number
+): string =>
+  '{"ok":false,"id":' +
+  idBody +
+  ',"traceId":' +
+  JSON.stringify(trace) +
+  ',"error":' +
+  JSON.stringify({ code, message, status }) +
+  '}';
+
 const failureBody = (
   id: string,
   trace: string,
@@ -971,7 +1704,7 @@ const failureBody = (
   });
 
 const preflight = (
-  request: FetchRequestSource,
+  request: Request,
   path: string
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {
@@ -980,18 +1713,20 @@ const preflight = (
   if (request.method !== 'POST') {
     return new Response(null, { status: 405, headers: { allow: 'POST' } });
   }
-  const contentType = request.getHeader('content-type') ?? '';
-  if (!isJsonContentType(contentType)) {
-    return new Response(
-      failureBody(
-        '',
-        traceId(request),
-        'UNSUPPORTED_MEDIA_TYPE',
-        'Content-Type must be application/json',
-        415
-      ),
-      jsonOkResponseInit
-    );
+  if (checkContentType) {
+    const contentType = request.headers.get('content-type') ?? '';
+    if (!isJsonContentType(contentType)) {
+      return new Response(
+        failureBody(
+          '',
+          traceIdFromRequest(request),
+          'UNSUPPORTED_MEDIA_TYPE',
+          'Content-Type must be application/json',
+          415
+        ),
+        jsonOkResponseInit
+      );
+    }
   }
   return undefined;
 };
@@ -1011,6 +1746,9 @@ const bodyReadFailure = (request: Request, error: object): Response => {
   );
 };
 
+${bunFastHandlerConstants}
+${bunFastContextlessUnary}
+
 export interface BunNativeOptions {
   hostname?: string;
   maxBodyBytes?: number;
@@ -1022,27 +1760,35 @@ export const createFetch = (options: BunNativeOptions = {}) => {
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
+  const unlimitedBody = bodyLimit >= Number.MAX_SAFE_INTEGER;
   return async (request: Request): Promise<Response> => {
-    const source = new FetchRequestSource(request);
-    const early = preflight(source, path);
+    const early = preflight(request, path);
     if (early !== undefined) return early;
     let body: JsonValue;
     try {
-      body = await readJsonBody(request, bodyLimit);
+      body = unlimitedBody
+        ? await readJsonBodyUnchecked(request)
+        : await readJsonBody(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
       return bodyReadFailure(request, error);
     }
+    if (isJsonObject(body)) {
+      const fastValue = fastContextlessUnary(body, request);
+      const fast =
+        fastValue instanceof Promise ? await fastValue : fastValue;
+      if (fast !== undefined) return fast;
+    }
+    const source = new FetchRequestSource(request);
     const services =
-      nativeRuntime.getServices() ?? (await nativeRuntime.resolveServices());
+      nativeRuntime.services ?? (await nativeRuntime.resolveServices());
     if (isJsonObject(body)) {
       const result = await nativeUnaryDispatch(
         body,
         source,
         services,
         nativeRuntime.runtime,
-        compiledUncachedExecutionState,
-        true
+        compiledUncachedExecutionState
       );
       if (result !== undefined) return transportResultToResponse(result);
     }
@@ -1077,326 +1823,11 @@ export const serve = (options: BunNativeOptions = {}) => {
   const denoFile = `${outDir}/deno.ts`;
   await writeFile(
     denoFile,
-    `import type { JsonValue } from 'joor';
-import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeResponseTransport, nativeRuntime, nativeUnaryDispatch } from './dispatcher.ts';
-
-interface JsonObject {
-  [key: string]: JsonValue;
-}
-
-interface SerializedJsonEnvelope {
-  body: string;
-  headers?: JsonObject;
-  responseHeaders?: Record<string, string>;
-}
-
-type NativeTransportResult = Awaited<ReturnType<typeof nativeResponseTransport>>;
+    `${denoTransportImport}
+${denoDispatcherImport}
 
 const configuredPath = ${configuredPath};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
-const defaultMaxBodyBytes = 1024 * 1024;
-const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
-const jsonOkResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
-const headerNamePattern = /^[A-Za-z0-9!#$%&'*+.^_|~-]+$/;
-const blockedResponseHeaders = new Set([
-  'connection',
-  'content-length',
-  'content-type',
-  'keep-alive',
-  'proxy-authenticate',
-  'proxy-authorization',
-  'te',
-  'trailer',
-  'transfer-encoding',
-  'upgrade',
-]);
-let traceCounter = 0;
-
-class BodySizeLimitError extends Error {}
-
-class FetchRequestSource {
-  readonly url: string;
-  readonly method: string;
-  readonly signal: AbortSignal;
-  readonly remoteAddress = undefined;
-
-  constructor(private readonly request: Request) {
-    this.url = request.url;
-    this.method = request.method;
-    this.signal = request.signal;
-  }
-
-  getHeader(name: string): string | null {
-    return this.request.headers.get(name);
-  }
-
-  toHeaders(): Headers {
-    return this.request.headers;
-  }
-
-  toRequest(): Request {
-    return this.request;
-  }
-}
-
-const normalizeMaxBodyBytes = (value?: number): number =>
-  Number.isFinite(value) && value >= 0 ? Math.floor(value) : defaultMaxBodyBytes;
-
-const parseJson = (text: string): JsonValue => JSON.parse(text) as JsonValue;
-
-const isJsonObject = (value: JsonValue | undefined): value is JsonObject =>
-  typeof value === 'object' && value !== null && !Array.isArray(value);
-
-const isSerializedEnvelope = (
-  result: NativeTransportResult
-): result is SerializedJsonEnvelope =>
-  !(result instanceof Response) &&
-  typeof result === 'object' &&
-  result !== null &&
-  !Array.isArray(result) &&
-  'body' in result &&
-  typeof result.body === 'string';
-
-const hasInvalidHeaderValue = (value: string): boolean =>
-  value.includes('\\0') || value.includes('\\r') || value.includes('\\n');
-
-const isSafeResponseHeader = (name: string, value: string): boolean => {
-  if (hasInvalidHeaderValue(value)) return false;
-  if (name === 'cache-control' || name === 'etag') return true;
-  return (
-    headerNamePattern.test(name) &&
-    !blockedResponseHeaders.has(name.toLowerCase())
-  );
-};
-
-const appendJsonStringHeaders = (
-  target: Record<string, string>,
-  source: JsonObject
-): void => {
-  const cacheControl = source['cache-control'];
-  if (
-    Object.hasOwn(source, 'cache-control') &&
-    typeof cacheControl === 'string' &&
-    !hasInvalidHeaderValue(cacheControl)
-  ) {
-    target['cache-control'] = cacheControl;
-  }
-  for (const key in source) {
-    if (key === 'cache-control') continue;
-    if (!Object.hasOwn(source, key)) continue;
-    const value = source[key];
-    if (typeof value === 'string' && isSafeResponseHeader(key, value)) {
-      target[key] = value;
-    }
-  }
-};
-
-const createJsonHeaderRecord = (source?: JsonObject): Record<string, string> => {
-  const headers: Record<string, string> = { 'content-type': 'application/json' };
-  if (source !== undefined) appendJsonStringHeaders(headers, source);
-  return headers;
-};
-
-const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
-  const cacheControl = source['cache-control'];
-  if (
-    Object.hasOwn(source, 'cache-control') &&
-    typeof cacheControl === 'string' &&
-    !hasInvalidHeaderValue(cacheControl)
-  ) {
-    target.set('cache-control', cacheControl);
-  }
-  for (const key in source) {
-    if (key === 'cache-control') continue;
-    if (!Object.hasOwn(source, key)) continue;
-    const value = source[key];
-    if (typeof value === 'string' && isSafeResponseHeader(key, value)) {
-      target.set(key, value);
-    }
-  }
-};
-
-const transportResultToResponse = (result: NativeTransportResult): Response => {
-  if (result instanceof Response) return result;
-  if (isSerializedEnvelope(result)) {
-    return result.responseHeaders !== undefined
-      ? new Response(result.body, {
-          status: 200,
-          headers: result.responseHeaders,
-        })
-      : result.headers === undefined
-        ? new Response(result.body, jsonOkResponseInit)
-        : new Response(result.body, {
-            status: 200,
-            headers: createJsonHeaderRecord(result.headers),
-          });
-  }
-  if (!isJsonObject(result) || result['ok'] !== true) {
-    return new Response(JSON.stringify(result), jsonOkResponseInit);
-  }
-  const responseHeaders = result['headers'];
-  if (!isJsonObject(responseHeaders)) {
-    return new Response(JSON.stringify(result), jsonOkResponseInit);
-  }
-  const headers = new Headers(jsonHeaders);
-  appendJsonHeaders(headers, responseHeaders);
-  return new Response(JSON.stringify(result), { status: 200, headers });
-};
-
-const parseContentLength = (request: Request): number | undefined => {
-  const value = request.headers.get('content-length');
-  if (value === null) return undefined;
-  const parsed = Number(value);
-  if (!Number.isInteger(parsed) || parsed < 0) return undefined;
-  return parsed;
-};
-
-const assertTextWithinLimit = (text: string, maxBodyBytes: number): void => {
-  if (text.length > maxBodyBytes) {
-    throw new BodySizeLimitError();
-  }
-  if (text.length * 4 <= maxBodyBytes) return;
-  if (encoder.encode(text).byteLength <= maxBodyBytes) return;
-  throw new BodySizeLimitError();
-};
-
-const readStreamText = async (
-  request: Request,
-  maxBodyBytes: number
-): Promise<string> => {
-  const body = request.body;
-  if (body === null) return '';
-  const reader = body.getReader();
-  let firstChunk: Uint8Array | undefined;
-  let chunks: Uint8Array[] | undefined;
-  let total = 0;
-  for (;;) {
-    const read = await reader.read();
-    if (read.done) break;
-    total += read.value.byteLength;
-    if (total > maxBodyBytes) {
-      try {
-        await reader.cancel();
-      } catch {}
-      throw new BodySizeLimitError();
-    }
-    if (firstChunk === undefined) firstChunk = read.value;
-    else {
-      chunks ??= [];
-      chunks.push(read.value);
-    }
-  }
-  if (firstChunk === undefined) return '';
-  if (chunks === undefined) return decoder.decode(firstChunk);
-  chunks.unshift(firstChunk);
-  const merged = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) {
-    merged.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return decoder.decode(merged);
-};
-
-const readJsonBody = async (
-  request: Request,
-  limit: number
-): Promise<JsonValue> => {
-  const contentLength = parseContentLength(request);
-  if (contentLength === 0) return {};
-  if (contentLength !== undefined) {
-    if (contentLength > limit) throw new BodySizeLimitError();
-    const text = await request.text();
-    assertTextWithinLimit(text, limit);
-    return text.length === 0 ? {} : parseJson(text);
-  }
-  const text = await readStreamText(request, limit);
-  return text.length === 0 ? {} : parseJson(text);
-};
-
-const matchesPath = (url: string, path: string): boolean => {
-  const protocolIndex = url.indexOf('://');
-  const pathStart =
-    protocolIndex === -1 ? 0 : url.indexOf('/', protocolIndex + 3);
-  if (pathStart === -1) return path === '/';
-  if (!url.startsWith(path, pathStart)) return false;
-  const next = url[pathStart + path.length];
-  return next === undefined || next === '?' || next === '#';
-};
-
-const isJsonContentType = (value: string): boolean => {
-  if (value === 'application/json') return true;
-  const semicolonIndex = value.indexOf(';');
-  const type = semicolonIndex === -1 ? value : value.slice(0, semicolonIndex);
-  const normalized = type.trim().toLowerCase();
-  return normalized === 'application/json' || normalized.endsWith('+json');
-};
-
-const traceId = (request: FetchRequestSource, requested?: string): string => {
-  if (requested !== undefined) return requested;
-  const headerTrace = request.getHeader('x-request-id');
-  if (headerTrace !== null) return headerTrace;
-  traceCounter += 1;
-  return 'trace-' + traceCounter;
-};
-
-const failureBody = (
-  id: string,
-  trace: string,
-  code: string,
-  message: string,
-  status: number
-): string =>
-  JSON.stringify({
-    ok: false,
-    id,
-    traceId: trace,
-    error: { code, message, status },
-  });
-
-const preflight = (
-  request: FetchRequestSource,
-  path: string
-): Response | undefined => {
-  if (!matchesPath(request.url, path)) {
-    return new Response(null, { status: 404 });
-  }
-  if (request.method !== 'POST') {
-    return new Response(null, { status: 405, headers: { allow: 'POST' } });
-  }
-  const contentType = request.getHeader('content-type') ?? '';
-  if (!isJsonContentType(contentType)) {
-    return new Response(
-      failureBody(
-        '',
-        traceId(request),
-        'UNSUPPORTED_MEDIA_TYPE',
-        'Content-Type must be application/json',
-        415
-      ),
-      jsonOkResponseInit
-    );
-  }
-  return undefined;
-};
-
-const bodyReadFailure = (request: Request, error: object): Response => {
-  const payloadTooLarge = error instanceof BodySizeLimitError;
-  const status = payloadTooLarge ? 413 : 400;
-  return new Response(
-    failureBody(
-      '',
-      request.headers.get('x-request-id') ?? 'trace-body-error',
-      payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
-      payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
-      status
-    ),
-    { status, headers: jsonHeaders }
-  );
-};
 
 export interface DenoNativeOptions {
   hostname?: string;
@@ -1405,36 +1836,9 @@ export interface DenoNativeOptions {
 }
 
 export const createFetch = (options: DenoNativeOptions = {}) => {
-  const path = configuredPath;
-  const bodyLimit = normalizeMaxBodyBytes(
-    options.maxBodyBytes ?? configuredMaxBodyBytes
-  );
-  return async (request: Request): Promise<Response> => {
-    const source = new FetchRequestSource(request);
-    const early = preflight(source, path);
-    if (early !== undefined) return early;
-    let body: JsonValue;
-    try {
-      body = await readJsonBody(request, bodyLimit);
-    } catch (error) {
-      if (!(error instanceof Error)) throw error;
-      return bodyReadFailure(request, error);
-    }
-    const services =
-      nativeRuntime.getServices() ?? (await nativeRuntime.resolveServices());
-    if (isJsonObject(body)) {
-      const result = await nativeUnaryDispatch(
-        body,
-        source,
-        services,
-        nativeRuntime.runtime,
-        compiledUncachedExecutionState,
-        'response'
-      );
-      if (result !== undefined) return transportResultToResponse(result);
-    }
-    return transportResultToResponse(await nativeResponseTransport(source, body));
-  };
+  const bodyLimit =
+    options.maxBodyBytes ?? configuredMaxBodyBytes;
+  ${denoCreateFetchReturn}
 };
 
 export const fetch = createFetch();
@@ -1596,7 +2000,13 @@ export const emitArtifacts = async (
     options.config,
     options.configPath
   );
-  await emitRuntimeTargets(options.outDir, options.config);
+  await emitDenoDispatcher(
+    manifest,
+    options.outDir,
+    options.config,
+    options.configPath
+  );
+  await emitRuntimeTargets(manifest, options.outDir, options.config);
   await emitClient(manifest, options.outDir);
   await emitProcedureHelper(options.outDir, options.configPath);
   await writeJson(
