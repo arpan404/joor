@@ -859,6 +859,7 @@ const legacyRequest = legacyClient.request<typeof procedure, 'users.get'>(
 );
 const legacyRequestId: 'users.get' = legacyRequest.id;
 legacyRequestId.toUpperCase();
+legacyRequest.headers['x-tenant-id'].toUpperCase();
 // @ts-expect-error legacy client requests preserve explicit route id literals.
 const _wrongLegacyRequestId: 'users.authenticated' = legacyRequest.id;
 legacyClient

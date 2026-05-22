@@ -255,7 +255,8 @@ export interface LegacyRpcTransportClient {
     id: TId,
     input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
-  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId>;
+  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId> &
+    PendingRpcRequestHeaders<RpcUnaryProcedure<TProcedure>>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
   ): Promise<BatchResults<TRequests>>;
@@ -409,13 +410,16 @@ export function createClient(
     > extends ProcedureHeaders<TProcedure>
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
-  ): PendingRpcRequest<TProcedure, TId> => ({
-    id,
-    input,
-    ...(requestOptions[0]?.headers === undefined
-      ? {}
-      : { headers: requestOptions[0].headers }),
-  });
+  ): PendingRpcRequest<TProcedure, TId> &
+    PendingRpcRequestHeaders<TProcedure> =>
+    ({
+      id,
+      input,
+      ...(requestOptions[0]?.headers === undefined
+        ? {}
+        : { headers: requestOptions[0].headers }),
+    }) as PendingRpcRequest<TProcedure, TId> &
+      PendingRpcRequestHeaders<TProcedure>;
   const batch = async <const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
   ): Promise<BatchResults<TRequests>> => {
