@@ -39,6 +39,7 @@
       "joor": ["./src/index.ts"],
       "joor/client": ["./src/rpc/client.ts"],
       "joor/rpc": ["./src/rpc/index.ts"],
+      "joor/manifest": ["./src/manifest.ts"],
       "joor/runtime/*": ["./src/runtime/*.ts"],
       "@/*": ["./src/*"]
     },

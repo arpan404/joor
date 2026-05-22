@@ -127,6 +127,17 @@ import {
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
 } from '../src/rpc/index.js';
 import {
+  defineManifest as defineManifestSubpath,
+  type JoorManifestRouteBody as JoorSubpathManifestRouteBody,
+  type JoorManifestRouteBodyResultFor as JoorSubpathManifestRouteBodyResultFor,
+  type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
+  type JoorManifestRouteId as JoorSubpathManifestRouteId,
+  type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
+  type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
+  type JoorManifestRouteStreamProtocolRequest as JoorSubpathManifestRouteStreamProtocolRequest,
+  type JoorManifestRoutes as JoorSubpathManifestRoutes,
+} from '../src/manifest.js';
+import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
@@ -276,6 +287,28 @@ const manifest = defineManifest({
   },
 });
 type ManifestRoutes = JoorManifestRoutes<typeof manifest>;
+const manifestFromSubpath = defineManifestSubpath({
+  procedures: {
+    'users.get': procedure,
+    'users.authenticated': authenticatedProcedure,
+    'users.watch': streamProcedure,
+  },
+});
+type ManifestSubpathRoutes = JoorSubpathManifestRoutes<
+  typeof manifestFromSubpath
+>;
+const manifestSubpathRouteId: JoorSubpathManifestRouteId<
+  typeof manifestFromSubpath
+> = 'users.get';
+manifestSubpathRouteId.toUpperCase();
+const manifestSubpathRouteInput: JoorSubpathManifestRouteInput<
+  typeof manifestFromSubpath,
+  'users.get'
+> = { id: '1' };
+manifestSubpathRouteInput.id.toUpperCase();
+const _manifestSubpathRoutes: ManifestSubpathRoutes =
+  manifestFromSubpath.procedures;
+_manifestSubpathRoutes['users.get'].input;
 const manifestRouteClient = createClient<ManifestRoutes>({ url: '/rpc' });
 manifestRouteClient.call(
   'users.get',
@@ -475,6 +508,32 @@ if (!(manifestRouteBodyResultFor instanceof Response)) {
   if (manifestRouteBodyResultFor.ok)
     manifestRouteBodyResultFor.data.name.toUpperCase();
 }
+const manifestSubpathProtocolRequest: JoorSubpathManifestRouteProtocolRequest<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestProtocolRequest;
+const manifestSubpathRouteBody: JoorSubpathManifestRouteBody<
+  typeof manifestFromSubpath
+> = manifestSubpathProtocolRequest;
+const manifestSubpathEnvelope: JoorSubpathManifestRouteEnvelope<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestRouteEnvelope;
+const manifestSubpathBodyResultFor: JoorSubpathManifestRouteBodyResultFor<
+  typeof manifestFromSubpath,
+  typeof manifestSubpathProtocolRequest
+> = manifestSubpathEnvelope;
+manifestSubpathRouteBody.id.toUpperCase();
+if (!(manifestSubpathBodyResultFor instanceof Response)) {
+  if (manifestSubpathBodyResultFor.ok)
+    manifestSubpathBodyResultFor.data.name.toUpperCase();
+}
+
+const _wrongManifestSubpathStreamProtocolRequest: JoorSubpathManifestRouteStreamProtocolRequest<
+  typeof manifestFromSubpath,
+  // @ts-expect-error manifest subpath stream protocol requests reject unary route ids.
+  'users.get'
+> = manifestSubpathProtocolRequest;
 
 // @ts-expect-error route body result inference keeps the requested route id.
 const _wrongManifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<

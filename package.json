@@ -32,6 +32,10 @@
       "types": "./dist/rpc/index.d.ts",
       "import": "./dist/rpc/index.js"
     },
+    "./manifest": {
+      "types": "./dist/manifest.d.ts",
+      "import": "./dist/manifest.js"
+    },
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"
