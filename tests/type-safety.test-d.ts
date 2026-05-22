@@ -178,6 +178,7 @@ import {
   type Schema,
   type SchemaMeta,
   type StringSchema,
+  type NumberSchema,
   type ValidationResult,
   type OpenApiSchema,
   type JsonValue,
@@ -762,6 +763,23 @@ const _wrongHeaderSchema: HeaderObjectSchema = t.string();
 const _wrongHeaderValueSchema: HeaderObjectSchema = t.object({
   'x-retry-count': t.number(),
 });
+type _WrongProcedureHeaderGeneric = Procedure<
+  typeof rootUserSchema,
+  typeof rootUserSchema,
+  Record<string, never>,
+  undefined,
+  // @ts-expect-error procedure header generics must use header object schemas.
+  NumberSchema
+>;
+type _WrongProcedureResponseHeaderGeneric = Procedure<
+  typeof rootUserSchema,
+  typeof rootUserSchema,
+  Record<string, never>,
+  undefined,
+  undefined,
+  // @ts-expect-error procedure response header generics must use header object schemas.
+  NumberSchema
+>;
 const rootArrayChain: ArrayChain<typeof rootStringSchema> = t
   .array(rootStringSchema)
   .min(1);

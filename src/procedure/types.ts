@@ -1,7 +1,11 @@
 import type { JoorContext } from '../context/context.js';
 import type { AuthPolicy } from '../auth/policy.js';
 import type { JsonObject, JsonValue } from '../schema/json.js';
-import type { InferSchema, Schema } from '../schema/types.js';
+import type {
+  HeaderObjectSchema,
+  InferSchema,
+  Schema,
+} from '../schema/types.js';
 import type { ProcedureResult } from './result.js';
 
 export type MaybePromise<TValue> = TValue | Promise<TValue>;
@@ -71,8 +75,12 @@ export interface Procedure<
   TOutput extends Schema = Schema,
   TErrors extends ErrorSchemas = ErrorSchemas,
   TStream extends Schema | undefined = Schema | undefined,
-  THeaders extends Schema | undefined = Schema | undefined,
-  TResponseHeaders extends Schema | undefined = Schema | undefined,
+  THeaders extends HeaderObjectSchema | undefined =
+    | HeaderObjectSchema
+    | undefined,
+  TResponseHeaders extends HeaderObjectSchema | undefined =
+    | HeaderObjectSchema
+    | undefined,
   TAuth extends object = Record<string, never>,
   TServices extends object = Record<string, never>,
 > extends ProcedureRuntime {
