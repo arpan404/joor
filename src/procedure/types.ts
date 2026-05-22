@@ -1,5 +1,5 @@
 import type { JoorContext } from '../context/context.js';
-import type { AuthPolicy } from '../auth/policy.js';
+import type { AuthPolicy, AuthPolicyHeaderValues } from '../auth/policy.js';
 import type { JsonObject, JsonValue } from '../schema/json.js';
 import type {
   HeaderObjectSchema,
@@ -57,7 +57,7 @@ export interface ProcedureRuntime {
   input: Schema;
   headers?: HeaderObjectSchema;
   responseHeaders?: HeaderObjectSchema;
-  auth?: AuthPolicy<object, object, object>;
+  auth?: AuthPolicy<object, AuthPolicyHeaderValues, object>;
   output?: Schema;
   stream?: Schema;
   errors: ErrorSchemas;

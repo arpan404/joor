@@ -1,4 +1,4 @@
-import type { AuthPolicy } from '../../auth/policy.js';
+import type { AuthPolicy, AuthPolicyHeaderValues } from '../../auth/policy.js';
 import type { JoorContext } from '../../context/context.js';
 import type { ProcedureFailure } from '../../procedure/result.js';
 
@@ -7,7 +7,10 @@ export type AuthResultLike = AuthResult | Promise<AuthResult>;
 
 export interface ExecutionState {
   cacheAuth: boolean;
-  authCache?: Map<AuthPolicy<object, object, object>, AuthResultLike>;
+  authCache?: Map<
+    AuthPolicy<object, AuthPolicyHeaderValues, object>,
+    AuthResultLike
+  >;
 }
 
 const emptyAuthResult: object = Object.freeze({});
@@ -22,16 +25,21 @@ export const createExecutionState = (cacheAuth = false): ExecutionState => ({
 
 const asAuthContext = (
   ctx: JoorContext<object, object, object, object>
-): JoorContext<object, object, Record<string, never>, Record<string, never>> =>
+): JoorContext<
+  object,
+  AuthPolicyHeaderValues,
+  Record<string, never>,
+  Record<string, never>
+> =>
   ctx as JoorContext<
     object,
-    object,
+    AuthPolicyHeaderValues,
     Record<string, never>,
     Record<string, never>
   >;
 
 export const authenticateOnce = (
-  policy: AuthPolicy<object, object, object> | undefined,
+  policy: AuthPolicy<object, AuthPolicyHeaderValues, object> | undefined,
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
 ): AuthResultLike => {
@@ -52,7 +60,7 @@ export const authenticateOnce = (
 };
 
 export const authenticateUncached = (
-  policy: AuthPolicy<object, object, object> | undefined,
+  policy: AuthPolicy<object, AuthPolicyHeaderValues, object> | undefined,
   ctx: JoorContext<object, object, object, object>
 ): AuthResultLike => {
   if (policy === undefined) return emptyAuthResult;

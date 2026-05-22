@@ -42,7 +42,9 @@ import {
   type BunServeOptionsFor,
   type BunServeOptions,
   type AuthPolicyAuth,
+  type AuthPolicy,
   type AuthPolicyHeaders,
+  type AuthPolicyHeaderValues,
   type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
@@ -445,6 +447,17 @@ const authPolicyServicesFromRoot: AuthPolicyServicesFromRoot = {
 authPolicyServicesFromRoot.users.findById('1').name.toUpperCase();
 const _authPolicyHeadersFromRoot: AuthPolicyHeaders<typeof authPolicy> = {};
 _authPolicyHeadersFromRoot;
+const authPolicyHeaderValues: AuthPolicyHeaderValues = {
+  authorization: 'Bearer token',
+  'x-optional': undefined,
+};
+authPolicyHeaderValues['authorization']?.toUpperCase();
+type _WrongAuthPolicyHeaderValues = AuthPolicy<
+  Services,
+  // @ts-expect-error auth policy headers must be HTTP string values.
+  { authorization: number },
+  { userId: string }
+>;
 const authPolicyAuthFromRoot: AuthPolicyAuth<typeof authPolicy> = {
   userId: '1',
 };

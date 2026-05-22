@@ -1,5 +1,5 @@
 import type { JoorContext } from '../context/context.js';
-import type { AuthPolicy } from '../auth/policy.js';
+import type { AuthPolicy, AuthPolicyHeaderValues } from '../auth/policy.js';
 import type { JsonValue } from '../schema/json.js';
 import type {
   HeaderObjectSchema,
@@ -275,7 +275,7 @@ const createDefineProcedure = <
       ...(responseHeaders === undefined ? {} : { responseHeaders }),
       ...(auth === undefined
         ? {}
-        : { auth: auth as AuthPolicy<object, object, object> }),
+        : { auth: auth as AuthPolicy<object, AuthPolicyHeaderValues, object> }),
       ...('output' in config ? { output: config.output } : {}),
       ...('stream' in config ? { stream: config.stream } : {}),
       errors: config.errors ?? {},
