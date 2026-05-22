@@ -1879,7 +1879,14 @@ export interface BunNativeOptions {
 
 export type BunNativeFetchHandler = (request: Request) => Promise<Response>;
 
-export type BunNativeServer = object;
+export interface BunNativeServer {
+  readonly hostname?: string;
+  readonly port?: number;
+  readonly url?: URL;
+  stop?(force?: boolean): void;
+  ref?(): void;
+  unref?(): void;
+}
 
 export const createFetch = (
   options: BunNativeOptions = {}
@@ -1937,7 +1944,7 @@ export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
         port: number;
         hostname: string;
         fetch(request: Request): Promise<Response>;
-      }): object;
+      }): BunNativeServer;
     };
   };
   if (bunGlobal.Bun === undefined) {
@@ -1969,7 +1976,12 @@ export interface DenoNativeOptions {
 
 export type DenoNativeFetchHandler = (request: Request) => Promise<Response>;
 
-export type DenoNativeServer = object;
+export interface DenoNativeServer {
+  readonly finished: Promise<void>;
+  shutdown(): Promise<void>;
+  ref?(): void;
+  unref?(): void;
+}
 
 export const createFetch = (
   options: DenoNativeOptions = {}
@@ -1988,7 +2000,7 @@ export const serve = (options: DenoNativeOptions = {}): DenoNativeServer => {
         port: number;
         hostname: string;
         handler(request: Request): Promise<Response>;
-      }): object;
+      }): DenoNativeServer;
     };
   };
   if (denoGlobal.Deno === undefined) {
