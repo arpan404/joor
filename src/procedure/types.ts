@@ -189,6 +189,22 @@ export type ProcedureResponseHeaders<TProcedure> = TProcedure extends {
     : never
   : never;
 
+export type ProcedureHasResponseHeaders<TProcedure> = [
+  ProcedureResponseHeaders<TProcedure>,
+] extends [Record<string, never>]
+  ? false
+  : true;
+
+export type ProcedureRequiresResponseHeaders<TProcedure> = [
+  ProcedureResponseHeaders<TProcedure>,
+] extends [Record<string, never>]
+  ? false
+  : ProcedureResponseHeaders<TProcedure> extends object
+    ? [RequiredHeaderKeys<ProcedureResponseHeaders<TProcedure>>] extends [never]
+      ? false
+      : true
+    : false;
+
 export type ProcedureAuth<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
     unknown,

@@ -104,11 +104,13 @@ import {
   type ProcedureErrorCode,
   type ProcedureFailure,
   type ProcedureHasHeaders,
+  type ProcedureHasResponseHeaders,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
   type ProcedureRequiresHeaders,
+  type ProcedureRequiresResponseHeaders,
   type ProcedureServices,
   type RpcEnvelope,
   type RpcBatchRequest,
@@ -228,7 +230,9 @@ import {
   type ProcedureInput as SubpathProcedureInput,
   type ProcedureOutput as SubpathProcedureOutput,
   type ProcedureResult as SubpathProcedureResult,
+  type ProcedureHasResponseHeaders as SubpathProcedureHasResponseHeaders,
   type ProcedureResponseHeaders as SubpathProcedureResponseHeaders,
+  type ProcedureRequiresResponseHeaders as SubpathProcedureRequiresResponseHeaders,
   type RpcEnvelope as SubpathProcedureRpcEnvelope,
   type StreamEvent as SubpathStreamEvent,
 } from '../src/procedure/index.js';
@@ -565,6 +569,46 @@ const authenticatedProcedureRequiresHeaders: ProcedureRequiresHeaders<
   typeof authenticatedProcedure
 > = false;
 authenticatedProcedureRequiresHeaders.valueOf();
+const procedureHasResponseHeaders: ProcedureHasResponseHeaders<
+  typeof procedure
+> = true;
+procedureHasResponseHeaders.valueOf();
+const procedureRequiresResponseHeaders: ProcedureRequiresResponseHeaders<
+  typeof procedure
+> = true;
+procedureRequiresResponseHeaders.valueOf();
+const authenticatedProcedureHasResponseHeaders: ProcedureHasResponseHeaders<
+  typeof authenticatedProcedure
+> = false;
+authenticatedProcedureHasResponseHeaders.valueOf();
+const authenticatedProcedureRequiresResponseHeaders: ProcedureRequiresResponseHeaders<
+  typeof authenticatedProcedure
+> = false;
+authenticatedProcedureRequiresResponseHeaders.valueOf();
+const optionalResponseHeaderProcedure = defineProcedure({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
+  responseHeaders: t.object({ etag: t.optional(t.string()) }),
+  handler(ctx, input) {
+    return ctx.ok({ id: input.id });
+  },
+});
+const optionalProcedureHasResponseHeaders: ProcedureHasResponseHeaders<
+  typeof optionalResponseHeaderProcedure
+> = true;
+optionalProcedureHasResponseHeaders.valueOf();
+const optionalProcedureRequiresResponseHeaders: ProcedureRequiresResponseHeaders<
+  typeof optionalResponseHeaderProcedure
+> = false;
+optionalProcedureRequiresResponseHeaders.valueOf();
+const subpathProcedureHasResponseHeaders: SubpathProcedureHasResponseHeaders<
+  typeof optionalResponseHeaderProcedure
+> = true;
+subpathProcedureHasResponseHeaders.valueOf();
+const subpathProcedureRequiresResponseHeaders: SubpathProcedureRequiresResponseHeaders<
+  typeof optionalResponseHeaderProcedure
+> = false;
+subpathProcedureRequiresResponseHeaders.valueOf();
 const executeCompiledProcedureServices: Parameters<
   typeof executeCompiledProcedure<typeof procedure>
 >[4] = procedureServices;
