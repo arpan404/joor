@@ -1408,7 +1408,16 @@ export interface NodeListenOptions extends NodeNativeOptions {
   port?: number;
 }
 
-export const createHandler = (options: NodeNativeOptions = {}) => {
+export type NodeNativeHandler = (
+  incoming: IncomingMessage,
+  outgoing: ServerResponse<IncomingMessage>
+) => Promise<void>;
+
+export type NodeNativeServer = ReturnType<typeof createServer>;
+
+export const createHandler = (
+  options: NodeNativeOptions = {}
+): NodeNativeHandler => {
   const hostname = options.hostname ?? '0.0.0.0';
   const path = configuredPath;
   const bodyLimit = normalizeMaxBodyBytes(
@@ -1465,12 +1474,9 @@ export const createHandler = (options: NodeNativeOptions = {}) => {
   };
 };
 
-export const handler: (
-  incoming: IncomingMessage,
-  outgoing: ServerResponse<IncomingMessage>
-) => Promise<void> = createHandler();
+export const handler: NodeNativeHandler = createHandler();
 
-export const listen = (options: NodeListenOptions = {}) => {
+export const listen = (options: NodeListenOptions = {}): NodeNativeServer => {
   const hostname = options.hostname ?? '0.0.0.0';
   const server = createServer(createHandler(options));
   server.listen(options.port ?? 3000, hostname);
@@ -1871,7 +1877,13 @@ export interface BunNativeOptions {
   port?: number;
 }
 
-export const createFetch = (options: BunNativeOptions = {}) => {
+export type BunNativeFetchHandler = (request: Request) => Promise<Response>;
+
+export type BunNativeServer = object;
+
+export const createFetch = (
+  options: BunNativeOptions = {}
+): BunNativeFetchHandler => {
   const path = configuredPath;
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
@@ -1916,9 +1928,9 @@ export const createFetch = (options: BunNativeOptions = {}) => {
   };
 };
 
-export const fetch = createFetch();
+export const fetch: BunNativeFetchHandler = createFetch();
 
-export const serve = (options: BunNativeOptions = {}) => {
+export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
   const bunGlobal = globalThis as typeof globalThis & {
     Bun?: {
       serve(config: {
@@ -1955,15 +1967,21 @@ export interface DenoNativeOptions {
   port?: number;
 }
 
-export const createFetch = (options: DenoNativeOptions = {}) => {
+export type DenoNativeFetchHandler = (request: Request) => Promise<Response>;
+
+export type DenoNativeServer = object;
+
+export const createFetch = (
+  options: DenoNativeOptions = {}
+): DenoNativeFetchHandler => {
   const bodyLimit =
     options.maxBodyBytes ?? configuredMaxBodyBytes;
   ${denoCreateFetchReturn}
 };
 
-export const fetch = createFetch();
+export const fetch: DenoNativeFetchHandler = createFetch();
 
-export const serve = (options: DenoNativeOptions = {}) => {
+export const serve = (options: DenoNativeOptions = {}): DenoNativeServer => {
   const denoGlobal = globalThis as typeof globalThis & {
     Deno?: {
       serve(config: {

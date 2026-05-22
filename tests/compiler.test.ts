@@ -400,6 +400,9 @@ describe('compiler', () => {
         usageFile,
         `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
+import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
+import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeServer } from './node.js';
 
 const defaultClient = createClient();
 const generatedClient: GeneratedClient = defaultClient;
@@ -413,6 +416,24 @@ generatedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000
   if (result.ok) result.data.name.toUpperCase();
 });
 generatedTransport.stream('users.watch', { userId: '1' });
+const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch();
+const bunDefaultFetchHandler: BunNativeFetchHandler = bunNativeFetch;
+bunFetchHandler(new Request('https://example.com/rpc'));
+bunDefaultFetchHandler(new Request('https://example.com/rpc'));
+const bunServer: BunNativeServer = serveBunNative({ port: 3000 });
+bunServer;
+const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch();
+const denoDefaultFetchHandler: DenoNativeFetchHandler = denoNativeFetch;
+denoFetchHandler(new Request('https://example.com/rpc'));
+denoDefaultFetchHandler(new Request('https://example.com/rpc'));
+const denoServer: DenoNativeServer = serveDenoNative({ port: 3000 });
+denoServer;
+const nodeHandler: NodeNativeHandler = createNodeNativeHandler();
+const nodeDefaultHandler: NodeNativeHandler = nodeNativeHandler;
+nodeHandler;
+nodeDefaultHandler;
+const nodeServer: NodeNativeServer = listenNodeNative({ port: 3000 });
+nodeServer.close();
 const requiredServices: RequiredServices = {
   users: {
     findById(id) {
