@@ -11,6 +11,7 @@ import {
   type ProcedureResponseHeaders,
   type RpcRouteEnvelope,
   type RpcRouteRequest,
+  type RpcRouteRequestUnion,
 } from '../src/index.js';
 import { createClient } from '../src/rpc/client.js';
 
@@ -122,8 +123,12 @@ const routeRequest = routeClient.request(
 );
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
 typedRouteRequest.input.id.toUpperCase();
+typedRouteRequest.headers['x-tenant-id'].toUpperCase();
 const routeRequestId: 'users.get' = routeRequest.id;
 routeRequestId.toUpperCase();
+
+const unionRouteRequest: RpcRouteRequestUnion<Routes> = routeRequest;
+unionRouteRequest.id.toUpperCase();
 
 // @ts-expect-error request ids preserve the selected route literal.
 const _wrongRouteRequestId: 'users.authenticated' = routeRequest.id;
@@ -151,6 +156,42 @@ routeClient
     firstRouteId.toUpperCase();
     secondRouteId.toUpperCase();
   });
+
+routeClient.batch([
+  {
+    id: 'users.get',
+    input: { id: '1' },
+    headers: { 'x-tenant-id': 'tenant-1' },
+  },
+  {
+    id: 'users.authenticated',
+    input: { ok: true },
+  },
+] as const);
+
+routeClient
+  .batch([
+    {
+      id: 'users.get',
+      input: { id: '1' },
+      headers: { 'x-tenant-id': 'tenant-1' },
+    },
+  ] as const)
+  .then((results) => {
+    const directBatchRouteId: 'users.get' = results[0].id;
+    directBatchRouteId.toUpperCase();
+  });
+
+// @ts-expect-error route client batches reject unknown route ids.
+routeClient.batch([{ id: 'users.missing', input: { id: '1' } }] as const);
+
+// @ts-expect-error route client batches validate direct request input by id.
+routeClient.batch([{ id: 'users.authenticated', input: { id: '1' } }] as const);
+
+routeClient.batch([
+  // @ts-expect-error route client batches require headers for protected routes.
+  { id: 'users.get', input: { id: '1' } },
+] as const);
 
 const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: true,

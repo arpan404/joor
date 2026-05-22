@@ -51,6 +51,13 @@ export type RpcRouteEnvelope<
   TId extends RpcRouteId<TRoutes>,
 > = RpcEnvelope<RpcRouteOutput<TRoutes, TId> & JsonValue, TId>;
 
+type PendingRpcRequestHeaders<TProcedure> = Record<
+  string,
+  never
+> extends ProcedureHeaders<TProcedure>
+  ? { headers?: ProcedureHeaders<TProcedure> }
+  : { headers: ProcedureHeaders<TProcedure> };
+
 type ClientRequestOptionsTuple<TProcedure> = Record<
   string,
   never
@@ -70,14 +77,30 @@ export interface PendingRpcRequest<
 export type RpcRouteRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
-> = PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId>;
+> = PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId> &
+  PendingRpcRequestHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteRequestUnion<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteId<TRoutes>]: RpcRouteRequest<TRoutes, TId>;
+}[RpcRouteId<TRoutes>];
+
+export type RpcRouteBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[],
+> = {
+  [TIndex in keyof TRequests]: TRequests[TIndex] extends {
+    id: infer TId extends RpcRouteId<TRoutes>;
+  }
+    ? RpcRouteEnvelope<TRoutes, TId>
+    : never;
+};
 
 export type ClientRequestOptions<TProcedure> =
   Record<string, never> extends ProcedureHeaders<TProcedure>
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
-export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
+export type BatchResults<TRequests extends readonly unknown[]> = {
   [TIndex in keyof TRequests]: TRequests[TIndex] extends PendingRpcRequest<
     infer TProcedure,
     infer TId
@@ -117,10 +140,10 @@ export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
-  ): PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId>;
-  batch<const TRequests extends readonly PendingRpcRequest[]>(
+  ): RpcRouteRequest<TRoutes, TId>;
+  batch<const TRequests extends readonly RpcRouteRequestUnion<TRoutes>[]>(
     requests: TRequests
-  ): Promise<BatchResults<TRequests>>;
+  ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
   stream<TId extends RpcRouteId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,

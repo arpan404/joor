@@ -15,6 +15,7 @@ export type {
   ClientOptions,
   ClientRequestOptions,
   PendingRpcRequest,
+  RpcRouteBatchResults,
   RpcRouteHeaders,
   RpcRouteId,
   RpcRouteInput,
@@ -23,6 +24,7 @@ export type {
   RpcRouteProcedure,
   RpcRouteEnvelope,
   RpcRouteRequest,
+  RpcRouteRequestUnion,
   RpcRouteStreamEvent,
   RpcTransportClient,
 } from './rpc/client.js';
