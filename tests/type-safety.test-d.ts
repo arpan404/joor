@@ -2,9 +2,11 @@ import {
   createPlugin,
   createAuthPolicy,
   defineConfig,
+  defineManifest,
   defineProcedure,
   t,
   type JoorConfigContext,
+  type JoorManifestRoutes,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
@@ -149,6 +151,27 @@ type Routes = {
   'users.authenticated': typeof authenticatedProcedure;
   'users.watch': typeof streamProcedure;
 };
+
+const manifest = defineManifest({
+  procedures: {
+    'users.get': procedure,
+    'users.authenticated': authenticatedProcedure,
+    'users.watch': streamProcedure,
+  },
+});
+type ManifestRoutes = JoorManifestRoutes<typeof manifest>;
+const manifestRouteClient = createClient<ManifestRoutes>({ url: '/rpc' });
+manifestRouteClient.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+
+// @ts-expect-error manifest-derived clients reject unknown route ids.
+manifestRouteClient.call('users.missing', { id: '1' });
+
+// @ts-expect-error manifests only accept procedure runtimes.
+defineManifest({ procedures: { broken: { input: t.string() } } });
 
 const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
   'cache-control': 'private',
