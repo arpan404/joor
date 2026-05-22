@@ -113,6 +113,33 @@ export type RpcRouteEnvelope<
   RpcRouteError<TRoutes, TId>
 >;
 
+export type RpcRouteProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = JsonObject & {
+  id: TId;
+  input: RpcRouteInput<TRoutes, TId> & JsonValue;
+  traceId?: string;
+};
+
+export type RpcRouteUnaryProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteProtocolRequest<TRoutes, TId>;
+
+export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteId<TRoutes>]: RpcRouteProtocolRequest<TRoutes, TId>;
+}[RpcRouteId<TRoutes>];
+
+export type RpcRouteUnaryProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
+  [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteUnaryProtocolRequest<TRoutes, TId>;
+}[RpcUnaryRouteId<TRoutes>];
+
+export type RpcRouteBatchRequest<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+> = TRequests;
+
 type PendingRpcRequestHeaders<TProcedure> = Record<
   string,
   never

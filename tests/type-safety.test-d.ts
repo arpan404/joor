@@ -46,6 +46,11 @@ import {
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
+  type RpcRouteBatchRequest,
+  type RpcRouteProtocolRequest,
+  type RpcRouteProtocolRequestUnion,
+  type RpcRouteUnaryProtocolRequest,
+  type RpcRouteUnaryProtocolRequestUnion,
   type RpcSuccess,
   type RpcStreamProcedure,
   type RpcStreamRouteId,
@@ -335,6 +340,53 @@ const routeNotFoundError: RpcRouteError<Routes, 'users.get'> = {
 if (routeNotFoundError.code === 'NOT_FOUND') {
   routeNotFoundError.details?.message.toUpperCase();
 }
+
+const routeProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> = {
+  id: 'users.get',
+  input: { id: '1' },
+  traceId: 'trace-1',
+};
+routeProtocolRequest.input.id.toUpperCase();
+const streamProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.watch'> = {
+  id: 'users.watch',
+  input: { userId: '1' },
+};
+streamProtocolRequest.input.userId.toUpperCase();
+const routeProtocolRequestUnion: RpcRouteProtocolRequestUnion<Routes> =
+  streamProtocolRequest;
+routeProtocolRequestUnion.id.toUpperCase();
+const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = routeProtocolRequest;
+unaryProtocolRequest.input.id.toUpperCase();
+const unaryProtocolRequestUnion: RpcRouteUnaryProtocolRequestUnion<Routes> =
+  unaryProtocolRequest;
+unaryProtocolRequestUnion.id.toUpperCase();
+const routeBatchRequest: RpcRouteBatchRequest<
+  Routes,
+  [typeof routeProtocolRequest]
+> = [routeProtocolRequest];
+routeBatchRequest[0].input.id.toUpperCase();
+
+const _wrongRouteProtocolRequest: RpcRouteProtocolRequest<
+  Routes,
+  'users.get'
+> =
+  // @ts-expect-error route protocol requests validate input by id.
+  { id: 'users.get', input: { ok: true } };
+
+const _wrongUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  // @ts-expect-error unary protocol requests reject stream route ids.
+  'users.watch'
+> = streamProtocolRequest;
+
+const _wrongRouteBatchRequest: RpcRouteBatchRequest<
+  Routes,
+  // @ts-expect-error route protocol batches reject stream request bodies.
+  [typeof streamProtocolRequest]
+> = [streamProtocolRequest];
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const unaryRouteId: RpcUnaryRouteId<Routes> = 'users.get';
