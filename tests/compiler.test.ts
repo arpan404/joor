@@ -145,6 +145,15 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteBatchResults');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteBody');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteProtocolRequest');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteProtocolBatchRequest');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('JoorManifestRouteEnvelope<Manifest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -287,7 +296,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteRequestUnion, type RouteResult } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -312,6 +321,23 @@ const requestId: 'users.get' = request.id;
 requestId.toUpperCase();
 const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
+const protocolRequest: RouteProtocolRequest<'users.get'> = {
+  id: 'users.get',
+  input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+};
+const protocolRequestUnion: RouteProtocolRequestUnion = protocolRequest;
+const unaryProtocolRequest: RouteUnaryProtocolRequest<'users.get'> = protocolRequest;
+const streamProtocolRequest: RouteStreamProtocolRequest<'users.watch'> = {
+  id: 'users.watch',
+  input: { userId: '1' },
+};
+const routeBody: RouteBody = streamProtocolRequest;
+const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
+  unaryProtocolRequest,
+];
+protocolRequestUnion.id.toUpperCase();
+routeBody.id.toUpperCase();
+protocolBatch[0].input.id.toUpperCase();
 
 const configured = createClient({ url: '/rpc' });
 configured['admin-user']['get-profile']({ id: '1' }).then((result) => {
@@ -367,6 +393,19 @@ client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });
 
 // @ts-expect-error stream routes do not expose unary request methods.
 client.users.watch.request({ userId: '1' });
+
+const invalidProtocolRequest: RouteProtocolRequest<'users.get'> = {
+  id: 'users.get',
+  // @ts-expect-error generated route protocol requests validate input by id.
+  input: { ok: true },
+};
+invalidProtocolRequest;
+
+const invalidProtocolBatch: RouteProtocolBatchRequest<
+  // @ts-expect-error generated route protocol batches reject stream requests.
+  readonly [typeof streamProtocolRequest]
+> = [streamProtocolRequest];
+invalidProtocolBatch;
 
 // @ts-expect-error generated native transports reject unknown route ids.
 nativeTransport(source, { id: 'users.missing', input: {} });

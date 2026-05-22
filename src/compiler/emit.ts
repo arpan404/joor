@@ -1970,7 +1970,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteBatchResults, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
+import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -1987,6 +1987,14 @@ export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Ma
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
 export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[]> = TRequests;
 export type RouteBatchResults<TRequests extends readonly unknown[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
+export type RouteProtocolRequest<TId extends RouteId> = JoorManifestRouteProtocolRequest<Manifest, TId>;
+export type RouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<Manifest>;
+export type RouteUnaryProtocolRequest<TId extends UnaryRouteId> = JoorManifestRouteUnaryProtocolRequest<Manifest, TId>;
+export type RouteUnaryProtocolRequestUnion = JoorManifestRouteUnaryProtocolRequestUnion<Manifest>;
+export type RouteStreamProtocolRequest<TId extends StreamRouteId> = JoorManifestRouteStreamProtocolRequest<Manifest, TId>;
+export type RouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolRequestUnion<Manifest>;
+export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
+export type RouteBody = JoorManifestRouteBody<Manifest>;
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;
