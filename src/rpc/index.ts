@@ -26,6 +26,8 @@ export type {
   RpcRouteEnvelope,
   RpcRouteEnvelopeUnion,
   RpcRouteError,
+  RpcRouteErrorCode,
+  RpcRouteErrorDetails,
   RpcRouteHasHeaders,
   RpcRouteHasResponseHeaders,
   RpcRouteHeaders,

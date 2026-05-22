@@ -27,11 +27,13 @@ export interface ProcedureTypes<
   TResponseHeaders,
   TAuth,
   TServices,
+  TErrorDetails = unknown,
 > {
   input: TInput;
   output: TOutput;
   stream: TStream;
   errors: TErrors;
+  errorDetails?: TErrorDetails;
   headers: THeaders;
   responseHeaders: TResponseHeaders;
   auth: TAuth;
@@ -84,7 +86,8 @@ export interface Procedure<
       ? InferSchema<TResponseHeaders>
       : Record<string, never>,
     TAuth,
-    TServices
+    TServices,
+    ErrorDetails<TErrors>
   >;
 }
 
@@ -94,6 +97,7 @@ export type ProcedureInput<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     string,
+    unknown,
     unknown,
     unknown,
     unknown,
@@ -109,6 +113,7 @@ export type ProcedureOutput<TProcedure> = TProcedure extends {
     infer TOutput,
     infer TStream,
     string,
+    unknown,
     unknown,
     unknown,
     unknown,
@@ -129,6 +134,7 @@ export type StreamEvent<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
+    unknown,
     unknown
   >;
 }
@@ -142,6 +148,7 @@ export type ProcedureHeaders<TProcedure> = TProcedure extends {
     unknown,
     string,
     infer THeaders,
+    unknown,
     unknown,
     unknown,
     unknown
@@ -181,6 +188,7 @@ export type ProcedureResponseHeaders<TProcedure> = TProcedure extends {
     unknown,
     infer TResponseHeaders,
     unknown,
+    unknown,
     unknown
   >;
 }
@@ -214,6 +222,7 @@ export type ProcedureAuth<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     infer TAuth,
+    unknown,
     unknown
   >;
 }
@@ -231,30 +240,35 @@ export type ProcedureErrorCode<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
+    unknown,
     unknown
   >;
 }
-  ? TErrors
+  ? TErrors extends string
+    ? TErrors
+    : never
   : never;
 
 export type ProcedureErrorDetails<
   TProcedure,
   TCode extends ProcedureErrorCode<TProcedure>,
-> =
-  TProcedure extends Procedure<
-    Schema,
-    Schema,
-    infer TErrors,
-    Schema | undefined,
-    Schema | undefined,
-    Schema | undefined,
-    object,
-    object
-  >
-    ? TCode extends keyof TErrors
-      ? InferSchema<TErrors[TCode]>
-      : never
-    : never;
+> = TProcedure extends {
+  types?: ProcedureTypes<
+    unknown,
+    unknown,
+    unknown,
+    string,
+    unknown,
+    unknown,
+    unknown,
+    unknown,
+    infer TErrorDetails
+  >;
+}
+  ? TCode extends keyof TErrorDetails
+    ? TErrorDetails[TCode]
+    : never
+  : never;
 
 export type ProcedureServices<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
@@ -265,7 +279,8 @@ export type ProcedureServices<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    infer TServices
+    infer TServices,
+    unknown
   >;
 }
   ? TServices extends object

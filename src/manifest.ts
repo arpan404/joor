@@ -16,6 +16,8 @@ import type {
   RpcRouteBatchResults,
   RpcRouteEnvelope,
   RpcRouteError,
+  RpcRouteErrorCode,
+  RpcRouteErrorDetails,
   RpcRouteHasHeaders,
   RpcRouteHasResponseHeaders,
   RpcRouteHeaders,
@@ -132,6 +134,17 @@ export type JoorManifestRouteError<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteError<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteErrorCode<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = RpcRouteErrorCode<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteErrorDetails<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+  TCode extends JoorManifestRouteErrorCode<TManifest, TId>,
+> = RpcRouteErrorDetails<JoorManifestRoutes<TManifest>, TId, TCode>;
 
 export type JoorManifestRouteEnvelope<
   TManifest,

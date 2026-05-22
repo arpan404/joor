@@ -218,6 +218,8 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteId');
       expect(clientSource).toContain('export type RouteResponseHeaders');
       expect(clientSource).toContain('export type RouteError');
+      expect(clientSource).toContain('export type RouteErrorCode');
+      expect(clientSource).toContain('export type RouteErrorDetails');
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');
@@ -369,7 +371,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -425,6 +427,12 @@ const usersGetRequiresResponseHeaders: RouteRequiresResponseHeaders<'users.get'>
 usersGetRequiresResponseHeaders.valueOf();
 const usersWatchHasResponseHeaders: RouteHasResponseHeaders<'users.watch'> = false;
 usersWatchHasResponseHeaders.valueOf();
+const usersGetErrorCode: RouteErrorCode<'users.get'> = 'NOT_FOUND';
+usersGetErrorCode.toUpperCase();
+const usersGetErrorDetails: RouteErrorDetails<'users.get', 'NOT_FOUND'> = {
+  message: 'Missing',
+};
+usersGetErrorDetails.message.toUpperCase();
 client.tenants.current({ ok: true }, { headers: tenantHeaders }).then((result) => {
   const exact: RouteResult<'tenants.current'> = result;
   exact.id.toUpperCase();

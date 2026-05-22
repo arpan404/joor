@@ -73,6 +73,8 @@ import {
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteEnvelope,
   type JoorManifestRouteError,
+  type JoorManifestRouteErrorCode,
+  type JoorManifestRouteErrorDetails,
   type JoorManifestRouteHasHeaders,
   type JoorManifestRouteHasResponseHeaders,
   type JoorManifestRouteHeaders,
@@ -145,6 +147,8 @@ import {
   type RpcRequest,
   type RpcResponse,
   type RpcRouteError,
+  type RpcRouteErrorCode,
+  type RpcRouteErrorDetails,
   type RpcRouteEnvelope,
   type RpcRouteEnvelopeUnion,
   type RpcRouteBody,
@@ -213,6 +217,8 @@ import {
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
+  type RpcRouteErrorCode as RpcSubpathRouteErrorCode,
+  type RpcRouteErrorDetails as RpcSubpathRouteErrorDetails,
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
   type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
@@ -1027,6 +1033,32 @@ const subpathRouteRequiresResponseHeaders: RpcSubpathRouteRequiresResponseHeader
   'users.get'
 > = true;
 subpathRouteRequiresResponseHeaders.valueOf();
+const routeErrorCode: RpcRouteErrorCode<Routes, 'users.get'> = 'NOT_FOUND';
+routeErrorCode.toUpperCase();
+const routeErrorDetails: RpcRouteErrorDetails<
+  Routes,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+routeErrorDetails.message.toUpperCase();
+const subpathRouteErrorCode: RpcSubpathRouteErrorCode<Routes, 'users.get'> =
+  'NOT_FOUND';
+subpathRouteErrorCode.toUpperCase();
+const subpathRouteErrorDetails: RpcSubpathRouteErrorDetails<
+  Routes,
+  'users.get',
+  'NOT_FOUND'
+> = routeErrorDetails;
+subpathRouteErrorDetails.message.toUpperCase();
+// @ts-expect-error route error details preserve the selected error schema.
+const _wrongRouteErrorDetails: RpcRouteErrorDetails<
+  Routes,
+  'users.get',
+  'NOT_FOUND'
+> = {
+  missing: 'message',
+};
+_wrongRouteErrorDetails;
 
 const manifest = defineManifest({
   procedures: {
@@ -1309,6 +1341,17 @@ const manifestRouteError: JoorManifestRouteError<typeof manifest, 'users.get'> =
     details: { message: 'User not found' },
   };
 manifestRouteError.code.toUpperCase();
+const manifestRouteErrorCode: JoorManifestRouteErrorCode<
+  typeof manifest,
+  'users.get'
+> = 'NOT_FOUND';
+manifestRouteErrorCode.toUpperCase();
+const manifestRouteErrorDetails: JoorManifestRouteErrorDetails<
+  typeof manifest,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+manifestRouteErrorDetails.message.toUpperCase();
 // @ts-expect-error declared manifest route errors require schema-backed details.
 const _missingManifestRouteErrorDetails: JoorManifestRouteError<
   typeof manifest,

@@ -11,6 +11,7 @@ import type {
   ProcedureRequiresResponseHeaders,
   ProcedureError,
   ProcedureErrorCode,
+  ProcedureErrorDetails,
   ProcedureRuntime,
   StreamEvent,
 } from '../procedure/types.js';
@@ -96,6 +97,17 @@ export type RpcRouteError<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
 > = RpcProcedureError<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteErrorCode<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureErrorCode<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteErrorDetails<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+  TCode extends RpcRouteErrorCode<TRoutes, TId>,
+> = ProcedureErrorDetails<RpcRouteProcedure<TRoutes, TId>, TCode>;
 
 export type RpcRouteStreamEvent<
   TRoutes extends RpcRouteMap,
