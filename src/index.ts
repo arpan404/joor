@@ -26,6 +26,7 @@ export {
   createDenoTransportRequestHandlerWithPath,
   serveDeno,
 } from './runtime/deno.js';
+export { createDenoCompiledTransportRequestHandlerWithPath } from './runtime/deno-compiled-transport.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
@@ -35,6 +36,12 @@ export {
   listen,
 } from './runtime/node.js';
 export { createVercelFetch } from './runtime/vercel.js';
+export {
+  createCompiledRpcBodyResultHandler,
+  createCompiledRpcHandler,
+  createCompiledRpcTransportBodyResultHandler,
+  createCompiledRuntimeState,
+} from './runtime/compiled.js';
 export { t } from './schema/builder.js';
 export { isJsonObject, parseJson } from './schema/json.js';
 export { toJsonSchema } from './schema/openapi.js';
@@ -191,6 +198,19 @@ export type {
   BunTransportBodyResultHandler,
 } from './runtime/bun.js';
 export type { CloudflareWorker } from './runtime/cloudflare.js';
+export type {
+  CompiledBodyResult,
+  CompiledDispatch,
+  CompiledFixedDispatch,
+  CompiledFixedUnaryDispatch,
+  CompiledRpcBodyResultHandler,
+  CompiledRpcTransportBodyResultHandler,
+  CompiledRuntime,
+  CompiledRuntimeState,
+  CompiledSerializedEnvelope,
+  CompiledSerializationMode,
+  CompiledUnaryDispatch,
+} from './runtime/compiled.js';
 export type {
   DenoServeOptionsFor,
   DenoServeOptions,

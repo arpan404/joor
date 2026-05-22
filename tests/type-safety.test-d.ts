@@ -9,6 +9,7 @@ import {
   createBunTransportRequestHandler,
   createCloudflareWorker,
   createDenoFetch,
+  createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
@@ -25,6 +26,9 @@ import {
   createRpcHandler,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  createCompiledRpcHandler as createRootCompiledRpcHandler,
+  createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
+  createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
   isJsonObject,
   listen,
@@ -43,6 +47,9 @@ import {
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
   type CloudflareWorker,
+  type CompiledDispatch as RootCompiledDispatch,
+  type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
+  type CompiledRuntimeState as RootCompiledRuntimeState,
   type DenoServeOptionsFor,
   type DenoServeOptions,
   type DenoTransportBodyResult,
@@ -1753,6 +1760,16 @@ typedCompiledRuntimeState.getServices()?.users.findById('1').name.toUpperCase();
 typedCompiledRuntimeState.resolveServices().then((services) => {
   services.users.findById('1').name.toUpperCase();
 });
+const rootTypedCompiledRuntimeState = createRootCompiledRuntimeState(config);
+rootTypedCompiledRuntimeState
+  .getServices()
+  ?.users.findById('1')
+  .name.toUpperCase();
+const rootCompiledRuntimeState: RootCompiledRuntimeState<Services> =
+  rootTypedCompiledRuntimeState;
+rootCompiledRuntimeState.resolveServices().then((services) => {
+  services.users.findById('1').name.toUpperCase();
+});
 const serviceTypedCompiledRuntimeState: CompiledRuntimeState<Services> =
   typedCompiledRuntimeState;
 serviceTypedCompiledRuntimeState.getServices()?.users.findById('1');
@@ -1771,6 +1788,10 @@ const _serviceTypedCompiledDispatch: CompiledDispatch<Services> = async (
   services.users.findById('1').name.toUpperCase();
   return manifestRouteEnvelope;
 };
+const _rootServiceTypedCompiledUnaryDispatch: RootCompiledFixedUnaryDispatch<Services> =
+  _serviceTypedCompiledUnaryDispatch;
+const _rootServiceTypedCompiledDispatch: RootCompiledDispatch<Services> =
+  _serviceTypedCompiledDispatch;
 createCompiledRpcTransportBodyResultHandler(
   _serviceTypedCompiledDispatch,
   config,
@@ -1784,14 +1805,40 @@ createCompiledRpcHandler(
   config,
   _serviceTypedCompiledUnaryDispatch
 );
+createRootCompiledRpcTransportBodyResultHandler(
+  _rootServiceTypedCompiledDispatch,
+  config,
+  _rootServiceTypedCompiledUnaryDispatch,
+  false,
+  true,
+  rootCompiledRuntimeState
+);
+createRootCompiledRpcHandler(
+  _rootServiceTypedCompiledDispatch,
+  config,
+  _rootServiceTypedCompiledUnaryDispatch
+);
 // @ts-expect-error service-dependent compiled dispatches require matching config services.
 createCompiledRpcHandler(_serviceTypedCompiledDispatch);
+// @ts-expect-error root compiled dispatches require matching config services.
+createRootCompiledRpcHandler(_rootServiceTypedCompiledDispatch);
 // @ts-expect-error service-dependent compiled transports require matching config services.
 createCompiledRpcTransportBodyResultHandler(_serviceTypedCompiledDispatch, {});
+createRootCompiledRpcTransportBodyResultHandler(
+  // @ts-expect-error root compiled transports require matching config services.
+  _rootServiceTypedCompiledDispatch,
+  {}
+);
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
   _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+createRootDenoCompiledTransportRequestHandlerWithPath(
+  rootCompiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _rootServiceTypedCompiledUnaryDispatch,
   '/rpc'
 );
 createDenoCompiledTransportRequestHandlerWithPath(
