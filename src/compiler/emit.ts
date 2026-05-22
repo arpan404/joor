@@ -2127,6 +2127,9 @@ ${clientBody}
   };
 };
 
+export type GeneratedClient = ReturnType<typeof createClient>;
+export type Client = GeneratedClient;
+
 export const client = createClient();
 `
   );

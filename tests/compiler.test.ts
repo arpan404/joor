@@ -204,6 +204,8 @@ describe('compiler', () => {
       expect(clientSource).toContain("from 'joor/manifest'");
       expect(clientSource).toContain('export type UnaryRouteFunction');
       expect(clientSource).toContain('export type StreamRouteFunction');
+      expect(clientSource).toContain('export type GeneratedClient');
+      expect(clientSource).toContain('export type Client');
       expect(clientSource).toContain('export type RouteHasHeaders');
       expect(clientSource).toContain('export type RouteRequiresHeaders');
       expect(clientSource).toContain('export type RouteHasResponseHeaders');
@@ -377,10 +379,13 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
+const generatedClient: GeneratedClient = defaultClient;
+const generatedClientAlias: Client = generatedClient;
+generatedClientAlias.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
 const options: GeneratedClientOptions = { headers: { authorization: 'token' } };
 createClient(options).users.watch({ userId: '1' });
