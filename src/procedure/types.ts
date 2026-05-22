@@ -13,6 +13,10 @@ export type ErrorCode<TErrors extends ErrorSchemas> = Extract<
   string
 >;
 
+export type ErrorDetails<TErrors extends ErrorSchemas> = {
+  [TCode in ErrorCode<TErrors>]: InferSchema<TErrors[TCode]> & JsonValue;
+};
+
 export interface ProcedureTypes<
   TInput,
   TOutput,

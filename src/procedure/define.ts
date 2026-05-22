@@ -5,6 +5,7 @@ import type { InferSchema, Schema } from '../schema/types.js';
 import type { ProcedureResult } from './result.js';
 import type {
   ErrorCode,
+  ErrorDetails,
   ErrorSchemas,
   MaybePromise,
   Procedure,
@@ -43,7 +44,8 @@ export interface UnaryProcedureConfig<
       TResponseHeaders extends Schema
         ? InferSchema<TResponseHeaders> & object
         : Record<string, never>,
-      TAuth
+      TAuth,
+      ErrorDetails<TErrors>
     >,
     input: InferSchema<TInput>
   ): MaybePromise<
@@ -82,7 +84,8 @@ export interface StreamProcedureConfig<
       TResponseHeaders extends Schema
         ? InferSchema<TResponseHeaders> & object
         : Record<string, never>,
-      TAuth
+      TAuth,
+      ErrorDetails<TErrors>
     >,
     input: InferSchema<TInput>
   ): AsyncIterable<InferSchema<TStream> & JsonValue>;

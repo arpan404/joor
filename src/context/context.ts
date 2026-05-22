@@ -10,6 +10,7 @@ export interface JoorContext<
   THeaders extends object = Record<string, never>,
   TResponseHeaders extends object = Record<string, never>,
   TAuth extends object = Record<string, never>,
+  TErrors extends Record<string, JsonValue> = Record<string, JsonValue>,
 > {
   request: Request;
   traceId: string;
@@ -22,10 +23,10 @@ export interface JoorContext<
     data: TData,
     headers?: TResponseHeaders
   ): ProcedureSuccess<TData>;
-  error<TCode extends string, TDetails extends JsonValue>(
+  error<TCode extends Extract<keyof TErrors, string>>(
     code: TCode,
-    details: TDetails
-  ): ProcedureFailure<TCode>;
+    details: TErrors[TCode]
+  ): ProcedureFailure<TCode, TErrors[TCode]>;
 }
 
 export interface ContextRequestSource {
@@ -75,7 +76,10 @@ class RuntimeJoorContext<
   THeaders extends object,
   TResponseHeaders extends object,
   TAuth extends object,
-> implements JoorContext<TServices, THeaders, TResponseHeaders, TAuth> {
+  TErrors extends Record<string, JsonValue>,
+> implements
+    JoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors>
+{
   readonly traceId: string;
   readonly signal: AbortSignal;
   readonly headers: THeaders;
@@ -113,10 +117,10 @@ class RuntimeJoorContext<
       : { kind: 'success', data, headers: headers as JsonObject };
   }
 
-  error<TCode extends string, TDetails extends JsonValue>(
+  error<TCode extends Extract<keyof TErrors, string>>(
     code: TCode,
-    details: TDetails
-  ): ProcedureFailure<TCode> {
+    details: TErrors[TCode]
+  ): ProcedureFailure<TCode, TErrors[TCode]> {
     return {
       kind: 'error',
       error: { code, details, status: errorStatus(code), message: code },
@@ -129,14 +133,21 @@ export const createRuntimeContext = <
   THeaders extends object,
   TResponseHeaders extends object,
   TAuth extends object,
+  TErrors extends Record<string, JsonValue> = Record<string, JsonValue>,
 >(
   request: ContextRequestSource,
   traceId: string,
   services: TServices,
   headers: THeaders,
   auth: TAuth
-): JoorContext<TServices, THeaders, TResponseHeaders, TAuth> =>
-  new RuntimeJoorContext<TServices, THeaders, TResponseHeaders, TAuth>(
+): JoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors> =>
+  new RuntimeJoorContext<
+    TServices,
+    THeaders,
+    TResponseHeaders,
+    TAuth,
+    TErrors
+  >(
     request,
     traceId,
     services,

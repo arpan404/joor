@@ -52,6 +52,10 @@ const procedure = defineProcedure.withContext<Services>()({
   async handler(ctx, input) {
     ctx.headers['x-tenant-id'].toUpperCase();
     ctx.headers.authorization?.toUpperCase();
+    // @ts-expect-error ctx.error details must match the declared error schema.
+    ctx.error('NOT_FOUND', { missing: 'message' });
+    // @ts-expect-error ctx.error code must be declared by the procedure.
+    ctx.error('UNDECLARED', { message: 'Nope' });
     const user = ctx.services.users.findById(input.id);
     return ctx.ok(user, { 'cache-control': 'private' });
   },
@@ -360,6 +364,8 @@ defineProcedure({
     ctx.services.users.findById(input.id);
     // @ts-expect-error no typed headers are available unless declared.
     ctx.headers.authorization.toUpperCase();
+    // @ts-expect-error ctx.error is unavailable without declared errors.
+    ctx.error('UNDECLARED', { message: 'Nope' });
     return ctx.ok({ id: input.id });
   },
 });

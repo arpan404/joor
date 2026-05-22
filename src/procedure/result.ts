@@ -6,19 +6,26 @@ export interface ProcedureSuccess<TData extends JsonValue> {
   headers?: JsonObject;
 }
 
-export interface ProcedureFailure<TCode extends string> {
+export interface ProcedureFailure<
+  TCode extends string,
+  TDetails extends JsonValue = JsonValue,
+> {
   kind: 'error';
   error: {
     code: TCode;
     message: string;
     status: number;
-    details?: JsonValue;
+    details?: TDetails;
   };
 }
 
-export type ProcedureResult<TData extends JsonValue, TCode extends string> =
+export type ProcedureResult<
+  TData extends JsonValue,
+  TCode extends string,
+  TDetails extends JsonValue = JsonValue,
+> =
   | ProcedureSuccess<TData>
-  | ProcedureFailure<TCode>;
+  | ProcedureFailure<TCode, TDetails>;
 
 export const ok = <TData extends JsonValue>(
   data: TData,
@@ -29,12 +36,12 @@ export const ok = <TData extends JsonValue>(
   ...(headers === undefined ? {} : { headers }),
 });
 
-export const failure = <TCode extends string>(
+export const failure = <TCode extends string, TDetails extends JsonValue>(
   code: TCode,
-  details: JsonValue,
+  details: TDetails,
   status = 400,
   message = code
-): ProcedureFailure<TCode> => ({
+): ProcedureFailure<TCode, TDetails> => ({
   kind: 'error',
   error: { code, details, status, message },
 });
