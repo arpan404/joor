@@ -103,10 +103,12 @@ import {
   type ProcedureError,
   type ProcedureErrorCode,
   type ProcedureFailure,
+  type ProcedureHasHeaders,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type ProcedureRequiresHeaders,
   type ProcedureServices,
   type RpcEnvelope,
   type RpcBatchRequest,
@@ -481,6 +483,10 @@ const authenticatedHeaderProcedure = defineProcedure.withContext<Services>()({
   },
 });
 authenticatedHeaderProcedure.auth?.name.toUpperCase();
+const authenticatedHeaderProcedureRequiresHeaders: ProcedureRequiresHeaders<
+  typeof authenticatedHeaderProcedure
+> = true;
+authenticatedHeaderProcedureRequiresHeaders.valueOf();
 
 defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
@@ -546,6 +552,19 @@ const procedureServices: ProcedureServices<typeof procedure> = {
   },
 };
 procedureServices.users.findById('1').name.toUpperCase();
+const procedureHasHeaders: ProcedureHasHeaders<typeof procedure> = true;
+procedureHasHeaders.valueOf();
+const procedureRequiresHeaders: ProcedureRequiresHeaders<typeof procedure> =
+  true;
+procedureRequiresHeaders.valueOf();
+const authenticatedProcedureHasHeaders: ProcedureHasHeaders<
+  typeof authenticatedProcedure
+> = false;
+authenticatedProcedureHasHeaders.valueOf();
+const authenticatedProcedureRequiresHeaders: ProcedureRequiresHeaders<
+  typeof authenticatedProcedure
+> = false;
+authenticatedProcedureRequiresHeaders.valueOf();
 const executeCompiledProcedureServices: Parameters<
   typeof executeCompiledProcedure<typeof procedure>
 >[4] = procedureServices;

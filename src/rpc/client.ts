@@ -4,6 +4,7 @@ import type {
   ProcedureInput,
   ProcedureOutput,
   ProcedureHeaders,
+  ProcedureRequiresHeaders,
   ProcedureResponseHeaders,
   ProcedureError,
   ProcedureErrorCode,
@@ -200,12 +201,12 @@ type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
 
 type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
   ? { headers?: object }
-  : Record<string, never> extends ProcedureHeaders<TProcedure>
+  : ProcedureRequiresHeaders<TProcedure> extends false
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
 type ClientRequestOptionsTuple<TProcedure> =
-  Record<string, never> extends ProcedureHeaders<TProcedure>
+  ProcedureRequiresHeaders<TProcedure> extends false
     ? [ClientRequestOptions<TProcedure>?]
     : [ClientRequestOptions<TProcedure>];
 
@@ -251,7 +252,7 @@ export type RpcRouteBatchResults<
 };
 
 export type ClientRequestOptions<TProcedure> =
-  Record<string, never> extends ProcedureHeaders<TProcedure>
+  ProcedureRequiresHeaders<TProcedure> extends false
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
@@ -417,10 +418,7 @@ export function createClient(
   const call = async <TProcedure, TId extends string = string>(
     id: TId,
     input: ProcedureInput<TProcedure>,
-    ...requestOptions: Record<
-      string,
-      never
-    > extends ProcedureHeaders<TProcedure>
+    ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
   ): Promise<
@@ -449,10 +447,7 @@ export function createClient(
   const request = <TProcedure, TId extends string = string>(
     id: TId,
     input: ProcedureInput<TProcedure>,
-    ...requestOptions: Record<
-      string,
-      never
-    > extends ProcedureHeaders<TProcedure>
+    ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
   ): PendingRpcRequest<TProcedure, TId> &
@@ -492,10 +487,7 @@ export function createClient(
   const stream = <TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>,
-    ...requestOptions: Record<
-      string,
-      never
-    > extends ProcedureHeaders<TProcedure>
+    ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
   ): AsyncIterable<StreamEvent<TProcedure> & JsonValue> => ({

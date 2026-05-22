@@ -18,6 +18,7 @@ import type {
   ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
+  ProcedureRequiresHeaders,
   ProcedureRuntime,
   ProcedureResponseHeaders,
   ProcedureRuntimeValue,
@@ -245,9 +246,7 @@ type RpcManifestRoutePendingRequest<
 > = {
   id: TId;
   input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]>;
-} & (Record<string, never> extends ProcedureHeaders<
-  RpcManifestRoutes<TManifest>[TId]
->
+} & (ProcedureRequiresHeaders<RpcManifestRoutes<TManifest>[TId]> extends false
   ? { headers?: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> }
   : { headers: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> });
 

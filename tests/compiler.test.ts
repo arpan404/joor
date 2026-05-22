@@ -198,6 +198,8 @@ describe('compiler', () => {
       expect(clientSource).toContain("from 'joor/manifest'");
       expect(clientSource).toContain('export type UnaryRouteFunction');
       expect(clientSource).toContain('export type StreamRouteFunction');
+      expect(clientSource).toContain('export type RouteHasHeaders');
+      expect(clientSource).toContain('export type RouteRequiresHeaders');
       expect(clientSource).toContain('"get": unaryRoute("users.get")');
       expect(clientSource).toContain('"watch": streamRoute("users.watch")');
       expect(clientSource).toContain(
@@ -363,7 +365,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteHasHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -405,6 +407,14 @@ const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
 const tenantHeaders: RouteHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
 tenantHeaders['x-tenant-id'].toUpperCase();
+const usersGetHasHeaders: RouteHasHeaders<'users.get'> = true;
+usersGetHasHeaders.valueOf();
+const usersGetRequiresHeaders: RouteRequiresHeaders<'users.get'> = false;
+usersGetRequiresHeaders.valueOf();
+const tenantsCurrentHasHeaders: RouteHasHeaders<'tenants.current'> = true;
+tenantsCurrentHasHeaders.valueOf();
+const tenantsCurrentRequiresHeaders: RouteRequiresHeaders<'tenants.current'> = true;
+tenantsCurrentRequiresHeaders.valueOf();
 client.tenants.current({ ok: true }, { headers: tenantHeaders }).then((result) => {
   const exact: RouteResult<'tenants.current'> = result;
   exact.id.toUpperCase();

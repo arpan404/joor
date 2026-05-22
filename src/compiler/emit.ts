@@ -2036,7 +2036,16 @@ export type RouteBodyResultFor<TBody extends RouteBody> = JoorManifestRouteBodyR
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;
-export type ClientArgs<TId extends RouteId> = Record<string, never> extends RouteHeaders<TId>
+export type RouteHasHeaders<TId extends RouteId> = [RouteHeaders<TId>] extends [Record<string, never>] ? false : true;
+type RequiredHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
+}[keyof THeaders];
+export type RouteRequiresHeaders<TId extends RouteId> = RouteHasHeaders<TId> extends false
+  ? false
+  : [RequiredHeaderKeys<RouteHeaders<TId>>] extends [never]
+    ? false
+    : true;
+export type ClientArgs<TId extends RouteId> = RouteRequiresHeaders<TId> extends false
   ? [input: RouteInput<TId>, options?: ClientRequestOptions<RouteProcedure<TId>>]
   : [input: RouteInput<TId>, options: ClientRequestOptions<RouteProcedure<TId>>];
 export type UnaryRouteFunction<TId extends UnaryRouteId> = {
