@@ -3,7 +3,7 @@ export { createPlugin } from './context/plugin.js';
 export { defineConfig } from './config.js';
 export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
-export { createClient } from './rpc/client.js';
+export { createClient, createManifestClient } from './rpc/client.js';
 export {
   createBunFetch,
   createBunRpcRequestHandler,

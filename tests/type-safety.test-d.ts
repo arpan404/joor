@@ -17,6 +17,7 @@ import {
   createNodeTransportRequestHandler,
   createVercelFetch,
   createClient as createRootClient,
+  createManifestClient as createRootManifestClient,
   t,
   type BunServeOptions,
   type CloudflareWorker,
@@ -80,7 +81,7 @@ import {
   type RpcUnaryRouteId,
   type JsonValue,
 } from '../src/index.js';
-import { createClient } from '../src/rpc/client.js';
+import { createClient, createManifestClient } from '../src/rpc/client.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -242,11 +243,33 @@ inferredManifestClient.call('users.missing', { id: '1' });
 // @ts-expect-error manifest-inferred clients reject stream routes in call.
 inferredManifestClient.call('users.watch', { userId: '1' });
 
+const explicitManifestClient = createManifestClient(manifest, { url: '/rpc' });
+explicitManifestClient.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+explicitManifestClient.stream('users.watch', { userId: '1' });
+
+// @ts-expect-error explicit manifest clients reject unknown route ids.
+explicitManifestClient.call('users.missing', { id: '1' });
+
+// @ts-expect-error explicit manifest clients reject stream routes in call.
+explicitManifestClient.call('users.watch', { userId: '1' });
+
 const rootManifestClient = createRootClient({ url: '/rpc', manifest });
 rootManifestClient.call('users.authenticated', { ok: true });
 
 // @ts-expect-error root manifest clients keep route id safety.
 rootManifestClient.stream('users.get', { id: '1' });
+
+const rootExplicitManifestClient = createRootManifestClient(manifest, {
+  url: '/rpc',
+});
+rootExplicitManifestClient.call('users.authenticated', { ok: true });
+
+// @ts-expect-error root explicit manifest clients keep route id safety.
+rootExplicitManifestClient.stream('users.get', { id: '1' });
 
 const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
 manifestRouteId.toUpperCase();

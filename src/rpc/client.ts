@@ -453,3 +453,9 @@ export function createClient(
     stream,
   };
 }
+
+export const createManifestClient = <const TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: Omit<ClientOptions<TManifest>, 'manifest'>
+): RpcTransportClient<JoorManifestRoutes<TManifest>> =>
+  createClient({ ...options, manifest });
