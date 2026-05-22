@@ -66,7 +66,11 @@ type StringResponseHeaders<THeaders extends object> = {
   > extends string
     ? THeaders[TKey]
     : never;
-};
+} & (string extends keyof THeaders
+  ? Exclude<THeaders[string], undefined> extends string
+    ? Record<string, Exclude<THeaders[string], undefined>>
+    : Record<string, never>
+  : object);
 
 type RpcSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,

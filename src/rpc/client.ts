@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue } from '../schema/json.js';
+import type { JsonValue } from '../schema/json.js';
 import type { JoorManifest, JoorManifestRoutes } from '../manifest.js';
 import type {
   ProcedureInput,
@@ -20,6 +20,7 @@ import type {
   RpcError,
   RpcFrameworkErrorCode,
   RpcRequest,
+  RpcResponseHeaderValues,
 } from './protocol.js';
 
 export interface ClientOptions<
@@ -305,7 +306,7 @@ type BatchResultData<TProcedure> = [TProcedure] extends [never]
   : ProcedureOutput<TProcedure> & JsonValue;
 
 type BatchResultHeaders<TProcedure> = [TProcedure] extends [never]
-  ? JsonObject
+  ? RpcResponseHeaderValues
   : ProcedureResponseHeaders<TProcedure>;
 
 type BatchResultError<TProcedure> = [TProcedure] extends [never]
@@ -321,7 +322,7 @@ type BatchResultFor<TRequest> =
         BatchResultError<TProcedure>
       >
     : TRequest extends { id: infer TId extends string }
-      ? RpcEnvelope<JsonValue, TId, JsonObject, RpcError>
+      ? RpcEnvelope<JsonValue, TId, RpcResponseHeaderValues, RpcError>
       : never;
 
 export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {

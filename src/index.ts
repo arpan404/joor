@@ -97,6 +97,7 @@ export type {
   JoorRouteMap,
 } from './manifest.js';
 export type {
+  BatchResults,
   ClientOptions,
   ClientHeaderValues,
   ClientRequestOptions,

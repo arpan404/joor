@@ -39,6 +39,7 @@ import {
   toJsonSchema,
   validate,
   type ArrayChain,
+  type BatchResults,
   type BunServeOptionsFor,
   type BunServeOptions,
   type AuthPolicyAuth,
@@ -223,6 +224,7 @@ import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
+  type BatchResults as RpcSubpathBatchResults,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
@@ -1453,8 +1455,44 @@ legacyClient
         : false;
       const untypedLegacyBatchDataIsNever: UntypedLegacyBatchDataIsNever = false;
       untypedLegacyBatchDataIsNever.valueOf();
+      first.headers?.['cache-control']?.toUpperCase();
     }
   });
+const untypedLegacyBatchResults: BatchResults<
+  readonly [typeof legacyUntypedRequest]
+> = [
+  {
+    ok: true,
+    id: 'users.untyped',
+    traceId: 'trace-1',
+    data: { id: '1' },
+    headers: { 'cache-control': 'private' },
+  },
+];
+if (untypedLegacyBatchResults[0].ok) {
+  untypedLegacyBatchResults[0].headers?.['cache-control']?.toUpperCase();
+}
+const subpathUntypedLegacyBatchResults: RpcSubpathBatchResults<
+  readonly [typeof legacyUntypedRequest]
+> = untypedLegacyBatchResults;
+if (subpathUntypedLegacyBatchResults[0].ok) {
+  subpathUntypedLegacyBatchResults[0].headers?.['cache-control']?.toUpperCase();
+}
+const _wrongUntypedLegacyBatchResults: BatchResults<
+  readonly [typeof legacyUntypedRequest]
+> = [
+  {
+    ok: true,
+    id: 'users.untyped',
+    traceId: 'trace-1',
+    data: { id: '1' },
+    headers: {
+      // @ts-expect-error legacy batch result headers must be HTTP string values.
+      'x-retry-count': 1,
+    },
+  },
+];
+_wrongUntypedLegacyBatchResults[0].id.toUpperCase();
 legacyClient.batch([
   {
     id: 'users.untyped',
