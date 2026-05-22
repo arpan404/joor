@@ -95,6 +95,13 @@ import {
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
 } from '../src/runtime/deno-transport.js';
+import {
+  createDenoCompiledTransportRequestHandlerWithPath,
+} from '../src/runtime/deno-compiled-transport.js';
+import type {
+  CompiledFixedUnaryDispatch,
+  CompiledRuntimeState,
+} from '../src/runtime/compiled.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -511,6 +518,35 @@ createStandaloneDenoTransportRequestHandlerWithPath(
   standaloneDenoTransportHandler,
   '/rpc'
 );
+const compiledRuntimeState: CompiledRuntimeState = {
+  path: '/rpc',
+  runtime: {
+    validateInput: true,
+    validateHeaders: true,
+    validateOutput: true,
+    validateResponseHeaders: true,
+    enforceRateLimit: true,
+    cacheMaxEntries: 100,
+    maxBodyBytes: 1_000,
+    rateLimit: { trustProxy: false, maxEntries: 100 },
+  },
+  services: {},
+  getServices() {
+    return {};
+  },
+  async resolveServices() {
+    return {};
+  },
+};
+const compiledUnaryDispatch: CompiledFixedUnaryDispatch = async () => undefined;
+const standaloneDenoCompiledHandler =
+  createDenoCompiledTransportRequestHandlerWithPath(
+    compiledRuntimeState,
+    standaloneDenoTransportHandler,
+    compiledUnaryDispatch,
+    '/rpc'
+  );
+standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(manifest);
 nextHandlers.POST(new Request('https://example.com/rpc'));
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(manifest);

@@ -48,6 +48,10 @@
       "types": "./dist/runtime/deno-transport.d.ts",
       "import": "./dist/runtime/deno-transport.js"
     },
+    "./runtime/deno-compiled-transport": {
+      "types": "./dist/runtime/deno-compiled-transport.d.ts",
+      "import": "./dist/runtime/deno-compiled-transport.js"
+    },
     "./runtime/cloudflare": {
       "types": "./dist/runtime/cloudflare.d.ts",
       "import": "./dist/runtime/cloudflare.js"
