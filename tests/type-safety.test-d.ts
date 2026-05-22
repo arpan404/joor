@@ -4,13 +4,28 @@ import {
   defineConfig,
   defineManifest,
   defineProcedure,
+  createBunFetch,
+  createCloudflareWorker,
+  createJoorHandler,
+  createNetlifyFetch,
+  createNextRouteHandlers,
+  createNodeRpcRequestHandler,
+  createNodeTransportRequestHandler,
+  createVercelFetch,
   t,
+  type BunServeOptions,
+  type CloudflareWorker,
+  type HandlerOptions,
   type JoorConfigContext,
   type JoorManifestRoutes,
+  type ListenOptions,
+  type NextRouteHandlers,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type RpcBodyResult,
+  type RpcManifest,
   type RpcRouteError,
   type RpcRouteEnvelope,
   type RpcRouteRequest,
@@ -172,6 +187,35 @@ manifestRouteClient.call('users.missing', { id: '1' });
 
 // @ts-expect-error manifests only accept procedure runtimes.
 defineManifest({ procedures: { broken: { input: t.string() } } });
+
+const publicManifest: RpcManifest = manifest;
+publicManifest.procedures['users.get'];
+const handlerOptions: HandlerOptions = { path: '/rpc' };
+const fetchHandler = createJoorHandler(manifest, handlerOptions);
+fetchHandler(new Request('https://example.com/rpc'));
+const bunFetch = createBunFetch(manifest, handlerOptions);
+bunFetch(new Request('https://example.com/rpc'));
+const nextHandlers: NextRouteHandlers = createNextRouteHandlers(manifest);
+nextHandlers.POST(new Request('https://example.com/rpc'));
+const cloudflareWorker: CloudflareWorker = createCloudflareWorker(manifest);
+cloudflareWorker.fetch(new Request('https://example.com/rpc'));
+const netlifyFetch = createNetlifyFetch(manifest);
+netlifyFetch(new Request('https://example.com/rpc'));
+const vercelFetch = createVercelFetch(manifest);
+vercelFetch(new Request('https://example.com/rpc'));
+const _nodeHandler = createNodeRpcRequestHandler(manifest);
+_nodeHandler;
+const transportResult: RpcBodyResult = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: {},
+};
+createNodeTransportRequestHandler(async () => transportResult);
+const bunOptions: BunServeOptions = { port: 3000 };
+bunOptions.port?.toFixed();
+const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
+listenOptions.hostname?.toUpperCase();
 
 const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
   'cache-control': 'private',
