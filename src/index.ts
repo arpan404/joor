@@ -60,6 +60,8 @@ export type {
   RpcRouteRequestUnion,
   RpcRouteResponseHeaders,
   RpcRouteStreamEvent,
+  RpcRouteStreamProtocolRequest,
+  RpcRouteStreamProtocolRequestUnion,
   RpcRouteUnaryProtocolRequest,
   RpcRouteUnaryProtocolRequestUnion,
   RpcStreamProcedure,

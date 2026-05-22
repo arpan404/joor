@@ -127,6 +127,11 @@ export type RpcRouteUnaryProtocolRequest<
   TId extends RpcUnaryRouteId<TRoutes>,
 > = RpcRouteProtocolRequest<TRoutes, TId>;
 
+export type RpcRouteStreamProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteProtocolRequest<TRoutes, TId>;
+
 export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcRouteId<TRoutes>]: RpcRouteProtocolRequest<TRoutes, TId>;
 }[RpcRouteId<TRoutes>];
@@ -134,6 +139,13 @@ export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
 export type RpcRouteUnaryProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 }[RpcUnaryRouteId<TRoutes>];
+
+export type RpcRouteStreamProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
+  [TId in RpcStreamRouteId<TRoutes>]: RpcRouteStreamProtocolRequest<
+    TRoutes,
+    TId
+  >;
+}[RpcStreamRouteId<TRoutes>];
 
 export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,

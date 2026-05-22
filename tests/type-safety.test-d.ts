@@ -49,6 +49,8 @@ import {
   type RpcRouteBatchRequest,
   type RpcRouteProtocolRequest,
   type RpcRouteProtocolRequestUnion,
+  type RpcRouteStreamProtocolRequest,
+  type RpcRouteStreamProtocolRequestUnion,
   type RpcRouteUnaryProtocolRequest,
   type RpcRouteUnaryProtocolRequestUnion,
   type RpcSuccess,
@@ -355,6 +357,14 @@ streamProtocolRequest.input.userId.toUpperCase();
 const routeProtocolRequestUnion: RpcRouteProtocolRequestUnion<Routes> =
   streamProtocolRequest;
 routeProtocolRequestUnion.id.toUpperCase();
+const streamOnlyProtocolRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = streamProtocolRequest;
+streamOnlyProtocolRequest.input.userId.toUpperCase();
+const streamProtocolRequestUnion: RpcRouteStreamProtocolRequestUnion<Routes> =
+  streamOnlyProtocolRequest;
+streamProtocolRequestUnion.input.userId.toUpperCase();
 const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<
   Routes,
   'users.get'
@@ -381,6 +391,12 @@ const _wrongUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<
   // @ts-expect-error unary protocol requests reject stream route ids.
   'users.watch'
 > = streamProtocolRequest;
+
+const _wrongStreamProtocolRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  // @ts-expect-error stream protocol requests reject unary route ids.
+  'users.get'
+> = routeProtocolRequest;
 
 const _wrongRouteBatchRequest: RpcRouteBatchRequest<
   Routes,
