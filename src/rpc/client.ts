@@ -32,6 +32,8 @@ export interface ClientOptions<
   maxStreamEventBytes?: number;
 }
 
+export type ClientHeaderValues = Record<string, string | undefined>;
+
 export type RpcRouteMap = Record<string, ProcedureRuntime>;
 
 export type RpcRouteId<TRoutes extends RpcRouteMap> = Extract<
@@ -235,7 +237,7 @@ type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
   : ProcedureInput<TProcedure>;
 
 type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
-  ? { headers?: object }
+  ? { headers?: ClientHeaderValues }
   : ProcedureRequiresHeaders<TProcedure> extends false
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
@@ -286,8 +288,9 @@ export type RpcRouteBatchResults<
   >;
 };
 
-export type ClientRequestOptions<TProcedure> =
-  ProcedureRequiresHeaders<TProcedure> extends false
+export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
+  ? { headers?: ClientHeaderValues }
+  : ProcedureRequiresHeaders<TProcedure> extends false
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 

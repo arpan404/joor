@@ -98,6 +98,7 @@ export type {
 } from './manifest.js';
 export type {
   ClientOptions,
+  ClientHeaderValues,
   ClientRequestOptions,
   PendingRpcRequest,
   RpcRouteBatchRequest,

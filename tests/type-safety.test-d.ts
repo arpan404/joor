@@ -48,6 +48,7 @@ import {
   type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
+  type ClientHeaderValues,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
@@ -1333,6 +1334,24 @@ const rootLegacyRequest = rootLegacyClient.request<
 >('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
 const rootLegacyRequestId: 'users.get' = rootLegacyRequest.id;
 rootLegacyRequestId.toUpperCase();
+const legacyClientHeaderValues: ClientHeaderValues = {
+  authorization: 'Bearer token',
+  'x-optional': undefined,
+};
+legacyClientHeaderValues['authorization']?.toUpperCase();
+const legacyUntypedRequest: PendingRpcRequest = {
+  id: 'users.untyped',
+  input: { id: '1' },
+  headers: legacyClientHeaderValues,
+};
+legacyUntypedRequest.headers?.['authorization']?.toUpperCase();
+const _wrongLegacyUntypedRequest: PendingRpcRequest = {
+  id: 'users.untyped',
+  input: { id: '1' },
+  // @ts-expect-error legacy pending request headers must be HTTP string values.
+  headers: { authorization: 1 },
+};
+_wrongLegacyUntypedRequest.id.toUpperCase();
 legacyClient
   .batch([{ id: 'users.untyped', input: { id: '1' } }] as const)
   .then((results) => {
@@ -1347,6 +1366,21 @@ legacyClient
       untypedLegacyBatchDataIsNever.valueOf();
     }
   });
+legacyClient.batch([
+  {
+    id: 'users.untyped',
+    input: { id: '1' },
+    headers: { authorization: 'Bearer token' },
+  },
+] as const);
+legacyClient.batch([
+  {
+    id: 'users.untyped',
+    input: { id: '1' },
+    // @ts-expect-error legacy client batches reject non-string headers.
+    headers: { authorization: 1 },
+  },
+] as const);
 
 const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
 manifestRouteId.toUpperCase();

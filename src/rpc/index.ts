@@ -11,6 +11,7 @@ export { createSseResponse, encodeSse } from './stream.js';
 
 export type {
   BatchResults,
+  ClientHeaderValues,
   ClientOptions,
   ClientRequestOptions,
   LegacyRpcTransportClient,
