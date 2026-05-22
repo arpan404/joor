@@ -194,15 +194,25 @@ export type RpcManifestRouteBatchRequest<
     readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = TRequests;
 
+type RpcManifestRouteBatchResultFor<
+  TManifest extends RpcManifest,
+  TRequest,
+> = TRequest extends {
+  id: infer TId extends RpcManifestUnaryRouteId<TManifest>;
+}
+  ? TRequest extends RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
+    ? RpcManifestRouteEnvelope<TManifest, TId>
+    : never
+  : never;
+
 export type RpcManifestRouteBatchResults<
   TManifest extends RpcManifest,
   TRequests extends readonly unknown[],
 > = {
-  [TIndex in keyof TRequests]: TRequests[TIndex] extends {
-    id: infer TId extends RpcManifestUnaryRouteId<TManifest>;
-  }
-    ? RpcManifestRouteEnvelope<TManifest, TId>
-    : never;
+  [TIndex in keyof TRequests]: RpcManifestRouteBatchResultFor<
+    TManifest,
+    TRequests[TIndex]
+  >;
 };
 
 export type RpcManifestRouteStreamProtocolRequestUnion<

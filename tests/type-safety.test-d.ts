@@ -1076,6 +1076,31 @@ const _wrongManifestBatchRequest: JoorManifestRouteBatchRequest<
   [typeof manifestStreamProtocolRequest]
 > = [manifestStreamProtocolRequest];
 
+type InvalidManifestUnaryProtocolRequest = {
+  id: 'users.get';
+  input: { ok: true };
+};
+const _wrongManifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  readonly [InvalidManifestUnaryProtocolRequest]
+> = [
+  // @ts-expect-error manifest batch result inference validates request input by route id.
+  manifestRouteEnvelope,
+];
+const _wrongManifestRouteBatchResults: JoorManifestRouteBatchResults<
+  typeof manifest,
+  readonly [
+    {
+      id: 'users.get';
+      input: { ok: true };
+      headers: { 'x-tenant-id': 'tenant-1' };
+    },
+  ]
+> = [
+  // @ts-expect-error manifest route batch results validate pending request input by route id.
+  manifestRouteEnvelope,
+];
+
 // @ts-expect-error manifests only accept procedure runtimes.
 defineManifest({ procedures: { broken: { input: t.string() } } });
 
@@ -1144,6 +1169,13 @@ const publicManifestBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
   typeof publicManifestProtocolRequest
 > = publicManifestEnvelopeUnion;
+const _wrongPublicManifestBatchBodyResultFor: RpcManifestBodyResultFor<
+  typeof manifest,
+  readonly [InvalidManifestUnaryProtocolRequest]
+> = [
+  // @ts-expect-error public manifest batch result inference validates request input by route id.
+  publicManifestEnvelopeUnion,
+];
 publicManifestBody.id.toUpperCase();
 publicManifestBatchBody[0]?.input.id.toUpperCase();
 publicManifestBatchBodyUnion.length.toFixed();

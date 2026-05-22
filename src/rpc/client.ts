@@ -208,15 +208,27 @@ export type RpcRouteRequestUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteRequest<TRoutes, TId>;
 }[RpcUnaryRouteId<TRoutes>];
 
+type RpcRouteBatchResultFor<
+  TRoutes extends RpcRouteMap,
+  TRequest,
+> = TRequest extends {
+  id: infer TId extends RpcUnaryRouteId<TRoutes>;
+}
+  ? TRequest extends
+      | RpcRouteRequest<TRoutes, TId>
+      | RpcRouteUnaryProtocolRequest<TRoutes, TId>
+    ? RpcRouteEnvelope<TRoutes, TId>
+    : never
+  : never;
+
 export type RpcRouteBatchResults<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly unknown[],
 > = {
-  [TIndex in keyof TRequests]: TRequests[TIndex] extends {
-    id: infer TId extends RpcUnaryRouteId<TRoutes>;
-  }
-    ? RpcRouteEnvelope<TRoutes, TId>
-    : never;
+  [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
+    TRoutes,
+    TRequests[TIndex]
+  >;
 };
 
 export type ClientRequestOptions<TProcedure> =
