@@ -36,7 +36,14 @@ export {
 export { createVercelFetch } from './runtime/vercel.js';
 export { t } from './schema/builder.js';
 
-export type { AuthPolicy } from './auth/policy.js';
+export type {
+  AuthPolicy,
+  AuthPolicyAuth,
+  AuthPolicyHeaders,
+  AuthPolicyServices,
+  DefineContextAuthPolicy,
+  DefineAuthPolicy,
+} from './auth/policy.js';
 export type { JoorContext } from './context/context.js';
 export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';

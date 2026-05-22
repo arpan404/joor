@@ -8,7 +8,14 @@ export {
 } from './context.js';
 export { createPlugin } from './plugin.js';
 
-export type { AuthPolicy } from '../auth/policy.js';
+export type {
+  AuthPolicy,
+  AuthPolicyAuth,
+  AuthPolicyHeaders,
+  AuthPolicyServices,
+  DefineContextAuthPolicy,
+  DefineAuthPolicy,
+} from '../auth/policy.js';
 export type { JoorConfig, JoorConfigContext } from '../config.js';
 export type { ContextRequestSource, JoorContext } from './context.js';
 export type { JoorPlugin, PluginServices } from './plugin.js';

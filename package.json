@@ -28,6 +28,10 @@
       "types": "./dist/rpc/client.d.ts",
       "import": "./dist/rpc/client.js"
     },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
     "./rpc": {
       "types": "./dist/rpc/index.d.ts",
       "import": "./dist/rpc/index.js"

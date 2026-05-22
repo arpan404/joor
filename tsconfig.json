@@ -38,6 +38,7 @@
     "paths": {
       "joor": ["./src/index.ts"],
       "joor/client": ["./src/rpc/client.ts"],
+      "joor/auth": ["./src/auth/index.ts"],
       "joor/rpc": ["./src/rpc/index.ts"],
       "joor/manifest": ["./src/manifest.ts"],
       "joor/procedure": ["./src/procedure/index.ts"],

@@ -26,6 +26,9 @@ import {
   createRpcTransportBodyResultHandler,
   t,
   type BunServeOptions,
+  type AuthPolicyAuth,
+  type AuthPolicyHeaders,
+  type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
   type CloudflareWorker,
@@ -115,6 +118,12 @@ import {
   type RpcUnaryRouteId,
   type JsonValue,
 } from '../src/index.js';
+import {
+  createAuthPolicy as createAuthPolicySubpath,
+  type AuthPolicyAuth as AuthSubpathPolicyAuth,
+  type AuthPolicyHeaders as AuthSubpathPolicyHeaders,
+  type AuthPolicyServices as AuthSubpathPolicyServices,
+} from '../src/auth/index.js';
 import { createClient, createManifestClient } from '../src/rpc/client.js';
 import {
   createAuthPolicy as createContextSubpathAuthPolicy,
@@ -257,6 +266,44 @@ const authPolicy = createAuthPolicy<
     return { userId: '1' };
   },
 });
+type AuthPolicyServicesFromRoot = AuthPolicyServices<typeof authPolicy>;
+const authPolicyServicesFromRoot: AuthPolicyServicesFromRoot = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+  },
+};
+authPolicyServicesFromRoot.users.findById('1').name.toUpperCase();
+const _authPolicyHeadersFromRoot: AuthPolicyHeaders<typeof authPolicy> = {};
+_authPolicyHeadersFromRoot;
+const authPolicyAuthFromRoot: AuthPolicyAuth<typeof authPolicy> = {
+  userId: '1',
+};
+authPolicyAuthFromRoot.userId.toUpperCase();
+const authSubpathPolicy = createAuthPolicySubpath.withContext<Services>()<
+  { authorization: string },
+  { userId: string; tenantId: string }
+>({
+  name: 'session-headers',
+  authenticate(ctx) {
+    ctx.services.users.findById('1');
+    ctx.headers.authorization.toUpperCase();
+    return { userId: '1', tenantId: 'tenant-1' };
+  },
+});
+const authSubpathServices: AuthSubpathPolicyServices<typeof authSubpathPolicy> =
+  authPolicyServicesFromRoot;
+authSubpathServices.users.findById('1');
+const authSubpathHeaders: AuthSubpathPolicyHeaders<typeof authSubpathPolicy> = {
+  authorization: 'Bearer token',
+};
+authSubpathHeaders.authorization.toUpperCase();
+const authSubpathAuth: AuthSubpathPolicyAuth<typeof authSubpathPolicy> = {
+  userId: '1',
+  tenantId: 'tenant-1',
+};
+authSubpathAuth.tenantId.toUpperCase();
 
 const authenticatedProcedure = defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
@@ -265,6 +312,27 @@ const authenticatedProcedure = defineProcedure.withContext<Services>()({
   async handler(ctx) {
     ctx.auth.userId.toUpperCase();
     return ctx.ok({ userId: ctx.auth.userId });
+  },
+});
+const authenticatedHeaderProcedure = defineProcedure.withContext<Services>()({
+  input: t.object({ ok: t.boolean() }),
+  headers: t.object({ authorization: t.string() }),
+  output: t.object({ tenantId: t.string() }),
+  auth: authSubpathPolicy,
+  handler(ctx) {
+    ctx.auth.tenantId.toUpperCase();
+    return ctx.ok({ tenantId: ctx.auth.tenantId });
+  },
+});
+authenticatedHeaderProcedure.auth?.name.toUpperCase();
+
+defineProcedure.withContext<Services>()({
+  input: t.object({ ok: t.boolean() }),
+  output: t.object({ tenantId: t.string() }),
+  // @ts-expect-error auth policies with required headers require matching procedure headers.
+  auth: authSubpathPolicy,
+  handler() {
+    return { tenantId: 'tenant-1' };
   },
 });
 
