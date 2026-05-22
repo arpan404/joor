@@ -70,16 +70,28 @@ describe('compiler', () => {
       ).resolves.toContain('type NativeBody');
       await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
+      ).resolves.toContain('type NativeTransportResult');
+      await expect(
+        readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.not.toContain('Parameters<typeof nativeTransport>');
+      await expect(
+        readFile(join(outDir, 'node.ts'), 'utf8')
+      ).resolves.not.toContain('ReturnType<typeof nativeTransport>');
       await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
         'readJsonBody'
       );
       await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
         'type NativeBody'
       );
+      await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
+        'type NativeTransportResult'
+      );
       await expect(
         readFile(join(outDir, 'bun.ts'), 'utf8')
       ).resolves.not.toContain('Parameters<typeof nativeTransport>');
+      await expect(
+        readFile(join(outDir, 'bun.ts'), 'utf8')
+      ).resolves.not.toContain('ReturnType<typeof nativeTransport>');
       await expect(
         readFile(join(outDir, 'deno.ts'), 'utf8')
       ).resolves.toContain("from './deno-dispatcher.ts'");

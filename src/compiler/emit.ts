@@ -930,7 +930,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeTransportResult } from '${dispatcherImport}';
 ${nodeFastImports}
 
 interface JsonObject {
@@ -952,8 +952,6 @@ interface RequestSource {
   toHeaders(): Headers;
   toRequest(): Request;
 }
-
-type NativeTransportResult = Awaited<ReturnType<typeof nativeTransport>>;
 
 const configuredPath = ${configuredPath};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
@@ -1497,7 +1495,7 @@ export const listen = (options: NodeListenOptions = {}): NodeNativeServer => {
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeTransportResult } from '${dispatcherImport}';
 ${bunFastImports}
 
 interface JsonObject {
@@ -1509,8 +1507,6 @@ interface SerializedJsonEnvelope {
   headers?: Record<string, string>;
   responseHeaders?: Record<string, string>;
 }
-
-type NativeTransportResult = Awaited<ReturnType<typeof nativeTransport>>;
 
 const configuredPath = ${configuredPath};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
