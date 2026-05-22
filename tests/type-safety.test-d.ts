@@ -108,6 +108,7 @@ import {
   type JoorManifestRouteBatchRequest,
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteClientArgs,
+  type JoorManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope,
   type JoorManifestRouteError,
   type JoorManifestRouteErrorCode,
@@ -224,6 +225,7 @@ import {
   type RpcSuccess,
   type RpcStreamProcedure,
   type RpcRouteClientArgs,
+  type RpcRouteClientHeaders,
   type RpcRouteRequestOptions,
   type RpcStreamRouteId,
   type RpcUnaryProcedure,
@@ -297,6 +299,7 @@ import {
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
   type RpcRouteClientArgs as RpcSubpathRouteClientArgs,
+  type RpcRouteClientHeaders as RpcSubpathRouteClientHeaders,
   type RpcRouteErrorCode as RpcSubpathRouteErrorCode,
   type RpcRouteErrorDetails as RpcSubpathRouteErrorDetails,
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
@@ -311,6 +314,7 @@ import {
   type JoorManifestRouteBody as JoorSubpathManifestRouteBody,
   type JoorManifestRouteBodyResultFor as JoorSubpathManifestRouteBodyResultFor,
   type JoorManifestRouteClientArgs as JoorSubpathManifestRouteClientArgs,
+  type JoorManifestRouteClientHeaders as JoorSubpathManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
@@ -1831,6 +1835,16 @@ const manifestRouteHeaders: JoorManifestRouteHeaders<
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
 manifestRouteHeaders['x-tenant-id'].toUpperCase();
+const manifestRouteClientHeaders: JoorManifestRouteClientHeaders<
+  typeof manifest,
+  'users.get'
+> = { authorization: undefined, 'x-tenant-id': 'tenant-1' };
+manifestRouteClientHeaders['x-tenant-id'].toUpperCase();
+const manifestSubpathRouteClientHeaders: JoorSubpathManifestRouteClientHeaders<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestRouteClientHeaders;
+manifestSubpathRouteClientHeaders['x-tenant-id'].toUpperCase();
 const manifestRouteHasHeaders: JoorManifestRouteHasHeaders<
   typeof manifest,
   'users.get'
@@ -3436,6 +3450,16 @@ const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
 };
+const routeClientHeaders: RpcRouteClientHeaders<Routes, 'users.get'> = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-1',
+};
+const rpcSubpathRouteClientHeaders: RpcSubpathRouteClientHeaders<
+  Routes,
+  'users.get'
+> = routeClientHeaders;
+routeClientHeaders['x-tenant-id'].toUpperCase();
+rpcSubpathRouteClientHeaders['x-tenant-id'].toUpperCase();
 const rpcSubpathRouteRequestOptions: RpcSubpathRouteRequestOptions<
   Routes,
   'users.get'

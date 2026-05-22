@@ -37,6 +37,7 @@ export type {
   RpcRouteHasResponseHeaders,
   RpcRouteHeaders,
   RpcRouteClientArgs,
+  RpcRouteClientHeaders,
   RpcRouteId,
   RpcRouteInput,
   RpcRouteMap,

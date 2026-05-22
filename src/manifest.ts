@@ -17,6 +17,7 @@ import type {
   RpcManifestClientOptions,
   RpcManifestTransportClient,
   RpcRouteClientArgs,
+  RpcRouteClientHeaders,
   RpcRouteEnvelope,
   RpcRouteError,
   RpcRouteErrorCode,
@@ -114,6 +115,11 @@ export type JoorManifestRouteHeaders<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteHeaders<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteClientHeaders<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = RpcRouteClientHeaders<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestRouteHasHeaders<
   TManifest,

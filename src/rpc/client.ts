@@ -64,6 +64,11 @@ export type RpcRouteHeaders<
   TId extends RpcRouteId<TRoutes>,
 > = ProcedureHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcRouteClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ClientProcedureHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
 export type RpcRouteHasHeaders<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
