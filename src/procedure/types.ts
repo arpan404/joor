@@ -6,7 +6,10 @@ import type {
   InferSchema,
   Schema,
 } from '../schema/types.js';
-import type { ProcedureResult } from './result.js';
+import type {
+  ProcedureResponseHeaderValues,
+  ProcedureResult,
+} from './result.js';
 
 export type MaybePromise<TValue> = TValue | Promise<TValue>;
 
@@ -330,24 +333,43 @@ export type RpcError<
   ? { details?: TDetails }
   : { details: TDetails });
 
-type RequiredResponseHeaderKeys<THeaders extends object> = {
-  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
+type KnownResponseHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]: string extends TKey
+    ? never
+    : number extends TKey
+      ? never
+      : symbol extends TKey
+        ? never
+        : TKey;
 }[keyof THeaders];
 
-type RpcEnvelopeSuccessHeaders<THeaders extends JsonObject> = [
-  THeaders,
-] extends [Record<string, never>]
-  ? { headers?: THeaders }
-  : JsonObject extends THeaders
-    ? { headers?: THeaders }
-    : [RequiredResponseHeaderKeys<THeaders>] extends [never]
-      ? { headers?: THeaders }
-      : { headers: THeaders };
+type RequiredResponseHeaderKeys<THeaders extends object> = {
+  [TKey in KnownResponseHeaderKeys<THeaders>]-?: undefined extends THeaders[TKey]
+    ? never
+    : TKey;
+}[KnownResponseHeaderKeys<THeaders>];
+
+type StringResponseHeaders<THeaders extends object> = {
+  [TKey in KnownResponseHeaderKeys<THeaders>]: Exclude<
+    THeaders[TKey],
+    undefined
+  > extends string
+    ? THeaders[TKey]
+    : never;
+};
+
+type RpcEnvelopeSuccessHeaders<THeaders extends object> = [THeaders] extends [
+  Record<string, never>,
+]
+  ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
+  : [RequiredResponseHeaderKeys<THeaders>] extends [never]
+    ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
+    : { headers: StringResponseHeaders<THeaders> & JsonObject };
 
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-  THeaders extends JsonObject = JsonObject,
+  THeaders extends object = ProcedureResponseHeaderValues,
   TError extends RpcError = RpcError,
 > =
   | ({

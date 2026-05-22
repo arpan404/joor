@@ -675,6 +675,33 @@ const procedureEnvelope: RpcEnvelope<
 };
 const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
 procedureEnvelopeId.toUpperCase();
+const procedureEnvelopeWithHeaders: RpcEnvelope<
+  { id: string; name: string },
+  'users.get',
+  { 'cache-control': string }
+> = {
+  ok: true,
+  id: 'users.get',
+  data: validOutput,
+  headers: { 'cache-control': 'private' },
+  traceId: 'trace-1',
+};
+procedureEnvelopeWithHeaders.headers['cache-control'].toUpperCase();
+const _wrongProcedureEnvelopeHeaders: RpcEnvelope<
+  { id: string; name: string },
+  'users.get',
+  { 'x-retry-count': number }
+> = {
+  ok: true,
+  id: 'users.get',
+  data: validOutput,
+  headers: {
+    // @ts-expect-error procedure envelopes require HTTP string response headers.
+    'x-retry-count': 1,
+  },
+  traceId: 'trace-1',
+};
+_wrongProcedureEnvelopeHeaders.id.toUpperCase();
 // @ts-expect-error procedure envelopes preserve route id literals.
 const _wrongProcedureEnvelopeId: 'users.authenticated' = procedureEnvelope.id;
 const procedureErrorCode: ProcedureErrorCode<typeof procedure> = 'NOT_FOUND';
@@ -774,6 +801,18 @@ const subpathProcedureEnvelope: SubpathProcedureRpcEnvelope<
 };
 const subpathProcedureEnvelopeId: 'users.get' = subpathProcedureEnvelope.id;
 subpathProcedureEnvelopeId.toUpperCase();
+const subpathProcedureEnvelopeWithHeaders: SubpathProcedureRpcEnvelope<
+  { id: string; name: string },
+  'users.get',
+  { 'cache-control': string }
+> = {
+  ok: true,
+  id: 'users.get',
+  data: { id: '1', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
+  traceId: 'trace-1',
+};
+subpathProcedureEnvelopeWithHeaders.headers['cache-control'].toUpperCase();
 const subpathProcedureFailure = procedureFailureSubpath(
   'NOT_FOUND',
   subpathProcedureErrorDetails
