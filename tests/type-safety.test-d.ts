@@ -62,6 +62,7 @@ import {
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
+  type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
@@ -361,6 +362,7 @@ import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcRequestHandler,
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
@@ -378,6 +380,7 @@ import {
   type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
   type BunTransportRequestHandler as RuntimeSubpathBunTransportRequestHandler,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
+  type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
   type DenoFetchHandler as RuntimeSubpathDenoFetchHandler,
@@ -2843,11 +2846,15 @@ createCompiledRpcTransportBodyResultHandler(
   true,
   typedCompiledRuntimeState
 );
-createCompiledRpcHandler(
+const compiledRpcHandler: CompiledRpcRequestHandler = createCompiledRpcHandler(
   _serviceTypedCompiledDispatch,
   config,
   _serviceTypedCompiledUnaryDispatch
 );
+const runtimeSubpathCompiledRpcHandler: RuntimeSubpathCompiledRpcRequestHandler =
+  compiledRpcHandler;
+compiledRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathCompiledRpcHandler(new Request('https://example.com/rpc'));
 createCompiledRpcTransportBodyResultHandler(
   _serviceTypedCompiledDispatch,
   manifestAwareConfig,
@@ -2866,9 +2873,16 @@ createRootCompiledRpcTransportBodyResultHandler(
   true,
   rootCompiledRuntimeState
 );
+const rootCompiledRpcHandler: RootCompiledRpcRequestHandler =
+  createRootCompiledRpcHandler(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+rootCompiledRpcHandler(new Request('https://example.com/rpc'));
 createRootCompiledRpcHandler(
   _rootServiceTypedCompiledDispatch,
-  config,
+  manifestAwareConfig,
   _rootServiceTypedCompiledUnaryDispatch
 );
 // @ts-expect-error service-dependent compiled dispatches require matching config services.

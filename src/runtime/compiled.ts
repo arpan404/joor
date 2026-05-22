@@ -51,6 +51,7 @@ import {
   normalizeMaxBodyBytes,
   readJsonRequestBodyWithLimit,
 } from './body.js';
+import type { JoorFetchHandler } from './fetch.js';
 import {
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
@@ -100,6 +101,8 @@ export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledRpcRequestHandler = JoorFetchHandler;
+
 export type CompiledRpcTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
@@ -958,7 +961,7 @@ export const createCompiledRpcHandler = <
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
-): ((request: Request) => Promise<Response>) => {
+): CompiledRpcRequestHandler => {
   const handlerConfig = (config ?? {}) as TConfig;
   const bodyLimit = normalizeMaxBodyBytes(
     handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES

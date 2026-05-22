@@ -255,6 +255,7 @@ export type {
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandler,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcRequestHandler,
   CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRuntime,
