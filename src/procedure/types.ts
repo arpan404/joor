@@ -176,9 +176,11 @@ export type ProcedureHasHeaders<TProcedure> = [
   ? false
   : true;
 
-type RequiredHeaderKeys<THeaders extends object> = {
-  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
-}[keyof THeaders];
+type RequiredHeaderKeys<THeaders extends object> = keyof {
+  [TKey in keyof THeaders as Record<never, never> extends Pick<THeaders, TKey>
+    ? never
+    : TKey]: true;
+};
 
 export type ProcedureRequiresHeaders<TProcedure> = [
   ProcedureHeaders<TProcedure>,
@@ -343,11 +345,14 @@ type KnownResponseHeaderKeys<THeaders extends object> = {
         : TKey;
 }[keyof THeaders];
 
-type RequiredResponseHeaderKeys<THeaders extends object> = {
-  [TKey in KnownResponseHeaderKeys<THeaders>]-?: undefined extends THeaders[TKey]
+type RequiredResponseHeaderKeys<THeaders extends object> = keyof {
+  [TKey in KnownResponseHeaderKeys<THeaders> as Record<
+    never,
+    never
+  > extends Pick<THeaders, TKey>
     ? never
-    : TKey;
-}[KnownResponseHeaderKeys<THeaders>];
+    : TKey]: true;
+};
 
 type StringResponseHeaders<THeaders extends object> = {
   [TKey in KnownResponseHeaderKeys<THeaders>]: Exclude<

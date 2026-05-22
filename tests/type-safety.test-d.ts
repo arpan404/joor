@@ -784,6 +784,32 @@ const procedureResponseHeaderValues: ProcedureResponseHeaderValues = {
 };
 procedureResponseHeaderValues['cache-control']?.toUpperCase();
 procedureOkSubpath({ id: '1', name: 'Ada' }, procedureResponseHeaderValues);
+const requiredProcedureSuccess: ProcedureSuccess<
+  { id: string; name: string },
+  { 'cache-control': string }
+> = {
+  kind: 'success',
+  data: { id: '1', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
+};
+requiredProcedureSuccess.headers['cache-control'].toUpperCase();
+// @ts-expect-error procedure successes require declared response headers.
+const _missingProcedureSuccessHeaders: ProcedureSuccess<
+  { id: string; name: string },
+  { 'cache-control': string }
+> = {
+  kind: 'success',
+  data: { id: '1', name: 'Ada' },
+};
+_missingProcedureSuccessHeaders.data.name.toUpperCase();
+const optionalProcedureSuccess: ProcedureSuccess<
+  { id: string },
+  { etag?: string }
+> = {
+  kind: 'success',
+  data: { id: '1' },
+};
+optionalProcedureSuccess.headers?.etag?.toUpperCase();
 procedureOkSubpath(
   { id: '1', name: 'Ada' },
   // @ts-expect-error manual success headers must be HTTP string values.

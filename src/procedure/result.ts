@@ -3,13 +3,42 @@ import type { JsonValue } from '../schema/json.js';
 export type ProcedureResponseHeaderValues = Record<string, string>;
 
 type StringResponseHeaders<THeaders extends object> = {
-  [TKey in keyof THeaders]: Exclude<THeaders[TKey], undefined> extends string
+  [TKey in KnownResponseHeaderKeys<THeaders>]: Exclude<
+    THeaders[TKey],
+    undefined
+  > extends string
     ? THeaders[TKey]
     : never;
+} & (string extends keyof THeaders
+  ? Exclude<THeaders[string], undefined> extends string
+    ? Record<string, Exclude<THeaders[string], undefined>>
+    : Record<string, never>
+  : object);
+
+type KnownResponseHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]: string extends TKey
+    ? never
+    : number extends TKey
+      ? never
+      : symbol extends TKey
+        ? never
+        : TKey;
+}[keyof THeaders];
+
+type RequiredResponseHeaderKeys<THeaders extends object> = keyof {
+  [TKey in KnownResponseHeaderKeys<THeaders> as Record<
+    never,
+    never
+  > extends Pick<THeaders, TKey>
+    ? never
+    : TKey]: true;
 };
 
-type ProcedureSuccessHeaders<THeaders extends object> =
-  Record<string, never> extends THeaders
+type ProcedureSuccessHeaders<THeaders extends object> = [THeaders] extends [
+  Record<string, never>,
+]
+  ? { headers?: StringResponseHeaders<THeaders> }
+  : [RequiredResponseHeaderKeys<THeaders>] extends [never]
     ? { headers?: StringResponseHeaders<THeaders> }
     : { headers: StringResponseHeaders<THeaders> };
 

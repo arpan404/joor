@@ -53,11 +53,14 @@ type KnownHeaderKeys<THeaders extends object> = {
         : TKey;
 }[keyof THeaders];
 
-type RequiredKnownHeaderKeys<THeaders extends object> = {
-  [TKey in KnownHeaderKeys<THeaders>]-?: undefined extends THeaders[TKey]
+type RequiredKnownHeaderKeys<THeaders extends object> = keyof {
+  [TKey in KnownHeaderKeys<THeaders> as Record<never, never> extends Pick<
+    THeaders,
+    TKey
+  >
     ? never
-    : TKey;
-}[KnownHeaderKeys<THeaders>];
+    : TKey]: true;
+};
 
 type StringResponseHeaders<THeaders extends object> = {
   [TKey in KnownHeaderKeys<THeaders>]: Exclude<
