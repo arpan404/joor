@@ -1208,6 +1208,17 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   headers: { 'cache-control': 'private' },
 };
 manifestRouteEnvelope.id.toUpperCase();
+// @ts-expect-error success envelopes require declared response headers.
+const _missingManifestRouteEnvelopeHeaders: JoorManifestRouteEnvelope<
+  typeof manifest,
+  'users.get'
+> = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '1', name: 'Ada' },
+};
+_missingManifestRouteEnvelopeHeaders;
 const authenticatedRouteEnvelope: JoorManifestRouteEnvelope<
   typeof manifest,
   'users.authenticated'
@@ -2345,6 +2356,14 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   traceId: 'trace-1',
 };
 routeEnvelope.id.toUpperCase();
+// @ts-expect-error route success envelopes require declared response headers.
+const _missingRouteEnvelopeHeaders: RpcRouteEnvelope<Routes, 'users.get'> = {
+  ok: true,
+  id: 'users.get',
+  data: { id: '1', name: 'Ada' },
+  traceId: 'trace-1',
+};
+_missingRouteEnvelopeHeaders;
 const routeEnvelopeUnion: RpcRouteEnvelopeUnion<Routes> = routeEnvelope;
 const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
 const routeBodyResultFor: RpcRouteBodyResultFor<

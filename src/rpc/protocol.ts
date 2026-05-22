@@ -42,17 +42,30 @@ export type RpcBatchRequest<
   TRequests extends readonly RpcRequest[] = readonly RpcRequest[],
 > = TRequests;
 
-export interface RpcSuccess<
+type RequiredHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
+}[keyof THeaders];
+
+type RpcSuccessHeaders<THeaders extends JsonObject> = [THeaders] extends [
+  Record<string, never>,
+]
+  ? { headers?: THeaders }
+  : JsonObject extends THeaders
+    ? { headers?: THeaders }
+    : [RequiredHeaderKeys<THeaders>] extends [never]
+      ? { headers?: THeaders }
+      : { headers: THeaders };
+
+export type RpcSuccess<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
   THeaders extends JsonObject = JsonObject,
-> extends JsonObject {
+> = JsonObject & {
   ok: true;
   id: TId;
   data: TData;
-  headers?: THeaders;
   traceId: string;
-}
+} & RpcSuccessHeaders<THeaders>;
 
 export interface RpcFailure<
   TId extends string = string,

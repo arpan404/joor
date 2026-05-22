@@ -291,19 +291,32 @@ export type RpcError<
   ? { details?: TDetails }
   : { details: TDetails });
 
+type RequiredResponseHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
+}[keyof THeaders];
+
+type RpcEnvelopeSuccessHeaders<THeaders extends JsonObject> = [
+  THeaders,
+] extends [Record<string, never>]
+  ? { headers?: THeaders }
+  : JsonObject extends THeaders
+    ? { headers?: THeaders }
+    : [RequiredResponseHeaderKeys<THeaders>] extends [never]
+      ? { headers?: THeaders }
+      : { headers: THeaders };
+
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
   THeaders extends JsonObject = JsonObject,
   TError extends RpcError = RpcError,
 > =
-  | {
+  | ({
       ok: true;
       id: TId;
       data: TData;
-      headers?: THeaders;
       traceId: string;
-    }
+    } & RpcEnvelopeSuccessHeaders<THeaders>)
   | {
       ok: false;
       id: TId;
