@@ -2149,6 +2149,45 @@ defineProcedure.withContext<Services>()({
 defineProcedure({
   input: t.object({ id: t.string() }),
   output: t.object({ id: t.string() }),
+  errors: {
+    NOT_FOUND: t.object({ message: t.string() }),
+  },
+  // @ts-expect-error manual procedure error results must include declared details.
+  handler() {
+    return {
+      kind: 'error' as const,
+      error: {
+        code: 'NOT_FOUND' as const,
+        message: 'Not found',
+        status: 404,
+      },
+    };
+  },
+});
+
+defineProcedure({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
+  errors: {
+    NOT_FOUND: t.object({ message: t.string() }),
+  },
+  // @ts-expect-error manual procedure error result details must match the declared schema.
+  handler() {
+    return {
+      kind: 'error' as const,
+      error: {
+        code: 'NOT_FOUND' as const,
+        message: 'Not found',
+        status: 404,
+        details: { missing: 'message' },
+      },
+    };
+  },
+});
+
+defineProcedure({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
   async handler(ctx, input) {
     input.id.toUpperCase();
     // @ts-expect-error no plugin context is available without withContext().

@@ -2,7 +2,11 @@ import type { JoorContext } from '../context/context.js';
 import type { AuthPolicy } from '../auth/policy.js';
 import type { JsonValue } from '../schema/json.js';
 import type { InferSchema, Schema } from '../schema/types.js';
-import type { ProcedureResult } from './result.js';
+import type {
+  ProcedureFailure,
+  ProcedureResult,
+  ProcedureSuccess,
+} from './result.js';
 import type {
   ErrorCode,
   ErrorDetails,
@@ -13,6 +17,18 @@ import type {
   ProcedureRuntime,
   ProcedureRuntimeValue,
 } from './types.js';
+
+type ProcedureConfigResult<
+  TOutput extends JsonValue,
+  TErrors extends ErrorSchemas,
+> =
+  | ProcedureSuccess<TOutput>
+  | {
+      [TCode in ErrorCode<TErrors>]: ProcedureFailure<
+        TCode,
+        ErrorDetails<TErrors>[TCode]
+      >;
+    }[ErrorCode<TErrors>];
 
 export interface UnaryProcedureConfig<
   TInput extends Schema,
@@ -50,7 +66,7 @@ export interface UnaryProcedureConfig<
     >,
     input: InferSchema<TInput>
   ): MaybePromise<
-    | ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
+    | ProcedureConfigResult<InferSchema<TOutput> & JsonValue, TErrors>
     | (InferSchema<TOutput> & JsonValue)
   >;
 }
@@ -68,7 +84,7 @@ export interface ContextlessUnaryProcedureConfig<
   handler(
     input: InferSchema<TInput>
   ): MaybePromise<
-    | ProcedureResult<InferSchema<TOutput> & JsonValue, ErrorCode<TErrors>>
+    | ProcedureConfigResult<InferSchema<TOutput> & JsonValue, TErrors>
     | (InferSchema<TOutput> & JsonValue)
   >;
 }
