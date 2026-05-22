@@ -1923,7 +1923,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
+import type { JoorManifestRouteBatchResults, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -1937,6 +1937,9 @@ export type RouteHeaders<TId extends RouteId> = JoorManifestRouteHeaders<Manifes
 export type RouteResponseHeaders<TId extends UnaryRouteId> = JoorManifestRouteResponseHeaders<Manifest, TId>;
 export type RouteError<TId extends RouteId> = JoorManifestRouteError<Manifest, TId>;
 export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Manifest, TId>;
+export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
+export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[]> = TRequests;
+export type RouteBatchResults<TRequests extends readonly unknown[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;

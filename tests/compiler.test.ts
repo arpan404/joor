@@ -133,6 +133,12 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteRequestUnion');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteBatchResults');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('JoorManifestRouteEnvelope<Manifest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -256,7 +262,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type RouteResult } from './client.js';
+        `import { client, createClient, type RouteBatchResults, type RouteRequestUnion, type RouteResult } from './client.js';
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;
@@ -273,6 +279,8 @@ const request = client.users.get.request({
 });
 const requestId: 'users.get' = request.id;
 requestId.toUpperCase();
+const requestUnion: RouteRequestUnion = request;
+requestUnion.id.toUpperCase();
 
 const configured = createClient({ url: '/rpc' });
 configured['admin-user']['get-profile']({ id: '1' }).then((result) => {
@@ -280,6 +288,12 @@ configured['admin-user']['get-profile']({ id: '1' }).then((result) => {
 });
 configured.posts.list({ userId: '1' }).then((result) => {
   if (result.ok) result.data[0]?.title.toUpperCase();
+});
+configured.batch([request] as const).then((results) => {
+  const exact: RouteBatchResults<readonly [typeof request]> = results;
+  const firstId: 'users.get' = exact[0].id;
+  firstId.toUpperCase();
+  if (exact[0].ok) exact[0].data.name.toUpperCase();
 });
 
 async function consumeStream() {
