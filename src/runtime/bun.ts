@@ -25,7 +25,7 @@ import {
   normalizeMaxBodyBytes,
   readJsonRequestBodyWithLimit,
 } from './body.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 import {
   jsonContentHeaders,
   transportResultToResponse,
@@ -56,6 +56,10 @@ export type BunServeOptionsFor<
 > = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type BunFetchHandler = JoorFetchHandler;
+export type BunRpcRequestHandler = JoorFetchHandler;
+export type BunTransportRequestHandler = JoorFetchHandler;
+
 export type BunTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends BunTransportBodyResult = BunTransportBodyResult,
@@ -95,11 +99,11 @@ export function createBunFetch<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): (request: Request) => Promise<Response>;
+): BunFetchHandler;
 export function createBunFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): (request: Request) => Promise<Response> {
+): BunFetchHandler {
   return createJoorHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>
@@ -113,7 +117,7 @@ export const createBunTransportRequestHandler = <
   handler: BunTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
-): ((request: Request) => Promise<Response>) => {
+): BunTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const requestPreflight =
     preflight === false
@@ -140,11 +144,11 @@ export function createBunRpcRequestHandler<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): (request: Request) => Promise<Response>;
+): BunRpcRequestHandler;
 export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): (request: Request) => Promise<Response> {
+): BunRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>,

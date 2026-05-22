@@ -5,10 +5,12 @@ import type {
   HandlerOptionsFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+
+export type CloudflareFetchHandler = JoorFetchHandler;
 
 export interface CloudflareWorker {
-  fetch(request: Request): Promise<Response>;
+  fetch: CloudflareFetchHandler;
 }
 
 export function createCloudflareWorker<

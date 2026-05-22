@@ -5,12 +5,14 @@ import type {
   HandlerOptionsFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+
+export type NextRouteHandler = JoorFetchHandler;
 
 export interface NextRouteHandlers {
-  GET(request: Request): Promise<Response>;
-  POST(request: Request): Promise<Response>;
-  OPTIONS(request: Request): Promise<Response>;
+  GET: NextRouteHandler;
+  POST: NextRouteHandler;
+  OPTIONS: NextRouteHandler;
 }
 
 export function createNextRouteHandlers<

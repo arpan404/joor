@@ -5,7 +5,9 @@ import type {
   HandlerOptionsFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+
+export type NetlifyFetchHandler = JoorFetchHandler;
 
 export function createNetlifyFetch<
   TManifest extends JoorManifest,
@@ -13,11 +15,11 @@ export function createNetlifyFetch<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): (request: Request) => Promise<Response>;
+): NetlifyFetchHandler;
 export function createNetlifyFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): (request: Request) => Promise<Response> {
+): NetlifyFetchHandler {
   return createJoorHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>

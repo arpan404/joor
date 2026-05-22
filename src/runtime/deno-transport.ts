@@ -25,6 +25,7 @@ import {
   normalizeMaxBodyBytes,
   readJsonRequestBodyWithLimit,
 } from './body.js';
+import type { JoorFetchHandler } from './fetch.js';
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
 import type { SerializedJsonEnvelope } from './response.js';
 
@@ -50,6 +51,8 @@ export type DenoServeOptionsFor<
 > = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type DenoRpcRequestHandler = JoorFetchHandler;
+export type DenoTransportRequestHandler = JoorFetchHandler;
 
 export type DenoTransportBodyResultHandler<
   TBody = JsonValue,
@@ -138,7 +141,7 @@ export const createDenoTransportRequestHandler = <
   handler: DenoTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
-): ((request: Request) => Promise<Response>) => {
+): DenoTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const requestPreflight =
     preflight === false
@@ -166,7 +169,7 @@ export const createDenoTransportRequestHandlerWithPath = <
   handler: DenoTransportBodyResultHandler<TBody, TResult>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
-): ((request: Request) => Promise<Response>) => {
+): DenoTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   return async (request: Request): Promise<Response> => {
     const early = requestPathPreflight(request, path);
@@ -189,11 +192,11 @@ export function createDenoRpcRequestHandler<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): (request: Request) => Promise<Response>;
+): DenoRpcRequestHandler;
 export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): (request: Request) => Promise<Response> {
+): DenoRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>,

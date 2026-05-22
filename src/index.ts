@@ -234,14 +234,20 @@ export type {
   ProcedureSuccess,
 } from './procedure/result.js';
 export type {
+  BunFetchHandler,
+  BunRpcRequestHandler,
   BunServer,
   BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
   BunTransportBodyResultHandler,
   BunTransportBodyResultHandlerFor,
+  BunTransportRequestHandler,
 } from './runtime/bun.js';
-export type { CloudflareWorker } from './runtime/cloudflare.js';
+export type {
+  CloudflareFetchHandler,
+  CloudflareWorker,
+} from './runtime/cloudflare.js';
 export type {
   CompiledBodyResult,
   CompiledDispatch,
@@ -262,14 +268,19 @@ export type {
   DenoCompiledTransportRequestHandler,
 } from './runtime/deno-compiled-transport.js';
 export type {
+  DenoFetchHandler,
+  DenoRpcRequestHandler,
   DenoServer,
   DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
   DenoTransportBodyResultHandler,
   DenoTransportBodyResultHandlerFor,
+  DenoTransportRequestHandler,
 } from './runtime/deno.js';
-export type { NextRouteHandlers } from './runtime/next.js';
+export type { JoorFetchHandler } from './runtime/fetch.js';
+export type { NetlifyFetchHandler } from './runtime/netlify.js';
+export type { NextRouteHandler, NextRouteHandlers } from './runtime/next.js';
 export type {
   ListenOptionsFor,
   ListenOptions,
@@ -279,6 +290,7 @@ export type {
   NodeTransportBodyResultHandler,
   NodeTransportBodyResultHandlerFor,
 } from './runtime/node.js';
+export type { VercelFetchHandler } from './runtime/vercel.js';
 export type {
   ArrayChain,
   BooleanChain,

@@ -7,6 +7,7 @@ import {
   defineProcedure,
   resolvePluginServices,
   createBunFetch,
+  createBunRpcRequestHandler,
   createBunTransportRequestHandler,
   createCloudflareWorker,
   createDenoFetch,
@@ -41,6 +42,8 @@ import {
   validate,
   type ArrayChain,
   type BatchResults,
+  type BunFetchHandler,
+  type BunRpcRequestHandler,
   type BunServer,
   type BunServeOptionsFor,
   type BunServeOptions,
@@ -52,7 +55,9 @@ import {
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor,
+  type BunTransportRequestHandler,
   type ClientHeaderValues,
+  type CloudflareFetchHandler,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
@@ -62,12 +67,15 @@ import {
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
+  type DenoFetchHandler,
+  type DenoRpcRequestHandler,
   type DenoServeOptionsFor,
   type DenoServer,
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
   type DenoTransportBodyResultHandlerFor,
+  type DenoTransportRequestHandler,
   type DefineConfigFor,
   type HandlerHookContext,
   type HandlerHookContextFor,
@@ -88,6 +96,7 @@ import {
   type HeaderValueSchema,
   type JsonObject,
   type JsonPrimitive,
+  type JoorFetchHandler,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
   type JoorManifestRouteBodyResultFor,
@@ -126,6 +135,8 @@ import {
   type LegacyRpcTransportClient,
   type ListenOptionsFor,
   type ListenOptions,
+  type NetlifyFetchHandler,
+  type NextRouteHandler,
   type NextRouteHandlers,
   type NodeServer,
   type NodeTransportBodyResult,
@@ -216,6 +227,7 @@ import {
   type ValidationResult,
   type OpenApiSchema,
   type JsonValue,
+  type VercelFetchHandler,
 } from '../src/index.js';
 import {
   createAuthPolicy as createAuthPolicySubpath,
@@ -319,12 +331,14 @@ import {
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
   serveDeno as serveStandaloneDeno,
+  type DenoRpcRequestHandler as StandaloneDenoRpcRequestHandler,
   type DenoServer as StandaloneDenoServer,
   type DenoServeOptionsFor as StandaloneDenoServeOptionsFor,
   type DenoServeOptions as StandaloneDenoServeOptions,
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
   type DenoTransportBodyResultHandlerFor as StandaloneDenoTransportBodyResultHandlerFor,
+  type DenoTransportRequestHandler as StandaloneDenoTransportRequestHandler,
 } from '../src/runtime/deno-transport.js';
 import {
   createDenoCompiledTransportRequestHandlerWithPath,
@@ -358,15 +372,26 @@ import {
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
+  type BunFetchHandler as RuntimeSubpathBunFetchHandler,
+  type BunRpcRequestHandler as RuntimeSubpathBunRpcRequestHandler,
   type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
+  type BunTransportRequestHandler as RuntimeSubpathBunTransportRequestHandler,
+  type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
+  type DenoFetchHandler as RuntimeSubpathDenoFetchHandler,
+  type DenoRpcRequestHandler as RuntimeSubpathDenoRpcRequestHandler,
   type DenoTransportBodyResult as RuntimeSubpathDenoTransportBodyResult,
   type DenoTransportBodyResultHandlerFor as RuntimeSubpathDenoTransportBodyResultHandlerFor,
+  type DenoTransportRequestHandler as RuntimeSubpathDenoTransportRequestHandler,
+  type JoorFetchHandler as RuntimeSubpathJoorFetchHandler,
+  type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
+  type NextRouteHandler as RuntimeSubpathNextRouteHandler,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
+  type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
 } from '../src/runtime/index.js';
 
 const usersPlugin = createPlugin({
@@ -2427,7 +2452,11 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
 createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });
 
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
+const typedFetchHandler: JoorFetchHandler = fetchHandler;
+const runtimeSubpathTypedFetchHandler: RuntimeSubpathJoorFetchHandler =
+  typedFetchHandler;
 fetchHandler(new Request('https://example.com/rpc'));
+runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching fetch handler plugins.
 createJoorHandler(manifest);
 
@@ -2435,9 +2464,20 @@ createJoorHandler(manifest);
 createJoorHandler({ procedures: { broken: { input: t.string() } } });
 
 const bunFetch = createBunFetch(manifest, handlerOptions);
+const typedBunFetch: BunFetchHandler = bunFetch;
+const runtimeSubpathTypedBunFetch: RuntimeSubpathBunFetchHandler =
+  typedBunFetch;
 bunFetch(new Request('https://example.com/rpc'));
+runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
 createBunFetch(manifest);
+const bunRpcHandler: BunRpcRequestHandler = createBunRpcRequestHandler(
+  manifest,
+  handlerOptions
+);
+const runtimeSubpathBunRpcHandler: RuntimeSubpathBunRpcRequestHandler =
+  bunRpcHandler;
+runtimeSubpathBunRpcHandler(new Request('https://example.com/rpc'));
 const typedBunServeOptions: BunServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -2448,7 +2488,11 @@ bunServer.ref?.();
 // @ts-expect-error service-dependent manifests require matching Bun serve plugins.
 serveBun(manifest);
 const denoFetch = createDenoFetch(manifest, handlerOptions);
+const typedDenoFetch: DenoFetchHandler = denoFetch;
+const runtimeSubpathTypedDenoFetch: RuntimeSubpathDenoFetchHandler =
+  typedDenoFetch;
 denoFetch(new Request('https://example.com/rpc'));
+runtimeSubpathTypedDenoFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
 createDenoFetch(manifest);
 const typedDenoServeOptions: DenoServeOptionsFor<
@@ -2465,14 +2509,21 @@ serveDeno(manifest);
 createDenoFetch({ procedures: { broken: { input: t.string() } } });
 
 const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
+const typedDenoHandler: DenoRpcRequestHandler = denoHandler;
+const runtimeSubpathTypedDenoHandler: RuntimeSubpathDenoRpcRequestHandler =
+  typedDenoHandler;
 denoHandler(new Request('https://example.com/rpc'));
+runtimeSubpathTypedDenoHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno RPC adapter plugins.
 createDenoRpcRequestHandler(manifest);
 const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
   manifest,
   handlerOptions
 );
+const typedStandaloneDenoHandler: StandaloneDenoRpcRequestHandler =
+  standaloneDenoHandler;
 standaloneDenoHandler(new Request('https://example.com/rpc'));
+typedStandaloneDenoHandler(new Request('https://example.com/rpc'));
 const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -2500,8 +2551,17 @@ const denoTransportResult: DenoTransportBodyResult = {
 };
 const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
-createDenoTransportRequestHandler(denoTransportHandler);
-createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+const denoTransportRequestHandler: DenoTransportRequestHandler =
+  createDenoTransportRequestHandler(denoTransportHandler);
+const denoTransportRequestHandlerWithPath: DenoTransportRequestHandler =
+  createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+const runtimeSubpathDenoTransportRequestHandler: RuntimeSubpathDenoTransportRequestHandler =
+  denoTransportRequestHandler;
+denoTransportRequestHandler(new Request('https://example.com/rpc'));
+denoTransportRequestHandlerWithPath(new Request('https://example.com/rpc'));
+runtimeSubpathDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 const routeTypedDenoTransportHandler: DenoTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -2559,7 +2619,14 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   }
   return manifestRouteBodyResult;
 };
-createBunTransportRequestHandler(routeTypedBunTransportHandler);
+const bunTransportRequestHandler: BunTransportRequestHandler =
+  createBunTransportRequestHandler(routeTypedBunTransportHandler);
+const runtimeSubpathBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler =
+  bunTransportRequestHandler;
+bunTransportRequestHandler(new Request('https://example.com/rpc'));
+runtimeSubpathBunTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 const manifestBunTransportHandler: BunTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
@@ -2579,6 +2646,9 @@ const standaloneDenoTransportResult: StandaloneDenoTransportBodyResult =
   denoTransportResult;
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
+const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
+  createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
+standaloneDenoTransportRequestHandler(new Request('https://example.com/rpc'));
 createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 createStandaloneDenoTransportRequestHandlerWithPath(
   standaloneDenoTransportHandler,
@@ -2868,22 +2938,38 @@ const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
   manifest,
   handlerOptions
 );
+const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
+const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
+  nextRouteHandler;
 nextHandlers.POST(new Request('https://example.com/rpc'));
+runtimeSubpathNextRouteHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Next adapter plugins.
 createNextRouteHandlers(manifest);
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
   manifest,
   handlerOptions
 );
+const cloudflareFetch: CloudflareFetchHandler = cloudflareWorker.fetch;
+const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
+  cloudflareFetch;
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
+runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
 createCloudflareWorker(manifest);
 const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
+const typedNetlifyFetch: NetlifyFetchHandler = netlifyFetch;
+const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =
+  typedNetlifyFetch;
 netlifyFetch(new Request('https://example.com/rpc'));
+runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
 const vercelFetch = createVercelFetch(manifest, handlerOptions);
+const typedVercelFetch: VercelFetchHandler = vercelFetch;
+const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =
+  typedVercelFetch;
 vercelFetch(new Request('https://example.com/rpc'));
+runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
