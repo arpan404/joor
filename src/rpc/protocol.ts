@@ -24,8 +24,10 @@ export type RpcError<
   code: TCode;
   message: string;
   status: number;
-  details?: TDetails;
-} & JsonObject;
+} & (JsonValue extends TDetails
+  ? { details?: TDetails }
+  : { details: TDetails }) &
+  JsonObject;
 
 export interface RpcRequest<
   TId extends string = string,

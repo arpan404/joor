@@ -264,8 +264,9 @@ export type RpcError<
   code: TCode;
   message: string;
   status: number;
-  details?: TDetails;
-};
+} & (JsonValue extends TDetails
+  ? { details?: TDetails }
+  : { details: TDetails });
 
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,

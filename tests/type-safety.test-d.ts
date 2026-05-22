@@ -934,6 +934,15 @@ const manifestRouteError: JoorManifestRouteError<typeof manifest, 'users.get'> =
     details: { message: 'User not found' },
   };
 manifestRouteError.code.toUpperCase();
+// @ts-expect-error declared manifest route errors require schema-backed details.
+const _missingManifestRouteErrorDetails: JoorManifestRouteError<
+  typeof manifest,
+  'users.get'
+> = {
+  code: 'NOT_FOUND',
+  message: 'Not found',
+  status: 404,
+};
 const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   typeof manifest,
   'users.get'
@@ -1711,6 +1720,15 @@ const protocolError: RpcProtocolError<
   status: 400,
   details: { issues: [] },
 };
+// @ts-expect-error protocol errors with specific details require details.
+const _missingProtocolErrorDetails: RpcProtocolError<
+  'VALIDATION_ERROR',
+  { issues: JsonValue[] }
+> = {
+  code: 'VALIDATION_ERROR',
+  message: 'Invalid input',
+  status: 400,
+};
 const protocolSuccess: RpcSuccess<
   { id: string },
   'users.get',
@@ -1756,6 +1774,12 @@ const routeNotFoundError: RpcRouteError<Routes, 'users.get'> = {
 if (routeNotFoundError.code === 'NOT_FOUND') {
   routeNotFoundError.details?.message.toUpperCase();
 }
+// @ts-expect-error declared route errors require schema-backed details.
+const _missingRouteErrorDetails: RpcRouteError<Routes, 'users.get'> = {
+  code: 'NOT_FOUND',
+  message: 'Not found',
+  status: 404,
+};
 
 const routeProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> = {
   id: 'users.get',
