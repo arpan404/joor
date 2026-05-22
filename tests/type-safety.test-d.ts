@@ -138,6 +138,17 @@ import {
   type JoorManifestRoutes as JoorSubpathManifestRoutes,
 } from '../src/manifest.js';
 import {
+  defineProcedure as defineProcedureSubpath,
+  failure as procedureFailureSubpath,
+  ok as procedureOkSubpath,
+  type ProcedureErrorDetails as SubpathProcedureErrorDetails,
+  type ProcedureInput as SubpathProcedureInput,
+  type ProcedureOutput as SubpathProcedureOutput,
+  type ProcedureResult as SubpathProcedureResult,
+  type ProcedureResponseHeaders as SubpathProcedureResponseHeaders,
+  type StreamEvent as SubpathStreamEvent,
+} from '../src/procedure/index.js';
+import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
@@ -224,6 +235,11 @@ const streamProcedure = defineProcedure({
     yield { type: 'user.updated' as const, userId: input.userId };
   },
 });
+const subpathStreamEvent: SubpathStreamEvent<typeof streamProcedure> = {
+  type: 'user.updated',
+  userId: '1',
+};
+subpathStreamEvent.userId.toUpperCase();
 
 const authShape: ProcedureAuth<typeof authenticatedProcedure> = {
   userId: '1',
@@ -242,11 +258,52 @@ const validOutput: ProcedureOutput<typeof procedure> = {
   name: 'Ada',
 };
 validOutput.name.toUpperCase();
+const subpathProcedure = defineProcedureSubpath({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string(), name: t.string() }),
+  errors: {
+    NOT_FOUND: t.object({ message: t.string() }),
+  },
+  handler(ctx, input) {
+    return ctx.ok({ id: input.id, name: 'Ada' });
+  },
+});
+const subpathProcedureInput: SubpathProcedureInput<typeof subpathProcedure> = {
+  id: '1',
+};
+subpathProcedureInput.id.toUpperCase();
+const subpathProcedureOutput: SubpathProcedureOutput<typeof subpathProcedure> =
+  { id: '1', name: 'Ada' };
+subpathProcedureOutput.name.toUpperCase();
+const subpathProcedureErrorDetails: SubpathProcedureErrorDetails<
+  typeof subpathProcedure,
+  'NOT_FOUND'
+> = { message: 'Missing' };
+subpathProcedureErrorDetails.message.toUpperCase();
+const subpathProcedureResult: SubpathProcedureResult<
+  { id: string; name: string },
+  'NOT_FOUND',
+  { message: string }
+> = procedureOkSubpath({ id: '1', name: 'Ada' });
+if (subpathProcedureResult.kind === 'success') {
+  subpathProcedureResult.data.name.toUpperCase();
+}
+const subpathProcedureFailure = procedureFailureSubpath(
+  'NOT_FOUND',
+  subpathProcedureErrorDetails
+);
+if (subpathProcedureFailure.kind === 'error') {
+  subpathProcedureFailure.error.details?.message.toUpperCase();
+}
 
 const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
   'cache-control': 'private',
 };
 responseHeaders['cache-control'].toUpperCase();
+const subpathResponseHeaders: SubpathProcedureResponseHeaders<
+  typeof procedure
+> = responseHeaders;
+subpathResponseHeaders['cache-control'].toUpperCase();
 
 const client = createClient({ url: '/rpc' });
 client.call<typeof procedure>(

@@ -36,6 +36,10 @@
       "types": "./dist/manifest.d.ts",
       "import": "./dist/manifest.js"
     },
+    "./procedure": {
+      "types": "./dist/procedure/index.d.ts",
+      "import": "./dist/procedure/index.js"
+    },
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"
