@@ -87,6 +87,14 @@ import {
   type JsonValue,
 } from '../src/index.js';
 import { createClient, createManifestClient } from '../src/rpc/client.js';
+import {
+  createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
+  createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
+  type DenoServeOptions as StandaloneDenoServeOptions,
+  type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
+  type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
+} from '../src/runtime/deno-transport.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -471,6 +479,19 @@ createDenoFetch({ procedures: { broken: { input: t.string() } } });
 
 const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
 denoHandler(new Request('https://example.com/rpc'));
+const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
+  manifest,
+  handlerOptions
+);
+standaloneDenoHandler(new Request('https://example.com/rpc'));
+
+createStandaloneDenoRpcRequestHandler({
+  procedures: {
+    // @ts-expect-error standalone Deno transport adapters only accept typed procedure manifests.
+    broken: { input: t.string() },
+  },
+});
+
 const denoTransportResult: DenoTransportBodyResult = {
   ok: true,
   id: 'users.get',
@@ -481,6 +502,15 @@ const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
 createDenoTransportRequestHandler(denoTransportHandler);
 createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+const standaloneDenoTransportResult: StandaloneDenoTransportBodyResult =
+  denoTransportResult;
+const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
+  async () => standaloneDenoTransportResult;
+createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
+createStandaloneDenoTransportRequestHandlerWithPath(
+  standaloneDenoTransportHandler,
+  '/rpc'
+);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(manifest);
 nextHandlers.POST(new Request('https://example.com/rpc'));
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(manifest);
@@ -502,6 +532,8 @@ const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
 const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
 denoOptions.hostname?.toUpperCase();
+const standaloneDenoOptions: StandaloneDenoServeOptions = { port: 3001 };
+standaloneDenoOptions.port?.toFixed();
 const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
 listenOptions.hostname?.toUpperCase();
 
