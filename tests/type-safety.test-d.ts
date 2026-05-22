@@ -88,6 +88,7 @@ import {
   type RpcResponse,
   type RpcRouteError,
   type RpcRouteEnvelope,
+  type RpcRouteBody,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
@@ -825,6 +826,8 @@ streamProtocolRequest.input.userId.toUpperCase();
 const routeProtocolRequestUnion: RpcRouteProtocolRequestUnion<Routes> =
   streamProtocolRequest;
 routeProtocolRequestUnion.id.toUpperCase();
+const routeBody: RpcRouteBody<Routes> = streamProtocolRequest;
+routeBody.id.toUpperCase();
 const streamOnlyProtocolRequest: RpcRouteStreamProtocolRequest<
   Routes,
   'users.watch'
@@ -844,6 +847,8 @@ const routeBatchRequest: RpcRouteBatchRequest<
   [typeof routeProtocolRequest]
 > = [routeProtocolRequest];
 routeBatchRequest[0].input.id.toUpperCase();
+const routeBatchBody: RpcRouteBody<Routes> = routeBatchRequest;
+routeBatchBody.length.toFixed();
 
 const _wrongRouteProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> =
   // @ts-expect-error route protocol requests validate input by id.
@@ -866,6 +871,15 @@ const _wrongRouteBatchRequest: RpcRouteBatchRequest<
   // @ts-expect-error route protocol batches reject stream request bodies.
   [typeof streamProtocolRequest]
 > = [streamProtocolRequest];
+
+const _wrongRouteBody: RpcRouteBody<Routes> = [
+  {
+    // @ts-expect-error route bodies reject stream request batches.
+    id: 'users.watch',
+    // @ts-expect-error route bodies reject stream batch inputs.
+    input: { userId: '1' },
+  },
+];
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const unaryRouteId: RpcUnaryRouteId<Routes> = 'users.get';

@@ -1,10 +1,7 @@
 import type { ProcedureRuntime } from './procedure/types.js';
+import type { RpcManifest, RpcManifestBody } from './rpc/dispatcher.js';
 import type {
-  RpcManifest,
-  RpcManifestBody,
-  RpcManifestRouteBatchRequest,
-} from './rpc/dispatcher.js';
-import type {
+  RpcRouteBody,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
   RpcRouteEnvelope,
@@ -117,7 +114,7 @@ export type JoorManifestRouteProtocolRequestUnion<TManifest> =
 
 export type JoorManifestRouteBody<TManifest> = TManifest extends JoorManifest
   ? RpcManifestBody<TManifest>
-  : never;
+  : RpcRouteBody<JoorManifestRoutes<TManifest>>;
 
 export type JoorManifestRouteUnaryProtocolRequest<
   TManifest,
@@ -139,9 +136,7 @@ export type JoorManifestRouteBatchRequest<
   TManifest,
   TRequests extends
     readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
-> = TManifest extends JoorManifest
-  ? RpcManifestRouteBatchRequest<TManifest, TRequests>
-  : RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
+> = RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(
   manifest: JoorManifest<TProcedures>

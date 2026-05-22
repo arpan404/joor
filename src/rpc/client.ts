@@ -78,15 +78,15 @@ export type RpcRouteStreamEvent<
   TId extends RpcRouteId<TRoutes>,
 > = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
 
-export type RpcUnaryProcedure<TProcedure> = [
-  StreamEvent<TProcedure>,
-] extends [never]
+export type RpcUnaryProcedure<TProcedure> = [StreamEvent<TProcedure>] extends [
+  never,
+]
   ? TProcedure
   : never;
 
-export type RpcStreamProcedure<TProcedure> = [
-  StreamEvent<TProcedure>,
-] extends [never]
+export type RpcStreamProcedure<TProcedure> = [StreamEvent<TProcedure>] extends [
+  never,
+]
   ? never
   : TProcedure;
 
@@ -152,19 +152,19 @@ export type RpcRouteBatchRequest<
   TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
 > = TRequests;
 
-type PendingRpcRequestHeaders<TProcedure> = Record<
-  string,
-  never
-> extends ProcedureHeaders<TProcedure>
-  ? { headers?: ProcedureHeaders<TProcedure> }
-  : { headers: ProcedureHeaders<TProcedure> };
+export type RpcRouteBody<TRoutes extends RpcRouteMap> =
+  | RpcRouteProtocolRequestUnion<TRoutes>
+  | RpcRouteBatchRequest<TRoutes, RpcRouteUnaryProtocolRequestUnion<TRoutes>[]>;
 
-type ClientRequestOptionsTuple<TProcedure> = Record<
-  string,
-  never
-> extends ProcedureHeaders<TProcedure>
-  ? [ClientRequestOptions<TProcedure>?]
-  : [ClientRequestOptions<TProcedure>];
+type PendingRpcRequestHeaders<TProcedure> =
+  Record<string, never> extends ProcedureHeaders<TProcedure>
+    ? { headers?: ProcedureHeaders<TProcedure> }
+    : { headers: ProcedureHeaders<TProcedure> };
+
+type ClientRequestOptionsTuple<TProcedure> =
+  Record<string, never> extends ProcedureHeaders<TProcedure>
+    ? [ClientRequestOptions<TProcedure>?]
+    : [ClientRequestOptions<TProcedure>];
 
 export interface PendingRpcRequest<
   TProcedure = never,
@@ -264,9 +264,9 @@ export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
   ): AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
 }
 
-export type RpcTransportClient<
-  TRoutes extends RpcRouteMap = never,
-> = [TRoutes] extends [never]
+export type RpcTransportClient<TRoutes extends RpcRouteMap = never> = [
+  TRoutes,
+] extends [never]
   ? LegacyRpcTransportClient
   : RouteRpcTransportClient<TRoutes>;
 

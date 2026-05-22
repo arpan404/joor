@@ -73,6 +73,7 @@ export type {
   PendingRpcRequest,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
+  RpcRouteBody,
   RpcRouteHeaders,
   RpcRouteId,
   RpcRouteInput,
