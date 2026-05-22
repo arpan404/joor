@@ -9,6 +9,12 @@ import type { JoorPlugin } from '../context/plugin.js';
 
 export type JoorFetchHandler = (request: Request) => Promise<Response>;
 
+export type JoorHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptionsFor<TManifest, TPlugins>;
+
 export function createJoorHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

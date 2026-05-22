@@ -9,6 +9,12 @@ import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
 export type VercelFetchHandler = JoorFetchHandler;
 
+export type VercelFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptionsFor<TManifest, TPlugins>;
+
 export function createVercelFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

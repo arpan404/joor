@@ -13,6 +13,12 @@ export interface CloudflareWorker {
   fetch: CloudflareFetchHandler;
 }
 
+export type CloudflareWorkerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptionsFor<TManifest, TPlugins>;
+
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

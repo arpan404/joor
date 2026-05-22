@@ -255,6 +255,7 @@ export type {
 export type {
   CloudflareFetchHandler,
   CloudflareWorker,
+  CloudflareWorkerOptionsFor,
 } from './runtime/cloudflare.js';
 export type {
   CompiledBodyResult,
@@ -287,9 +288,19 @@ export type {
   DenoTransportBodyResultHandlerFor,
   DenoTransportRequestHandler,
 } from './runtime/deno.js';
-export type { JoorFetchHandler } from './runtime/fetch.js';
-export type { NetlifyFetchHandler } from './runtime/netlify.js';
-export type { NextRouteHandler, NextRouteHandlers } from './runtime/next.js';
+export type {
+  JoorFetchHandler,
+  JoorHandlerOptionsFor,
+} from './runtime/fetch.js';
+export type {
+  NetlifyFetchHandler,
+  NetlifyFetchOptionsFor,
+} from './runtime/netlify.js';
+export type {
+  NextRouteHandler,
+  NextRouteHandlers,
+  NextRouteHandlersOptionsFor,
+} from './runtime/next.js';
 export type {
   ListenOptionsFor,
   ListenOptions,
@@ -299,7 +310,10 @@ export type {
   NodeTransportBodyResultHandler,
   NodeTransportBodyResultHandlerFor,
 } from './runtime/node.js';
-export type { VercelFetchHandler } from './runtime/vercel.js';
+export type {
+  VercelFetchHandler,
+  VercelFetchOptionsFor,
+} from './runtime/vercel.js';
 export type {
   ArrayChain,
   BooleanChain,

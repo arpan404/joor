@@ -9,6 +9,12 @@ import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
 export type NetlifyFetchHandler = JoorFetchHandler;
 
+export type NetlifyFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptionsFor<TManifest, TPlugins>;
+
 export function createNetlifyFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

@@ -61,6 +61,7 @@ import {
   type ClientOptions,
   type ClientProcedureHeaders,
   type CloudflareFetchHandler,
+  type CloudflareWorkerOptionsFor,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
@@ -101,6 +102,7 @@ import {
   type JsonObject,
   type JsonPrimitive,
   type JoorFetchHandler,
+  type JoorHandlerOptionsFor,
   type JoorManifestClientOptions,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
@@ -145,6 +147,7 @@ import {
   type NetlifyFetchHandler,
   type NextRouteHandler,
   type NextRouteHandlers,
+  type NextRouteHandlersOptionsFor,
   type NodeServer,
   type NodeTransportBodyResult,
   type NodeTransportBodyResultHandler,
@@ -237,7 +240,9 @@ import {
   type ValidationResult,
   type OpenApiSchema,
   type JsonValue,
+  type NetlifyFetchOptionsFor,
   type VercelFetchHandler,
+  type VercelFetchOptionsFor,
 } from '../src/index.js';
 import {
   createAuthPolicy as createAuthPolicySubpath,
@@ -398,8 +403,10 @@ import {
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
+  createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
+  createVercelFetch as createRuntimeSubpathVercelFetch,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
   type BunRpcRequestHandler as RuntimeSubpathBunRpcRequestHandler,
   type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
@@ -415,12 +422,17 @@ import {
   type DenoTransportBodyResultHandlerFor as RuntimeSubpathDenoTransportBodyResultHandlerFor,
   type DenoTransportRequestHandler as RuntimeSubpathDenoTransportRequestHandler,
   type JoorFetchHandler as RuntimeSubpathJoorFetchHandler,
+  type JoorHandlerOptionsFor as RuntimeSubpathJoorHandlerOptionsFor,
   type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
+  type NetlifyFetchOptionsFor as RuntimeSubpathNetlifyFetchOptionsFor,
   type NextRouteHandler as RuntimeSubpathNextRouteHandler,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
+  type NextRouteHandlersOptionsFor as RuntimeSubpathNextRouteHandlersOptionsFor,
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
+  type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
+  type CloudflareWorkerOptionsFor as RuntimeSubpathCloudflareWorkerOptionsFor,
 } from '../src/runtime/index.js';
 
 const usersPlugin = createPlugin({
@@ -3079,9 +3091,32 @@ rootTypedStandaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedStandaloneDenoCompiledHandler(
   new Request('https://example.com/rpc')
 );
+const joorHandlerOptions: JoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorHandlerOptions;
+createJoorHandler(manifest, joorHandlerOptions);
+createRuntimeSubpathJoorHandler(manifest, runtimeSubpathJoorHandlerOptions);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
   manifest,
   handlerOptions
+);
+const nextRouteHandlersOptions: NextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteHandlersOptions;
+createNextRouteHandlers(manifest, nextRouteHandlersOptions);
+createRuntimeSubpathNextRouteHandlers(
+  manifest,
+  runtimeSubpathNextRouteHandlersOptions
 );
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
@@ -3097,6 +3132,19 @@ const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
 const cloudflareFetch: CloudflareFetchHandler = cloudflareWorker.fetch;
 const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
   cloudflareFetch;
+const cloudflareWorkerOptions: CloudflareWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareWorkerOptions;
+createCloudflareWorker(manifest, cloudflareWorkerOptions);
+createRuntimeSubpathCloudflareWorker(
+  manifest,
+  runtimeSubpathCloudflareWorkerOptions
+);
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
@@ -3105,6 +3153,16 @@ const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
 const typedNetlifyFetch: NetlifyFetchHandler = netlifyFetch;
 const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =
   typedNetlifyFetch;
+const netlifyFetchOptions: NetlifyFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyFetchOptions;
+createNetlifyFetch(manifest, netlifyFetchOptions);
+createRuntimeSubpathNetlifyFetch(manifest, runtimeSubpathNetlifyFetchOptions);
 netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
@@ -3113,6 +3171,16 @@ const vercelFetch = createVercelFetch(manifest, handlerOptions);
 const typedVercelFetch: VercelFetchHandler = vercelFetch;
 const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =
   typedVercelFetch;
+const vercelFetchOptions: VercelFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelFetchOptions;
+createVercelFetch(manifest, vercelFetchOptions);
+createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
