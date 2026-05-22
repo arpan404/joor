@@ -48,6 +48,15 @@ describe('compiler', () => {
       ).resolves.toContain('createCompiledRpcHandler');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/manifest'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/schema'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/procedure'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('createCompiledRpcTransportBodyResultHandler');
       await expect(
         readFile(join(outDir, 'fetch.ts'), 'utf8')
@@ -174,6 +183,7 @@ describe('compiler', () => {
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createManifestClient');
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
+      expect(clientSource).toContain("from 'joor/manifest'");
       expect(clientSource).toContain('export type UnaryRouteFunction');
       expect(clientSource).toContain('export type StreamRouteFunction');
       expect(clientSource).toContain('"get": unaryRoute("users.get")');
@@ -187,6 +197,12 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');
+      await expect(
+        readFile(join(outDir, 'procedure.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/procedure'");
+      await expect(
+        readFile(join(outDir, 'procedure.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/context'");
       await expect(
         readFile(join(outDir, 'openapi.json'), 'utf8')
       ).resolves.toContain('/rpc');
@@ -508,6 +524,10 @@ invalidNativeBatch;
               paths: {
                 joor: ['./src/index.ts'],
                 'joor/client': ['./src/rpc/client.ts'],
+                'joor/context': ['./src/context/index.ts'],
+                'joor/manifest': ['./src/manifest.ts'],
+                'joor/procedure': ['./src/procedure/index.ts'],
+                'joor/schema': ['./src/schema/index.ts'],
                 'joor/runtime/*': ['./src/runtime/*.ts'],
               },
             },

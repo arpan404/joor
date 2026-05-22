@@ -136,8 +136,7 @@ const emitProfileDispatcher = async (
     'type CompiledDispatch',
     'type CompiledRpcTransportBodyResultHandler',
   ];
-  const joorTypeImports = [
-    ...(hasCompiledProcedures ? ['JsonValue', 'RpcError'] : []),
+  const manifestTypeImports = [
     'JoorManifestRouteBody',
     'JoorManifestRouteBodyResultFor',
     'JoorManifestRouteBodyResult',
@@ -147,7 +146,13 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteStreamProtocolRequestUnion',
     'JoorManifestRouteUnaryProtocolRequestUnion',
   ];
-  const joorTypeImport = `import type { ${joorTypeImports.join(', ')} } from 'joor';\n`;
+  const schemaTypeImport = hasCompiledProcedures
+    ? "import type { JsonValue } from 'joor/schema';\n"
+    : '';
+  const procedureTypeImport = hasCompiledProcedures
+    ? "import type { RpcError } from 'joor/procedure';\n"
+    : '';
+  const manifestTypeImport = `import type { ${manifestTypeImports.join(', ')} } from 'joor/manifest';\n`;
   const nativeManifestEntries = manifest.procedures
     .map(
       (entry) => `    ${JSON.stringify(entry.id)}: typeof ${entry.exportName};`
@@ -355,7 +360,7 @@ ${unaryCases('response')}
     `import {
   ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-${joorTypeImport}${configImport}${imports}
+${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${configImport}${imports}
 
 ${nativeManifestTypes}
 
@@ -870,7 +875,7 @@ export default fetch;
     nodeFile,
     `import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import type { JsonValue } from 'joor';
+import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
 import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
 ${nodeFastImports}
@@ -1423,7 +1428,7 @@ export const listen = (options: NodeListenOptions = {}) => {
   const bunFile = `${outDir}/bun.ts`;
   await writeFile(
     bunFile,
-    `import type { JsonValue } from 'joor';
+    `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
 import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
 ${bunFastImports}
@@ -1984,7 +1989,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
+import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -2093,8 +2098,8 @@ const emitProcedureHelper = async (
     configPath === undefined ? 'object' : 'JoorConfigContext<typeof config>';
   await writeFile(
     `${outDir}/procedure.ts`,
-    `import { defineProcedure } from 'joor';
-import type { JoorConfigContext } from 'joor';
+    `import { defineProcedure } from 'joor/procedure';
+import type { JoorConfigContext } from 'joor/context';
 ${configImport}
 export const procedure = defineProcedure.withContext<${contextType}>();
 `
