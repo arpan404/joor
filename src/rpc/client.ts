@@ -255,18 +255,32 @@ export type ClientRequestOptions<TProcedure> =
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
-export type BatchResults<TRequests extends readonly unknown[]> = {
-  [TIndex in keyof TRequests]: TRequests[TIndex] extends PendingRpcRequest<
-    infer TProcedure,
-    infer TId
-  >
+type BatchResultData<TProcedure> = [TProcedure] extends [never]
+  ? JsonValue
+  : ProcedureOutput<TProcedure> & JsonValue;
+
+type BatchResultHeaders<TProcedure> = [TProcedure] extends [never]
+  ? JsonObject
+  : ProcedureResponseHeaders<TProcedure> & JsonObject;
+
+type BatchResultError<TProcedure> = [TProcedure] extends [never]
+  ? RpcError
+  : RpcProcedureError<TProcedure>;
+
+type BatchResultFor<TRequest> =
+  TRequest extends PendingRpcRequest<infer TProcedure, infer TId>
     ? RpcEnvelope<
-        ProcedureOutput<TProcedure> & JsonValue,
+        BatchResultData<TProcedure>,
         TId,
-        ProcedureResponseHeaders<TProcedure> & JsonObject,
-        RpcProcedureError<TProcedure>
+        BatchResultHeaders<TProcedure>,
+        BatchResultError<TProcedure>
       >
-    : never;
+    : TRequest extends { id: infer TId extends string }
+      ? RpcEnvelope<JsonValue, TId, JsonObject, RpcError>
+      : never;
+
+export type BatchResults<TRequests extends readonly unknown[]> = {
+  [TIndex in keyof TRequests]: BatchResultFor<TRequests[TIndex]>;
 };
 
 export interface LegacyRpcTransportClient {

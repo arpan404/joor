@@ -943,7 +943,20 @@ const rootLegacyRequest = rootLegacyClient.request<
 >('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
 const rootLegacyRequestId: 'users.get' = rootLegacyRequest.id;
 rootLegacyRequestId.toUpperCase();
-legacyClient.batch([{ id: 'users.untyped', input: { id: '1' } }] as const);
+legacyClient
+  .batch([{ id: 'users.untyped', input: { id: '1' } }] as const)
+  .then((results) => {
+    const first = results[0];
+    const firstId: 'users.untyped' = first.id;
+    firstId.toUpperCase();
+    if (first.ok) {
+      type UntypedLegacyBatchDataIsNever = [typeof first.data] extends [never]
+        ? true
+        : false;
+      const untypedLegacyBatchDataIsNever: UntypedLegacyBatchDataIsNever = false;
+      untypedLegacyBatchDataIsNever.valueOf();
+    }
+  });
 
 const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
 manifestRouteId.toUpperCase();
