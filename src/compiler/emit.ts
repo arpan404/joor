@@ -2004,7 +2004,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor/manifest';
+import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -2036,15 +2036,10 @@ export type RouteBodyResultFor<TBody extends RouteBody> = JoorManifestRouteBodyR
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;
-export type RouteHasHeaders<TId extends RouteId> = [RouteHeaders<TId>] extends [Record<string, never>] ? false : true;
-type RequiredHeaderKeys<THeaders extends object> = {
-  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
-}[keyof THeaders];
-export type RouteRequiresHeaders<TId extends RouteId> = RouteHasHeaders<TId> extends false
-  ? false
-  : [RequiredHeaderKeys<RouteHeaders<TId>>] extends [never]
-    ? false
-    : true;
+export type RouteHasHeaders<TId extends RouteId> = JoorManifestRouteHasHeaders<Manifest, TId>;
+export type RouteRequiresHeaders<TId extends RouteId> = JoorManifestRouteRequiresHeaders<Manifest, TId>;
+export type RouteHasResponseHeaders<TId extends RouteId> = JoorManifestRouteHasResponseHeaders<Manifest, TId>;
+export type RouteRequiresResponseHeaders<TId extends RouteId> = JoorManifestRouteRequiresResponseHeaders<Manifest, TId>;
 export type ClientArgs<TId extends RouteId> = RouteRequiresHeaders<TId> extends false
   ? [input: RouteInput<TId>, options?: ClientRequestOptions<RouteProcedure<TId>>]
   : [input: RouteInput<TId>, options: ClientRequestOptions<RouteProcedure<TId>>];
