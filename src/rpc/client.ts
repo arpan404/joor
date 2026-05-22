@@ -113,6 +113,10 @@ export type RpcRouteEnvelope<
   RpcRouteError<TRoutes, TId>
 >;
 
+export type RpcRouteEnvelopeUnion<TRoutes extends RpcRouteMap> = {
+  [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteEnvelope<TRoutes, TId>;
+}[RpcUnaryRouteId<TRoutes>];
+
 export type RpcRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
@@ -155,6 +159,11 @@ export type RpcRouteBatchRequest<
 export type RpcRouteBody<TRoutes extends RpcRouteMap> =
   | RpcRouteProtocolRequestUnion<TRoutes>
   | RpcRouteBatchRequest<TRoutes, RpcRouteUnaryProtocolRequestUnion<TRoutes>[]>;
+
+export type RpcRouteBodyResult<TRoutes extends RpcRouteMap> =
+  | RpcRouteEnvelopeUnion<TRoutes>
+  | RpcRouteEnvelopeUnion<TRoutes>[]
+  | Response;
 
 type PendingRpcRequestHeaders<TProcedure> =
   Record<string, never> extends ProcedureHeaders<TProcedure>

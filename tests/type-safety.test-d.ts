@@ -35,6 +35,7 @@ import {
   type HandlerOptions,
   type JoorConfigContext,
   type JoorManifestRouteBody,
+  type JoorManifestRouteBodyResult,
   type JoorManifestRouteBatchRequest,
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteEnvelope,
@@ -71,6 +72,8 @@ import {
   type RpcFrameworkErrorCode,
   type RpcManifest,
   type RpcManifestBody,
+  type RpcManifestBodyResult,
+  type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteBatchRequest,
   type RpcManifestRouteId,
   type RpcManifestRouteProtocolRequest,
@@ -88,7 +91,9 @@ import {
   type RpcResponse,
   type RpcRouteError,
   type RpcRouteEnvelope,
+  type RpcRouteEnvelopeUnion,
   type RpcRouteBody,
+  type RpcRouteBodyResult,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
@@ -359,6 +364,15 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   headers: { 'cache-control': 'private' },
 };
 manifestRouteEnvelope.id.toUpperCase();
+const manifestRouteBodyResult: JoorManifestRouteBodyResult<typeof manifest> =
+  manifestRouteEnvelope;
+if (!(manifestRouteBodyResult instanceof Response)) {
+  if (Array.isArray(manifestRouteBodyResult)) {
+    manifestRouteBodyResult[0]?.id.toUpperCase();
+  } else if (manifestRouteBodyResult.ok) {
+    manifestRouteBodyResult.data.id.toUpperCase();
+  }
+}
 const manifestRouteRequest: JoorManifestRouteRequest<
   typeof manifest,
   'users.get'
@@ -489,10 +503,22 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
+  typeof manifest
+> = manifestRouteEnvelope;
+const publicManifestBodyResult: RpcManifestBodyResult<typeof manifest> =
+  publicManifestEnvelopeUnion;
 publicManifestBody.id.toUpperCase();
 publicManifestBatchBody[0]?.input.id.toUpperCase();
 publicManifestBatchBodyUnion.length.toFixed();
 publicManifestBatchRequest[0].input.id.toUpperCase();
+if (!(publicManifestBodyResult instanceof Response)) {
+  if (Array.isArray(publicManifestBodyResult)) {
+    publicManifestBodyResult[0]?.id.toUpperCase();
+  } else {
+    publicManifestBodyResult.id.toUpperCase();
+  }
+}
 const _publicManifestRoutes: PublicManifestRoutes = manifest.procedures;
 _publicManifestRoutes['users.get'].output;
 
@@ -546,6 +572,14 @@ const rpcBodyResultHandler = createRpcBodyResultHandler(
 rpcBodyResultHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
+}).then((result) => {
+  const typedResult: JoorManifestRouteBodyResult<typeof manifest> = result;
+  if (!(typedResult instanceof Response) && !Array.isArray(typedResult)) {
+    typedResult.id.toUpperCase();
+    if (typedResult.ok && typedResult.id === 'users.get') {
+      typedResult.data.name.toUpperCase();
+    }
+  }
 });
 // @ts-expect-error low-level typed body handlers validate input by route id.
 rpcBodyResultHandler(new Request('https://example.com/rpc'), {
@@ -559,6 +593,11 @@ const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
   input: { id: '1' },
+}).then((result) => {
+  const typedResult: RpcManifestBodyResult<typeof manifest> = result;
+  if (!(typedResult instanceof Response) && !Array.isArray(typedResult)) {
+    typedResult.id.toUpperCase();
+  }
 });
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
   { id: 'users.authenticated', input: { ok: true } },
@@ -1016,6 +1055,15 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   traceId: 'trace-1',
 };
 routeEnvelope.id.toUpperCase();
+const routeEnvelopeUnion: RpcRouteEnvelopeUnion<Routes> = routeEnvelope;
+const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
+if (!(routeBodyResult instanceof Response)) {
+  if (Array.isArray(routeBodyResult)) {
+    routeBodyResult[0]?.id.toUpperCase();
+  } else if (routeBodyResult.ok && routeBodyResult.id === 'users.get') {
+    routeBodyResult.data.name.toUpperCase();
+  }
+}
 if (routeEnvelope.ok) {
   routeEnvelope.headers?.['cache-control'].toUpperCase();
 

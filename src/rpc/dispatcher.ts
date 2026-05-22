@@ -8,8 +8,12 @@ import {
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
 import type {
   MaybePromise,
+  ProcedureError,
+  ProcedureErrorCode,
   ProcedureInput,
+  ProcedureOutput,
   ProcedureRuntime,
+  ProcedureResponseHeaders,
   ProcedureRuntimeValue,
   StreamEvent,
 } from '../procedure/types.js';
@@ -45,7 +49,9 @@ import {
 import {
   validationDetails,
   type RpcEnvelope,
+  type RpcError,
   type RpcFailure,
+  type RpcFrameworkErrorCode,
   type RpcRequest,
 } from './protocol.js';
 import { parseDurationMs } from '../internal/duration.js';
@@ -89,6 +95,32 @@ export type RpcManifestStreamRouteId<TManifest extends RpcManifest> = Exclude<
   RpcManifestRouteId<TManifest>,
   RpcManifestUnaryRouteId<TManifest>
 >;
+
+export type RpcManifestProcedureFrameworkError<TProcedure> = RpcError<
+  Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
+  JsonValue
+>;
+
+export type RpcManifestProcedureError<TProcedure> =
+  | ProcedureError<TProcedure>
+  | RpcManifestProcedureFrameworkError<TProcedure>;
+
+export type RpcManifestRouteEnvelope<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcEnvelope<
+  ProcedureOutput<RpcManifestRoutes<TManifest>[TId]> & JsonValue,
+  TId,
+  ProcedureResponseHeaders<RpcManifestRoutes<TManifest>[TId]> & JsonObject,
+  RpcManifestProcedureError<RpcManifestRoutes<TManifest>[TId]>
+>;
+
+export type RpcManifestRouteEnvelopeUnion<TManifest extends RpcManifest> = {
+  [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRouteEnvelope<
+    TManifest,
+    TId
+  >;
+}[RpcManifestUnaryRouteId<TManifest>];
 
 export type RpcManifestRouteProtocolRequest<
   TManifest extends RpcManifest,
@@ -150,6 +182,11 @@ export type RpcManifestBody<TManifest extends RpcManifest> =
     >;
 
 export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;
+
+export type RpcManifestBodyResult<TManifest extends RpcManifest> =
+  | RpcManifestRouteEnvelopeUnion<TManifest>
+  | RpcManifestRouteEnvelopeUnion<TManifest>[]
+  | Response;
 
 interface PreparedProcedure {
   procedure: ProcedureRuntime;
@@ -936,7 +973,7 @@ export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
 ): ((
   request: Request,
   body: RpcManifestBody<TManifest>
-) => Promise<RpcBodyResult>) => {
+) => Promise<RpcManifestBodyResult<TManifest>>) => {
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
     options,
@@ -945,7 +982,7 @@ export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
   return (
     request: Request,
     body: RpcManifestBody<TManifest>
-  ): Promise<RpcBodyResult> =>
+  ): Promise<RpcManifestBodyResult<TManifest>> =>
     handleTransport(createFetchRequestSource(request), body);
 };
 
@@ -958,7 +995,7 @@ export const createRpcTransportBodyResultHandler = <
 ): ((
   request: ContextRequestSource,
   body: RpcManifestBody<TManifest>
-) => Promise<RpcBodyResult>) => {
+) => Promise<RpcManifestBodyResult<TManifest>>) => {
   const procedures = prepareProcedures(manifest);
   const requestPreflight = preflight
     ? createRpcRequestPreflight(options)
@@ -1138,18 +1175,31 @@ export const createRpcTransportBodyResultHandler = <
           uncachedExecutionState
         );
   };
-  if (!hasBeforeHooks && !hasAfterHooks) return handleRequest;
+  if (!hasBeforeHooks && !hasAfterHooks) {
+    return (request, body) =>
+      handleRequest(request, body) as Promise<RpcManifestBodyResult<TManifest>>;
+  }
   return async (
     request: ContextRequestSource,
-    body: JsonValue
-  ): Promise<RpcBodyResult> => {
+    body: RpcManifestBody<TManifest>
+  ): Promise<RpcManifestBodyResult<TManifest>> => {
     const early = hasBeforeHooks ? await runBefore(request) : undefined;
     if (early !== undefined) {
-      return hasAfterHooks ? runAfter(early, request) : early;
+      return (
+        hasAfterHooks ? await runAfter(early, request) : early
+      ) as RpcManifestBodyResult<TManifest>;
     }
     const result = await handleRequest(request, body);
-    if (!hasAfterHooks) return result;
-    if (result instanceof Response) return runAfter(result, request);
-    return runAfter(toResponse(result, options), request);
+    if (!hasAfterHooks) return result as RpcManifestBodyResult<TManifest>;
+    if (result instanceof Response) {
+      return (await runAfter(
+        result,
+        request
+      )) as RpcManifestBodyResult<TManifest>;
+    }
+    return (await runAfter(
+      toResponse(result, options),
+      request
+    )) as RpcManifestBodyResult<TManifest>;
   };
 };

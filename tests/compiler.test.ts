@@ -148,6 +148,9 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteBody');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteBodyResult');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('export type RouteProtocolRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -296,7 +299,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -332,11 +335,21 @@ const streamProtocolRequest: RouteStreamProtocolRequest<'users.watch'> = {
   input: { userId: '1' },
 };
 const routeBody: RouteBody = streamProtocolRequest;
+const routeBodyResult: RouteBodyResult = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
+};
 const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
   unaryProtocolRequest,
 ];
 protocolRequestUnion.id.toUpperCase();
 routeBody.id.toUpperCase();
+if (!(routeBodyResult instanceof Response) && !Array.isArray(routeBodyResult) && routeBodyResult.ok) {
+  routeBodyResult.data.name.toUpperCase();
+}
 protocolBatch[0].input.id.toUpperCase();
 
 const configured = createClient({ url: '/rpc' });
