@@ -172,7 +172,13 @@ export type NativeBatchBody = NativeUnaryProtocolRequest[];
 export type NativeBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
 export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
-export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;`;
+export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;
+export type NativeTransportResultFor<TBody extends NativeBody> =
+  NativeBodyResultFor<TBody> | CompiledSerializedEnvelope;
+export type NativeTransportHandler = <const TBody extends NativeBody>(
+  request: Parameters<CompiledRpcTransportBodyResultHandler<NativeBody>>[0],
+  body: TBody
+) => Promise<NativeTransportResultFor<TBody>>;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
@@ -374,7 +380,7 @@ export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   false,
   ${transportModeLiteral},
   nativeRuntime
-) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
+) as NativeTransportHandler;
 export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
   ${configValue},
@@ -382,7 +388,7 @@ export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandl
   false,
   'response',
   nativeRuntime
-) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
+) as NativeTransportHandler;
 export const transport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
@@ -390,7 +396,7 @@ export const transport = createCompiledRpcTransportBodyResultHandler(
   true,
   ${transportModeLiteral},
   nativeRuntime
-) as CompiledRpcTransportBodyResultHandler<NativeBody, NativeTransportResult>;
+) as NativeTransportHandler;
 export const fetch = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
   );
