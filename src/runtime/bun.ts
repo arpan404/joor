@@ -6,6 +6,7 @@ import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
   HandlerOptionsArgs,
+  HandlerOptionsArgsFor,
   HandlerOptionsFor,
   RpcRequestPreflight,
   RpcBodyResult,
@@ -30,10 +31,19 @@ import {
   type SerializedJsonEnvelope,
 } from './response.js';
 
-export interface BunServeOptions extends HandlerOptions {
+export interface BunServeOptions<
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> extends HandlerOptions<TPlugins> {
   port?: number;
   hostname?: string;
 }
+
+export type BunServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type BunTransportBodyResultHandler<
@@ -129,13 +139,20 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   );
 }
 
-export const serveBun = <TManifest extends JoorManifest>(
+export function serveBun<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgsFor<TManifest, TPlugins, BunServeOptions<TPlugins>>
+): void;
+export function serveBun<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: BunServeOptions = {}
-): void => {
+): void {
   const fetch = createBunRpcRequestHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>
+    options as BunServeOptionsFor<TManifest>
   );
   const bunGlobal = globalThis as typeof globalThis & {
     Bun?: {
@@ -154,4 +171,4 @@ export const serveBun = <TManifest extends JoorManifest>(
     hostname: options.hostname ?? '0.0.0.0',
     fetch,
   });
-};
+}

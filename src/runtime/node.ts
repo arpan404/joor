@@ -4,6 +4,7 @@ import type { ContextRequestSource } from '../context/context.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
+  HandlerOptionsArgsFor,
   HandlerOptionsFor,
   HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
@@ -30,10 +31,19 @@ import {
   type SerializedJsonEnvelope,
 } from './response.js';
 
-export interface ListenOptions extends HandlerOptions {
+export interface ListenOptions<
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> extends HandlerOptions<TPlugins> {
   port?: number;
   hostname?: string;
 }
+
+export type ListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = ListenOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type NodeRpcRequestHandler = (
   incoming: IncomingMessage,
@@ -272,20 +282,27 @@ export const createNodeTransportRequestHandler = <
   };
 };
 
-export const listen = <TManifest extends JoorManifest>(
+export function listen<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgsFor<TManifest, TPlugins, ListenOptions<TPlugins>>
+): void;
+export function listen<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: ListenOptions = {}
-): void => {
+): void {
   const port = options.port ?? 3000;
   const hostname = options.hostname ?? '0.0.0.0';
   const handler = createNodeRpcRequestHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>,
+    options as ListenOptionsFor<TManifest>,
     hostname
   );
   const server = createServer(handler);
   server.listen(port, hostname);
-};
+}
 
 export function createNodeRpcRequestHandler<
   TManifest extends JoorManifest,

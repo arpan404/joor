@@ -326,14 +326,25 @@ export type HandlerOptionsFor<
         };
       });
 
+export type HandlerOptionsArgsFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TOptions extends HandlerOptions<TPlugins> = HandlerOptions<TPlugins>,
+> =
+  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+    ? [options?: TOptions & HandlerOptionsFor<TManifest, TPlugins>]
+    : [options: TOptions & HandlerOptionsFor<TManifest, TPlugins>];
+
 export type HandlerOptionsArgs<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> =
-  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
-    ? [options?: HandlerOptionsFor<TManifest, TPlugins>]
-    : [options: HandlerOptionsFor<TManifest, TPlugins>];
+> = HandlerOptionsArgsFor<
+  TManifest,
+  TPlugins,
+  HandlerOptionsFor<TManifest, TPlugins>
+>;
 
 export type HandlerOptionsWithTrailingArgs<
   TManifest extends RpcManifest,

@@ -1,6 +1,7 @@
 import type {
   HandlerOptions,
   HandlerOptionsArgs,
+  HandlerOptionsArgsFor,
   HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
@@ -26,10 +27,19 @@ import {
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
 import type { SerializedJsonEnvelope } from './response.js';
 
-export interface DenoServeOptions extends HandlerOptions {
+export interface DenoServeOptions<
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> extends HandlerOptions<TPlugins> {
   port?: number;
   hostname?: string;
 }
+
+export type DenoServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 
@@ -181,13 +191,24 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   );
 }
 
-export const serveDeno = <TManifest extends JoorManifest>(
+export function serveDeno<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgsFor<
+    TManifest,
+    TPlugins,
+    DenoServeOptions<TPlugins>
+  >
+): void;
+export function serveDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
-): void => {
+): void {
   const fetch = createDenoRpcRequestHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>
+    options as DenoServeOptionsFor<TManifest>
   );
   const denoGlobal = globalThis as typeof globalThis & {
     Deno?: {
@@ -206,4 +227,4 @@ export const serveDeno = <TManifest extends JoorManifest>(
     hostname: options.hostname ?? '0.0.0.0',
     handler: fetch,
   });
-};
+}

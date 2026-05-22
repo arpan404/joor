@@ -52,6 +52,7 @@ export type {
   HandlerHooks,
   DefineHandlerOptions,
   HandlerOptionServices,
+  HandlerOptionsArgsFor,
   HandlerOptionsArgs,
   HandlerOptionsFor,
   HandlerOptionsWithPreflightArgs,

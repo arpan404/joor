@@ -119,6 +119,7 @@ export type {
   HandlerHooks,
   DefineHandlerOptions,
   HandlerOptionServices,
+  HandlerOptionsArgsFor,
   HandlerOptionsArgs,
   HandlerOptionsFor,
   HandlerOptionsWithPreflightArgs,
@@ -179,18 +180,21 @@ export type {
   StreamEvent,
 } from './procedure/types.js';
 export type {
+  BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
   BunTransportBodyResultHandler,
 } from './runtime/bun.js';
 export type { CloudflareWorker } from './runtime/cloudflare.js';
 export type {
+  DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
   DenoTransportBodyResultHandler,
 } from './runtime/deno.js';
 export type { NextRouteHandlers } from './runtime/next.js';
 export type {
+  ListenOptionsFor,
   ListenOptions,
   NodeRpcRequestHandler,
   NodeTransportBodyResult,

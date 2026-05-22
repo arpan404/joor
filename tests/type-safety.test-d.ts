@@ -25,7 +25,11 @@ import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
+  listen,
+  serveBun,
+  serveDeno,
   t,
+  type BunServeOptionsFor,
   type BunServeOptions,
   type AuthPolicyAuth,
   type AuthPolicyHeaders,
@@ -33,6 +37,7 @@ import {
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
   type CloudflareWorker,
+  type DenoServeOptionsFor,
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
@@ -67,6 +72,7 @@ import {
   type JoorManifestRoutes,
   type JoorManifestStreamRouteId,
   type JoorManifestUnaryRouteId,
+  type ListenOptionsFor,
   type ListenOptions,
   type NextRouteHandlers,
   type NodeTransportBodyResult,
@@ -203,6 +209,8 @@ import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
+  serveDeno as serveStandaloneDeno,
+  type DenoServeOptionsFor as StandaloneDenoServeOptionsFor,
   type DenoServeOptions as StandaloneDenoServeOptions,
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
@@ -1202,10 +1210,24 @@ const bunFetch = createBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
 createBunFetch(manifest);
+const typedBunServeOptions: BunServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+serveBun(manifest, typedBunServeOptions);
+// @ts-expect-error service-dependent manifests require matching Bun serve plugins.
+serveBun(manifest);
 const denoFetch = createDenoFetch(manifest, handlerOptions);
 denoFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
 createDenoFetch(manifest);
+const typedDenoServeOptions: DenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+serveDeno(manifest, typedDenoServeOptions);
+// @ts-expect-error service-dependent manifests require matching Deno serve plugins.
+serveDeno(manifest);
 
 // @ts-expect-error Deno adapters only accept typed procedure manifests.
 createDenoFetch({ procedures: { broken: { input: t.string() } } });
@@ -1219,6 +1241,13 @@ const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
   handlerOptions
 );
 standaloneDenoHandler(new Request('https://example.com/rpc'));
+const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+serveStandaloneDeno(manifest, typedStandaloneDenoServeOptions);
+// @ts-expect-error service-dependent manifests require matching standalone Deno serve plugins.
+serveStandaloneDeno(manifest);
 
 createStandaloneDenoRpcRequestHandler({
   procedures: {
@@ -1353,6 +1382,13 @@ const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
+const typedListenOptions: ListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+listen(manifest, typedListenOptions);
+// @ts-expect-error service-dependent manifests require matching Node listen plugins.
+listen(manifest);
 const transportResult: RpcBodyResult = {
   ok: true,
   id: 'users.get',
