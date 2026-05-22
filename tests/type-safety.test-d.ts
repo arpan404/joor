@@ -24,13 +24,21 @@ import {
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type RpcBatchRequest,
   type RpcBodyResult,
+  type RpcFailure,
+  type RpcFrameworkErrorCode,
   type RpcManifest,
+  type RpcProtocolEnvelope,
+  type RpcProtocolError,
+  type RpcRequest,
+  type RpcResponse,
   type RpcRouteError,
   type RpcRouteEnvelope,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
+  type RpcSuccess,
   type RpcStreamProcedure,
   type RpcStreamRouteId,
   type RpcUnaryProcedure,
@@ -216,6 +224,58 @@ const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
 const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
 listenOptions.hostname?.toUpperCase();
+
+const protocolRequest: RpcRequest<'users.get', { id: string }> = {
+  id: 'users.get',
+  input: { id: '1' },
+  traceId: 'trace-1',
+};
+protocolRequest.input?.id.toUpperCase();
+const protocolBatch: RpcBatchRequest<[typeof protocolRequest]> = [
+  protocolRequest,
+];
+protocolBatch[0].id.toUpperCase();
+const frameworkCode: RpcFrameworkErrorCode = 'VALIDATION_ERROR';
+frameworkCode.toUpperCase();
+const protocolError: RpcProtocolError<
+  'VALIDATION_ERROR',
+  { issues: JsonValue[] }
+> = {
+  code: 'VALIDATION_ERROR',
+  message: 'Invalid input',
+  status: 400,
+  details: { issues: [] },
+};
+const protocolSuccess: RpcSuccess<
+  { id: string },
+  'users.get',
+  { 'cache-control': string }
+> = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '1' },
+  headers: { 'cache-control': 'private' },
+};
+const protocolFailure: RpcFailure<'users.get', typeof protocolError> = {
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace-1',
+  error: protocolError,
+};
+const protocolEnvelope: RpcProtocolEnvelope<
+  { id: string },
+  'users.get',
+  { 'cache-control': string },
+  typeof protocolError
+> = protocolSuccess;
+const protocolResponse: RpcResponse<
+  { id: string },
+  'users.get',
+  { 'cache-control': string },
+  typeof protocolError
+> = [protocolEnvelope, protocolFailure];
+protocolResponse[0]?.id.toUpperCase();
 
 const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
   'cache-control': 'private',

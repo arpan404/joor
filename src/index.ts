@@ -65,6 +65,16 @@ export type {
   RpcRequestPreflight,
 } from './rpc/dispatcher.js';
 export type {
+  RpcBatchRequest,
+  RpcEnvelope as RpcProtocolEnvelope,
+  RpcError as RpcProtocolError,
+  RpcFailure,
+  RpcFrameworkErrorCode,
+  RpcRequest,
+  RpcResponse,
+  RpcSuccess,
+} from './rpc/protocol.js';
+export type {
   Procedure,
   ProcedureAuth,
   ProcedureError,
