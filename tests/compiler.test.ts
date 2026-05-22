@@ -106,6 +106,7 @@ describe('compiler', () => {
       );
       expect(clientSource).toContain('export type UnaryRouteId');
       expect(clientSource).toContain('export type StreamRouteId');
+      expect(clientSource).toContain('export type RouteResponseHeaders');
       expect(watchClientMatch?.[0]).toContain('stream:');
       expect(watchClientMatch?.[0]).not.toContain('call:');
       expect(watchClientMatch?.[0]).not.toContain('request:');

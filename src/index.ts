@@ -25,6 +25,7 @@ export type {
   RpcRouteEnvelope,
   RpcRouteRequest,
   RpcRouteRequestUnion,
+  RpcRouteResponseHeaders,
   RpcRouteStreamEvent,
   RpcStreamRouteId,
   RpcTransportClient,

@@ -186,12 +186,15 @@ export type RpcError = {
   details?: JsonValue;
 };
 
-export type RpcEnvelope<TData extends JsonValue = JsonValue> =
+export type RpcEnvelope<
+  TData extends JsonValue = JsonValue,
+  THeaders extends JsonObject = JsonObject,
+> =
   | {
       ok: true;
       id: string;
       data: TData;
-      headers?: JsonObject;
+      headers?: THeaders;
       traceId: string;
     }
   | {

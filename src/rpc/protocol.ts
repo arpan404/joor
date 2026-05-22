@@ -17,11 +17,12 @@ export type RpcBatchRequest<
 export interface RpcSuccess<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
+  THeaders extends JsonObject = JsonObject,
 > extends JsonObject {
   ok: true;
   id: TId;
   data: TData;
-  headers?: JsonObject;
+  headers?: THeaders;
   traceId: string;
 }
 
@@ -40,12 +41,14 @@ export interface RpcFailure<TId extends string = string> extends JsonObject {
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-> = RpcSuccess<TData, TId> | RpcFailure<TId>;
+  THeaders extends JsonObject = JsonObject,
+> = RpcSuccess<TData, TId, THeaders> | RpcFailure<TId>;
 
 export type RpcResponse<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-> = RpcEnvelope<TData, TId> | RpcEnvelope<TData, TId>[];
+  THeaders extends JsonObject = JsonObject,
+> = RpcEnvelope<TData, TId, THeaders> | RpcEnvelope<TData, TId, THeaders>[];
 
 export const validationDetails = (issues: ValidationIssue[]): JsonObject => ({
   issues: issues.map((item) => ({ path: item.path, message: item.message })),

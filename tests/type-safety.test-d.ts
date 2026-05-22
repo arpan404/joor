@@ -12,6 +12,7 @@ import {
   type RpcRouteEnvelope,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
+  type RpcRouteResponseHeaders,
   type RpcStreamRouteId,
   type RpcUnaryRouteId,
 } from '../src/index.js';
@@ -107,6 +108,11 @@ const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
 };
 responseHeaders['cache-control'].toUpperCase();
 
+const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
+  'cache-control': 'private',
+};
+routeResponseHeaders['cache-control'].toUpperCase();
+
 const client = createClient({ url: '/rpc' });
 client.call<typeof procedure>(
   'users.get',
@@ -175,7 +181,13 @@ routeClient
   .then((result) => {
     const routeResultId: 'users.get' = result.id;
     routeResultId.toUpperCase();
-    if (result.ok) result.data.name.toUpperCase();
+    if (result.ok) {
+      result.data.name.toUpperCase();
+      result.headers?.['cache-control'].toUpperCase();
+
+      // @ts-expect-error route response headers preserve the declared shape.
+      result.headers?.missing;
+    }
 
     // @ts-expect-error envelopes preserve the selected route literal.
     const _wrongRouteResultId: 'users.authenticated' = result.id;
@@ -234,9 +246,16 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: true,
   id: 'users.get',
   data: { id: '1', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
   traceId: 'trace-1',
 };
 routeEnvelope.id.toUpperCase();
+if (routeEnvelope.ok) {
+  routeEnvelope.headers?.['cache-control'].toUpperCase();
+
+  // @ts-expect-error typed route envelopes reject unknown response headers.
+  routeEnvelope.headers?.missing;
+}
 
 // @ts-expect-error typed route envelopes require the matching route id.
 const _wrongRouteEnvelopeId: RpcRouteEnvelope<
