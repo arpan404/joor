@@ -12,6 +12,7 @@ import {
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
   createVercelFetch,
+  createClient as createRootClient,
   t,
   type BunServeOptions,
   type CloudflareWorker,
@@ -192,6 +193,26 @@ manifestRouteClient.call(
 
 // @ts-expect-error manifest-derived clients reject unknown route ids.
 manifestRouteClient.call('users.missing', { id: '1' });
+
+const inferredManifestClient = createClient({ url: '/rpc', manifest });
+inferredManifestClient.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+inferredManifestClient.stream('users.watch', { userId: '1' });
+
+// @ts-expect-error manifest-inferred clients reject unknown route ids.
+inferredManifestClient.call('users.missing', { id: '1' });
+
+// @ts-expect-error manifest-inferred clients reject stream routes in call.
+inferredManifestClient.call('users.watch', { userId: '1' });
+
+const rootManifestClient = createRootClient({ url: '/rpc', manifest });
+rootManifestClient.call('users.authenticated', { ok: true });
+
+// @ts-expect-error root manifest clients keep route id safety.
+rootManifestClient.stream('users.get', { id: '1' });
 
 // @ts-expect-error manifests only accept procedure runtimes.
 defineManifest({ procedures: { broken: { input: t.string() } } });

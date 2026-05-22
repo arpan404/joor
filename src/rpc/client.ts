@@ -1,4 +1,5 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
+import type { JoorManifest, JoorManifestRoutes } from '../manifest.js';
 import type {
   ProcedureInput,
   ProcedureOutput,
@@ -15,10 +16,13 @@ import type {
   RpcRequest,
 } from './protocol.js';
 
-export interface ClientOptions {
+export interface ClientOptions<
+  TManifest extends JoorManifest | undefined = undefined,
+> {
   url: string;
   fetch?: (request: Request) => Promise<Response>;
   headers?: Record<string, string>;
+  manifest?: TManifest;
   maxStreamEventBytes?: number;
 }
 
@@ -286,9 +290,15 @@ const parseSse = async function* <TEvent extends JsonValue>(
   }
 };
 
-export const createClient = <TRoutes extends RpcRouteMap = never>(
+export function createClient<const TManifest extends JoorManifest>(
+  options: ClientOptions<TManifest> & { manifest: TManifest }
+): RpcTransportClient<JoorManifestRoutes<TManifest>>;
+export function createClient<TRoutes extends RpcRouteMap = never>(
   options: ClientOptions
-): RpcTransportClient<TRoutes> => {
+): RpcTransportClient<TRoutes>;
+export function createClient(
+  options: ClientOptions<JoorManifest | undefined>
+): LegacyRpcTransportClient | RouteRpcTransportClient<RpcRouteMap> {
   const fetcher =
     options.fetch ??
     ((request: Request): Promise<Response> => globalThis.fetch(request));
@@ -401,5 +411,5 @@ export const createClient = <TRoutes extends RpcRouteMap = never>(
     request,
     batch,
     stream,
-  } as RpcTransportClient<TRoutes>;
-};
+  };
+}
