@@ -15,17 +15,16 @@ export interface ProcedureFailure<
     code: TCode;
     message: string;
     status: number;
-    details?: TDetails;
-  };
+  } & (JsonValue extends TDetails
+    ? { details?: TDetails }
+    : { details: TDetails });
 }
 
 export type ProcedureResult<
   TData extends JsonValue,
   TCode extends string,
   TDetails extends JsonValue = JsonValue,
-> =
-  | ProcedureSuccess<TData>
-  | ProcedureFailure<TCode, TDetails>;
+> = ProcedureSuccess<TData> | ProcedureFailure<TCode, TDetails>;
 
 export const ok = <TData extends JsonValue>(
   data: TData,

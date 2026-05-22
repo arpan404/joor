@@ -82,6 +82,7 @@ import {
   type NodeTransportBodyResultHandler,
   type PendingRpcRequest,
   type Procedure,
+  type ProcedureFailure,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
@@ -195,6 +196,7 @@ import {
   failure as procedureFailureSubpath,
   ok as procedureOkSubpath,
   type ProcedureErrorDetails as SubpathProcedureErrorDetails,
+  type ProcedureFailure as SubpathProcedureFailure,
   type ProcedureInput as SubpathProcedureInput,
   type ProcedureOutput as SubpathProcedureOutput,
   type ProcedureResult as SubpathProcedureResult,
@@ -460,6 +462,18 @@ const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
 procedureEnvelopeId.toUpperCase();
 // @ts-expect-error procedure envelopes preserve route id literals.
 const _wrongProcedureEnvelopeId: 'users.authenticated' = procedureEnvelope.id;
+const _missingProcedureFailureDetails: ProcedureFailure<
+  'NOT_FOUND',
+  { message: string }
+> = {
+  kind: 'error',
+  // @ts-expect-error procedure failures with specific details require details.
+  error: {
+    code: 'NOT_FOUND',
+    message: 'Not found',
+    status: 404,
+  },
+};
 const subpathProcedure = defineProcedureSubpath({
   input: t.object({ id: t.string() }),
   output: t.object({ id: t.string(), name: t.string() }),
@@ -506,8 +520,20 @@ const subpathProcedureFailure = procedureFailureSubpath(
   subpathProcedureErrorDetails
 );
 if (subpathProcedureFailure.kind === 'error') {
-  subpathProcedureFailure.error.details?.message.toUpperCase();
+  subpathProcedureFailure.error.details.message.toUpperCase();
 }
+const _missingSubpathProcedureFailureDetails: SubpathProcedureFailure<
+  'NOT_FOUND',
+  { message: string }
+> = {
+  kind: 'error',
+  // @ts-expect-error procedure failures with specific details require details.
+  error: {
+    code: 'NOT_FOUND',
+    message: 'Not found',
+    status: 404,
+  },
+};
 
 const schemaSubpathUserSchema = schemaSubpathT.object({
   id: schemaSubpathT.string(),
