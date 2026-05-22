@@ -42,6 +42,7 @@
       "joor/manifest": ["./src/manifest.ts"],
       "joor/procedure": ["./src/procedure/index.ts"],
       "joor/schema": ["./src/schema/index.ts"],
+      "joor/context": ["./src/context/index.ts"],
       "joor/runtime/*": ["./src/runtime/*.ts"],
       "@/*": ["./src/*"]
     },

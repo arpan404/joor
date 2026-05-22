@@ -117,6 +117,15 @@ import {
 } from '../src/index.js';
 import { createClient, createManifestClient } from '../src/rpc/client.js';
 import {
+  createAuthPolicy as createContextSubpathAuthPolicy,
+  createPlugin as createContextSubpathPlugin,
+  defineConfig as defineContextSubpathConfig,
+  type AuthPolicy as ContextSubpathAuthPolicy,
+  type JoorConfigContext as ContextSubpathConfigContext,
+  type JoorContext as ContextSubpathJoorContext,
+  type PluginServices as ContextSubpathPluginServices,
+} from '../src/context/index.js';
+import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   type RpcManifestBody as RpcSubpathManifestBody,
@@ -363,6 +372,86 @@ const schemaSubpathProcedureOutput: SubpathProcedureOutput<
   },
 };
 schemaSubpathProcedureOutput.user.email.toUpperCase();
+
+const contextSubpathPlugin = createContextSubpathPlugin({
+  name: 'audit',
+  setup() {
+    return {
+      audit: {
+        record(action: string) {
+          return action.length;
+        },
+      },
+    };
+  },
+});
+type ContextSubpathServices = ContextSubpathPluginServices<
+  [typeof contextSubpathPlugin]
+>;
+const contextSubpathServices: ContextSubpathServices = {
+  audit: {
+    record(action) {
+      return action.length;
+    },
+  },
+};
+contextSubpathServices.audit.record('view');
+const contextSubpathConfig = defineContextSubpathConfig({
+  plugins: [contextSubpathPlugin] as const,
+});
+type ContextSubpathConfigServices = ContextSubpathConfigContext<
+  typeof contextSubpathConfig
+>;
+const contextSubpathConfigServices: ContextSubpathConfigServices =
+  contextSubpathServices;
+contextSubpathConfigServices.audit.record('config');
+const contextSubpathAuthPolicy = createContextSubpathAuthPolicy<
+  ContextSubpathConfigServices,
+  { authorization: string },
+  { userId: string }
+>({
+  name: 'session',
+  authenticate(ctx) {
+    ctx.services.audit.record(ctx.headers.authorization);
+    return { userId: '1' };
+  },
+});
+const contextSubpathTypedPolicy: ContextSubpathAuthPolicy<
+  ContextSubpathConfigServices,
+  { authorization: string },
+  { userId: string }
+> = contextSubpathAuthPolicy;
+contextSubpathTypedPolicy.name.toUpperCase();
+const _readContextSubpathContext = (
+  ctx: ContextSubpathJoorContext<
+    ContextSubpathConfigServices,
+    { authorization: string },
+    Record<string, never>,
+    { userId: string }
+  >
+) => {
+  ctx.services.audit.record(ctx.headers.authorization);
+  ctx.auth.userId.toUpperCase();
+};
+_readContextSubpathContext;
+const contextSubpathProcedure =
+  defineProcedureSubpath.withContext<ContextSubpathConfigServices>()({
+    input: schemaSubpathT.object({ action: schemaSubpathT.string() }),
+    headers: schemaSubpathT.object({ authorization: schemaSubpathT.string() }),
+    output: schemaSubpathT.object({
+      recorded: schemaSubpathT.number(),
+      userId: schemaSubpathT.string(),
+    }),
+    auth: contextSubpathAuthPolicy,
+    handler(ctx, input) {
+      const recorded = ctx.services.audit.record(input.action);
+      return ctx.ok({ recorded, userId: ctx.auth.userId });
+    },
+  });
+const contextSubpathProcedureOutput: SubpathProcedureOutput<
+  typeof contextSubpathProcedure
+> = { recorded: 4, userId: '1' };
+contextSubpathProcedureOutput.userId.toUpperCase();
 
 const responseHeaders: ProcedureResponseHeaders<typeof procedure> = {
   'cache-control': 'private',
