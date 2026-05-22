@@ -2529,6 +2529,13 @@ const protocolRequest: RpcRequest<'users.get', { id: string }> = {
   traceId: 'trace-1',
 };
 protocolRequest.input?.id.toUpperCase();
+const _extraProtocolRequestEnvelope: RpcRequest<'users.get', { id: string }> = {
+  id: 'users.get',
+  input: { id: '1' },
+  // @ts-expect-error protocol requests reject unknown envelope fields.
+  extra: true,
+};
+_extraProtocolRequestEnvelope.id.toUpperCase();
 // @ts-expect-error protocol requests require an input payload.
 const _missingProtocolRequestInput: RpcRequest<'users.get', { id: string }> = {
   id: 'users.get',
@@ -2572,6 +2579,20 @@ const protocolSuccess: RpcSuccess<
   data: { id: '1' },
   headers: { 'cache-control': 'private' },
 };
+const _extraProtocolSuccess: RpcSuccess<
+  { id: string },
+  'users.get',
+  { 'cache-control': string }
+> = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '1' },
+  headers: { 'cache-control': 'private' },
+  // @ts-expect-error protocol success envelopes reject unknown envelope fields.
+  extra: true,
+};
+_extraProtocolSuccess.data.id.toUpperCase();
 const rpcResponseHeaderValues: RpcResponseHeaderValues = {
   'cache-control': 'private',
 };
@@ -2851,6 +2872,16 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   traceId: 'trace-1',
 };
 routeEnvelope.id.toUpperCase();
+const _extraRouteEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
+  ok: true,
+  id: 'users.get',
+  data: { id: '1', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
+  traceId: 'trace-1',
+  // @ts-expect-error typed route envelopes reject unknown envelope fields.
+  extra: true,
+};
+_extraRouteEnvelope.id.toUpperCase();
 // @ts-expect-error route success envelopes require declared response headers.
 const _missingRouteEnvelopeHeaders: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: true,
@@ -2946,11 +2977,11 @@ if (!routeErrorEnvelope.ok && routeErrorEnvelope.error.code === 'NOT_FOUND') {
 const _wrongRouteEnvelopeId: RpcRouteEnvelope<Routes, 'users.get'>['id'] =
   'users.authenticated';
 
-// @ts-expect-error typed route errors reject invalid declared details.
 const _wrongRouteErrorEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: false,
   id: 'users.get',
   traceId: 'trace-1',
+  // @ts-expect-error typed route errors reject invalid declared details.
   error: {
     code: 'NOT_FOUND',
     message: 'Not found',

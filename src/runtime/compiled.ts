@@ -474,7 +474,7 @@ const streamResponse = async <TProcedure extends ProcedureRuntime>(
                   'Stream event failed validation',
                   500,
                   validationDetails(eventResult.issues)
-                )
+                ) as unknown as JsonValue
               )
             );
             break;

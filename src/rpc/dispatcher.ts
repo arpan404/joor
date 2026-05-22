@@ -1121,7 +1121,7 @@ const executeStream = async (
                   'Stream event failed validation',
                   500,
                   validationDetails(eventResult.issues)
-                )
+                ) as unknown as JsonValue
               )
             );
             break;
@@ -1135,7 +1135,13 @@ const executeStream = async (
         controller.enqueue(
           encodeSse(
             'error',
-            rpcFailure(rpcRequest.id, trace, 'INTERNAL_ERROR', message, 500)
+            rpcFailure(
+              rpcRequest.id,
+              trace,
+              'INTERNAL_ERROR',
+              message,
+              500
+            ) as unknown as JsonValue
           )
         );
       } finally {

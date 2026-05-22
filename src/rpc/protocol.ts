@@ -26,13 +26,12 @@ export type RpcError<
   status: number;
 } & (JsonValue extends TDetails
   ? { details?: TDetails }
-  : { details: TDetails }) &
-  JsonObject;
+  : { details: TDetails });
 
 export interface RpcRequest<
   TId extends string = string,
   TInput extends JsonValue = JsonValue,
-> extends JsonObject {
+> {
   id: TId;
   input: TInput;
   traceId?: string;
@@ -81,7 +80,7 @@ export type RpcSuccess<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
   THeaders extends object = RpcResponseHeaderValues,
-> = JsonObject & {
+> = {
   ok: true;
   id: TId;
   data: TData;
@@ -91,7 +90,7 @@ export type RpcSuccess<
 export interface RpcFailure<
   TId extends string = string,
   TError extends RpcError = RpcError,
-> extends JsonObject {
+> {
   ok: false;
   id: TId;
   error: TError;
