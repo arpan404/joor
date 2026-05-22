@@ -218,7 +218,9 @@ import {
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
 } from '../src/runtime/deno-transport.js';
 import { createDenoCompiledTransportRequestHandlerWithPath } from '../src/runtime/deno-compiled-transport.js';
+import { createCompiledRuntimeState } from '../src/runtime/compiled.js';
 import type {
+  CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRuntimeState,
 } from '../src/runtime/compiled.js';
@@ -1372,7 +1374,29 @@ const compiledRuntimeState: CompiledRuntimeState = {
     return {};
   },
 };
+const typedCompiledRuntimeState = createCompiledRuntimeState(config);
+typedCompiledRuntimeState.getServices()?.users.findById('1').name.toUpperCase();
+typedCompiledRuntimeState.resolveServices().then((services) => {
+  services.users.findById('1').name.toUpperCase();
+});
+const serviceTypedCompiledRuntimeState: CompiledRuntimeState<Services> =
+  typedCompiledRuntimeState;
+serviceTypedCompiledRuntimeState.getServices()?.users.findById('1');
 const compiledUnaryDispatch: CompiledFixedUnaryDispatch = async () => undefined;
+const _serviceTypedCompiledUnaryDispatch: CompiledFixedUnaryDispatch<
+  Services
+> = async (_body, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return undefined;
+};
+const _serviceTypedCompiledDispatch: CompiledDispatch<Services> = async (
+  _rpcRequest,
+  _request,
+  services
+) => {
+  services.users.findById('1').name.toUpperCase();
+  return manifestRouteEnvelope;
+};
 const standaloneDenoCompiledHandler =
   createDenoCompiledTransportRequestHandlerWithPath(
     compiledRuntimeState,
