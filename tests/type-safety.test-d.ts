@@ -119,6 +119,7 @@ import {
   type ProcedureResponseHeaders,
   type ProcedureRequiresHeaders,
   type ProcedureRequiresResponseHeaders,
+  type ProcedureRuntime,
   type ProcedureServices,
   type RpcEnvelope,
   type RpcBatchRequest,
@@ -780,6 +781,39 @@ type _WrongProcedureResponseHeaderGeneric = Procedure<
   // @ts-expect-error procedure response header generics must use header object schemas.
   NumberSchema
 >;
+const rootProcedureRuntimeWithHeaders: ProcedureRuntime = {
+  input: rootUserSchema,
+  headers: rootHeaderSchema,
+  responseHeaders: rootHeaderSchema,
+  errors: {},
+  meta: {},
+  handler() {
+    return {};
+  },
+};
+rootProcedureRuntimeWithHeaders.headers?.kind.toUpperCase();
+const _wrongRuntimeHeaderSchema: ProcedureRuntime = {
+  input: rootUserSchema,
+  // @ts-expect-error runtime procedure headers must use header object schemas.
+  headers: t.object({ 'x-retry-count': t.number() }),
+  errors: {},
+  meta: {},
+  handler() {
+    return {};
+  },
+};
+_wrongRuntimeHeaderSchema.input.kind.toUpperCase();
+const _wrongRuntimeResponseHeaderSchema: ProcedureRuntime = {
+  input: rootUserSchema,
+  // @ts-expect-error runtime procedure response headers must use header object schemas.
+  responseHeaders: t.object({ 'x-retry-count': t.number() }),
+  errors: {},
+  meta: {},
+  handler() {
+    return {};
+  },
+};
+_wrongRuntimeResponseHeaderSchema.input.kind.toUpperCase();
 const rootArrayChain: ArrayChain<typeof rootStringSchema> = t
   .array(rootStringSchema)
   .min(1);

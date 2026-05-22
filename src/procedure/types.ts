@@ -55,8 +55,8 @@ export type ContextlessProcedureHandler = (
 export interface ProcedureRuntime {
   id?: string;
   input: Schema;
-  headers?: Schema;
-  responseHeaders?: Schema;
+  headers?: HeaderObjectSchema;
+  responseHeaders?: HeaderObjectSchema;
   auth?: AuthPolicy<object, object, object>;
   output?: Schema;
   stream?: Schema;
