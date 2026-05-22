@@ -69,6 +69,7 @@ describe('client', () => {
       input: t.object({ ok: t.boolean() }),
       headers: t.object({
         authorization: t.optional(t.string()),
+        'x-skip': t.optional(t.string()),
       }),
       output: t.object({}),
       async handler(ctx) {
@@ -97,6 +98,7 @@ describe('client', () => {
       {
         headers: {
           authorization: 'Bearer request',
+          'x-skip': undefined,
         },
       }
     );
@@ -113,6 +115,7 @@ describe('client', () => {
 
     expect(seen[0]?.get('authorization')).toBe('Bearer request');
     expect(seen[0]?.get('x-base')).toBe('base');
+    expect(seen[0]?.get('x-skip')).toBeNull();
     expect(seen[1]?.get('authorization')).toBeNull();
     expect(seen[1]?.get('x-base')).toBe('base');
     expect(seen[1]?.get('x-batch')).toBe('batch');

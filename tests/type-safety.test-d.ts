@@ -59,6 +59,7 @@ import {
   type ClientFetch,
   type ClientHeaderValues,
   type ClientOptions,
+  type ClientProcedureHeaders,
   type CloudflareFetchHandler,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
@@ -282,6 +283,7 @@ import {
   type BatchResults as RpcSubpathBatchResults,
   type ClientFetch as RpcSubpathClientFetch,
   type ClientOptions as RpcSubpathClientOptions,
+  type ClientProcedureHeaders as RpcSubpathClientProcedureHeaders,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
@@ -1595,6 +1597,33 @@ const clientFetch: ClientFetch = async (request) => new Response(request.url);
 const rpcSubpathClientFetch: RpcSubpathClientFetch = clientFetch;
 clientFetch(new Request('https://example.com/rpc'));
 rpcSubpathClientFetch(new Request('https://example.com/rpc'));
+const procedureClientHeaders: ClientProcedureHeaders<typeof procedure> = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-1',
+};
+const rpcSubpathProcedureClientHeaders: RpcSubpathClientProcedureHeaders<
+  typeof procedure
+> = procedureClientHeaders;
+client.call<typeof procedure>(
+  'users.get',
+  { id: '1' },
+  {
+    headers: procedureClientHeaders,
+  }
+);
+createClient({ url: '/rpc' }).call<typeof procedure>(
+  'users.get',
+  { id: '1' },
+  {
+    headers: rpcSubpathProcedureClientHeaders,
+  }
+);
+const _wrongProcedureClientHeaders: ClientProcedureHeaders<typeof procedure> = {
+  authorization: 'Bearer token',
+  // @ts-expect-error required procedure headers cannot be undefined.
+  'x-tenant-id': undefined,
+};
+_wrongProcedureClientHeaders.authorization?.toUpperCase();
 const manifestClientOptions: RpcManifestClientOptions<typeof manifest> = {
   url: '/rpc',
   fetch: clientFetch,
@@ -1918,7 +1947,7 @@ manifestRouteRequest.headers['x-tenant-id'].toUpperCase();
 const manifestRouteRequestOptions: JoorManifestRouteRequestOptions<
   typeof manifest,
   'users.get'
-> = { headers: { 'x-tenant-id': 'tenant-1' } };
+> = { headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' } };
 manifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
 const manifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest,
@@ -3405,7 +3434,7 @@ const _wrongRouteBody: RpcRouteBody<Routes> = [
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
-  headers: { 'x-tenant-id': 'tenant-1' },
+  headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
 };
 const rpcSubpathRouteRequestOptions: RpcSubpathRouteRequestOptions<
   Routes,

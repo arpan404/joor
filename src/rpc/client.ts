@@ -241,11 +241,35 @@ type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
   ? JsonValue
   : ProcedureInput<TProcedure>;
 
+type OptionalClientHeaderKeys<THeaders extends object> = keyof {
+  [TKey in keyof THeaders as undefined extends THeaders[TKey]
+    ? TKey
+    : never]: true;
+};
+
+type RequiredClientHeaderFields<THeaders extends object> = {
+  [TKey in keyof THeaders as TKey extends OptionalClientHeaderKeys<THeaders>
+    ? never
+    : TKey]: THeaders[TKey];
+};
+
+type OptionalClientHeaderFields<THeaders extends object> = {
+  [TKey in OptionalClientHeaderKeys<THeaders>]?: THeaders[TKey] | undefined;
+};
+
+export type ClientProcedureHeaders<TProcedure> =
+  ProcedureHeaders<TProcedure> extends infer THeaders
+    ? THeaders extends object
+      ? RequiredClientHeaderFields<THeaders> &
+          OptionalClientHeaderFields<THeaders>
+      : never
+    : never;
+
 type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
   ? { headers?: ClientHeaderValues }
   : ProcedureRequiresHeaders<TProcedure> extends false
-    ? { headers?: ProcedureHeaders<TProcedure> }
-    : { headers: ProcedureHeaders<TProcedure> };
+    ? { headers?: ClientProcedureHeaders<TProcedure> }
+    : { headers: ClientProcedureHeaders<TProcedure> };
 
 type ClientRequestOptionsTuple<TProcedure> =
   ProcedureRequiresHeaders<TProcedure> extends false
@@ -300,8 +324,8 @@ export type RpcRouteBatchResults<
 export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
   ? { headers?: ClientHeaderValues }
   : ProcedureRequiresHeaders<TProcedure> extends false
-    ? { headers?: ProcedureHeaders<TProcedure> }
-    : { headers: ProcedureHeaders<TProcedure> };
+    ? { headers?: ClientProcedureHeaders<TProcedure> }
+    : { headers: ClientProcedureHeaders<TProcedure> };
 
 export type RpcRouteRequestOptions<
   TRoutes extends RpcRouteMap,

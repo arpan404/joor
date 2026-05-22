@@ -110,6 +110,7 @@ export type {
   ClientFetch,
   ClientOptions,
   ClientHeaderValues,
+  ClientProcedureHeaders,
   ClientRequestOptions,
   LegacyRpcTransportClient,
   PendingRpcRequest,

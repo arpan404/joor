@@ -14,6 +14,7 @@ export type {
   ClientFetch,
   ClientHeaderValues,
   ClientOptions,
+  ClientProcedureHeaders,
   ClientRequestOptions,
   LegacyRpcTransportClient,
   PendingRpcRequest,
