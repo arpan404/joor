@@ -158,7 +158,7 @@ export type RpcRouteEnvelopeUnion<TRoutes extends RpcRouteMap> = {
 export type RpcRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
-> = JsonObject & {
+> = {
   id: TId;
   input: RpcRouteInput<TRoutes, TId> & JsonValue;
   traceId?: string;

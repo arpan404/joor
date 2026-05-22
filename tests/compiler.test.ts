@@ -505,6 +505,13 @@ const protocolRequest: RouteProtocolRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
 };
+const _extraProtocolRequest: RouteProtocolRequest<'users.get'> = {
+  id: 'users.get',
+  input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+  // @ts-expect-error generated protocol request types reject unknown envelope fields.
+  extra: true,
+};
+_extraProtocolRequest.id.toUpperCase();
 const protocolRequestUnion: RouteProtocolRequestUnion = protocolRequest;
 const unaryProtocolRequest: RouteUnaryProtocolRequest<'users.get'> = protocolRequest;
 const streamProtocolRequest: RouteStreamProtocolRequest<'users.watch'> = {

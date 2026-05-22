@@ -1634,6 +1634,16 @@ const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
   'users.get'
 > = { id: 'users.get', input: { id: '1' } };
 manifestProtocolRequest.input.id.toUpperCase();
+const _extraManifestProtocolRequest: JoorManifestRouteProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = {
+  id: 'users.get',
+  input: { id: '1' },
+  // @ts-expect-error manifest protocol requests reject unknown envelope fields.
+  extra: true,
+};
+_extraManifestProtocolRequest.id.toUpperCase();
 const manifestProtocolRequestUnion: JoorManifestRouteProtocolRequestUnion<
   typeof manifest
 > = manifestProtocolRequest;
@@ -2093,8 +2103,8 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
   { id: 'users.authenticated', input: { ok: true } },
 ]);
-// @ts-expect-error low-level typed batch bodies reject stream routes.
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
+  // @ts-expect-error low-level typed batch bodies reject stream routes.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
 
@@ -2459,8 +2469,8 @@ const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
-// @ts-expect-error typed Node transport handlers reject stream requests in batches.
 routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [
+  // @ts-expect-error typed Node transport handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
 const runtimeSubpathFetch = createRuntimeSubpathJoorHandler(
@@ -2635,6 +2645,14 @@ const routeProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> = {
   traceId: 'trace-1',
 };
 routeProtocolRequest.input.id.toUpperCase();
+const _extraRouteProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> =
+  {
+    id: 'users.get',
+    input: { id: '1' },
+    // @ts-expect-error route protocol requests reject unknown envelope fields.
+    extra: true,
+  };
+_extraRouteProtocolRequest.id.toUpperCase();
 const streamProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.watch'> = {
   id: 'users.watch',
   input: { userId: '1' },
@@ -2693,8 +2711,8 @@ const _wrongRouteBatchRequest: RpcRouteBatchRequest<
   [typeof streamProtocolRequest]
 > = [streamProtocolRequest];
 
-// @ts-expect-error route bodies reject stream request batches.
 const _wrongRouteBody: RpcRouteBody<Routes> = [
+  // @ts-expect-error route bodies reject stream request batches.
   { id: 'users.watch', input: { userId: '1' } },
 ];
 

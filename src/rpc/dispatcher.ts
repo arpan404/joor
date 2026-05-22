@@ -158,7 +158,7 @@ export type RpcManifestRouteEnvelopeUnion<TManifest extends RpcManifest> = {
 export type RpcManifestRouteProtocolRequest<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
-> = JsonObject & {
+> = {
   id: TId;
   input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]> & JsonValue;
   traceId?: string;
