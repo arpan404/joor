@@ -301,6 +301,25 @@ export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
+export type RpcRouteRequestOptions<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ClientRequestOptions<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteClientArgs<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> =
+  RpcRouteRequiresHeaders<TRoutes, TId> extends false
+    ? [
+        input: RpcRouteInput<TRoutes, TId>,
+        options?: RpcRouteRequestOptions<TRoutes, TId>,
+      ]
+    : [
+        input: RpcRouteInput<TRoutes, TId>,
+        options: RpcRouteRequestOptions<TRoutes, TId>,
+      ];
+
 type BatchResultData<TProcedure> = [TProcedure] extends [never]
   ? JsonValue
   : ProcedureOutput<TProcedure> & JsonValue;
@@ -385,6 +404,14 @@ export type RpcTransportClient<TRoutes extends RpcRouteMap = never> = [
   ? LegacyRpcTransportClient
   : RouteRpcTransportClient<TRoutes>;
 
+export type RpcManifestTransportClient<TManifest extends JoorManifest> =
+  RpcTransportClient<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestClientOptions<TManifest extends JoorManifest> = Omit<
+  ClientOptions<TManifest>,
+  'manifest'
+>;
+
 const createHeaders = (
   baseHeaders?: Record<string, string>,
   requestHeaders?: object
@@ -447,7 +474,7 @@ const parseSse = async function* <TEvent extends JsonValue>(
 
 export function createClient<const TManifest extends JoorManifest>(
   options: ClientOptions<TManifest> & { manifest: TManifest }
-): RpcTransportClient<JoorManifestRoutes<TManifest>>;
+): RpcManifestTransportClient<TManifest>;
 export function createClient<TRoutes extends RpcRouteMap = never>(
   options: ClientOptions
 ): RpcTransportClient<TRoutes>;
@@ -565,6 +592,6 @@ export function createClient(
 
 export const createManifestClient = <const TManifest extends JoorManifest>(
   manifest: TManifest,
-  options: Omit<ClientOptions<TManifest>, 'manifest'>
-): RpcTransportClient<JoorManifestRoutes<TManifest>> =>
+  options: RpcManifestClientOptions<TManifest>
+): RpcManifestTransportClient<TManifest> =>
   createClient({ ...options, manifest });

@@ -193,8 +193,12 @@ import {
   type RpcRouteUnaryProtocolRequest,
   type RpcRouteUnaryProtocolRequestUnion,
   type RouteRpcTransportClient,
+  type RpcManifestClientOptions,
+  type RpcManifestTransportClient,
   type RpcSuccess,
   type RpcStreamProcedure,
+  type RpcRouteClientArgs,
+  type RpcRouteRequestOptions,
   type RpcStreamRouteId,
   type RpcUnaryProcedure,
   type RpcUnaryRouteId,
@@ -246,13 +250,17 @@ import {
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
+  type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
+  type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
+  type RpcRouteClientArgs as RpcSubpathRouteClientArgs,
   type RpcRouteErrorCode as RpcSubpathRouteErrorCode,
   type RpcRouteErrorDetails as RpcSubpathRouteErrorDetails,
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
+  type RpcRouteRequestOptions as RpcSubpathRouteRequestOptions,
   type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
@@ -1484,6 +1492,22 @@ explicitManifestClient.call('users.missing', { id: '1' });
 explicitManifestClient.call('users.watch', { userId: '1' });
 
 const rootManifestClient = createRootClient({ url: '/rpc', manifest });
+const rootManifestClientShape: RpcManifestTransportClient<typeof manifest> =
+  rootManifestClient;
+rootManifestClientShape.call('users.authenticated', { ok: true });
+const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
+  typeof manifest
+> = rootManifestClient;
+rpcSubpathManifestClientShape.call('users.authenticated', { ok: true });
+const manifestClientOptions: RpcManifestClientOptions<typeof manifest> = {
+  url: '/rpc',
+  headers: { authorization: 'Bearer token' },
+};
+createRootManifestClient(manifest, manifestClientOptions);
+const rpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
+  typeof manifest
+> = manifestClientOptions;
+createRootManifestClient(manifest, rpcSubpathManifestClientOptions);
 rootManifestClient.call('users.authenticated', { ok: true });
 
 // @ts-expect-error root manifest clients keep route id safety.
@@ -3107,6 +3131,37 @@ const _wrongRouteBody: RpcRouteBody<Routes> = [
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
+const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
+  headers: { 'x-tenant-id': 'tenant-1' },
+};
+const rpcSubpathRouteRequestOptions: RpcSubpathRouteRequestOptions<
+  Routes,
+  'users.get'
+> = routeRequestOptions;
+routeRequestOptions.headers['x-tenant-id'].toUpperCase();
+rpcSubpathRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
+const routeClientArgs: RpcRouteClientArgs<Routes, 'users.get'> = [
+  { id: '1' },
+  routeRequestOptions,
+];
+const rpcSubpathRouteClientArgs: RpcSubpathRouteClientArgs<
+  Routes,
+  'users.get'
+> = routeClientArgs;
+routeClient.call('users.get', ...routeClientArgs);
+routeClient.call('users.get', ...rpcSubpathRouteClientArgs);
+const noHeaderRouteClientArgs: RpcRouteClientArgs<
+  Routes,
+  'users.authenticated'
+> = [{ ok: true }];
+routeClient.call('users.authenticated', ...noHeaderRouteClientArgs);
+const _wrongRouteRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
+  headers: {
+    // @ts-expect-error route request options preserve declared header value types.
+    'x-tenant-id': 1,
+  },
+};
+_wrongRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
 routeClientShape.call(
   'users.get',
   { id: '1' },
