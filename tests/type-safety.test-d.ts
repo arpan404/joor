@@ -44,6 +44,7 @@ import {
   type HandlerOptionServices,
   type HandlerOptionsFor,
   type HandlerOptions,
+  type JoorConfig,
   type JoorConfigContext,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
@@ -144,6 +145,7 @@ import {
   createPlugin as createContextSubpathPlugin,
   defineConfig as defineContextSubpathConfig,
   type AuthPolicy as ContextSubpathAuthPolicy,
+  type JoorConfig as ContextSubpathConfig,
   type JoorConfigContext as ContextSubpathConfigContext,
   type JoorContext as ContextSubpathJoorContext,
   type PluginServices as ContextSubpathPluginServices,
@@ -248,6 +250,18 @@ const usersPlugin = createPlugin({
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
 type Services = JoorConfigContext<typeof config>;
+const annotatedConfig: JoorConfig<readonly [typeof usersPlugin]> = {
+  plugins: [usersPlugin] as const,
+};
+type AnnotatedConfigServices = JoorConfigContext<typeof annotatedConfig>;
+const annotatedConfigServices: AnnotatedConfigServices = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+  },
+};
+annotatedConfigServices.users.findById('1').name.toUpperCase();
 
 const procedure = defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
@@ -522,6 +536,17 @@ type ContextSubpathConfigServices = ContextSubpathConfigContext<
 const contextSubpathConfigServices: ContextSubpathConfigServices =
   contextSubpathServices;
 contextSubpathConfigServices.audit.record('config');
+const annotatedContextSubpathConfig: ContextSubpathConfig<
+  readonly [typeof contextSubpathPlugin]
+> = {
+  plugins: [contextSubpathPlugin] as const,
+};
+type AnnotatedContextSubpathConfigServices = ContextSubpathConfigContext<
+  typeof annotatedContextSubpathConfig
+>;
+const annotatedContextSubpathConfigServices: AnnotatedContextSubpathConfigServices =
+  contextSubpathServices;
+annotatedContextSubpathConfigServices.audit.record('config');
 const contextSubpathAuthPolicy = createContextSubpathAuthPolicy<
   ContextSubpathConfigServices,
   { authorization: string },
