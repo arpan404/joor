@@ -1952,24 +1952,40 @@ export type StreamRouteFunction<TId extends StreamRouteId> = {
   (...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
-
-const optionalOptions = <TId extends RouteId>(
-  options: ClientRequestOptions<RouteProcedure<TId>> | undefined
-) =>
-  options === undefined ? [] : [options] as const;
+type UnaryRouteTransport<TId extends UnaryRouteId> = {
+  call(
+    id: TId,
+    input: RouteInput<TId>,
+    options?: ClientRequestOptions<RouteProcedure<TId>>
+  ): Promise<RouteResult<TId>>;
+  request(
+    id: TId,
+    input: RouteInput<TId>,
+    options?: ClientRequestOptions<RouteProcedure<TId>>
+  ): RouteRequest<TId>;
+};
+type StreamRouteTransport<TId extends StreamRouteId> = {
+  stream(
+    id: TId,
+    input: RouteInput<TId>,
+    options?: ClientRequestOptions<RouteProcedure<TId>>
+  ): AsyncIterable<Stream<TId>>;
+};
 
 export const createClient = (options: Omit<ClientOptions<Manifest>, 'manifest'>) => {
   const transport = createTransportClient(manifest, options);
   const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
+    const routeTransport = transport as UnaryRouteTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
-      transport.call(id, args[0], ...optionalOptions<TId>(args[1]));
+      routeTransport.call(id, args[0], args[1]);
     const request = (...args: ClientArgs<TId>) =>
-      transport.request(id, args[0], ...optionalOptions<TId>(args[1]));
+      routeTransport.request(id, args[0], args[1]);
     return Object.assign(call, { call, request });
   };
   const streamRoute = <TId extends StreamRouteId>(id: TId): StreamRouteFunction<TId> => {
+    const routeTransport = transport as StreamRouteTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
-      transport.stream(id, args[0], ...optionalOptions<TId>(args[1]));
+      routeTransport.stream(id, args[0], args[1]);
     return Object.assign(stream, { stream });
   };
   return {

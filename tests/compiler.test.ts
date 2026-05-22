@@ -1,11 +1,16 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
 import { emitArtifacts } from '../src/compiler/emit.js';
 import { loadProcedures } from '../src/compiler/load.js';
 
+const execFileAsync = promisify(execFile);
+const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const fixture = new URL('./fixtures/basic-app/rpc', import.meta.url).pathname;
 const fixtureConfig = new URL(
   './fixtures/basic-app/joor.config.ts',
@@ -239,6 +244,121 @@ describe('compiler', () => {
       expect(bunTarget).toContain('checkContentType = false');
       expect(dispatcher).toContain('contextlessHandler(inputValue)');
       expect(dispatcher).not.toContain('const ctx = compiledCreateContext');
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('typechecks generated callable client route leaves', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
+    try {
+      await build({ entry: fixture, outDir });
+      const usageFile = join(outDir, 'client-usage.ts');
+      await writeFile(
+        usageFile,
+        `import { client, createClient, type RouteResult } from './client.js';
+
+client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
+  const exact: RouteResult<'users.get'> = result;
+  exact.id.toUpperCase();
+  if (result.ok) {
+    result.data.name.toUpperCase();
+    result.headers?.['cache-control'].toUpperCase();
+  }
+});
+
+client.users.get.call({ id: '550e8400-e29b-41d4-a716-446655440000' });
+const request = client.users.get.request({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
+const requestId: 'users.get' = request.id;
+requestId.toUpperCase();
+
+const configured = createClient({ url: '/rpc' });
+configured['admin-user']['get-profile']({ id: '1' }).then((result) => {
+  if (result.ok) result.data.name.toUpperCase();
+});
+configured.posts.list({ userId: '1' }).then((result) => {
+  if (result.ok) result.data[0]?.title.toUpperCase();
+});
+
+async function consumeStream() {
+  for await (const event of client.users.watch({ userId: '1' })) {
+    const eventType: 'user.updated' = event.type;
+    eventType.toUpperCase();
+    event.userId.toUpperCase();
+  }
+  for await (const event of client.users.watch.stream({ userId: '1' })) {
+    event.userId.toUpperCase();
+  }
+}
+consumeStream();
+
+// @ts-expect-error generated clients reject unknown route leaves.
+client.users.missing({ id: '1' });
+
+// @ts-expect-error generated callable leaves validate input by route id.
+client.users.get({ ok: true });
+
+// @ts-expect-error unary routes do not expose stream methods.
+client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });
+
+// @ts-expect-error stream routes do not expose unary request methods.
+client.users.watch.request({ userId: '1' });
+`
+      );
+      const tsconfigFile = join(outDir, 'tsconfig.generated-client.json');
+      await writeFile(
+        tsconfigFile,
+        JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2022',
+              module: 'ESNext',
+              lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+              moduleResolution: 'bundler',
+              allowImportingTsExtensions: true,
+              strict: true,
+              noImplicitAny: true,
+              strictNullChecks: true,
+              exactOptionalPropertyTypes: true,
+              noUncheckedIndexedAccess: true,
+              noPropertyAccessFromIndexSignature: true,
+              skipLibCheck: true,
+              verbatimModuleSyntax: true,
+              isolatedModules: true,
+              noEmit: true,
+              types: ['node'],
+              typeRoots: [join(repoRoot, 'node_modules/@types')],
+              baseUrl: repoRoot,
+              paths: {
+                joor: ['./src/index.ts'],
+                'joor/client': ['./src/rpc/client.ts'],
+                'joor/runtime/*': ['./src/runtime/*.ts'],
+              },
+            },
+            include: [usageFile, join(outDir, 'client.ts')],
+          },
+          null,
+          2
+        )
+      );
+
+      try {
+        await execFileAsync(
+          join(repoRoot, 'node_modules/.bin/tsc'),
+          ['--project', tsconfigFile],
+          {
+            cwd: repoRoot,
+            maxBuffer: 1024 * 1024 * 4,
+          }
+        );
+      } catch (error) {
+        const output = error as { stdout?: string; stderr?: string };
+        throw new Error(
+          [output.stdout, output.stderr].filter(Boolean).join('\n')
+        );
+      }
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
