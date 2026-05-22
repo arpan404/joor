@@ -3127,6 +3127,8 @@ const typedListenOptions: ListenOptionsFor<
 > = handlerOptions;
 const nodeServer: NodeServer = listen(manifest, typedListenOptions);
 nodeServer.close();
+nodeServer.address();
+nodeServer.ref().unref();
 // @ts-expect-error service-dependent manifests require matching Node listen plugins.
 listen(manifest);
 const transportResult: RpcBodyResult = {

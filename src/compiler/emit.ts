@@ -927,6 +927,7 @@ export default fetch;
     nodeFile,
     `import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
 import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
@@ -1413,7 +1414,13 @@ export type NodeNativeHandler = (
   outgoing: ServerResponse<IncomingMessage>
 ) => Promise<void>;
 
-export type NodeNativeServer = ReturnType<typeof createServer>;
+export interface NodeNativeServer {
+  readonly listening: boolean;
+  address(): AddressInfo | string | null;
+  close(callback?: (error?: Error) => void): this;
+  ref(): this;
+  unref(): this;
+}
 
 export const createHandler = (
   options: NodeNativeOptions = {}

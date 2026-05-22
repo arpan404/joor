@@ -437,6 +437,8 @@ nodeHandler;
 nodeDefaultHandler;
 const nodeServer: NodeNativeServer = listenNodeNative({ port: 3000 });
 nodeServer.close();
+nodeServer.address();
+nodeServer.ref().unref();
 const requiredServices: RequiredServices = {
   users: {
     findById(id) {

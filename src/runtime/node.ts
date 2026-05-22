@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import type { ContextRequestSource } from '../context/context.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
@@ -40,7 +41,13 @@ export interface ListenOptions<
   hostname?: string;
 }
 
-export type NodeServer = ReturnType<typeof createServer>;
+export interface NodeServer {
+  readonly listening: boolean;
+  address(): AddressInfo | string | null;
+  close(callback?: (error?: Error) => void): this;
+  ref(): this;
+  unref(): this;
+}
 
 export type ListenOptionsFor<
   TManifest extends JoorManifest,
