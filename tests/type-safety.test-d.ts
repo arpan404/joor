@@ -119,11 +119,13 @@ import {
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
+  type ProcedureResponseHeaderValues,
   type ProcedureResponseHeaders,
   type ProcedureRequiresHeaders,
   type ProcedureRequiresResponseHeaders,
   type ProcedureRuntime,
   type ProcedureServices,
+  type ProcedureSuccess,
   type RpcEnvelope,
   type RpcBatchRequest,
   type RpcBodyResult,
@@ -718,6 +720,45 @@ const subpathProcedureResult: SubpathProcedureResult<
   'NOT_FOUND',
   { message: string }
 > = procedureOkSubpath({ id: '1', name: 'Ada' });
+const procedureResponseHeaderValues: ProcedureResponseHeaderValues = {
+  'cache-control': 'private',
+  etag: 'v1',
+};
+procedureResponseHeaderValues['cache-control']?.toUpperCase();
+procedureOkSubpath({ id: '1', name: 'Ada' }, procedureResponseHeaderValues);
+procedureOkSubpath(
+  { id: '1', name: 'Ada' },
+  // @ts-expect-error manual success headers must be HTTP string values.
+  { 'x-retry-count': 1 }
+);
+const _wrongProcedureSuccessHeaders: ProcedureSuccess<
+  { id: string; name: string },
+  { 'x-retry-count': number }
+> = {
+  kind: 'success',
+  data: { id: '1', name: 'Ada' },
+  headers: {
+    // @ts-expect-error procedure success headers must be HTTP string values.
+    'x-retry-count': 1,
+  },
+};
+_wrongProcedureSuccessHeaders.data.name.toUpperCase();
+const _wrongProcedureResultHeaders: SubpathProcedureResult<
+  { id: string; name: string },
+  'NOT_FOUND',
+  { message: string },
+  { 'x-retry-count': number }
+> = {
+  kind: 'success',
+  data: { id: '1', name: 'Ada' },
+  headers: {
+    // @ts-expect-error procedure result headers must be HTTP string values.
+    'x-retry-count': 1,
+  },
+};
+if (_wrongProcedureResultHeaders.kind === 'success') {
+  _wrongProcedureResultHeaders.data.name.toUpperCase();
+}
 if (subpathProcedureResult.kind === 'success') {
   subpathProcedureResult.data.name.toUpperCase();
 }

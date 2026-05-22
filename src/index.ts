@@ -210,7 +210,11 @@ export type {
   RpcError,
   StreamEvent,
 } from './procedure/types.js';
-export type { ProcedureFailure, ProcedureSuccess } from './procedure/result.js';
+export type {
+  ProcedureFailure,
+  ProcedureResponseHeaderValues,
+  ProcedureSuccess,
+} from './procedure/result.js';
 export type {
   BunServeOptionsFor,
   BunServeOptions,

@@ -40,6 +40,7 @@ export type {
 } from './types.js';
 export type {
   ProcedureFailure,
+  ProcedureResponseHeaderValues,
   ProcedureResult,
   ProcedureSuccess,
 } from './result.js';
