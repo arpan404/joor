@@ -66,6 +66,7 @@ export type {
 } from './config.js';
 export type {
   JoorManifest,
+  JoorManifestClientOptions,
   JoorManifestRouteBody,
   JoorManifestRouteBodyResultFor,
   JoorManifestRouteBodyResult,
@@ -100,6 +101,7 @@ export type {
   JoorManifestRouteUnaryProtocolRequestUnion,
   JoorManifestRoutes,
   JoorManifestStreamRouteId,
+  JoorManifestTransportClient,
   JoorManifestUnaryRouteId,
   JoorRouteMap,
 } from './manifest.js';

@@ -243,7 +243,8 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type RouteErrorCode');
       expect(clientSource).toContain('export type RouteErrorDetails');
       expect(clientSource).toContain('export type RouteRequestOptions');
-      expect(clientSource).toContain(
+      expect(clientSource).toContain('JoorManifestClientOptions<Manifest>');
+      expect(clientSource).not.toContain(
         "import type { ClientOptions } from 'joor/client';"
       );
       await expect(

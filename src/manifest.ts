@@ -14,6 +14,8 @@ import type {
   RpcRouteBodyResultFor,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
+  RpcManifestClientOptions,
+  RpcManifestTransportClient,
   RpcRouteClientArgs,
   RpcRouteEnvelope,
   RpcRouteError,
@@ -55,6 +57,12 @@ export type JoorManifestRoutes<TManifest> = TManifest extends {
 }
   ? TProcedures
   : never;
+
+export type JoorManifestTransportClient<TManifest extends JoorManifest> =
+  RpcManifestTransportClient<TManifest>;
+
+export type JoorManifestClientOptions<TManifest extends JoorManifest> =
+  RpcManifestClientOptions<TManifest>;
 
 export type JoorManifestRouteId<TManifest> = RpcRouteId<
   JoorManifestRoutes<TManifest>

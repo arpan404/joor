@@ -99,6 +99,7 @@ import {
   type JsonObject,
   type JsonPrimitive,
   type JoorFetchHandler,
+  type JoorManifestClientOptions,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
   type JoorManifestRouteBodyResultFor,
@@ -133,6 +134,7 @@ import {
   type JoorManifestRouteUnaryProtocolRequestUnion,
   type JoorManifestRoutes,
   type JoorManifestStreamRouteId,
+  type JoorManifestTransportClient,
   type JoorManifestUnaryRouteId,
   type LegacyRpcTransportClient,
   type ListenOptionsFor,
@@ -295,6 +297,7 @@ import {
 } from '../src/rpc/index.js';
 import {
   defineManifest as defineManifestSubpath,
+  type JoorManifestClientOptions as JoorSubpathManifestClientOptions,
   type JoorManifestRouteBody as JoorSubpathManifestRouteBody,
   type JoorManifestRouteBodyResultFor as JoorSubpathManifestRouteBodyResultFor,
   type JoorManifestRouteClientArgs as JoorSubpathManifestRouteClientArgs,
@@ -307,6 +310,7 @@ import {
   type JoorManifestRouteServices as JoorSubpathManifestRouteServices,
   type JoorManifestRouteStreamProtocolRequest as JoorSubpathManifestRouteStreamProtocolRequest,
   type JoorManifestRoutes as JoorSubpathManifestRoutes,
+  type JoorManifestTransportClient as JoorSubpathManifestTransportClient,
 } from '../src/manifest.js';
 import {
   defineProcedure as defineProcedureSubpath,
@@ -1551,6 +1555,13 @@ const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
   typeof manifest
 > = rootManifestClient;
 rpcSubpathManifestClientShape.call('users.authenticated', { ok: true });
+const joorManifestClientShape: JoorManifestTransportClient<typeof manifest> =
+  rootManifestClient;
+const joorSubpathManifestClientShape: JoorSubpathManifestTransportClient<
+  typeof manifestFromSubpath
+> = joorManifestClientShape;
+joorManifestClientShape.call('users.authenticated', { ok: true });
+joorSubpathManifestClientShape.call('users.authenticated', { ok: true });
 const clientFetch: ClientFetch = async (request) => new Response(request.url);
 const rpcSubpathClientFetch: RpcSubpathClientFetch = clientFetch;
 clientFetch(new Request('https://example.com/rpc'));
@@ -1565,6 +1576,13 @@ const rpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
   typeof manifest
 > = manifestClientOptions;
 createRootManifestClient(manifest, rpcSubpathManifestClientOptions);
+const joorManifestClientOptions: JoorManifestClientOptions<typeof manifest> =
+  manifestClientOptions;
+const joorSubpathManifestClientOptions: JoorSubpathManifestClientOptions<
+  typeof manifestFromSubpath
+> = joorManifestClientOptions;
+createRootManifestClient(manifest, joorManifestClientOptions);
+createRootManifestClient(manifestFromSubpath, joorSubpathManifestClientOptions);
 rootManifestClient.call('users.authenticated', { ok: true });
 
 // @ts-expect-error root manifest clients keep route id safety.
