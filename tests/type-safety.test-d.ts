@@ -26,10 +26,15 @@ import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
+  isJsonObject,
   listen,
+  parseJson,
   serveBun,
   serveDeno,
   t,
+  toJsonSchema,
+  validate,
+  type ArrayChain,
   type BunServeOptionsFor,
   type BunServeOptions,
   type AuthPolicyAuth,
@@ -51,6 +56,9 @@ import {
   type JoorConfig,
   type JoorConfigContext,
   type PluginServices,
+  type Infer,
+  type JsonObject,
+  type JsonPrimitive,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
   type JoorManifestRouteBodyResultFor,
@@ -140,6 +148,11 @@ import {
   type RpcStreamRouteId,
   type RpcUnaryProcedure,
   type RpcUnaryRouteId,
+  type Schema,
+  type SchemaMeta,
+  type StringSchema,
+  type ValidationResult,
+  type OpenApiSchema,
   type JsonValue,
 } from '../src/index.js';
 import {
@@ -571,6 +584,47 @@ const _missingSubpathProcedureFailureDetails: SubpathProcedureFailure<
     status: 404,
   },
 };
+
+const rootUserSchema = t.object({
+  id: t.string().uuid(),
+  email: t.string().email(),
+  tags: t.array(t.string()),
+  nickname: t.string().optional(),
+});
+const rootSchema: Schema = rootUserSchema;
+rootSchema.kind.toUpperCase();
+const rootStringSchema: StringSchema = t.string().min(1);
+rootStringSchema.kind.toUpperCase();
+const rootSchemaMeta: SchemaMeta = { description: 'User payload' };
+rootSchemaMeta.description?.toUpperCase();
+const rootArrayChain: ArrayChain<typeof rootStringSchema> = t
+  .array(rootStringSchema)
+  .min(1);
+rootArrayChain.item.kind.toUpperCase();
+const rootUserValue: Infer<typeof rootUserSchema> = {
+  id: '550e8400-e29b-41d4-a716-446655440000',
+  email: 'ada@example.com',
+  tags: ['member'],
+};
+rootUserValue.email.toUpperCase();
+const rootParsedJson: JsonValue = parseJson(
+  '{"id":"550e8400-e29b-41d4-a716-446655440000","email":"ada@example.com","tags":["member"]}'
+);
+const rootJsonPrimitive: JsonPrimitive = 'value';
+rootJsonPrimitive.toUpperCase();
+if (isJsonObject(rootParsedJson)) {
+  const rootJsonObject: JsonObject = rootParsedJson;
+  rootJsonObject['email'];
+}
+const rootValidation: ValidationResult<Infer<typeof rootUserSchema>> = validate(
+  rootUserSchema,
+  rootParsedJson
+);
+if (rootValidation.ok) {
+  rootValidation.value.tags[0]?.toUpperCase();
+}
+const rootOpenApiSchema: OpenApiSchema = toJsonSchema(rootUserSchema);
+rootOpenApiSchema['type'];
 
 const schemaSubpathUserSchema = schemaSubpathT.object({
   id: schemaSubpathT.string(),

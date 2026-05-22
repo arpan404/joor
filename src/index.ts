@@ -36,6 +36,9 @@ export {
 } from './runtime/node.js';
 export { createVercelFetch } from './runtime/vercel.js';
 export { t } from './schema/builder.js';
+export { isJsonObject, parseJson } from './schema/json.js';
+export { toJsonSchema } from './schema/openapi.js';
+export { validate } from './schema/validate.js';
 
 export type {
   AuthPolicy,
@@ -202,5 +205,40 @@ export type {
   NodeTransportBodyResult,
   NodeTransportBodyResultHandler,
 } from './runtime/node.js';
-export type { JsonValue } from './schema/json.js';
+export type {
+  ArrayChain,
+  BooleanChain,
+  EnumChain,
+  JsonChain,
+  LiteralChain,
+  NumberChain,
+  ObjectChain,
+  RecordChain,
+  StringChain,
+  UnionChain,
+} from './schema/builder.js';
 export type { Infer } from './schema/infer.js';
+export type { JsonObject, JsonPrimitive, JsonValue } from './schema/json.js';
+export type { OpenApiSchema } from './schema/openapi.js';
+export type {
+  ArraySchema,
+  BaseSchema,
+  BooleanSchema,
+  EnumSchema,
+  InferObject,
+  InferSchema,
+  JsonSchema,
+  LiteralSchema,
+  NullableSchema,
+  NumberSchema,
+  ObjectSchema,
+  OptionalSchema,
+  RecordSchema,
+  Schema,
+  SchemaMeta,
+  SchemaShape,
+  StringSchema,
+  UnionSchema,
+  ValidationIssue,
+} from './schema/types.js';
+export type { ValidationResult } from './schema/validate.js';
