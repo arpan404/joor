@@ -28,7 +28,7 @@ export interface ClientOptions<
 > {
   url: string;
   fetch?: ClientFetch;
-  headers?: Record<string, string>;
+  headers?: ClientHeaderValues;
   manifest?: TManifest;
   maxStreamEventBytes?: number;
 }
@@ -414,16 +414,25 @@ export type RpcManifestClientOptions<TManifest extends JoorManifest> = Omit<
   'manifest'
 >;
 
-const createHeaders = (
-  baseHeaders?: Record<string, string>,
-  requestHeaders?: object
-): Headers => {
-  const output = new Headers(baseHeaders);
-  if (requestHeaders !== undefined) {
-    for (const [key, value] of Object.entries(requestHeaders)) {
-      if (typeof value === 'string') output.set(key, value);
+const appendStringHeaders = (
+  output: Headers,
+  values: object | undefined
+): void => {
+  if (values === undefined) return;
+  for (const [key, value] of Object.entries(values)) {
+    if (typeof value === 'string') {
+      output.set(key, value);
     }
   }
+};
+
+const createHeaders = (
+  baseHeaders?: ClientHeaderValues,
+  requestHeaders?: object
+): Headers => {
+  const output = new Headers();
+  appendStringHeaders(output, baseHeaders);
+  appendStringHeaders(output, requestHeaders);
   output.set('content-type', 'application/json');
   return output;
 };
@@ -541,12 +550,9 @@ export function createClient(
       id: pending.id,
       input: pending.input as JsonValue,
     }));
-    const requestHeaders = new Headers(options.headers);
+    const requestHeaders = createHeaders(options.headers);
     for (const pending of requests) {
-      if (pending.headers === undefined) continue;
-      for (const [key, value] of Object.entries(pending.headers)) {
-        if (typeof value === 'string') requestHeaders.set(key, value);
-      }
+      appendStringHeaders(requestHeaders, pending.headers);
     }
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(

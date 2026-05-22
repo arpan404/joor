@@ -64,6 +64,60 @@ describe('client', () => {
     expect(result.ok).toBe(true);
   });
 
+  it('skips undefined configured and request headers', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      headers: t.object({
+        authorization: t.optional(t.string()),
+      }),
+      output: t.object({}),
+      async handler(ctx) {
+        return ctx.ok({});
+      },
+    });
+    const seen: Headers[] = [];
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      headers: {
+        authorization: undefined,
+        'x-base': 'base',
+      },
+      async fetch(request) {
+        seen.push(request.headers);
+        const body = await request.json();
+        return Response.json(
+          Array.isArray(body) ? [] : { ok: true, id: body.id, data: {} }
+        );
+      },
+    });
+
+    await client.call<typeof procedure>(
+      'single',
+      { ok: true },
+      {
+        headers: {
+          authorization: 'Bearer request',
+        },
+      }
+    );
+    await client.batch([
+      {
+        id: 'batch',
+        input: { ok: true },
+        headers: {
+          authorization: undefined,
+          'x-batch': 'batch',
+        },
+      },
+    ]);
+
+    expect(seen[0]?.get('authorization')).toBe('Bearer request');
+    expect(seen[0]?.get('x-base')).toBe('base');
+    expect(seen[1]?.get('authorization')).toBeNull();
+    expect(seen[1]?.get('x-base')).toBe('base');
+    expect(seen[1]?.get('x-batch')).toBe('batch');
+  });
+
   it('bounds SSE event buffering', async () => {
     const client = createClient({
       url: 'http://localhost/rpc',

@@ -58,6 +58,7 @@ import {
   type BunTransportRequestHandler,
   type ClientFetch,
   type ClientHeaderValues,
+  type ClientOptions,
   type CloudflareFetchHandler,
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
@@ -280,6 +281,7 @@ import {
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
   type ClientFetch as RpcSubpathClientFetch,
+  type ClientOptions as RpcSubpathClientOptions,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
@@ -1596,7 +1598,7 @@ rpcSubpathClientFetch(new Request('https://example.com/rpc'));
 const manifestClientOptions: RpcManifestClientOptions<typeof manifest> = {
   url: '/rpc',
   fetch: clientFetch,
-  headers: { authorization: 'Bearer token' },
+  headers: { authorization: 'Bearer token', 'x-optional': undefined },
 };
 createRootManifestClient(manifest, manifestClientOptions);
 const rpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
@@ -1610,6 +1612,17 @@ const joorSubpathManifestClientOptions: JoorSubpathManifestClientOptions<
 > = joorManifestClientOptions;
 createRootManifestClient(manifest, joorManifestClientOptions);
 createRootManifestClient(manifestFromSubpath, joorSubpathManifestClientOptions);
+const clientOptionsWithOptionalHeaders: ClientOptions = {
+  url: '/rpc',
+  headers: {
+    authorization: 'Bearer token',
+    'x-optional': undefined,
+  },
+};
+const rpcSubpathClientOptionsWithOptionalHeaders: RpcSubpathClientOptions =
+  clientOptionsWithOptionalHeaders;
+createRootClient(clientOptionsWithOptionalHeaders);
+createClient(rpcSubpathClientOptionsWithOptionalHeaders);
 rootManifestClient.call('users.authenticated', { ok: true });
 
 // @ts-expect-error root manifest clients keep route id safety.
