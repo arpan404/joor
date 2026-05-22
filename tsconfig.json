@@ -43,6 +43,7 @@
       "joor/procedure": ["./src/procedure/index.ts"],
       "joor/schema": ["./src/schema/index.ts"],
       "joor/context": ["./src/context/index.ts"],
+      "joor/runtime": ["./src/runtime/index.ts"],
       "joor/runtime/*": ["./src/runtime/*.ts"],
       "@/*": ["./src/*"]
     },

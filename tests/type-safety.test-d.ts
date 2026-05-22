@@ -182,6 +182,18 @@ import type {
   CompiledFixedUnaryDispatch,
   CompiledRuntimeState,
 } from '../src/runtime/compiled.js';
+import {
+  createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
+  createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
+  createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
+  createJoorHandler as createRuntimeSubpathJoorHandler,
+  createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
+  createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
+  type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
+  type DenoTransportBodyResult as RuntimeSubpathDenoTransportBodyResult,
+  type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
+  type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
+} from '../src/runtime/index.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -1129,6 +1141,45 @@ createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
 routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+const runtimeSubpathFetch = createRuntimeSubpathJoorHandler(
+  manifest,
+  handlerOptions
+);
+runtimeSubpathFetch(new Request('https://example.com/rpc'));
+const runtimeSubpathDenoResult: RuntimeSubpathDenoTransportBodyResult =
+  transportResult;
+runtimeSubpathDenoResult.id.toUpperCase();
+const runtimeSubpathBunTransportHandler: RuntimeSubpathBunTransportBodyResultHandler<
+  typeof manifestRouteRequest,
+  JoorManifestRouteBodyResultFor<typeof manifest, typeof manifestRouteRequest>
+> = async (_request, body) => {
+  body.input.id.toUpperCase();
+  return manifestRouteEnvelope;
+};
+createRuntimeSubpathBunTransportRequestHandler(
+  runtimeSubpathBunTransportHandler
+);
+createRuntimeSubpathDenoTransportRequestHandler(
+  runtimeSubpathBunTransportHandler
+);
+const runtimeSubpathNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultHandler<
+  typeof manifestRouteRequest,
+  JoorManifestRouteBodyResultFor<typeof manifest, typeof manifestRouteRequest>
+> = runtimeSubpathBunTransportHandler;
+createRuntimeSubpathNodeTransportRequestHandler(
+  runtimeSubpathNodeTransportHandler
+);
+runtimeSubpathNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  // @ts-expect-error aggregate runtime transport handlers preserve route body input.
+  input: { ok: true },
+});
+const runtimeSubpathNextHandlers: RuntimeSubpathNextRouteHandlers =
+  createRuntimeSubpathNextRouteHandlers(manifest);
+runtimeSubpathNextHandlers.POST(new Request('https://example.com/rpc'));
+const runtimeSubpathCloudflareWorker =
+  createRuntimeSubpathCloudflareWorker(manifest);
+runtimeSubpathCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
 const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
