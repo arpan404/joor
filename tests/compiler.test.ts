@@ -106,6 +106,12 @@ describe('compiler', () => {
       ).resolves.toContain('export type NativeServices');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeRouteInput');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeRouteErrorDetails');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeUnaryDispatch =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -372,7 +378,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
-import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -393,6 +399,42 @@ routeServices.users.findById('1')?.name.toUpperCase();
 const nativeServices: NativeServices = {};
 nativeRuntime.getServices();
 nativeServices;
+const nativeRequiredServices: NativeRequiredServices = requiredServices;
+nativeRequiredServices.users.findById('1')?.name.toUpperCase();
+const nativeRouteServices: NativeRouteServices<'users.get'> = requiredServices;
+nativeRouteServices.users.findById('1')?.name.toUpperCase();
+const nativeRouteInput: NativeRouteInput<'users.get'> = {
+  id: '550e8400-e29b-41d4-a716-446655440000',
+};
+nativeRouteInput.id.toUpperCase();
+const nativeRouteOutput: NativeRouteOutput<'users.get'> = {
+  id: '1',
+  name: 'Ada',
+};
+nativeRouteOutput.name.toUpperCase();
+const nativeRouteHasHeaders: NativeRouteHasHeaders<'tenants.current'> = true;
+nativeRouteHasHeaders.valueOf();
+const nativeRouteRequiresHeaders: NativeRouteRequiresHeaders<'tenants.current'> = true;
+nativeRouteRequiresHeaders.valueOf();
+const nativeRouteResponseHeaders: NativeRouteResponseHeaders<'users.get'> = {
+  'cache-control': 'private',
+};
+nativeRouteResponseHeaders['cache-control'].toUpperCase();
+const nativeRouteHasResponseHeaders: NativeRouteHasResponseHeaders<'users.get'> = true;
+nativeRouteHasResponseHeaders.valueOf();
+const nativeRouteRequiresResponseHeaders: NativeRouteRequiresResponseHeaders<'users.get'> = true;
+nativeRouteRequiresResponseHeaders.valueOf();
+const nativeRouteErrorCode: NativeRouteErrorCode<'users.get'> = 'NOT_FOUND';
+nativeRouteErrorCode.toUpperCase();
+const nativeRouteErrorDetails: NativeRouteErrorDetails<'users.get', 'NOT_FOUND'> = {
+  message: 'Missing',
+};
+nativeRouteErrorDetails.message.toUpperCase();
+const nativeRouteStreamEvent: NativeRouteStreamEvent<'users.watch'> = {
+  type: 'user.updated',
+  userId: '1',
+};
+nativeRouteStreamEvent.userId.toUpperCase();
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;
@@ -413,6 +455,8 @@ const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
 const tenantHeaders: RouteHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
 tenantHeaders['x-tenant-id'].toUpperCase();
+const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
+nativeRouteHeaders['x-tenant-id'].toUpperCase();
 const usersGetHasHeaders: RouteHasHeaders<'users.get'> = true;
 usersGetHasHeaders.valueOf();
 const usersGetRequiresHeaders: RouteRequiresHeaders<'users.get'> = false;
@@ -519,6 +563,7 @@ const nativeStreamBody: NativeStreamProtocolRequest = {
 const nativeBody: NativeBody = nativeUnaryBody;
 const nativeBodyResult: NativeBodyResult = routeBodyResult;
 const nativeBodyResultFor: NativeBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
+const nativeRouteResult: NativeRouteResult<'users.get'> = nativeBodyResult;
 const nativeTransportResult: NativeTransportResult = nativeBodyResult;
 const nativeUnaryTransportResult: NativeTransportResultFor<typeof nativeUnaryBody> = nativeBodyResult;
 const isNativeResultArray = (
@@ -551,6 +596,9 @@ if (!(nativeTransportResult instanceof Response) && !isNativeResultArray(nativeT
 }
 if (!(nativeBodyResultFor instanceof Response) && nativeBodyResultFor.ok) {
   nativeBodyResultFor.data.name.toUpperCase();
+}
+if (nativeRouteResult.ok) {
+  nativeRouteResult.data.name.toUpperCase();
 }
 if (!(nativeUnaryTransportResult instanceof Response) && !('body' in nativeUnaryTransportResult) && nativeUnaryTransportResult.ok) {
   nativeUnaryTransportResult.data.name.toUpperCase();
