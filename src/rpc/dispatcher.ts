@@ -57,8 +57,13 @@ import {
   rpcEnvelopeToResponse,
 } from '../runtime/response.js';
 
-export interface RpcManifest {
-  procedures: Record<string, ProcedureRuntime>;
+export interface RpcManifest<
+  TProcedures extends Record<string, ProcedureRuntime> = Record<
+    string,
+    ProcedureRuntime
+  >,
+> {
+  procedures: TProcedures;
 }
 
 export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;

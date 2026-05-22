@@ -395,6 +395,12 @@ defineManifest({ procedures: { broken: { input: t.string() } } });
 
 const publicManifest: RpcManifest = manifest;
 publicManifest.procedures['users.get'];
+const typedPublicManifest: RpcManifest<ManifestRoutes> = manifest;
+typedPublicManifest.procedures['users.get'].output;
+
+// @ts-expect-error RpcManifest route maps require procedure runtimes.
+type _WrongRpcManifest = RpcManifest<{ broken: { input: string } }>;
+
 const handlerOptions: HandlerOptions = { path: '/rpc' };
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
 fetchHandler(new Request('https://example.com/rpc'));
