@@ -55,6 +55,8 @@ import {
   type JoorManifestRouteRequest,
   type JoorManifestRouteRequestUnion,
   type JoorManifestRouteResponseHeaders,
+  type JoorManifestRequiredServices,
+  type JoorManifestRouteServices,
   type JoorManifestRouteStreamEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
@@ -166,6 +168,8 @@ import {
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
+  type JoorManifestRequiredServices as JoorSubpathManifestRequiredServices,
+  type JoorManifestRouteServices as JoorSubpathManifestRouteServices,
   type JoorManifestRouteStreamProtocolRequest as JoorSubpathManifestRouteStreamProtocolRequest,
   type JoorManifestRoutes as JoorSubpathManifestRoutes,
 } from '../src/manifest.js';
@@ -603,6 +607,15 @@ const manifest = defineManifest({
   },
 });
 type ManifestRoutes = JoorManifestRoutes<typeof manifest>;
+const joorManifestRequiredServices: JoorManifestRequiredServices<
+  typeof manifest
+> = procedureServices;
+joorManifestRequiredServices.users.findById('1').name.toUpperCase();
+const joorManifestRouteServices: JoorManifestRouteServices<
+  typeof manifest,
+  'users.get'
+> = procedureServices;
+joorManifestRouteServices.users.findById('1');
 const manifestRequiredServices: RpcManifestRequiredServices<typeof manifest> =
   procedureServices;
 manifestRequiredServices.users.findById('1').id.toUpperCase();
@@ -630,6 +643,15 @@ const manifestSubpathRouteInput: JoorSubpathManifestRouteInput<
   'users.get'
 > = { id: '1' };
 manifestSubpathRouteInput.id.toUpperCase();
+const manifestSubpathRequiredServices: JoorSubpathManifestRequiredServices<
+  typeof manifestFromSubpath
+> = procedureServices;
+manifestSubpathRequiredServices.users.findById('1').id.toUpperCase();
+const manifestSubpathRouteServices: JoorSubpathManifestRouteServices<
+  typeof manifestFromSubpath,
+  'users.get'
+> = procedureServices;
+manifestSubpathRouteServices.users.findById('1');
 const _manifestSubpathRoutes: ManifestSubpathRoutes =
   manifestFromSubpath.procedures;
 _manifestSubpathRoutes['users.get'].input;

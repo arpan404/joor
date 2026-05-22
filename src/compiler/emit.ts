@@ -1989,7 +1989,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor/manifest';
+import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -1997,6 +1997,8 @@ export type RouteId = JoorManifestRouteId<Manifest>;
 export type UnaryRouteId = JoorManifestUnaryRouteId<Manifest>;
 export type StreamRouteId = JoorManifestStreamRouteId<Manifest>;
 export type RouteProcedure<TId extends RouteId> = Manifest['procedures'][TId];
+export type RequiredServices = JoorManifestRequiredServices<Manifest>;
+export type RouteServices<TId extends RouteId> = JoorManifestRouteServices<Manifest, TId>;
 export type RouteInput<TId extends RouteId> = JoorManifestRouteInput<Manifest, TId>;
 export type RouteOutput<TId extends UnaryRouteId> = JoorManifestRouteOutput<Manifest, TId>;
 export type RouteHeaders<TId extends RouteId> = JoorManifestRouteHeaders<Manifest, TId>;

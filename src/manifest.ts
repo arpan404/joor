@@ -1,9 +1,12 @@
-import type { ProcedureRuntime } from './procedure/types.js';
+import type { ProcedureRuntime, ProcedureServices } from './procedure/types.js';
+import type { UnionToIntersection } from './context/plugin.js';
 import type {
   RpcManifest,
   RpcManifestBody,
   RpcManifestBodyResult,
   RpcManifestBodyResultFor,
+  RpcManifestRequiredServices,
+  RpcManifestRouteServices,
 } from './rpc/dispatcher.js';
 import type {
   RpcRouteBody,
@@ -61,6 +64,25 @@ export type JoorManifestRouteProcedure<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteServices<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = TManifest extends JoorManifest
+  ? RpcManifestRouteServices<TManifest, TId & JoorManifestRouteId<TManifest>>
+  : ProcedureServices<JoorManifestRouteProcedure<TManifest, TId>>;
+
+export type JoorManifestRequiredServices<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRequiredServices<TManifest>
+    : UnionToIntersection<
+        {
+          [TId in JoorManifestRouteId<TManifest>]: JoorManifestRouteServices<
+            TManifest,
+            TId
+          >;
+        }[JoorManifestRouteId<TManifest>]
+      >;
 
 export type JoorManifestRouteInput<
   TManifest,

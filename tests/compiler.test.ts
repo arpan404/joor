@@ -172,6 +172,12 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteBodyResultFor');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RequiredServices');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteServices');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('export type RouteProtocolRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -327,13 +333,25 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
 const options: GeneratedClientOptions = { headers: { authorization: 'token' } };
 createClient(options).users.watch({ userId: '1' });
+const requiredServices: RequiredServices = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+    async *watch(userId) {
+      yield { type: 'user.updated' as const, userId };
+    },
+  },
+};
+const routeServices: RouteServices<'users.get'> = requiredServices;
+routeServices.users.findById('1')?.name.toUpperCase();
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;

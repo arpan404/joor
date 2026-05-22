@@ -66,6 +66,8 @@ export type {
   JoorManifestRouteRequest,
   JoorManifestRouteRequestUnion,
   JoorManifestRouteResponseHeaders,
+  JoorManifestRequiredServices,
+  JoorManifestRouteServices,
   JoorManifestRouteStreamEvent,
   JoorManifestRouteStreamProtocolRequest,
   JoorManifestRouteStreamProtocolRequestUnion,
