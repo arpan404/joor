@@ -1735,6 +1735,10 @@ const protocolBatch: RpcBatchRequest<[typeof protocolRequest]> = [
   protocolRequest,
 ];
 protocolBatch[0].id.toUpperCase();
+const readonlyProtocolBatch = [protocolRequest] as const;
+const protocolReadonlyBatch: RpcBatchRequest<typeof readonlyProtocolBatch> =
+  readonlyProtocolBatch;
+protocolReadonlyBatch[0].input?.id.toUpperCase();
 const frameworkCode: RpcFrameworkErrorCode = 'VALIDATION_ERROR';
 frameworkCode.toUpperCase();
 const protocolError: RpcProtocolError<
@@ -1785,6 +1789,13 @@ const protocolResponse: RpcResponse<
   typeof protocolError
 > = [protocolEnvelope, protocolFailure];
 protocolResponse[0]?.id.toUpperCase();
+const protocolReadonlyResponse: RpcResponse<
+  { id: string },
+  'users.get',
+  { 'cache-control': string },
+  typeof protocolError
+> = [protocolEnvelope, protocolFailure] as const;
+protocolReadonlyResponse[0]?.id.toUpperCase();
 
 const routeResponseHeaders: RpcRouteResponseHeaders<Routes, 'users.get'> = {
   'cache-control': 'private',

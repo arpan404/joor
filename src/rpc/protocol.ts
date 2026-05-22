@@ -39,7 +39,7 @@ export interface RpcRequest<
 }
 
 export type RpcBatchRequest<
-  TRequests extends readonly RpcRequest[] = RpcRequest[],
+  TRequests extends readonly RpcRequest[] = readonly RpcRequest[],
 > = TRequests;
 
 export interface RpcSuccess<
@@ -78,7 +78,7 @@ export type RpcResponse<
   TError extends RpcError = RpcError,
 > =
   | RpcEnvelope<TData, TId, THeaders, TError>
-  | RpcEnvelope<TData, TId, THeaders, TError>[];
+  | readonly RpcEnvelope<TData, TId, THeaders, TError>[];
 
 export const validationDetails = (issues: ValidationIssue[]): JsonObject => ({
   issues: issues.map((item) => ({ path: item.path, message: item.message })),
