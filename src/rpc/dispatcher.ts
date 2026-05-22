@@ -490,6 +490,24 @@ export interface JoorMiddleware<
   name: string;
 }
 
+export type HandlerHookContextFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerHookContext<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+
+export type HandlerHooksFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerHooks<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+
+export type JoorMiddlewareFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = JoorMiddleware<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+
 const rateLimitWindows = new Map<string, RateLimitWindow>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;

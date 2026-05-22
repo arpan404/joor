@@ -60,11 +60,14 @@ import {
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
   type HandlerHookContext,
+  type HandlerHookContextFor,
   type HandlerHooks,
+  type HandlerHooksFor,
   type HandlerOptionServices,
   type HandlerOptionsFor,
   type HandlerOptions,
   type JoorMiddleware,
+  type JoorMiddlewareFor,
   type JoorConfig,
   type JoorConfigContext,
   type JoorContext,
@@ -229,6 +232,9 @@ import {
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
+  type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
+  type HandlerHooksFor as RpcSubpathHandlerHooksFor,
+  type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcRouteBody as RpcSubpathRouteBody,
@@ -2019,6 +2025,38 @@ if (
 ) {
   typedHandlerHookContext.body.id.toUpperCase();
 }
+const manifestHandlerHookContext: HandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  services: rootPluginServices,
+  body: manifestRouteRequest,
+};
+if (
+  manifestHandlerHookContext.body !== undefined &&
+  !('length' in manifestHandlerHookContext.body) &&
+  manifestHandlerHookContext.body.id === 'users.get'
+) {
+  manifestHandlerHookContext.body.input.id.toUpperCase();
+}
+const rpcSubpathManifestHandlerHookContext: RpcSubpathHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestHandlerHookContext;
+rpcSubpathManifestHandlerHookContext.services.users
+  .findById('1')
+  .name.toUpperCase();
+const _wrongManifestHandlerHookContext: HandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  services: rootPluginServices,
+  // @ts-expect-error manifest-aware hook contexts reject unknown body route ids.
+  body: {
+    id: 'users.missing',
+    input: { id: '1' },
+  },
+};
 const serviceAwareHandlerHooks: HandlerHooks<RootPluginServices> = {
   beforeRequest(_request, context) {
     context.services.users.findById('1').name.toUpperCase();
@@ -2040,6 +2078,53 @@ const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
     return undefined;
   },
 };
+const manifestAwareHandlerHooks: HandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  beforeRequest(_request, context) {
+    context.services.users.findById('1').name.toUpperCase();
+    if (
+      context.body !== undefined &&
+      !('length' in context.body) &&
+      context.body.id === 'users.get'
+    ) {
+      context.body.input.id.toUpperCase();
+      // @ts-expect-error manifest-aware hooks keep route input exact.
+      context.body.input.missing;
+    }
+    return undefined;
+  },
+};
+const rpcSubpathManifestAwareHandlerHooks: RpcSubpathHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestAwareHandlerHooks;
+rpcSubpathManifestAwareHandlerHooks.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestHandlerHookContext
+);
+const manifestAwareMiddleware: JoorMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  name: 'route-audit',
+  afterResponse(response, _request, context) {
+    if (
+      context.body !== undefined &&
+      !('length' in context.body) &&
+      context.body.id === 'users.authenticated'
+    ) {
+      context.body.input.ok.valueOf();
+    }
+    return response;
+  },
+};
+const rpcSubpathManifestAwareMiddleware: RpcSubpathJoorMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestAwareMiddleware;
+rpcSubpathManifestAwareMiddleware.name.toUpperCase();
 const handlerOptionsWithHooks: HandlerOptions<readonly [typeof usersPlugin]> = {
   path: '/rpc',
   plugins: [usersPlugin] as const,

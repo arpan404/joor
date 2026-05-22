@@ -144,7 +144,9 @@ export type {
 } from './rpc/client.js';
 export type {
   HandlerHookContext,
+  HandlerHookContextFor,
   HandlerHooks,
+  HandlerHooksFor,
   DefineHandlerOptions,
   HandlerOptionServices,
   HandlerOptionsArgsFor,
@@ -154,6 +156,7 @@ export type {
   HandlerOptionsWithTrailingArgs,
   HandlerOptions,
   JoorMiddleware,
+  JoorMiddlewareFor,
   RpcBodyResult,
   RpcBodyResultHandler,
   RpcManifestBody,
