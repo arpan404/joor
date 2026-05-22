@@ -102,11 +102,14 @@ describe('compiler', () => {
       ).resolves.toContain('export const nativeRuntime =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeServices');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeUnaryDispatch =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
-        'const serializedUnaryDispatch: CompiledFixedUnaryDispatch'
+        'const serializedUnaryDispatch: CompiledFixedUnaryDispatch<NativeServices>'
       );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -131,7 +134,7 @@ describe('compiler', () => {
         'utf8'
       );
       const postsListMatch = dispatcher.match(
-        /const posts_list_execute_serialized: CompiledFixedDispatch = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch = async \(/
+        /const posts_list_execute_serialized: CompiledFixedDispatch<NativeServices> = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch<NativeServices> = async \(/
       );
       expect(postsListMatch?.[0]).toBeDefined();
       expect(postsListMatch?.[0]).not.toContain('compiledAuthenticate');
@@ -140,7 +143,9 @@ describe('compiler', () => {
       expect(postsListMatch?.[0]).not.toContain('compiledRateLimitFailure');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('const dispatchSerialized: CompiledDispatch');
+      ).resolves.toContain(
+        'const dispatchSerialized: CompiledDispatch<NativeServices>'
+      );
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
@@ -282,6 +287,14 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('joor.config.ts');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/context'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain(
+        'export type NativeServices = JoorConfigContext<typeof config>'
+      );
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
@@ -334,7 +347,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
-import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -352,6 +365,9 @@ const requiredServices: RequiredServices = {
 };
 const routeServices: RouteServices<'users.get'> = requiredServices;
 routeServices.users.findById('1')?.name.toUpperCase();
+const nativeServices: NativeServices = {};
+nativeRuntime.getServices();
+nativeServices;
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;

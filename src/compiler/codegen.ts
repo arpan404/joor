@@ -3,6 +3,7 @@ import type { Schema } from '../schema/types.js';
 import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledProcedureGenerationOptions {
+  dispatchServicesType?: string;
   enforceRateLimit: boolean;
   includeDispatchWrapper?: boolean;
   modes?: readonly CompiledProcedureMode[];
@@ -700,6 +701,8 @@ export const emitCompiledProcedureSource = (
   entry: LoadedProcedure,
   options: CompiledProcedureGenerationOptions
 ): string => {
+  const compiledFixedDispatchType = `CompiledFixedDispatch${options.dispatchServicesType === undefined ? '' : `<${options.dispatchServicesType}>`}`;
+  const compiledDispatchType = `CompiledDispatch${options.dispatchServicesType === undefined ? '' : `<${options.dispatchServicesType}>`}`;
   if (entry.procedure.output === undefined) return '';
   const modes = options.modes ?? (['body', 'serialized', 'response'] as const);
   const base = entry.exportName;
@@ -950,7 +953,7 @@ export const emitCompiledProcedureSource = (
     | { kind: 'error'; error: RpcError };`;
   const emitExecutor = (
     mode: 'body' | 'serialized' | 'response'
-  ): string => `${mode === 'body' ? '' : '\n'}const ${base}_execute_${mode}: CompiledFixedDispatch = async (
+  ): string => `${mode === 'body' ? '' : '\n'}const ${base}_execute_${mode}: ${compiledFixedDispatchType} = async (
   rpcRequest,
   request,
   services,
@@ -987,7 +990,7 @@ export const emitCompiledProcedureSource = (
     options.includeDispatchWrapper === false || modes.length === 1
       ? ''
       : `
-const ${base}_execute: CompiledDispatch = async (
+const ${base}_execute: ${compiledDispatchType} = async (
   rpcRequest,
   request,
   services,

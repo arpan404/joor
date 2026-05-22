@@ -70,6 +70,7 @@ const emitProfileDispatcher = async (
   const configValue = configPath === undefined ? '{}' : 'config';
   const generationOptions: CompiledProcedureGenerationOptions = {
     ...profileOptions,
+    dispatchServicesType: 'NativeServices',
     includeDispatchWrapper: false,
     modes,
   };
@@ -153,6 +154,14 @@ const emitProfileDispatcher = async (
     ? "import type { RpcError } from 'joor/procedure';\n"
     : '';
   const manifestTypeImport = `import type { ${manifestTypeImports.join(', ')} } from 'joor/manifest';\n`;
+  const serviceTypeImport =
+    configPath === undefined
+      ? ''
+      : "import type { JoorConfigContext } from 'joor/context';\n";
+  const nativeServicesType =
+    configPath === undefined
+      ? 'Record<string, never>'
+      : 'JoorConfigContext<typeof config>';
   const nativeManifestEntries = manifest.procedures
     .map(
       (entry) => `    ${JSON.stringify(entry.id)}: typeof ${entry.exportName};`
@@ -164,6 +173,7 @@ ${nativeManifestEntries}
   };
 };
 
+export type NativeServices = ${nativeServicesType};
 export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
 export type NativeRouteRequest<TId extends NativeRouteId> =
   JoorManifestRouteProtocolRequest<NativeManifest, TId>;
@@ -191,6 +201,9 @@ export type NativeTransportHandler = <const TBody extends NativeBody>(
   const hasBodyMode = modes.includes('body');
   const hasSerializedMode = modes.includes('serialized');
   const hasResponseMode = modes.includes('response');
+  const compiledDispatchType = 'CompiledDispatch<NativeServices>';
+  const compiledFixedUnaryDispatchType =
+    'CompiledFixedUnaryDispatch<NativeServices>';
   const dispatchCaseForMode = (
     mode: 'body' | 'serialized' | 'response'
   ): string =>
@@ -206,7 +219,7 @@ export type NativeTransportHandler = <const TBody extends NativeBody>(
       })
       .join('\n');
   const dispatchBody = hasBodyMode
-    ? `const dispatchBody: CompiledDispatch = (
+    ? `const dispatchBody: ${compiledDispatchType} = (
   rpcRequest,
   request,
   services,
@@ -222,7 +235,7 @@ ${dispatchCaseForMode('body')}
 };`
     : '';
   const dispatchSerialized = hasSerializedMode
-    ? `const dispatchSerialized: CompiledDispatch = (
+    ? `const dispatchSerialized: ${compiledDispatchType} = (
   rpcRequest,
   request,
   services,
@@ -238,7 +251,7 @@ ${dispatchCaseForMode('serialized')}
 };`
     : '';
   const dispatchResponse = hasResponseMode
-    ? `const dispatchResponse: CompiledDispatch = (
+    ? `const dispatchResponse: ${compiledDispatchType} = (
   rpcRequest,
   request,
   services,
@@ -266,7 +279,7 @@ ${dispatchCaseForMode('response')}
       })
       .join('\n');
   const bodyUnaryDispatch = hasBodyMode
-    ? `const bodyUnaryDispatch: CompiledFixedUnaryDispatch = (
+    ? `const bodyUnaryDispatch: ${compiledFixedUnaryDispatchType} = (
   body,
   request,
   services,
@@ -280,7 +293,7 @@ ${dispatchCaseForMode('response')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as Parameters<CompiledDispatch>[0];
+  const rpcRequest = body as Parameters<${compiledDispatchType}>[0];
   switch (rpcRequest.id) {
 ${unaryCases('body')}
     default:
@@ -289,7 +302,7 @@ ${unaryCases('body')}
 };`
     : '';
   const serializedUnaryDispatch = hasSerializedMode
-    ? `const serializedUnaryDispatch: CompiledFixedUnaryDispatch = (
+    ? `const serializedUnaryDispatch: ${compiledFixedUnaryDispatchType} = (
   body,
   request,
   services,
@@ -303,7 +316,7 @@ ${unaryCases('body')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as Parameters<CompiledDispatch>[0];
+  const rpcRequest = body as Parameters<${compiledDispatchType}>[0];
   switch (rpcRequest.id) {
 ${unaryCases('serialized')}
     default:
@@ -312,7 +325,7 @@ ${unaryCases('serialized')}
 };`
     : '';
   const responseUnaryDispatch = hasResponseMode
-    ? `const responseUnaryDispatch: CompiledFixedUnaryDispatch = (
+    ? `const responseUnaryDispatch: ${compiledFixedUnaryDispatchType} = (
   body,
   request,
   services,
@@ -326,7 +339,7 @@ ${unaryCases('serialized')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as Parameters<CompiledDispatch>[0];
+  const rpcRequest = body as Parameters<${compiledDispatchType}>[0];
   switch (rpcRequest.id) {
 ${unaryCases('response')}
     default:
@@ -360,7 +373,7 @@ ${unaryCases('response')}
     `import {
   ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${configImport}${imports}
+${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${serviceTypeImport}${configImport}${imports}
 
 ${nativeManifestTypes}
 
@@ -374,7 +387,7 @@ ${bodyUnaryDispatch}
 ${serializedUnaryDispatch}
 ${responseUnaryDispatch}
 
-const dispatch: CompiledDispatch = ${transportDispatchName};
+const dispatch: ${compiledDispatchType} = ${transportDispatchName};
 export const nativeUnaryDispatch = ${nativeUnaryDispatchName};
 export const nativeResponseUnaryDispatch = ${nativeResponseUnaryDispatchName};
 export const nativeRuntime = createCompiledRuntimeState(${configValue});

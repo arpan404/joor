@@ -124,10 +124,10 @@ export type CompiledDispatch<TServices extends object = object> = (
   serialize: CompiledSerializationMode
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
 
-export type CompiledFixedDispatch = (
+export type CompiledFixedDispatch<TServices extends object = object> = (
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
-  services: object,
+  services: TServices,
   runtime: CompiledRuntime,
   state: ExecutionState
 ) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
