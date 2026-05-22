@@ -1029,7 +1029,9 @@ const appendJsonStringHeaders = (
   }
 };
 
-const createJsonHeaderRecord = (source?: JsonObject): Record<string, string> => {
+const createJsonHeaderRecord = (
+  source?: Record<string, string>
+): Record<string, string> => {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
   return headers;
@@ -1129,7 +1131,7 @@ const successBody = (
   idBody: string,
   trace: string,
   data: JsonValue,
-  headers?: JsonObject
+  headers?: Record<string, string>
 ): string =>
   headers === undefined
     ? '{"ok":true,"id":' +
@@ -1599,7 +1601,9 @@ const appendJsonStringHeaders = (
   }
 };
 
-const createJsonHeaderRecord = (source?: JsonObject): Record<string, string> => {
+const createJsonHeaderRecord = (
+  source?: Record<string, string>
+): Record<string, string> => {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
   return headers;
@@ -1764,7 +1768,7 @@ const successBody = (
   idBody: string,
   trace: string,
   data: JsonValue,
-  headers?: JsonObject
+  headers?: Record<string, string>
 ): string =>
   headers === undefined
     ? '{"ok":true,"id":' +

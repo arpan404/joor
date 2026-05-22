@@ -1,4 +1,4 @@
-import type { JsonObject, JsonValue } from '../schema/json.js';
+import type { JsonValue } from '../schema/json.js';
 
 export type ProcedureResponseHeaderValues = Record<string, string>;
 
@@ -10,8 +10,8 @@ type StringResponseHeaders<THeaders extends object> = {
 
 type ProcedureSuccessHeaders<THeaders extends object> =
   Record<string, never> extends THeaders
-    ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
-    : { headers: StringResponseHeaders<THeaders> & JsonObject };
+    ? { headers?: StringResponseHeaders<THeaders> }
+    : { headers: StringResponseHeaders<THeaders> };
 
 export type ProcedureSuccess<
   TData extends JsonValue,

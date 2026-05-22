@@ -113,7 +113,7 @@ const emitResponseHeaderRecordFunction = (
   }`;
     })
     .join('\n');
-  definitions.push(`const ${name} = (headers: Record<string, JsonValue>): Record<string, string> => {
+  definitions.push(`const ${name} = (headers: Record<string, string>): Record<string, string> => {
   const output: Record<string, string> = { 'content-type': 'application/json' };
 ${checks}
   return output;
@@ -572,7 +572,7 @@ ${
 const ${base}_serialize_success = (
   traceId: string,
   data: JsonValue,
-  headers?: Record<string, JsonValue>
+  headers?: Record<string, string>
 ) => {
   const traceBody = JSON.stringify(traceId);
   const dataBody = ${dataSerialization};
@@ -611,7 +611,7 @@ ${
 const ${base}_response_success = (
   traceId: string,
   data: JsonValue,
-  headers?: Record<string, JsonValue>
+  headers?: Record<string, string>
 ): Response => {
   const traceBody = JSON.stringify(traceId);
   const dataBody = ${dataSerialization};
@@ -949,7 +949,7 @@ export const emitCompiledProcedureSource = (
     )}
   }
   const procedureResult = result as
-    | { kind: 'success'; data: JsonValue; headers?: Record<string, JsonValue> }
+    | { kind: 'success'; data: JsonValue; headers?: Record<string, string> }
     | { kind: 'error'; error: RpcError };`;
   const emitExecutor = (
     mode: 'body' | 'serialized' | 'response'

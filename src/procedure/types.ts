@@ -1,6 +1,6 @@
 import type { JoorContext } from '../context/context.js';
 import type { AuthPolicy, AuthPolicyHeaderValues } from '../auth/policy.js';
-import type { JsonObject, JsonValue } from '../schema/json.js';
+import type { JsonValue } from '../schema/json.js';
 import type {
   HeaderObjectSchema,
   InferSchema,
@@ -361,10 +361,10 @@ type StringResponseHeaders<THeaders extends object> = {
 type RpcEnvelopeSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,
 ]
-  ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
+  ? { headers?: StringResponseHeaders<THeaders> }
   : [RequiredResponseHeaderKeys<THeaders>] extends [never]
-    ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
-    : { headers: StringResponseHeaders<THeaders> & JsonObject };
+    ? { headers?: StringResponseHeaders<THeaders> }
+    : { headers: StringResponseHeaders<THeaders> };
 
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,

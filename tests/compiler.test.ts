@@ -140,6 +140,8 @@ describe('compiler', () => {
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
       );
+      expect(dispatcher).toContain('headers?: Record<string, string>');
+      expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
       const postsListMatch = dispatcher.match(
         /const posts_list_execute_serialized: CompiledFixedDispatch<NativeServices> = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch<NativeServices> = async \(/
       );
@@ -426,6 +428,11 @@ const nativeRouteResponseHeaders: NativeRouteResponseHeaders<'users.get'> = {
   'cache-control': 'private',
 };
 nativeRouteResponseHeaders['cache-control'].toUpperCase();
+const _wrongNativeRouteResponseHeaders: NativeRouteResponseHeaders<'users.get'> = {
+  // @ts-expect-error generated native response headers require HTTP string values.
+  'cache-control': 1,
+};
+_wrongNativeRouteResponseHeaders;
 const nativeRouteHasResponseHeaders: NativeRouteHasResponseHeaders<'users.get'> = true;
 nativeRouteHasResponseHeaders.valueOf();
 const nativeRouteRequiresResponseHeaders: NativeRouteRequiresResponseHeaders<'users.get'> = true;

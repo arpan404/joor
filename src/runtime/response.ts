@@ -59,7 +59,7 @@ const isRpcEnvelopeArray = (
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
-  source: JsonObject
+  source: Record<string, string>
 ): void => {
   const cacheControl = source['cache-control'];
   if (
@@ -112,7 +112,7 @@ const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
 };
 
 export const createJsonHeaderRecord = (
-  source?: JsonObject
+  source?: Record<string, string>
 ): Record<string, string> => {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
