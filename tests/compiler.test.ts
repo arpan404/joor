@@ -28,6 +28,7 @@ describe('compiler', () => {
     expect(manifest.procedures.map((entry) => entry.id)).toEqual([
       'admin-user.get-profile',
       'posts.list',
+      'tenants.current',
       'users.get',
       'users.watch',
     ]);
@@ -199,6 +200,12 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteFunction');
       expect(clientSource).toContain('"get": unaryRoute("users.get")');
       expect(clientSource).toContain('"watch": streamRoute("users.watch")');
+      expect(clientSource).toContain(
+        '"current": unaryRoute("tenants.current")'
+      );
+      expect(clientSource).toContain(
+        'call(...args: [id: TId, ...ClientArgs<TId>])'
+      );
       expect(clientSource).toContain('Object.assign(call, { call, request })');
       expect(clientSource).not.toContain('ProcedureInput');
       expect(clientSource).toContain('export type UnaryRouteId');
@@ -356,7 +363,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -396,6 +403,18 @@ const requestId: 'users.get' = request.id;
 requestId.toUpperCase();
 const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
+const tenantHeaders: RouteHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
+tenantHeaders['x-tenant-id'].toUpperCase();
+client.tenants.current({ ok: true }, { headers: tenantHeaders }).then((result) => {
+  const exact: RouteResult<'tenants.current'> = result;
+  exact.id.toUpperCase();
+  if (result.ok) result.data.tenantId.toUpperCase();
+});
+client.tenants.current.call({ ok: true }, { headers: tenantHeaders });
+const tenantRequest = client.tenants.current.request({ ok: true }, { headers: tenantHeaders });
+const tenantRequestId: 'tenants.current' = tenantRequest.id;
+tenantRequestId.toUpperCase();
+tenantRequest.headers['x-tenant-id'].toUpperCase();
 const protocolRequest: RouteProtocolRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
@@ -436,6 +455,9 @@ configured['admin-user']['get-profile']({ id: '1' }).then((result) => {
 });
 configured.posts.list({ userId: '1' }).then((result) => {
   if (result.ok) result.data[0]?.title.toUpperCase();
+});
+configured.tenants.current({ ok: true }, { headers: tenantHeaders }).then((result) => {
+  if (result.ok) result.data.tenantId.toUpperCase();
 });
 configured.batch([request] as const).then((results) => {
   const exact: RouteBatchResults<readonly [typeof request]> = results;
@@ -510,6 +532,12 @@ client.users.missing({ id: '1' });
 
 // @ts-expect-error generated callable leaves validate input by route id.
 client.users.get({ ok: true });
+
+// @ts-expect-error generated callable leaves require route headers.
+client.tenants.current({ ok: true });
+
+// @ts-expect-error generated callable leaves validate required route headers.
+client.tenants.current({ ok: true }, { headers: {} });
 
 // @ts-expect-error unary routes do not expose stream methods.
 client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });

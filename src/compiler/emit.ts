@@ -2050,23 +2050,11 @@ export type GeneratedClientOptions = Omit<ClientOptions<Manifest>, 'manifest' | 
   url?: string;
 };
 type UnaryRouteTransport<TId extends UnaryRouteId> = {
-  call(
-    id: TId,
-    input: RouteInput<TId>,
-    options?: ClientRequestOptions<RouteProcedure<TId>>
-  ): Promise<RouteResult<TId>>;
-  request(
-    id: TId,
-    input: RouteInput<TId>,
-    options?: ClientRequestOptions<RouteProcedure<TId>>
-  ): RouteRequest<TId>;
+  call(...args: [id: TId, ...ClientArgs<TId>]): Promise<RouteResult<TId>>;
+  request(...args: [id: TId, ...ClientArgs<TId>]): RouteRequest<TId>;
 };
 type StreamRouteTransport<TId extends StreamRouteId> = {
-  stream(
-    id: TId,
-    input: RouteInput<TId>,
-    options?: ClientRequestOptions<RouteProcedure<TId>>
-  ): AsyncIterable<Stream<TId>>;
+  stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
@@ -2079,15 +2067,15 @@ export const createClient = (options: GeneratedClientOptions = {}) => {
   const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
     const routeTransport = transport as UnaryRouteTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
-      routeTransport.call(id, args[0], args[1]);
+      routeTransport.call(id, ...args);
     const request = (...args: ClientArgs<TId>) =>
-      routeTransport.request(id, args[0], args[1]);
+      routeTransport.request(id, ...args);
     return Object.assign(call, { call, request });
   };
   const streamRoute = <TId extends StreamRouteId>(id: TId): StreamRouteFunction<TId> => {
     const routeTransport = transport as StreamRouteTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
-      routeTransport.stream(id, args[0], args[1]);
+      routeTransport.stream(id, ...args);
     return Object.assign(stream, { stream });
   };
   return {
