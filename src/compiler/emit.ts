@@ -1475,6 +1475,9 @@ const emitClient = async (
     children: new Map(),
   });
   const tree = createNode();
+  const entryById = new Map(
+    manifest.procedures.map((entry) => [entry.id, entry])
+  );
   for (const entry of manifest.procedures) {
     const parts = entry.id.split('.');
     const methodName = parts.pop();
@@ -1502,13 +1505,18 @@ ${indent}},`
         const name = id.split('.').at(-1);
         if (name === undefined) return '';
         const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
-        return `${indent}${JSON.stringify(name)}: {
-${childIndent}call: (...args: ClientArgs<${typeRef}>) =>
+        const entry = entryById.get(id);
+        if (entry === undefined) return '';
+        const methods =
+          entry.procedure.stream === undefined
+            ? `${childIndent}call: (...args: ClientArgs<${typeRef}>) =>
 ${childIndent}  transport.call(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
 ${childIndent}request: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.request(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
-${childIndent}stream: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.stream(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}  transport.request(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),`
+            : `${childIndent}stream: (...args: ClientArgs<${typeRef}>) =>
+${childIndent}  transport.stream(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),`;
+        return `${indent}${JSON.stringify(name)}: {
+${methods}
 ${indent}},`;
       })
       .join('\n');
@@ -1519,19 +1527,21 @@ ${indent}},`;
     `${outDir}/client.ts`,
     `import { createClient as createTransportClient } from 'joor/client';
 import type { ClientRequestOptions } from 'joor/client';
-import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcRouteEnvelope, RpcRouteRequest, StreamEvent } from 'joor';
+import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcRouteEnvelope, RpcRouteRequest, RpcStreamRouteId, RpcUnaryRouteId, StreamEvent } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
 export type RouteId = keyof Manifest['procedures'] & string;
+export type UnaryRouteId = RpcUnaryRouteId<Manifest['procedures']>;
+export type StreamRouteId = RpcStreamRouteId<Manifest['procedures']>;
 export type RouteProcedure<TId extends RouteId> = Manifest['procedures'][TId];
 export type RouteInput<TId extends RouteId> = ProcedureInput<RouteProcedure<TId>>;
-export type RouteOutput<TId extends RouteId> = ProcedureOutput<RouteProcedure<TId>>;
+export type RouteOutput<TId extends UnaryRouteId> = ProcedureOutput<RouteProcedure<TId>>;
 export type RouteHeaders<TId extends RouteId> = ProcedureHeaders<RouteProcedure<TId>>;
-export type RouteRequest<TId extends RouteId> = RpcRouteRequest<Manifest['procedures'], TId>;
-export type RouteResult<TId extends RouteId> = RpcRouteEnvelope<Manifest['procedures'], TId>;
-export type Result<TId extends RouteId> = RouteResult<TId>;
-export type Stream<TId extends RouteId> = StreamEvent<RouteProcedure<TId>>;
+export type RouteRequest<TId extends UnaryRouteId> = RpcRouteRequest<Manifest['procedures'], TId>;
+export type RouteResult<TId extends UnaryRouteId> = RpcRouteEnvelope<Manifest['procedures'], TId>;
+export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
+export type Stream<TId extends StreamRouteId> = StreamEvent<RouteProcedure<TId>>;
 export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
   ? [input: ProcedureInput<TProcedure>, options?: ClientRequestOptions<TProcedure>]
   : [input: ProcedureInput<TProcedure>, options: ClientRequestOptions<TProcedure>];

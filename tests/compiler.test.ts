@@ -100,6 +100,15 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('RpcRouteEnvelope<Manifest');
+      const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
+      const watchClientMatch = clientSource.match(
+        /"watch": \{[\s\S]*?\n {4}\},/
+      );
+      expect(clientSource).toContain('export type UnaryRouteId');
+      expect(clientSource).toContain('export type StreamRouteId');
+      expect(watchClientMatch?.[0]).toContain('stream:');
+      expect(watchClientMatch?.[0]).not.toContain('call:');
+      expect(watchClientMatch?.[0]).not.toContain('request:');
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');

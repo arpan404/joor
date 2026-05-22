@@ -76,12 +76,12 @@ export interface Procedure<
 export type ProcedureInput<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
     infer TInput,
-    JsonValue,
-    JsonValue,
+    unknown,
+    unknown,
     string,
-    object,
-    object,
-    object
+    unknown,
+    unknown,
+    unknown
   >;
 }
   ? TInput
@@ -89,13 +89,13 @@ export type ProcedureInput<TProcedure> = TProcedure extends {
 
 export type ProcedureOutput<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
-    JsonValue,
+    unknown,
     infer TOutput,
-    JsonValue,
+    unknown,
     string,
-    object,
-    object,
-    object
+    unknown,
+    unknown,
+    unknown
   >;
 }
   ? TOutput
@@ -103,13 +103,13 @@ export type ProcedureOutput<TProcedure> = TProcedure extends {
 
 export type StreamEvent<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
-    JsonValue,
-    JsonValue,
+    unknown,
+    unknown,
     infer TStream,
     string,
-    object,
-    object,
-    object
+    unknown,
+    unknown,
+    unknown
   >;
 }
   ? TStream
@@ -117,44 +117,50 @@ export type StreamEvent<TProcedure> = TProcedure extends {
 
 export type ProcedureHeaders<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
-    JsonValue,
-    JsonValue,
-    JsonValue,
+    unknown,
+    unknown,
+    unknown,
     string,
-    infer THeaders extends object,
-    object,
-    object
+    infer THeaders,
+    unknown,
+    unknown
   >;
 }
-  ? THeaders
+  ? THeaders extends object
+    ? THeaders
+    : never
   : never;
 
 export type ProcedureResponseHeaders<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
-    JsonValue,
-    JsonValue,
-    JsonValue,
+    unknown,
+    unknown,
+    unknown,
     string,
-    object,
-    infer TResponseHeaders extends object,
-    object
+    unknown,
+    infer TResponseHeaders,
+    unknown
   >;
 }
-  ? TResponseHeaders
+  ? TResponseHeaders extends object
+    ? TResponseHeaders
+    : never
   : never;
 
 export type ProcedureAuth<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
-    JsonValue,
-    JsonValue,
-    JsonValue,
+    unknown,
+    unknown,
+    unknown,
     string,
-    object,
-    object,
-    infer TAuth extends object
+    unknown,
+    unknown,
+    infer TAuth
   >;
 }
-  ? TAuth
+  ? TAuth extends object
+    ? TAuth
+    : never
   : never;
 
 export interface ProcedureMeta {

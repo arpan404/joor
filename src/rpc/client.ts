@@ -46,9 +46,22 @@ export type RpcRouteStreamEvent<
   TId extends RpcRouteId<TRoutes>,
 > = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcUnaryRouteId<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteId<TRoutes>]: [RpcRouteStreamEvent<TRoutes, TId>] extends [
+    never,
+  ]
+    ? TId
+    : never;
+}[RpcRouteId<TRoutes>];
+
+export type RpcStreamRouteId<TRoutes extends RpcRouteMap> = Exclude<
+  RpcRouteId<TRoutes>,
+  RpcUnaryRouteId<TRoutes>
+>;
+
 export type RpcRouteEnvelope<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcUnaryRouteId<TRoutes>,
 > = RpcEnvelope<RpcRouteOutput<TRoutes, TId> & JsonValue, TId>;
 
 type PendingRpcRequestHeaders<TProcedure> = Record<
@@ -76,20 +89,20 @@ export interface PendingRpcRequest<
 
 export type RpcRouteRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcUnaryRouteId<TRoutes>,
 > = PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId> &
   PendingRpcRequestHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteRequestUnion<TRoutes extends RpcRouteMap> = {
-  [TId in RpcRouteId<TRoutes>]: RpcRouteRequest<TRoutes, TId>;
-}[RpcRouteId<TRoutes>];
+  [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteRequest<TRoutes, TId>;
+}[RpcUnaryRouteId<TRoutes>];
 
 export type RpcRouteBatchResults<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly unknown[],
 > = {
   [TIndex in keyof TRequests]: TRequests[TIndex] extends {
-    id: infer TId extends RpcRouteId<TRoutes>;
+    id: infer TId extends RpcUnaryRouteId<TRoutes>;
   }
     ? RpcRouteEnvelope<TRoutes, TId>
     : never;
@@ -131,12 +144,12 @@ export interface LegacyRpcTransportClient {
 }
 
 export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
-  call<TId extends RpcRouteId<TRoutes>>(
+  call<TId extends RpcUnaryRouteId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ): Promise<RpcRouteEnvelope<TRoutes, TId>>;
-  request<TId extends RpcRouteId<TRoutes>>(
+  request<TId extends RpcUnaryRouteId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
@@ -144,7 +157,7 @@ export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
   batch<const TRequests extends readonly RpcRouteRequestUnion<TRoutes>[]>(
     requests: TRequests
   ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
-  stream<TId extends RpcRouteId<TRoutes>>(
+  stream<TId extends RpcStreamRouteId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>

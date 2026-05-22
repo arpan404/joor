@@ -26,7 +26,9 @@ export type {
   RpcRouteRequest,
   RpcRouteRequestUnion,
   RpcRouteStreamEvent,
+  RpcStreamRouteId,
   RpcTransportClient,
+  RpcUnaryRouteId,
 } from './rpc/client.js';
 export type {
   Procedure,

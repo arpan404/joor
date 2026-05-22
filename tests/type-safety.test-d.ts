@@ -12,6 +12,8 @@ import {
   type RpcRouteEnvelope,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
+  type RpcStreamRouteId,
+  type RpcUnaryRouteId,
 } from '../src/index.js';
 import { createClient } from '../src/rpc/client.js';
 
@@ -71,6 +73,17 @@ const authenticatedProcedure = defineProcedure.withContext<Services>()({
   },
 });
 
+const streamProcedure = defineProcedure({
+  input: t.object({ userId: t.string() }),
+  stream: t.object({
+    type: t.literal('user.updated'),
+    userId: t.string(),
+  }),
+  async *handler(_ctx, input) {
+    yield { type: 'user.updated' as const, userId: input.userId };
+  },
+});
+
 const authShape: ProcedureAuth<typeof authenticatedProcedure> = {
   userId: '1',
 };
@@ -106,15 +119,39 @@ client.call<typeof procedure>('users.get', { id: '1' });
 type Routes = {
   'users.get': typeof procedure;
   'users.authenticated': typeof authenticatedProcedure;
+  'users.watch': typeof streamProcedure;
 };
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
+const unaryRouteId: RpcUnaryRouteId<Routes> = 'users.get';
+unaryRouteId.toUpperCase();
+const streamRouteId: RpcStreamRouteId<Routes> = 'users.watch';
+streamRouteId.toUpperCase();
+
+// @ts-expect-error stream routes are not unary route ids.
+const _wrongUnaryRouteId: RpcUnaryRouteId<Routes> = 'users.watch';
+
+// @ts-expect-error unary routes are not stream route ids.
+const _wrongStreamRouteId: RpcStreamRouteId<Routes> = 'users.get';
+
 routeClient.call(
   'users.get',
   { id: '1' },
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 routeClient.call('users.authenticated', { ok: true });
+routeClient.stream('users.watch', { userId: '1' });
+
+async function consumeRouteStream() {
+  for await (const event of routeClient.stream('users.watch', {
+    userId: '1',
+  })) {
+    const eventType: 'user.updated' = event.type;
+    eventType.toUpperCase();
+    event.userId.toUpperCase();
+  }
+}
+consumeRouteStream();
 
 const routeRequest = routeClient.request(
   'users.get',
@@ -209,6 +246,22 @@ const _wrongRouteEnvelopeId: RpcRouteEnvelope<
 
 // @ts-expect-error route-map clients only accept known procedure ids.
 routeClient.call('users.missing', { id: '1' });
+
+// @ts-expect-error stream routes cannot be called through unary call.
+routeClient.call('users.watch', { userId: '1' });
+
+// @ts-expect-error stream routes cannot create unary batch requests.
+routeClient.request('users.watch', { userId: '1' });
+
+// @ts-expect-error stream routes cannot be included in unary batches.
+routeClient.batch([{ id: 'users.watch', input: { userId: '1' } }] as const);
+
+routeClient.stream(
+  // @ts-expect-error unary routes cannot be consumed through streaming transport.
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
 
 // @ts-expect-error procedure id controls the input type.
 routeClient.call('users.authenticated', { id: '1' });
