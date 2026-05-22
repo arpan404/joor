@@ -56,6 +56,10 @@
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.js"
     },
+    "./runtime/fetch": {
+      "types": "./dist/runtime/fetch.d.ts",
+      "import": "./dist/runtime/fetch.js"
+    },
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"
