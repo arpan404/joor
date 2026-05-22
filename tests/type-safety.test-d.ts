@@ -43,6 +43,7 @@ import {
   type JoorManifestRouteId,
   type JoorManifestRouteInput,
   type JoorManifestRouteOutput,
+  type JoorManifestRouteProcedure,
   type JoorManifestRouteProtocolRequest,
   type JoorManifestRouteProtocolRequestUnion,
   type JoorManifestRouteRequest,
@@ -70,6 +71,7 @@ import {
   type RpcFrameworkErrorCode,
   type RpcManifest,
   type RpcManifestBody,
+  type RpcManifestRouteBatchRequest,
   type RpcManifestRouteId,
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
@@ -317,6 +319,11 @@ manifestStreamRouteId.toUpperCase();
 const manifestRouteInput: JoorManifestRouteInput<typeof manifest, 'users.get'> =
   { id: '1' };
 manifestRouteInput.id.toUpperCase();
+const manifestRouteProcedure: JoorManifestRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = procedure;
+manifestRouteProcedure.output;
 const manifestRouteOutput: JoorManifestRouteOutput<
   typeof manifest,
   'users.get'
@@ -477,11 +484,22 @@ const publicManifestBatchBody: RpcManifestRouteUnaryProtocolRequest<
 >[] = [publicManifestUnaryProtocolRequest];
 const publicManifestBatchBodyUnion: RpcManifestBody<typeof manifest> =
   publicManifestBatchBody;
+const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
+  typeof manifest,
+  [typeof publicManifestUnaryProtocolRequest]
+> = [publicManifestUnaryProtocolRequest];
 publicManifestBody.id.toUpperCase();
 publicManifestBatchBody[0]?.input.id.toUpperCase();
 publicManifestBatchBodyUnion.length.toFixed();
+publicManifestBatchRequest[0].input.id.toUpperCase();
 const _publicManifestRoutes: PublicManifestRoutes = manifest.procedures;
 _publicManifestRoutes['users.get'].output;
+
+const _wrongPublicManifestBatchRequest: RpcManifestRouteBatchRequest<
+  typeof manifest,
+  // @ts-expect-error RpcManifest protocol batches reject stream request bodies.
+  [typeof publicManifestStreamProtocolRequest]
+> = [publicManifestStreamProtocolRequest];
 
 // @ts-expect-error RpcManifest route maps require procedure runtimes.
 type _WrongRpcManifest = RpcManifest<{ broken: { input: string } }>;

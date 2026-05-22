@@ -1,5 +1,9 @@
 import type { ProcedureRuntime } from './procedure/types.js';
-import type { RpcManifest, RpcManifestBody } from './rpc/dispatcher.js';
+import type {
+  RpcManifest,
+  RpcManifestBody,
+  RpcManifestRouteBatchRequest,
+} from './rpc/dispatcher.js';
 import type {
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
@@ -9,6 +13,7 @@ import type {
   RpcRouteId,
   RpcRouteInput,
   RpcRouteOutput,
+  RpcRouteProcedure,
   RpcRouteProtocolRequest,
   RpcRouteProtocolRequestUnion,
   RpcRouteRequest,
@@ -25,11 +30,10 @@ import type {
 
 export type JoorRouteMap = Record<string, ProcedureRuntime>;
 
-export type JoorManifest<
-  TProcedures extends JoorRouteMap = JoorRouteMap,
-> = Omit<RpcManifest, 'procedures'> & {
-  procedures: TProcedures;
-};
+export type JoorManifest<TProcedures extends JoorRouteMap = JoorRouteMap> =
+  Omit<RpcManifest, 'procedures'> & {
+    procedures: TProcedures;
+  };
 
 export type JoorManifestRoutes<TManifest> = TManifest extends {
   procedures: infer TProcedures extends JoorRouteMap;
@@ -48,6 +52,11 @@ export type JoorManifestUnaryRouteId<TManifest> = RpcUnaryRouteId<
 export type JoorManifestStreamRouteId<TManifest> = RpcStreamRouteId<
   JoorManifestRoutes<TManifest>
 >;
+
+export type JoorManifestRouteProcedure<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest>,
+> = RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestRouteInput<
   TManifest,
@@ -106,8 +115,9 @@ export type JoorManifestRouteProtocolRequest<
 export type JoorManifestRouteProtocolRequestUnion<TManifest> =
   RpcRouteProtocolRequestUnion<JoorManifestRoutes<TManifest>>;
 
-export type JoorManifestRouteBody<TManifest> =
-  TManifest extends JoorManifest ? RpcManifestBody<TManifest> : never;
+export type JoorManifestRouteBody<TManifest> = TManifest extends JoorManifest
+  ? RpcManifestBody<TManifest>
+  : never;
 
 export type JoorManifestRouteUnaryProtocolRequest<
   TManifest,
@@ -127,8 +137,11 @@ export type JoorManifestRouteStreamProtocolRequestUnion<TManifest> =
 
 export type JoorManifestRouteBatchRequest<
   TManifest,
-  TRequests extends readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
-> = RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
+  TRequests extends
+    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+> = TManifest extends JoorManifest
+  ? RpcManifestRouteBatchRequest<TManifest, TRequests>
+  : RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(
   manifest: JoorManifest<TProcedures>

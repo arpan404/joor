@@ -127,6 +127,12 @@ export type RpcManifestRouteUnaryProtocolRequestUnion<
   >;
 }[RpcManifestUnaryRouteId<TManifest>];
 
+export type RpcManifestRouteBatchRequest<
+  TManifest extends RpcManifest,
+  TRequests extends
+    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+> = TRequests;
+
 export type RpcManifestRouteStreamProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = {
@@ -138,7 +144,10 @@ export type RpcManifestRouteStreamProtocolRequestUnion<
 
 export type RpcManifestBody<TManifest extends RpcManifest> =
   | RpcManifestRouteProtocolRequestUnion<TManifest>
-  | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[];
+  | RpcManifestRouteBatchRequest<
+      TManifest,
+      RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[]
+    >;
 
 export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;
 
@@ -906,7 +915,10 @@ export const createRpcBodyHandler = <TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((request: Request, body: RpcManifestBody<TManifest>) => Promise<Response>) => {
+): ((
+  request: Request,
+  body: RpcManifestBody<TManifest>
+) => Promise<Response>) => {
   const handleResult = createRpcBodyResultHandler(manifest, options, preflight);
   return async (
     request: Request,
