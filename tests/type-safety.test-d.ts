@@ -406,6 +406,10 @@ const bunFetch = createBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
 const denoFetch = createDenoFetch(manifest, handlerOptions);
 denoFetch(new Request('https://example.com/rpc'));
+
+// @ts-expect-error Deno adapters only accept typed procedure manifests.
+createDenoFetch({ procedures: { broken: { input: t.string() } } });
+
 const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
 denoHandler(new Request('https://example.com/rpc'));
 const denoTransportResult: DenoTransportBodyResult = {

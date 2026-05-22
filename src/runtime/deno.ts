@@ -1,9 +1,9 @@
 import type {
   HandlerOptions,
   RpcBodyResult,
-  RpcManifest,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { JoorManifest } from '../manifest.js';
 import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
@@ -57,8 +57,8 @@ const bodyReadFailure = (request: Request, error: object): Response => {
   });
 };
 
-export const createDenoFetch = (
-  manifest: RpcManifest,
+export const createDenoFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
@@ -88,8 +88,8 @@ export const createDenoTransportRequestHandler = (
   };
 };
 
-export const createDenoRpcRequestHandler = (
-  manifest: RpcManifest,
+export const createDenoRpcRequestHandler = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) => {
   const handler = createRpcBodyResultHandler(manifest, options, false);
@@ -100,8 +100,8 @@ export const createDenoRpcRequestHandler = (
   );
 };
 
-export const serveDeno = (
-  manifest: RpcManifest,
+export const serveDeno = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options: DenoServeOptions = {}
 ): void => {
   const fetch = createDenoRpcRequestHandler(manifest, options);
