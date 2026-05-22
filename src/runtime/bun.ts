@@ -5,6 +5,7 @@ import {
 import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
+  HandlerOptionsFor,
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
@@ -61,7 +62,7 @@ export const createBunFetch = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) =>
-  createJoorHandler(manifest, options);
+  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
 
 export const createBunTransportRequestHandler = <
   TBody = JsonValue,

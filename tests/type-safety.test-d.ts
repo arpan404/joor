@@ -1107,6 +1107,8 @@ const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);
 rpcHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching handler plugins.
+createRpcHandler(manifest);
 const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
@@ -1184,6 +1186,8 @@ createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });
 
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
 fetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching fetch handler plugins.
+createJoorHandler(manifest);
 
 // @ts-expect-error runtime adapters only accept typed procedure manifests.
 createJoorHandler({ procedures: { broken: { input: t.string() } } });

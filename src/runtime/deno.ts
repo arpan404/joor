@@ -1,5 +1,6 @@
 import type {
   HandlerOptions,
+  HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
   RpcRequestPreflight,
@@ -110,7 +111,7 @@ export const createDenoFetch = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) =>
-  createJoorHandler(manifest, options);
+  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
 
 export const createDenoTransportRequestHandler = <
   TBody = JsonValue,

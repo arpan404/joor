@@ -1021,10 +1021,17 @@ const executeStream = async (
   return createSseResponse(stream);
 };
 
-export const createRpcHandler = <TManifest extends RpcManifest>(
+export function createRpcHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {}
-): ((request: Request) => Promise<Response>) => {
+): (request: Request) => Promise<Response> {
   const handleParsed = createRpcBodyHandler(manifest, options, false);
   const preflight = createRpcRequestPreflight(options);
   const bodyLimit = normalizeMaxBodyBytes(
@@ -1059,7 +1066,7 @@ export const createRpcHandler = <TManifest extends RpcManifest>(
     }
     return handleParsed(request, body as RpcManifestBody<TManifest>);
   };
-};
+}
 
 export const createRpcBodyHandler = <TManifest extends RpcManifest>(
   manifest: TManifest,
