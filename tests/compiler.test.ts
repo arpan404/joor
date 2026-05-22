@@ -260,7 +260,7 @@ describe('compiler', () => {
       ).resolves.toContain("from 'joor/procedure'");
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
-      ).resolves.toContain("from 'joor/context'");
+      ).resolves.toContain("from 'joor/config'");
       await expect(
         readFile(join(outDir, 'openapi.json'), 'utf8')
       ).resolves.toContain('/rpc');
@@ -336,7 +336,7 @@ describe('compiler', () => {
       ).resolves.toContain('joor.config.ts');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain("from 'joor/context'");
+      ).resolves.toContain("from 'joor/config'");
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
@@ -745,6 +745,7 @@ invalidNativeBatch;
               paths: {
                 joor: ['./src/index.ts'],
                 'joor/client': ['./src/rpc/client.ts'],
+                'joor/config': ['./src/config.ts'],
                 'joor/context': ['./src/context/index.ts'],
                 'joor/manifest': ['./src/manifest.ts'],
                 'joor/procedure': ['./src/procedure/index.ts'],

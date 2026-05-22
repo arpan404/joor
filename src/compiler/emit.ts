@@ -178,7 +178,7 @@ const emitProfileDispatcher = async (
   const serviceTypeImport =
     configPath === undefined
       ? ''
-      : "import type { JoorConfigContext } from 'joor/context';\n";
+      : "import type { JoorConfigContext } from 'joor/config';\n";
   const nativeServicesType =
     configPath === undefined
       ? 'Record<string, never>'
@@ -2163,7 +2163,7 @@ const emitProcedureHelper = async (
   await writeFile(
     `${outDir}/procedure.ts`,
     `import { defineProcedure } from 'joor/procedure';
-import type { JoorConfigContext } from 'joor/context';
+import type { JoorConfigContext } from 'joor/config';
 ${configImport}
 export const procedure = defineProcedure.withContext<${contextType}>();
 `
