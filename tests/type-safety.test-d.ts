@@ -73,6 +73,8 @@ import {
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteEnvelope,
   type JoorManifestRouteError,
+  type JoorManifestRouteHasHeaders,
+  type JoorManifestRouteHasResponseHeaders,
   type JoorManifestRouteHeaders,
   type JoorManifestRouteId,
   type JoorManifestRouteInput,
@@ -83,6 +85,8 @@ import {
   type JoorManifestRouteRequest,
   type JoorManifestRouteRequestUnion,
   type JoorManifestRouteResponseHeaders,
+  type JoorManifestRouteRequiresHeaders,
+  type JoorManifestRouteRequiresResponseHeaders,
   type JoorManifestRequiredServices,
   type JoorManifestRouteServices,
   type JoorManifestRouteStreamEvent,
@@ -146,9 +150,13 @@ import {
   type RpcRouteBody,
   type RpcRouteBodyResult,
   type RpcRouteBodyResultFor,
+  type RpcRouteHasHeaders,
+  type RpcRouteHasResponseHeaders,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
+  type RpcRouteRequiresHeaders,
+  type RpcRouteRequiresResponseHeaders,
   type RpcRouteBatchRequest,
   type RpcRouteProtocolRequest,
   type RpcRouteProtocolRequestUnion,
@@ -206,6 +214,8 @@ import {
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
+  type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
+  type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
 } from '../src/rpc/index.js';
 import {
@@ -980,6 +990,43 @@ type Routes = {
   'users.authenticated': typeof authenticatedProcedure;
   'users.watch': typeof streamProcedure;
 };
+const routeHasHeaders: RpcRouteHasHeaders<Routes, 'users.get'> = true;
+routeHasHeaders.valueOf();
+const routeRequiresHeaders: RpcRouteRequiresHeaders<Routes, 'users.get'> = true;
+routeRequiresHeaders.valueOf();
+const routeHasResponseHeaders: RpcRouteHasResponseHeaders<Routes, 'users.get'> =
+  true;
+routeHasResponseHeaders.valueOf();
+const routeRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
+  Routes,
+  'users.get'
+> = true;
+routeRequiresResponseHeaders.valueOf();
+const authenticatedRouteHasHeaders: RpcRouteHasHeaders<
+  Routes,
+  'users.authenticated'
+> = false;
+authenticatedRouteHasHeaders.valueOf();
+const authenticatedRouteRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
+  Routes,
+  'users.authenticated'
+> = false;
+authenticatedRouteRequiresResponseHeaders.valueOf();
+const streamRouteHasResponseHeaders: RpcRouteHasResponseHeaders<
+  Routes,
+  'users.watch'
+> = false;
+streamRouteHasResponseHeaders.valueOf();
+const subpathRouteRequiresHeaders: RpcSubpathRouteRequiresHeaders<
+  Routes,
+  'users.get'
+> = true;
+subpathRouteRequiresHeaders.valueOf();
+const subpathRouteRequiresResponseHeaders: RpcSubpathRouteRequiresResponseHeaders<
+  Routes,
+  'users.get'
+> = true;
+subpathRouteRequiresResponseHeaders.valueOf();
 
 const manifest = defineManifest({
   procedures: {
@@ -1219,11 +1266,41 @@ const manifestRouteHeaders: JoorManifestRouteHeaders<
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
 manifestRouteHeaders['x-tenant-id'].toUpperCase();
+const manifestRouteHasHeaders: JoorManifestRouteHasHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestRouteHasHeaders.valueOf();
+const manifestRouteRequiresHeaders: JoorManifestRouteRequiresHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestRouteRequiresHeaders.valueOf();
 const manifestRouteResponseHeaders: JoorManifestRouteResponseHeaders<
   typeof manifest,
   'users.get'
 > = { 'cache-control': 'private' };
 manifestRouteResponseHeaders['cache-control'].toUpperCase();
+const manifestRouteHasResponseHeaders: JoorManifestRouteHasResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestRouteHasResponseHeaders.valueOf();
+const manifestRouteRequiresResponseHeaders: JoorManifestRouteRequiresResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestRouteRequiresResponseHeaders.valueOf();
+const manifestAuthenticatedRouteHasHeaders: JoorManifestRouteHasHeaders<
+  typeof manifest,
+  'users.authenticated'
+> = false;
+manifestAuthenticatedRouteHasHeaders.valueOf();
+const manifestAuthenticatedRouteRequiresResponseHeaders: JoorManifestRouteRequiresResponseHeaders<
+  typeof manifest,
+  'users.authenticated'
+> = false;
+manifestAuthenticatedRouteRequiresResponseHeaders.valueOf();
 const manifestRouteError: JoorManifestRouteError<typeof manifest, 'users.get'> =
   {
     code: 'NOT_FOUND',

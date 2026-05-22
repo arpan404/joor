@@ -3,9 +3,12 @@ import type { JoorManifest, JoorManifestRoutes } from '../manifest.js';
 import type {
   ProcedureInput,
   ProcedureOutput,
+  ProcedureHasHeaders,
   ProcedureHeaders,
   ProcedureRequiresHeaders,
+  ProcedureHasResponseHeaders,
   ProcedureResponseHeaders,
+  ProcedureRequiresResponseHeaders,
   ProcedureError,
   ProcedureErrorCode,
   ProcedureRuntime,
@@ -55,10 +58,30 @@ export type RpcRouteHeaders<
   TId extends RpcRouteId<TRoutes>,
 > = ProcedureHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcRouteHasHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureHasHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteRequiresHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureRequiresHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
 export type RpcRouteResponseHeaders<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
 > = ProcedureResponseHeaders<RpcRouteProcedure<TRoutes, TId>> & JsonObject;
+
+export type RpcRouteHasResponseHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureHasResponseHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteRequiresResponseHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureRequiresResponseHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcProcedureFrameworkError<TProcedure> = RpcError<
   Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
