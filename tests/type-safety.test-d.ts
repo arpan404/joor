@@ -2695,6 +2695,16 @@ createCompiledRpcHandler(
   config,
   _serviceTypedCompiledUnaryDispatch
 );
+createCompiledRpcTransportBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+createCompiledRpcHandler(
+  _serviceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
 createRootCompiledRpcTransportBodyResultHandler(
   _rootServiceTypedCompiledDispatch,
   config,

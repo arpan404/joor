@@ -39,6 +39,8 @@ import type {
 import type { ProcedureResult } from '../procedure/result.js';
 import type {
   HandlerHookContext,
+  HandlerHooks,
+  JoorMiddleware,
   RpcBodyResult,
   RpcManifestBody,
   RpcManifestBodyResultFor,
@@ -125,6 +127,19 @@ export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
 ) => Promise<
   RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope
 >;
+
+type CompiledHookBody<TConfig> = TConfig extends {
+  hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;
+}
+  ? TBody
+  : TConfig extends {
+        middleware?: readonly JoorMiddleware<
+          infer _TServices extends object,
+          infer TBody
+        >[];
+      }
+    ? TBody
+    : JsonValue;
 
 export type CompiledUnaryDispatch<TServices extends object = object> = (
   body: JsonObject,
@@ -789,14 +804,16 @@ export const createCompiledRpcTransportBodyResultHandler = <
     handlerConfig.hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
   const createHookContext = async (
-    body?: unknown
-  ): Promise<HandlerHookContext<JoorConfigContext<TConfig>, unknown>> => ({
+    body?: CompiledHookBody<TConfig>
+  ): Promise<
+    HandlerHookContext<JoorConfigContext<TConfig>, CompiledHookBody<TConfig>>
+  > => ({
     services: compiled.services ?? (await compiled.resolveServices()),
     ...(body === undefined ? {} : { body }),
   });
   const runBefore = async (
     request: ContextRequestSource,
-    body: unknown
+    body: CompiledHookBody<TConfig>
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
     const context = await createHookContext(body);
@@ -814,7 +831,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
   const runAfter = async (
     response: Response,
     request: ContextRequestSource,
-    body: unknown
+    body: CompiledHookBody<TConfig>
   ): Promise<Response> => {
     let next = response;
     const hookRequest = request.toRequest();
@@ -907,12 +924,15 @@ export const createCompiledRpcTransportBodyResultHandler = <
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
-    const early = hasBeforeHooks ? await runBefore(request, body) : undefined;
+    const hookBody = body as CompiledHookBody<TConfig>;
+    const early = hasBeforeHooks
+      ? await runBefore(request, hookBody)
+      : undefined;
     if (early !== undefined)
-      return hasAfterHooks ? await runAfter(early, request, body) : early;
+      return hasAfterHooks ? await runAfter(early, request, hookBody) : early;
     const result = await execute(request, body);
     if (!hasAfterHooks) return result;
-    return runAfter(transportResultToResponse(result), request, body);
+    return runAfter(transportResultToResponse(result), request, hookBody);
   };
 };
 
