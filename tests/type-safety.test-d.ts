@@ -372,6 +372,10 @@ const procedure = defineProcedure.withContext<Services>()({
     // @ts-expect-error ctx.error code must be declared by the procedure.
     ctx.error('UNDECLARED', { message: 'Nope' });
     const user = ctx.services.users.findById(input.id);
+    // @ts-expect-error ctx.ok requires declared response headers.
+    ctx.ok(user);
+    // @ts-expect-error ctx.ok response headers must match the declared schema.
+    ctx.ok(user, { missing: 'cache-control' });
     return ctx.ok(user, { 'cache-control': 'private' });
   },
 });

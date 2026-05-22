@@ -5,6 +5,11 @@ import type {
 } from '../procedure/result.js';
 import { errorStatus } from '../procedure/errors.js';
 
+type ProcedureSuccessArgs<TData extends JsonValue, TResponseHeaders> =
+  Record<string, never> extends TResponseHeaders
+    ? [data: TData, headers?: TResponseHeaders]
+    : [data: TData, headers: TResponseHeaders];
+
 export interface JoorContext<
   TServices extends object = Record<string, never>,
   THeaders extends object = Record<string, never>,
@@ -20,8 +25,7 @@ export interface JoorContext<
   services: TServices;
   auth: TAuth;
   ok<TData extends JsonValue>(
-    data: TData,
-    headers?: TResponseHeaders
+    ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
   ): ProcedureSuccess<TData>;
   error<TCode extends Extract<keyof TErrors, string>>(
     code: TCode,
@@ -77,9 +81,13 @@ class RuntimeJoorContext<
   TResponseHeaders extends object,
   TAuth extends object,
   TErrors extends Record<string, JsonValue>,
-> implements
-    JoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors>
-{
+> implements JoorContext<
+  TServices,
+  THeaders,
+  TResponseHeaders,
+  TAuth,
+  TErrors
+> {
   readonly traceId: string;
   readonly signal: AbortSignal;
   readonly headers: THeaders;
@@ -109,9 +117,9 @@ class RuntimeJoorContext<
   }
 
   ok<TData extends JsonValue>(
-    data: TData,
-    headers?: TResponseHeaders
+    ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
   ): ProcedureSuccess<TData> {
+    const [data, headers] = args;
     return headers === undefined
       ? { kind: 'success', data }
       : { kind: 'success', data, headers: headers as JsonObject };
@@ -141,13 +149,7 @@ export const createRuntimeContext = <
   headers: THeaders,
   auth: TAuth
 ): JoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors> =>
-  new RuntimeJoorContext<
-    TServices,
-    THeaders,
-    TResponseHeaders,
-    TAuth,
-    TErrors
-  >(
+  new RuntimeJoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors>(
     request,
     traceId,
     services,
