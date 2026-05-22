@@ -1868,7 +1868,8 @@ export const serve = (options: DenoNativeOptions = {}) => {
 
 const emitClient = async (
   manifest: CompilerManifest,
-  outDir: string
+  outDir: string,
+  config?: JoorConfig
 ): Promise<void> => {
   interface ClientTree {
     procedures: string[];
@@ -1919,6 +1920,7 @@ ${indent}},`
     return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
   };
   const clientBody = renderNode(tree, 2);
+  const defaultUrl = config?.path ?? '/rpc';
   await writeFile(
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
@@ -1955,6 +1957,9 @@ export type StreamRouteFunction<TId extends StreamRouteId> = {
   (...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
+export type GeneratedClientOptions = Omit<ClientOptions<Manifest>, 'manifest' | 'url'> & {
+  url?: string;
+};
 type UnaryRouteTransport<TId extends UnaryRouteId> = {
   call(
     id: TId,
@@ -1975,8 +1980,13 @@ type StreamRouteTransport<TId extends StreamRouteId> = {
   ): AsyncIterable<Stream<TId>>;
 };
 
-export const createClient = (options: Omit<ClientOptions<Manifest>, 'manifest'>) => {
-  const transport = createTransportClient(manifest, options);
+const defaultUrl = ${JSON.stringify(defaultUrl)};
+
+export const createClient = (options: GeneratedClientOptions = {}) => {
+  const transport = createTransportClient(manifest, {
+    ...options,
+    url: options.url ?? defaultUrl,
+  });
   const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
     const routeTransport = transport as UnaryRouteTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
@@ -1997,7 +2007,7 @@ ${clientBody}
   };
 };
 
-export const client = createClient({ url: '/rpc' });
+export const client = createClient();
 `
   );
 };
@@ -2041,7 +2051,7 @@ export const emitArtifacts = async (
     options.configPath
   );
   await emitRuntimeTargets(manifest, options.outDir, options.config);
-  await emitClient(manifest, options.outDir);
+  await emitClient(manifest, options.outDir, options.config);
   await emitProcedureHelper(options.outDir, options.configPath);
   await writeJson(
     `${options.outDir}/openapi.json`,

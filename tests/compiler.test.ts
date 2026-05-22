@@ -235,6 +235,25 @@ describe('compiler', () => {
     }
   });
 
+  it('uses configured path as the generated client default url', async () => {
+    const manifest = await loadProcedures(fixture);
+    const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
+    try {
+      await emitArtifacts(manifest, {
+        outDir,
+        config: {
+          path: '/api/rpc',
+        },
+      });
+      const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
+
+      expect(clientSource).toContain('const defaultUrl = "/api/rpc"');
+      expect(clientSource).toContain('export const client = createClient()');
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
   it('emits Bun fast path for unsafe contextless procedures', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
@@ -262,7 +281,12 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type RouteBatchResults, type RouteRequestUnion, type RouteResult } from './client.js';
+        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteRequestUnion, type RouteResult } from './client.js';
+
+const defaultClient = createClient();
+defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
+const options: GeneratedClientOptions = { headers: { authorization: 'token' } };
+createClient(options).users.watch({ userId: '1' });
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;
