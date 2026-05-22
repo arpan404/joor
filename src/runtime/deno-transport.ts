@@ -1,6 +1,7 @@
 import type {
   HandlerOptions,
   RpcBodyResult,
+  RpcManifestBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorManifest } from '../manifest.js';
@@ -156,7 +157,8 @@ export const createDenoRpcRequestHandler = <TManifest extends JoorManifest>(
 ): ((request: Request) => Promise<Response>) => {
   const handler = createRpcBodyResultHandler(manifest, options, false);
   return createDenoTransportRequestHandler(
-    (request, body) => handler(request.toRequest(), body),
+    (request, body) =>
+      handler(request.toRequest(), body as RpcManifestBody<TManifest>),
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)
   );

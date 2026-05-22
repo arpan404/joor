@@ -5,6 +5,7 @@ import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
   RpcBodyResult,
+  RpcManifestBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import {
@@ -274,7 +275,7 @@ export const createNodeRpcRequestHandler = <TManifest extends JoorManifest>(
 ): NodeRpcRequestHandler => {
   const handler = createRpcTransportBodyResultHandler(manifest, options, false);
   return createNodeTransportRequestHandler(
-    handler,
+    (request, body) => handler(request, body as RpcManifestBody<TManifest>),
     hostname,
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)

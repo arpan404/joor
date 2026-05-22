@@ -63,6 +63,17 @@ import {
   type RpcFailure,
   type RpcFrameworkErrorCode,
   type RpcManifest,
+  type RpcManifestBody,
+  type RpcManifestRouteId,
+  type RpcManifestRouteProtocolRequest,
+  type RpcManifestRouteProtocolRequestUnion,
+  type RpcManifestRoutes,
+  type RpcManifestRouteStreamProtocolRequest,
+  type RpcManifestRouteStreamProtocolRequestUnion,
+  type RpcManifestRouteUnaryProtocolRequest,
+  type RpcManifestRouteUnaryProtocolRequestUnion,
+  type RpcManifestStreamRouteId,
+  type RpcManifestUnaryRouteId,
   type RpcProtocolEnvelope,
   type RpcProtocolError,
   type RpcRequest,
@@ -417,6 +428,55 @@ const publicManifest: RpcManifest = manifest;
 publicManifest.procedures['users.get'];
 const typedPublicManifest: RpcManifest<ManifestRoutes> = manifest;
 typedPublicManifest.procedures['users.get'].output;
+type PublicManifestRoutes = RpcManifestRoutes<typeof manifest>;
+const publicManifestRouteId: RpcManifestRouteId<typeof manifest> = 'users.get';
+publicManifestRouteId.toUpperCase();
+const publicManifestUnaryRouteId: RpcManifestUnaryRouteId<typeof manifest> =
+  'users.authenticated';
+publicManifestUnaryRouteId.toUpperCase();
+const publicManifestStreamRouteId: RpcManifestStreamRouteId<typeof manifest> =
+  'users.watch';
+publicManifestStreamRouteId.toUpperCase();
+const publicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = { id: 'users.get', input: { id: '1' } };
+publicManifestProtocolRequest.input.id.toUpperCase();
+const publicManifestProtocolRequestUnion: RpcManifestRouteProtocolRequestUnion<
+  typeof manifest
+> = publicManifestProtocolRequest;
+publicManifestProtocolRequestUnion.id.toUpperCase();
+const publicManifestUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = publicManifestProtocolRequest;
+publicManifestUnaryProtocolRequest.input.id.toUpperCase();
+const publicManifestUnaryProtocolRequestUnion: RpcManifestRouteUnaryProtocolRequestUnion<
+  typeof manifest
+> = publicManifestUnaryProtocolRequest;
+publicManifestUnaryProtocolRequestUnion.id.toUpperCase();
+const publicManifestStreamProtocolRequest: RpcManifestRouteStreamProtocolRequest<
+  typeof manifest,
+  'users.watch'
+> = { id: 'users.watch', input: { userId: '1' } };
+publicManifestStreamProtocolRequest.input.userId.toUpperCase();
+const publicManifestStreamProtocolRequestUnion: RpcManifestRouteStreamProtocolRequestUnion<
+  typeof manifest
+> = publicManifestStreamProtocolRequest;
+publicManifestStreamProtocolRequestUnion.input.userId.toUpperCase();
+const publicManifestBody: RpcManifestBody<typeof manifest> =
+  publicManifestProtocolRequest;
+const publicManifestBatchBody: RpcManifestRouteUnaryProtocolRequest<
+  typeof manifest,
+  'users.get'
+>[] = [publicManifestUnaryProtocolRequest];
+const publicManifestBatchBodyUnion: RpcManifestBody<typeof manifest> =
+  publicManifestBatchBody;
+publicManifestBody.id.toUpperCase();
+publicManifestBatchBody[0]?.input.id.toUpperCase();
+publicManifestBatchBodyUnion.length.toFixed();
+const _publicManifestRoutes: PublicManifestRoutes = manifest.procedures;
+_publicManifestRoutes['users.get'].output;
 
 // @ts-expect-error RpcManifest route maps require procedure runtimes.
 type _WrongRpcManifest = RpcManifest<{ broken: { input: string } }>;
@@ -450,6 +510,11 @@ rpcBodyHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
 });
+rpcBodyHandler(new Request('https://example.com/rpc'), {
+  // @ts-expect-error low-level typed body handlers reject unknown route ids.
+  id: 'users.missing',
+  input: { id: '1' },
+});
 const rpcBodyResultHandler = createRpcBodyResultHandler(
   manifest,
   handlerOptions
@@ -457,6 +522,11 @@ const rpcBodyResultHandler = createRpcBodyResultHandler(
 rpcBodyResultHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
+});
+// @ts-expect-error low-level typed body handlers validate input by route id.
+rpcBodyResultHandler(new Request('https://example.com/rpc'), {
+  id: 'users.get',
+  input: { ok: true },
 });
 const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
   manifest,
@@ -466,6 +536,17 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
   input: { id: '1' },
 });
+rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
+  { id: 'users.authenticated', input: { ok: true } },
+]);
+rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
+  {
+    // @ts-expect-error low-level typed batch bodies reject stream routes.
+    id: 'users.watch',
+    // @ts-expect-error low-level typed batch bodies reject stream route inputs.
+    input: { userId: '1' },
+  },
+]);
 
 // @ts-expect-error low-level runtime handlers only accept typed procedure manifests.
 createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });

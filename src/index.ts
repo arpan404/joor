@@ -102,7 +102,18 @@ export type {
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,
+  RpcManifestBody,
   RpcManifest,
+  RpcManifestRouteId,
+  RpcManifestRouteProtocolRequest,
+  RpcManifestRouteProtocolRequestUnion,
+  RpcManifestRoutes,
+  RpcManifestRouteStreamProtocolRequest,
+  RpcManifestRouteStreamProtocolRequestUnion,
+  RpcManifestRouteUnaryProtocolRequest,
+  RpcManifestRouteUnaryProtocolRequestUnion,
+  RpcManifestStreamRouteId,
+  RpcManifestUnaryRouteId,
   RpcRequestPreflight,
 } from './rpc/dispatcher.js';
 export type {

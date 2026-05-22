@@ -7,6 +7,7 @@ import type {
   HandlerOptions,
   RpcRequestPreflight,
   RpcBodyResult,
+  RpcManifestBody,
 } from '../rpc/dispatcher.js';
 import {
   createRpcBodyResultHandler,
@@ -93,7 +94,8 @@ export const createBunRpcRequestHandler = <TManifest extends JoorManifest>(
 ): ((request: Request) => Promise<Response>) => {
   const handler = createRpcBodyResultHandler(manifest, options, false);
   return createBunTransportRequestHandler(
-    (request, body) => handler(request.toRequest(), body),
+    (request, body) =>
+      handler(request.toRequest(), body as RpcManifestBody<TManifest>),
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)
   );

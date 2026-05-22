@@ -8,8 +8,10 @@ import {
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
 import type {
   MaybePromise,
+  ProcedureInput,
   ProcedureRuntime,
   ProcedureRuntimeValue,
+  StreamEvent,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
 import {
@@ -66,6 +68,77 @@ export interface RpcManifest<
 > {
   procedures: TProcedures;
 }
+
+export type RpcManifestRoutes<TManifest extends RpcManifest> =
+  TManifest extends RpcManifest<infer TProcedures> ? TProcedures : never;
+
+export type RpcManifestRouteId<TManifest extends RpcManifest> = Extract<
+  keyof RpcManifestRoutes<TManifest>,
+  string
+>;
+
+export type RpcManifestUnaryRouteId<TManifest extends RpcManifest> = {
+  [TId in RpcManifestRouteId<TManifest>]: [
+    StreamEvent<RpcManifestRoutes<TManifest>[TId]>,
+  ] extends [never]
+    ? TId
+    : never;
+}[RpcManifestRouteId<TManifest>];
+
+export type RpcManifestStreamRouteId<TManifest extends RpcManifest> = Exclude<
+  RpcManifestRouteId<TManifest>,
+  RpcManifestUnaryRouteId<TManifest>
+>;
+
+export type RpcManifestRouteProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = JsonObject & {
+  id: TId;
+  input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]> & JsonValue;
+  traceId?: string;
+};
+
+export type RpcManifestRouteUnaryProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteProtocolRequest<TManifest, TId>;
+
+export type RpcManifestRouteStreamProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteProtocolRequest<TManifest, TId>;
+
+export type RpcManifestRouteProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = {
+  [TId in RpcManifestRouteId<TManifest>]: RpcManifestRouteProtocolRequest<
+    TManifest,
+    TId
+  >;
+}[RpcManifestRouteId<TManifest>];
+
+export type RpcManifestRouteUnaryProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = {
+  [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRouteUnaryProtocolRequest<
+    TManifest,
+    TId
+  >;
+}[RpcManifestUnaryRouteId<TManifest>];
+
+export type RpcManifestRouteStreamProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = {
+  [TId in RpcManifestStreamRouteId<TManifest>]: RpcManifestRouteStreamProtocolRequest<
+    TManifest,
+    TId
+  >;
+}[RpcManifestStreamRouteId<TManifest>];
+
+export type RpcManifestBody<TManifest extends RpcManifest> =
+  | RpcManifestRouteProtocolRequestUnion<TManifest>
+  | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[];
 
 export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;
 
@@ -825,7 +898,7 @@ export const createRpcHandler = <TManifest extends RpcManifest>(
         },
       });
     }
-    return handleParsed(request, body);
+    return handleParsed(request, body as RpcManifestBody<TManifest>);
   };
 };
 
@@ -833,9 +906,12 @@ export const createRpcBodyHandler = <TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((request: Request, body: JsonValue) => Promise<Response>) => {
+): ((request: Request, body: RpcManifestBody<TManifest>) => Promise<Response>) => {
   const handleResult = createRpcBodyResultHandler(manifest, options, preflight);
-  return async (request: Request, body: JsonValue): Promise<Response> => {
+  return async (
+    request: Request,
+    body: RpcManifestBody<TManifest>
+  ): Promise<Response> => {
     const result = await handleResult(request, body);
     return result instanceof Response ? result : toResponse(result, options);
   };
@@ -845,13 +921,19 @@ export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((request: Request, body: JsonValue) => Promise<RpcBodyResult>) => {
+): ((
+  request: Request,
+  body: RpcManifestBody<TManifest>
+) => Promise<RpcBodyResult>) => {
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
     options,
     preflight
   );
-  return (request: Request, body: JsonValue): Promise<RpcBodyResult> =>
+  return (
+    request: Request,
+    body: RpcManifestBody<TManifest>
+  ): Promise<RpcBodyResult> =>
     handleTransport(createFetchRequestSource(request), body);
 };
 
@@ -863,7 +945,7 @@ export const createRpcTransportBodyResultHandler = <
   preflight = true
 ): ((
   request: ContextRequestSource,
-  body: JsonValue
+  body: RpcManifestBody<TManifest>
 ) => Promise<RpcBodyResult>) => {
   const procedures = prepareProcedures(manifest);
   const requestPreflight = preflight
