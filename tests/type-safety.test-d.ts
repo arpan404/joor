@@ -106,6 +106,7 @@ import {
   type JoorManifestRoutes,
   type JoorManifestStreamRouteId,
   type JoorManifestUnaryRouteId,
+  type LegacyRpcTransportClient,
   type ListenOptionsFor,
   type ListenOptions,
   type NextRouteHandlers,
@@ -179,6 +180,7 @@ import {
   type RpcRouteStreamProtocolRequestUnion,
   type RpcRouteUnaryProtocolRequest,
   type RpcRouteUnaryProtocolRequestUnion,
+  type RouteRpcTransportClient,
   type RpcSuccess,
   type RpcStreamProcedure,
   type RpcStreamRouteId,
@@ -1385,6 +1387,16 @@ rootExplicitManifestClient.call('users.authenticated', { ok: true });
 rootExplicitManifestClient.stream('users.get', { id: '1' });
 
 const legacyClient = createClient({ url: '/rpc' });
+const legacyClientShape: LegacyRpcTransportClient = legacyClient;
+legacyClientShape
+  .request<typeof procedure, 'users.get'>(
+    'users.get',
+    { id: '1' },
+    {
+      headers: { 'x-tenant-id': 'tenant-1' },
+    }
+  )
+  .id.toUpperCase();
 const legacyRequest = legacyClient.request<typeof procedure, 'users.get'>(
   'users.get',
   { id: '1' },
@@ -2776,6 +2788,12 @@ const _wrongRouteBody: RpcRouteBody<Routes> = [
 ];
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
+const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
+routeClientShape.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
 const unaryRouteId: RpcUnaryRouteId<Routes> = 'users.get';
 unaryRouteId.toUpperCase();
 const streamRouteId: RpcStreamRouteId<Routes> = 'users.watch';
