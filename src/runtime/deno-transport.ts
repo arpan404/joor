@@ -30,10 +30,10 @@ export interface DenoServeOptions extends HandlerOptions {
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 
-export type DenoTransportBodyResultHandler<TBody = JsonValue> = (
-  request: ContextRequestSource,
-  body: TBody
-) => Promise<DenoTransportBodyResult>;
+export type DenoTransportBodyResultHandler<
+  TBody = JsonValue,
+  TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
@@ -102,8 +102,11 @@ const requestPathPreflight = (
   return undefined;
 };
 
-export const createDenoTransportRequestHandler = <TBody = JsonValue>(
-  handler: DenoTransportBodyResultHandler<TBody>,
+export const createDenoTransportRequestHandler = <
+  TBody = JsonValue,
+  TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+>(
+  handler: DenoTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
 ): ((request: Request) => Promise<Response>) => {
@@ -127,8 +130,11 @@ export const createDenoTransportRequestHandler = <TBody = JsonValue>(
   };
 };
 
-export const createDenoTransportRequestHandlerWithPath = <TBody = JsonValue>(
-  handler: DenoTransportBodyResultHandler<TBody>,
+export const createDenoTransportRequestHandlerWithPath = <
+  TBody = JsonValue,
+  TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+>(
+  handler: DenoTransportBodyResultHandler<TBody, TResult>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): ((request: Request) => Promise<Response>) => {

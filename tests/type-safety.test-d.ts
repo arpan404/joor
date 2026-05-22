@@ -654,12 +654,13 @@ const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
 createDenoTransportRequestHandler(denoTransportHandler);
 createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
 const routeTypedDenoTransportHandler: DenoTransportBodyResultHandler<
-  JoorManifestRouteBody<typeof manifest>
+  JoorManifestRouteBody<typeof manifest>,
+  JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
   if (!Array.isArray(body) && body.id === 'users.get') {
     body.input.id.toUpperCase();
   }
-  return denoTransportResult;
+  return manifestRouteBodyResult;
 };
 createDenoTransportRequestHandler(routeTypedDenoTransportHandler);
 createDenoTransportRequestHandlerWithPath(
@@ -671,14 +672,15 @@ routeTypedDenoTransportHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
   input: { ok: true },
 });
-const bunTransportResult: BunTransportBodyResult = denoTransportResult;
+const _bunTransportResult: BunTransportBodyResult = denoTransportResult;
 const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
-  JoorManifestRouteBody<typeof manifest>
+  JoorManifestRouteBody<typeof manifest>,
+  JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
   if (!Array.isArray(body) && body.id === 'users.authenticated') {
     body.input.ok.valueOf();
   }
-  return bunTransportResult;
+  return manifestRouteBodyResult;
 };
 createBunTransportRequestHandler(routeTypedBunTransportHandler);
 routeTypedBunTransportHandler(createFetchRequestSourceForTypes(), {
@@ -697,12 +699,13 @@ createStandaloneDenoTransportRequestHandlerWithPath(
   '/rpc'
 );
 const routeTypedStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler<
-  JoorManifestRouteBody<typeof manifest>
+  JoorManifestRouteBody<typeof manifest>,
+  JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
   if (!Array.isArray(body) && body.id === 'users.get') {
     body.input.id.toUpperCase();
   }
-  return standaloneDenoTransportResult;
+  return manifestRouteBodyResult;
 };
 createStandaloneDenoTransportRequestHandler(
   routeTypedStandaloneDenoTransportHandler
@@ -757,14 +760,15 @@ const transportResult: RpcBodyResult = {
   data: {},
 };
 createNodeTransportRequestHandler(async () => transportResult);
-const nodeTransportResult: NodeTransportBodyResult = transportResult;
+const _nodeTransportResult: NodeTransportBodyResult = transportResult;
 const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
-  JoorManifestRouteBody<typeof manifest>
+  JoorManifestRouteBody<typeof manifest>,
+  JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
   if (!Array.isArray(body) && body.id === 'users.watch') {
     body.input.userId.toUpperCase();
   }
-  return nodeTransportResult;
+  return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
 routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [

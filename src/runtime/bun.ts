@@ -33,10 +33,10 @@ export interface BunServeOptions extends HandlerOptions {
 }
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type BunTransportBodyResultHandler<TBody = JsonValue> = (
-  request: ContextRequestSource,
-  body: TBody
-) => Promise<BunTransportBodyResult>;
+export type BunTransportBodyResultHandler<
+  TBody = JsonValue,
+  TResult extends BunTransportBodyResult = BunTransportBodyResult,
+> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
 
 const bodyReadFailure = (request: Request, error: object): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
@@ -63,8 +63,11 @@ export const createBunFetch = <TManifest extends JoorManifest>(
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
 
-export const createBunTransportRequestHandler = <TBody = JsonValue>(
-  handler: BunTransportBodyResultHandler<TBody>,
+export const createBunTransportRequestHandler = <
+  TBody = JsonValue,
+  TResult extends BunTransportBodyResult = BunTransportBodyResult,
+>(
+  handler: BunTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false
 ): ((request: Request) => Promise<Response>) => {

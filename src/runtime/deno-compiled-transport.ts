@@ -15,7 +15,10 @@ import {
   readJsonRequestBodyWithLimit,
 } from './body.js';
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
-import type { DenoTransportBodyResultHandler } from './deno-transport.js';
+import type {
+  DenoTransportBodyResult,
+  DenoTransportBodyResultHandler,
+} from './deno-transport.js';
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
@@ -87,9 +90,10 @@ const requestPathPreflight = (
 
 export const createDenoCompiledTransportRequestHandlerWithPath = <
   TBody = JsonValue,
+  TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
 >(
   runtimeState: CompiledRuntimeState,
-  handler: DenoTransportBodyResultHandler<TBody>,
+  handler: DenoTransportBodyResultHandler<TBody, TResult>,
   unaryDispatch: CompiledFixedUnaryDispatch,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
