@@ -6,9 +6,14 @@ export { validate } from './validate.js';
 export type {
   ArrayChain,
   BooleanChain,
+  EnumChain,
+  JsonChain,
+  LiteralChain,
   NumberChain,
   ObjectChain,
+  RecordChain,
   StringChain,
+  UnionChain,
 } from './builder.js';
 export type { Infer } from './infer.js';
 export type { JsonObject, JsonPrimitive, JsonValue } from './json.js';

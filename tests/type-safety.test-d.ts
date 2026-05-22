@@ -549,6 +549,30 @@ const schemaSubpathUser: SchemaSubpathInfer<typeof schemaSubpathUserSchema> = {
   roles: ['admin'],
 };
 schemaSubpathUser.roles[0]?.toUpperCase();
+const schemaSubpathRouteSchema = schemaSubpathT.object({
+  status: schemaSubpathT
+    .literal('active')
+    .describe('Status discriminator')
+    .optional(),
+  role: schemaSubpathT.enum(['admin', 'member']).nullable(),
+  filter: schemaSubpathT
+    .union([schemaSubpathT.string(), schemaSubpathT.number()])
+    .optional(),
+  metadata: schemaSubpathT.record(schemaSubpathT.string()).optional(),
+  raw: schemaSubpathT.json().nullable(),
+});
+const schemaSubpathRouteValue: SchemaSubpathInfer<
+  typeof schemaSubpathRouteSchema
+> = {
+  role: null,
+  filter: 'Ada',
+  metadata: { source: 'test' },
+  raw: { ok: true },
+};
+schemaSubpathRouteValue.filter?.valueOf();
+const schemaSubpathLiteralStatus: 'active' | undefined =
+  schemaSubpathRouteValue.status;
+schemaSubpathLiteralStatus?.toUpperCase();
 const schemaSubpathJson: SchemaSubpathJsonValue = schemaSubpathUser;
 if (isSchemaSubpathJsonObject(schemaSubpathJson)) {
   const schemaSubpathObject: SchemaSubpathJsonObject = schemaSubpathJson;

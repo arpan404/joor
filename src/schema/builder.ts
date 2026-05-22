@@ -45,6 +45,18 @@ export interface BooleanChain extends BooleanSchema, MetaChain<BooleanChain> {
   nullable(): NullableSchema<BooleanChain>;
 }
 
+export interface LiteralChain<TValue extends JsonValue>
+  extends LiteralSchema<TValue>, MetaChain<LiteralChain<TValue>> {
+  optional(): OptionalSchema<LiteralChain<TValue>>;
+  nullable(): NullableSchema<LiteralChain<TValue>>;
+}
+
+export interface EnumChain<TValue extends readonly string[]>
+  extends EnumSchema<TValue>, MetaChain<EnumChain<TValue>> {
+  optional(): OptionalSchema<EnumChain<TValue>>;
+  nullable(): NullableSchema<EnumChain<TValue>>;
+}
+
 export interface ArrayChain<TItem extends Schema>
   extends ArraySchema<TItem>, MetaChain<ArrayChain<TItem>> {
   min(length: number): ArrayChain<TItem>;
@@ -58,6 +70,23 @@ export interface ObjectChain<TShape extends SchemaShape>
   strict(): ObjectChain<TShape>;
   optional(): OptionalSchema<ObjectChain<TShape>>;
   nullable(): NullableSchema<ObjectChain<TShape>>;
+}
+
+export interface UnionChain<TVariants extends readonly Schema[]>
+  extends UnionSchema<TVariants>, MetaChain<UnionChain<TVariants>> {
+  optional(): OptionalSchema<UnionChain<TVariants>>;
+  nullable(): NullableSchema<UnionChain<TVariants>>;
+}
+
+export interface RecordChain<TValue extends Schema>
+  extends RecordSchema<TValue>, MetaChain<RecordChain<TValue>> {
+  optional(): OptionalSchema<RecordChain<TValue>>;
+  nullable(): NullableSchema<RecordChain<TValue>>;
+}
+
+export interface JsonChain extends JsonSchema, MetaChain<JsonChain> {
+  optional(): OptionalSchema<JsonChain>;
+  nullable(): NullableSchema<JsonChain>;
 }
 
 const withMeta = <TSchema extends { readonly meta: SchemaMeta }>(
@@ -168,6 +197,56 @@ const booleanFrom = (base: Omit<BooleanSchema, 'type'>): BooleanChain => {
   return Object.freeze(schema);
 };
 
+const literalFrom = <TValue extends JsonValue>(
+  base: Omit<LiteralSchema<TValue>, 'type'>
+): LiteralChain<TValue> => {
+  const schema = {
+    ...base,
+    describe(description: string) {
+      return literalFrom(withMeta(base, { ...base.meta, description }));
+    },
+    example(example: JsonValue) {
+      return literalFrom(withMeta(base, { ...base.meta, example }));
+    },
+    default(defaultValue: JsonValue) {
+      return literalFrom(
+        withMeta(base, { ...base.meta, default: defaultValue })
+      );
+    },
+    optional() {
+      return makeOptional(schema);
+    },
+    nullable() {
+      return makeNullable(schema);
+    },
+  };
+  return Object.freeze(schema);
+};
+
+const enumFrom = <TValue extends readonly string[]>(
+  base: Omit<EnumSchema<TValue>, 'type'>
+): EnumChain<TValue> => {
+  const schema = {
+    ...base,
+    describe(description: string) {
+      return enumFrom(withMeta(base, { ...base.meta, description }));
+    },
+    example(example: JsonValue) {
+      return enumFrom(withMeta(base, { ...base.meta, example }));
+    },
+    default(defaultValue: JsonValue) {
+      return enumFrom(withMeta(base, { ...base.meta, default: defaultValue }));
+    },
+    optional() {
+      return makeOptional(schema);
+    },
+    nullable() {
+      return makeNullable(schema);
+    },
+  };
+  return Object.freeze(schema);
+};
+
 const arrayFrom = <TItem extends Schema>(
   base: Omit<ArraySchema<TItem>, 'type'>
 ): ArrayChain<TItem> => {
@@ -227,15 +306,87 @@ const objectFrom = <TShape extends SchemaShape>(
   return Object.freeze(schema);
 };
 
+const unionFrom = <TVariants extends readonly Schema[]>(
+  base: Omit<UnionSchema<TVariants>, 'type'>
+): UnionChain<TVariants> => {
+  const schema = {
+    ...base,
+    describe(description: string) {
+      return unionFrom(withMeta(base, { ...base.meta, description }));
+    },
+    example(example: JsonValue) {
+      return unionFrom(withMeta(base, { ...base.meta, example }));
+    },
+    default(defaultValue: JsonValue) {
+      return unionFrom(withMeta(base, { ...base.meta, default: defaultValue }));
+    },
+    optional() {
+      return makeOptional(schema);
+    },
+    nullable() {
+      return makeNullable(schema);
+    },
+  };
+  return Object.freeze(schema);
+};
+
+const recordFrom = <TValue extends Schema>(
+  base: Omit<RecordSchema<TValue>, 'type'>
+): RecordChain<TValue> => {
+  const schema = {
+    ...base,
+    describe(description: string) {
+      return recordFrom(withMeta(base, { ...base.meta, description }));
+    },
+    example(example: JsonValue) {
+      return recordFrom(withMeta(base, { ...base.meta, example }));
+    },
+    default(defaultValue: JsonValue) {
+      return recordFrom(
+        withMeta(base, { ...base.meta, default: defaultValue })
+      );
+    },
+    optional() {
+      return makeOptional(schema);
+    },
+    nullable() {
+      return makeNullable(schema);
+    },
+  };
+  return Object.freeze(schema);
+};
+
+const jsonFrom = (base: Omit<JsonSchema, 'type'>): JsonChain => {
+  const schema = {
+    ...base,
+    describe(description: string) {
+      return jsonFrom(withMeta(base, { ...base.meta, description }));
+    },
+    example(example: JsonValue) {
+      return jsonFrom(withMeta(base, { ...base.meta, example }));
+    },
+    default(defaultValue: JsonValue) {
+      return jsonFrom(withMeta(base, { ...base.meta, default: defaultValue }));
+    },
+    optional() {
+      return makeOptional(schema);
+    },
+    nullable() {
+      return makeNullable(schema);
+    },
+  };
+  return Object.freeze(schema);
+};
+
 export const t = {
   string: (): StringChain => stringFrom({ kind: 'string', meta: {} }),
   number: (): NumberChain => numberFrom({ kind: 'number', meta: {} }),
   boolean: (): BooleanChain => booleanFrom({ kind: 'boolean', meta: {} }),
-  literal: <TValue extends JsonValue>(value: TValue): LiteralSchema<TValue> =>
-    Object.freeze({ kind: 'literal', value, meta: {} }),
+  literal: <TValue extends JsonValue>(value: TValue): LiteralChain<TValue> =>
+    literalFrom({ kind: 'literal', value, meta: {} }),
   enum: <const TValue extends readonly string[]>(
     values: TValue
-  ): EnumSchema<TValue> => Object.freeze({ kind: 'enum', values, meta: {} }),
+  ): EnumChain<TValue> => enumFrom({ kind: 'enum', values, meta: {} }),
   array: <TItem extends Schema>(item: TItem): ArrayChain<TItem> =>
     arrayFrom({ kind: 'array', item, meta: {} }),
   object: <TShape extends SchemaShape>(shape: TShape): ObjectChain<TShape> =>
@@ -246,9 +397,8 @@ export const t = {
     makeNullable(inner),
   union: <const TVariants extends readonly Schema[]>(
     variants: TVariants
-  ): UnionSchema<TVariants> =>
-    Object.freeze({ kind: 'union', variants, meta: {} }),
-  record: <TValue extends Schema>(value: TValue): RecordSchema<TValue> =>
-    Object.freeze({ kind: 'record', value, meta: {} }),
-  json: (): JsonSchema => Object.freeze({ kind: 'json', meta: {} }),
+  ): UnionChain<TVariants> => unionFrom({ kind: 'union', variants, meta: {} }),
+  record: <TValue extends Schema>(value: TValue): RecordChain<TValue> =>
+    recordFrom({ kind: 'record', value, meta: {} }),
+  json: (): JsonChain => jsonFrom({ kind: 'json', meta: {} }),
 } as const;
