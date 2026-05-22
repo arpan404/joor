@@ -46,6 +46,11 @@ export type RpcRouteStreamEvent<
   TId extends RpcRouteId<TRoutes>,
 > = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcRouteEnvelope<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = RpcEnvelope<RpcRouteOutput<TRoutes, TId> & JsonValue, TId>;
+
 type ClientRequestOptionsTuple<TProcedure> = Record<
   string,
   never
@@ -62,6 +67,11 @@ export interface PendingRpcRequest<
   headers?: ProcedureHeaders<TProcedure>;
 }
 
+export type RpcRouteRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId>;
+
 export type ClientRequestOptions<TProcedure> =
   Record<string, never> extends ProcedureHeaders<TProcedure>
     ? { headers?: ProcedureHeaders<TProcedure> }
@@ -69,9 +79,10 @@ export type ClientRequestOptions<TProcedure> =
 
 export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
   [TIndex in keyof TRequests]: TRequests[TIndex] extends PendingRpcRequest<
-    infer TProcedure
+    infer TProcedure,
+    infer TId
   >
-    ? RpcEnvelope<ProcedureOutput<TProcedure> & JsonValue>
+    ? RpcEnvelope<ProcedureOutput<TProcedure> & JsonValue, TId>
     : never;
 };
 
@@ -101,7 +112,7 @@ export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
-  ): Promise<RpcEnvelope<RpcRouteOutput<TRoutes, TId> & JsonValue>>;
+  ): Promise<RpcRouteEnvelope<TRoutes, TId>>;
   request<TId extends RpcRouteId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,

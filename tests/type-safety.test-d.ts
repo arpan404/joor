@@ -9,6 +9,8 @@ import {
   type ProcedureAuth,
   type ProcedureOutput,
   type ProcedureResponseHeaders,
+  type RpcRouteEnvelope,
+  type RpcRouteRequest,
 } from '../src/index.js';
 import { createClient } from '../src/rpc/client.js';
 
@@ -112,6 +114,57 @@ routeClient.call(
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 routeClient.call('users.authenticated', { ok: true });
+
+const routeRequest = routeClient.request(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
+typedRouteRequest.input.id.toUpperCase();
+const routeRequestId: 'users.get' = routeRequest.id;
+routeRequestId.toUpperCase();
+
+// @ts-expect-error request ids preserve the selected route literal.
+const _wrongRouteRequestId: 'users.authenticated' = routeRequest.id;
+
+routeClient
+  .call('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } })
+  .then((result) => {
+    const routeResultId: 'users.get' = result.id;
+    routeResultId.toUpperCase();
+    if (result.ok) result.data.name.toUpperCase();
+
+    // @ts-expect-error envelopes preserve the selected route literal.
+    const _wrongRouteResultId: 'users.authenticated' = result.id;
+    _wrongRouteResultId;
+  });
+
+routeClient
+  .batch([
+    routeRequest,
+    routeClient.request('users.authenticated', { ok: true }),
+  ] as const)
+  .then((results) => {
+    const firstRouteId: 'users.get' = results[0].id;
+    const secondRouteId: 'users.authenticated' = results[1].id;
+    firstRouteId.toUpperCase();
+    secondRouteId.toUpperCase();
+  });
+
+const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
+  ok: true,
+  id: 'users.get',
+  data: { id: '1', name: 'Ada' },
+  traceId: 'trace-1',
+};
+routeEnvelope.id.toUpperCase();
+
+// @ts-expect-error typed route envelopes require the matching route id.
+const _wrongRouteEnvelopeId: RpcRouteEnvelope<
+  Routes,
+  'users.get'
+>['id'] = 'users.authenticated';
 
 // @ts-expect-error route-map clients only accept known procedure ids.
 routeClient.call('users.missing', { id: '1' });

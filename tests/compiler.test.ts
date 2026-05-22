@@ -95,6 +95,12 @@ describe('compiler', () => {
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('"get-profile": {');
       await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteRequest');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('RpcRouteEnvelope<Manifest');
+      await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');
       await expect(

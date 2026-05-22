@@ -21,6 +21,8 @@ export type {
   RpcRouteMap,
   RpcRouteOutput,
   RpcRouteProcedure,
+  RpcRouteEnvelope,
+  RpcRouteRequest,
   RpcRouteStreamEvent,
   RpcTransportClient,
 } from './rpc/client.js';

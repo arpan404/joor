@@ -1519,7 +1519,7 @@ ${indent}},`;
     `${outDir}/client.ts`,
     `import { createClient as createTransportClient } from 'joor/client';
 import type { ClientRequestOptions } from 'joor/client';
-import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcEnvelope, StreamEvent } from 'joor';
+import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcRouteEnvelope, RpcRouteRequest, StreamEvent } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -1528,7 +1528,8 @@ export type RouteProcedure<TId extends RouteId> = Manifest['procedures'][TId];
 export type RouteInput<TId extends RouteId> = ProcedureInput<RouteProcedure<TId>>;
 export type RouteOutput<TId extends RouteId> = ProcedureOutput<RouteProcedure<TId>>;
 export type RouteHeaders<TId extends RouteId> = ProcedureHeaders<RouteProcedure<TId>>;
-export type RouteResult<TId extends RouteId> = RpcEnvelope<RouteOutput<TId>>;
+export type RouteRequest<TId extends RouteId> = RpcRouteRequest<Manifest['procedures'], TId>;
+export type RouteResult<TId extends RouteId> = RpcRouteEnvelope<Manifest['procedures'], TId>;
 export type Result<TId extends RouteId> = RouteResult<TId>;
 export type Stream<TId extends RouteId> = StreamEvent<RouteProcedure<TId>>;
 export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
