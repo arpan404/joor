@@ -1470,6 +1470,19 @@ createCompiledRpcHandler(
 createCompiledRpcHandler(_serviceTypedCompiledDispatch);
 // @ts-expect-error service-dependent compiled transports require matching config services.
 createCompiledRpcTransportBodyResultHandler(_serviceTypedCompiledDispatch, {});
+createDenoCompiledTransportRequestHandlerWithPath(
+  typedCompiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+createDenoCompiledTransportRequestHandlerWithPath(
+  // @ts-expect-error compiled Deno transports require unary dispatch services to match runtime state services.
+  compiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
 const standaloneDenoCompiledHandler =
   createDenoCompiledTransportRequestHandlerWithPath(
     compiledRuntimeState,

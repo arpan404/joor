@@ -89,12 +89,13 @@ const requestPathPreflight = (
 };
 
 export const createDenoCompiledTransportRequestHandlerWithPath = <
+  TServices extends object = object,
   TBody = JsonValue,
   TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
 >(
-  runtimeState: CompiledRuntimeState,
+  runtimeState: CompiledRuntimeState<TServices>,
   handler: DenoTransportBodyResultHandler<TBody, TResult>,
-  unaryDispatch: CompiledFixedUnaryDispatch,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): ((request: Request) => Promise<Response>) => {
