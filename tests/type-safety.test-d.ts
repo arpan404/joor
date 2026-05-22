@@ -67,6 +67,7 @@ import {
   type JoorMiddleware,
   type JoorConfig,
   type JoorConfigContext,
+  type JoorContext,
   type PluginServices,
   type Infer,
   type HeaderObjectSchema,
@@ -425,6 +426,23 @@ const procedure = defineProcedure.withContext<Services>()({
     return ctx.ok(user, { 'cache-control': 'private' });
   },
 });
+const _readRootContextOkResult = (
+  ctx: JoorContext<
+    Services,
+    { 'x-tenant-id': string },
+    { 'cache-control': string },
+    Record<string, never>
+  >
+) => {
+  const result = ctx.ok(
+    { id: '1', name: 'Ada' },
+    { 'cache-control': 'private' }
+  );
+  result.headers['cache-control'].toUpperCase();
+  // @ts-expect-error ctx.ok results preserve declared response header keys.
+  result.headers.missing;
+};
+_readRootContextOkResult;
 
 defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),

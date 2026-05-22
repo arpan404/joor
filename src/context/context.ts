@@ -126,7 +126,7 @@ class RuntimeJoorContext<
         : {
             kind: 'success',
             data,
-            headers: headers as TResponseHeaders & JsonObject,
+            headers: headers as TResponseHeaders,
           }
     ) as ProcedureSuccess<TData, TResponseHeaders>;
   }
