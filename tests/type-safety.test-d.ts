@@ -25,7 +25,27 @@ import {
   type DenoTransportBodyResultHandler,
   type HandlerOptions,
   type JoorConfigContext,
+  type JoorManifestRouteBatchRequest,
+  type JoorManifestRouteBatchResults,
+  type JoorManifestRouteEnvelope,
+  type JoorManifestRouteError,
+  type JoorManifestRouteHeaders,
+  type JoorManifestRouteId,
+  type JoorManifestRouteInput,
+  type JoorManifestRouteOutput,
+  type JoorManifestRouteProtocolRequest,
+  type JoorManifestRouteProtocolRequestUnion,
+  type JoorManifestRouteRequest,
+  type JoorManifestRouteRequestUnion,
+  type JoorManifestRouteResponseHeaders,
+  type JoorManifestRouteStreamEvent,
+  type JoorManifestRouteStreamProtocolRequest,
+  type JoorManifestRouteStreamProtocolRequestUnion,
+  type JoorManifestRouteUnaryProtocolRequest,
+  type JoorManifestRouteUnaryProtocolRequestUnion,
   type JoorManifestRoutes,
+  type JoorManifestStreamRouteId,
+  type JoorManifestUnaryRouteId,
   type ListenOptions,
   type NextRouteHandlers,
   type ProcedureInput,
@@ -227,6 +247,125 @@ rootManifestClient.call('users.authenticated', { ok: true });
 
 // @ts-expect-error root manifest clients keep route id safety.
 rootManifestClient.stream('users.get', { id: '1' });
+
+const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
+manifestRouteId.toUpperCase();
+const manifestUnaryRouteId: JoorManifestUnaryRouteId<typeof manifest> =
+  'users.authenticated';
+manifestUnaryRouteId.toUpperCase();
+const manifestStreamRouteId: JoorManifestStreamRouteId<typeof manifest> =
+  'users.watch';
+manifestStreamRouteId.toUpperCase();
+const manifestRouteInput: JoorManifestRouteInput<
+  typeof manifest,
+  'users.get'
+> = { id: '1' };
+manifestRouteInput.id.toUpperCase();
+const manifestRouteOutput: JoorManifestRouteOutput<
+  typeof manifest,
+  'users.get'
+> = { id: '1', name: 'Ada' };
+manifestRouteOutput.name.toUpperCase();
+const manifestRouteHeaders: JoorManifestRouteHeaders<
+  typeof manifest,
+  'users.get'
+> = { 'x-tenant-id': 'tenant-1' };
+manifestRouteHeaders['x-tenant-id'].toUpperCase();
+const manifestRouteResponseHeaders: JoorManifestRouteResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = { 'cache-control': 'private' };
+manifestRouteResponseHeaders['cache-control'].toUpperCase();
+const manifestRouteError: JoorManifestRouteError<typeof manifest, 'users.get'> =
+  {
+    code: 'NOT_FOUND',
+    message: 'Not found',
+    status: 404,
+    details: { message: 'User not found' },
+  };
+manifestRouteError.code.toUpperCase();
+const manifestRouteEnvelope: JoorManifestRouteEnvelope<
+  typeof manifest,
+  'users.get'
+> = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '1', name: 'Ada' },
+  headers: { 'cache-control': 'private' },
+};
+manifestRouteEnvelope.id.toUpperCase();
+const manifestRouteRequest: JoorManifestRouteRequest<
+  typeof manifest,
+  'users.get'
+> = {
+  id: 'users.get',
+  input: { id: '1' },
+  headers: { 'x-tenant-id': 'tenant-1' },
+};
+manifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+const manifestRouteRequestUnion: JoorManifestRouteRequestUnion<
+  typeof manifest
+> = manifestRouteRequest;
+manifestRouteRequestUnion.id.toUpperCase();
+const manifestRouteBatchResults: JoorManifestRouteBatchResults<
+  typeof manifest,
+  [typeof manifestRouteRequest]
+> = [manifestRouteEnvelope];
+manifestRouteBatchResults[0].id.toUpperCase();
+const manifestStreamEvent: JoorManifestRouteStreamEvent<
+  typeof manifest,
+  'users.watch'
+> = { type: 'user.updated', userId: '1' };
+manifestStreamEvent.userId.toUpperCase();
+const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = { id: 'users.get', input: { id: '1' } };
+manifestProtocolRequest.input.id.toUpperCase();
+const manifestProtocolRequestUnion: JoorManifestRouteProtocolRequestUnion<
+  typeof manifest
+> = manifestProtocolRequest;
+manifestProtocolRequestUnion.id.toUpperCase();
+const manifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = manifestProtocolRequest;
+manifestUnaryProtocolRequest.input.id.toUpperCase();
+const manifestUnaryProtocolRequestUnion: JoorManifestRouteUnaryProtocolRequestUnion<
+  typeof manifest
+> = manifestUnaryProtocolRequest;
+manifestUnaryProtocolRequestUnion.id.toUpperCase();
+const manifestStreamProtocolRequest: JoorManifestRouteStreamProtocolRequest<
+  typeof manifest,
+  'users.watch'
+> = { id: 'users.watch', input: { userId: '1' } };
+manifestStreamProtocolRequest.input.userId.toUpperCase();
+const manifestStreamProtocolRequestUnion: JoorManifestRouteStreamProtocolRequestUnion<
+  typeof manifest
+> = manifestStreamProtocolRequest;
+manifestStreamProtocolRequestUnion.input.userId.toUpperCase();
+const manifestBatchRequest: JoorManifestRouteBatchRequest<
+  typeof manifest,
+  [typeof manifestUnaryProtocolRequest]
+> = [manifestUnaryProtocolRequest];
+manifestBatchRequest[0].input.id.toUpperCase();
+
+// @ts-expect-error manifest route ids reject missing routes.
+const _wrongManifestRouteId: JoorManifestRouteId<typeof manifest> =
+  'users.missing';
+
+const _wrongManifestStreamProtocolRequest: JoorManifestRouteStreamProtocolRequest<
+  typeof manifest,
+  // @ts-expect-error manifest stream protocol requests reject unary route ids.
+  'users.get'
+> = manifestProtocolRequest;
+
+const _wrongManifestBatchRequest: JoorManifestRouteBatchRequest<
+  typeof manifest,
+  // @ts-expect-error manifest protocol batches reject stream request bodies.
+  [typeof manifestStreamProtocolRequest]
+> = [manifestStreamProtocolRequest];
 
 // @ts-expect-error manifests only accept procedure runtimes.
 defineManifest({ procedures: { broken: { input: t.string() } } });

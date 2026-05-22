@@ -35,7 +35,27 @@ export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   JoorManifest,
+  JoorManifestRouteBatchRequest,
+  JoorManifestRouteBatchResults,
+  JoorManifestRouteEnvelope,
+  JoorManifestRouteError,
+  JoorManifestRouteHeaders,
+  JoorManifestRouteId,
+  JoorManifestRouteInput,
+  JoorManifestRouteOutput,
+  JoorManifestRouteProtocolRequest,
+  JoorManifestRouteProtocolRequestUnion,
+  JoorManifestRouteRequest,
+  JoorManifestRouteRequestUnion,
+  JoorManifestRouteResponseHeaders,
+  JoorManifestRouteStreamEvent,
+  JoorManifestRouteStreamProtocolRequest,
+  JoorManifestRouteStreamProtocolRequestUnion,
+  JoorManifestRouteUnaryProtocolRequest,
+  JoorManifestRouteUnaryProtocolRequestUnion,
   JoorManifestRoutes,
+  JoorManifestStreamRouteId,
+  JoorManifestUnaryRouteId,
   JoorRouteMap,
 } from './manifest.js';
 export type {
