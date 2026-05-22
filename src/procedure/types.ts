@@ -106,7 +106,7 @@ export type ProcedureOutput<TProcedure> = TProcedure extends {
   types?: ProcedureTypes<
     unknown,
     infer TOutput,
-    unknown,
+    infer TStream,
     string,
     unknown,
     unknown,
@@ -114,7 +114,9 @@ export type ProcedureOutput<TProcedure> = TProcedure extends {
     unknown
   >;
 }
-  ? TOutput
+  ? [TStream] extends [never]
+    ? TOutput
+    : never
   : never;
 
 export type StreamEvent<TProcedure> = TProcedure extends {

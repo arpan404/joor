@@ -502,6 +502,13 @@ const _streamProcedureResponseHeaders: ProcedureResponseHeaders<
   typeof streamProcedure
 > = {};
 _streamProcedureResponseHeaders;
+type StreamProcedureOutputIsNever = [
+  ProcedureOutput<typeof streamProcedure>,
+] extends [never]
+  ? true
+  : false;
+const streamProcedureOutputIsNever: StreamProcedureOutputIsNever = true;
+streamProcedureOutputIsNever.valueOf();
 const subpathStreamEvent: SubpathStreamEvent<typeof streamProcedure> = {
   type: 'user.updated',
   userId: '1',
@@ -1105,6 +1112,11 @@ manifestUnaryRouteId.toUpperCase();
 const manifestStreamRouteId: JoorManifestStreamRouteId<typeof manifest> =
   'users.watch';
 manifestStreamRouteId.toUpperCase();
+type _InvalidManifestStreamRouteOutput = JoorManifestRouteOutput<
+  typeof manifest,
+  // @ts-expect-error manifest route outputs are only available for unary routes.
+  'users.watch'
+>;
 const manifestRouteInput: JoorManifestRouteInput<typeof manifest, 'users.get'> =
   { id: '1' };
 manifestRouteInput.id.toUpperCase();
