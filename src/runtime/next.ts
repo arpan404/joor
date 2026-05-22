@@ -1,5 +1,10 @@
 import type { JoorManifest } from '../manifest.js';
-import type { HandlerOptions, HandlerOptionsFor } from '../rpc/dispatcher.js';
+import type {
+  HandlerOptions,
+  HandlerOptionsArgs,
+  HandlerOptionsFor,
+} from '../rpc/dispatcher.js';
+import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler } from './fetch.js';
 
 export interface NextRouteHandlers {
@@ -8,10 +13,17 @@ export interface NextRouteHandlers {
   OPTIONS(request: Request): Promise<Response>;
 }
 
-export const createNextRouteHandlers = <TManifest extends JoorManifest>(
+export function createNextRouteHandlers<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): NextRouteHandlers;
+export function createNextRouteHandlers<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): NextRouteHandlers => {
+): NextRouteHandlers {
   const fetch = createJoorHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>
@@ -21,6 +33,6 @@ export const createNextRouteHandlers = <TManifest extends JoorManifest>(
     POST: fetch,
     OPTIONS: fetch,
   };
-};
+}
 
 export const createNextHandler = createNextRouteHandlers;

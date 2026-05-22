@@ -335,14 +335,27 @@ export type HandlerOptionsArgs<
     ? [options?: HandlerOptionsFor<TManifest, TPlugins>]
     : [options: HandlerOptionsFor<TManifest, TPlugins>];
 
-export type HandlerOptionsWithPreflightArgs<
+export type HandlerOptionsWithTrailingArgs<
   TManifest extends RpcManifest,
+  TTrailingArgs extends readonly unknown[],
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
 > =
   RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
-    ? [options?: HandlerOptionsFor<TManifest, TPlugins>, preflight?: boolean]
-    : [options: HandlerOptionsFor<TManifest, TPlugins>, preflight?: boolean];
+    ? [
+        options?: HandlerOptionsFor<TManifest, TPlugins>,
+        ...trailingArgs: TTrailingArgs,
+      ]
+    : [
+        options: HandlerOptionsFor<TManifest, TPlugins>,
+        ...trailingArgs: TTrailingArgs,
+      ];
+
+export type HandlerOptionsWithPreflightArgs<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptionsWithTrailingArgs<TManifest, [preflight?: boolean], TPlugins>;
 
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],

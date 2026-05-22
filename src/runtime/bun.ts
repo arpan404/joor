@@ -5,11 +5,13 @@ import {
 import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
+  HandlerOptionsArgs,
   HandlerOptionsFor,
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
 } from '../rpc/dispatcher.js';
+import type { JoorPlugin } from '../context/plugin.js';
 import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
@@ -58,11 +60,22 @@ const bodyReadFailure = (request: Request, error: object): Response => {
   });
 };
 
-export const createBunFetch = <TManifest extends JoorManifest>(
+export function createBunFetch<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createBunFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): ((request: Request) => Promise<Response>) =>
-  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
+): (request: Request) => Promise<Response> {
+  return createJoorHandler(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>
+  );
+}
 
 export const createBunTransportRequestHandler = <
   TBody = JsonValue,
@@ -92,10 +105,17 @@ export const createBunTransportRequestHandler = <
   };
 };
 
-export const createBunRpcRequestHandler = <TManifest extends JoorManifest>(
+export function createBunRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): ((request: Request) => Promise<Response>) => {
+): (request: Request) => Promise<Response> {
   const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>,
@@ -107,13 +127,16 @@ export const createBunRpcRequestHandler = <TManifest extends JoorManifest>(
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)
   );
-};
+}
 
 export const serveBun = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: BunServeOptions = {}
 ): void => {
-  const fetch = createBunRpcRequestHandler(manifest, options);
+  const fetch = createBunRpcRequestHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>
+  );
   const bunGlobal = globalThis as typeof globalThis & {
     Bun?: {
       serve(options: {

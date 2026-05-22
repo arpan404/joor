@@ -1,10 +1,12 @@
 import type {
   HandlerOptions,
+  HandlerOptionsArgs,
   HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { JoorPlugin } from '../context/plugin.js';
 import type { JoorManifest } from '../manifest.js';
 import {
   createRpcBodyResultHandler,
@@ -107,11 +109,22 @@ const requestPathPreflight = (
   return undefined;
 };
 
-export const createDenoFetch = <TManifest extends JoorManifest>(
+export function createDenoFetch<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createDenoFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): ((request: Request) => Promise<Response>) =>
-  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
+): (request: Request) => Promise<Response> {
+  return createJoorHandler(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>
+  );
+}
 
 export const createDenoTransportRequestHandler = <
   TBody = JsonValue,
@@ -165,10 +178,17 @@ export const createDenoTransportRequestHandlerWithPath = <
   };
 };
 
-export const createDenoRpcRequestHandler = <TManifest extends JoorManifest>(
+export function createDenoRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): ((request: Request) => Promise<Response>) => {
+): (request: Request) => Promise<Response> {
   const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>,
@@ -180,13 +200,16 @@ export const createDenoRpcRequestHandler = <TManifest extends JoorManifest>(
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)
   );
-};
+}
 
 export const serveDeno = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
 ): void => {
-  const fetch = createDenoRpcRequestHandler(manifest, options);
+  const fetch = createDenoRpcRequestHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>
+  );
   const denoGlobal = globalThis as typeof globalThis & {
     Deno?: {
       serve(options: {

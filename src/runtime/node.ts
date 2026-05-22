@@ -5,10 +5,12 @@ import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
   HandlerOptionsFor,
+  HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
   RpcManifestBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { JoorPlugin } from '../context/plugin.js';
 import type { RpcEnvelope } from '../rpc/protocol.js';
 import {
   createRpcRequestPreflight,
@@ -276,16 +278,31 @@ export const listen = <TManifest extends JoorManifest>(
 ): void => {
   const port = options.port ?? 3000;
   const hostname = options.hostname ?? '0.0.0.0';
-  const handler = createNodeRpcRequestHandler(manifest, options, hostname);
+  const handler = createNodeRpcRequestHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>,
+    hostname
+  );
   const server = createServer(handler);
   server.listen(port, hostname);
 };
 
-export const createNodeRpcRequestHandler = <TManifest extends JoorManifest>(
+export function createNodeRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithTrailingArgs<
+    TManifest,
+    [hostname?: string],
+    TPlugins
+  >
+): NodeRpcRequestHandler;
+export function createNodeRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   hostname = '0.0.0.0'
-): NodeRpcRequestHandler => {
+): NodeRpcRequestHandler {
   const handler = createRpcTransportBodyResultHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,
@@ -297,4 +314,4 @@ export const createNodeRpcRequestHandler = <TManifest extends JoorManifest>(
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options)
   );
-};
+}

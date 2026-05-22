@@ -1,9 +1,25 @@
 import type { JoorManifest } from '../manifest.js';
-import type { HandlerOptions, HandlerOptionsFor } from '../rpc/dispatcher.js';
+import type {
+  HandlerOptions,
+  HandlerOptionsArgs,
+  HandlerOptionsFor,
+} from '../rpc/dispatcher.js';
+import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler } from './fetch.js';
 
-export const createVercelFetch = <TManifest extends JoorManifest>(
+export function createVercelFetch<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): (request: Request) => Promise<Response>;
+export function createVercelFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
-): ((request: Request) => Promise<Response>) =>
-  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
+): (request: Request) => Promise<Response> {
+  return createJoorHandler(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>
+  );
+}

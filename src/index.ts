@@ -121,6 +121,8 @@ export type {
   HandlerOptionServices,
   HandlerOptionsArgs,
   HandlerOptionsFor,
+  HandlerOptionsWithPreflightArgs,
+  HandlerOptionsWithTrailingArgs,
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,

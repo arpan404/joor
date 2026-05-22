@@ -1200,14 +1200,20 @@ createJoorHandler({ procedures: { broken: { input: t.string() } } });
 
 const bunFetch = createBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
+createBunFetch(manifest);
 const denoFetch = createDenoFetch(manifest, handlerOptions);
 denoFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
+createDenoFetch(manifest);
 
 // @ts-expect-error Deno adapters only accept typed procedure manifests.
 createDenoFetch({ procedures: { broken: { input: t.string() } } });
 
 const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
 denoHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching Deno RPC adapter plugins.
+createDenoRpcRequestHandler(manifest);
 const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
   manifest,
   handlerOptions
@@ -1321,16 +1327,32 @@ const standaloneDenoCompiledHandler =
     '/rpc'
   );
 standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
-const nextHandlers: NextRouteHandlers = createNextRouteHandlers(manifest);
+const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
+  manifest,
+  handlerOptions
+);
 nextHandlers.POST(new Request('https://example.com/rpc'));
-const cloudflareWorker: CloudflareWorker = createCloudflareWorker(manifest);
+// @ts-expect-error service-dependent manifests require matching Next adapter plugins.
+createNextRouteHandlers(manifest);
+const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
+  manifest,
+  handlerOptions
+);
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
-const netlifyFetch = createNetlifyFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
+createCloudflareWorker(manifest);
+const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
 netlifyFetch(new Request('https://example.com/rpc'));
-const vercelFetch = createVercelFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
+createNetlifyFetch(manifest);
+const vercelFetch = createVercelFetch(manifest, handlerOptions);
 vercelFetch(new Request('https://example.com/rpc'));
-const _nodeHandler = createNodeRpcRequestHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
+createVercelFetch(manifest);
+const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
+// @ts-expect-error service-dependent manifests require matching Node adapter plugins.
+createNodeRpcRequestHandler(manifest);
 const transportResult: RpcBodyResult = {
   ok: true,
   id: 'users.get',
@@ -1387,10 +1409,12 @@ runtimeSubpathNodeTransportHandler(createFetchRequestSourceForTypes(), {
   input: { ok: true },
 });
 const runtimeSubpathNextHandlers: RuntimeSubpathNextRouteHandlers =
-  createRuntimeSubpathNextRouteHandlers(manifest);
+  createRuntimeSubpathNextRouteHandlers(manifest, handlerOptions);
 runtimeSubpathNextHandlers.POST(new Request('https://example.com/rpc'));
-const runtimeSubpathCloudflareWorker =
-  createRuntimeSubpathCloudflareWorker(manifest);
+const runtimeSubpathCloudflareWorker = createRuntimeSubpathCloudflareWorker(
+  manifest,
+  handlerOptions
+);
 runtimeSubpathCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
