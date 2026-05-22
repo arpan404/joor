@@ -1698,11 +1698,25 @@ const handlerOptionServices: HandlerOptionServices<typeof handlerOptions> =
 handlerOptionServices.users.findById('1').name.toUpperCase();
 const handlerHookContext: HandlerHookContext<RootPluginServices> = {
   services: rootPluginServices,
+  body: manifestRouteRequest,
 };
 handlerHookContext.services.users.findById('1').name.toUpperCase();
 const rpcSubpathHandlerHookContext: RpcSubpathHandlerHookContext<RootPluginServices> =
   handlerHookContext;
 rpcSubpathHandlerHookContext.services.users.findById('1').name.toUpperCase();
+const typedHandlerHookContext: HandlerHookContext<
+  RootPluginServices,
+  JoorManifestRouteBody<typeof manifest>
+> = {
+  services: rootPluginServices,
+  body: manifestRouteRequest,
+};
+if (
+  typedHandlerHookContext.body !== undefined &&
+  !('length' in typedHandlerHookContext.body)
+) {
+  typedHandlerHookContext.body.id.toUpperCase();
+}
 const serviceAwareHandlerHooks: HandlerHooks<RootPluginServices> = {
   beforeRequest(_request, context) {
     context.services.users.findById('1').name.toUpperCase();
@@ -1747,7 +1761,28 @@ _handlerOptionsWithoutHookPlugins;
 const serviceAwareHandlerOptions: HandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = handlerOptions;
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(_request, context) {
+      if (context.body !== undefined && !('length' in context.body)) {
+        context.body.id.toUpperCase();
+      }
+      return undefined;
+    },
+    afterResponse(response, _request, context) {
+      if (
+        context.body !== undefined &&
+        !('length' in context.body) &&
+        context.body.id === 'users.get'
+      ) {
+        context.body.input.id.toUpperCase();
+      }
+      return response;
+    },
+  },
+};
 serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const handlerOptionsWithExtraServices: HandlerOptionsFor<
   typeof manifest,

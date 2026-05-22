@@ -200,10 +200,16 @@ describe('dispatcher', () => {
         hooks: {
           beforeRequest(_request, context) {
             context.services.hooks.record('before');
+            context.services.hooks.record(
+              `before-body:${(context.body as { id?: string }).id}`
+            );
             return undefined;
           },
           afterResponse(response, _request, context) {
             context.services.hooks.record('after');
+            context.services.hooks.record(
+              `after-body:${(context.body as { id?: string }).id}`
+            );
             return response;
           },
         },
@@ -226,7 +232,16 @@ describe('dispatcher', () => {
 
     expect(limitedBody.ok).toBe(false);
     expect(limitedBody.error.code).toBe('RATE_LIMITED');
-    expect(seen).toEqual(['before', 'after', 'before', 'after']);
+    expect(seen).toEqual([
+      'before',
+      'before-body:limited',
+      'after',
+      'after-body:limited',
+      'before',
+      'before-body:limited',
+      'after',
+      'after-body:limited',
+    ]);
   });
 
   it('runs compiled runtime hooks with plugin services', async () => {
@@ -248,10 +263,16 @@ describe('dispatcher', () => {
       hooks: {
         beforeRequest(_request, context) {
           context.services.hooks.record('before');
+          context.services.hooks.record(
+            `before-body:${(context.body as { id?: string }).id}`
+          );
           return undefined;
         },
         afterResponse(response, _request, context) {
           context.services.hooks.record('after');
+          context.services.hooks.record(
+            `after-body:${(context.body as { id?: string }).id}`
+          );
           return response;
         },
       },
@@ -280,7 +301,12 @@ describe('dispatcher', () => {
       id: 'compiled',
       data: { ok: true },
     });
-    expect(seen).toEqual(['before', 'after']);
+    expect(seen).toEqual([
+      'before',
+      'before-body:compiled',
+      'after',
+      'after-body:compiled',
+    ]);
   });
 
   it('caches successful query responses when meta.cache is configured', async () => {

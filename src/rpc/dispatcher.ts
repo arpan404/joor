@@ -318,10 +318,11 @@ interface RuntimeOptions {
 export interface HandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
+  TBody = unknown,
 > {
   plugins?: TPlugins;
-  middleware?: readonly JoorMiddleware<PluginServices<TPlugins>>[];
-  hooks?: HandlerHooks<PluginServices<TPlugins>>;
+  middleware?: readonly JoorMiddleware<PluginServices<TPlugins>, TBody>[];
+  hooks?: HandlerHooks<PluginServices<TPlugins>, TBody>;
   path?: string;
   cors?: {
     origin?: string;
@@ -363,7 +364,7 @@ export type HandlerOptionsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptions<TPlugins> &
+> = HandlerOptions<TPlugins, RpcManifestBody<TManifest>> &
   (HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
@@ -379,7 +380,8 @@ export type HandlerOptionsArgsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-  TOptions extends HandlerOptions<TPlugins> = HandlerOptions<TPlugins>,
+  TOptions extends HandlerOptions<TPlugins, RpcManifestBody<TManifest>> =
+    HandlerOptions<TPlugins, RpcManifestBody<TManifest>>,
 > =
   HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
@@ -441,25 +443,33 @@ export function defineHandlerOptions<TManifest extends RpcManifest>(
   return ((options) => options) as DefineHandlerOptions<TManifest>;
 }
 
-export interface HandlerHookContext<TServices extends object = object> {
+export interface HandlerHookContext<
+  TServices extends object = object,
+  TBody = unknown,
+> {
   services: TServices;
+  body?: TBody;
 }
 
-export interface HandlerHooks<TServices extends object = object> {
+export interface HandlerHooks<
+  TServices extends object = object,
+  TBody = unknown,
+> {
   beforeRequest?(
     request: Request,
-    context: HandlerHookContext<TServices>
+    context: HandlerHookContext<TServices, TBody>
   ): MaybePromise<Response | undefined>;
   afterResponse?(
     response: Response,
     request: Request,
-    context: HandlerHookContext<TServices>
+    context: HandlerHookContext<TServices, TBody>
   ): MaybePromise<Response | undefined>;
 }
 
 export interface JoorMiddleware<
   TServices extends object = object,
-> extends HandlerHooks<TServices> {
+  TBody = unknown,
+> extends HandlerHooks<TServices, TBody> {
   name: string;
 }
 
@@ -1282,14 +1292,18 @@ export function createRpcTransportBodyResultHandler<
   const hasAfterHooks =
     options.hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
-  const createHookContext = async (): Promise<HandlerHookContext<object>> => ({
+  const createHookContext = async (
+    body?: unknown
+  ): Promise<HandlerHookContext<object, unknown>> => ({
     services: services ?? (await servicesPromise),
+    ...(body === undefined ? {} : { body }),
   });
   const runBefore = async (
-    request: ContextRequestSource
+    request: ContextRequestSource,
+    body: unknown
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
-    const context = await createHookContext();
+    const context = await createHookContext(body);
     const hookResult = await options.hooks?.beforeRequest?.(
       hookRequest,
       context
@@ -1303,11 +1317,12 @@ export function createRpcTransportBodyResultHandler<
   };
   const runAfter = async (
     response: Response,
-    request: ContextRequestSource
+    request: ContextRequestSource,
+    body: unknown
   ): Promise<RpcBodyResult> => {
     let next = response;
     const hookRequest = request.toRequest();
-    const context = await createHookContext();
+    const context = await createHookContext(body);
     for (const item of middleware) {
       const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
@@ -1439,24 +1454,26 @@ export function createRpcTransportBodyResultHandler<
     request: ContextRequestSource,
     body: TBody
   ): Promise<RpcManifestBodyResultFor<TManifest, TBody>> => {
-    const early = hasBeforeHooks ? await runBefore(request) : undefined;
+    const early = hasBeforeHooks ? await runBefore(request, body) : undefined;
     if (early !== undefined) {
       return (
-        hasAfterHooks ? await runAfter(early, request) : early
+        hasAfterHooks ? await runAfter(early, request, body) : early
       ) as RpcManifestBodyResultFor<TManifest, TBody>;
     }
     const result = await handleRequest(request, body as JsonValue);
     if (!hasAfterHooks)
       return result as RpcManifestBodyResultFor<TManifest, TBody>;
     if (result instanceof Response) {
-      return (await runAfter(result, request)) as RpcManifestBodyResultFor<
-        TManifest,
-        TBody
-      >;
+      return (await runAfter(
+        result,
+        request,
+        body
+      )) as RpcManifestBodyResultFor<TManifest, TBody>;
     }
     return (await runAfter(
       toResponse(result, options),
-      request
+      request,
+      body
     )) as RpcManifestBodyResultFor<TManifest, TBody>;
   }) as RpcTransportBodyResultHandler<TManifest>;
 }

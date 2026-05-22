@@ -762,16 +762,18 @@ export const createCompiledRpcTransportBodyResultHandler = <
   const hasAfterHooks =
     handlerConfig.hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
-  const createHookContext = async (): Promise<
-    HandlerHookContext<JoorConfigContext<TConfig>>
-  > => ({
+  const createHookContext = async (
+    body?: unknown
+  ): Promise<HandlerHookContext<JoorConfigContext<TConfig>, unknown>> => ({
     services: compiled.services ?? (await compiled.resolveServices()),
+    ...(body === undefined ? {} : { body }),
   });
   const runBefore = async (
-    request: ContextRequestSource
+    request: ContextRequestSource,
+    body: unknown
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
-    const context = await createHookContext();
+    const context = await createHookContext(body);
     const hookResult = await handlerConfig.hooks?.beforeRequest?.(
       hookRequest,
       context
@@ -785,11 +787,12 @@ export const createCompiledRpcTransportBodyResultHandler = <
   };
   const runAfter = async (
     response: Response,
-    request: ContextRequestSource
+    request: ContextRequestSource,
+    body: unknown
   ): Promise<Response> => {
     let next = response;
     const hookRequest = request.toRequest();
-    const context = await createHookContext();
+    const context = await createHookContext(body);
     for (const item of middleware) {
       const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
@@ -878,12 +881,12 @@ export const createCompiledRpcTransportBodyResultHandler = <
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
-    const early = hasBeforeHooks ? await runBefore(request) : undefined;
+    const early = hasBeforeHooks ? await runBefore(request, body) : undefined;
     if (early !== undefined)
-      return hasAfterHooks ? await runAfter(early, request) : early;
+      return hasAfterHooks ? await runAfter(early, request, body) : early;
     const result = await execute(request, body);
     if (!hasAfterHooks) return result;
-    return runAfter(transportResultToResponse(result), request);
+    return runAfter(transportResultToResponse(result), request, body);
   };
 };
 
