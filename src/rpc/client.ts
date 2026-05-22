@@ -194,8 +194,13 @@ export type RpcRouteBodyResultFor<
   ? RpcRouteBatchResults<TRoutes, TBody> | Response
   : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
 
-type PendingRpcRequestHeaders<TProcedure> =
-  Record<string, never> extends ProcedureHeaders<TProcedure>
+type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
+  ? JsonValue
+  : ProcedureInput<TProcedure>;
+
+type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
+  ? { headers?: object }
+  : Record<string, never> extends ProcedureHeaders<TProcedure>
     ? { headers?: ProcedureHeaders<TProcedure> }
     : { headers: ProcedureHeaders<TProcedure> };
 
@@ -204,14 +209,13 @@ type ClientRequestOptionsTuple<TProcedure> =
     ? [ClientRequestOptions<TProcedure>?]
     : [ClientRequestOptions<TProcedure>];
 
-export interface PendingRpcRequest<
+export type PendingRpcRequest<
   TProcedure = never,
   TId extends string = string,
-> {
+> = {
   id: TId;
-  input: ProcedureInput<TProcedure>;
-  headers?: ProcedureHeaders<TProcedure>;
-}
+  input: PendingRpcRequestInput<TProcedure>;
+} & PendingRpcRequestHeaders<TProcedure>;
 
 export type RpcRouteRequest<
   TRoutes extends RpcRouteMap,

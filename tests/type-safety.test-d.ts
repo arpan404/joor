@@ -80,6 +80,7 @@ import {
   type NextRouteHandlers,
   type NodeTransportBodyResult,
   type NodeTransportBodyResultHandler,
+  type PendingRpcRequest,
   type Procedure,
   type ProcedureInput,
   type ProcedureAuth,
@@ -860,6 +861,19 @@ const legacyRequest = legacyClient.request<typeof procedure, 'users.get'>(
 const legacyRequestId: 'users.get' = legacyRequest.id;
 legacyRequestId.toUpperCase();
 legacyRequest.headers['x-tenant-id'].toUpperCase();
+const typedPendingLegacyRequest: PendingRpcRequest<
+  typeof procedure,
+  'users.get'
+> = legacyRequest;
+typedPendingLegacyRequest.headers['x-tenant-id'].toUpperCase();
+// @ts-expect-error typed pending requests require declared procedure headers.
+const _missingHeaderPendingLegacyRequest: PendingRpcRequest<
+  typeof procedure,
+  'users.get'
+> = {
+  id: 'users.get',
+  input: { id: '1' },
+};
 // @ts-expect-error legacy client requests preserve explicit route id literals.
 const _wrongLegacyRequestId: 'users.authenticated' = legacyRequest.id;
 legacyClient
@@ -879,6 +893,7 @@ const rootLegacyRequest = rootLegacyClient.request<
 >('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
 const rootLegacyRequestId: 'users.get' = rootLegacyRequest.id;
 rootLegacyRequestId.toUpperCase();
+legacyClient.batch([{ id: 'users.untyped', input: { id: '1' } }] as const);
 
 const manifestRouteId: JoorManifestRouteId<typeof manifest> = 'users.get';
 manifestRouteId.toUpperCase();
