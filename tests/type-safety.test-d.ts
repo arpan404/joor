@@ -1060,6 +1060,16 @@ const _wrongManifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifestProtocolRequest
 > = authenticatedRouteEnvelope;
 
+type InvalidManifestUnaryProtocolRequest = {
+  id: 'users.get';
+  input: { ok: true };
+};
+// @ts-expect-error manifest body result inference validates request input by route id.
+const _wrongManifestSingleBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  InvalidManifestUnaryProtocolRequest
+> = manifestRouteEnvelope;
+
 // @ts-expect-error manifest route ids reject missing routes.
 const _wrongManifestRouteId: JoorManifestRouteId<typeof manifest> =
   'users.missing';
@@ -1076,10 +1086,6 @@ const _wrongManifestBatchRequest: JoorManifestRouteBatchRequest<
   [typeof manifestStreamProtocolRequest]
 > = [manifestStreamProtocolRequest];
 
-type InvalidManifestUnaryProtocolRequest = {
-  id: 'users.get';
-  input: { ok: true };
-};
 const _wrongManifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   readonly [InvalidManifestUnaryProtocolRequest]
@@ -1176,6 +1182,11 @@ const _wrongPublicManifestBatchBodyResultFor: RpcManifestBodyResultFor<
   // @ts-expect-error public manifest batch result inference validates request input by route id.
   publicManifestEnvelopeUnion,
 ];
+// @ts-expect-error public manifest body result inference validates request input by route id.
+const _wrongPublicManifestSingleBodyResultFor: RpcManifestBodyResultFor<
+  typeof manifest,
+  InvalidManifestUnaryProtocolRequest
+> = publicManifestEnvelopeUnion;
 publicManifestBody.id.toUpperCase();
 publicManifestBatchBody[0]?.input.id.toUpperCase();
 publicManifestBatchBodyUnion.length.toFixed();
@@ -1944,6 +1955,15 @@ const routeBodyResultFor: RpcRouteBodyResultFor<
 if (!(routeBodyResultFor instanceof Response)) {
   routeBodyResultFor.data.name.toUpperCase();
 }
+type InvalidRouteProtocolBody = {
+  id: 'users.get';
+  input: { ok: true };
+};
+// @ts-expect-error route body result inference validates request input by route id.
+const _wrongRouteBodyResultFor: RpcRouteBodyResultFor<
+  Routes,
+  InvalidRouteProtocolBody
+> = routeEnvelopeUnion;
 const rpcSubpathRouteProtocolRequest: RpcSubpathRouteProtocolRequest<
   Routes,
   'users.get'

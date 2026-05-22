@@ -168,16 +168,31 @@ export type RpcRouteBodyResult<TRoutes extends RpcRouteMap> =
   | readonly RpcRouteEnvelopeUnion<TRoutes>[]
   | Response;
 
+type RpcRouteProtocolBodyResultFor<
+  TRoutes extends RpcRouteMap,
+  TBody,
+> = TBody extends { id: infer TId extends RpcRouteId<TRoutes> }
+  ? TId extends RpcStreamRouteId<TRoutes>
+    ? TBody extends RpcRouteStreamProtocolRequest<TRoutes, TId>
+      ? Response
+      : never
+    : TId extends RpcUnaryRouteId<TRoutes>
+      ? TBody extends
+          | RpcRouteUnaryProtocolRequest<TRoutes, TId>
+          | RpcRouteRequest<TRoutes, TId>
+        ? RpcRouteEnvelope<TRoutes, TId> | Response
+        : never
+      : never
+  : TBody extends { id: string }
+    ? never
+    : RpcRouteBodyResult<TRoutes>;
+
 export type RpcRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
   TBody,
 > = TBody extends readonly unknown[]
   ? RpcRouteBatchResults<TRoutes, TBody> | Response
-  : TBody extends { id: infer _TId extends RpcStreamRouteId<TRoutes> }
-    ? Response
-    : TBody extends { id: infer TId extends RpcUnaryRouteId<TRoutes> }
-      ? RpcRouteEnvelope<TRoutes, TId> | Response
-      : RpcRouteBodyResult<TRoutes>;
+  : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
 
 type PendingRpcRequestHeaders<TProcedure> =
   Record<string, never> extends ProcedureHeaders<TProcedure>

@@ -15,6 +15,7 @@ import type {
   MaybePromise,
   ProcedureError,
   ProcedureErrorCode,
+  ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
   ProcedureRuntime,
@@ -238,16 +239,43 @@ export type RpcManifestBodyResult<TManifest extends RpcManifest> =
   | readonly RpcManifestRouteEnvelopeUnion<TManifest>[]
   | Response;
 
+type RpcManifestRoutePendingRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = {
+  id: TId;
+  input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]>;
+} & (Record<string, never> extends ProcedureHeaders<
+  RpcManifestRoutes<TManifest>[TId]
+>
+  ? { headers?: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> }
+  : { headers: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> });
+
+type RpcManifestProtocolBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody,
+> = TBody extends { id: infer TId extends RpcManifestRouteId<TManifest> }
+  ? TId extends RpcManifestStreamRouteId<TManifest>
+    ? TBody extends RpcManifestRouteStreamProtocolRequest<TManifest, TId>
+      ? Response
+      : never
+    : TId extends RpcManifestUnaryRouteId<TManifest>
+      ? TBody extends
+          | RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
+          | RpcManifestRoutePendingRequest<TManifest, TId>
+        ? RpcManifestRouteEnvelope<TManifest, TId> | Response
+        : never
+      : never
+  : TBody extends { id: string }
+    ? never
+    : RpcManifestBodyResult<TManifest>;
+
 export type RpcManifestBodyResultFor<
   TManifest extends RpcManifest,
   TBody,
 > = TBody extends readonly unknown[]
   ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
-  : TBody extends { id: infer _TId extends RpcManifestStreamRouteId<TManifest> }
-    ? Response
-    : TBody extends { id: infer TId extends RpcManifestUnaryRouteId<TManifest> }
-      ? RpcManifestRouteEnvelope<TManifest, TId> | Response
-      : RpcManifestBodyResult<TManifest>;
+  : RpcManifestProtocolBodyResultFor<TManifest, TBody>;
 
 export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
