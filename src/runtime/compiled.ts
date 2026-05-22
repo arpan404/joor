@@ -30,13 +30,19 @@ import {
 } from '../context/context.js';
 import { resolvePluginServices } from '../context/plugin.js';
 import type { JoorConfig, JoorConfigContext } from '../config.js';
+import type { JoorManifest } from '../manifest.js';
 import type {
   ProcedureRuntime,
   ProcedureRuntimeValue,
   ProcedureServices,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
-import type { HandlerHookContext, RpcBodyResult } from '../rpc/dispatcher.js';
+import type {
+  HandlerHookContext,
+  RpcBodyResult,
+  RpcManifestBody,
+  RpcManifestBodyResultFor,
+} from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
   isBodySizeLimitError,
@@ -97,10 +103,28 @@ export type CompiledRpcTransportBodyResultHandler<
   TResult extends CompiledBodyResult = CompiledBodyResult,
 > = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
 
+export type CompiledRpcTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<
+  RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope
+>;
+
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
 > = (request: Request, body: TBody) => Promise<TResult>;
+
+export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
+  const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: Request,
+  body: TBody
+) => Promise<
+  RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope
+>;
 
 export type CompiledUnaryDispatch<TServices extends object = object> = (
   body: JsonObject,

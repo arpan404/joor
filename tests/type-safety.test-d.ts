@@ -55,6 +55,8 @@ import {
   type CloudflareWorker,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
+  type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
+  type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type DenoServeOptionsFor,
@@ -322,6 +324,8 @@ import {
 import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
+  CompiledRpcBodyResultHandlerFor,
+  CompiledRpcTransportBodyResultHandlerFor,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
 } from '../src/runtime/compiled.js';
@@ -2540,6 +2544,47 @@ const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   },
 };
 _wrongCompiledSerializedEnvelopeHeaders.body.toUpperCase();
+const manifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+    // @ts-expect-error manifest-aware compiled transport handlers keep route input exact.
+    body.input.ok;
+  }
+  return compiledSerializedEnvelope;
+};
+const rootManifestCompiledTransportHandler: RootCompiledRpcTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledTransportHandler;
+manifestCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteRequest
+).then((result) => {
+  if (!(result instanceof Response) && 'ok' in result && result.ok) {
+    result.data.name.toUpperCase();
+  }
+});
+// @ts-expect-error manifest-aware compiled transport handlers validate body input by route id.
+rootManifestCompiledTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { ok: true },
+});
+const manifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body && body.id === 'users.authenticated') {
+    body.input.ok.valueOf();
+  }
+  return compiledSerializedEnvelope;
+};
+const rootManifestCompiledBodyHandler: RootCompiledRpcBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledBodyHandler;
+rootManifestCompiledBodyHandler(new Request('https://example.com/rpc'), [
+  // @ts-expect-error manifest-aware compiled body handlers reject stream requests in batches.
+  { id: 'users.watch', input: { userId: '1' } },
+]);
 const cachedProcedureHeaders: CachedProcedureHeaders = {
   'cache-control': 'private',
 };
