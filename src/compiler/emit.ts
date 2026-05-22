@@ -2109,11 +2109,16 @@ type StreamRouteTransport<TId extends StreamRouteId> = {
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
 
-export const createClient = (options: GeneratedClientOptions = {}) => {
-  const transport = createTransportClient(manifest, {
+export const createTransport = (options: GeneratedClientOptions = {}) =>
+  createTransportClient(manifest, {
     ...options,
     url: options.url ?? defaultUrl,
   });
+
+export type TransportClient = ReturnType<typeof createTransport>;
+
+export const createClient = (options: GeneratedClientOptions = {}) => {
+  const transport = createTransport(options);
   const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
     const routeTransport = transport as UnaryRouteTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>

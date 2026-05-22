@@ -382,7 +382,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
 import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
@@ -392,6 +392,11 @@ generatedClientAlias.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
 const options: GeneratedClientOptions = { headers: { authorization: 'token' } };
 createClient(options).users.watch({ userId: '1' });
+const generatedTransport: TransportClient = createTransport(options);
+generatedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
+  if (result.ok) result.data.name.toUpperCase();
+});
+generatedTransport.stream('users.watch', { userId: '1' });
 const requiredServices: RequiredServices = {
   users: {
     findById(id) {
@@ -645,6 +650,15 @@ client.tenants.current({ ok: true });
 
 // @ts-expect-error generated callable leaves validate required route headers.
 client.tenants.current({ ok: true }, { headers: {} });
+
+// @ts-expect-error generated transports reject unknown route ids.
+generatedTransport.call('users.missing', { id: '1' });
+
+// @ts-expect-error generated transports validate input by route id.
+generatedTransport.call('users.get', { ok: true });
+
+// @ts-expect-error generated transports require route headers.
+generatedTransport.call('tenants.current', { ok: true });
 
 // @ts-expect-error unary routes do not expose stream methods.
 client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });
