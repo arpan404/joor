@@ -159,6 +159,9 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteBodyResult');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteBodyResultFor');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('export type RouteProtocolRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -307,8 +310,8 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
-import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+        `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestUnion, type RouteResult, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest } from './client.js';
+import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -350,13 +353,19 @@ const routeBodyResult: RouteBodyResult = {
   data: { id: '550e8400-e29b-41d4-a716-446655440000', name: 'Ada' },
   headers: { 'cache-control': 'private' },
 };
+const routeBodyResultFor: RouteBodyResultFor<typeof protocolRequest> = routeBodyResult;
 const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
   unaryProtocolRequest,
 ];
+const readonlyRouteBody: RouteBody = protocolBatch;
 protocolRequestUnion.id.toUpperCase();
 routeBody.id.toUpperCase();
+readonlyRouteBody.length.toFixed();
 if (!(routeBodyResult instanceof Response) && !Array.isArray(routeBodyResult) && routeBodyResult.ok) {
   routeBodyResult.data.name.toUpperCase();
+}
+if (!(routeBodyResultFor instanceof Response) && routeBodyResultFor.ok) {
+  routeBodyResultFor.data.name.toUpperCase();
 }
 protocolBatch[0].input.id.toUpperCase();
 
@@ -397,19 +406,26 @@ const nativeStreamBody: NativeStreamProtocolRequest = {
 };
 const nativeBody: NativeBody = nativeUnaryBody;
 const nativeBodyResult: NativeBodyResult = routeBodyResult;
+const nativeBodyResultFor: NativeBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
 const nativeTransportResult: NativeTransportResult = nativeBodyResult;
+const isNativeResultArray = (
+  result: NativeTransportResult
+): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);
 const nativeRouteRequest: NativeRouteRequest<'users.get'> = nativeUnaryBody;
 const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
 nativeTransport(source, nativeBody);
 nativeTransport(source, nativeStreamBody);
 nativeTransport(source, nativeBatchBody).then((result) => {
   const exact: NativeTransportResult = result;
-  if (!(exact instanceof Response) && !Array.isArray(exact) && !('body' in exact) && exact.ok) {
+  if (!(exact instanceof Response) && !isNativeResultArray(exact) && !('body' in exact) && exact.ok) {
     exact.id.toUpperCase();
   }
 });
-if (!(nativeTransportResult instanceof Response) && !Array.isArray(nativeTransportResult) && !('body' in nativeTransportResult) && nativeTransportResult.ok) {
+if (!(nativeTransportResult instanceof Response) && !isNativeResultArray(nativeTransportResult) && !('body' in nativeTransportResult) && nativeTransportResult.ok) {
   nativeTransportResult.id.toUpperCase();
+}
+if (!(nativeBodyResultFor instanceof Response) && nativeBodyResultFor.ok) {
+  nativeBodyResultFor.data.name.toUpperCase();
 }
 nativeRouteRequest.id.toUpperCase();
 

@@ -9,7 +9,7 @@ export interface SerializedJsonEnvelope {
 
 export type TransportBodyResult =
   | RpcEnvelope
-  | RpcEnvelope[]
+  | readonly RpcEnvelope[]
   | Response
   | SerializedJsonEnvelope;
 
@@ -52,6 +52,10 @@ export const isSerializedJsonEnvelope = (
   result: TransportBodyResult
 ): result is SerializedJsonEnvelope =>
   'body' in result && typeof result.body === 'string';
+
+const isRpcEnvelopeArray = (
+  result: RpcEnvelope | readonly RpcEnvelope[]
+): result is readonly RpcEnvelope[] => Array.isArray(result);
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
@@ -133,18 +137,22 @@ export const serializedEnvelopeToResponse = (
         });
 
 export const rpcEnvelopeToResponse = (
-  result: RpcEnvelope | RpcEnvelope[],
+  result: RpcEnvelope | readonly RpcEnvelope[],
   extraHeaders?: Record<string, string>
 ): Response => {
   if (
     extraHeaders === undefined &&
-    (Array.isArray(result) || !result.ok || result.headers === undefined)
+    (isRpcEnvelopeArray(result) || !result.ok || result.headers === undefined)
   ) {
     return new Response(JSON.stringify(result), jsonOkResponseInit);
   }
   const headers = new Headers(jsonContentHeaders);
   if (extraHeaders !== undefined) appendHeaders(headers, extraHeaders);
-  if (!Array.isArray(result) && result.ok && result.headers !== undefined) {
+  if (
+    !isRpcEnvelopeArray(result) &&
+    result.ok &&
+    result.headers !== undefined
+  ) {
     appendJsonHeaders(headers, result.headers);
   }
   return new Response(JSON.stringify(result), { status: 200, headers });

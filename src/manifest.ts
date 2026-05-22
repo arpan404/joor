@@ -3,10 +3,12 @@ import type {
   RpcManifest,
   RpcManifestBody,
   RpcManifestBodyResult,
+  RpcManifestBodyResultFor,
 } from './rpc/dispatcher.js';
 import type {
   RpcRouteBody,
   RpcRouteBodyResult,
+  RpcRouteBodyResultFor,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
   RpcRouteEnvelope,
@@ -125,6 +127,11 @@ export type JoorManifestRouteBodyResult<TManifest> =
   TManifest extends JoorManifest
     ? RpcManifestBodyResult<TManifest>
     : RpcRouteBodyResult<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestRouteBodyResultFor<TManifest, TBody> =
+  TManifest extends JoorManifest
+    ? RpcManifestBodyResultFor<TManifest, TBody>
+    : RpcRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
 
 export type JoorManifestRouteUnaryProtocolRequest<
   TManifest,

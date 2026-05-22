@@ -43,6 +43,7 @@ export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   JoorManifest,
   JoorManifestRouteBody,
+  JoorManifestRouteBodyResultFor,
   JoorManifestRouteBodyResult,
   JoorManifestRouteBatchRequest,
   JoorManifestRouteBatchResults,
@@ -75,6 +76,7 @@ export type {
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
   RpcRouteBody,
+  RpcRouteBodyResultFor,
   RpcRouteBodyResult,
   RpcRouteEnvelopeUnion,
   RpcRouteHeaders,
@@ -108,9 +110,12 @@ export type {
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,
+  RpcBodyResultHandler,
   RpcManifestBody,
+  RpcManifestBodyResultFor,
   RpcManifestBodyResult,
   RpcManifest,
+  RpcManifestRouteBatchResults,
   RpcManifestProcedureError,
   RpcManifestProcedureFrameworkError,
   RpcManifestRouteBatchRequest,
@@ -127,6 +132,7 @@ export type {
   RpcManifestStreamRouteId,
   RpcManifestUnaryRouteId,
   RpcRequestPreflight,
+  RpcTransportBodyResultHandler,
 } from './rpc/dispatcher.js';
 export type {
   RpcBatchRequest,

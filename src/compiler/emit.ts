@@ -139,6 +139,7 @@ const emitProfileDispatcher = async (
   const joorTypeImports = [
     ...(hasCompiledProcedures ? ['JsonValue', 'RpcError'] : []),
     'JoorManifestRouteBody',
+    'JoorManifestRouteBodyResultFor',
     'JoorManifestRouteBodyResult',
     'JoorManifestRouteId',
     'JoorManifestRouteProtocolRequest',
@@ -170,6 +171,7 @@ export type NativeStreamProtocolRequest =
 export type NativeBatchBody = NativeUnaryProtocolRequest[];
 export type NativeBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
+export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
 export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
@@ -919,7 +921,7 @@ const normalizeMaxBodyBytes = (value?: number): number =>
 
 const parseJson = (text: string): JsonValue => JSON.parse(text) as JsonValue;
 
-const isJsonObject = (value: JsonValue | undefined): value is JsonObject =>
+const isJsonObject = (value: unknown): value is JsonObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const isSerializedEnvelope = (
@@ -1489,7 +1491,7 @@ const normalizeMaxBodyBytes = (value?: number): number =>
 
 const parseJson = (text: string): JsonValue => JSON.parse(text) as JsonValue;
 
-const isJsonObject = (value: JsonValue | undefined): value is JsonObject =>
+const isJsonObject = (value: unknown): value is JsonObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 const isSerializedEnvelope = (
@@ -1976,7 +1978,7 @@ ${indent}},`
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
+import type { JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestUnion, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -2002,6 +2004,7 @@ export type RouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolReq
 export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
 export type RouteBody = JoorManifestRouteBody<Manifest>;
 export type RouteBodyResult = JoorManifestRouteBodyResult<Manifest>;
+export type RouteBodyResultFor<TBody extends RouteBody> = JoorManifestRouteBodyResultFor<Manifest, TBody>;
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;

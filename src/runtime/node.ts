@@ -8,6 +8,7 @@ import type {
   RpcManifestBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { RpcEnvelope } from '../rpc/protocol.js';
 import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
@@ -169,12 +170,20 @@ const writeResult = async (
     return;
   }
   const headers = createJsonHeaderRecord();
-  if (!Array.isArray(result) && result.ok && result.headers !== undefined) {
+  if (
+    !isNodeRpcEnvelopeArray(result) &&
+    result.ok &&
+    result.headers !== undefined
+  ) {
     appendJsonStringHeaders(headers, result.headers);
   }
   outgoing.writeHead(200, headers);
   outgoing.end(JSON.stringify(result));
 };
+
+const isNodeRpcEnvelopeArray = (
+  result: NodeTransportBodyResult
+): result is readonly RpcEnvelope[] => Array.isArray(result);
 
 const chunkToBuffer = (chunk: string | Buffer): Buffer =>
   typeof chunk === 'string' ? Buffer.from(chunk) : chunk;

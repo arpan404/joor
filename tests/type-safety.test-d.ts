@@ -36,6 +36,7 @@ import {
   type JoorConfigContext,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
+  type JoorManifestRouteBodyResultFor,
   type JoorManifestRouteBatchRequest,
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteEnvelope,
@@ -73,6 +74,8 @@ import {
   type RpcManifest,
   type RpcManifestBody,
   type RpcManifestBodyResult,
+  type RpcManifestBodyResultFor,
+  type RpcManifestRouteBatchResults,
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteBatchRequest,
   type RpcManifestRouteId,
@@ -94,6 +97,7 @@ import {
   type RpcRouteEnvelopeUnion,
   type RpcRouteBody,
   type RpcRouteBodyResult,
+  type RpcRouteBodyResultFor,
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
@@ -364,6 +368,16 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   headers: { 'cache-control': 'private' },
 };
 manifestRouteEnvelope.id.toUpperCase();
+const authenticatedRouteEnvelope: JoorManifestRouteEnvelope<
+  typeof manifest,
+  'users.authenticated'
+> = {
+  ok: true,
+  id: 'users.authenticated',
+  traceId: 'trace-1',
+  data: { userId: '1' },
+};
+authenticatedRouteEnvelope.data.userId.toUpperCase();
 const manifestRouteBodyResult: JoorManifestRouteBodyResult<typeof manifest> =
   manifestRouteEnvelope;
 if (!(manifestRouteBodyResult instanceof Response)) {
@@ -431,6 +445,32 @@ const manifestBatchRequest: JoorManifestRouteBatchRequest<
   [typeof manifestUnaryProtocolRequest]
 > = [manifestUnaryProtocolRequest];
 manifestBatchRequest[0].input.id.toUpperCase();
+const readonlyManifestBatchRequest = [manifestUnaryProtocolRequest] as const;
+const manifestReadonlyBatchBody: JoorManifestRouteBody<typeof manifest> =
+  readonlyManifestBatchRequest;
+manifestReadonlyBatchBody.length.toFixed();
+const manifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  typeof readonlyManifestBatchRequest
+> = [manifestRouteEnvelope];
+if (!(manifestBatchBodyResultFor instanceof Response)) {
+  const first = manifestBatchBodyResultFor[0];
+  if (first.ok) first.data.name.toUpperCase();
+}
+const manifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestProtocolRequest
+> = manifestRouteEnvelope;
+if (!(manifestRouteBodyResultFor instanceof Response)) {
+  if (manifestRouteBodyResultFor.ok)
+    manifestRouteBodyResultFor.data.name.toUpperCase();
+}
+
+// @ts-expect-error route body result inference keeps the requested route id.
+const _wrongManifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestProtocolRequest
+> = authenticatedRouteEnvelope;
 
 // @ts-expect-error manifest route ids reject missing routes.
 const _wrongManifestRouteId: JoorManifestRouteId<typeof manifest> =
@@ -503,21 +543,36 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+const publicManifestBatchResults: RpcManifestRouteBatchResults<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = [manifestRouteEnvelope];
 const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
 const publicManifestBodyResult: RpcManifestBodyResult<typeof manifest> =
   publicManifestEnvelopeUnion;
+const publicManifestBodyResultFor: RpcManifestBodyResultFor<
+  typeof manifest,
+  typeof publicManifestProtocolRequest
+> = publicManifestEnvelopeUnion;
 publicManifestBody.id.toUpperCase();
 publicManifestBatchBody[0]?.input.id.toUpperCase();
 publicManifestBatchBodyUnion.length.toFixed();
 publicManifestBatchRequest[0].input.id.toUpperCase();
+if (publicManifestBatchResults[0].ok) {
+  publicManifestBatchResults[0].data.name.toUpperCase();
+}
 if (!(publicManifestBodyResult instanceof Response)) {
   if (Array.isArray(publicManifestBodyResult)) {
     publicManifestBodyResult[0]?.id.toUpperCase();
   } else {
     publicManifestBodyResult.id.toUpperCase();
   }
+}
+if (!(publicManifestBodyResultFor instanceof Response)) {
+  if (publicManifestBodyResultFor.ok)
+    publicManifestBodyResultFor.data.name.toUpperCase();
 }
 const _publicManifestRoutes: PublicManifestRoutes = manifest.procedures;
 _publicManifestRoutes['users.get'].output;
@@ -581,6 +636,26 @@ rpcBodyResultHandler(new Request('https://example.com/rpc'), {
     }
   }
 });
+rpcBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestProtocolRequest
+).then((result) => {
+  const exactResult: JoorManifestRouteBodyResultFor<
+    typeof manifest,
+    typeof manifestProtocolRequest
+  > = result;
+  if (!(exactResult instanceof Response)) {
+    if (exactResult.ok) exactResult.data.name.toUpperCase();
+  }
+});
+rpcBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  readonlyManifestBatchRequest
+).then((result) => {
+  if (!(result instanceof Response)) {
+    if (result[0].ok) result[0].data.name.toUpperCase();
+  }
+});
 // @ts-expect-error low-level typed body handlers validate input by route id.
 rpcBodyResultHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
@@ -602,13 +677,9 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
   { id: 'users.authenticated', input: { ok: true } },
 ]);
+// @ts-expect-error low-level typed batch bodies reject stream routes.
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
-  {
-    // @ts-expect-error low-level typed batch bodies reject stream routes.
-    id: 'users.watch',
-    // @ts-expect-error low-level typed batch bodies reject stream route inputs.
-    input: { userId: '1' },
-  },
+  { id: 'users.watch', input: { userId: '1' } },
 ]);
 
 // @ts-expect-error low-level runtime handlers only accept typed procedure manifests.
@@ -657,7 +728,7 @@ const routeTypedDenoTransportHandler: DenoTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
-  if (!Array.isArray(body) && body.id === 'users.get') {
+  if ('id' in body && body.id === 'users.get') {
     body.input.id.toUpperCase();
   }
   return manifestRouteBodyResult;
@@ -677,7 +748,7 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
-  if (!Array.isArray(body) && body.id === 'users.authenticated') {
+  if ('id' in body && body.id === 'users.authenticated') {
     body.input.ok.valueOf();
   }
   return manifestRouteBodyResult;
@@ -702,7 +773,7 @@ const routeTypedStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResul
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
-  if (!Array.isArray(body) && body.id === 'users.get') {
+  if ('id' in body && body.id === 'users.get') {
     body.input.id.toUpperCase();
   }
   return manifestRouteBodyResult;
@@ -765,19 +836,15 @@ const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
 > = async (_request, body) => {
-  if (!Array.isArray(body) && body.id === 'users.watch') {
+  if ('id' in body && body.id === 'users.watch') {
     body.input.userId.toUpperCase();
   }
   return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
+// @ts-expect-error typed Node transport handlers reject stream requests in batches.
 routeTypedNodeTransportHandler(createFetchRequestSourceForTypes(), [
-  {
-    // @ts-expect-error typed Node transport handlers reject stream requests in batches.
-    id: 'users.watch',
-    // @ts-expect-error typed Node transport handlers reject stream request inputs in batches.
-    input: { userId: '1' },
-  },
+  { id: 'users.watch', input: { userId: '1' } },
 ]);
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
@@ -892,6 +959,10 @@ const routeBatchRequest: RpcRouteBatchRequest<
 routeBatchRequest[0].input.id.toUpperCase();
 const routeBatchBody: RpcRouteBody<Routes> = routeBatchRequest;
 routeBatchBody.length.toFixed();
+const readonlyRouteBatchBody: RpcRouteBody<Routes> = [
+  routeProtocolRequest,
+] as const;
+readonlyRouteBatchBody.length.toFixed();
 
 const _wrongRouteProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> =
   // @ts-expect-error route protocol requests validate input by id.
@@ -915,13 +986,9 @@ const _wrongRouteBatchRequest: RpcRouteBatchRequest<
   [typeof streamProtocolRequest]
 > = [streamProtocolRequest];
 
+// @ts-expect-error route bodies reject stream request batches.
 const _wrongRouteBody: RpcRouteBody<Routes> = [
-  {
-    // @ts-expect-error route bodies reject stream request batches.
-    id: 'users.watch',
-    // @ts-expect-error route bodies reject stream batch inputs.
-    input: { userId: '1' },
-  },
+  { id: 'users.watch', input: { userId: '1' } },
 ];
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
@@ -1061,6 +1128,13 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
 routeEnvelope.id.toUpperCase();
 const routeEnvelopeUnion: RpcRouteEnvelopeUnion<Routes> = routeEnvelope;
 const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
+const routeBodyResultFor: RpcRouteBodyResultFor<
+  Routes,
+  typeof routeProtocolRequest
+> = routeEnvelopeUnion;
+if (!(routeBodyResultFor instanceof Response)) {
+  routeBodyResultFor.data.name.toUpperCase();
+}
 if (!(routeBodyResult instanceof Response)) {
   if (Array.isArray(routeBodyResult)) {
     routeBodyResult[0]?.id.toUpperCase();

@@ -165,6 +165,17 @@ export type RpcManifestRouteBatchRequest<
     readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = TRequests;
 
+export type RpcManifestRouteBatchResults<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[],
+> = {
+  [TIndex in keyof TRequests]: TRequests[TIndex] extends {
+    id: infer TId extends RpcManifestUnaryRouteId<TManifest>;
+  }
+    ? RpcManifestRouteEnvelope<TManifest, TId>
+    : never;
+};
+
 export type RpcManifestRouteStreamProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = {
@@ -178,15 +189,40 @@ export type RpcManifestBody<TManifest extends RpcManifest> =
   | RpcManifestRouteProtocolRequestUnion<TManifest>
   | RpcManifestRouteBatchRequest<
       TManifest,
-      RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[]
+      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[]
     >;
 
-export type RpcBodyResult = RpcEnvelope | RpcEnvelope[] | Response;
+export type RpcBodyResult = RpcEnvelope | readonly RpcEnvelope[] | Response;
 
 export type RpcManifestBodyResult<TManifest extends RpcManifest> =
   | RpcManifestRouteEnvelopeUnion<TManifest>
-  | RpcManifestRouteEnvelopeUnion<TManifest>[]
+  | readonly RpcManifestRouteEnvelopeUnion<TManifest>[]
   | Response;
+
+export type RpcManifestBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody,
+> = TBody extends readonly unknown[]
+  ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
+  : TBody extends { id: infer _TId extends RpcManifestStreamRouteId<TManifest> }
+    ? Response
+    : TBody extends { id: infer TId extends RpcManifestUnaryRouteId<TManifest> }
+      ? RpcManifestRouteEnvelope<TManifest, TId> | Response
+      : RpcManifestBodyResult<TManifest>;
+
+export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
+  const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: Request,
+  body: TBody
+) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
+
+export type RpcTransportBodyResultHandler<TManifest extends RpcManifest> = <
+  const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
 interface PreparedProcedure {
   procedure: ProcedureRuntime;
@@ -296,7 +332,7 @@ const rpcFailure = (
 });
 
 const toResponse = (
-  payload: RpcEnvelope | RpcEnvelope[],
+  payload: RpcEnvelope | readonly RpcEnvelope[],
   options: HandlerOptions = {}
 ): Response =>
   rpcEnvelopeToResponse(
@@ -970,20 +1006,20 @@ export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((
-  request: Request,
-  body: RpcManifestBody<TManifest>
-) => Promise<RpcManifestBodyResult<TManifest>>) => {
+): RpcBodyResultHandler<TManifest> => {
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
     options,
     preflight
   );
-  return (
+  return (<const TBody extends RpcManifestBody<TManifest>>(
     request: Request,
-    body: RpcManifestBody<TManifest>
-  ): Promise<RpcManifestBodyResult<TManifest>> =>
-    handleTransport(createFetchRequestSource(request), body);
+    body: TBody
+  ): Promise<RpcManifestBodyResultFor<TManifest, TBody>> =>
+    handleTransport(
+      createFetchRequestSource(request),
+      body
+    )) as RpcBodyResultHandler<TManifest>;
 };
 
 export const createRpcTransportBodyResultHandler = <
@@ -992,10 +1028,7 @@ export const createRpcTransportBodyResultHandler = <
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): ((
-  request: ContextRequestSource,
-  body: RpcManifestBody<TManifest>
-) => Promise<RpcManifestBodyResult<TManifest>>) => {
+): RpcTransportBodyResultHandler<TManifest> => {
   const procedures = prepareProcedures(manifest);
   const requestPreflight = preflight
     ? createRpcRequestPreflight(options)
@@ -1176,30 +1209,34 @@ export const createRpcTransportBodyResultHandler = <
         );
   };
   if (!hasBeforeHooks && !hasAfterHooks) {
-    return (request, body) =>
-      handleRequest(request, body) as Promise<RpcManifestBodyResult<TManifest>>;
+    return ((request, body) =>
+      handleRequest(
+        request,
+        body as JsonValue
+      )) as RpcTransportBodyResultHandler<TManifest>;
   }
-  return async (
+  return (async <const TBody extends RpcManifestBody<TManifest>>(
     request: ContextRequestSource,
-    body: RpcManifestBody<TManifest>
-  ): Promise<RpcManifestBodyResult<TManifest>> => {
+    body: TBody
+  ): Promise<RpcManifestBodyResultFor<TManifest, TBody>> => {
     const early = hasBeforeHooks ? await runBefore(request) : undefined;
     if (early !== undefined) {
       return (
         hasAfterHooks ? await runAfter(early, request) : early
-      ) as RpcManifestBodyResult<TManifest>;
+      ) as RpcManifestBodyResultFor<TManifest, TBody>;
     }
-    const result = await handleRequest(request, body);
-    if (!hasAfterHooks) return result as RpcManifestBodyResult<TManifest>;
+    const result = await handleRequest(request, body as JsonValue);
+    if (!hasAfterHooks)
+      return result as RpcManifestBodyResultFor<TManifest, TBody>;
     if (result instanceof Response) {
-      return (await runAfter(
-        result,
-        request
-      )) as RpcManifestBodyResult<TManifest>;
+      return (await runAfter(result, request)) as RpcManifestBodyResultFor<
+        TManifest,
+        TBody
+      >;
     }
     return (await runAfter(
       toResponse(result, options),
       request
-    )) as RpcManifestBodyResult<TManifest>;
-  };
+    )) as RpcManifestBodyResultFor<TManifest, TBody>;
+  }) as RpcTransportBodyResultHandler<TManifest>;
 };
