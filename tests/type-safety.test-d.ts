@@ -64,6 +64,8 @@ import {
   type JoorConfigContext,
   type PluginServices,
   type Infer,
+  type HeaderObjectSchema,
+  type HeaderValueSchema,
   type JsonObject,
   type JsonPrimitive,
   type JoorManifestRouteBody,
@@ -746,6 +748,20 @@ const rootStringSchema: StringSchema = t.string().min(1);
 rootStringSchema.kind.toUpperCase();
 const rootSchemaMeta: SchemaMeta = { description: 'User payload' };
 rootSchemaMeta.description?.toUpperCase();
+const rootHeaderValueSchema: HeaderValueSchema = t.string().optional();
+rootHeaderValueSchema.kind.toUpperCase();
+const rootHeaderSchema: HeaderObjectSchema = t.object({
+  authorization: t.string().optional(),
+  'x-route-mode': t.enum(['read', 'write']),
+});
+const authorizationHeaderSchema = rootHeaderSchema.shape['authorization'];
+authorizationHeaderSchema?.kind.toUpperCase();
+// @ts-expect-error header schemas must be object schemas.
+const _wrongHeaderSchema: HeaderObjectSchema = t.string();
+// @ts-expect-error header schema values must be string-like HTTP values.
+const _wrongHeaderValueSchema: HeaderObjectSchema = t.object({
+  'x-retry-count': t.number(),
+});
 const rootArrayChain: ArrayChain<typeof rootStringSchema> = t
   .array(rootStringSchema)
   .min(1);

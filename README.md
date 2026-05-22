@@ -212,6 +212,7 @@ The adapter is Fetch-native, so it works with both Edge-compatible route handler
 ## Typed Headers
 
 Procedures can declare request and response headers with the same schema DSL used for input/output. Request header names are normalized to lowercase before validation, so HTTP names like `X-Tenant-Id` are declared as `'x-tenant-id'`.
+Header schemas must be objects with string-like values (`t.string()`, `t.enum(...)`, string `t.literal(...)`, or optional versions of those), matching the values HTTP transports can read and emit.
 
 ```ts
 export default defineProcedure({

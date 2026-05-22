@@ -1,7 +1,11 @@
 import type { JoorContext } from '../context/context.js';
 import type { AuthPolicy } from '../auth/policy.js';
 import type { JsonValue } from '../schema/json.js';
-import type { InferSchema, Schema } from '../schema/types.js';
+import type {
+  HeaderObjectSchema,
+  InferSchema,
+  Schema,
+} from '../schema/types.js';
 import type {
   ProcedureFailure,
   ProcedureResult,
@@ -36,8 +40,8 @@ export interface UnaryProcedureConfig<
   TOutput extends Schema,
   TErrors extends ErrorSchemas,
   TServices extends object,
-  THeaders extends Schema | undefined,
-  TResponseHeaders extends Schema | undefined,
+  THeaders extends HeaderObjectSchema | undefined,
+  TResponseHeaders extends HeaderObjectSchema | undefined,
   TAuth extends object,
 > {
   input: TInput;
@@ -105,7 +109,7 @@ export interface StreamProcedureConfig<
   TStream extends Schema,
   TErrors extends ErrorSchemas,
   TServices extends object,
-  THeaders extends Schema | undefined,
+  THeaders extends HeaderObjectSchema | undefined,
   TAuth extends object,
 > {
   input: TInput;
@@ -158,8 +162,8 @@ export interface DefineProcedure<
     TInput extends Schema,
     TOutput extends Schema,
     TErrors extends ErrorSchemas = Record<string, never>,
-    THeaders extends Schema | undefined = undefined,
-    TResponseHeaders extends Schema | undefined = undefined,
+    THeaders extends HeaderObjectSchema | undefined = undefined,
+    TResponseHeaders extends HeaderObjectSchema | undefined = undefined,
     TAuth extends object = Record<string, never>,
   >(
     config: UnaryProcedureConfig<
@@ -186,7 +190,7 @@ export interface DefineProcedure<
     TInput extends Schema,
     TStream extends Schema,
     TErrors extends ErrorSchemas = Record<string, never>,
-    THeaders extends Schema | undefined = undefined,
+    THeaders extends HeaderObjectSchema | undefined = undefined,
     TAuth extends object = Record<string, never>,
   >(
     config: StreamProcedureConfig<
@@ -219,8 +223,8 @@ const createDefineProcedure = <
     TOutput extends Schema,
     TErrors extends ErrorSchemas,
     TStream extends Schema,
-    THeaders extends Schema | undefined,
-    TResponseHeaders extends Schema | undefined,
+    THeaders extends HeaderObjectSchema | undefined,
+    TResponseHeaders extends HeaderObjectSchema | undefined,
     TAuth extends object,
   >(
     config:

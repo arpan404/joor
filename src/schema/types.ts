@@ -115,6 +115,16 @@ export type Schema =
 
 export type SchemaShape = Record<string, Schema>;
 
+export type HeaderValueSchema =
+  | StringSchema
+  | EnumSchema<readonly string[]>
+  | LiteralSchema<string>
+  | OptionalSchema<HeaderValueSchema>;
+
+export type HeaderSchemaShape = Record<string, HeaderValueSchema>;
+
+export type HeaderObjectSchema = ObjectSchema<HeaderSchemaShape>;
+
 export type InferSchema<TSchema extends Schema> =
   TSchema extends BaseSchema<infer TValue> ? TValue : never;
 
