@@ -117,6 +117,16 @@ import {
 } from '../src/index.js';
 import { createClient, createManifestClient } from '../src/rpc/client.js';
 import {
+  createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
+  createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
+  type RpcManifestBody as RpcSubpathManifestBody,
+  type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcRouteBody as RpcSubpathRouteBody,
+  type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
+  type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
+  type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
+} from '../src/rpc/index.js';
+import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
@@ -1135,6 +1145,42 @@ const routeBodyResultFor: RpcRouteBodyResultFor<
 if (!(routeBodyResultFor instanceof Response)) {
   routeBodyResultFor.data.name.toUpperCase();
 }
+const rpcSubpathRouteProtocolRequest: RpcSubpathRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = routeProtocolRequest;
+const rpcSubpathRouteBody: RpcSubpathRouteBody<Routes> =
+  rpcSubpathRouteProtocolRequest;
+const rpcSubpathRouteEnvelope: RpcSubpathRouteEnvelope<Routes, 'users.get'> =
+  routeEnvelope;
+const rpcSubpathRouteBodyResultFor: RpcSubpathRouteBodyResultFor<
+  Routes,
+  typeof rpcSubpathRouteProtocolRequest
+> = rpcSubpathRouteEnvelope;
+rpcSubpathRouteBody.id.toUpperCase();
+if (!(rpcSubpathRouteBodyResultFor instanceof Response)) {
+  rpcSubpathRouteBodyResultFor.data.name.toUpperCase();
+}
+
+const rpcSubpathManifestBody: RpcSubpathManifestBody<typeof manifest> =
+  publicManifestProtocolRequest;
+rpcSubpathManifestBody.id.toUpperCase();
+const rpcSubpathManifestBodyResult: RpcSubpathManifestBodyResultFor<
+  typeof manifest,
+  typeof publicManifestProtocolRequest
+> = manifestRouteEnvelope;
+if (!(rpcSubpathManifestBodyResult instanceof Response)) {
+  if (rpcSubpathManifestBodyResult.ok)
+    rpcSubpathManifestBodyResult.data.name.toUpperCase();
+}
+createRpcSubpathBodyResultHandler(manifest, handlerOptions)(
+  new Request('https://example.com/rpc'),
+  manifestProtocolRequest
+);
+createRpcSubpathTransportBodyResultHandler(manifest, handlerOptions)(
+  createFetchRequestSourceForTypes(),
+  manifestProtocolRequest
+);
 if (!(routeBodyResult instanceof Response)) {
   if (Array.isArray(routeBodyResult)) {
     routeBodyResult[0]?.id.toUpperCase();

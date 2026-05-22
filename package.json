@@ -28,6 +28,10 @@
       "types": "./dist/rpc/client.d.ts",
       "import": "./dist/rpc/client.js"
     },
+    "./rpc": {
+      "types": "./dist/rpc/index.d.ts",
+      "import": "./dist/rpc/index.js"
+    },
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"
