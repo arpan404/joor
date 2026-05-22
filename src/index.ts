@@ -10,6 +10,7 @@ export {
   createRpcHandler,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  defineHandlerOptions,
 } from './rpc/dispatcher.js';
 export {
   createBunFetch,
@@ -116,6 +117,7 @@ export type {
 } from './rpc/client.js';
 export type {
   HandlerHooks,
+  DefineHandlerOptions,
   HandlerOptionServices,
   HandlerOptionsArgs,
   HandlerOptionsFor,

@@ -5,6 +5,7 @@ export {
   createRpcHandler,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  defineHandlerOptions,
 } from './dispatcher.js';
 export { createSseResponse, encodeSse } from './stream.js';
 
@@ -49,6 +50,7 @@ export type {
 } from './client.js';
 export type {
   HandlerHooks,
+  DefineHandlerOptions,
   HandlerOptionServices,
   HandlerOptionsArgs,
   HandlerOptionsFor,

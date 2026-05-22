@@ -24,6 +24,7 @@ import {
   createRpcHandler,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  defineHandlerOptions,
   t,
   type BunServeOptions,
   type AuthPolicyAuth,
@@ -154,6 +155,7 @@ import {
 import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
+  defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcRouteBody as RpcSubpathRouteBody,
@@ -1076,11 +1078,31 @@ const serviceAwareHandlerOptions: HandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = handlerOptions;
 serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const definedHandlerOptions = defineHandlerOptions(manifest)({
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+});
+definedHandlerOptions.plugins?.[0]?.setup;
+const definedHandlerOptionServices: HandlerOptionServices<
+  typeof definedHandlerOptions
+> = procedureServices;
+definedHandlerOptionServices.users.findById('1').name.toUpperCase();
+const rpcSubpathDefinedHandlerOptions = defineRpcSubpathHandlerOptions(
+  manifest
+)({
+  plugins: [usersPlugin] as const,
+});
+rpcSubpathDefinedHandlerOptions.plugins?.[0]?.name.toUpperCase();
 // @ts-expect-error service-aware handler options reject missing service plugins.
 const _missingServiceHandlerOptions: HandlerOptionsFor<
   typeof manifest,
   readonly []
 > = { path: '/rpc' };
+defineHandlerOptions(manifest)({
+  path: '/rpc',
+  // @ts-expect-error manifest-aware handler options reject missing service plugins.
+  plugins: [] as const,
+});
 const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);

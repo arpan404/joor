@@ -335,6 +335,24 @@ export type HandlerOptionsArgs<
     ? [options?: HandlerOptionsFor<TManifest, TPlugins>]
     : [options: HandlerOptionsFor<TManifest, TPlugins>];
 
+export type DefineHandlerOptions<TManifest extends RpcManifest> = <
+  const TPlugins extends readonly JoorPlugin<object>[],
+>(
+  options: HandlerOptionsFor<TManifest, TPlugins>
+) => HandlerOptionsFor<TManifest, TPlugins>;
+
+export function defineHandlerOptions<TManifest extends RpcManifest>(
+  manifest: TManifest
+): DefineHandlerOptions<TManifest>;
+export function defineHandlerOptions<
+  TManifest extends RpcManifest,
+>(): DefineHandlerOptions<TManifest>;
+export function defineHandlerOptions<TManifest extends RpcManifest>(
+  _manifest?: TManifest
+): DefineHandlerOptions<TManifest> {
+  return ((options) => options) as DefineHandlerOptions<TManifest>;
+}
+
 export interface HandlerHooks {
   beforeRequest?(request: Request): MaybePromise<Response | undefined>;
   afterResponse?(
