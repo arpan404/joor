@@ -6,6 +6,10 @@ import {
   defineProcedure,
   createBunFetch,
   createCloudflareWorker,
+  createDenoFetch,
+  createDenoRpcRequestHandler,
+  createDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerWithPath,
   createJoorHandler,
   createNetlifyFetch,
   createNextRouteHandlers,
@@ -16,6 +20,9 @@ import {
   t,
   type BunServeOptions,
   type CloudflareWorker,
+  type DenoServeOptions,
+  type DenoTransportBodyResult,
+  type DenoTransportBodyResultHandler,
   type HandlerOptions,
   type JoorConfigContext,
   type JoorManifestRoutes,
@@ -224,6 +231,20 @@ const fetchHandler = createJoorHandler(manifest, handlerOptions);
 fetchHandler(new Request('https://example.com/rpc'));
 const bunFetch = createBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
+const denoFetch = createDenoFetch(manifest, handlerOptions);
+denoFetch(new Request('https://example.com/rpc'));
+const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
+denoHandler(new Request('https://example.com/rpc'));
+const denoTransportResult: DenoTransportBodyResult = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: {},
+};
+const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
+  denoTransportResult;
+createDenoTransportRequestHandler(denoTransportHandler);
+createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(manifest);
 nextHandlers.POST(new Request('https://example.com/rpc'));
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(manifest);
@@ -243,6 +264,8 @@ const transportResult: RpcBodyResult = {
 createNodeTransportRequestHandler(async () => transportResult);
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
+const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
+denoOptions.hostname?.toUpperCase();
 const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
 listenOptions.hostname?.toUpperCase();
 

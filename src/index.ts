@@ -11,6 +11,13 @@ export {
   serveBun,
 } from './runtime/bun.js';
 export { createCloudflareWorker } from './runtime/cloudflare.js';
+export {
+  createDenoFetch,
+  createDenoRpcRequestHandler,
+  createDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerWithPath,
+  serveDeno,
+} from './runtime/deno.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
@@ -95,6 +102,11 @@ export type {
   BunTransportBodyResultHandler,
 } from './runtime/bun.js';
 export type { CloudflareWorker } from './runtime/cloudflare.js';
+export type {
+  DenoServeOptions,
+  DenoTransportBodyResult,
+  DenoTransportBodyResultHandler,
+} from './runtime/deno.js';
 export type { NextRouteHandlers } from './runtime/next.js';
 export type {
   ListenOptions,
