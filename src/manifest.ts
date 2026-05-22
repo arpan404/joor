@@ -1,5 +1,5 @@
 import type { ProcedureRuntime } from './procedure/types.js';
-import type { RpcManifest } from './rpc/dispatcher.js';
+import type { RpcManifest, RpcManifestBody } from './rpc/dispatcher.js';
 import type {
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
@@ -105,6 +105,9 @@ export type JoorManifestRouteProtocolRequest<
 
 export type JoorManifestRouteProtocolRequestUnion<TManifest> =
   RpcRouteProtocolRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestRouteBody<TManifest> =
+  TManifest extends JoorManifest ? RpcManifestBody<TManifest> : never;
 
 export type JoorManifestRouteUnaryProtocolRequest<
   TManifest,

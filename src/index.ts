@@ -42,6 +42,7 @@ export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
   JoorManifest,
+  JoorManifestRouteBody,
   JoorManifestRouteBatchRequest,
   JoorManifestRouteBatchResults,
   JoorManifestRouteEnvelope,

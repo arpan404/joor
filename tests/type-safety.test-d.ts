@@ -31,6 +31,7 @@ import {
   type DenoTransportBodyResultHandler,
   type HandlerOptions,
   type JoorConfigContext,
+  type JoorManifestRouteBody,
   type JoorManifestRouteBatchRequest,
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteEnvelope,
@@ -381,6 +382,9 @@ const manifestProtocolRequestUnion: JoorManifestRouteProtocolRequestUnion<
   typeof manifest
 > = manifestProtocolRequest;
 manifestProtocolRequestUnion.id.toUpperCase();
+const manifestRouteBody: JoorManifestRouteBody<typeof manifest> =
+  manifestProtocolRequest;
+manifestRouteBody.id.toUpperCase();
 const manifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
