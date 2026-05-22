@@ -789,8 +789,8 @@ const executeStream = async (
   return createSseResponse(stream);
 };
 
-export const createRpcHandler = (
-  manifest: RpcManifest,
+export const createRpcHandler = <TManifest extends RpcManifest>(
+  manifest: TManifest,
   options: HandlerOptions = {}
 ): ((request: Request) => Promise<Response>) => {
   const handleParsed = createRpcBodyHandler(manifest, options, false);
@@ -829,8 +829,8 @@ export const createRpcHandler = (
   };
 };
 
-export const createRpcBodyHandler = (
-  manifest: RpcManifest,
+export const createRpcBodyHandler = <TManifest extends RpcManifest>(
+  manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
 ): ((request: Request, body: JsonValue) => Promise<Response>) => {
@@ -841,8 +841,8 @@ export const createRpcBodyHandler = (
   };
 };
 
-export const createRpcBodyResultHandler = (
-  manifest: RpcManifest,
+export const createRpcBodyResultHandler = <TManifest extends RpcManifest>(
+  manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
 ): ((request: Request, body: JsonValue) => Promise<RpcBodyResult>) => {
@@ -855,8 +855,10 @@ export const createRpcBodyResultHandler = (
     handleTransport(createFetchRequestSource(request), body);
 };
 
-export const createRpcTransportBodyResultHandler = (
-  manifest: RpcManifest,
+export const createRpcTransportBodyResultHandler = <
+  TManifest extends RpcManifest,
+>(
+  manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
 ): ((

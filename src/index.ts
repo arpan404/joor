@@ -5,6 +5,13 @@ export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
 export { createClient, createManifestClient } from './rpc/client.js';
 export {
+  createRpcBodyHandler,
+  createRpcBodyResultHandler,
+  createRpcHandler,
+  createRpcRequestPreflight,
+  createRpcTransportBodyResultHandler,
+} from './rpc/dispatcher.js';
+export {
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,

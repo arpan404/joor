@@ -18,6 +18,11 @@ import {
   createVercelFetch,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
+  createRpcBodyHandler,
+  createRpcBodyResultHandler,
+  createRpcHandler,
+  createRpcRequestPreflight,
+  createRpcTransportBodyResultHandler,
   t,
   type BunServeOptions,
   type CloudflareWorker,
@@ -401,7 +406,55 @@ typedPublicManifest.procedures['users.get'].output;
 // @ts-expect-error RpcManifest route maps require procedure runtimes.
 type _WrongRpcManifest = RpcManifest<{ broken: { input: string } }>;
 
+function createFetchRequestSourceForTypes() {
+  const request = new Request('https://example.com/rpc', { method: 'POST' });
+  return {
+    method: 'POST',
+    remoteAddress: undefined,
+    signal: request.signal,
+    url: request.url,
+    getHeader(_name: string) {
+      return null;
+    },
+    toHeaders() {
+      return new Headers();
+    },
+    toRequest() {
+      return request;
+    },
+  };
+}
+
 const handlerOptions: HandlerOptions = { path: '/rpc' };
+const rpcPreflight = createRpcRequestPreflight(handlerOptions);
+rpcPreflight(createFetchRequestSourceForTypes());
+const rpcHandler = createRpcHandler(manifest, handlerOptions);
+rpcHandler(new Request('https://example.com/rpc'));
+const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
+rpcBodyHandler(new Request('https://example.com/rpc'), {
+  id: 'users.get',
+  input: { id: '1' },
+});
+const rpcBodyResultHandler = createRpcBodyResultHandler(
+  manifest,
+  handlerOptions
+);
+rpcBodyResultHandler(new Request('https://example.com/rpc'), {
+  id: 'users.get',
+  input: { id: '1' },
+});
+const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
+  manifest,
+  handlerOptions
+);
+rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { id: '1' },
+});
+
+// @ts-expect-error low-level runtime handlers only accept typed procedure manifests.
+createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });
+
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
 fetchHandler(new Request('https://example.com/rpc'));
 
