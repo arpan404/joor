@@ -8,10 +8,11 @@ export type MaybePromise<TValue> = TValue | Promise<TValue>;
 
 export type ErrorSchemas = Record<string, Schema>;
 
-export type ErrorCode<TErrors extends ErrorSchemas> = Extract<
-  keyof TErrors,
-  string
->;
+export type ErrorCode<TErrors extends ErrorSchemas> = [TErrors] extends [
+  Record<string, never>,
+]
+  ? never
+  : Extract<keyof TErrors, string>;
 
 export type ErrorDetails<TErrors extends ErrorSchemas> = {
   [TCode in ErrorCode<TErrors>]: InferSchema<TErrors[TCode]> & JsonValue;

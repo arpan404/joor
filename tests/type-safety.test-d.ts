@@ -100,6 +100,8 @@ import {
   type NodeTransportBodyResultHandler,
   type PendingRpcRequest,
   type Procedure,
+  type ProcedureError,
+  type ProcedureErrorCode,
   type ProcedureFailure,
   type ProcedureInput,
   type ProcedureAuth,
@@ -454,6 +456,20 @@ const authenticatedProcedure = defineProcedure.withContext<Services>()({
     return ctx.ok({ userId: ctx.auth.userId });
   },
 });
+type AuthenticatedProcedureErrorCodeIsNever = [
+  ProcedureErrorCode<typeof authenticatedProcedure>,
+] extends [never]
+  ? true
+  : false;
+const authenticatedProcedureErrorCodeIsNever: AuthenticatedProcedureErrorCodeIsNever = true;
+authenticatedProcedureErrorCodeIsNever.valueOf();
+type AuthenticatedProcedureErrorIsNever = [
+  ProcedureError<typeof authenticatedProcedure>,
+] extends [never]
+  ? true
+  : false;
+const authenticatedProcedureErrorIsNever: AuthenticatedProcedureErrorIsNever = true;
+authenticatedProcedureErrorIsNever.valueOf();
 const authenticatedHeaderProcedure = defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
   headers: t.object({ authorization: t.string() }),
@@ -561,6 +577,11 @@ const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
 procedureEnvelopeId.toUpperCase();
 // @ts-expect-error procedure envelopes preserve route id literals.
 const _wrongProcedureEnvelopeId: 'users.authenticated' = procedureEnvelope.id;
+const procedureErrorCode: ProcedureErrorCode<typeof procedure> = 'NOT_FOUND';
+procedureErrorCode.toUpperCase();
+// @ts-expect-error procedure error codes only include declared errors.
+const _wrongProcedureErrorCode: ProcedureErrorCode<typeof procedure> =
+  'UNDECLARED';
 const _missingProcedureFailureDetails: ProcedureFailure<
   'NOT_FOUND',
   { message: string }
