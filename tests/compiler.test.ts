@@ -120,7 +120,9 @@ describe('compiler', () => {
       ).resolves.toContain('"admin-user": {');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
-      ).resolves.toContain('"get-profile": {');
+      ).resolves.toContain(
+        '"get-profile": unaryRoute("admin-user.get-profile")'
+      );
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('export type RouteRequest');
@@ -131,16 +133,16 @@ describe('compiler', () => {
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createManifestClient');
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
-      const watchClientMatch = clientSource.match(
-        /"watch": \{[\s\S]*?\n {4}\},/
-      );
+      expect(clientSource).toContain('export type UnaryRouteFunction');
+      expect(clientSource).toContain('export type StreamRouteFunction');
+      expect(clientSource).toContain('"get": unaryRoute("users.get")');
+      expect(clientSource).toContain('"watch": streamRoute("users.watch")');
+      expect(clientSource).toContain('Object.assign(call, { call, request })');
+      expect(clientSource).not.toContain('ProcedureInput');
       expect(clientSource).toContain('export type UnaryRouteId');
       expect(clientSource).toContain('export type StreamRouteId');
       expect(clientSource).toContain('export type RouteResponseHeaders');
       expect(clientSource).toContain('export type RouteError');
-      expect(watchClientMatch?.[0]).toContain('stream:');
-      expect(watchClientMatch?.[0]).not.toContain('call:');
-      expect(watchClientMatch?.[0]).not.toContain('request:');
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');

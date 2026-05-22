@@ -1896,7 +1896,6 @@ const emitClient = async (
   }
   const renderNode = (node: ClientTree, depth: number): string => {
     const indent = '  '.repeat(depth);
-    const childIndent = '  '.repeat(depth + 1);
     const childBlocks = [...node.children.entries()]
       .map(
         ([name, child]) => `${indent}${JSON.stringify(name)}: {
@@ -1908,20 +1907,13 @@ ${indent}},`
       .map((id) => {
         const name = id.split('.').at(-1);
         if (name === undefined) return '';
-        const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
         const entry = entryById.get(id);
         if (entry === undefined) return '';
         const methods =
           entry.procedure.stream === undefined
-            ? `${childIndent}call: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.call(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
-${childIndent}request: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.request(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),`
-            : `${childIndent}stream: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.stream(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),`;
-        return `${indent}${JSON.stringify(name)}: {
-${methods}
-${indent}},`;
+            ? `unaryRoute(${JSON.stringify(id)})`
+            : `streamRoute(${JSON.stringify(id)})`;
+        return `${indent}${JSON.stringify(name)}: ${methods},`;
       })
       .join('\n');
     return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
@@ -1931,7 +1923,7 @@ ${indent}},`;
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
 import type { ClientOptions, ClientRequestOptions } from 'joor/client';
-import type { JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId, ProcedureHeaders, ProcedureInput } from 'joor';
+import type { JoorManifestRouteEnvelope, JoorManifestRouteError, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteRequest, JoorManifestRouteResponseHeaders, JoorManifestRouteStreamEvent, JoorManifestStreamRouteId, JoorManifestUnaryRouteId } from 'joor';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -1948,15 +1940,38 @@ export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Ma
 export type RouteResult<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type Result<TId extends UnaryRouteId> = RouteResult<TId>;
 export type Stream<TId extends StreamRouteId> = JoorManifestRouteStreamEvent<Manifest, TId>;
-export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
-  ? [input: ProcedureInput<TProcedure>, options?: ClientRequestOptions<TProcedure>]
-  : [input: ProcedureInput<TProcedure>, options: ClientRequestOptions<TProcedure>];
+export type ClientArgs<TId extends RouteId> = Record<string, never> extends RouteHeaders<TId>
+  ? [input: RouteInput<TId>, options?: ClientRequestOptions<RouteProcedure<TId>>]
+  : [input: RouteInput<TId>, options: ClientRequestOptions<RouteProcedure<TId>>];
+export type UnaryRouteFunction<TId extends UnaryRouteId> = {
+  (...args: ClientArgs<TId>): Promise<RouteResult<TId>>;
+  call(...args: ClientArgs<TId>): Promise<RouteResult<TId>>;
+  request(...args: ClientArgs<TId>): RouteRequest<TId>;
+};
+export type StreamRouteFunction<TId extends StreamRouteId> = {
+  (...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
+  stream(...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
+};
 
-const optionalOptions = <TProcedure>(options: ClientRequestOptions<TProcedure> | undefined) =>
+const optionalOptions = <TId extends RouteId>(
+  options: ClientRequestOptions<RouteProcedure<TId>> | undefined
+) =>
   options === undefined ? [] : [options] as const;
 
 export const createClient = (options: Omit<ClientOptions<Manifest>, 'manifest'>) => {
   const transport = createTransportClient(manifest, options);
+  const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
+    const call = (...args: ClientArgs<TId>) =>
+      transport.call(id, args[0], ...optionalOptions<TId>(args[1]));
+    const request = (...args: ClientArgs<TId>) =>
+      transport.request(id, args[0], ...optionalOptions<TId>(args[1]));
+    return Object.assign(call, { call, request });
+  };
+  const streamRoute = <TId extends StreamRouteId>(id: TId): StreamRouteFunction<TId> => {
+    const stream = (...args: ClientArgs<TId>) =>
+      transport.stream(id, args[0], ...optionalOptions<TId>(args[1]));
+    return Object.assign(stream, { stream });
+  };
   return {
 ${clientBody}
     batch: transport.batch,
