@@ -6,7 +6,7 @@ export {
   emptyContextObject,
   emptyJsonObject,
 } from './context.js';
-export { createPlugin } from './plugin.js';
+export { createPlugin, resolvePluginServices } from './plugin.js';
 
 export type {
   AuthPolicy,

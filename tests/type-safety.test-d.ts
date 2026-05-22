@@ -4,6 +4,7 @@ import {
   defineConfig,
   defineManifest,
   defineProcedure,
+  resolvePluginServices,
   createBunFetch,
   createBunTransportRequestHandler,
   createCloudflareWorker,
@@ -46,6 +47,7 @@ import {
   type HandlerOptions,
   type JoorConfig,
   type JoorConfigContext,
+  type PluginServices,
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
   type JoorManifestRouteBodyResultFor,
@@ -144,6 +146,7 @@ import {
   createAuthPolicy as createContextSubpathAuthPolicy,
   createPlugin as createContextSubpathPlugin,
   defineConfig as defineContextSubpathConfig,
+  resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
   type JoorConfig as ContextSubpathConfig,
   type JoorConfigContext as ContextSubpathConfigContext,
@@ -252,6 +255,18 @@ const usersPlugin = createPlugin({
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
 type Services = JoorConfigContext<typeof config>;
+type RootPluginServices = PluginServices<readonly [typeof usersPlugin]>;
+const rootPluginServices: RootPluginServices = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+  },
+};
+rootPluginServices.users.findById('1').name.toUpperCase();
+resolvePluginServices([usersPlugin] as const).then((services) => {
+  services.users.findById('1').name.toUpperCase();
+});
 const annotatedConfig: JoorConfig<readonly [typeof usersPlugin]> = {
   plugins: [usersPlugin] as const,
 };
@@ -529,6 +544,11 @@ const contextSubpathServices: ContextSubpathServices = {
   },
 };
 contextSubpathServices.audit.record('view');
+resolveContextSubpathPluginServices([contextSubpathPlugin] as const).then(
+  (services) => {
+    services.audit.record('view').toFixed();
+  }
+);
 const contextSubpathConfig = defineContextSubpathConfig({
   plugins: [contextSubpathPlugin] as const,
 });

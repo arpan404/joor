@@ -19,12 +19,14 @@ type PluginOutput<TPlugin> =
 export type PluginServices<TPlugins extends readonly JoorPlugin<object>[]> =
   TPlugins[number] extends never
     ? Record<string, never>
-    : UnionToIntersection<PluginOutput<TPlugins[number]>>;
+    : UnionToIntersection<PluginOutput<TPlugins[number]>> & object;
 
-export const resolvePluginServices = async (
-  plugins: readonly JoorPlugin<object>[]
-): Promise<object> => {
-  const services = {};
+export const resolvePluginServices = async <
+  const TPlugins extends readonly JoorPlugin<object>[],
+>(
+  plugins: TPlugins
+): Promise<PluginServices<TPlugins>> => {
+  const services = {} as PluginServices<TPlugins>;
   for (const plugin of plugins) {
     Object.assign(services, await plugin.setup());
   }
