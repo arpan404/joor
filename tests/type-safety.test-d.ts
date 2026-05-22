@@ -222,7 +222,11 @@ import {
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
 } from '../src/runtime/deno-transport.js';
 import { createDenoCompiledTransportRequestHandlerWithPath } from '../src/runtime/deno-compiled-transport.js';
-import { createCompiledRuntimeState } from '../src/runtime/compiled.js';
+import {
+  createCompiledRpcHandler,
+  createCompiledRpcTransportBodyResultHandler,
+  createCompiledRuntimeState,
+} from '../src/runtime/compiled.js';
 import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
@@ -1449,6 +1453,23 @@ const _serviceTypedCompiledDispatch: CompiledDispatch<Services> = async (
   services.users.findById('1').name.toUpperCase();
   return manifestRouteEnvelope;
 };
+createCompiledRpcTransportBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  config,
+  _serviceTypedCompiledUnaryDispatch,
+  false,
+  true,
+  typedCompiledRuntimeState
+);
+createCompiledRpcHandler(
+  _serviceTypedCompiledDispatch,
+  config,
+  _serviceTypedCompiledUnaryDispatch
+);
+// @ts-expect-error service-dependent compiled dispatches require matching config services.
+createCompiledRpcHandler(_serviceTypedCompiledDispatch);
+// @ts-expect-error service-dependent compiled transports require matching config services.
+createCompiledRpcTransportBodyResultHandler(_serviceTypedCompiledDispatch, {});
 const standaloneDenoCompiledHandler =
   createDenoCompiledTransportRequestHandlerWithPath(
     compiledRuntimeState,

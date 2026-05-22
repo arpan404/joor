@@ -737,17 +737,20 @@ export function createCompiledRuntimeState(
 }
 
 export const createCompiledRpcTransportBodyResultHandler = <
-  TServices extends object = object,
+  const TConfig extends JoorConfig = Record<string, never>,
 >(
-  dispatch: CompiledDispatch<TServices>,
-  config: JoorConfig = {},
-  unaryDispatch?: CompiledUnaryDispatch<TServices>,
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>,
   preflight = true,
   serializationMode: CompiledSerializationMode = true,
-  runtimeState?: CompiledRuntimeState<TServices>
+  runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
 ): CompiledRpcTransportBodyResultHandler => {
+  const handlerConfig = (config ?? {}) as TConfig;
   const compiled = (runtimeState ??
-    createCompiledRuntimeState(config)) as CompiledRuntimeState<TServices>;
+    createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
+    JoorConfigContext<TConfig>
+  >;
   return async (
     request: ContextRequestSource,
     body: JsonValue
@@ -823,11 +826,11 @@ export const createCompiledRpcTransportBodyResultHandler = <
 };
 
 export const createCompiledRpcBodyResultHandler = <
-  TServices extends object = object,
+  const TConfig extends JoorConfig = Record<string, never>,
 >(
-  dispatch: CompiledDispatch<TServices>,
-  config: JoorConfig = {},
-  unaryDispatch?: CompiledUnaryDispatch<TServices>
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
 ): CompiledRpcBodyResultHandler => {
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
@@ -838,24 +841,27 @@ export const createCompiledRpcBodyResultHandler = <
     handleTransport(createFetchRequestSource(request), body);
 };
 
-export const createCompiledRpcHandler = <TServices extends object = object>(
-  dispatch: CompiledDispatch<TServices>,
-  config: JoorConfig = {},
-  unaryDispatch?: CompiledUnaryDispatch<TServices>
+export const createCompiledRpcHandler = <
+  const TConfig extends JoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
 ): ((request: Request) => Promise<Response>) => {
+  const handlerConfig = (config ?? {}) as TConfig;
   const bodyLimit = normalizeMaxBodyBytes(
-    config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
-    config,
+    handlerConfig,
     unaryDispatch,
     false,
     'response'
   );
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
-    const early = requestPreflight(source, config.path ?? '/rpc');
+    const early = requestPreflight(source, handlerConfig.path ?? '/rpc');
     if (early !== undefined) return early;
     let body: JsonValue;
     try {
