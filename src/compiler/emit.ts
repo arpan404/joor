@@ -2076,7 +2076,32 @@ ${indent}},`
       .join('\n');
     return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
   };
+  const renderTypeNode = (node: ClientTree, depth: number): string => {
+    const indent = '  '.repeat(depth);
+    const childBlocks = [...node.children.entries()]
+      .map(
+        ([name, child]) => `${indent}${JSON.stringify(name)}: {
+${renderTypeNode(child, depth + 1)}
+${indent}};`
+      )
+      .join('\n');
+    const procedureBlocks = node.procedures
+      .map((id) => {
+        const name = id.split('.').at(-1);
+        if (name === undefined) return '';
+        const entry = entryById.get(id);
+        if (entry === undefined) return '';
+        const typeName =
+          entry.procedure.stream === undefined
+            ? 'UnaryRouteFunction'
+            : 'StreamRouteFunction';
+        return `${indent}${JSON.stringify(name)}: ${typeName}<${JSON.stringify(id)}>;`;
+      })
+      .join('\n');
+    return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
+  };
   const clientBody = renderNode(tree, 2);
+  const clientTypeBody = renderTypeNode(tree, 1);
   const defaultUrl = config?.path ?? '/rpc';
   await writeFile(
     `${outDir}/client.ts`,
@@ -2155,7 +2180,13 @@ export const createTransport = (options: GeneratedClientOptions = {}) =>
 
 export type TransportClient = JoorManifestTransportClient<Manifest>;
 
-export const createClient = (options: GeneratedClientOptions = {}) => {
+export type GeneratedClient = {
+${clientTypeBody}
+  batch: BatchFunction;
+};
+export type Client = GeneratedClient;
+
+export const createClient = (options: GeneratedClientOptions = {}): GeneratedClient => {
   const transport = createTransport(options);
   const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
     const routeTransport = transport as UnaryRouteTransport<TId>;
@@ -2177,9 +2208,6 @@ ${clientBody}
     batch,
   };
 };
-
-export type GeneratedClient = ReturnType<typeof createClient>;
-export type Client = GeneratedClient;
 
 export const client = createClient();
 `

@@ -231,7 +231,14 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteFunction');
       expect(clientSource).toContain('export type BatchFunction');
       expect(clientSource).toContain('export type GeneratedClient');
+      expect(clientSource).toContain('"get": UnaryRouteFunction<"users.get">');
+      expect(clientSource).toContain(
+        '"watch": StreamRouteFunction<"users.watch">'
+      );
       expect(clientSource).toContain('export type Client');
+      expect(clientSource).not.toContain(
+        'export type GeneratedClient = ReturnType<typeof createClient>'
+      );
       expect(clientSource).toContain('export type RouteHasHeaders');
       expect(clientSource).toContain('export type RouteRequiresHeaders');
       expect(clientSource).toContain('export type RouteHasResponseHeaders');
