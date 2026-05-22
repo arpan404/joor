@@ -40,6 +40,15 @@ export interface BunServeOptions<
   hostname?: string;
 }
 
+export interface BunServer {
+  readonly hostname?: string;
+  readonly port?: number;
+  readonly url?: URL;
+  stop(force?: boolean): void;
+  ref?(): void;
+  unref?(): void;
+}
+
 export type BunServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -155,11 +164,11 @@ export function serveBun<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgsFor<TManifest, TPlugins, BunServeOptions<TPlugins>>
-): void;
+): BunServer;
 export function serveBun<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: BunServeOptions = {}
-): void {
+): BunServer {
   const fetch = createBunRpcRequestHandler(
     manifest,
     options as BunServeOptionsFor<TManifest>
@@ -170,13 +179,13 @@ export function serveBun<TManifest extends JoorManifest>(
         port: number;
         hostname: string;
         fetch(request: Request): Promise<Response>;
-      }): object;
+      }): BunServer;
     };
   };
   if (bunGlobal.Bun === undefined) {
     throw new Error('Bun runtime is not available');
   }
-  bunGlobal.Bun.serve({
+  return bunGlobal.Bun.serve({
     port: options.port ?? 3000,
     hostname: options.hostname ?? '0.0.0.0',
     fetch,

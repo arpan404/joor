@@ -41,6 +41,7 @@ import {
   validate,
   type ArrayChain,
   type BatchResults,
+  type BunServer,
   type BunServeOptionsFor,
   type BunServeOptions,
   type AuthPolicyAuth,
@@ -60,6 +61,7 @@ import {
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type DenoServeOptionsFor,
+  type DenoServer,
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
@@ -121,6 +123,7 @@ import {
   type ListenOptionsFor,
   type ListenOptions,
   type NextRouteHandlers,
+  type NodeServer,
   type NodeTransportBodyResult,
   type NodeTransportBodyResultHandler,
   type NodeTransportBodyResultHandlerFor,
@@ -310,6 +313,7 @@ import {
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
   serveDeno as serveStandaloneDeno,
+  type DenoServer as StandaloneDenoServer,
   type DenoServeOptionsFor as StandaloneDenoServeOptionsFor,
   type DenoServeOptions as StandaloneDenoServeOptions,
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
@@ -2391,7 +2395,9 @@ const typedBunServeOptions: BunServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-serveBun(manifest, typedBunServeOptions);
+const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
+bunServer.stop();
+bunServer.ref?.();
 // @ts-expect-error service-dependent manifests require matching Bun serve plugins.
 serveBun(manifest);
 const denoFetch = createDenoFetch(manifest, handlerOptions);
@@ -2402,7 +2408,9 @@ const typedDenoServeOptions: DenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-serveDeno(manifest, typedDenoServeOptions);
+const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
+denoServer.shutdown().then(() => undefined);
+denoServer.finished.then(() => undefined);
 // @ts-expect-error service-dependent manifests require matching Deno serve plugins.
 serveDeno(manifest);
 
@@ -2422,7 +2430,11 @@ const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-serveStandaloneDeno(manifest, typedStandaloneDenoServeOptions);
+const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
+  manifest,
+  typedStandaloneDenoServeOptions
+);
+standaloneDenoServer.shutdown().then(() => undefined);
 // @ts-expect-error service-dependent manifests require matching standalone Deno serve plugins.
 serveStandaloneDeno(manifest);
 
@@ -2810,7 +2822,8 @@ const typedListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-listen(manifest, typedListenOptions);
+const nodeServer: NodeServer = listen(manifest, typedListenOptions);
+nodeServer.close();
 // @ts-expect-error service-dependent manifests require matching Node listen plugins.
 listen(manifest);
 const transportResult: RpcBodyResult = {

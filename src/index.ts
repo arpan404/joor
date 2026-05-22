@@ -232,6 +232,7 @@ export type {
   ProcedureSuccess,
 } from './procedure/result.js';
 export type {
+  BunServer,
   BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
@@ -255,6 +256,7 @@ export type {
   CompiledUnaryDispatch,
 } from './runtime/compiled.js';
 export type {
+  DenoServer,
   DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
@@ -265,6 +267,7 @@ export type { NextRouteHandlers } from './runtime/next.js';
 export type {
   ListenOptionsFor,
   ListenOptions,
+  NodeServer,
   NodeRpcRequestHandler,
   NodeTransportBodyResult,
   NodeTransportBodyResultHandler,

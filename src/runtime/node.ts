@@ -40,6 +40,8 @@ export interface ListenOptions<
   hostname?: string;
 }
 
+export type NodeServer = ReturnType<typeof createServer>;
+
 export type ListenOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -297,11 +299,11 @@ export function listen<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgsFor<TManifest, TPlugins, ListenOptions<TPlugins>>
-): void;
+): NodeServer;
 export function listen<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: ListenOptions = {}
-): void {
+): NodeServer {
   const port = options.port ?? 3000;
   const hostname = options.hostname ?? '0.0.0.0';
   const handler = createNodeRpcRequestHandler(
@@ -311,6 +313,7 @@ export function listen<TManifest extends JoorManifest>(
   );
   const server = createServer(handler);
   server.listen(port, hostname);
+  return server;
 }
 
 export function createNodeRpcRequestHandler<

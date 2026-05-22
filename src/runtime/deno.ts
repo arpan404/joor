@@ -40,6 +40,13 @@ export interface DenoServeOptions<
   hostname?: string;
 }
 
+export interface DenoServer {
+  readonly finished: Promise<void>;
+  shutdown(): Promise<void>;
+  ref?(): void;
+  unref?(): void;
+}
+
 export type DenoServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -231,11 +238,11 @@ export function serveDeno<
     TPlugins,
     DenoServeOptions<TPlugins>
   >
-): void;
+): DenoServer;
 export function serveDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
-): void {
+): DenoServer {
   const fetch = createDenoRpcRequestHandler(
     manifest,
     options as DenoServeOptionsFor<TManifest>
@@ -246,13 +253,13 @@ export function serveDeno<TManifest extends JoorManifest>(
         port: number;
         hostname: string;
         handler(request: Request): Promise<Response>;
-      }): object;
+      }): DenoServer;
     };
   };
   if (denoGlobal.Deno === undefined) {
     throw new Error('Deno runtime is not available');
   }
-  denoGlobal.Deno.serve({
+  return denoGlobal.Deno.serve({
     port: options.port ?? 3000,
     hostname: options.hostname ?? '0.0.0.0',
     handler: fetch,
