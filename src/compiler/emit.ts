@@ -930,7 +930,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody } from '${dispatcherImport}';
 ${nodeFastImports}
 
 interface JsonObject {
@@ -1476,7 +1476,7 @@ export const createHandler = (
     request ??= new IncomingRequestSource(incoming, hostname);
     await writeResult(
       outgoing,
-      await nativeTransport(request, body as Parameters<typeof nativeTransport>[1])
+      await nativeTransport(request, body as NativeBody)
     );
   };
 };
@@ -1497,7 +1497,7 @@ export const listen = (options: NodeListenOptions = {}): NodeNativeServer => {
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody } from '${dispatcherImport}';
 ${bunFastImports}
 
 interface JsonObject {
@@ -1937,7 +1937,7 @@ export const createFetch = (
       }
     }
     return transportResultToResponse(
-      await nativeTransport(source, body as Parameters<typeof nativeTransport>[1])
+      await nativeTransport(source, body as NativeBody)
     );
   };
 };

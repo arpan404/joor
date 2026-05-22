@@ -65,9 +65,21 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.toContain('readIncomingBody');
+      await expect(
+        readFile(join(outDir, 'node.ts'), 'utf8')
+      ).resolves.toContain('type NativeBody');
+      await expect(
+        readFile(join(outDir, 'node.ts'), 'utf8')
+      ).resolves.not.toContain('Parameters<typeof nativeTransport>');
       await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
         'readJsonBody'
       );
+      await expect(readFile(join(outDir, 'bun.ts'), 'utf8')).resolves.toContain(
+        'type NativeBody'
+      );
+      await expect(
+        readFile(join(outDir, 'bun.ts'), 'utf8')
+      ).resolves.not.toContain('Parameters<typeof nativeTransport>');
       await expect(
         readFile(join(outDir, 'deno.ts'), 'utf8')
       ).resolves.toContain("from './deno-dispatcher.ts'");
