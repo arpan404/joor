@@ -2,9 +2,11 @@ import type { JsonObject, JsonValue } from '../../schema/json.js';
 
 export const DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES = 10_000;
 
+export type CachedProcedureHeaders = Record<string, string>;
+
 export interface CachedProcedureSuccess {
   data: JsonValue;
-  headers?: JsonObject;
+  headers?: CachedProcedureHeaders;
   expiresAt: number;
 }
 
@@ -124,7 +126,7 @@ export const writeCachedProcedureSuccess = (
   key: string,
   ttlMs: number,
   data: JsonValue,
-  headers?: JsonObject,
+  headers?: CachedProcedureHeaders,
   maxEntries = DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES
 ): void => {
   const now = Date.now();

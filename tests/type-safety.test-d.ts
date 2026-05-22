@@ -293,6 +293,10 @@ import {
   type executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
 import type {
+  CachedProcedureHeaders,
+  CachedProcedureSuccess,
+} from '../src/runtime/internal/procedure-cache.js';
+import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRuntimeState,
@@ -2247,6 +2251,25 @@ const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   },
 };
 _wrongCompiledSerializedEnvelopeHeaders.body.toUpperCase();
+const cachedProcedureHeaders: CachedProcedureHeaders = {
+  'cache-control': 'private',
+};
+cachedProcedureHeaders['cache-control']?.toUpperCase();
+const cachedProcedureSuccess: CachedProcedureSuccess = {
+  data: { ok: true },
+  headers: cachedProcedureHeaders,
+  expiresAt: Date.now() + 1_000,
+};
+cachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
+const _wrongCachedProcedureSuccessHeaders: CachedProcedureSuccess = {
+  data: { ok: true },
+  headers: {
+    // @ts-expect-error cached procedure headers must be HTTP string values.
+    'x-retry-count': 1,
+  },
+  expiresAt: Date.now() + 1_000,
+};
+_wrongCachedProcedureSuccessHeaders.data;
 const compiledRuntimeState: CompiledRuntimeState = {
   path: '/rpc',
   runtime: {

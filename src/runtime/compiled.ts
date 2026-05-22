@@ -9,6 +9,7 @@ import {
   createProcedureCacheKey,
   DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
   readCachedProcedureSuccess,
+  type CachedProcedureHeaders,
   type CachedProcedureSuccess,
   writeCachedProcedureSuccess,
 } from './internal/procedure-cache.js';
@@ -358,7 +359,7 @@ export const compiledWriteCache = (
   headers: JsonObject,
   auth: object,
   data: JsonValue,
-  responseHeaders?: JsonObject
+  responseHeaders?: CachedProcedureHeaders
 ): void => {
   const cacheConfig =
     procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
