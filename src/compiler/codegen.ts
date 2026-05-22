@@ -470,7 +470,7 @@ const emitJsonSerializerFunction = (
   }`;
           }
           return `  if (needsComma) output += ',';
-  output += ${propertyKey} + ${childName}(objectValue[${JSON.stringify(key)}]);
+  output += ${propertyKey} + ${childName}(objectValue[${JSON.stringify(key)}] as JsonValue);
   needsComma = true;`;
         })
         .join('\n');
@@ -743,7 +743,10 @@ export const emitCompiledProcedureSource = (
       validators
     );
   }
-  if (needsResponseHeaderValidation && entry.procedure.responseHeaders !== undefined) {
+  if (
+    needsResponseHeaderValidation &&
+    entry.procedure.responseHeaders !== undefined
+  ) {
     emitValidatorFunction(
       `${base}_validate_response_headers`,
       entry.procedure.responseHeaders,
@@ -788,7 +791,7 @@ export const emitCompiledProcedureSource = (
   const headerValidationBlock = (mode: 'body' | 'serialized' | 'response') =>
     entry.procedure.headers === undefined || !needsHeaderValidation
       ? ''
-      : `const headerIssue = ${base}_validate_headers(headerValue, 'headers');
+      : `const headerIssue = ${base}_validate_headers(headerValue as JsonValue, 'headers');
   if (headerIssue !== undefined) {
     const error = {
       code: 'HEADER_VALIDATION_ERROR',
@@ -910,8 +913,7 @@ export const emitCompiledProcedureSource = (
     : `${entry.exportName}.handler(ctx, inputValue)`;
   const stateParameter = (mode: 'body' | 'serialized' | 'response'): string =>
     needsAuth && mode === 'body' ? 'state' : '_state';
-  const runtimeParameter =
-    needsRateLimit ? 'runtime' : '_runtime';
+  const runtimeParameter = needsRateLimit ? 'runtime' : '_runtime';
   const outputValidationFor = (
     mode: 'body' | 'serialized' | 'response',
     dataExpression: string
@@ -942,7 +944,10 @@ export const emitCompiledProcedureSource = (
       undefined,
       '{ ok: true as const, id: rpcRequest.id, traceId: trace, data: outputValue }'
     )}
-  }`;
+  }
+  const procedureResult = result as
+    | { kind: 'success'; data: JsonValue; headers?: Record<string, JsonValue> }
+    | { kind: 'error'; error: RpcError };`;
   const emitExecutor = (
     mode: 'body' | 'serialized' | 'response'
   ): string => `${mode === 'body' ? '' : '\n'}const ${base}_execute_${mode}: CompiledFixedDispatch = async (
@@ -963,19 +968,19 @@ export const emitCompiledProcedureSource = (
   ${contextCreationBlock}
   const result = await ${handlerCall};
   ${resultShapeBlock(mode)}
-  if (result.kind === 'error') {
-    ${errorReturn(mode, 'result.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: result.error }')}
+  if (procedureResult.kind === 'error') {
+    ${errorReturn(mode, 'procedureResult.error', '{ ok: false as const, id: rpcRequest.id, traceId: trace, error: procedureResult.error }')}
   }
-  ${outputValidationFor(mode, 'result.data')}
-  ${responseHeaderValidation(mode)}
-  ${cacheWriteBlockFor('result.data', 'result.headers')}
+  ${outputValidationFor(mode, 'procedureResult.data')}
+  ${responseHeaderValidation(mode, 'procedureResult.headers')}
+  ${cacheWriteBlockFor('procedureResult.data', 'procedureResult.headers')}
   ${successReturn(
     mode,
-    'result.data',
-    'result.headers',
-    `result.headers === undefined
-      ? { ok: true as const, id: rpcRequest.id, traceId: trace, data: result.data }
-      : { ok: true as const, id: rpcRequest.id, traceId: trace, data: result.data, headers: result.headers }`
+    'procedureResult.data',
+    'procedureResult.headers',
+    `procedureResult.headers === undefined
+      ? { ok: true as const, id: rpcRequest.id, traceId: trace, data: procedureResult.data }
+      : { ok: true as const, id: rpcRequest.id, traceId: trace, data: procedureResult.data, headers: procedureResult.headers }`
   )}
 };`;
   const dispatchWrapper =

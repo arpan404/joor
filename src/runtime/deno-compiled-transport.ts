@@ -2,10 +2,7 @@ import {
   createFetchRequestSource,
   type ContextRequestSource,
 } from '../context/context.js';
-import {
-  isJsonObject,
-  type JsonValue,
-} from '../schema/json.js';
+import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
   type CompiledFixedUnaryDispatch,
@@ -17,10 +14,7 @@ import {
   normalizeMaxBodyBytes,
   readJsonRequestBodyWithLimit,
 } from './body.js';
-import {
-  jsonContentHeaders,
-  transportResultToResponse,
-} from './response.js';
+import { jsonContentHeaders, transportResultToResponse } from './response.js';
 import type { DenoTransportBodyResultHandler } from './deno-transport.js';
 
 const matchesPath = (url: string, path: string): boolean => {
@@ -91,9 +85,11 @@ const requestPathPreflight = (
   return undefined;
 };
 
-export const createDenoCompiledTransportRequestHandlerWithPath = (
+export const createDenoCompiledTransportRequestHandlerWithPath = <
+  TBody = JsonValue,
+>(
   runtimeState: CompiledRuntimeState,
-  handler: DenoTransportBodyResultHandler,
+  handler: DenoTransportBodyResultHandler<TBody>,
   unaryDispatch: CompiledFixedUnaryDispatch,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
@@ -122,6 +118,6 @@ export const createDenoCompiledTransportRequestHandlerWithPath = (
       );
       if (unary !== undefined) return transportResultToResponse(unary);
     }
-    return transportResultToResponse(await handler(source, body));
+    return transportResultToResponse(await handler(source, body as TBody));
   };
 };

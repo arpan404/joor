@@ -88,6 +88,16 @@ export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledRpcTransportBodyResultHandler<TBody = JsonValue> = (
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<CompiledBodyResult>;
+
+export type CompiledRpcBodyResultHandler<TBody = JsonValue> = (
+  request: Request,
+  body: TBody
+) => Promise<CompiledBodyResult>;
+
 export type CompiledUnaryDispatch = (
   body: JsonObject,
   request: ContextRequestSource,
@@ -727,10 +737,7 @@ export const createCompiledRpcTransportBodyResultHandler = (
   preflight = true,
   serializationMode: CompiledSerializationMode = true,
   runtimeState?: CompiledRuntimeState
-): ((
-  request: ContextRequestSource,
-  body: JsonValue
-) => Promise<CompiledBodyResult>) => {
+): CompiledRpcTransportBodyResultHandler => {
   const compiled = runtimeState ?? createCompiledRuntimeState(config);
   return async (
     request: ContextRequestSource,
@@ -810,7 +817,7 @@ export const createCompiledRpcBodyResultHandler = (
   dispatch: CompiledDispatch,
   config: JoorConfig = {},
   unaryDispatch?: CompiledUnaryDispatch
-): ((request: Request, body: JsonValue) => Promise<CompiledBodyResult>) => {
+): CompiledRpcBodyResultHandler => {
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
     config,

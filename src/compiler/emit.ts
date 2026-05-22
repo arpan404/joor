@@ -119,6 +119,7 @@ const emitProfileDispatcher = async (
           'compiledCreateJsonHeaderRecord',
           'compiledEmptyObject',
           'compiledHasInvalidHeaderValue',
+          'compiledJsonOkResponseInit',
           'compiledTraceId',
         ]
       : []),
@@ -132,10 +133,40 @@ const emitProfileDispatcher = async (
     'type CompiledFixedUnaryDispatch',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
+    'type CompiledRpcTransportBodyResultHandler',
   ];
-  const joorTypeImport = hasCompiledProcedures
-    ? "import type { JsonValue, RpcError } from 'joor';\n"
-    : '';
+  const joorTypeImports = [
+    ...(hasCompiledProcedures ? ['JsonValue', 'RpcError'] : []),
+    'JoorManifestRouteBody',
+    'JoorManifestRouteId',
+    'JoorManifestRouteProtocolRequest',
+    'JoorManifestRouteProtocolRequestUnion',
+    'JoorManifestRouteStreamProtocolRequestUnion',
+    'JoorManifestRouteUnaryProtocolRequestUnion',
+  ];
+  const joorTypeImport = `import type { ${joorTypeImports.join(', ')} } from 'joor';\n`;
+  const nativeManifestEntries = manifest.procedures
+    .map(
+      (entry) => `    ${JSON.stringify(entry.id)}: typeof ${entry.exportName};`
+    )
+    .join('\n');
+  const nativeManifestTypes = `export type NativeManifest = {
+  procedures: {
+${nativeManifestEntries}
+  };
+};
+
+export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
+export type NativeRouteRequest<TId extends NativeRouteId> =
+  JoorManifestRouteProtocolRequest<NativeManifest, TId>;
+export type NativeProtocolRequest =
+  JoorManifestRouteProtocolRequestUnion<NativeManifest>;
+export type NativeUnaryProtocolRequest =
+  JoorManifestRouteUnaryProtocolRequestUnion<NativeManifest>;
+export type NativeStreamProtocolRequest =
+  JoorManifestRouteStreamProtocolRequestUnion<NativeManifest>;
+export type NativeBatchBody = NativeUnaryProtocolRequest[];
+export type NativeBody = JoorManifestRouteBody<NativeManifest>;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
@@ -232,7 +263,7 @@ ${dispatchCaseForMode('response')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body;
+  const rpcRequest = body as Parameters<CompiledDispatch>[0];
   switch (rpcRequest.id) {
 ${unaryCases('body')}
     default:
@@ -255,7 +286,7 @@ ${unaryCases('body')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body;
+  const rpcRequest = body as Parameters<CompiledDispatch>[0];
   switch (rpcRequest.id) {
 ${unaryCases('serialized')}
     default:
@@ -278,7 +309,7 @@ ${unaryCases('serialized')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body;
+  const rpcRequest = body as Parameters<CompiledDispatch>[0];
   switch (rpcRequest.id) {
 ${unaryCases('response')}
     default:
@@ -314,6 +345,8 @@ ${unaryCases('response')}
 } from 'joor/runtime/compiled';
 ${joorTypeImport}${configImport}${imports}
 
+${nativeManifestTypes}
+
 ${executors}
 
 ${dispatchBody}
@@ -328,7 +361,7 @@ const dispatch: CompiledDispatch = ${transportDispatchName};
 export const nativeUnaryDispatch = ${nativeUnaryDispatchName};
 export const nativeResponseUnaryDispatch = ${nativeResponseUnaryDispatchName};
 export const nativeRuntime = createCompiledRuntimeState(${configValue});
-export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
+export const nativeTransport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
@@ -336,7 +369,7 @@ export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   ${transportModeLiteral},
   nativeRuntime
 );
-export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandler(
+export const nativeResponseTransport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
   ${configValue},
   nativeResponseUnaryDispatch,
@@ -344,7 +377,7 @@ export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandl
   'response',
   nativeRuntime
 );
-export const transport = createCompiledRpcTransportBodyResultHandler(
+export const transport: CompiledRpcTransportBodyResultHandler<NativeBody> = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
@@ -400,7 +433,8 @@ const emitDispatcher = async (
   const hasAuthProcedure = manifest.procedures.some(
     (entry) => entry.procedure.auth !== undefined
   );
-  const useBareDispatcher = unsafeFastPath &&
+  const useBareDispatcher =
+    unsafeFastPath &&
     manifest.procedures.every(
       (entry) =>
         entry.procedure.output !== undefined &&
@@ -507,7 +541,8 @@ const emitDenoDispatcher = async (
   const hasAuthProcedure = manifest.procedures.some(
     (entry) => entry.procedure.auth !== undefined
   );
-  const useBareDispatcher = unsafeFastPath &&
+  const useBareDispatcher =
+    unsafeFastPath &&
     manifest.procedures.every(
       (entry) =>
         entry.procedure.output !== undefined &&
@@ -593,7 +628,8 @@ const emitRuntimeTargets = async (
   const hasAuthProcedure = manifest.procedures.some(
     (entry) => entry.procedure.auth !== undefined
   );
-  const useBareDispatcher = unsafeFastPath &&
+  const useBareDispatcher =
+    unsafeFastPath &&
     manifest.procedures.every(
       (entry) =>
         entry.procedure.output !== undefined &&
@@ -873,7 +909,9 @@ let traceCounter = 0;
 class BodySizeLimitError extends Error {}
 
 const normalizeMaxBodyBytes = (value?: number): number =>
-  Number.isFinite(value) && value >= 0 ? Math.floor(value) : defaultMaxBodyBytes;
+  typeof value === 'number' && Number.isFinite(value) && value >= 0
+    ? Math.floor(value)
+    : defaultMaxBodyBytes;
 
 const parseJson = (text: string): JsonValue => JSON.parse(text) as JsonValue;
 
@@ -1349,7 +1387,10 @@ export const createHandler = (options: NodeNativeOptions = {}) => {
       }
     }
     request ??= new IncomingRequestSource(incoming, hostname);
-    await writeResult(outgoing, await nativeTransport(request, body));
+    await writeResult(
+      outgoing,
+      await nativeTransport(request, body as Parameters<typeof nativeTransport>[1])
+    );
   };
 };
 
@@ -1438,7 +1479,9 @@ class FetchRequestSource {
 }
 
 const normalizeMaxBodyBytes = (value?: number): number =>
-  Number.isFinite(value) && value >= 0 ? Math.floor(value) : defaultMaxBodyBytes;
+  typeof value === 'number' && Number.isFinite(value) && value >= 0
+    ? Math.floor(value)
+    : defaultMaxBodyBytes;
 
 const parseJson = (text: string): JsonValue => JSON.parse(text) as JsonValue;
 
@@ -1792,7 +1835,9 @@ export const createFetch = (options: BunNativeOptions = {}) => {
       );
       if (result !== undefined) return transportResultToResponse(result);
     }
-    return transportResultToResponse(await nativeTransport(source, body));
+    return transportResultToResponse(
+      await nativeTransport(source, body as Parameters<typeof nativeTransport>[1])
+    );
   };
 };
 

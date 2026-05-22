@@ -69,10 +69,16 @@ describe('compiler', () => {
       ).resolves.not.toContain('_execute_response');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeTransport =');
+      ).resolves.toContain('export const nativeTransport:');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeResponseTransport =');
+      ).resolves.toContain('export type NativeBody');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('CompiledRpcTransportBodyResultHandler<NativeBody>');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export const nativeResponseTransport:');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeRuntime =');
@@ -101,7 +107,7 @@ describe('compiler', () => {
       ).resolves.toContain('compiledHasInvalidHeaderValue');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const transport =');
+      ).resolves.toContain('export const transport:');
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
@@ -282,6 +288,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, type GeneratedClientOptions, type RouteBatchResults, type RouteRequestUnion, type RouteResult } from './client.js';
+import { nativeTransport, type NativeBatchBody, type NativeBody, type NativeRouteRequest, type NativeStreamProtocolRequest, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 defaultClient.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -332,6 +339,23 @@ async function consumeStream() {
 }
 consumeStream();
 
+const source = {} as Parameters<typeof nativeTransport>[0];
+const nativeUnaryBody: NativeUnaryProtocolRequest = {
+  id: 'users.get',
+  input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+};
+const nativeStreamBody: NativeStreamProtocolRequest = {
+  id: 'users.watch',
+  input: { userId: '1' },
+};
+const nativeBody: NativeBody = nativeUnaryBody;
+const nativeRouteRequest: NativeRouteRequest<'users.get'> = nativeUnaryBody;
+const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
+nativeTransport(source, nativeBody);
+nativeTransport(source, nativeStreamBody);
+nativeTransport(source, nativeBatchBody);
+nativeRouteRequest.id.toUpperCase();
+
 // @ts-expect-error generated clients reject unknown route leaves.
 client.users.missing({ id: '1' });
 
@@ -343,6 +367,16 @@ client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });
 
 // @ts-expect-error stream routes do not expose unary request methods.
 client.users.watch.request({ userId: '1' });
+
+// @ts-expect-error generated native transports reject unknown route ids.
+nativeTransport(source, { id: 'users.missing', input: {} });
+
+// @ts-expect-error generated native transports validate input by route id.
+nativeTransport(source, { id: 'users.get', input: { ok: true } });
+
+// @ts-expect-error streaming native route requests cannot be batched.
+const invalidNativeBatch: NativeBatchBody = [nativeStreamBody];
+invalidNativeBatch;
 `
       );
       const tsconfigFile = join(outDir, 'tsconfig.generated-client.json');
@@ -375,7 +409,16 @@ client.users.watch.request({ userId: '1' });
                 'joor/runtime/*': ['./src/runtime/*.ts'],
               },
             },
-            include: [usageFile, join(outDir, 'client.ts')],
+            include: [
+              usageFile,
+              join(outDir, 'client.ts'),
+              join(outDir, 'dispatcher.safe.ts'),
+              join(outDir, 'dispatcher.streaming.ts'),
+              join(outDir, 'node.ts'),
+              join(outDir, 'bun.ts'),
+              join(outDir, 'deno.ts'),
+              join(outDir, 'deno-dispatcher.safe.ts'),
+            ],
           },
           null,
           2
