@@ -38,6 +38,24 @@ export type DenoTransportBodyResultHandler = (
   body: JsonValue
 ) => Promise<DenoTransportBodyResult>;
 
+const matchesPath = (url: string, path: string): boolean => {
+  const protocolIndex = url.indexOf('://');
+  const pathStart =
+    protocolIndex === -1 ? 0 : url.indexOf('/', protocolIndex + 3);
+  if (pathStart === -1) return path === '/';
+  if (!url.startsWith(path, pathStart)) return false;
+  const next = url[pathStart + path.length];
+  return next === undefined || next === '?' || next === '#';
+};
+
+const isJsonContentType = (value: string): boolean => {
+  if (value === 'application/json') return true;
+  const semicolonIndex = value.indexOf(';');
+  const type = semicolonIndex === -1 ? value : value.slice(0, semicolonIndex);
+  const normalized = type.trim().toLowerCase();
+  return normalized === 'application/json' || normalized.endsWith('+json');
+};
+
 const bodyReadFailure = (request: Request, error: object): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
   const status = payloadTooLarge ? 413 : 400;
@@ -55,6 +73,36 @@ const bodyReadFailure = (request: Request, error: object): Response => {
     status,
     headers: jsonContentHeaders,
   });
+};
+
+const requestPathPreflight = (
+  request: Request,
+  path: string
+): Response | undefined => {
+  if (!matchesPath(request.url, path)) {
+    return new Response(null, { status: 404 });
+  }
+  if (request.method !== 'POST') {
+    return new Response(null, { status: 405, headers: { allow: 'POST' } });
+  }
+  const contentType = request.headers.get('content-type') ?? '';
+  if (!isJsonContentType(contentType)) {
+    const headerTrace = request.headers.get('x-request-id');
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        id: '',
+        traceId: headerTrace ?? 'trace-body-error',
+        error: {
+          code: 'UNSUPPORTED_MEDIA_TYPE',
+          message: 'Content-Type must be application/json',
+          status: 415,
+        },
+      }),
+      { status: 415, headers: jsonContentHeaders }
+    );
+  }
+  return undefined;
 };
 
 export const createDenoFetch = <TManifest extends JoorManifest>(
@@ -77,6 +125,27 @@ export const createDenoTransportRequestHandler = (
     const source = createFetchRequestSource(request);
     const early = requestPreflight?.(source);
     if (early !== undefined) return early;
+    let body: JsonValue;
+    try {
+      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
+    } catch (error) {
+      if (!(error instanceof Error)) throw error;
+      return bodyReadFailure(request, error);
+    }
+    return transportResultToResponse(await handler(source, body));
+  };
+};
+
+export const createDenoTransportRequestHandlerWithPath = (
+  handler: DenoTransportBodyResultHandler,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): ((request: Request) => Promise<Response>) => {
+  const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  return async (request: Request): Promise<Response> => {
+    const early = requestPathPreflight(request, path);
+    if (early !== undefined) return early;
+    const source = createFetchRequestSource(request);
     let body: JsonValue;
     try {
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
