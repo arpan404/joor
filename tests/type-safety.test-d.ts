@@ -60,6 +60,8 @@ import {
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
+  type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
   type DenoServeOptionsFor,
   type DenoServer,
   type DenoServeOptions,
@@ -320,7 +322,11 @@ import {
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
   type DenoTransportBodyResultHandlerFor as StandaloneDenoTransportBodyResultHandlerFor,
 } from '../src/runtime/deno-transport.js';
-import { createDenoCompiledTransportRequestHandlerWithPath } from '../src/runtime/deno-compiled-transport.js';
+import {
+  createDenoCompiledTransportRequestHandlerWithPath,
+  type DenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledTransportRequestHandler,
+} from '../src/runtime/deno-compiled-transport.js';
 import {
   createCompiledRpcHandler,
   createCompiledRpcTransportBodyResultHandler,
@@ -2791,7 +2797,24 @@ const standaloneDenoCompiledHandler =
     compiledUnaryDispatch,
     '/rpc'
   );
+const typedStandaloneDenoCompiledHandler: DenoCompiledTransportRequestHandler =
+  standaloneDenoCompiledHandler;
+const rootTypedStandaloneDenoCompiledHandler: RootDenoCompiledTransportRequestHandler =
+  typedStandaloneDenoCompiledHandler;
+const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestStandaloneDenoTransportHandler;
+const rootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoCompiledTransportHandler;
+createDenoCompiledTransportRequestHandlerWithPath(
+  typedCompiledRuntimeState,
+  rootManifestDenoCompiledTransportHandler,
+  _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
 standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
+rootTypedStandaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
   manifest,
   handlerOptions

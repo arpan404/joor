@@ -2,6 +2,7 @@ import {
   createFetchRequestSource,
   type ContextRequestSource,
 } from '../context/context.js';
+import type { JoorManifest } from '../manifest.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
@@ -18,7 +19,16 @@ import { jsonContentHeaders, transportResultToResponse } from './response.js';
 import type {
   DenoTransportBodyResult,
   DenoTransportBodyResultHandler,
+  DenoTransportBodyResultHandlerFor,
 } from './deno-transport.js';
+
+export type DenoCompiledTransportRequestHandler = (
+  request: Request
+) => Promise<Response>;
+
+export type DenoCompiledTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoTransportBodyResultHandlerFor<TManifest>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
@@ -98,7 +108,7 @@ export const createDenoCompiledTransportRequestHandlerWithPath = <
   unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
-): ((request: Request) => Promise<Response>) => {
+): DenoCompiledTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   return async (request: Request): Promise<Response> => {
     const early = requestPathPreflight(request, path);

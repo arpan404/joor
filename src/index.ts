@@ -256,6 +256,10 @@ export type {
   CompiledUnaryDispatch,
 } from './runtime/compiled.js';
 export type {
+  DenoCompiledTransportBodyResultHandlerFor,
+  DenoCompiledTransportRequestHandler,
+} from './runtime/deno-compiled-transport.js';
+export type {
   DenoServer,
   DenoServeOptionsFor,
   DenoServeOptions,
