@@ -30,8 +30,10 @@ export type {
   RpcRouteRequestUnion,
   RpcRouteResponseHeaders,
   RpcRouteStreamEvent,
+  RpcStreamProcedure,
   RpcStreamRouteId,
   RpcTransportClient,
+  RpcUnaryProcedure,
   RpcUnaryRouteId,
 } from './rpc/client.js';
 export type {

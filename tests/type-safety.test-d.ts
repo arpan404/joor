@@ -14,7 +14,9 @@ import {
   type RpcRouteRequest,
   type RpcRouteRequestUnion,
   type RpcRouteResponseHeaders,
+  type RpcStreamProcedure,
   type RpcStreamRouteId,
+  type RpcUnaryProcedure,
   type RpcUnaryRouteId,
   type JsonValue,
 } from '../src/index.js';
@@ -125,6 +127,22 @@ client.call<typeof procedure>(
 );
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
+
+const legacyUnaryProcedure: RpcUnaryProcedure<typeof procedure> = procedure;
+legacyUnaryProcedure.output;
+const legacyStreamProcedure: RpcStreamProcedure<typeof streamProcedure> =
+  streamProcedure;
+legacyStreamProcedure.stream;
+client.stream<typeof streamProcedure>('users.watch', { userId: '1' });
+
+// @ts-expect-error legacy call rejects stream procedures.
+client.call<typeof streamProcedure>('users.watch', { userId: '1' });
+
+// @ts-expect-error legacy request rejects stream procedures.
+client.request<typeof streamProcedure>('users.watch', { userId: '1' });
+
+// @ts-expect-error legacy stream rejects unary procedures.
+client.stream<typeof procedure>('users.get', { id: '1' });
 
 type Routes = {
   'users.get': typeof procedure;

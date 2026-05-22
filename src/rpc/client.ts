@@ -73,6 +73,18 @@ export type RpcRouteStreamEvent<
   TId extends RpcRouteId<TRoutes>,
 > = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcUnaryProcedure<TProcedure> = [
+  StreamEvent<TProcedure>,
+] extends [never]
+  ? TProcedure
+  : never;
+
+export type RpcStreamProcedure<TProcedure> = [
+  StreamEvent<TProcedure>,
+] extends [never]
+  ? never
+  : TProcedure;
+
 export type RpcUnaryRouteId<TRoutes extends RpcRouteMap> = {
   [TId in RpcRouteId<TRoutes>]: [RpcRouteStreamEvent<TRoutes, TId>] extends [
     never,
@@ -162,29 +174,29 @@ export type BatchResults<TRequests extends readonly unknown[]> = {
 export interface LegacyRpcTransportClient {
   call<TProcedure>(
     id: string,
-    input: ProcedureInput<TProcedure>,
-    ...options: ClientRequestOptionsTuple<TProcedure>
+    input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
+    ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
   ): Promise<
     RpcEnvelope<
-      ProcedureOutput<TProcedure> & JsonValue,
+      ProcedureOutput<RpcUnaryProcedure<TProcedure>> & JsonValue,
       string,
-      ProcedureResponseHeaders<TProcedure> & JsonObject,
-      RpcProcedureError<TProcedure>
+      ProcedureResponseHeaders<RpcUnaryProcedure<TProcedure>> & JsonObject,
+      RpcProcedureError<RpcUnaryProcedure<TProcedure>>
     >
   >;
   request<TProcedure>(
     id: string,
-    input: ProcedureInput<TProcedure>,
-    ...options: ClientRequestOptionsTuple<TProcedure>
-  ): PendingRpcRequest<TProcedure, string>;
+    input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
+    ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
+  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, string>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
   ): Promise<BatchResults<TRequests>>;
   stream<TProcedure>(
     id: string,
-    input: ProcedureInput<TProcedure>,
-    ...options: ClientRequestOptionsTuple<TProcedure>
-  ): AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
+    input: ProcedureInput<RpcStreamProcedure<TProcedure>>,
+    ...options: ClientRequestOptionsTuple<RpcStreamProcedure<TProcedure>>
+  ): AsyncIterable<StreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue>;
 }
 
 export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
