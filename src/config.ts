@@ -18,8 +18,9 @@ export type JoorConfigContext<TConfig> = TConfig extends {
     : Record<string, never>
   : Record<string, never>;
 
-export const defineConfig = <
-  const TConfig extends JoorConfig<readonly JoorPlugin<object>[]>,
->(
-  config: TConfig
-): TConfig => config;
+export function defineConfig<
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(config: JoorConfig<TPlugins>): JoorConfig<TPlugins>;
+export function defineConfig(config: JoorConfig): JoorConfig {
+  return config;
+}

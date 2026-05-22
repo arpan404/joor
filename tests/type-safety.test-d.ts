@@ -279,6 +279,39 @@ const rootPluginServices: RootPluginServices = {
   },
 };
 rootPluginServices.users.findById('1').name.toUpperCase();
+const configWithServiceAwareHooks = defineConfig({
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(_request, context) {
+      context.services.users.findById('1').name.toUpperCase();
+      return undefined;
+    },
+  },
+  middleware: [
+    {
+      name: 'config-audit',
+      afterResponse(response, _request, context) {
+        context.services.users.findById('1').name.toUpperCase();
+        return response;
+      },
+    },
+  ],
+});
+type ConfigWithHookServices = JoorConfigContext<
+  typeof configWithServiceAwareHooks
+>;
+const configWithHookServices: ConfigWithHookServices = rootPluginServices;
+configWithHookServices.users.findById('1').name.toUpperCase();
+const _configWithoutHookPlugins = defineConfig({
+  hooks: {
+    beforeRequest(_request, context) {
+      // @ts-expect-error config hooks without plugins do not expose plugin services.
+      context.services.users;
+      return undefined;
+    },
+  },
+});
+_configWithoutHookPlugins;
 resolvePluginServices([usersPlugin] as const).then((services) => {
   services.users.findById('1').name.toUpperCase();
 });
@@ -649,6 +682,12 @@ resolveContextSubpathPluginServices([contextSubpathPlugin] as const).then(
 );
 const contextSubpathConfig = defineContextSubpathConfig({
   plugins: [contextSubpathPlugin] as const,
+  hooks: {
+    beforeRequest(_request, context) {
+      context.services.audit.record('config');
+      return undefined;
+    },
+  },
 });
 type ContextSubpathConfigServices = ContextSubpathConfigContext<
   typeof contextSubpathConfig
