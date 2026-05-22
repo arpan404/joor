@@ -105,6 +105,7 @@ export type {
 } from './manifest.js';
 export type {
   BatchResults,
+  ClientFetch,
   ClientOptions,
   ClientHeaderValues,
   ClientRequestOptions,

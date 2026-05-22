@@ -56,6 +56,7 @@ import {
   type BunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor,
   type BunTransportRequestHandler,
+  type ClientFetch,
   type ClientHeaderValues,
   type CloudflareFetchHandler,
   type CloudflareWorker,
@@ -266,6 +267,7 @@ import {
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
+  type ClientFetch as RpcSubpathClientFetch,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
@@ -1543,8 +1545,13 @@ const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
   typeof manifest
 > = rootManifestClient;
 rpcSubpathManifestClientShape.call('users.authenticated', { ok: true });
+const clientFetch: ClientFetch = async (request) => new Response(request.url);
+const rpcSubpathClientFetch: RpcSubpathClientFetch = clientFetch;
+clientFetch(new Request('https://example.com/rpc'));
+rpcSubpathClientFetch(new Request('https://example.com/rpc'));
 const manifestClientOptions: RpcManifestClientOptions<typeof manifest> = {
   url: '/rpc',
+  fetch: clientFetch,
   headers: { authorization: 'Bearer token' },
 };
 createRootManifestClient(manifest, manifestClientOptions);

@@ -27,11 +27,13 @@ export interface ClientOptions<
   TManifest extends JoorManifest | undefined = undefined,
 > {
   url: string;
-  fetch?: (request: Request) => Promise<Response>;
+  fetch?: ClientFetch;
   headers?: Record<string, string>;
   manifest?: TManifest;
   maxStreamEventBytes?: number;
 }
+
+export type ClientFetch = (request: Request) => Promise<Response>;
 
 export type ClientHeaderValues = Record<string, string | undefined>;
 
