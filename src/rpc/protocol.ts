@@ -34,7 +34,7 @@ export interface RpcRequest<
   TInput extends JsonValue = JsonValue,
 > extends JsonObject {
   id: TId;
-  input?: TInput;
+  input: TInput;
   traceId?: string;
 }
 

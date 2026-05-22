@@ -2379,6 +2379,10 @@ const protocolRequest: RpcRequest<'users.get', { id: string }> = {
   traceId: 'trace-1',
 };
 protocolRequest.input?.id.toUpperCase();
+// @ts-expect-error protocol requests require an input payload.
+const _missingProtocolRequestInput: RpcRequest<'users.get', { id: string }> = {
+  id: 'users.get',
+};
 const protocolBatch: RpcBatchRequest<[typeof protocolRequest]> = [
   protocolRequest,
 ];
