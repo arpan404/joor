@@ -97,6 +97,17 @@ describe('compiler', () => {
       ).resolves.toContain('export type NativeTransportHandler');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeBodyHandler');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain(
+        'CompiledRpcTransportBodyResultHandlerFor<NativeManifest>'
+      );
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('CompiledRpcBodyResultHandlerFor<NativeManifest>');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeResponseTransport =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -383,7 +394,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
-import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 
 const defaultClient = createClient();
 const generatedClient: GeneratedClient = defaultClient;
@@ -584,7 +595,9 @@ async function consumeStream() {
 }
 consumeStream();
 
-const source = {} as Parameters<typeof nativeTransport>[0];
+const source = {} as NativeTransportRequest;
+const nativeTransportHandler: NativeTransportHandler = nativeTransport;
+const nativeBodyHandler = nativeTransport as unknown as NativeBodyHandler;
 const nativeUnaryBody: NativeRouteRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
@@ -609,6 +622,8 @@ const nativeReadonlyBatchBody: NativeBatchBody = [nativeUnaryBody] as const;
 const nativeExactBatchBody = [nativeUnaryBody] as const;
 nativeUnaryRequestUnion.id.toUpperCase();
 nativeTransport(source, nativeBody);
+nativeTransportHandler(source, nativeBody);
+nativeBodyHandler(new Request('https://example.com/rpc'), nativeUnaryBody);
 nativeTransport(source, nativeStreamBody);
 nativeTransport(source, nativeUnaryBody).then((result) => {
   const exact: NativeTransportResultFor<typeof nativeUnaryBody> = result;
@@ -623,6 +638,12 @@ nativeTransport(source, nativeExactBatchBody).then((result) => {
   if (!(exact instanceof Response) && !('body' in exact)) {
     const firstId: 'users.get' = exact[0].id;
     firstId.toUpperCase();
+  }
+});
+nativeTransportHandler(source, nativeUnaryBody).then((result) => {
+  const exact: NativeTransportResultFor<typeof nativeUnaryBody> = result;
+  if (!(exact instanceof Response) && !('body' in exact) && exact.ok) {
+    exact.data.name.toUpperCase();
   }
 });
 if (!(nativeTransportResult instanceof Response) && !isNativeResultArray(nativeTransportResult) && !('body' in nativeTransportResult) && nativeTransportResult.ok) {

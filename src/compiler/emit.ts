@@ -135,7 +135,9 @@ const emitProfileDispatcher = async (
     'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
+    'type CompiledRpcBodyResultHandlerFor',
     'type CompiledRpcTransportBodyResultHandler',
+    'type CompiledRpcTransportBodyResultHandlerFor',
   ];
   const manifestTypeImports = [
     'JoorManifestRouteBody',
@@ -227,10 +229,9 @@ export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBod
 export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   NativeBodyResultFor<TBody> | CompiledSerializedEnvelope;
-export type NativeTransportHandler = <const TBody extends NativeBody>(
-  request: Parameters<CompiledRpcTransportBodyResultHandler<NativeBody>>[0],
-  body: TBody
-) => Promise<NativeTransportResultFor<TBody>>;`;
+export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
+export type NativeTransportRequest = Parameters<CompiledRpcTransportBodyResultHandler<NativeBody>>[0];`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
