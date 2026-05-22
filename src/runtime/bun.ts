@@ -2,11 +2,11 @@ import {
   createFetchRequestSource,
   type ContextRequestSource,
 } from '../context/context.js';
+import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
   RpcRequestPreflight,
   RpcBodyResult,
-  RpcManifest,
 } from '../rpc/dispatcher.js';
 import {
   createRpcBodyResultHandler,
@@ -56,8 +56,8 @@ const bodyReadFailure = (request: Request, error: object): Response => {
   });
 };
 
-export const createBunFetch = (
-  manifest: RpcManifest,
+export const createBunFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
@@ -87,8 +87,8 @@ export const createBunTransportRequestHandler = (
   };
 };
 
-export const createBunRpcRequestHandler = (
-  manifest: RpcManifest,
+export const createBunRpcRequestHandler = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) => {
   const handler = createRpcBodyResultHandler(manifest, options, false);
@@ -99,8 +99,8 @@ export const createBunRpcRequestHandler = (
   );
 };
 
-export const serveBun = (
-  manifest: RpcManifest,
+export const serveBun = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options: BunServeOptions = {}
 ): void => {
   const fetch = createBunRpcRequestHandler(manifest, options);

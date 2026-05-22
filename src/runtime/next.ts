@@ -1,4 +1,5 @@
-import type { HandlerOptions, RpcManifest } from '../rpc/dispatcher.js';
+import type { JoorManifest } from '../manifest.js';
+import type { HandlerOptions } from '../rpc/dispatcher.js';
 import { createJoorHandler } from './fetch.js';
 
 export interface NextRouteHandlers {
@@ -7,8 +8,8 @@ export interface NextRouteHandlers {
   OPTIONS(request: Request): Promise<Response>;
 }
 
-export const createNextRouteHandlers = (
-  manifest: RpcManifest,
+export const createNextRouteHandlers = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): NextRouteHandlers => {
   const fetch = createJoorHandler(manifest, options);

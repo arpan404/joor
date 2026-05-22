@@ -1,10 +1,10 @@
 import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { ContextRequestSource } from '../context/context.js';
+import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
   RpcBodyResult,
-  RpcManifest,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import {
@@ -256,8 +256,8 @@ export const createNodeTransportRequestHandler = (
   };
 };
 
-export const listen = (
-  manifest: RpcManifest,
+export const listen = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options: ListenOptions = {}
 ): void => {
   const port = options.port ?? 3000;
@@ -267,8 +267,8 @@ export const listen = (
   server.listen(port, hostname);
 };
 
-export const createNodeRpcRequestHandler = (
-  manifest: RpcManifest,
+export const createNodeRpcRequestHandler = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options: HandlerOptions = {},
   hostname = '0.0.0.0'
 ): NodeRpcRequestHandler => {

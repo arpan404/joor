@@ -398,6 +398,10 @@ publicManifest.procedures['users.get'];
 const handlerOptions: HandlerOptions = { path: '/rpc' };
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
 fetchHandler(new Request('https://example.com/rpc'));
+
+// @ts-expect-error runtime adapters only accept typed procedure manifests.
+createJoorHandler({ procedures: { broken: { input: t.string() } } });
+
 const bunFetch = createBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
 const denoFetch = createDenoFetch(manifest, handlerOptions);

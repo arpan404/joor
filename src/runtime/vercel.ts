@@ -1,8 +1,9 @@
-import type { HandlerOptions, RpcManifest } from '../rpc/dispatcher.js';
+import type { JoorManifest } from '../manifest.js';
+import type { HandlerOptions } from '../rpc/dispatcher.js';
 import { createJoorHandler } from './fetch.js';
 
-export const createVercelFetch = (
-  manifest: RpcManifest,
+export const createVercelFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
   options?: HandlerOptions
 ): ((request: Request) => Promise<Response>) =>
   createJoorHandler(manifest, options);
