@@ -42,24 +42,45 @@ export type RpcBatchRequest<
   TRequests extends readonly RpcRequest[] = readonly RpcRequest[],
 > = TRequests;
 
-type RequiredHeaderKeys<THeaders extends object> = {
-  [TKey in keyof THeaders]-?: undefined extends THeaders[TKey] ? never : TKey;
+export type RpcResponseHeaderValues = Record<string, string>;
+
+type KnownHeaderKeys<THeaders extends object> = {
+  [TKey in keyof THeaders]: string extends TKey
+    ? never
+    : number extends TKey
+      ? never
+      : symbol extends TKey
+        ? never
+        : TKey;
 }[keyof THeaders];
 
-type RpcSuccessHeaders<THeaders extends JsonObject> = [THeaders] extends [
+type RequiredKnownHeaderKeys<THeaders extends object> = {
+  [TKey in KnownHeaderKeys<THeaders>]-?: undefined extends THeaders[TKey]
+    ? never
+    : TKey;
+}[KnownHeaderKeys<THeaders>];
+
+type StringResponseHeaders<THeaders extends object> = {
+  [TKey in KnownHeaderKeys<THeaders>]: Exclude<
+    THeaders[TKey],
+    undefined
+  > extends string
+    ? THeaders[TKey]
+    : never;
+};
+
+type RpcSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,
 ]
-  ? { headers?: THeaders }
-  : JsonObject extends THeaders
-    ? { headers?: THeaders }
-    : [RequiredHeaderKeys<THeaders>] extends [never]
-      ? { headers?: THeaders }
-      : { headers: THeaders };
+  ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
+  : [RequiredKnownHeaderKeys<THeaders>] extends [never]
+    ? { headers?: StringResponseHeaders<THeaders> & JsonObject }
+    : { headers: StringResponseHeaders<THeaders> & JsonObject };
 
 export type RpcSuccess<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-  THeaders extends JsonObject = JsonObject,
+  THeaders extends object = RpcResponseHeaderValues,
 > = JsonObject & {
   ok: true;
   id: TId;
@@ -80,14 +101,14 @@ export interface RpcFailure<
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-  THeaders extends JsonObject = JsonObject,
+  THeaders extends object = RpcResponseHeaderValues,
   TError extends RpcError = RpcError,
 > = RpcSuccess<TData, TId, THeaders> | RpcFailure<TId, TError>;
 
 export type RpcResponse<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
-  THeaders extends JsonObject = JsonObject,
+  THeaders extends object = RpcResponseHeaderValues,
   TError extends RpcError = RpcError,
 > =
   | RpcEnvelope<TData, TId, THeaders, TError>

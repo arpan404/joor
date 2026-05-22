@@ -142,7 +142,7 @@ export type RpcManifestRouteEnvelope<
 > = RpcEnvelope<
   ProcedureOutput<RpcManifestRoutes<TManifest>[TId]> & JsonValue,
   TId,
-  ProcedureResponseHeaders<RpcManifestRoutes<TManifest>[TId]> & JsonObject,
+  ProcedureResponseHeaders<RpcManifestRoutes<TManifest>[TId]>,
   RpcManifestProcedureError<RpcManifestRoutes<TManifest>[TId]>
 >;
 

@@ -154,6 +154,7 @@ import {
   type RpcProtocolError,
   type RpcRequest,
   type RpcResponse,
+  type RpcResponseHeaderValues,
   type RpcRouteError,
   type RpcRouteErrorCode,
   type RpcRouteErrorDetails,
@@ -2463,6 +2464,25 @@ const protocolSuccess: RpcSuccess<
   data: { id: '1' },
   headers: { 'cache-control': 'private' },
 };
+const rpcResponseHeaderValues: RpcResponseHeaderValues = {
+  'cache-control': 'private',
+};
+rpcResponseHeaderValues['cache-control']?.toUpperCase();
+const _wrongProtocolSuccessHeaders: RpcSuccess<
+  { id: string },
+  'users.get',
+  { 'x-retry-count': number }
+> = {
+  ok: true,
+  id: 'users.get',
+  traceId: 'trace-1',
+  data: { id: '1' },
+  headers: {
+    // @ts-expect-error protocol success headers must be HTTP string values.
+    'x-retry-count': 1,
+  },
+};
+_wrongProtocolSuccessHeaders.data.id.toUpperCase();
 const protocolFailure: RpcFailure<'users.get', typeof protocolError> = {
   ok: false,
   id: 'users.get',

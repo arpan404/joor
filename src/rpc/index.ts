@@ -102,6 +102,7 @@ export type {
   RpcFrameworkErrorCode,
   RpcRequest,
   RpcResponse,
+  RpcResponseHeaderValues,
   RpcSuccess,
 } from './protocol.js';
 export type { StreamEvent } from './stream.js';

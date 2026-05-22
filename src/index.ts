@@ -186,6 +186,7 @@ export type {
   RpcFrameworkErrorCode,
   RpcRequest,
   RpcResponse,
+  RpcResponseHeaderValues,
   RpcSuccess,
 } from './rpc/protocol.js';
 export type {

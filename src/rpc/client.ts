@@ -74,7 +74,7 @@ export type RpcRouteRequiresHeaders<
 export type RpcRouteResponseHeaders<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
-> = ProcedureResponseHeaders<RpcRouteProcedure<TRoutes, TId>> & JsonObject;
+> = ProcedureResponseHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteHasResponseHeaders<
   TRoutes extends RpcRouteMap,
@@ -300,7 +300,7 @@ type BatchResultData<TProcedure> = [TProcedure] extends [never]
 
 type BatchResultHeaders<TProcedure> = [TProcedure] extends [never]
   ? JsonObject
-  : ProcedureResponseHeaders<TProcedure> & JsonObject;
+  : ProcedureResponseHeaders<TProcedure>;
 
 type BatchResultError<TProcedure> = [TProcedure] extends [never]
   ? RpcError
@@ -331,7 +331,7 @@ export interface LegacyRpcTransportClient {
     RpcEnvelope<
       ProcedureOutput<RpcUnaryProcedure<TProcedure>> & JsonValue,
       TId,
-      ProcedureResponseHeaders<RpcUnaryProcedure<TProcedure>> & JsonObject,
+      ProcedureResponseHeaders<RpcUnaryProcedure<TProcedure>>,
       RpcProcedureError<RpcUnaryProcedure<TProcedure>>
     >
   >;
@@ -463,7 +463,7 @@ export function createClient(
     RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
       TId,
-      ProcedureResponseHeaders<TProcedure> & JsonObject,
+      ProcedureResponseHeaders<TProcedure>,
       RpcProcedureError<TProcedure>
     >
   > => {
@@ -478,7 +478,7 @@ export function createClient(
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
       TId,
-      ProcedureResponseHeaders<TProcedure> & JsonObject,
+      ProcedureResponseHeaders<TProcedure>,
       RpcProcedureError<TProcedure>
     >;
   };
