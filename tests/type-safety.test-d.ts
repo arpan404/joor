@@ -53,6 +53,7 @@ import {
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRuntimeState as RootCompiledRuntimeState,
+  type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type DenoServeOptionsFor,
   type DenoServeOptions,
   type DenoTransportBodyResult,
@@ -295,6 +296,7 @@ import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRuntimeState,
+  CompiledSerializedEnvelope,
 } from '../src/runtime/compiled.js';
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
@@ -2228,6 +2230,23 @@ createStandaloneDenoTransportRequestHandlerWithPath(
   routeTypedStandaloneDenoTransportHandler,
   '/rpc'
 );
+const compiledSerializedEnvelope: CompiledSerializedEnvelope = {
+  body: '{"ok":true}',
+  headers: { 'cache-control': 'private' },
+  responseHeaders: { 'cache-control': 'private' },
+};
+compiledSerializedEnvelope.headers?.['cache-control']?.toUpperCase();
+const rootCompiledSerializedEnvelope: RootCompiledSerializedEnvelope =
+  compiledSerializedEnvelope;
+rootCompiledSerializedEnvelope.body.toUpperCase();
+const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
+  body: '{"ok":true}',
+  headers: {
+    // @ts-expect-error compiled serialized envelope headers must be HTTP string values.
+    'x-retry-count': 1,
+  },
+};
+_wrongCompiledSerializedEnvelopeHeaders.body.toUpperCase();
 const compiledRuntimeState: CompiledRuntimeState = {
   path: '/rpc',
   runtime: {

@@ -3,7 +3,7 @@ import type { JsonObject } from '../schema/json.js';
 
 export interface SerializedJsonEnvelope {
   body: string;
-  headers?: JsonObject;
+  headers?: Record<string, string>;
   responseHeaders?: Record<string, string>;
 }
 

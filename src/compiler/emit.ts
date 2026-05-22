@@ -936,7 +936,7 @@ interface JsonObject {
 
 interface SerializedJsonEnvelope {
   body: string;
-  headers?: JsonObject;
+  headers?: Record<string, string>;
   responseHeaders?: Record<string, string>;
 }
 
@@ -1489,7 +1489,7 @@ interface JsonObject {
 
 interface SerializedJsonEnvelope {
   body: string;
-  headers?: JsonObject;
+  headers?: Record<string, string>;
   responseHeaders?: Record<string, string>;
 }
 
