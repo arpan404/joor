@@ -163,6 +163,7 @@ import {
   type ProcedureSuccess,
   type RpcEnvelope,
   type RpcBatchRequest,
+  type RpcBodyHandler,
   type RpcBodyResult,
   type RpcFailure,
   type RpcFrameworkErrorCode,
@@ -187,6 +188,7 @@ import {
   type RpcManifestUnaryRouteId,
   type RpcProtocolEnvelope,
   type RpcProtocolError,
+  type RpcRequestHandler,
   type RpcRequest,
   type RpcResponse,
   type RpcResponseHeaderValues,
@@ -263,7 +265,9 @@ import {
   type ProcedureFile as CompilerSubpathProcedureFile,
 } from '../src/compiler/index.js';
 import {
+  createRpcBodyHandler as createRpcSubpathBodyHandler,
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
+  createRpcHandler as createRpcSubpathHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
@@ -276,6 +280,8 @@ import {
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcBodyHandler as RpcSubpathBodyHandler,
+  type RpcRequestHandler as RpcSubpathRequestHandler,
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
   type RpcRouteClientArgs as RpcSubpathRouteClientArgs,
@@ -2377,16 +2383,33 @@ defineHandlerOptions(manifest)({
 const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);
+const typedRpcHandler: RpcRequestHandler = rpcHandler;
+const rpcSubpathHandler = createRpcSubpathHandler(manifest, handlerOptions);
+const typedRpcSubpathHandler: RpcSubpathRequestHandler = rpcSubpathHandler;
 rpcHandler(new Request('https://example.com/rpc'));
+typedRpcHandler(new Request('https://example.com/rpc'));
+typedRpcSubpathHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching handler plugins.
 createRpcHandler(manifest);
 const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
+const typedRpcBodyHandler: RpcBodyHandler<typeof manifest> = rpcBodyHandler;
+const rpcSubpathBodyHandler = createRpcSubpathBodyHandler(
+  manifest,
+  handlerOptions
+);
+const typedRpcSubpathBodyHandler: RpcSubpathBodyHandler<typeof manifest> =
+  rpcSubpathBodyHandler;
 // @ts-expect-error service-dependent manifests require matching body handler plugins.
 createRpcBodyHandler(manifest);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
   id: 'users.get',
   input: { id: '1' },
 });
+typedRpcBodyHandler(new Request('https://example.com/rpc'), manifestRouteBody);
+typedRpcSubpathBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteBody
+);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
   // @ts-expect-error low-level typed body handlers reject unknown route ids.
   id: 'users.missing',

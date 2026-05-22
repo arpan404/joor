@@ -170,6 +170,7 @@ export type {
   JoorMiddleware,
   JoorMiddlewareFor,
   RpcBodyResult,
+  RpcBodyHandler,
   RpcBodyResultHandler,
   RpcManifestBody,
   RpcManifestBodyResultFor,
@@ -193,6 +194,7 @@ export type {
   RpcManifestRouteUnaryProtocolRequestUnion,
   RpcManifestStreamRouteId,
   RpcManifestUnaryRouteId,
+  RpcRequestHandler,
   RpcRequestPreflight,
   RpcTransportBodyResultHandler,
 } from './rpc/dispatcher.js';

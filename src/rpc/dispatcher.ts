@@ -300,6 +300,15 @@ export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
   body: TBody
 ) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
+export type RpcRequestHandler = (request: Request) => Promise<Response>;
+
+export type RpcBodyHandler<TManifest extends RpcManifest> = <
+  const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: Request,
+  body: TBody
+) => Promise<Response>;
+
 export type RpcTransportBodyResultHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
@@ -1176,11 +1185,11 @@ export function createRpcHandler<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): (request: Request) => Promise<Response>;
+): RpcRequestHandler;
 export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {}
-): (request: Request) => Promise<Response> {
+): RpcRequestHandler {
   const handleParsed = createRpcBodyHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,
@@ -1227,12 +1236,12 @@ export function createRpcBodyHandler<
 >(
   manifest: TManifest,
   ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
-): (request: Request, body: RpcManifestBody<TManifest>) => Promise<Response>;
+): RpcBodyHandler<TManifest>;
 export function createRpcBodyHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
   preflight = true
-): (request: Request, body: RpcManifestBody<TManifest>) => Promise<Response> {
+): RpcBodyHandler<TManifest> {
   const handleResult = createRpcBodyResultHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,

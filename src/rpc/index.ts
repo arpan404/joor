@@ -76,6 +76,7 @@ export type {
   JoorMiddleware,
   JoorMiddlewareFor,
   RpcBodyResult,
+  RpcBodyHandler,
   RpcBodyResultHandler,
   RpcManifest,
   RpcManifestBody,
@@ -99,6 +100,7 @@ export type {
   RpcManifestRoutes,
   RpcManifestStreamRouteId,
   RpcManifestUnaryRouteId,
+  RpcRequestHandler,
   RpcRequestPreflight,
   RpcTransportBodyResultHandler,
 } from './dispatcher.js';
