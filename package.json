@@ -88,6 +88,10 @@
       "types": "./dist/runtime/next.d.ts",
       "import": "./dist/runtime/next.js"
     },
+    "./compiler": {
+      "types": "./dist/compiler/index.d.ts",
+      "import": "./dist/compiler/index.js"
+    },
     "./runtime/netlify": {
       "types": "./dist/runtime/netlify.d.ts",
       "import": "./dist/runtime/netlify.js"

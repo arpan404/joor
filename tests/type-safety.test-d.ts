@@ -126,6 +126,16 @@ import {
   type PluginServices as ContextSubpathPluginServices,
 } from '../src/context/index.js';
 import {
+  build as buildCompilerSubpath,
+  createAiDocs as createCompilerSubpathAiDocs,
+  createOpenApiDocument as createCompilerSubpathOpenApiDocument,
+  type BuildOptions as CompilerSubpathBuildOptions,
+  type CompilerManifest as CompilerSubpathManifest,
+  type CompiledProcedureGenerationOptions as CompilerSubpathCompiledProcedureGenerationOptions,
+  type CompiledProcedureMode as CompilerSubpathCompiledProcedureMode,
+  type ProcedureFile as CompilerSubpathProcedureFile,
+} from '../src/compiler/index.js';
+import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   type RpcManifestBody as RpcSubpathManifestBody,
@@ -535,6 +545,49 @@ manifestSubpathRouteInput.id.toUpperCase();
 const _manifestSubpathRoutes: ManifestSubpathRoutes =
   manifestFromSubpath.procedures;
 _manifestSubpathRoutes['users.get'].input;
+const _compilerSubpathBuild: typeof buildCompilerSubpath = buildCompilerSubpath;
+_compilerSubpathBuild;
+const compilerSubpathBuildOptions: CompilerSubpathBuildOptions = {
+  cwd: '/tmp/joor-app',
+  entry: './rpc',
+  outDir: './.joor',
+};
+compilerSubpathBuildOptions.outDir?.toUpperCase();
+const compilerSubpathProcedureFile: CompilerSubpathProcedureFile = {
+  path: '/tmp/joor-app/rpc/users/get.rpc.ts',
+  id: 'users.get',
+};
+compilerSubpathProcedureFile.id.toUpperCase();
+const compilerSubpathGenerationOptions: CompilerSubpathCompiledProcedureGenerationOptions =
+  {
+    enforceRateLimit: true,
+    validateHeaders: true,
+    validateInput: true,
+    validateOutput: true,
+    validateResponseHeaders: true,
+    modes: ['body', 'serialized', 'response'],
+  };
+const compilerSubpathMode: CompilerSubpathCompiledProcedureMode =
+  compilerSubpathGenerationOptions.modes?.[0] ?? 'body';
+compilerSubpathMode.toUpperCase();
+const compilerSubpathManifest: CompilerSubpathManifest = {
+  procedures: [
+    {
+      id: 'users.get',
+      importPath: '/tmp/joor-app/rpc/users/get.rpc.ts',
+      exportName: 'users_get',
+      procedure,
+    },
+  ],
+};
+const compilerSubpathOpenApi = createCompilerSubpathOpenApiDocument(
+  compilerSubpathManifest
+);
+compilerSubpathOpenApi['openapi'];
+const compilerSubpathAiDocs = createCompilerSubpathAiDocs(
+  compilerSubpathManifest
+);
+compilerSubpathAiDocs['framework'];
 const manifestRouteClient = createClient<ManifestRoutes>({ url: '/rpc' });
 manifestRouteClient.call(
   'users.get',
