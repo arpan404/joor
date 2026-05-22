@@ -43,6 +43,7 @@ import {
   createProcedureCacheKey,
   DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
   readCachedProcedureSuccess,
+  type CachedProcedureHeaders,
   type CachedProcedureSuccess,
   type ProcedureCacheHeaderValues,
   writeCachedProcedureSuccess,
@@ -853,7 +854,7 @@ const executeUnary = async (
       id: rpcRequest.id,
       traceId: trace,
       data,
-      headers: responseHeaderResult.value as JsonObject,
+      headers: responseHeaderResult.value as CachedProcedureHeaders,
     };
   }
   if (headers !== undefined) {
