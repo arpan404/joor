@@ -42,9 +42,12 @@ import {
   type DenoServeOptions,
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
+  type HandlerHookContext,
+  type HandlerHooks,
   type HandlerOptionServices,
   type HandlerOptionsFor,
   type HandlerOptions,
+  type JoorMiddleware,
   type JoorConfig,
   type JoorConfigContext,
   type PluginServices,
@@ -171,6 +174,7 @@ import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
+  type HandlerHookContext as RpcSubpathHandlerHookContext,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcRouteBody as RpcSubpathRouteBody,
@@ -1330,11 +1334,66 @@ const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
 const handlerOptionServices: HandlerOptionServices<typeof handlerOptions> =
   procedureServices;
 handlerOptionServices.users.findById('1').name.toUpperCase();
+const handlerHookContext: HandlerHookContext<RootPluginServices> = {
+  services: rootPluginServices,
+};
+handlerHookContext.services.users.findById('1').name.toUpperCase();
+const rpcSubpathHandlerHookContext: RpcSubpathHandlerHookContext<RootPluginServices> =
+  handlerHookContext;
+rpcSubpathHandlerHookContext.services.users.findById('1').name.toUpperCase();
+const serviceAwareHandlerHooks: HandlerHooks<RootPluginServices> = {
+  beforeRequest(_request, context) {
+    context.services.users.findById('1').name.toUpperCase();
+    return undefined;
+  },
+  afterResponse(response, _request, context) {
+    context.services.users.findById('1').name.toUpperCase();
+    return response;
+  },
+};
+serviceAwareHandlerHooks.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  handlerHookContext
+);
+const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
+  name: 'audit',
+  beforeRequest(_request, context) {
+    context.services.users.findById('1').name.toUpperCase();
+    return undefined;
+  },
+};
+const handlerOptionsWithHooks: HandlerOptions<readonly [typeof usersPlugin]> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: serviceAwareHandlerHooks,
+  middleware: [serviceAwareMiddleware],
+};
+handlerOptionsWithHooks.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  handlerHookContext
+);
+const _handlerOptionsWithoutHookPlugins: HandlerOptions = {
+  hooks: {
+    beforeRequest(_request, context) {
+      // @ts-expect-error default handler hooks do not expose plugin services.
+      context.services.users;
+      return undefined;
+    },
+  },
+};
+_handlerOptionsWithoutHookPlugins;
 const serviceAwareHandlerOptions: HandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
 serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const handlerOptionsWithExtraServices: HandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin, typeof contextSubpathPlugin]
+> = {
+  plugins: [usersPlugin, contextSubpathPlugin] as const,
+};
+handlerOptionsWithExtraServices.plugins?.[1]?.name.toUpperCase();
 const definedHandlerOptions = defineHandlerOptions(manifest)({
   path: '/rpc',
   plugins: [usersPlugin] as const,

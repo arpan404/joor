@@ -49,6 +49,7 @@ export type {
   RpcUnaryRouteId,
 } from './client.js';
 export type {
+  HandlerHookContext,
   HandlerHooks,
   DefineHandlerOptions,
   HandlerOptionServices,

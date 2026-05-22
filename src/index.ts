@@ -116,6 +116,7 @@ export type {
   RpcUnaryRouteId,
 } from './rpc/client.js';
 export type {
+  HandlerHookContext,
   HandlerHooks,
   DefineHandlerOptions,
   HandlerOptionServices,

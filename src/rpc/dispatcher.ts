@@ -321,8 +321,8 @@ export interface HandlerOptions<
     readonly JoorPlugin<object>[],
 > {
   plugins?: TPlugins;
-  middleware?: readonly JoorMiddleware[];
-  hooks?: HandlerHooks;
+  middleware?: readonly JoorMiddleware<PluginServices<TPlugins>>[];
+  hooks?: HandlerHooks<PluginServices<TPlugins>>;
   path?: string;
   cors?: {
     origin?: string;
@@ -351,12 +351,24 @@ export type HandlerOptionServices<TOptions> =
     ? PluginServices<TPlugins>
     : Record<string, never>;
 
+type HandlerOptionsHaveRequiredServices<TRequiredServices, TAvailableServices> =
+  [TRequiredServices] extends [Record<string, never>]
+    ? true
+    : [TRequiredServices] extends [object]
+      ? [TAvailableServices] extends [TRequiredServices]
+        ? true
+        : false
+      : false;
+
 export type HandlerOptionsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
 > = HandlerOptions<TPlugins> &
-  (RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+  (HandlerOptionsHaveRequiredServices<
+    RpcManifestRequiredServices<TManifest>,
+    PluginServices<TPlugins>
+  > extends true
     ? unknown
     : {
         plugins: TPlugins & {
@@ -370,7 +382,10 @@ export type HandlerOptionsArgsFor<
     readonly JoorPlugin<object>[],
   TOptions extends HandlerOptions<TPlugins> = HandlerOptions<TPlugins>,
 > =
-  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+  HandlerOptionsHaveRequiredServices<
+    RpcManifestRequiredServices<TManifest>,
+    PluginServices<TPlugins>
+  > extends true
     ? [options?: TOptions & HandlerOptionsFor<TManifest, TPlugins>]
     : [options: TOptions & HandlerOptionsFor<TManifest, TPlugins>];
 
@@ -390,7 +405,10 @@ export type HandlerOptionsWithTrailingArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
 > =
-  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+  HandlerOptionsHaveRequiredServices<
+    RpcManifestRequiredServices<TManifest>,
+    PluginServices<TPlugins>
+  > extends true
     ? [
         options?: HandlerOptionsFor<TManifest, TPlugins>,
         ...trailingArgs: TTrailingArgs,
@@ -424,15 +442,25 @@ export function defineHandlerOptions<TManifest extends RpcManifest>(
   return ((options) => options) as DefineHandlerOptions<TManifest>;
 }
 
-export interface HandlerHooks {
-  beforeRequest?(request: Request): MaybePromise<Response | undefined>;
+export interface HandlerHookContext<TServices extends object = object> {
+  services: TServices;
+}
+
+export interface HandlerHooks<TServices extends object = object> {
+  beforeRequest?(
+    request: Request,
+    context: HandlerHookContext<TServices>
+  ): MaybePromise<Response | undefined>;
   afterResponse?(
     response: Response,
-    request: Request
+    request: Request,
+    context: HandlerHookContext<TServices>
   ): MaybePromise<Response | undefined>;
 }
 
-export interface JoorMiddleware extends HandlerHooks {
+export interface JoorMiddleware<
+  TServices extends object = object,
+> extends HandlerHooks<TServices> {
   name: string;
 }
 
@@ -1255,14 +1283,21 @@ export function createRpcTransportBodyResultHandler<
   const hasAfterHooks =
     options.hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
+  const createHookContext = async (): Promise<HandlerHookContext<object>> => ({
+    services: services ?? (await servicesPromise),
+  });
   const runBefore = async (
     request: ContextRequestSource
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
-    const hookResult = await options.hooks?.beforeRequest?.(hookRequest);
+    const context = await createHookContext();
+    const hookResult = await options.hooks?.beforeRequest?.(
+      hookRequest,
+      context
+    );
     if (hookResult instanceof Response) return hookResult;
     for (const item of middleware) {
-      const result = await item.beforeRequest?.(hookRequest);
+      const result = await item.beforeRequest?.(hookRequest, context);
       if (result instanceof Response) return result;
     }
     return undefined;
@@ -1273,11 +1308,16 @@ export function createRpcTransportBodyResultHandler<
   ): Promise<RpcBodyResult> => {
     let next = response;
     const hookRequest = request.toRequest();
+    const context = await createHookContext();
     for (const item of middleware) {
-      const result = await item.afterResponse?.(next, hookRequest);
+      const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
     }
-    const hookResult = await options.hooks?.afterResponse?.(next, hookRequest);
+    const hookResult = await options.hooks?.afterResponse?.(
+      next,
+      hookRequest,
+      context
+    );
     return hookResult instanceof Response ? hookResult : next;
   };
   const handleRequest = async (

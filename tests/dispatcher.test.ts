@@ -5,6 +5,7 @@ import config from './fixtures/basic-app/joor.config.js';
 import {
   createAuthPolicy,
   createJoorHandler,
+  createPlugin,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -178,16 +179,29 @@ describe('dispatcher', () => {
       },
     });
     const seen: string[] = [];
+    const hooksPlugin = createPlugin({
+      name: 'hooks',
+      setup() {
+        return {
+          hooks: {
+            record(value: string) {
+              seen.push(value);
+            },
+          },
+        };
+      },
+    });
     const handler = createJoorHandler(
       { procedures: { limited } },
       {
+        plugins: [hooksPlugin] as const,
         hooks: {
-          beforeRequest() {
-            seen.push('before');
+          beforeRequest(_request, context) {
+            context.services.hooks.record('before');
             return undefined;
           },
-          afterResponse(response) {
-            seen.push('after');
+          afterResponse(response, _request, context) {
+            context.services.hooks.record('after');
             return response;
           },
         },
