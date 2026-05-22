@@ -17,7 +17,9 @@ type PluginOutput<TPlugin> =
   TPlugin extends JoorPlugin<infer TServices> ? TServices : never;
 
 export type PluginServices<TPlugins extends readonly JoorPlugin<object>[]> =
-  UnionToIntersection<PluginOutput<TPlugins[number]>>;
+  TPlugins[number] extends never
+    ? Record<string, never>
+    : UnionToIntersection<PluginOutput<TPlugins[number]>>;
 
 export const resolvePluginServices = async (
   plugins: readonly JoorPlugin<object>[]

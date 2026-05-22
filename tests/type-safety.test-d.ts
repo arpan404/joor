@@ -36,6 +36,7 @@ import {
   type DenoTransportBodyResult,
   type DenoTransportBodyResultHandler,
   type HandlerOptionServices,
+  type HandlerOptionsFor,
   type HandlerOptions,
   type JoorConfigContext,
   type JoorManifestRouteBody,
@@ -1070,6 +1071,16 @@ const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
 const handlerOptionServices: HandlerOptionServices<typeof handlerOptions> =
   procedureServices;
 handlerOptionServices.users.findById('1').name.toUpperCase();
+const serviceAwareHandlerOptions: HandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
+// @ts-expect-error service-aware handler options reject missing service plugins.
+const _missingServiceHandlerOptions: HandlerOptionsFor<
+  typeof manifest,
+  readonly []
+> = { path: '/rpc' };
 const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);

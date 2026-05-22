@@ -117,6 +117,8 @@ export type {
 export type {
   HandlerHooks,
   HandlerOptionServices,
+  HandlerOptionsArgs,
+  HandlerOptionsFor,
   HandlerOptions,
   JoorMiddleware,
   RpcBodyResult,

@@ -107,15 +107,23 @@ export type RpcManifestRouteServices<
   TId extends RpcManifestRouteId<TManifest>,
 > = ProcedureServices<RpcManifestRoutes<TManifest>[TId]>;
 
-export type RpcManifestRequiredServices<TManifest extends RpcManifest> =
-  UnionToIntersection<
-    {
-      [TId in RpcManifestRouteId<TManifest>]: RpcManifestRouteServices<
-        TManifest,
-        TId
-      >;
-    }[RpcManifestRouteId<TManifest>]
+type RpcManifestServiceContribution<TServices> = [TServices] extends [
+  Record<string, never>,
+]
+  ? never
+  : TServices;
+
+type RpcManifestServiceContributions<TManifest extends RpcManifest> = {
+  [TId in RpcManifestRouteId<TManifest>]: RpcManifestServiceContribution<
+    RpcManifestRouteServices<TManifest, TId>
   >;
+}[RpcManifestRouteId<TManifest>];
+
+export type RpcManifestRequiredServices<TManifest extends RpcManifest> = [
+  RpcManifestServiceContributions<TManifest>,
+] extends [never]
+  ? Record<string, never>
+  : UnionToIntersection<RpcManifestServiceContributions<TManifest>>;
 
 export type RpcManifestProcedureFrameworkError<TProcedure> = RpcError<
   Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
@@ -304,6 +312,28 @@ export type HandlerOptionServices<TOptions> =
   TOptions extends HandlerOptions<infer TPlugins>
     ? PluginServices<TPlugins>
     : Record<string, never>;
+
+export type HandlerOptionsFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = HandlerOptions<TPlugins> &
+  (RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+    ? unknown
+    : {
+        plugins: TPlugins & {
+          readonly __joorMissingServices: RpcManifestRequiredServices<TManifest>;
+        };
+      });
+
+export type HandlerOptionsArgs<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> =
+  RpcManifestRequiredServices<TManifest> extends PluginServices<TPlugins>
+    ? [options?: HandlerOptionsFor<TManifest, TPlugins>]
+    : [options: HandlerOptionsFor<TManifest, TPlugins>];
 
 export interface HandlerHooks {
   beforeRequest?(request: Request): MaybePromise<Response | undefined>;

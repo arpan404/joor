@@ -111,7 +111,9 @@ export interface StreamProcedureConfig<
   ): AsyncIterable<InferSchema<TStream> & JsonValue>;
 }
 
-export interface DefineProcedure<TServices extends object = object> {
+export interface DefineProcedure<
+  TServices extends object = Record<string, never>,
+> {
   <
     TInput extends Schema,
     TOutput extends Schema,
@@ -263,4 +265,4 @@ const createDefineProcedure = <
   }) as DefineProcedure<TServices>;
 };
 
-export const defineProcedure = createDefineProcedure<object>();
+export const defineProcedure = createDefineProcedure<Record<string, never>>();

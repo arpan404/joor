@@ -1,7 +1,4 @@
-import {
-  createRpcHandler,
-  type HandlerOptions,
-} from '../rpc/dispatcher.js';
+import { createRpcHandler, type HandlerOptions } from '../rpc/dispatcher.js';
 import type { JoorManifest } from '../manifest.js';
 
 export const createJoorHandler = <TManifest extends JoorManifest>(
