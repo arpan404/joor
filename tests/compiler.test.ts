@@ -17,6 +17,7 @@ describe('compiler', () => {
     const manifest = await loadProcedures(fixture);
 
     expect(manifest.procedures.map((entry) => entry.id)).toEqual([
+      'admin-user.get-profile',
       'posts.list',
       'users.get',
       'users.watch',
@@ -87,6 +88,12 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('"admin-user": {');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('"get-profile": {');
       await expect(
         readFile(join(outDir, 'procedure.ts'), 'utf8')
       ).resolves.toContain('defineProcedure.withContext');

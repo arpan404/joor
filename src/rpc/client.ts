@@ -14,8 +14,50 @@ export interface ClientOptions {
   maxStreamEventBytes?: number;
 }
 
-export interface PendingRpcRequest<TProcedure = never> {
-  id: string;
+export type RpcRouteMap = Record<string, unknown>;
+
+export type RpcRouteId<TRoutes extends RpcRouteMap> = Extract<
+  keyof TRoutes,
+  string
+>;
+
+export type RpcRouteProcedure<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = TRoutes[TId];
+
+export type RpcRouteInput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureInput<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteOutput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureOutput<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = ProcedureHeaders<RpcRouteProcedure<TRoutes, TId>>;
+
+export type RpcRouteStreamEvent<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
+> = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
+
+type ClientRequestOptionsTuple<TProcedure> = Record<
+  string,
+  never
+> extends ProcedureHeaders<TProcedure>
+  ? [ClientRequestOptions<TProcedure>?]
+  : [ClientRequestOptions<TProcedure>];
+
+export interface PendingRpcRequest<
+  TProcedure = never,
+  TId extends string = string,
+> {
+  id: TId;
   input: ProcedureInput<TProcedure>;
   headers?: ProcedureHeaders<TProcedure>;
 }
@@ -33,32 +75,53 @@ export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
     : never;
 };
 
-export interface RpcTransportClient {
+export interface LegacyRpcTransportClient {
   call<TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>,
-    ...options: Record<string, never> extends ProcedureHeaders<TProcedure>
-      ? [ClientRequestOptions<TProcedure>?]
-      : [ClientRequestOptions<TProcedure>]
+    ...options: ClientRequestOptionsTuple<TProcedure>
   ): Promise<RpcEnvelope<ProcedureOutput<TProcedure> & JsonValue>>;
   request<TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>,
-    ...options: Record<string, never> extends ProcedureHeaders<TProcedure>
-      ? [ClientRequestOptions<TProcedure>?]
-      : [ClientRequestOptions<TProcedure>]
-  ): PendingRpcRequest<TProcedure>;
+    ...options: ClientRequestOptionsTuple<TProcedure>
+  ): PendingRpcRequest<TProcedure, string>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests
   ): Promise<BatchResults<TRequests>>;
   stream<TProcedure>(
     id: string,
     input: ProcedureInput<TProcedure>,
-    ...options: Record<string, never> extends ProcedureHeaders<TProcedure>
-      ? [ClientRequestOptions<TProcedure>?]
-      : [ClientRequestOptions<TProcedure>]
+    ...options: ClientRequestOptionsTuple<TProcedure>
   ): AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
 }
+
+export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap> {
+  call<TId extends RpcRouteId<TRoutes>>(
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  ): Promise<RpcEnvelope<RpcRouteOutput<TRoutes, TId> & JsonValue>>;
+  request<TId extends RpcRouteId<TRoutes>>(
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  ): PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId>;
+  batch<const TRequests extends readonly PendingRpcRequest[]>(
+    requests: TRequests
+  ): Promise<BatchResults<TRequests>>;
+  stream<TId extends RpcRouteId<TRoutes>>(
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  ): AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
+}
+
+export type RpcTransportClient<
+  TRoutes extends RpcRouteMap = never,
+> = [TRoutes] extends [never]
+  ? LegacyRpcTransportClient
+  : RouteRpcTransportClient<TRoutes>;
 
 const createHeaders = (
   baseHeaders?: Record<string, string>,
@@ -120,7 +183,9 @@ const parseSse = async function* <TEvent extends JsonValue>(
   }
 };
 
-export const createClient = (options: ClientOptions): RpcTransportClient => {
+export const createClient = <TRoutes extends RpcRouteMap = never>(
+  options: ClientOptions
+): RpcTransportClient<TRoutes> => {
   const fetcher =
     options.fetch ??
     ((request: Request): Promise<Response> => globalThis.fetch(request));
@@ -223,5 +288,5 @@ export const createClient = (options: ClientOptions): RpcTransportClient => {
     request,
     batch,
     stream,
-  };
+  } as RpcTransportClient<TRoutes>;
 };

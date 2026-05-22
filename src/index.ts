@@ -12,6 +12,19 @@ export type { JoorContext } from './context/context.js';
 export type { JoorPlugin } from './context/plugin.js';
 export type { JoorConfig, JoorConfigContext } from './config.js';
 export type {
+  ClientOptions,
+  ClientRequestOptions,
+  PendingRpcRequest,
+  RpcRouteHeaders,
+  RpcRouteId,
+  RpcRouteInput,
+  RpcRouteMap,
+  RpcRouteOutput,
+  RpcRouteProcedure,
+  RpcRouteStreamEvent,
+  RpcTransportClient,
+} from './rpc/client.js';
+export type {
   Procedure,
   ProcedureAuth,
   ProcedureHeaders,

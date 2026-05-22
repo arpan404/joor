@@ -100,6 +100,28 @@ client.call<typeof procedure>(
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
 
+type Routes = {
+  'users.get': typeof procedure;
+  'users.authenticated': typeof authenticatedProcedure;
+};
+
+const routeClient = createClient<Routes>({ url: '/rpc' });
+routeClient.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+routeClient.call('users.authenticated', { ok: true });
+
+// @ts-expect-error route-map clients only accept known procedure ids.
+routeClient.call('users.missing', { id: '1' });
+
+// @ts-expect-error procedure id controls the input type.
+routeClient.call('users.authenticated', { id: '1' });
+
+// @ts-expect-error procedure id controls required headers.
+routeClient.call('users.get', { id: '1' });
+
 defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
   output: t.object({ id: t.string() }),

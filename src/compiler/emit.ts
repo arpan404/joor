@@ -1492,7 +1492,7 @@ const emitClient = async (
     const childIndent = '  '.repeat(depth + 1);
     const childBlocks = [...node.children.entries()]
       .map(
-        ([name, child]) => `${indent}${name}: {
+        ([name, child]) => `${indent}${JSON.stringify(name)}: {
 ${renderNode(child, depth + 1)}
 ${indent}},`
       )
@@ -1502,13 +1502,13 @@ ${indent}},`
         const name = id.split('.').at(-1);
         if (name === undefined) return '';
         const typeRef = `typeof manifest.procedures[${JSON.stringify(id)}]`;
-        return `${indent}${name}: {
+        return `${indent}${JSON.stringify(name)}: {
 ${childIndent}call: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.call<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}  transport.call(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
 ${childIndent}request: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.request<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}  transport.request(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
 ${childIndent}stream: (...args: ClientArgs<${typeRef}>) =>
-${childIndent}  transport.stream<${typeRef}>(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
+${childIndent}  transport.stream(${JSON.stringify(id)}, args[0], ...optionalOptions(args[1])),
 ${indent}},`;
       })
       .join('\n');
@@ -1523,8 +1523,14 @@ import type { ProcedureHeaders, ProcedureInput, ProcedureOutput, RpcEnvelope, St
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
-export type Result<TId extends keyof Manifest['procedures']> = RpcEnvelope<ProcedureOutput<Manifest['procedures'][TId]>>;
-export type Stream<TId extends keyof Manifest['procedures']> = StreamEvent<Manifest['procedures'][TId]>;
+export type RouteId = keyof Manifest['procedures'] & string;
+export type RouteProcedure<TId extends RouteId> = Manifest['procedures'][TId];
+export type RouteInput<TId extends RouteId> = ProcedureInput<RouteProcedure<TId>>;
+export type RouteOutput<TId extends RouteId> = ProcedureOutput<RouteProcedure<TId>>;
+export type RouteHeaders<TId extends RouteId> = ProcedureHeaders<RouteProcedure<TId>>;
+export type RouteResult<TId extends RouteId> = RpcEnvelope<RouteOutput<TId>>;
+export type Result<TId extends RouteId> = RouteResult<TId>;
+export type Stream<TId extends RouteId> = StreamEvent<RouteProcedure<TId>>;
 export type ClientArgs<TProcedure> = Record<string, never> extends ProcedureHeaders<TProcedure>
   ? [input: ProcedureInput<TProcedure>, options?: ClientRequestOptions<TProcedure>]
   : [input: ProcedureInput<TProcedure>, options: ClientRequestOptions<TProcedure>];
@@ -1533,7 +1539,7 @@ const optionalOptions = <TProcedure>(options: ClientRequestOptions<TProcedure> |
   options === undefined ? [] : [options] as const;
 
 export const createClient = (options: Parameters<typeof createTransportClient>[0]) => {
-  const transport = createTransportClient(options);
+  const transport = createTransportClient<Manifest['procedures']>(options);
   return {
 ${clientBody}
     batch: transport.batch,
