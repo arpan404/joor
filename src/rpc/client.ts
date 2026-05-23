@@ -227,6 +227,11 @@ export type RpcUnaryRouteResponseHeaders<
   TId extends RpcUnaryRouteId<TRoutes>,
 > = RpcRouteResponseHeaders<TRoutes, TId>;
 
+export type RpcStreamRouteResponseHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteResponseHeaders<TRoutes, TId>;
+
 export type RpcUnaryRouteHasResponseHeaders<
   TRoutes extends RpcRouteMap,
   TId extends RpcUnaryRouteId<TRoutes>,
