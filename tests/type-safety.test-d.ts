@@ -2463,6 +2463,21 @@ const rpcSubpathManifestHandlerHookContext: RpcSubpathHandlerHookContextFor<
 rpcSubpathManifestHandlerHookContext.services.users
   .findById('1')
   .name.toUpperCase();
+const exactManifestHandlerHookContext: HandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = {
+  services: rootPluginServices,
+  body: manifestRouteRequest,
+};
+exactManifestHandlerHookContext.body?.input.id.toUpperCase();
+const rpcSubpathExactManifestHandlerHookContext: RpcSubpathHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactManifestHandlerHookContext;
+rpcSubpathExactManifestHandlerHookContext.body?.input.id.toUpperCase();
 const _wrongManifestHandlerHookContext: HandlerHookContextFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -2521,6 +2536,27 @@ rpcSubpathManifestAwareHandlerHooks.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestHandlerHookContext
 );
+const exactManifestAwareHandlerHooks: HandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = {
+  beforeRequest(_request, context) {
+    context.body?.input.id.toUpperCase();
+    // @ts-expect-error exact manifest-aware hooks keep request bodies route-specific.
+    context.body?.input.ok;
+    return undefined;
+  },
+};
+const rpcSubpathExactManifestAwareHandlerHooks: RpcSubpathHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactManifestAwareHandlerHooks;
+rpcSubpathExactManifestAwareHandlerHooks.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const manifestAwareMiddleware: JoorMiddlewareFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -2542,6 +2578,25 @@ const rpcSubpathManifestAwareMiddleware: RpcSubpathJoorMiddlewareFor<
   readonly [typeof usersPlugin]
 > = manifestAwareMiddleware;
 rpcSubpathManifestAwareMiddleware.name.toUpperCase();
+const exactManifestAwareMiddleware: JoorMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = {
+  name: 'route-get-audit',
+  afterResponse(response, _request, context) {
+    context.body?.input.id.toUpperCase();
+    // @ts-expect-error exact manifest-aware middleware rejects other route inputs.
+    context.body?.input.ok;
+    return response;
+  },
+};
+const rpcSubpathExactManifestAwareMiddleware: RpcSubpathJoorMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactManifestAwareMiddleware;
+rpcSubpathExactManifestAwareMiddleware.name.toUpperCase();
 const handlerOptionsWithHooks: HandlerOptions<readonly [typeof usersPlugin]> = {
   path: '/rpc',
   plugins: [usersPlugin] as const,
@@ -2588,6 +2643,20 @@ const serviceAwareHandlerOptions: HandlerOptionsFor<
   },
 };
 serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const exactServiceAwareHandlerOptions: HandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: exactManifestAwareHandlerHooks,
+  middleware: [exactManifestAwareMiddleware],
+};
+exactServiceAwareHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const handlerOptionsWithExtraServices: HandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin, typeof contextSubpathPlugin]

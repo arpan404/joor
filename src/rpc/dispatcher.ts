@@ -398,7 +398,8 @@ export type HandlerOptionsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptions<TPlugins, RpcManifestBody<TManifest>> &
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptions<TPlugins, TBody> &
   (HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
@@ -511,19 +512,22 @@ export type HandlerHookContextFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerHookContext<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerHookContext<PluginServices<TPlugins>, TBody>;
 
 export type HandlerHooksFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerHooks<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerHooks<PluginServices<TPlugins>, TBody>;
 
 export type JoorMiddlewareFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = JoorMiddleware<PluginServices<TPlugins>, RpcManifestBody<TManifest>>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = JoorMiddleware<PluginServices<TPlugins>, TBody>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
