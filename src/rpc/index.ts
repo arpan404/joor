@@ -97,6 +97,8 @@ export type {
   RpcManifestRouteId,
   RpcManifestRouteProtocolRequest,
   RpcManifestRouteProtocolRequestUnion,
+  RpcManifestRouteRequest,
+  RpcManifestRouteRequestUnion,
   RpcManifestRequiredServices,
   RpcManifestRouteServices,
   RpcManifestRouteStreamProtocolRequest,

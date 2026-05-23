@@ -208,7 +208,7 @@ export type RpcManifestRouteBatchRequest<
 
 type RpcManifestRouteBatchResultRequest<TManifest extends RpcManifest> =
   | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>
-  | RpcManifestRoutePendingRequestUnion<TManifest>;
+  | RpcManifestRouteRequestUnion<TManifest>;
 
 type RpcManifestRouteBatchResultFor<
   TManifest extends RpcManifest,
@@ -218,7 +218,7 @@ type RpcManifestRouteBatchResultFor<
 }
   ? TRequest extends
       | RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
-      | RpcManifestRoutePendingRequest<TManifest, TId>
+      | RpcManifestRouteRequest<TManifest, TId>
     ? RpcManifestRouteEnvelope<TManifest, TId>
     : never
   : never;
@@ -256,18 +256,46 @@ export type RpcManifestBodyResult<TManifest extends RpcManifest> =
   | readonly RpcManifestRouteEnvelopeUnion<TManifest>[]
   | Response;
 
-type RpcManifestRoutePendingRequest<
+type RpcManifestOptionalHeaderKeys<THeaders extends object> = keyof {
+  [TKey in keyof THeaders as undefined extends THeaders[TKey]
+    ? TKey
+    : never]: true;
+};
+
+type RpcManifestRequiredHeaderFields<THeaders extends object> = {
+  [TKey in keyof THeaders as TKey extends RpcManifestOptionalHeaderKeys<THeaders>
+    ? never
+    : TKey]: THeaders[TKey];
+};
+
+type RpcManifestOptionalHeaderFields<THeaders extends object> = {
+  [TKey in RpcManifestOptionalHeaderKeys<THeaders>]?:
+    | THeaders[TKey]
+    | undefined;
+};
+
+type RpcManifestRouteRequestHeaders<TManifest extends RpcManifest, TId> =
+  TId extends RpcManifestUnaryRouteId<TManifest>
+    ? ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> extends infer THeaders
+      ? THeaders extends object
+        ? RpcManifestRequiredHeaderFields<THeaders> &
+            RpcManifestOptionalHeaderFields<THeaders>
+        : never
+      : never
+    : never;
+
+export type RpcManifestRouteRequest<
   TManifest extends RpcManifest,
   TId extends RpcManifestUnaryRouteId<TManifest>,
 > = {
   id: TId;
   input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]>;
 } & (ProcedureRequiresHeaders<RpcManifestRoutes<TManifest>[TId]> extends false
-  ? { headers?: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> }
-  : { headers: ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> });
+  ? { headers?: RpcManifestRouteRequestHeaders<TManifest, TId> }
+  : { headers: RpcManifestRouteRequestHeaders<TManifest, TId> });
 
-type RpcManifestRoutePendingRequestUnion<TManifest extends RpcManifest> = {
-  [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRoutePendingRequest<
+export type RpcManifestRouteRequestUnion<TManifest extends RpcManifest> = {
+  [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRouteRequest<
     TManifest,
     TId
   >;
@@ -284,7 +312,7 @@ type RpcManifestProtocolBodyResultFor<
     : TId extends RpcManifestUnaryRouteId<TManifest>
       ? TBody extends
           | RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
-          | RpcManifestRoutePendingRequest<TManifest, TId>
+          | RpcManifestRouteRequest<TManifest, TId>
         ? RpcManifestRouteEnvelope<TManifest, TId> | Response
         : never
       : never

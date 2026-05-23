@@ -207,6 +207,8 @@ import {
   type RpcManifestRouteId,
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
+  type RpcManifestRouteRequest,
+  type RpcManifestRouteRequestUnion,
   type RpcManifestRequiredServices,
   type RpcManifestRouteServices,
   type RpcManifestRoutes,
@@ -329,6 +331,8 @@ import {
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
+  type RpcManifestRouteRequestUnion as RpcSubpathManifestRouteRequestUnion,
   type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
   type RpcBodyHandler as RpcSubpathBodyHandler,
   type RpcRequestHandler as RpcSubpathRequestHandler,
@@ -2306,6 +2310,23 @@ const publicManifestProtocolRequestUnion: RpcManifestRouteProtocolRequestUnion<
   typeof manifest
 > = publicManifestProtocolRequest;
 publicManifestProtocolRequestUnion.id.toUpperCase();
+const publicManifestRouteRequest: RpcManifestRouteRequest<
+  typeof manifest,
+  'users.get'
+> = manifestRouteRequest;
+publicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+const publicManifestRouteRequestUnion: RpcManifestRouteRequestUnion<
+  typeof manifest
+> = publicManifestRouteRequest;
+publicManifestRouteRequestUnion.id.toUpperCase();
+const rpcSubpathManifestRouteRequest: RpcSubpathManifestRouteRequest<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteRequest;
+const rpcSubpathManifestRouteRequestUnion: RpcSubpathManifestRouteRequestUnion<
+  typeof manifest
+> = rpcSubpathManifestRouteRequest;
+rpcSubpathManifestRouteRequestUnion.id.toUpperCase();
 const publicManifestUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
@@ -2338,7 +2359,7 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
 > = [publicManifestUnaryProtocolRequest];
 const publicManifestBatchResults: RpcManifestRouteBatchResults<
   typeof manifest,
-  readonly [typeof publicManifestUnaryProtocolRequest]
+  readonly [typeof publicManifestRouteRequest]
 > = [manifestRouteEnvelope];
 const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
   typeof manifest
