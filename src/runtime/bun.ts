@@ -489,7 +489,7 @@ export function serveBun<TManifest extends JoorManifest>(
       serve(options: {
         port: number;
         hostname: string;
-        fetch(request: Request): Promise<Response>;
+        fetch(request: Request): Response | Promise<Response>;
       }): BunServer;
     };
   };

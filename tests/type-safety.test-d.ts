@@ -6908,10 +6908,14 @@ createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });
 
 const fetchHandler = createJoorHandler(manifest, handlerOptions);
 const typedFetchHandler: JoorFetchHandler = fetchHandler;
+const syncTypedFetchHandler: JoorFetchHandler = () => new Response();
 const runtimeSubpathTypedFetchHandler: RuntimeSubpathJoorFetchHandler =
   typedFetchHandler;
+const runtimeSubpathSyncTypedFetchHandler: RuntimeSubpathJoorFetchHandler =
+  syncTypedFetchHandler;
 fetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
+runtimeSubpathSyncTypedFetchHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching fetch handler plugins.
 createJoorHandler(manifest);
 
@@ -6920,10 +6924,14 @@ createJoorHandler({ procedures: { broken: { input: t.string() } } });
 
 const bunFetch = createBunFetch(manifest, handlerOptions);
 const typedBunFetch: BunFetchHandler = bunFetch;
+const syncTypedBunFetch: BunFetchHandler = () => new Response();
 const runtimeSubpathTypedBunFetch: RuntimeSubpathBunFetchHandler =
   typedBunFetch;
+const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
+  syncTypedBunFetch;
 bunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
+runtimeSubpathSyncTypedBunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
 createBunFetch(manifest);
 const bunRpcHandler: BunRpcRequestHandler = createBunRpcRequestHandler(
@@ -9694,6 +9702,8 @@ const standaloneDenoCompiledHandler =
   );
 const typedStandaloneDenoCompiledHandler: DenoCompiledTransportRequestHandler =
   standaloneDenoCompiledHandler;
+const syncDenoCompiledTransportRequestHandler: DenoCompiledTransportRequestHandler =
+  () => new Response();
 const standaloneDenoCompiledDefaultHandler =
   createDenoCompiledTransportRequestHandler(
     compiledRuntimeState,
@@ -9706,6 +9716,10 @@ const rootTypedStandaloneDenoCompiledHandler: RootDenoCompiledTransportRequestHa
   typedStandaloneDenoCompiledHandler;
 const runtimeSubpathTypedStandaloneDenoCompiledHandler: RuntimeSubpathDenoCompiledTransportRequestHandler =
   rootTypedStandaloneDenoCompiledHandler;
+const rootSyncDenoCompiledTransportRequestHandler: RootDenoCompiledTransportRequestHandler =
+  syncDenoCompiledTransportRequestHandler;
+const runtimeSubpathSyncDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledTransportRequestHandler =
+  rootSyncDenoCompiledTransportRequestHandler;
 const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
@@ -9845,7 +9859,13 @@ typedStandaloneDenoCompiledDefaultHandler(
 );
 standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 rootTypedStandaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
+rootSyncDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 runtimeSubpathTypedStandaloneDenoCompiledHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathSyncDenoCompiledTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
 const joorHandlerOptions: JoorHandlerOptionsFor<
@@ -11181,16 +11201,20 @@ const elysiaHandler: ElysiaHandler = createElysiaHandler(
   manifest,
   elysiaHandlerOptions
 );
+const syncElysiaHandler: ElysiaHandler = () => new Response();
 const runtimeSubpathElysiaHandler: RuntimeSubpathElysiaHandler =
   createRuntimeSubpathElysiaHandler(
     manifest,
     runtimeSubpathElysiaHandlerOptions
   );
+const runtimeSubpathSyncElysiaHandler: RuntimeSubpathElysiaHandler =
+  syncElysiaHandler;
 const elysiaContext: ElysiaContext = {
   request: new Request('https://example.com/rpc'),
 };
 elysiaHandler(elysiaContext);
 runtimeSubpathElysiaHandler(elysiaContext);
+runtimeSubpathSyncElysiaHandler(elysiaContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
 createElysiaHandler(manifest);
 const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
@@ -11380,13 +11404,17 @@ const honoHandler: HonoHandler = createHonoHandler(
   manifest,
   honoHandlerOptions
 );
+const syncHonoHandler: HonoHandler = () => new Response();
 const runtimeSubpathHonoHandler: RuntimeSubpathHonoHandler =
   createRuntimeSubpathHonoHandler(manifest, runtimeSubpathHonoHandlerOptions);
+const runtimeSubpathSyncHonoHandler: RuntimeSubpathHonoHandler =
+  syncHonoHandler;
 const honoContext: HonoContext = {
   req: { raw: new Request('https://example.com/rpc') },
 };
 honoHandler(honoContext);
 runtimeSubpathHonoHandler(honoContext);
+runtimeSubpathSyncHonoHandler(honoContext);
 // @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
 createHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);

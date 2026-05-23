@@ -54,7 +54,7 @@ const createRequest = (): Request =>
 
 const runBenchmark = async (
   name: string,
-  handler: (request: Request) => Promise<Response>,
+  handler: (request: Request) => Response | Promise<Response>,
   setting: BenchmarkSetting,
   run: number
 ): Promise<BenchmarkSample> => {
@@ -115,7 +115,7 @@ printBenchmarkPlan('direct benchmark', runs, settings);
 
 const entries: Array<{
   name: string;
-  handler(request: Request): Promise<Response>;
+  handler(request: Request): Response | Promise<Response>;
 }> = [
   { name: 'users.get unary rpc (generic)', handler: genericHandler },
   { name: 'users.get unary rpc (compiled safe)', handler: compiledHandler },

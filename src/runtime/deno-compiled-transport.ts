@@ -27,11 +27,10 @@ import {
   normalizeMaxBodyBytes,
   readJsonRequestBodyWithLimit,
 } from './body.js';
+import type { JoorFetchHandler } from './fetch.js';
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
 
-export type DenoCompiledTransportRequestHandler = (
-  request: Request
-) => Promise<Response>;
+export type DenoCompiledTransportRequestHandler = JoorFetchHandler;
 
 export type DenoCompiledTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,

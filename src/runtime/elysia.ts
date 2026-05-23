@@ -14,7 +14,9 @@ export interface ElysiaContext {
   request: Request;
 }
 
-export type ElysiaHandler = (context: ElysiaContext) => Promise<Response>;
+export type ElysiaHandler = (
+  context: ElysiaContext
+) => Response | Promise<Response>;
 
 export type ElysiaHandlerOptionsFor<
   TManifest extends JoorManifest,

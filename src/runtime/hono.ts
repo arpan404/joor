@@ -16,7 +16,7 @@ export interface HonoContext {
   };
 }
 
-export type HonoHandler = (context: HonoContext) => Promise<Response>;
+export type HonoHandler = (context: HonoContext) => Response | Promise<Response>;
 
 export type HonoHandlerOptionsFor<
   TManifest extends JoorManifest,

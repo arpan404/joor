@@ -1876,7 +1876,7 @@ export interface NodeListenOptions extends NodeNativeOptions {
 export type NodeNativeHandler = (
   incoming: IncomingMessage,
   outgoing: ServerResponse<IncomingMessage>
-) => Promise<void>;
+) => void | Promise<void>;
 
 export interface NodeNativeServer {
   readonly listening: boolean;
@@ -2406,7 +2406,7 @@ export interface NativeCorsOptions {
   headers?: string[];
 }
 
-export type BunNativeFetchHandler = (request: Request) => Promise<Response>;
+export type BunNativeFetchHandler = (request: Request) => Response | Promise<Response>;
 
 export interface BunNativeServer {
   readonly hostname?: string;
@@ -2474,7 +2474,7 @@ export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
       serve(config: {
         port: number;
         hostname: string;
-        fetch(request: Request): Promise<Response>;
+        fetch(request: Request): Response | Promise<Response>;
       }): BunNativeServer;
     };
   };
@@ -2524,7 +2524,7 @@ export interface DenoNativeOptions {
   port?: number;
 }
 
-export type DenoNativeFetchHandler = (request: Request) => Promise<Response>;
+export type DenoNativeFetchHandler = (request: Request) => Response | Promise<Response>;
 
 export interface DenoNativeServer {
   readonly finished: Promise<void>;
@@ -2551,7 +2551,7 @@ export const serve = (options: DenoNativeOptions = {}): DenoNativeServer => {
       serve(config: {
         port: number;
         hostname: string;
-        handler(request: Request): Promise<Response>;
+        handler(request: Request): Response | Promise<Response>;
       }): DenoNativeServer;
     };
   };

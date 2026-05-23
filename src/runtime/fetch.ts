@@ -10,7 +10,7 @@ import {
 import type { JoorManifest } from '../manifest.js';
 import type { JoorPlugin } from '../context/plugin.js';
 
-export type JoorFetchHandler = (request: Request) => Promise<Response>;
+export type JoorFetchHandler = (request: Request) => Response | Promise<Response>;
 
 export type JoorHandlerOptionsFor<
   TManifest extends JoorManifest,

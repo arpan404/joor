@@ -32,12 +32,14 @@ const manifest = {
 
 const call = (body: object): Promise<Response> => {
   const handler = createJoorHandler(manifest, config);
-  return handler(
-    new Request('http://localhost/rpc', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    })
+  return Promise.resolve(
+    handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+    )
   );
 };
 
@@ -227,15 +229,17 @@ describe('dispatcher', () => {
       }
     );
     const request = (): Promise<Response> =>
-      handler(
-        new Request('http://localhost/rpc', {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'x-forwarded-for': 'rate-limit-test',
-          },
-          body: JSON.stringify({ id: 'limited', input: { ok: true } }),
-        })
+      Promise.resolve(
+        handler(
+          new Request('http://localhost/rpc', {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              'x-forwarded-for': 'rate-limit-test',
+            },
+            body: JSON.stringify({ id: 'limited', input: { ok: true } }),
+          })
+        )
       );
 
     expect((await (await request()).json()).ok).toBe(true);
@@ -589,12 +593,14 @@ describe('dispatcher', () => {
     });
     const handler = createJoorHandler({ procedures: { cached } });
     const request = (): Promise<Response> =>
-      handler(
-        new Request('http://localhost/rpc', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ id: 'cached', input: { id: 'same' } }),
-        })
+      Promise.resolve(
+        handler(
+          new Request('http://localhost/rpc', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ id: 'cached', input: { id: 'same' } }),
+          })
+        )
       );
 
     const first = await (await request()).json();

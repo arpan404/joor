@@ -991,8 +991,10 @@ const bunNativeOptions: BunNativeOptions = { path: '/custom-rpc', cors: bunNativ
 const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch(bunNativeOptions);
 createBunNativeFetch({ ...bunNativeOptions, cors: false });
 const bunDefaultFetchHandler: BunNativeFetchHandler = bunNativeFetch;
+const syncBunFetchHandler: BunNativeFetchHandler = () => new Response();
 bunFetchHandler(new Request('https://example.com/rpc'));
 bunDefaultFetchHandler(new Request('https://example.com/rpc'));
+syncBunFetchHandler(new Request('https://example.com/rpc'));
 const bunServer: BunNativeServer = serveBunNative({ ...bunNativeOptions, port: 3000 });
 bunServer.stop?.();
 bunServer.ref?.();
@@ -1001,8 +1003,10 @@ const denoNativeOptions: DenoNativeOptions = { path: '/custom-rpc', cors: denoNa
 const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch(denoNativeOptions);
 createDenoNativeFetch({ ...denoNativeOptions, cors: false });
 const denoDefaultFetchHandler: DenoNativeFetchHandler = denoNativeFetch;
+const syncDenoFetchHandler: DenoNativeFetchHandler = () => new Response();
 denoFetchHandler(new Request('https://example.com/rpc'));
 denoDefaultFetchHandler(new Request('https://example.com/rpc'));
+syncDenoFetchHandler(new Request('https://example.com/rpc'));
 const denoServer: DenoNativeServer = serveDenoNative({ ...denoNativeOptions, port: 3000 });
 denoServer.shutdown();
 denoServer.finished.then(() => undefined);
@@ -1011,8 +1015,10 @@ const nodeNativeOptions: NodeNativeOptions = { path: '/custom-rpc', cors: nodeNa
 const nodeHandler: NodeNativeHandler = createNodeNativeHandler(nodeNativeOptions);
 createNodeNativeHandler({ ...nodeNativeOptions, cors: false });
 const nodeDefaultHandler: NodeNativeHandler = nodeNativeHandler;
+const syncNodeHandler: NodeNativeHandler = () => undefined;
 nodeHandler;
 nodeDefaultHandler;
+syncNodeHandler;
 const nodeServer: NodeNativeServer = listenNodeNative({ ...nodeNativeOptions, port: 3000 });
 nodeServer.close();
 nodeServer.address();

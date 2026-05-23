@@ -553,7 +553,7 @@ export function serveDeno<TManifest extends JoorManifest>(
       serve(options: {
         port: number;
         hostname: string;
-        handler(request: Request): Promise<Response>;
+        handler(request: Request): Response | Promise<Response>;
       }): DenoServer;
     };
   };
