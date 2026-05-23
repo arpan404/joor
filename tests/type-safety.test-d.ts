@@ -11270,6 +11270,24 @@ const nextDynamicHandlers: NextRouteHandlers<
   POST: nextDynamicRouteHandler,
   OPTIONS: nextDynamicRouteHandler,
 };
+const nextRequestRouteHandler: NextRouteHandler<never, AppFetchRequest> = (
+  request
+) => new Response(request.requestId);
+const runtimeSubpathNextRequestRouteHandler: RuntimeSubpathNextRouteHandler<
+  never,
+  AppFetchRequest
+> = nextRequestRouteHandler;
+const nextDynamicRequestRouteHandler: NextRouteHandler<
+  NextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = async (request, context) => {
+  const params = await context.params;
+  return new Response(`${request.requestId}:${params.team}`);
+};
+const runtimeSubpathNextDynamicRequestRouteHandler: RuntimeSubpathNextRouteHandler<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = nextDynamicRequestRouteHandler;
 const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
   NextDynamicRouteParamsForTypes
 > = {
@@ -11286,12 +11304,40 @@ const createTypedNextRouteHandlers = createNextRouteHandlersFor<
 const nextTypedHandlers: NextRouteHandlers<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = createTypedNextRouteHandlers(manifest, handlerOptions);
+const createRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
+  never,
+  AppFetchRequest
+>();
+const nextRequestTypedHandlers: NextRouteHandlers<never, AppFetchRequest> =
+  createRequestTypedNextRouteHandlers(manifest, handlerOptions);
+const createContextRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
+  NextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+>();
+const nextContextRequestTypedHandlers: NextRouteHandlers<
+  NextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = createContextRequestTypedNextRouteHandlers(manifest, handlerOptions);
 const createTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 >();
 const nextTypedHandler: NextHandler<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = createTypedNextHandler(manifest, handlerOptions);
+const createRequestTypedNextHandler = createNextHandlerFor<
+  never,
+  AppFetchRequest
+>();
+const nextRequestTypedHandler: NextHandler<never, AppFetchRequest> =
+  createRequestTypedNextHandler(manifest, handlerOptions);
+const createContextRequestTypedNextHandler = createNextHandlerFor<
+  NextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+>();
+const nextContextRequestTypedHandler: NextHandler<
+  NextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = createContextRequestTypedNextHandler(manifest, handlerOptions);
 const createRuntimeSubpathTypedNextRouteHandlers =
   createRuntimeSubpathNextRouteHandlersFor<
     RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
@@ -11299,6 +11345,27 @@ const createRuntimeSubpathTypedNextRouteHandlers =
 const runtimeSubpathTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
   RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
 > = createRuntimeSubpathTypedNextRouteHandlers(manifest, handlerOptions);
+const createRuntimeSubpathRequestTypedNextRouteHandlers =
+  createRuntimeSubpathNextRouteHandlersFor<never, AppFetchRequest>();
+const runtimeSubpathRequestTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
+  never,
+  AppFetchRequest
+> = createRuntimeSubpathRequestTypedNextRouteHandlers(
+  manifest,
+  handlerOptions
+);
+const createRuntimeSubpathContextRequestTypedNextRouteHandlers =
+  createRuntimeSubpathNextRouteHandlersFor<
+    RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
+    AppFetchRequest
+  >();
+const runtimeSubpathContextRequestTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = createRuntimeSubpathContextRequestTypedNextRouteHandlers(
+  manifest,
+  handlerOptions
+);
 const createRuntimeSubpathTypedNextHandler =
   createRuntimeSubpathNextHandlerFor<
     RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
@@ -11306,12 +11373,37 @@ const createRuntimeSubpathTypedNextHandler =
 const runtimeSubpathTypedNextHandler: RuntimeSubpathNextHandler<
   RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
 > = createRuntimeSubpathTypedNextHandler(manifest, handlerOptions);
+const createRuntimeSubpathRequestTypedNextHandler =
+  createRuntimeSubpathNextHandlerFor<never, AppFetchRequest>();
+const runtimeSubpathRequestTypedNextHandler: RuntimeSubpathNextHandler<
+  never,
+  AppFetchRequest
+> = createRuntimeSubpathRequestTypedNextHandler(manifest, handlerOptions);
+const createRuntimeSubpathContextRequestTypedNextHandler =
+  createRuntimeSubpathNextHandlerFor<
+    RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
+    AppFetchRequest
+  >();
+const runtimeSubpathContextRequestTypedNextHandler: RuntimeSubpathNextHandler<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
+  AppFetchRequest
+> = createRuntimeSubpathContextRequestTypedNextHandler(manifest, handlerOptions);
 nextHandler.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
 nextHandlers.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextRouteHandler(new Request('https://example.com/rpc'));
+nextRequestRouteHandler(appFetchRequest);
+runtimeSubpathNextRequestRouteHandler(appFetchRequest);
 runtimeSubpathNextDynamicRouteHandler(
   new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+nextDynamicRequestRouteHandler(
+  appFetchRequest,
+  runtimeSubpathNextDynamicRouteContext
+);
+runtimeSubpathNextDynamicRequestRouteHandler(
+  appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
 );
 nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
@@ -11319,6 +11411,16 @@ nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
     team: 'core',
   }),
 });
+nextRequestTypedHandlers.GET(appFetchRequest);
+nextRequestTypedHandler.POST(appFetchRequest);
+nextContextRequestTypedHandlers.GET(
+  appFetchRequest,
+  runtimeSubpathNextDynamicRouteContext
+);
+nextContextRequestTypedHandler.POST(
+  appFetchRequest,
+  runtimeSubpathNextDynamicRouteContext
+);
 nextTypedHandlers.GET(
   new Request('https://example.com/rpc'),
   runtimeSubpathNextDynamicRouteContext
@@ -11332,6 +11434,23 @@ runtimeSubpathTypedNextHandlers.OPTIONS(
   runtimeSubpathNextDynamicRouteContext
 );
 runtimeSubpathTypedNextHandler.GET(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+runtimeSubpathRequestTypedNextHandlers.GET(appFetchRequest);
+runtimeSubpathRequestTypedNextHandler.POST(appFetchRequest);
+runtimeSubpathContextRequestTypedNextHandlers.GET(
+  appFetchRequest,
+  runtimeSubpathNextDynamicRouteContext
+);
+runtimeSubpathContextRequestTypedNextHandler.POST(
+  appFetchRequest,
+  runtimeSubpathNextDynamicRouteContext
+);
+// @ts-expect-error typed Next handlers require the configured request subtype.
+nextRequestTypedHandlers.GET(new Request('https://example.com/rpc'));
+nextContextRequestTypedHandlers.GET(
+  // @ts-expect-error context-aware typed Next handlers require the configured request subtype.
   new Request('https://example.com/rpc'),
   runtimeSubpathNextDynamicRouteContext
 );

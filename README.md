@@ -214,7 +214,7 @@ npm run joor -- doctor
 Fetch is the base runtime. The package also exposes small adapters for Node, Express, Fastify, Elysia, Hono, Koa, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
 Custom adapters can reuse `joor/runtime/body` for JSON body limits and `joor/runtime/response` for serialized envelope and `Response` conversion helpers.
 
-Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createCloudflareWorkerFor<Env, Context, Request>()` preserves typed Worker bindings, `createNextRouteHandlers()` returns App Router method exports, `createVercelFunction()` returns a fetch object, `createNetlifyEdgeFunction()` returns a Netlify Edge handler, and `createNetlifyEdgeFunctionFor<Context, Request>()` preserves the Netlify context object. Framework adapters also provide typed factory forms such as `createJoorHandlerFor<Request>()`, `createBunFetchFor<Request>()`, `createDenoFetchFor<Request>()`, `createCloudflareFetchFor<Request>()`, `createVercelFetchFor<Request>()`, `createNetlifyFetchFor<Request>()`, `createAwsLambdaHandlerFor<Event>()`, `createNodeRpcRequestHandlerFor<Request, Response>()`, `createExpressHandlerFor<Request, Response>()`, `createFastifyHandlerFor<Request, Reply>()`, `createKoaHandlerFor<Context>()`, `createHonoHandlerFor<Context>()`, and `createElysiaHandlerFor<Context>()` for apps with extended runtime event or framework context types.
+Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createCloudflareWorkerFor<Env, Context, Request>()` preserves typed Worker bindings, `createNextRouteHandlers()` returns App Router method exports, `createNextRouteHandlersFor<Context, Request>()` preserves App Router context and extended request types, `createVercelFunction()` returns a fetch object, `createNetlifyEdgeFunction()` returns a Netlify Edge handler, and `createNetlifyEdgeFunctionFor<Context, Request>()` preserves the Netlify context object. Framework adapters also provide typed factory forms such as `createJoorHandlerFor<Request>()`, `createBunFetchFor<Request>()`, `createDenoFetchFor<Request>()`, `createCloudflareFetchFor<Request>()`, `createVercelFetchFor<Request>()`, `createNetlifyFetchFor<Request>()`, `createAwsLambdaHandlerFor<Event>()`, `createNodeRpcRequestHandlerFor<Request, Response>()`, `createExpressHandlerFor<Request, Response>()`, `createFastifyHandlerFor<Request, Reply>()`, `createKoaHandlerFor<Context>()`, `createHonoHandlerFor<Context>()`, and `createElysiaHandlerFor<Context>()` for apps with extended runtime event or framework context types.
 Low-level RPC helpers expose the same pattern through `createRpcHandlerFor<Request>()`, `createRpcBodyHandlerFor<Request>()`, and `createRpcBodyResultHandlerFor<Request>()`.
 Compiled runtime helpers mirror the same request typing with `createCompiledRpcHandlerFor<Request>()` and `createDenoCompiledTransportRequestHandlerFor<Request>()`.
 Generated native dispatcher, Bun, Deno, Cloudflare, Vercel, and Netlify entrypoints also export typed factory helpers such as `createFetchFor<Request>()` so generated handlers can preserve extended request types.
@@ -239,7 +239,7 @@ export const { GET, POST, OPTIONS } = handlers;
 
 The adapter is Fetch-native, so it works with both Edge-compatible route handlers and standard App Router `Request`/`Response` APIs.
 
-For dynamic App Router segments, use the typed factory form to preserve the route context shape:
+For dynamic App Router segments, use the typed factory form to preserve the route context shape. The same factory can take a second generic for extended `Request` subtypes:
 
 ```ts
 import {
@@ -254,6 +254,13 @@ const { GET, POST, OPTIONS } = createHandlers(manifest, {
   ...config,
   path: '/teams/[team]/rpc',
 });
+
+type AppRequest = Request & { requestId: string };
+
+const createTypedHandlers = createNextRouteHandlersFor<
+  NextRouteContext<Params>,
+  AppRequest
+>();
 ```
 
 ## Typed Headers
