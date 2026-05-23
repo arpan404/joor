@@ -17,6 +17,7 @@ import {
   createDenoTransportRequestHandlerWithPath,
   createJoorHandler,
   createNetlifyFetch,
+  createNextHandler,
   createNextRouteHandlers,
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
@@ -149,6 +150,8 @@ import {
   type ListenOptionsFor,
   type ListenOptions,
   type NetlifyFetchHandler,
+  type NextHandler,
+  type NextHandlerOptionsFor,
   type NextRouteHandler,
   type NextRouteHandlers,
   type NextRouteHandlersOptionsFor,
@@ -415,6 +418,7 @@ import {
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
+  createNextHandler as createRuntimeSubpathNextHandler,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createVercelFetch as createRuntimeSubpathVercelFetch,
@@ -438,6 +442,8 @@ import {
   type JoorHandlerOptionsFor as RuntimeSubpathJoorHandlerOptionsFor,
   type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
   type NetlifyFetchOptionsFor as RuntimeSubpathNetlifyFetchOptionsFor,
+  type NextHandler as RuntimeSubpathNextHandler,
+  type NextHandlerOptionsFor as RuntimeSubpathNextHandlerOptionsFor,
   type NextRouteHandler as RuntimeSubpathNextRouteHandler,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
   type NextRouteHandlersOptionsFor as RuntimeSubpathNextRouteHandlersOptionsFor,
@@ -3162,18 +3168,34 @@ const nextRouteHandlersOptions: NextRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const nextHandlerOptions: NextHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteHandlersOptions;
 const runtimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteHandlersOptions;
+const runtimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextHandlerOptions;
 createNextRouteHandlers(manifest, nextRouteHandlersOptions);
 createRuntimeSubpathNextRouteHandlers(
   manifest,
   runtimeSubpathNextRouteHandlersOptions
 );
+const nextHandler: NextHandler = createNextHandler(
+  manifest,
+  nextHandlerOptions
+);
+const runtimeSubpathNextHandler: RuntimeSubpathNextHandler =
+  createRuntimeSubpathNextHandler(manifest, runtimeSubpathNextHandlerOptions);
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
   nextRouteHandler;
+nextHandler.POST(new Request('https://example.com/rpc'));
+runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
 nextHandlers.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextRouteHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Next adapter plugins.

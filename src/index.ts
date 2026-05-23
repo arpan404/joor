@@ -301,6 +301,8 @@ export type {
   NetlifyFetchOptionsFor,
 } from './runtime/netlify.js';
 export type {
+  NextHandler,
+  NextHandlerOptionsFor,
   NextRouteHandler,
   NextRouteHandlers,
   NextRouteHandlersOptionsFor,

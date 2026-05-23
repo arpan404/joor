@@ -15,11 +15,19 @@ export interface NextRouteHandlers {
   OPTIONS: NextRouteHandler;
 }
 
+export type NextHandler = NextRouteHandlers;
+
 export type NextRouteHandlersOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
 > = HandlerOptionsFor<TManifest, TPlugins>;
+
+export type NextHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+> = NextRouteHandlersOptionsFor<TManifest, TPlugins>;
 
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,
@@ -43,4 +51,5 @@ export function createNextRouteHandlers<TManifest extends JoorManifest>(
   };
 }
 
-export const createNextHandler = createNextRouteHandlers;
+export const createNextHandler: typeof createNextRouteHandlers =
+  createNextRouteHandlers;
