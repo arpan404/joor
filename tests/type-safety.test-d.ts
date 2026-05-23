@@ -119,6 +119,7 @@ import {
   type JoorManifestRouteClientArgs,
   type JoorManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope,
+  type JoorManifestRouteEnvelopeUnion,
   type JoorManifestRouteError,
   type JoorManifestRouteErrorCode,
   type JoorManifestRouteErrorDetails,
@@ -334,6 +335,7 @@ import {
   type JoorManifestRouteClientArgs as JoorSubpathManifestRouteClientArgs,
   type JoorManifestRouteClientHeaders as JoorSubpathManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
+  type JoorManifestRouteEnvelopeUnion as JoorSubpathManifestRouteEnvelopeUnion,
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
@@ -1993,6 +1995,10 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   headers: { 'cache-control': 'private' },
 };
 manifestRouteEnvelope.id.toUpperCase();
+const manifestRouteEnvelopeUnion: JoorManifestRouteEnvelopeUnion<
+  typeof manifest
+> = manifestRouteEnvelope;
+manifestRouteEnvelopeUnion.id.toUpperCase();
 // @ts-expect-error success envelopes require declared response headers.
 const _missingManifestRouteEnvelopeHeaders: JoorManifestRouteEnvelope<
   typeof manifest,
@@ -2157,6 +2163,10 @@ const manifestSubpathEnvelope: JoorSubpathManifestRouteEnvelope<
   typeof manifestFromSubpath,
   'users.get'
 > = manifestRouteEnvelope;
+const manifestSubpathEnvelopeUnion: JoorSubpathManifestRouteEnvelopeUnion<
+  typeof manifestFromSubpath
+> = manifestSubpathEnvelope;
+manifestSubpathEnvelopeUnion.id.toUpperCase();
 const manifestSubpathBodyResultFor: JoorSubpathManifestRouteBodyResultFor<
   typeof manifestFromSubpath,
   typeof manifestSubpathProtocolRequest

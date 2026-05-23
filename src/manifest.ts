@@ -19,6 +19,7 @@ import type {
   RpcRouteClientArgs,
   RpcRouteClientHeaders,
   RpcRouteEnvelope,
+  RpcRouteEnvelopeUnion,
   RpcRouteError,
   RpcRouteErrorCode,
   RpcRouteErrorDetails,
@@ -166,6 +167,10 @@ export type JoorManifestRouteEnvelope<
   TManifest,
   TId extends JoorManifestUnaryRouteId<TManifest>,
 > = RpcRouteEnvelope<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestRouteEnvelopeUnion<TManifest> = RpcRouteEnvelopeUnion<
+  JoorManifestRoutes<TManifest>
+>;
 
 export type JoorManifestRouteRequest<
   TManifest,
