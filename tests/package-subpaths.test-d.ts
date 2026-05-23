@@ -182,6 +182,16 @@ export type PackageSubpathSurface = [
   Schema.Infer<typeof packageSubpathOutputSchema>,
   Runtime.JoorFetchHandler,
   AwsLambda.AwsLambdaHandler,
+  AwsLambda.AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  AwsLambda.AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
   Body.BodySizeLimitError,
   Bun.BunFetchHandler,
   Cloudflare.CloudflareFetchHandler,

@@ -96,6 +96,14 @@ import {
   type AwsLambdaHttpApiHandler,
   type AwsLambdaHttpApiHandlerOptionsArgs,
   type AwsLambdaHttpApiHandlerOptionsFor,
+  type AwsLambdaHttpApiRouteStreamHandlerOptionsArgs,
+  type AwsLambdaHttpApiRouteStreamHandlerOptionsFor,
+  type AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs,
+  type AwsLambdaHttpApiRouteUnaryHandlerOptionsFor,
+  type AwsLambdaHttpApiStreamRouteHandlerOptionsArgs,
+  type AwsLambdaHttpApiStreamRouteHandlerOptionsFor,
+  type AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs,
+  type AwsLambdaHttpApiUnaryRouteHandlerOptionsFor,
   type AwsLambdaHttpEventV2,
   type AwsLambdaHttpResponseV2,
   type AwsLambdaRestApiEventV1,
@@ -1335,6 +1343,15 @@ import {
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
   type AwsLambdaHttpApiHandler as RuntimeSubpathAwsLambdaHttpApiHandler,
+  type AwsLambdaHttpApiHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiHandlerOptionsFor,
+  type AwsLambdaHttpApiRouteStreamHandlerOptionsArgs as RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs,
+  type AwsLambdaHttpApiRouteStreamHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsFor,
+  type AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs as RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs,
+  type AwsLambdaHttpApiRouteUnaryHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsFor,
+  type AwsLambdaHttpApiStreamRouteHandlerOptionsArgs as RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs,
+  type AwsLambdaHttpApiStreamRouteHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsFor,
+  type AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs as RuntimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs,
+  type AwsLambdaHttpApiUnaryRouteHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsFor,
   type AwsLambdaRestApiHandler as RuntimeSubpathAwsLambdaRestApiHandler,
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
   type ElysiaHandler as RuntimeSubpathElysiaHandler,
@@ -9652,6 +9669,10 @@ const awsLambdaHttpApiHandlerOptions: AwsLambdaHttpApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptions;
+const runtimeSubpathAwsLambdaHttpApiHandlerOptions: RuntimeSubpathAwsLambdaHttpApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiHandlerOptions;
 const awsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9663,6 +9684,7 @@ const runtimeSubpathAwsLambdaRestApiHandlerOptions: RuntimeSubpathAwsLambdaRestA
 exactAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 awsLambdaHttpApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHttpApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaRestApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const awsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
   typeof manifest,
@@ -9682,6 +9704,42 @@ const awsLambdaStreamRouteHandlerOptions: AwsLambdaStreamRouteHandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = awsLambdaRouteStreamHandlerOptions;
 awsLambdaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const awsLambdaHttpApiRouteUnaryHandlerOptions: AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiHandlerOptions;
+const awsLambdaHttpApiUnaryRouteHandlerOptions: AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteUnaryHandlerOptions;
+const awsLambdaHttpApiRouteStreamHandlerOptions: AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiHandlerOptions;
+const awsLambdaHttpApiStreamRouteHandlerOptions: AwsLambdaHttpApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteStreamHandlerOptions;
+const runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptions: RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteUnaryHandlerOptions;
+const runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptions: RuntimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptions;
+const runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptions: RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteStreamHandlerOptions;
+const runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptions: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptions;
+awsLambdaHttpApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+awsLambdaHttpApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const awsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9708,6 +9766,40 @@ const awsLambdaHttpApiHandlerOptionsArgs: AwsLambdaHttpApiHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptionsArgs;
+const awsLambdaHttpApiRouteUnaryHandlerOptionsArgs: AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiHandlerOptionsArgs;
+const awsLambdaHttpApiUnaryRouteHandlerOptionsArgs: AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteUnaryHandlerOptionsArgs;
+const awsLambdaHttpApiRouteStreamHandlerOptionsArgs: AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiHandlerOptionsArgs;
+const awsLambdaHttpApiStreamRouteHandlerOptionsArgs: AwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+const runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+const runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+awsLambdaHttpApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+awsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const awsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9747,6 +9839,8 @@ const awsLambdaRestApiStreamRouteHandlerOptionsArgs: AwsLambdaRestApiStreamRoute
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiRouteStreamHandlerOptionsArgs;
 awsLambdaHttpApiHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 awsLambdaRestApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 awsLambdaRestApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
