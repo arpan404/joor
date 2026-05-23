@@ -286,6 +286,8 @@ export type {
   HandlerHooks,
   HandlerHooksFor,
   DefineHandlerOptions,
+  DefineStreamRouteHandlerOptions,
+  DefineUnaryRouteHandlerOptions,
   HandlerOptionServices,
   HandlerOptionsArgsFor,
   HandlerOptionsArgs,

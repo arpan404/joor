@@ -945,6 +945,22 @@ export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   options: HandlerOptionsFor<TManifest, TPlugins, TBody>
 ) => HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DefineUnaryRouteHandlerOptions<TManifest extends RpcManifest> = <
+  const TPlugins extends readonly JoorPlugin<object>[],
+  const TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+>(
+  options: RpcManifestUnaryRouteHandlerOptionsFor<TManifest, TPlugins, TBody>
+) => RpcManifestUnaryRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DefineStreamRouteHandlerOptions<TManifest extends RpcManifest> = <
+  const TPlugins extends readonly JoorPlugin<object>[],
+  const TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+>(
+  options: RpcManifestStreamRouteHandlerOptionsFor<TManifest, TPlugins, TBody>
+) => RpcManifestStreamRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
 export function defineHandlerOptions<TManifest extends RpcManifest>(
   manifest: TManifest
 ): DefineHandlerOptions<TManifest>;

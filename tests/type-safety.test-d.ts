@@ -122,8 +122,11 @@ import {
   type DenoUnaryRouteTransportBodyResultFor,
   type DenoUnaryRouteTransportBodyResultHandlerFor,
   type DefineConfigFor,
+  type DefineHandlerOptions,
   type DefineStreamRouteConfigFor,
+  type DefineStreamRouteHandlerOptions,
   type DefineUnaryRouteConfigFor,
+  type DefineUnaryRouteHandlerOptions,
   type HandlerHookContext,
   type HandlerHookContextFor,
   type HandlerHooks,
@@ -554,6 +557,9 @@ import {
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
+  type DefineHandlerOptions as RpcSubpathDefineHandlerOptions,
+  type DefineStreamRouteHandlerOptions as RpcSubpathDefineStreamRouteHandlerOptions,
+  type DefineUnaryRouteHandlerOptions as RpcSubpathDefineUnaryRouteHandlerOptions,
   type HandlerOptionsArgs as RpcSubpathHandlerOptionsArgs,
   type HandlerOptionsArgsFor as RpcSubpathHandlerOptionsArgsFor,
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
@@ -4057,6 +4063,28 @@ exactDefinedHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const definedHandlerOptionsFactory: DefineHandlerOptions<typeof manifest> =
+  defineHandlerOptions(manifest);
+const definedUnaryRouteHandlerOptionsFactory: DefineUnaryRouteHandlerOptions<
+  typeof manifest
+> = defineHandlerOptions(manifest);
+const definedStreamRouteHandlerOptionsFactory: DefineStreamRouteHandlerOptions<
+  typeof manifest
+> = defineHandlerOptions(manifest);
+const definedUnaryRouteHandlerOptions = definedUnaryRouteHandlerOptionsFactory(
+  manifestUnaryRouteHandlerOptions
+);
+const definedStreamRouteHandlerOptions =
+  definedStreamRouteHandlerOptionsFactory(manifestStreamRouteHandlerOptions);
+definedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
+definedUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+definedStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const exactManifestAwareConfigShape: JoorConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -4095,6 +4123,28 @@ const rpcSubpathDefinedHandlerOptions = defineRpcSubpathHandlerOptions(
   plugins: [usersPlugin] as const,
 });
 rpcSubpathDefinedHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const rpcSubpathDefinedHandlerOptionsFactory: RpcSubpathDefineHandlerOptions<
+  typeof manifest
+> = defineRpcSubpathHandlerOptions(manifest);
+const rpcSubpathDefinedUnaryRouteHandlerOptionsFactory: RpcSubpathDefineUnaryRouteHandlerOptions<
+  typeof manifest
+> = defineRpcSubpathHandlerOptions(manifest);
+const rpcSubpathDefinedStreamRouteHandlerOptionsFactory: RpcSubpathDefineStreamRouteHandlerOptions<
+  typeof manifest
+> = defineRpcSubpathHandlerOptions(manifest);
+rpcSubpathDefinedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
+rpcSubpathDefinedUnaryRouteHandlerOptionsFactory(
+  rpcSubpathManifestUnaryRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+rpcSubpathDefinedStreamRouteHandlerOptionsFactory(
+  rpcSubpathManifestStreamRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 // @ts-expect-error service-aware handler options reject missing service plugins.
 const _missingServiceHandlerOptions: HandlerOptionsFor<
   typeof manifest,
