@@ -69,6 +69,7 @@ import {
   type CloudflareWorker,
   type CompiledAuthResult as RootCompiledAuthResult,
   type CompiledAuthResultLike as RootCompiledAuthResultLike,
+  type CompiledBodyResultFor as RootCompiledBodyResultFor,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
@@ -428,6 +429,7 @@ import {
 import type {
   CompiledAuthResult,
   CompiledAuthResultLike,
+  CompiledBodyResultFor,
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
@@ -2969,6 +2971,18 @@ compiledSerializedEnvelope.headers?.['cache-control']?.toUpperCase();
 const rootCompiledSerializedEnvelope: RootCompiledSerializedEnvelope =
   compiledSerializedEnvelope;
 rootCompiledSerializedEnvelope.body.toUpperCase();
+const compiledBodyResultFor: CompiledBodyResultFor<typeof manifest> =
+  manifestRouteBodyResult;
+const rootCompiledBodyResultFor: RootCompiledBodyResultFor<typeof manifest> =
+  compiledBodyResultFor;
+if (
+  !(rootCompiledBodyResultFor instanceof Response) &&
+  !Array.isArray(rootCompiledBodyResultFor) &&
+  'ok' in rootCompiledBodyResultFor &&
+  rootCompiledBodyResultFor.ok
+) {
+  rootCompiledBodyResultFor.data.name.toUpperCase();
+}
 const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   body: '{"ok":true}',
   headers: {

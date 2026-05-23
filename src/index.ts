@@ -271,6 +271,7 @@ export type {
   CompiledAuthResult,
   CompiledAuthResultLike,
   CompiledBodyResult,
+  CompiledBodyResultFor,
   CompiledDispatch,
   CompiledFixedDispatch,
   CompiledFixedUnaryDispatch,

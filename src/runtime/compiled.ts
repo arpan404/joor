@@ -45,6 +45,7 @@ import type {
   JoorMiddleware,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResult,
   RpcManifestBodyResultFor,
 } from '../rpc/dispatcher.js';
 import {
@@ -105,6 +106,9 @@ export type CompiledAuthResult = AuthResult;
 export type CompiledAuthResultLike = AuthResultLike;
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledBodyResultFor<TManifest extends JoorManifest> =
+  | RpcManifestBodyResult<TManifest>
+  | CompiledSerializedEnvelope;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
 export type CompiledRpcTransportBodyResultHandler<
