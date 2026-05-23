@@ -2558,7 +2558,7 @@ export type RouteStreamProtocolRequest<TId extends RouteStreamId> = JoorManifest
 export type StreamRouteProtocolRequest<TId extends RouteStreamId> = RouteStreamProtocolRequest<TId>;
 export type RouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolRequestUnion<Manifest>;
 export type StreamRouteProtocolRequestUnion = RouteStreamProtocolRequestUnion;
-export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
+export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[] = readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
 export type RouteBody = JoorManifestRouteBody<Manifest>;
 export type RouteUnaryBody =
   | RouteUnaryProtocolRequestUnion

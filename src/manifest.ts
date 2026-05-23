@@ -779,19 +779,22 @@ export type JoorManifestStreamRouteProtocolRequestUnion<TManifest> =
 export type JoorManifestRouteBatchRequest<
   TManifest,
   TRequests extends
-    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = RpcRouteBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestRouteUnaryBatchRequest<
   TManifest,
   TRequests extends
-    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = RpcRouteUnaryBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestUnaryRouteBatchRequest<
   TManifest,
   TRequests extends
-    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly JoorManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = JoorManifestRouteUnaryBatchRequest<TManifest, TRequests>;
 
 export type JoorManifestRouteRequestOptions<

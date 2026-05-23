@@ -538,17 +538,20 @@ export type RpcStreamRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> =
 
 export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
+    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
 > = TRequests;
 
 export type RpcRouteUnaryBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
+    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
 > = RpcRouteBatchRequest<TRoutes, TRequests>;
 
 export type RpcUnaryRouteBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
+    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
 > = RpcRouteUnaryBatchRequest<TRoutes, TRequests>;
 
 export type RpcRouteBody<TRoutes extends RpcRouteMap> =

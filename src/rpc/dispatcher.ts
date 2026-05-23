@@ -424,13 +424,15 @@ export type RpcManifestUnaryRouteProtocolRequestUnion<
 export type RpcManifestRouteBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = TRequests;
 
 export type RpcManifestRouteUnaryBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = RpcManifestRouteBatchRequest<TManifest, TRequests>;
 
 type RpcManifestRouteBatchResultRequest<TManifest extends RpcManifest> =
@@ -1279,7 +1281,8 @@ export type RpcManifestRouteUnaryRequestUnion<TManifest extends RpcManifest> =
 export type RpcManifestUnaryRouteBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = RpcManifestRouteUnaryBatchRequest<TManifest, TRequests>;
 
 export type RpcManifestUnaryRouteBatchResults<

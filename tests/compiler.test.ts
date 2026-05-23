@@ -1269,6 +1269,11 @@ routeUnaryResult.id.toUpperCase();
 const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
   unaryProtocolRequest,
 ];
+const defaultProtocolBatch: RouteProtocolBatchRequest = protocolBatch;
+const defaultProtocolBatchFirst = defaultProtocolBatch[0];
+if (defaultProtocolBatchFirst) {
+  defaultProtocolBatchFirst.id.toUpperCase();
+}
 const readonlyRouteBody: RouteBody = protocolBatch;
 protocolRequestUnion.id.toUpperCase();
 routeBody.id.toUpperCase();

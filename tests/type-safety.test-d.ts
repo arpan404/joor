@@ -3658,12 +3658,27 @@ const manifestBatchRequest: JoorManifestRouteBatchRequest<
   typeof manifest,
   [typeof manifestUnaryProtocolRequest]
 > = [manifestUnaryProtocolRequest];
+const defaultManifestBatchRequest: JoorManifestRouteBatchRequest<
+  typeof manifest
+> = manifestBatchRequest;
 manifestBatchRequest[0].input.id.toUpperCase();
+const defaultManifestBatchRequestFirst = defaultManifestBatchRequest[0];
+if (defaultManifestBatchRequestFirst) {
+  defaultManifestBatchRequestFirst.id.toUpperCase();
+}
 const manifestUnaryRouteBatchRequest: JoorManifestUnaryRouteBatchRequest<
   typeof manifest,
   [typeof manifestUnaryRouteProtocolRequest]
 > = [manifestUnaryRouteProtocolRequest];
+const defaultManifestUnaryRouteBatchRequest: JoorManifestUnaryRouteBatchRequest<
+  typeof manifest
+> = manifestUnaryRouteBatchRequest;
 manifestUnaryRouteBatchRequest[0].input.id.toUpperCase();
+const defaultManifestUnaryRouteBatchRequestFirst =
+  defaultManifestUnaryRouteBatchRequest[0];
+if (defaultManifestUnaryRouteBatchRequestFirst) {
+  defaultManifestUnaryRouteBatchRequestFirst.id.toUpperCase();
+}
 const readonlyManifestBatchRequest = [manifestUnaryProtocolRequest] as const;
 const manifestReadonlyBatchBody: JoorManifestRouteBody<typeof manifest> =
   readonlyManifestBatchRequest;
@@ -4320,11 +4335,27 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+const defaultPublicManifestBatchRequest: RpcManifestRouteBatchRequest<
+  typeof manifest
+> = publicManifestBatchRequest;
 const publicManifestUnaryRouteBatchRequest: RpcManifestUnaryRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryRouteProtocolRequest]
 > = [publicManifestUnaryRouteProtocolRequest];
+const defaultPublicManifestUnaryRouteBatchRequest: RpcManifestUnaryRouteBatchRequest<
+  typeof manifest
+> = publicManifestUnaryRouteBatchRequest;
+const defaultPublicManifestBatchRequestFirst =
+  defaultPublicManifestBatchRequest[0];
+if (defaultPublicManifestBatchRequestFirst) {
+  defaultPublicManifestBatchRequestFirst.id.toUpperCase();
+}
 publicManifestUnaryRouteBatchRequest[0].input.id.toUpperCase();
+const defaultPublicManifestUnaryRouteBatchRequestFirst =
+  defaultPublicManifestUnaryRouteBatchRequest[0];
+if (defaultPublicManifestUnaryRouteBatchRequestFirst) {
+  defaultPublicManifestUnaryRouteBatchRequestFirst.id.toUpperCase();
+}
 const publicManifestBatchResults: RpcManifestRouteBatchResults<
   typeof manifest,
   readonly [typeof publicManifestRouteRequest]
@@ -9089,12 +9120,25 @@ const routeBatchRequest: RpcRouteBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = [routeProtocolRequest];
+const defaultRouteBatchRequest: RpcRouteBatchRequest<Routes> =
+  routeBatchRequest;
 routeBatchRequest[0].input.id.toUpperCase();
+const defaultRouteBatchRequestFirst = defaultRouteBatchRequest[0];
+if (defaultRouteBatchRequestFirst) {
+  defaultRouteBatchRequestFirst.id.toUpperCase();
+}
 const unaryRouteBatchRequestAlias: RpcUnaryRouteBatchRequest<
   Routes,
   [typeof unaryRouteProtocolRequestAlias]
 > = [unaryRouteProtocolRequestAlias];
+const defaultUnaryRouteBatchRequestAlias: RpcUnaryRouteBatchRequest<Routes> =
+  unaryRouteBatchRequestAlias;
 unaryRouteBatchRequestAlias[0].input.id.toUpperCase();
+const defaultUnaryRouteBatchRequestAliasFirst =
+  defaultUnaryRouteBatchRequestAlias[0];
+if (defaultUnaryRouteBatchRequestAliasFirst) {
+  defaultUnaryRouteBatchRequestAliasFirst.id.toUpperCase();
+}
 const routeBatchBody: RpcRouteBody<Routes> = routeBatchRequest;
 routeBatchBody.length.toFixed();
 const unaryRouteBatchBodyAlias: RpcUnaryRouteBody<Routes> =
