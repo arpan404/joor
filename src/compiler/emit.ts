@@ -2627,7 +2627,7 @@ ${indent}};`
   const defaultUrl = config?.path ?? '/rpc';
   await writeFile(
     `${outDir}/client.ts`,
-    `import { createManifestClient as createTransportClient } from 'joor/client';
+    `import { createManifestClient as createTransportClient, type ClientBatchOptions } from 'joor/client';
 import type { JoorManifestClientOptions, JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteClientArgs, JoorManifestRouteClientHeaders, JoorManifestRouteEnvelope, JoorManifestRouteEnvelopeUnion, JoorManifestRouteError, JoorManifestRouteErrorCode, JoorManifestRouteErrorDetails, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProcedure, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestOptions, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteResult, JoorManifestRouteResultUnion, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamId, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteStreamRequest, JoorManifestRouteStreamRequestUnion, JoorManifestRouteUnaryId, JoorManifestRouteUnaryProcedure, JoorManifestRouteStreamProcedure, JoorManifestRouteUnaryInput, JoorManifestRouteStreamInput, JoorManifestRouteUnaryOutput, JoorManifestRouteStreamOutput, JoorManifestRouteUnaryHeaders, JoorManifestRouteStreamHeaders, JoorManifestRouteUnaryClientHeaders, JoorManifestRouteStreamClientHeaders, JoorManifestRouteUnaryResponseHeaders, JoorManifestRouteStreamResponseHeaders, JoorManifestRouteUnaryError, JoorManifestRouteStreamError, JoorManifestRouteUnaryErrorCode, JoorManifestRouteStreamErrorCode, JoorManifestRouteUnaryErrorDetails, JoorManifestRouteStreamErrorDetails, JoorManifestRouteUnaryEnvelope, JoorManifestRouteUnaryEnvelopeUnion, JoorManifestRouteUnaryResult, JoorManifestRouteUnaryResultUnion, JoorManifestRouteUnaryHasHeaders, JoorManifestRouteStreamHasHeaders, JoorManifestRouteUnaryRequiresHeaders, JoorManifestRouteStreamRequiresHeaders, JoorManifestRouteUnaryHasResponseHeaders, JoorManifestRouteStreamHasResponseHeaders, JoorManifestRouteUnaryRequiresResponseHeaders, JoorManifestRouteStreamRequiresResponseHeaders, JoorManifestRouteUnaryRequestOptions, JoorManifestRouteStreamRequestOptions, JoorManifestRouteUnaryClientArgs, JoorManifestRouteStreamClientArgs, JoorManifestRouteUnaryBatchRequest, JoorManifestRouteUnaryBatchResults, JoorManifestRouteUnaryBodyResult, JoorManifestRouteStreamBodyResult, JoorManifestRouteUnaryBodyResultFor, JoorManifestRouteStreamBodyResultFor, JoorManifestRouteUnaryRequest, JoorManifestRouteUnaryRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteClientArgs, JoorManifestStreamRouteClientHeaders, JoorManifestStreamRouteError, JoorManifestStreamRouteErrorCode, JoorManifestStreamRouteErrorDetails, JoorManifestStreamRouteEvent, JoorManifestStreamRouteHasHeaders, JoorManifestStreamRouteHasResponseHeaders, JoorManifestStreamRouteHeaders, JoorManifestStreamRouteInput, JoorManifestStreamRouteOutput, JoorManifestStreamRouteProcedure, JoorManifestStreamRouteRequiresHeaders, JoorManifestStreamRouteRequiresResponseHeaders, JoorManifestStreamRouteResponseHeaders, JoorManifestStreamRouteRequestOptions, JoorManifestTransportClient, JoorManifestUnaryRouteClientArgs, JoorManifestUnaryRouteClientHeaders, JoorManifestUnaryRouteEnvelope, JoorManifestUnaryRouteError, JoorManifestUnaryRouteErrorCode, JoorManifestUnaryRouteErrorDetails, JoorManifestUnaryRouteHasHeaders, JoorManifestUnaryRouteHasResponseHeaders, JoorManifestUnaryRouteHeaders, JoorManifestUnaryRouteInput, JoorManifestUnaryRouteOutput, JoorManifestUnaryRouteProcedure, JoorManifestUnaryRouteResponseHeaders, JoorManifestUnaryRouteResult, JoorManifestUnaryRouteRequiresHeaders, JoorManifestUnaryRouteRequiresResponseHeaders, JoorManifestUnaryRouteRequestOptions } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
@@ -2801,8 +2801,10 @@ export type RouteStreamFunction<TId extends RouteStreamId = RouteStreamId> = {
 }[TId];
 export type StreamRouteFunction<TId extends RouteStreamId = RouteStreamId> =
   RouteStreamFunction<TId>;
+export type BatchOptions = ClientBatchOptions;
 export type BatchFunction = <const TRequests extends RouteBatchRequest>(
-  requests: TRequests
+  requests: TRequests,
+  options?: BatchOptions
 ) => Promise<RouteBatchResults<TRequests>>;
 export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
   url?: string;
@@ -2866,7 +2868,8 @@ export const createClient = (options: GeneratedClientOptions = {}): GeneratedCli
       routeTransport.stream(id, ...args);
     return Object.assign(stream, { stream });
   };
-  const batch: BatchFunction = (requests) => transport.batch(requests);
+  const batch: BatchFunction = (requests, options) =>
+    transport.batch(requests, options);
   return {
 ${clientBody}
     batch,

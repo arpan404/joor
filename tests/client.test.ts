@@ -121,6 +121,72 @@ describe('client', () => {
     expect(seen[1]?.get('x-batch')).toBe('batch');
   });
 
+  it('forwards request init options through calls, batches, and streams', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const seen: Request[] = [];
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      request: {
+        cache: 'reload',
+        credentials: 'same-origin',
+      },
+      async fetch(request) {
+        seen.push(request);
+        if (request.headers.get('accept') === 'text/event-stream') {
+          return new Response('event: done\ndata: null\n\n', {
+            headers: { 'content-type': 'text/event-stream' },
+          });
+        }
+        const body = await request.json();
+        return Response.json(
+          Array.isArray(body)
+            ? body.map((entry) => ({ ok: true, id: entry.id, data: {} }))
+            : { ok: true, id: body.id, data: { ok: true } }
+        );
+      },
+    });
+
+    await client.call<typeof procedure>(
+      'call',
+      { ok: true },
+      {
+        request: {
+          credentials: 'include',
+          keepalive: true,
+        },
+      }
+    );
+    await client.batch(
+      [{ id: 'batch', input: { ok: true } }] as const,
+      {
+        headers: { 'x-batch': '1' },
+        request: { cache: 'no-store' },
+      }
+    );
+    for await (const _event of client.stream<StreamTestProcedure>(
+      'stream',
+      { ok: true },
+      { request: { redirect: 'manual' } }
+    )) {
+      void _event;
+    }
+
+    expect(seen[0]?.credentials).toBe('include');
+    expect(seen[0]?.cache).toBe('reload');
+    expect(seen[0]?.keepalive).toBe(true);
+    expect(seen[1]?.credentials).toBe('same-origin');
+    expect(seen[1]?.cache).toBe('no-store');
+    expect(seen[1]?.headers.get('x-batch')).toBe('1');
+    expect(seen[2]?.redirect).toBe('manual');
+    expect(seen[2]?.cache).toBe('reload');
+  });
+
   it('bounds SSE event buffering', async () => {
     const client = createClient({
       url: 'http://localhost/rpc',

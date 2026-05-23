@@ -29,6 +29,7 @@ export interface ClientOptions<
   url: string;
   fetch?: ClientFetch;
   headers?: ClientHeaderValues;
+  request?: ClientRequestInit;
   manifest?: TManifest;
   maxStreamEventBytes?: number;
 }
@@ -36,6 +37,11 @@ export interface ClientOptions<
 export type ClientFetch = (request: Request) => Promise<Response>;
 
 export type ClientHeaderValues = Record<string, string | undefined>;
+
+export type ClientRequestInit = Omit<
+  RequestInit,
+  'body' | 'headers' | 'method'
+>;
 
 export type RpcRouteMap = Record<string, ProcedureRuntime>;
 
@@ -840,10 +846,21 @@ export type RpcUnaryRouteBatchResults<
 > = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
 
 export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
-  ? { headers?: ClientHeaderValues }
+  ? { headers?: ClientHeaderValues; request?: ClientRequestInit }
   : ProcedureRequiresHeaders<TProcedure> extends false
-    ? { headers?: ClientProcedureHeaders<TProcedure> }
-    : { headers: ClientProcedureHeaders<TProcedure> };
+    ? {
+        headers?: ClientProcedureHeaders<TProcedure>;
+        request?: ClientRequestInit;
+      }
+    : {
+        headers: ClientProcedureHeaders<TProcedure>;
+        request?: ClientRequestInit;
+      };
+
+export interface ClientBatchOptions {
+  headers?: ClientHeaderValues;
+  request?: ClientRequestInit;
+}
 
 export type RpcRouteRequestOptions<
   TRoutes extends RpcRouteMap,
@@ -961,7 +978,8 @@ export interface LegacyRpcTransportClient {
   ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId> &
     PendingRpcRequestHeaders<RpcUnaryProcedure<TProcedure>>;
   batch<const TRequests extends readonly PendingRpcRequest[]>(
-    requests: TRequests
+    requests: TRequests,
+    options?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>>;
   stream<TProcedure>(
     id: string,
@@ -982,7 +1000,8 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ): RpcRouteRequest<TRoutes, TId>;
   batch<const TRequests extends readonly RpcRouteRequestUnion<TRoutes>[]>(
-    requests: TRequests
+    requests: TRequests,
+    options?: ClientBatchOptions
   ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
 }
 
@@ -1057,6 +1076,21 @@ const createHeaders = (
   output.set('content-type', 'application/json');
   return output;
 };
+
+const createRpcRequest = (
+  url: string,
+  body: JsonValue,
+  headers: Headers,
+  baseRequest?: ClientRequestInit,
+  request?: ClientRequestInit
+): Request =>
+  new Request(url, {
+    ...baseRequest,
+    ...request,
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
 
 const defaultMaxStreamEventBytes = 1024 * 1024;
 
@@ -1135,11 +1169,13 @@ export function createClient(
   > => {
     const [callOptions] = requestOptions;
     const response = await fetcher(
-      new Request(options.url, {
-        method: 'POST',
-        headers: createHeaders(options.headers, callOptions?.headers),
-        body: JSON.stringify({ id, input }),
-      })
+      createRpcRequest(
+        options.url,
+        { id, input } as JsonValue,
+        createHeaders(options.headers, callOptions?.headers),
+        options.request,
+        callOptions?.request
+      )
     );
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
@@ -1165,23 +1201,29 @@ export function createClient(
     }) as PendingRpcRequest<TProcedure, TId> &
       PendingRpcRequestHeaders<TProcedure>;
   const batch = async <const TRequests extends readonly PendingRpcRequest[]>(
-    requests: TRequests
+    requests: TRequests,
+    batchOptions?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>> => {
     const body: RpcRequest[] = requests.map((pending) => ({
       id: pending.id,
       input: pending.input as JsonValue,
     }));
-    const requestHeaders = createHeaders(options.headers);
+    const requestHeaders = createHeaders(
+      options.headers,
+      batchOptions?.headers
+    );
     for (const pending of requests) {
       appendStringHeaders(requestHeaders, pending.headers);
     }
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(
-      new Request(options.url, {
-        method: 'POST',
-        headers: requestHeaders,
-        body: JSON.stringify(body),
-      })
+      createRpcRequest(
+        options.url,
+        body as unknown as JsonValue,
+        requestHeaders,
+        options.request,
+        batchOptions?.request
+      )
     );
     return (await response.json()) as BatchResults<TRequests>;
   };
@@ -1199,11 +1241,13 @@ export function createClient(
       );
       headers.set('accept', 'text/event-stream');
       const response = await fetcher(
-        new Request(options.url, {
-          method: 'POST',
+        createRpcRequest(
+          options.url,
+          { id, input } as JsonValue,
           headers,
-          body: JSON.stringify({ id, input }),
-        })
+          options.request,
+          requestOptions[0]?.request
+        )
       );
       yield* parseSse<JsonValue>(
         response,

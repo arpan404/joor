@@ -104,10 +104,13 @@ import {
   type BunUnaryRouteServeOptionsFor,
   type BunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor,
+  type ClientBatchOptions,
   type ClientFetch,
   type ClientHeaderValues,
   type ClientOptions,
   type ClientProcedureHeaders,
+  type ClientRequestInit,
+  type ClientRequestOptions,
   type CloudflareFetchHandler,
   type CloudflareFetchOptionsArgs,
   type CloudflareFetchOptionsFor,
@@ -2386,10 +2389,29 @@ const subpathResponseHeaders: SubpathProcedureResponseHeaders<
 subpathResponseHeaders['cache-control'].toUpperCase();
 
 const client = createClient({ url: '/rpc' });
+const clientRequestInit: ClientRequestInit = {
+  cache: 'no-store',
+  credentials: 'include',
+};
+const _wrongClientRequestInit: ClientRequestInit = {
+  cache: 'reload',
+  // @ts-expect-error client request init cannot override the RPC HTTP method.
+  method: 'GET',
+};
+_wrongClientRequestInit.cache?.toUpperCase();
+const clientBatchOptions: ClientBatchOptions = {
+  headers: { 'x-batch': '1' },
+  request: clientRequestInit,
+};
+const clientRequestOptions: ClientRequestOptions<typeof procedure> = {
+  headers: { 'x-tenant-id': 'tenant-1' },
+  request: clientRequestInit,
+};
+clientRequestOptions.headers['x-tenant-id'].toUpperCase();
 client.call<typeof procedure>(
   'users.get',
   { id: '1' },
-  { headers: { 'x-tenant-id': 'tenant-1' } }
+  clientRequestOptions
 );
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
@@ -3193,6 +3215,10 @@ legacyClient
       first.headers?.['cache-control']?.toUpperCase();
     }
   });
+legacyClient.batch(
+  [{ id: 'users.untyped', input: { id: '1' } }] as const,
+  clientBatchOptions
+);
 const untypedLegacyBatchResults: BatchResults<
   readonly [typeof legacyUntypedRequest]
 > = [
