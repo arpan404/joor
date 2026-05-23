@@ -216,6 +216,7 @@ Custom adapters can reuse `joor/runtime/body` for JSON body limits and `joor/run
 
 Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createCloudflareWorkerFor<Env, Context, Request>()` preserves typed Worker bindings, `createNextRouteHandlers()` returns App Router method exports, `createVercelFunction()` returns a fetch object, `createNetlifyEdgeFunction()` returns a Netlify Edge handler, and `createNetlifyEdgeFunctionFor<Context, Request>()` preserves the Netlify context object. Framework adapters also provide typed factory forms such as `createJoorHandlerFor<Request>()`, `createBunFetchFor<Request>()`, `createDenoFetchFor<Request>()`, `createCloudflareFetchFor<Request>()`, `createVercelFetchFor<Request>()`, `createNetlifyFetchFor<Request>()`, `createAwsLambdaHandlerFor<Event>()`, `createNodeRpcRequestHandlerFor<Request, Response>()`, `createExpressHandlerFor<Request, Response>()`, `createFastifyHandlerFor<Request, Reply>()`, `createKoaHandlerFor<Context>()`, `createHonoHandlerFor<Context>()`, and `createElysiaHandlerFor<Context>()` for apps with extended runtime event or framework context types.
 Compiled runtime helpers mirror the same request typing with `createCompiledRpcHandlerFor<Request>()` and `createDenoCompiledTransportRequestHandlerFor<Request>()`.
+Generated native dispatcher, Bun, and Deno entrypoints also export `createFetchFor<Request>()` so generated handlers can preserve extended request types.
 
 ## Next.js API Routes
 

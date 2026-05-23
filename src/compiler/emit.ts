@@ -127,6 +127,7 @@ const emitProfileDispatcher = async (
     'createCompiledRuntimeState',
     'createCompiledRpcBodyResultHandler',
     'createCompiledRpcHandler',
+    'createCompiledRpcHandlerFor',
     'createCompiledRpcTransportBodyResultHandler',
     ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
     ...(usesValidationDetails ? ['compiledValidationDetails'] : []),
@@ -306,7 +307,7 @@ export type NativeServices = ${nativeServicesType};
 export type NativeRuntimeState = CompiledRuntimeState<NativeServices>;
 export type NativeDispatch = CompiledDispatch<NativeServices>;
 export type NativeUnaryDispatch = CompiledFixedUnaryDispatch<NativeServices>;
-export type NativeFetchHandler = CompiledRpcRequestHandler;
+export type NativeFetchHandler<TRequest extends Request = Request> = CompiledRpcRequestHandler<TRequest>;
 export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
 export type NativeRouteUnaryId = JoorManifestRouteUnaryId<NativeManifest>;
 export type NativeUnaryRouteId = NativeRouteUnaryId;
@@ -855,6 +856,8 @@ export const transport: NativeTransportHandler = createCompiledRpcTransportBodyR
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
+export const createFetchFor = <TRequest extends Request>(): NativeFetchHandler<TRequest> =>
+  createCompiledRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
   );
@@ -1307,20 +1310,20 @@ ${nodeFastCases}
 };`;
   const denoUseCompiledUnaryFastPath = useBareDispatcher;
   const denoTransportImport = denoUseCompiledUnaryFastPath
-    ? "import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';"
-    : "import { createDenoTransportRequestHandler } from 'joor/runtime/deno-transport';";
+    ? "import { createDenoCompiledTransportRequestHandlerFor } from 'joor/runtime/deno-compiled-transport';"
+    : "import { createDenoTransportRequestHandlerFor } from 'joor/runtime/deno-transport';";
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
     ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './deno-dispatcher.ts';"
     : "import { nativeTransport } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
-    ? `return createDenoCompiledTransportRequestHandler(
+    ? `return createDenoCompiledTransportRequestHandlerFor<TRequest>()(
     nativeRuntime,
     nativeTransport,
     nativeUnaryDispatch,
     bodyLimit,
     createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`
-    : `return createDenoTransportRequestHandler(
+    : `return createDenoTransportRequestHandlerFor<TRequest>()(
     nativeTransport,
     bodyLimit,
     createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
@@ -2452,7 +2455,9 @@ export interface NativeCorsOptions {
   headers?: string[];
 }
 
-export type BunNativeFetchHandler = (request: Request) => Response | Promise<Response>;
+export type BunNativeFetchHandler<TRequest extends Request = Request> = (
+  request: TRequest
+) => Response | Promise<Response>;
 
 export interface BunNativeServer {
   readonly hostname?: string;
@@ -2463,16 +2468,16 @@ export interface BunNativeServer {
   unref?(): void;
 }
 
-export const createFetch = (
-  options: BunNativeOptions = {}
-): BunNativeFetchHandler => {
+export const createFetchFor =
+  <TRequest extends Request>() =>
+  (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsHeaders(options.cors);
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
   const unlimitedBody = bodyLimit >= Number.MAX_SAFE_INTEGER;
-  return async (request: Request): Promise<Response> => {
+  return async (request: TRequest): Promise<Response> => {
     const early = preflight(request, path, cors);
     if (early !== undefined) return early;
     let body: JsonValue;
@@ -2511,6 +2516,10 @@ export const createFetch = (
     );
   };
 };
+
+export const createFetch = (
+  options: BunNativeOptions = {}
+): BunNativeFetchHandler => createFetchFor<Request>()(options);
 
 export const fetch: BunNativeFetchHandler = createFetch();
 
@@ -2570,7 +2579,9 @@ export interface DenoNativeOptions {
   port?: number;
 }
 
-export type DenoNativeFetchHandler = (request: Request) => Response | Promise<Response>;
+export type DenoNativeFetchHandler<TRequest extends Request = Request> = (
+  request: TRequest
+) => Response | Promise<Response>;
 
 export interface DenoNativeServer {
   readonly finished: Promise<void>;
@@ -2579,15 +2590,19 @@ export interface DenoNativeServer {
   unref?(): void;
 }
 
-export const createFetch = (
-  options: DenoNativeOptions = {}
-): DenoNativeFetchHandler => {
+export const createFetchFor =
+  <TRequest extends Request>() =>
+  (options: DenoNativeOptions = {}): DenoNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsOptions(options.cors);
   const bodyLimit =
     options.maxBodyBytes ?? configuredMaxBodyBytes;
   ${denoCreateFetchReturn}
 };
+
+export const createFetch = (
+  options: DenoNativeOptions = {}
+): DenoNativeFetchHandler => createFetchFor<Request>()(options);
 
 export const fetch: DenoNativeFetchHandler = createFetch();
 
