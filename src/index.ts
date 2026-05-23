@@ -448,10 +448,14 @@ export type {
   ProcedureSuccess,
 } from './procedure/result.js';
 export type {
+  BunFetchOptionsArgs,
   BunFetchHandler,
+  BunRpcRequestHandlerOptionsArgs,
   BunRpcRequestHandler,
   BunServer,
+  BunStreamRouteServeOptionsArgs,
   BunStreamRouteServeOptionsFor,
+  BunServeOptionsArgs,
   BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
@@ -461,6 +465,7 @@ export type {
   BunStreamRouteTransportBodyResultFor,
   BunStreamRouteTransportBodyResultHandlerFor,
   BunTransportRequestHandler,
+  BunUnaryRouteServeOptionsArgs,
   BunUnaryRouteServeOptionsFor,
   BunUnaryRouteTransportBodyResultFor,
   BunUnaryRouteTransportBodyResultHandlerFor,
@@ -515,10 +520,14 @@ export type {
   DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno-compiled-transport.js';
 export type {
+  DenoFetchOptionsArgs,
   DenoFetchHandler,
+  DenoRpcRequestHandlerOptionsArgs,
   DenoRpcRequestHandler,
   DenoServer,
+  DenoStreamRouteServeOptionsArgs,
   DenoStreamRouteServeOptionsFor,
+  DenoServeOptionsArgs,
   DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
@@ -528,6 +537,7 @@ export type {
   DenoStreamRouteTransportBodyResultFor,
   DenoStreamRouteTransportBodyResultHandlerFor,
   DenoTransportRequestHandler,
+  DenoUnaryRouteServeOptionsArgs,
   DenoUnaryRouteServeOptionsFor,
   DenoUnaryRouteTransportBodyResultFor,
   DenoUnaryRouteTransportBodyResultHandlerFor,
@@ -568,10 +578,13 @@ export type {
   NextUnaryRouteHandlersOptionsFor,
 } from './runtime/next.js';
 export type {
+  ListenOptionsArgs,
   ListenOptionsFor,
   ListenOptions,
+  NodeRpcRequestHandlerOptionsArgs,
   NodeServer,
   NodeRpcRequestHandler,
+  StreamRouteListenOptionsArgs,
   StreamRouteListenOptionsFor,
   NodeTransportBodyResult,
   NodeTransportBodyResultFor,
@@ -579,9 +592,12 @@ export type {
   NodeTransportBodyResultHandlerFor,
   NodeStreamRouteTransportBodyResultFor,
   NodeStreamRouteTransportBodyResultHandlerFor,
+  NodeStreamRouteRpcRequestHandlerOptionsArgs,
+  UnaryRouteListenOptionsArgs,
   UnaryRouteListenOptionsFor,
   NodeUnaryRouteTransportBodyResultFor,
   NodeUnaryRouteTransportBodyResultHandlerFor,
+  NodeUnaryRouteRpcRequestHandlerOptionsArgs,
 } from './runtime/node.js';
 export type {
   VercelFetchHandler,

@@ -74,6 +74,57 @@ export type StreamRouteListenOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = ListenOptionsFor<TManifest, TPlugins, TBody>;
 
+export type ListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgsFor<TManifest, TPlugins, ListenOptions<TPlugins>, TBody>;
+
+export type UnaryRouteListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = ListenOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type StreamRouteListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = ListenOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NodeRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsWithTrailingArgs<
+  TManifest,
+  [hostname?: string],
+  TPlugins,
+  TBody
+>;
+
+export type NodeUnaryRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NodeRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NodeRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type NodeRpcRequestHandler = (
   incoming: IncomingMessage,
   outgoing: ServerResponse<IncomingMessage>
