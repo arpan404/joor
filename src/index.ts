@@ -40,6 +40,7 @@ export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
 export {
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerWithPath,
   listen,
 } from './runtime/node.js';
 export {

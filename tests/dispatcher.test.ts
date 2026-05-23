@@ -1,3 +1,4 @@
+import { createServer } from 'node:http';
 import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import listPosts from './fixtures/basic-app/rpc/posts/list.rpc.js';
@@ -16,6 +17,7 @@ import {
 } from '../src/runtime/compiled.js';
 import { createBunTransportRequestHandlerWithPath } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
+import { createNodeTransportRequestHandlerWithPath } from '../src/runtime/node.js';
 
 const manifest = {
   procedures: {
@@ -408,6 +410,71 @@ describe('dispatcher', () => {
       traceId: 'trace-bun-transport',
       data: { ok: true },
     });
+  });
+
+  it('handles path-scoped Node transport requests', async () => {
+    const handler = createNodeTransportRequestHandlerWithPath(
+      async (_request, body) => {
+        const id =
+          typeof body === 'object' &&
+          body !== null &&
+          'id' in body &&
+          typeof body['id'] === 'string'
+            ? body['id']
+            : 'unknown';
+        return {
+          ok: true,
+          id,
+          traceId: 'trace-node-transport',
+          data: { ok: true },
+        };
+      },
+      '/rpc',
+      '127.0.0.1'
+    );
+    const server = createServer((incoming, outgoing) => {
+      void handler(incoming, outgoing);
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    try {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        throw new Error('Expected Node test server to listen on a TCP port');
+      }
+      const base = `http://127.0.0.1:${address.port}`;
+      const wrongPath = await fetch(`${base}/not-rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      });
+
+      expect(wrongPath.status).toBe(404);
+
+      const response = await fetch(`${base}/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body).toMatchObject({
+        ok: true,
+        id: 'users.get',
+        traceId: 'trace-node-transport',
+        data: { ok: true },
+      });
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
   });
 
   it('caches successful query responses when meta.cache is configured', async () => {

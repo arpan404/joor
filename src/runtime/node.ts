@@ -586,6 +586,22 @@ export const createNodeTransportRequestHandler = <
   };
 };
 
+export const createNodeTransportRequestHandlerWithPath = <
+  TBody = JsonValue,
+  TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
+>(
+  handler: NodeTransportBodyResultHandler<TBody, TResult>,
+  path: string,
+  hostname = '0.0.0.0',
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): NodeRpcRequestHandler =>
+  createNodeTransportRequestHandler(
+    handler,
+    hostname,
+    maxBodyBytes,
+    createRpcRequestPreflight({ path })
+  );
+
 export function listen<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

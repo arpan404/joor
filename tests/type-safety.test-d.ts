@@ -24,6 +24,7 @@ import {
   createNextRouteHandlers,
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerWithPath,
   createVercelFetch,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
@@ -1069,6 +1070,7 @@ import {
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createVercelFetch as createRuntimeSubpathVercelFetch,
   isRpcEnvelopeArray as isRuntimeSubpathRpcEnvelopeArray,
   isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
@@ -9566,6 +9568,7 @@ const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
+createNodeTransportRequestHandlerWithPath(routeTypedNodeTransportHandler, '/rpc');
 const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
@@ -9788,6 +9791,10 @@ const runtimeSubpathNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultH
 > = runtimeSubpathBunTransportHandler;
 createRuntimeSubpathNodeTransportRequestHandler(
   runtimeSubpathNodeTransportHandler
+);
+createRuntimeSubpathNodeTransportRequestHandlerWithPath(
+  runtimeSubpathNodeTransportHandler,
+  '/rpc'
 );
 const runtimeSubpathManifestNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultHandlerFor<
   typeof manifest
