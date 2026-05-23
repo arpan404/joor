@@ -124,6 +124,19 @@ describe('compiler', () => {
       ).resolves.toContain('export type NativeBodyHandler');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain("from 'joor/context'");
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain(
+        'export type NativeTransportRequest = ContextRequestSource'
+      );
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.not.toContain(
+        'Parameters<CompiledRpcTransportBodyResultHandler'
+      );
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
         'CompiledRpcTransportBodyResultHandlerFor<NativeManifest>'
       );

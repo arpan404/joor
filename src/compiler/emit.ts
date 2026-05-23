@@ -175,6 +175,8 @@ const emitProfileDispatcher = async (
     ? "import type { ProcedureServices, RpcError } from 'joor/procedure';\n"
     : '';
   const manifestTypeImport = `import type { ${manifestTypeImports.join(', ')} } from 'joor/manifest';\n`;
+  const contextTypeImport =
+    "import type { ContextRequestSource } from 'joor/context';\n";
   const serviceTypeImport =
     configPath === undefined
       ? ''
@@ -232,7 +234,7 @@ export type NativeTransportResultFor<TBody extends NativeBody> =
   NativeBodyResultFor<TBody> | CompiledSerializedEnvelope;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
-export type NativeTransportRequest = Parameters<CompiledRpcTransportBodyResultHandler<NativeBody>>[0];`;
+export type NativeTransportRequest = ContextRequestSource;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
     .filter(Boolean)
@@ -412,7 +414,7 @@ ${unaryCases('response')}
     `import {
   ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${serviceTypeImport}${configImport}${imports}
+${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${contextTypeImport}${serviceTypeImport}${configImport}${imports}
 
 ${nativeManifestTypes}
 
