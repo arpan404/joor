@@ -780,27 +780,27 @@ export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
 
 export type RpcRouteRequestOptions<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
 > = ClientRequestOptions<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteUnaryRequestOptions<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteRequestOptions<TRoutes, TId>;
 
 export type RpcUnaryRouteRequestOptions<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryRequestOptions<TRoutes, TId>;
 
 export type RpcRouteStreamRequestOptions<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteRequestOptions<TRoutes, TId>;
 
 export type RpcStreamRouteRequestOptions<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamRequestOptions<TRoutes, TId>;
 
 export type RpcRouteClientArgs<

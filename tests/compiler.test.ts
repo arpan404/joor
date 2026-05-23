@@ -1131,13 +1131,27 @@ tenantUnaryClientHeaders['x-tenant-id'].toUpperCase();
 const watchStreamClientHeaders: RouteStreamClientHeaders<'users.watch'> = {};
 watchStreamClientHeaders.valueOf();
 const tenantRequestOptions: RouteRequestOptions<'tenants.current'> = { headers: tenantHeaders };
+const defaultRouteRequestOptions: RouteRequestOptions = tenantRequestOptions;
 tenantRequestOptions.headers['x-tenant-id'].toUpperCase();
+defaultRouteRequestOptions.headers?.valueOf();
 const tenantUnaryRequestOptions: UnaryRouteRequestOptions<'tenants.current'> = tenantRequestOptions;
+const defaultUnaryRouteRequestOptions: UnaryRouteRequestOptions =
+  tenantUnaryRequestOptions;
 const tenantRouteUnaryRequestOptions: RouteUnaryRequestOptions<'tenants.current'> = tenantUnaryRequestOptions;
+const defaultRouteUnaryRequestOptions: RouteUnaryRequestOptions =
+  tenantRouteUnaryRequestOptions;
 tenantRouteUnaryRequestOptions.headers['x-tenant-id'].toUpperCase();
+defaultUnaryRouteRequestOptions.headers?.valueOf();
+defaultRouteUnaryRequestOptions.headers?.valueOf();
 const watchStreamRequestOptions: StreamRouteRequestOptions<'users.watch'> = {};
+const defaultStreamRouteRequestOptions: StreamRouteRequestOptions =
+  watchStreamRequestOptions;
 const watchRouteStreamRequestOptions: RouteStreamRequestOptions<'users.watch'> = watchStreamRequestOptions;
+const defaultRouteStreamRequestOptions: RouteStreamRequestOptions =
+  watchRouteStreamRequestOptions;
 watchRouteStreamRequestOptions.valueOf();
+defaultStreamRouteRequestOptions.valueOf();
+defaultRouteStreamRequestOptions.valueOf();
 const tenantRouteClientArgs: RouteClientArgs<'tenants.current'> = [
   { ok: true },
   tenantRequestOptions,
@@ -1180,13 +1194,28 @@ const nativeWatchStreamClientHeaders: NativeStreamRouteClientHeaders<'users.watc
 const nativeWatchRouteStreamClientHeaders: NativeRouteStreamClientHeaders<'users.watch'> = nativeWatchStreamClientHeaders;
 nativeWatchRouteStreamClientHeaders.valueOf();
 const nativeTenantRequestOptions: NativeRouteRequestOptions<'tenants.current'> = { headers: nativeTenantClientHeaders };
+const defaultNativeRouteRequestOptions: NativeRouteRequestOptions =
+  nativeTenantRequestOptions;
 nativeTenantRequestOptions.headers['x-tenant-id'].toUpperCase();
+defaultNativeRouteRequestOptions.headers?.valueOf();
 const nativeTenantUnaryRequestOptions: NativeUnaryRouteRequestOptions<'tenants.current'> = nativeTenantRequestOptions;
+const defaultNativeUnaryRouteRequestOptions: NativeUnaryRouteRequestOptions =
+  nativeTenantUnaryRequestOptions;
 const nativeTenantRouteUnaryRequestOptions: NativeRouteUnaryRequestOptions<'tenants.current'> = nativeTenantUnaryRequestOptions;
+const defaultNativeRouteUnaryRequestOptions: NativeRouteUnaryRequestOptions =
+  nativeTenantRouteUnaryRequestOptions;
 nativeTenantRouteUnaryRequestOptions.headers['x-tenant-id'].toUpperCase();
+defaultNativeUnaryRouteRequestOptions.headers?.valueOf();
+defaultNativeRouteUnaryRequestOptions.headers?.valueOf();
 const nativeWatchStreamRequestOptions: NativeStreamRouteRequestOptions<'users.watch'> = {};
+const defaultNativeStreamRouteRequestOptions: NativeStreamRouteRequestOptions =
+  nativeWatchStreamRequestOptions;
 const nativeWatchRouteStreamRequestOptions: NativeRouteStreamRequestOptions<'users.watch'> = nativeWatchStreamRequestOptions;
+const defaultNativeRouteStreamRequestOptions: NativeRouteStreamRequestOptions =
+  nativeWatchRouteStreamRequestOptions;
 nativeWatchRouteStreamRequestOptions.valueOf();
+defaultNativeStreamRouteRequestOptions.valueOf();
+defaultNativeRouteStreamRequestOptions.valueOf();
 const nativeTenantClientArgs: NativeRouteClientArgs<'tenants.current'> = [
   { ok: true },
   nativeTenantRequestOptions,
