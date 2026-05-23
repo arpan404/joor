@@ -2216,7 +2216,8 @@ type UnaryRouteTransport<TId extends UnaryRouteId> = {
 type StreamRouteTransport<TId extends StreamRouteId> = {
   stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
-export type TransportClient = JoorManifestTransportClient<Manifest>;
+export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
+export type TransportClient = RouteTransportClient;
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
 
