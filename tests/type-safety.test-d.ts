@@ -39,6 +39,7 @@ import {
   createJoorHandler,
   createKoaHandler,
   createNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
   createNextHandler,
   createNextHandlerFor,
@@ -1388,6 +1389,7 @@ import {
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createKoaHandler as createRuntimeSubpathKoaHandler,
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor as createRuntimeSubpathNetlifyEdgeFunctionFor,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
@@ -11259,6 +11261,15 @@ const netlifyEdgeFunction: NetlifyEdgeFetchHandler =
   createNetlifyEdgeFunction(manifest, handlerOptions);
 const runtimeSubpathNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler =
   createRuntimeSubpathNetlifyEdgeFunction(manifest, handlerOptions);
+const createTypedNetlifyEdgeFunction =
+  createNetlifyEdgeFunctionFor<NetlifyContextForTypes>();
+const typedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<NetlifyContextForTypes> =
+  createTypedNetlifyEdgeFunction(manifest, handlerOptions);
+const createRuntimeSubpathTypedNetlifyEdgeFunction =
+  createRuntimeSubpathNetlifyEdgeFunctionFor<NetlifyContextForTypes>();
+const runtimeSubpathTypedNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler<
+  NetlifyContextForTypes
+> = createRuntimeSubpathTypedNetlifyEdgeFunction(manifest, handlerOptions);
 const netlifyEdgeUrlResult: NetlifyEdgeResult = new URL(
   '/rewritten',
   'https://example.com'
@@ -11415,11 +11426,29 @@ netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
 netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+typedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
+runtimeSubpathTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 new Response(`${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`);
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Netlify edge plugins.
 createNetlifyEdgeFunction(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Netlify edge plugins.
+createTypedNetlifyEdgeFunction(manifest);
 const vercelFetch = createVercelFetch(manifest, handlerOptions);
 const typedVercelFetch: VercelFetchHandler = vercelFetch;
 const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =

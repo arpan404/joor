@@ -94,6 +94,7 @@ export { createJoorHandler } from './runtime/fetch.js';
 export { createKoaHandler } from './runtime/koa.js';
 export {
   createNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
 } from './runtime/netlify.js';
 export {

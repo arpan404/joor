@@ -214,7 +214,7 @@ npm run joor -- doctor
 Fetch is the base runtime. The package also exposes small adapters for Node, Express, Fastify, Elysia, Hono, Koa, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
 Custom adapters can reuse `joor/runtime/body` for JSON body limits and `joor/runtime/response` for serialized envelope and `Response` conversion helpers.
 
-Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createCloudflareWorkerFor<Env, Context>()` preserves typed Worker bindings, `createNextRouteHandlers()` returns App Router method exports, `createVercelFunction()` returns a fetch object, and `createNetlifyEdgeFunction()` returns a Netlify Edge handler.
+Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createCloudflareWorkerFor<Env, Context>()` preserves typed Worker bindings, `createNextRouteHandlers()` returns App Router method exports, `createVercelFunction()` returns a fetch object, `createNetlifyEdgeFunction()` returns a Netlify Edge handler, and `createNetlifyEdgeFunctionFor<Context>()` preserves the Netlify context object.
 
 ## Next.js API Routes
 

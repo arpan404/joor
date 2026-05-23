@@ -5,7 +5,10 @@ import {
   createCloudflareWorker,
   createCloudflareWorkerFor,
 } from '../src/runtime/cloudflare.js';
-import { createNetlifyEdgeFunction } from '../src/runtime/netlify.js';
+import {
+  createNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor,
+} from '../src/runtime/netlify.js';
 import { createVercelFunction } from '../src/runtime/vercel.js';
 
 const manifest = {
@@ -66,6 +69,24 @@ describe('platform runtime helpers', () => {
     const edge = createNetlifyEdgeFunction(manifest, config);
     const response = await edge(createRpcRequest(), {
       requestId: 'request-1',
+    });
+
+    expect(response).toBeInstanceOf(Response);
+    await expectUserResponse(response as Response);
+  });
+
+  it('dispatches through a typed Netlify Edge function handler', async () => {
+    interface Context {
+      requestId: string;
+      geo: {
+        city?: string;
+      };
+    }
+    const createEdge = createNetlifyEdgeFunctionFor<Context>();
+    const edge = createEdge(manifest, config);
+    const response = await edge(createRpcRequest(), {
+      requestId: 'request-1',
+      geo: { city: 'San Francisco' },
     });
 
     expect(response).toBeInstanceOf(Response);

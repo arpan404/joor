@@ -9,6 +9,7 @@ import {
   errorStatus,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor as createRootNetlifyEdgeFunctionFor,
   createNextRouteHandlersFor as createRootNextRouteHandlersFor,
   encodeSse as rootEncodeSse,
   listen as rootListen,
@@ -55,6 +56,7 @@ import { createHonoHandler } from 'joor/runtime/hono';
 import { createKoaHandler } from 'joor/runtime/koa';
 import {
   createNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
 } from 'joor/runtime/netlify';
 import {
@@ -258,6 +260,7 @@ const packageSubpathValues = [
   createJoorHandler,
   createKoaHandler,
   createNetlifyEdgeFunction,
+  createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
   createNextHandlerFor,
   createNextHandler,
@@ -266,6 +269,7 @@ const packageSubpathValues = [
   createRuntimeContext,
   createRootRuntimeContext,
   createRootNetlifyEdgeFunction,
+  createRootNetlifyEdgeFunctionFor,
   createRootNextRouteHandlersFor,
   createVercelFetch,
   createVercelFunction,

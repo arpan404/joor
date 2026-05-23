@@ -133,3 +133,19 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
   );
   return (request) => fetch(request);
 }
+
+export const createNetlifyEdgeFunctionFor =
+  <TContext>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ): NetlifyEdgeFetchHandler<TContext> => {
+    const fetch = createNetlifyFetch(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+    return (request) => fetch(request);
+  };
