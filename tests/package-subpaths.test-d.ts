@@ -8,6 +8,7 @@ import {
   errorStatus,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
+  createNextRouteHandlersFor as createRootNextRouteHandlersFor,
   encodeSse as rootEncodeSse,
   listen as rootListen,
   ok as rootOk,
@@ -54,7 +55,11 @@ import {
   createNetlifyEdgeFunction,
   createNetlifyFetch,
 } from 'joor/runtime/netlify';
-import { createNextHandler } from 'joor/runtime/next';
+import {
+  createNextHandlerFor,
+  createNextHandler,
+  createNextRouteHandlersFor,
+} from 'joor/runtime/next';
 import {
   createNodeTransportRequestHandler,
   listen,
@@ -250,11 +255,14 @@ const packageSubpathValues = [
   createKoaHandler,
   createNetlifyEdgeFunction,
   createNetlifyFetch,
+  createNextHandlerFor,
   createNextHandler,
+  createNextRouteHandlersFor,
   createNodeTransportRequestHandler,
   createRuntimeContext,
   createRootRuntimeContext,
   createRootNetlifyEdgeFunction,
+  createRootNextRouteHandlersFor,
   createVercelFetch,
   createVercelFunction,
   DEFAULT_MAX_BODY_BYTES,

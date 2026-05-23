@@ -188,6 +188,24 @@ export type NextStreamRouteHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = NextRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+const createRouteHandlers = <
+  TContext,
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): NextRouteHandlers<TContext> => {
+  const fetch = createJoorHandler(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>
+  );
+  return {
+    GET: fetch,
+    POST: fetch,
+    OPTIONS: fetch,
+  } as NextRouteHandlers<TContext>;
+};
+
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -199,16 +217,25 @@ export function createNextRouteHandlers<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): NextRouteHandlers {
-  const fetch = createJoorHandler(
-    manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
-  );
-  return {
-    GET: fetch,
-    POST: fetch,
-    OPTIONS: fetch,
-  };
+  return createRouteHandlers<never, TManifest>(manifest, options);
 }
 
 export const createNextHandler: typeof createNextRouteHandlers =
   createNextRouteHandlers;
+
+export const createNextRouteHandlersFor =
+  <TContext>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ): NextRouteHandlers<TContext> =>
+    createRouteHandlers<TContext, TManifest>(
+      manifest,
+      args[0] as HandlerOptions | undefined
+    );
+
+export const createNextHandlerFor: typeof createNextRouteHandlersFor =
+  createNextRouteHandlersFor;

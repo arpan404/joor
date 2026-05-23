@@ -236,6 +236,23 @@ export const { GET, POST, OPTIONS } = handlers;
 
 The adapter is Fetch-native, so it works with both Edge-compatible route handlers and standard App Router `Request`/`Response` APIs.
 
+For dynamic App Router segments, use the typed factory form to preserve the route context shape:
+
+```ts
+import {
+  createNextRouteHandlersFor,
+  type NextRouteContext,
+} from 'joor/runtime/next';
+
+type Params = { team: string };
+
+const createHandlers = createNextRouteHandlersFor<NextRouteContext<Params>>();
+const { GET, POST, OPTIONS } = createHandlers(manifest, {
+  ...config,
+  path: '/teams/[team]/rpc',
+});
+```
+
 ## Typed Headers
 
 Procedures can declare request and response headers with the same schema DSL used for input/output. Request header names are normalized to lowercase before validation, so HTTP names like `X-Tenant-Id` are declared as `'x-tenant-id'`.

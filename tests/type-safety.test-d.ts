@@ -40,7 +40,9 @@ import {
   createNetlifyEdgeFunction,
   createNetlifyFetch,
   createNextHandler,
+  createNextHandlerFor,
   createNextRouteHandlers,
+  createNextRouteHandlersFor,
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath,
@@ -1386,7 +1388,9 @@ import {
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
+  createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
+  createNextRouteHandlersFor as createRuntimeSubpathNextRouteHandlersFor,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createVercelFetch as createRuntimeSubpathVercelFetch,
@@ -10808,6 +10812,32 @@ const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
       : {}),
   }),
 };
+const createTypedNextRouteHandlers = createNextRouteHandlersFor<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+>();
+const nextTypedHandlers: NextRouteHandlers<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+> = createTypedNextRouteHandlers(manifest, handlerOptions);
+const createTypedNextHandler = createNextHandlerFor<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+>();
+const nextTypedHandler: NextHandler<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+> = createTypedNextHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedNextRouteHandlers =
+  createRuntimeSubpathNextRouteHandlersFor<
+    RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
+  >();
+const runtimeSubpathTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
+> = createRuntimeSubpathTypedNextRouteHandlers(manifest, handlerOptions);
+const createRuntimeSubpathTypedNextHandler =
+  createRuntimeSubpathNextHandlerFor<
+    RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
+  >();
+const runtimeSubpathTypedNextHandler: RuntimeSubpathNextHandler<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
+> = createRuntimeSubpathTypedNextHandler(manifest, handlerOptions);
 nextHandler.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
 nextHandlers.POST(new Request('https://example.com/rpc'));
@@ -10821,6 +10851,22 @@ nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
     team: 'core',
   }),
 });
+nextTypedHandlers.GET(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+nextTypedHandler.POST(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+runtimeSubpathTypedNextHandlers.OPTIONS(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+runtimeSubpathTypedNextHandler.GET(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
 // @ts-expect-error service-dependent manifests require matching Next adapter plugins.
 createNextRouteHandlers(manifest);
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(

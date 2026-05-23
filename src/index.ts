@@ -95,7 +95,12 @@ export {
   createNetlifyEdgeFunction,
   createNetlifyFetch,
 } from './runtime/netlify.js';
-export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
+export {
+  createNextHandler,
+  createNextHandlerFor,
+  createNextRouteHandlers,
+  createNextRouteHandlersFor,
+} from './runtime/next.js';
 export {
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
