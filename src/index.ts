@@ -130,6 +130,7 @@ export type {
   JoorManifestStreamRouteRequiresHeaders,
   JoorManifestStreamRouteRequiresResponseHeaders,
   JoorManifestStreamRouteRequestOptions,
+  JoorManifestStreamRouteTransportClient,
   JoorManifestTransportClient,
   JoorManifestUnaryRouteClientArgs,
   JoorManifestUnaryRouteClientHeaders,
@@ -159,6 +160,7 @@ export type {
   JoorManifestUnaryRouteRequest,
   JoorManifestUnaryRouteRequestOptions,
   JoorManifestUnaryRouteRequestUnion,
+  JoorManifestUnaryRouteTransportClient,
   JoorManifestUnaryRouteId,
   JoorRouteMap,
 } from './manifest.js';
@@ -173,7 +175,9 @@ export type {
   PendingRpcRequest,
   RouteRpcTransportClient,
   RpcManifestClientOptions,
+  RpcManifestStreamRouteTransportClient,
   RpcManifestTransportClient,
+  RpcManifestUnaryRouteTransportClient,
   RpcRouteBatchRequest,
   RpcRouteBatchResults,
   RpcRouteBody,
@@ -232,6 +236,7 @@ export type {
   RpcRouteUnaryProtocolRequestUnion,
   RpcStreamProcedure,
   RpcStreamRouteId,
+  RpcStreamRouteTransportClient,
   RpcTransportClient,
   RpcUnaryRouteClientArgs,
   RpcUnaryRouteClientHeaders,
@@ -262,6 +267,7 @@ export type {
   RpcUnaryRouteResultUnion,
   RpcUnaryRouteRequestOptions,
   RpcUnaryRouteRequestUnion,
+  RpcUnaryRouteTransportClient,
   RpcUnaryRouteId,
 } from './rpc/client.js';
 export type {

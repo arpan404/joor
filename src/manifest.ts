@@ -23,7 +23,9 @@ import type {
   RpcRouteBatchResults,
   RpcUnaryRouteBatchResults,
   RpcManifestClientOptions,
+  RpcManifestStreamRouteTransportClient,
   RpcManifestTransportClient,
+  RpcManifestUnaryRouteTransportClient,
   RpcRouteClientArgs,
   RpcRouteClientHeaders,
   RpcRouteEnvelope,
@@ -114,6 +116,14 @@ export type JoorManifestRoutes<TManifest> = TManifest extends {
 
 export type JoorManifestTransportClient<TManifest extends JoorManifest> =
   RpcManifestTransportClient<TManifest>;
+
+export type JoorManifestUnaryRouteTransportClient<
+  TManifest extends JoorManifest,
+> = RpcManifestUnaryRouteTransportClient<TManifest>;
+
+export type JoorManifestStreamRouteTransportClient<
+  TManifest extends JoorManifest,
+> = RpcManifestStreamRouteTransportClient<TManifest>;
 
 export type JoorManifestClientOptions<TManifest extends JoorManifest> =
   RpcManifestClientOptions<TManifest>;

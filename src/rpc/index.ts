@@ -20,7 +20,9 @@ export type {
   PendingRpcRequest,
   RouteRpcTransportClient,
   RpcManifestClientOptions,
+  RpcManifestStreamRouteTransportClient,
   RpcManifestTransportClient,
+  RpcManifestUnaryRouteTransportClient,
   RpcProcedureError,
   RpcProcedureFrameworkError,
   RpcRouteBatchRequest,
@@ -79,6 +81,7 @@ export type {
   RpcRouteUnaryProtocolRequestUnion,
   RpcStreamProcedure,
   RpcStreamRouteId,
+  RpcStreamRouteTransportClient,
   RpcTransportClient,
   RpcUnaryRouteClientArgs,
   RpcUnaryRouteClientHeaders,
@@ -110,6 +113,7 @@ export type {
   RpcUnaryRouteRequestOptions,
   RpcUnaryRouteRequestUnion,
   RpcUnaryRouteId,
+  RpcUnaryRouteTransportClient,
 } from './client.js';
 export type {
   HandlerHookContext,

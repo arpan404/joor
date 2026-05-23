@@ -2439,14 +2439,29 @@ export type BatchFunction = <const TRequests extends RouteBatchRequest>(
 export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
   url?: string;
 };
-type UnaryRouteTransport<TId extends UnaryRouteId> = {
+export type UnaryRouteTransport<TId extends UnaryRouteId> = {
   call(...args: [id: TId, ...ClientArgs<TId>]): Promise<RouteResult<TId>>;
   request(...args: [id: TId, ...ClientArgs<TId>]): RouteRequest<TId>;
 };
-type StreamRouteTransport<TId extends StreamRouteId> = {
+
+export type RouteUnaryTransport<TId extends UnaryRouteId> =
+  UnaryRouteTransport<TId>;
+
+export type StreamRouteTransport<TId extends StreamRouteId> = {
   stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
+
+export type RouteStreamTransport<TId extends StreamRouteId> =
+  StreamRouteTransport<TId>;
+
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
+export type UnaryRouteTransportClient = Pick<
+  RouteTransportClient,
+  'call' | 'request' | 'batch'
+>;
+export type RouteUnaryTransportClient = UnaryRouteTransportClient;
+export type StreamRouteTransportClient = Pick<RouteTransportClient, 'stream'>;
+export type RouteStreamTransportClient = StreamRouteTransportClient;
 export type TransportClient = RouteTransportClient;
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
