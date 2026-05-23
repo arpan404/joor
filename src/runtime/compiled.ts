@@ -46,6 +46,8 @@ import type {
   RpcBodyResult,
   RpcManifestBody,
   RpcManifestBodyResultFor,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -113,6 +115,29 @@ export type CompiledBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
+export type CompiledUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CompiledTransportBodyResultFor<TManifest, TBody>;
+export type CompiledStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> =
+  TBody extends RpcManifestStreamRouteBody<TManifest>
+    ? Response | CompiledSerializedEnvelope
+    : never;
+export type CompiledUnaryRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+export type CompiledStreamRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
 export type CompiledRpcTransportBodyResultHandler<
@@ -127,6 +152,20 @@ export type CompiledRpcTransportBodyResultHandlerFor<
   body: TBody
 ) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
+export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<CompiledStreamRouteTransportBodyResultFor<TManifest>>;
+
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
@@ -138,6 +177,20 @@ export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
   request: Request,
   body: TBody
 ) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
+
+export type CompiledRpcUnaryRouteBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: Request,
+  body: TBody
+) => Promise<CompiledUnaryRouteBodyResultFor<TManifest, TBody>>;
+
+export type CompiledRpcStreamRouteBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: Request,
+  body: TBody
+) => Promise<CompiledStreamRouteBodyResultFor<TManifest>>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
   hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;

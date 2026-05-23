@@ -458,6 +458,10 @@ export type {
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandler,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcStreamRouteBodyResultHandlerFor,
+  CompiledRpcStreamRouteTransportBodyResultHandlerFor,
+  CompiledRpcUnaryRouteBodyResultHandlerFor,
+  CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
   CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerFor,
@@ -465,7 +469,11 @@ export type {
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
   CompiledSerializationMode,
+  CompiledStreamRouteBodyResultFor,
+  CompiledStreamRouteTransportBodyResultFor,
   CompiledTransportBodyResultFor,
+  CompiledUnaryRouteBodyResultFor,
+  CompiledUnaryRouteTransportBodyResultFor,
   CompiledUnaryDispatch,
 } from './runtime/compiled.js';
 export type {

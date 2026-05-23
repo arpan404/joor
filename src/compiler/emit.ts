@@ -134,14 +134,22 @@ const emitProfileDispatcher = async (
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
     'type CompiledBodyResultFor',
+    'type CompiledStreamRouteBodyResultFor',
+    'type CompiledStreamRouteTransportBodyResultFor',
     'type CompiledTransportBodyResultFor',
+    'type CompiledUnaryRouteBodyResultFor',
+    'type CompiledUnaryRouteTransportBodyResultFor',
     'type CompiledRuntimeState',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
     'type CompiledRpcRequestHandler',
     'type CompiledRpcBodyResultHandlerFor',
+    'type CompiledRpcStreamRouteBodyResultHandlerFor',
+    'type CompiledRpcStreamRouteTransportBodyResultHandlerFor',
     'type CompiledRpcTransportBodyResultHandler',
     'type CompiledRpcTransportBodyResultHandlerFor',
+    'type CompiledRpcUnaryRouteBodyResultHandlerFor',
+    'type CompiledRpcUnaryRouteTransportBodyResultHandlerFor',
   ];
   const manifestTypeImports = [
     'JoorManifestRouteBody',
@@ -404,13 +412,41 @@ export type NativeRouteStreamBodyResultFor<TBody extends NativeStreamRouteBody> 
 export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
 export type NativeCompiledBodyResultFor<TBody extends NativeBody> =
   CompiledBodyResultFor<NativeManifest, TBody>;
+export type NativeUnaryRouteCompiledBodyResultFor<TBody extends NativeUnaryRouteBody> =
+  CompiledUnaryRouteBodyResultFor<NativeManifest, TBody>;
+export type NativeRouteUnaryCompiledBodyResultFor<TBody extends NativeUnaryRouteBody> =
+  NativeUnaryRouteCompiledBodyResultFor<TBody>;
+export type NativeStreamRouteCompiledBodyResultFor<TBody extends NativeStreamRouteBody> =
+  CompiledStreamRouteBodyResultFor<NativeManifest, TBody>;
+export type NativeRouteStreamCompiledBodyResultFor<TBody extends NativeStreamRouteBody> =
+  NativeStreamRouteCompiledBodyResultFor<TBody>;
 export type NativeCompiledTransportResult =
   CompiledTransportBodyResultFor<NativeManifest>;
 export type NativeTransportResult = NativeCompiledTransportResult;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   CompiledTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeUnaryRouteTransportResultFor<TBody extends NativeUnaryRouteBody> =
+  CompiledUnaryRouteTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeRouteUnaryTransportResultFor<TBody extends NativeUnaryRouteBody> =
+  NativeUnaryRouteTransportResultFor<TBody>;
+export type NativeStreamRouteTransportResultFor<TBody extends NativeStreamRouteBody> =
+  CompiledStreamRouteTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeRouteStreamTransportResultFor<TBody extends NativeStreamRouteBody> =
+  NativeStreamRouteTransportResultFor<TBody>;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeUnaryRouteTransportHandler =
+  CompiledRpcUnaryRouteTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeRouteUnaryTransportHandler = NativeUnaryRouteTransportHandler;
+export type NativeStreamRouteTransportHandler =
+  CompiledRpcStreamRouteTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeRouteStreamTransportHandler = NativeStreamRouteTransportHandler;
 export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
+export type NativeUnaryRouteBodyHandler =
+  CompiledRpcUnaryRouteBodyResultHandlerFor<NativeManifest>;
+export type NativeRouteUnaryBodyHandler = NativeUnaryRouteBodyHandler;
+export type NativeStreamRouteBodyHandler =
+  CompiledRpcStreamRouteBodyResultHandlerFor<NativeManifest>;
+export type NativeRouteStreamBodyHandler = NativeStreamRouteBodyHandler;
 export type NativeTransportRequest = ContextRequestSource;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))

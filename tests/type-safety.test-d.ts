@@ -75,11 +75,19 @@ import {
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
+  type CompiledRpcStreamRouteBodyResultHandlerFor as RootCompiledRpcStreamRouteBodyResultHandlerFor,
+  type CompiledRpcStreamRouteTransportBodyResultHandlerFor as RootCompiledRpcStreamRouteTransportBodyResultHandlerFor,
   type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
+  type CompiledRpcUnaryRouteBodyResultHandlerFor as RootCompiledRpcUnaryRouteBodyResultHandlerFor,
+  type CompiledRpcUnaryRouteTransportBodyResultHandlerFor as RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
+  type CompiledStreamRouteBodyResultFor as RootCompiledStreamRouteBodyResultFor,
+  type CompiledStreamRouteTransportBodyResultFor as RootCompiledStreamRouteTransportBodyResultFor,
   type CompiledTransportBodyResultFor as RootCompiledTransportBodyResultFor,
+  type CompiledUnaryRouteBodyResultFor as RootCompiledUnaryRouteBodyResultFor,
+  type CompiledUnaryRouteTransportBodyResultFor as RootCompiledUnaryRouteTransportBodyResultFor,
   type DenoCompiledTransportBodyResult as RootDenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor as RootDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RootDenoCompiledTransportBodyResultHandler,
@@ -647,11 +655,19 @@ import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcStreamRouteBodyResultHandlerFor,
+  CompiledRpcStreamRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
   CompiledRpcTransportBodyResultHandlerFor,
+  CompiledRpcUnaryRouteBodyResultHandlerFor,
+  CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
+  CompiledStreamRouteBodyResultFor,
+  CompiledStreamRouteTransportBodyResultFor,
   CompiledTransportBodyResultFor,
+  CompiledUnaryRouteBodyResultFor,
+  CompiledUnaryRouteTransportBodyResultFor,
 } from '../src/runtime/compiled.js';
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
@@ -4535,6 +4551,120 @@ rootManifestCompiledBodyHandler(new Request('https://example.com/rpc'), [
   // @ts-expect-error manifest-aware compiled body handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+const manifestCompiledUnaryTransportHandler: CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body) body.input.valueOf();
+  return compiledSerializedEnvelope;
+};
+const rootManifestCompiledUnaryTransportHandler: RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledUnaryTransportHandler;
+const manifestCompiledStreamTransportHandler: CompiledRpcStreamRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  body.input.userId.toUpperCase();
+  return new Response();
+};
+const rootManifestCompiledStreamTransportHandler: RootCompiledRpcStreamRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledStreamTransportHandler;
+const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body) body.id.toUpperCase();
+  return compiledSerializedEnvelope;
+};
+const rootManifestCompiledUnaryBodyHandler: RootCompiledRpcUnaryRouteBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledUnaryBodyHandler;
+const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  body.input.userId.toUpperCase();
+  return new Response();
+};
+const rootManifestCompiledStreamBodyHandler: RootCompiledRpcStreamRouteBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledStreamBodyHandler;
+const compiledUnaryRouteTransportResultFor: CompiledUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledSerializedEnvelope;
+const compiledStreamRouteTransportResultFor: CompiledStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = new Response();
+const compiledUnaryRouteBodyResultFor: CompiledUnaryRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledUnaryRouteTransportResultFor;
+const compiledStreamRouteBodyResultFor: CompiledStreamRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledStreamRouteTransportResultFor;
+const rootCompiledUnaryRouteTransportResultFor: RootCompiledUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledUnaryRouteTransportResultFor;
+const rootCompiledStreamRouteTransportResultFor: RootCompiledStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledStreamRouteTransportResultFor;
+const rootCompiledUnaryRouteBodyResultFor: RootCompiledUnaryRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledUnaryRouteBodyResultFor;
+const rootCompiledStreamRouteBodyResultFor: RootCompiledStreamRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledStreamRouteBodyResultFor;
+rootCompiledUnaryRouteTransportResultFor.valueOf();
+rootCompiledStreamRouteTransportResultFor.valueOf();
+rootCompiledUnaryRouteBodyResultFor.valueOf();
+rootCompiledStreamRouteBodyResultFor.valueOf();
+manifestCompiledUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+manifestCompiledStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+manifestCompiledUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error compiled unary transport handlers reject stream route bodies.
+  manifestStreamRouteBody
+);
+manifestCompiledStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error compiled stream transport handlers reject unary route bodies.
+  manifestUnaryRouteBody
+);
+rootManifestCompiledUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rootManifestCompiledStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+manifestCompiledUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+manifestCompiledStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+rootManifestCompiledUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+rootManifestCompiledStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
 const cachedProcedureHeaders: CachedProcedureHeaders = {
   'cache-control': 'private',
 };
