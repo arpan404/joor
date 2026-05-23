@@ -300,6 +300,24 @@ describe('compiler', () => {
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
       );
+      expect(dispatcher).toContain('JoorRouteUnaryConfigFor<NativeManifest');
+      expect(dispatcher).toContain('JoorRouteStreamConfigFor<NativeManifest');
+      expect(dispatcher).toContain('DefineRouteUnaryConfigFor<NativeManifest>');
+      expect(dispatcher).toContain(
+        'DefineRouteStreamConfigFor<NativeManifest>'
+      );
+      expect(dispatcher).toContain(
+        'RpcManifestRouteUnaryHandlerOptionsFor<NativeManifest'
+      );
+      expect(dispatcher).toContain(
+        'RpcManifestRouteStreamHandlerOptionsFor<NativeManifest'
+      );
+      expect(dispatcher).toContain(
+        'DefineRouteUnaryHandlerOptions<NativeManifest>'
+      );
+      expect(dispatcher).toContain(
+        'DefineRouteStreamHandlerOptions<NativeManifest>'
+      );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
       const postsListMatch = dispatcher.match(
