@@ -37,26 +37,29 @@ export type DenoCompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
-export type DenoCompiledUnaryRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
-export type DenoCompiledStreamRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
 export type DenoCompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = DenoCompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+
+export type DenoCompiledUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
 export type DenoCompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoCompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
+> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
+
+export type DenoCompiledStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,
@@ -71,27 +74,27 @@ export type DenoCompiledTransportBodyResultHandlerFor<
   body: TBody
 ) => Promise<DenoCompiledTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
+export type DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
+export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
+export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledStreamRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
+export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = DenoCompiledUnaryRouteTransportBodyResultHandlerFor<TManifest>;
-
-export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
-  TManifest extends JoorManifest,
-> = DenoCompiledStreamRouteTransportBodyResultHandlerFor<TManifest>;
+> = DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

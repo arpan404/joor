@@ -56,12 +56,28 @@ export type DenoServeOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DenoRouteUnaryServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteServeOptionsFor<
@@ -70,23 +86,7 @@ export type DenoStreamRouteServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryServeOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteServeOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamServeOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteServeOptionsFor<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamServeOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -95,12 +95,28 @@ export type DenoFetchOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DenoRouteUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoFetchOptionsFor<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteFetchOptionsFor<
@@ -109,23 +125,7 @@ export type DenoStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -134,12 +134,28 @@ export type DenoRpcRequestHandlerOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DenoRouteUnaryRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteRpcRequestHandlerOptionsFor<
@@ -148,23 +164,7 @@ export type DenoStreamRouteRpcRequestHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryRpcRequestHandlerOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamRpcRequestHandlerOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -173,12 +173,28 @@ export type DenoFetchOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type DenoRouteUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteFetchOptionsArgs<
@@ -187,23 +203,7 @@ export type DenoStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -212,12 +212,28 @@ export type DenoRpcRequestHandlerOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteRpcRequestHandlerOptionsArgs<
@@ -226,23 +242,7 @@ export type DenoStreamRouteRpcRequestHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryRpcRequestHandlerOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamRpcRequestHandlerOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoServeOptionsArgs<
   TManifest extends JoorManifest,
@@ -256,12 +256,28 @@ export type DenoServeOptionsArgs<
   TBody
 >;
 
+export type DenoRouteUnaryServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoServeOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type DenoUnaryRouteServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type DenoRouteStreamServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = DenoServeOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoStreamRouteServeOptionsArgs<
@@ -270,49 +286,36 @@ export type DenoStreamRouteServeOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoServeOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteUnaryServeOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteServeOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DenoRouteStreamServeOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteServeOptionsArgs<TManifest, TPlugins, TBody>;
+> = DenoRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type DenoTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = TransportBodyResultFor<TManifest, TBody>;
-export type DenoUnaryRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
-export type DenoStreamRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
 export type DenoRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = DenoUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+> = TransportBodyResultFor<TManifest, TBody>;
+
+export type DenoUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
 export type DenoRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = DenoStreamRouteTransportBodyResultFor<TManifest, TBody>;
+> = TransportBodyResultFor<TManifest, TBody>;
+
+export type DenoStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type DenoFetchHandler = JoorFetchHandler;
 export type DenoRpcRequestHandler = JoorFetchHandler;
 export type DenoTransportRequestHandler = JoorFetchHandler;
@@ -328,27 +331,27 @@ export type DenoTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
     body: TBody
   ) => Promise<DenoTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoUnaryRouteTransportBodyResultHandlerFor<
+export type DenoRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoStreamRouteTransportBodyResultHandlerFor<
+export type DenoUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
+export type DenoRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoStreamRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<DenoRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
-export type DenoRouteUnaryTransportBodyResultHandlerFor<
+export type DenoStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = DenoUnaryRouteTransportBodyResultHandlerFor<TManifest>;
-
-export type DenoRouteStreamTransportBodyResultHandlerFor<
-  TManifest extends JoorManifest,
-> = DenoStreamRouteTransportBodyResultHandlerFor<TManifest>;
+> = DenoRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
