@@ -4,8 +4,14 @@ import config from './fixtures/basic-app/joor.config.js';
 import {
   createClient,
   createManifestRouteRequest,
+  createManifestRouteProtocolRequest,
+  createManifestRouteStreamProtocolRequest,
+  createManifestRouteUnaryProtocolRequest,
   createJoorHandler,
+  createRouteProtocolRequest,
   createRouteRequest,
+  createRouteStreamProtocolRequest,
+  createRouteUnaryProtocolRequest,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -25,6 +31,65 @@ type StreamTestProcedure = {
 };
 
 describe('client', () => {
+  it('builds standalone protocol requests with optional trace ids', () => {
+    const streamProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const routeRequest = createRouteProtocolRequest<
+      { protected: typeof getUser },
+      'protected'
+    >(
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { traceId: 'trace-1' }
+    );
+    const routeUnaryRequest = createRouteUnaryProtocolRequest<
+      { protected: typeof getUser },
+      'protected'
+    >('protected', { id: '550e8400-e29b-41d4-a716-446655440000' });
+    const routeStreamRequest = createRouteStreamProtocolRequest<
+      { stream: typeof streamProcedure },
+      'stream'
+    >('stream', { ok: true });
+    const manifestRouteRequest = createManifestRouteProtocolRequest(
+      { procedures: { protected: getUser, stream: streamProcedure } },
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { traceId: 'trace-2' }
+    );
+    const manifestRouteUnaryRequest = createManifestRouteUnaryProtocolRequest(
+      { procedures: { protected: getUser, stream: streamProcedure } },
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' }
+    );
+    const manifestRouteStreamRequest = createManifestRouteStreamProtocolRequest(
+      { procedures: { protected: getUser, stream: streamProcedure } },
+      'stream',
+      { ok: true }
+    );
+
+    expect(routeRequest).toEqual({
+      id: 'protected',
+      input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      traceId: 'trace-1',
+    });
+    expect(routeUnaryRequest).toEqual({
+      id: 'protected',
+      input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+    });
+    expect(routeStreamRequest).toEqual({
+      id: 'stream',
+      input: { ok: true },
+    });
+    expect(manifestRouteRequest.traceId).toBe('trace-2');
+    expect(manifestRouteUnaryRequest.id).toBe('protected');
+    expect(manifestRouteStreamRequest.id).toBe('stream');
+  });
+
   it('builds standalone route requests for batches', () => {
     const routeRequest = createRouteRequest<
       { protected: typeof getUser },

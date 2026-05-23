@@ -38,11 +38,21 @@ import {
   createVercelFetch,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
+  createManifestRouteProtocolRequest,
   createManifestRouteRequest,
+  createManifestRouteStreamProtocolRequest,
+  createManifestRouteUnaryProtocolRequest,
+  createManifestStreamRouteProtocolRequest,
+  createManifestUnaryRouteProtocolRequest,
   createManifestRouteUnaryRequest,
   createManifestUnaryRouteRequest,
+  createRouteProtocolRequest,
   createRouteRequest,
+  createRouteStreamProtocolRequest,
+  createRouteUnaryProtocolRequest,
   createRouteUnaryRequest,
+  createStreamRouteProtocolRequest,
+  createUnaryRouteProtocolRequest,
   createUnaryRouteRequest,
   createRpcBodyHandler,
   createRpcBodyResultHandler,
@@ -755,6 +765,7 @@ import {
   type RpcRouteProtocolRequest,
   type RpcRouteProtocolRequestUnion,
   type RpcProtocolRequest,
+  type RpcProtocolRequestOptions,
   type RpcProtocolRequestUnion,
   type RpcRouteStreamProtocolRequest,
   type RpcRouteStreamProtocolRequestUnion,
@@ -909,11 +920,21 @@ import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcHandler as createRpcSubpathHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
+  createManifestRouteProtocolRequest as createRpcSubpathManifestRouteProtocolRequest,
   createManifestRouteRequest as createRpcSubpathManifestRouteRequest,
+  createManifestRouteStreamProtocolRequest as createRpcSubpathManifestRouteStreamProtocolRequest,
+  createManifestRouteUnaryProtocolRequest as createRpcSubpathManifestRouteUnaryProtocolRequest,
+  createManifestStreamRouteProtocolRequest as createRpcSubpathManifestStreamRouteProtocolRequest,
+  createManifestUnaryRouteProtocolRequest as createRpcSubpathManifestUnaryRouteProtocolRequest,
   createManifestRouteUnaryRequest as createRpcSubpathManifestRouteUnaryRequest,
   createManifestUnaryRouteRequest as createRpcSubpathManifestUnaryRouteRequest,
+  createRouteProtocolRequest as createRpcSubpathRouteProtocolRequest,
   createRouteRequest as createRpcSubpathRouteRequest,
+  createRouteStreamProtocolRequest as createRpcSubpathRouteStreamProtocolRequest,
+  createRouteUnaryProtocolRequest as createRpcSubpathRouteUnaryProtocolRequest,
   createRouteUnaryRequest as createRpcSubpathRouteUnaryRequest,
+  createStreamRouteProtocolRequest as createRpcSubpathStreamRouteProtocolRequest,
+  createUnaryRouteProtocolRequest as createRpcSubpathUnaryRouteProtocolRequest,
   createUnaryRouteRequest as createRpcSubpathUnaryRouteRequest,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
@@ -994,6 +1015,7 @@ import {
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
   type RpcProtocolRequest as RpcSubpathProtocolRequest,
+  type RpcProtocolRequestOptions as RpcSubpathProtocolRequestOptions,
   type RpcProtocolRequestUnion as RpcSubpathProtocolRequestUnion,
   type RpcStreamProtocolRequest as RpcSubpathStreamProtocolRequest,
   type RpcStreamProtocolRequestUnion as RpcSubpathStreamProtocolRequestUnion,
@@ -11253,6 +11275,224 @@ const rpcSubpathManifestUnaryRouteRequest =
     { id: '1' },
     { headers: { 'x-tenant-id': 'tenant-1' } }
   );
+const protocolRequestOptions: RpcProtocolRequestOptions = {
+  traceId: 'trace-1',
+};
+const rpcSubpathProtocolRequestOptions: RpcSubpathProtocolRequestOptions =
+  protocolRequestOptions;
+rpcSubpathProtocolRequestOptions.traceId?.toUpperCase();
+const standaloneRouteProtocolRequest = createRouteProtocolRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, protocolRequestOptions);
+const standaloneRouteUnaryProtocolRequest = createRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' });
+const standaloneUnaryRouteProtocolRequest = createUnaryRouteProtocolRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' });
+const standaloneRouteStreamProtocolRequest = createRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+>('users.watch', { userId: '1' });
+const standaloneStreamRouteProtocolRequest = createStreamRouteProtocolRequest<
+  Routes,
+  'users.watch'
+>('users.watch', { userId: '1' });
+const rpcSubpathRouteProtocolBuilderRequest =
+  createRpcSubpathRouteProtocolRequest<Routes, 'users.get'>(
+    'users.get',
+    { id: '1' },
+    rpcSubpathProtocolRequestOptions
+  );
+const rpcSubpathRouteUnaryProtocolBuilderRequest =
+  createRpcSubpathRouteUnaryProtocolRequest<Routes, 'users.get'>('users.get', {
+    id: '1',
+  });
+const rpcSubpathUnaryRouteProtocolBuilderRequest =
+  createRpcSubpathUnaryRouteProtocolRequest<Routes, 'users.get'>('users.get', {
+    id: '1',
+  });
+const rpcSubpathRouteStreamProtocolBuilderRequest =
+  createRpcSubpathRouteStreamProtocolRequest<Routes, 'users.watch'>(
+    'users.watch',
+    { userId: '1' }
+  );
+const rpcSubpathStreamRouteProtocolBuilderRequest =
+  createRpcSubpathStreamRouteProtocolRequest<Routes, 'users.watch'>(
+    'users.watch',
+    { userId: '1' }
+  );
+const manifestRouteProtocolRequest = createManifestRouteProtocolRequest(
+  manifest,
+  'users.get',
+  { id: '1' },
+  { traceId: 'trace-2' }
+);
+const manifestRouteUnaryProtocolRequest =
+  createManifestRouteUnaryProtocolRequest(manifest, 'users.get', { id: '1' });
+const builtManifestUnaryRouteProtocolRequest =
+  createManifestUnaryRouteProtocolRequest(manifest, 'users.get', { id: '1' });
+const manifestRouteStreamProtocolRequest =
+  createManifestRouteStreamProtocolRequest(manifest, 'users.watch', {
+    userId: '1',
+  });
+const builtManifestStreamRouteProtocolRequest =
+  createManifestStreamRouteProtocolRequest(manifest, 'users.watch', {
+    userId: '1',
+  });
+const rpcSubpathManifestRouteProtocolRequest =
+  createRpcSubpathManifestRouteProtocolRequest(
+    manifest,
+    'users.get',
+    { id: '1' },
+    { traceId: 'trace-3' }
+  );
+const rpcSubpathManifestRouteUnaryProtocolRequest =
+  createRpcSubpathManifestRouteUnaryProtocolRequest(manifest, 'users.get', {
+    id: '1',
+  });
+const rpcSubpathManifestUnaryRouteProtocolRequest =
+  createRpcSubpathManifestUnaryRouteProtocolRequest(manifest, 'users.get', {
+    id: '1',
+  });
+const rpcSubpathManifestRouteStreamProtocolRequest =
+  createRpcSubpathManifestRouteStreamProtocolRequest(manifest, 'users.watch', {
+    userId: '1',
+  });
+const rpcSubpathManifestStreamRouteProtocolRequest =
+  createRpcSubpathManifestStreamRouteProtocolRequest(manifest, 'users.watch', {
+    userId: '1',
+  });
+const typedStandaloneRouteProtocolRequest: RpcRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = standaloneRouteProtocolRequest;
+const typedStandaloneRouteUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = standaloneRouteUnaryProtocolRequest;
+const typedStandaloneUnaryRouteProtocolRequest: RpcUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = standaloneUnaryRouteProtocolRequest;
+const typedStandaloneRouteStreamProtocolRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = standaloneRouteStreamProtocolRequest;
+const typedStandaloneStreamRouteProtocolRequest: RpcStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = standaloneStreamRouteProtocolRequest;
+const typedRpcSubpathRouteProtocolBuilderRequest: RpcRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathRouteProtocolBuilderRequest;
+const typedRpcSubpathRouteUnaryProtocolBuilderRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathRouteUnaryProtocolBuilderRequest;
+const typedRpcSubpathUnaryRouteProtocolBuilderRequest: RpcUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathUnaryRouteProtocolBuilderRequest;
+const typedRpcSubpathRouteStreamProtocolBuilderRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = rpcSubpathRouteStreamProtocolBuilderRequest;
+const typedRpcSubpathStreamRouteProtocolBuilderRequest: RpcStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = rpcSubpathStreamRouteProtocolBuilderRequest;
+const typedManifestRouteProtocolRequest: RpcRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = manifestRouteProtocolRequest;
+const typedManifestRouteUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = manifestRouteUnaryProtocolRequest;
+const typedManifestUnaryRouteProtocolRequest: RpcUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = builtManifestUnaryRouteProtocolRequest;
+const typedManifestRouteStreamProtocolRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = manifestRouteStreamProtocolRequest;
+const typedManifestStreamRouteProtocolRequest: RpcStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = builtManifestStreamRouteProtocolRequest;
+const typedRpcSubpathManifestRouteProtocolRequest: RpcRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathManifestRouteProtocolRequest;
+const typedRpcSubpathManifestRouteUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathManifestRouteUnaryProtocolRequest;
+const typedRpcSubpathManifestUnaryRouteProtocolRequest: RpcUnaryProtocolRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathManifestUnaryRouteProtocolRequest;
+const typedRpcSubpathManifestRouteStreamProtocolRequest: RpcRouteStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = rpcSubpathManifestRouteStreamProtocolRequest;
+const typedRpcSubpathManifestStreamRouteProtocolRequest: RpcStreamProtocolRequest<
+  Routes,
+  'users.watch'
+> = rpcSubpathManifestStreamRouteProtocolRequest;
+typedStandaloneRouteProtocolRequest.input.id.toUpperCase();
+typedStandaloneRouteProtocolRequest.traceId?.toUpperCase();
+typedStandaloneRouteUnaryProtocolRequest.input.id.toUpperCase();
+typedStandaloneUnaryRouteProtocolRequest.input.id.toUpperCase();
+typedStandaloneRouteStreamProtocolRequest.input.userId.toUpperCase();
+typedStandaloneStreamRouteProtocolRequest.input.userId.toUpperCase();
+typedRpcSubpathRouteProtocolBuilderRequest.input.id.toUpperCase();
+typedRpcSubpathRouteUnaryProtocolBuilderRequest.input.id.toUpperCase();
+typedRpcSubpathUnaryRouteProtocolBuilderRequest.input.id.toUpperCase();
+typedRpcSubpathRouteStreamProtocolBuilderRequest.input.userId.toUpperCase();
+typedRpcSubpathStreamRouteProtocolBuilderRequest.input.userId.toUpperCase();
+typedManifestRouteProtocolRequest.traceId?.toUpperCase();
+typedManifestRouteUnaryProtocolRequest.input.id.toUpperCase();
+typedManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+typedManifestRouteStreamProtocolRequest.input.userId.toUpperCase();
+typedManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
+typedRpcSubpathManifestRouteProtocolRequest.traceId?.toUpperCase();
+typedRpcSubpathManifestRouteUnaryProtocolRequest.input.id.toUpperCase();
+typedRpcSubpathManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+typedRpcSubpathManifestRouteStreamProtocolRequest.input.userId.toUpperCase();
+typedRpcSubpathManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
+const _wrongProtocolRequestOptions: RpcProtocolRequestOptions = {
+  // @ts-expect-error trace ids must be strings.
+  traceId: 1,
+};
+_wrongProtocolRequestOptions.valueOf();
+createRouteProtocolRequest<Routes, 'users.get'>(
+  'users.get',
+  // @ts-expect-error standalone protocol request builders validate input by id.
+  { userId: '1' }
+);
+createRouteUnaryProtocolRequest<Routes>(
+  // @ts-expect-error unary protocol request builders reject stream route ids.
+  'users.watch',
+  { userId: '1' }
+);
+createRouteStreamProtocolRequest<Routes>(
+  // @ts-expect-error stream protocol request builders reject unary route ids.
+  'users.get',
+  { id: '1' }
+);
+createManifestRouteProtocolRequest(
+  manifest,
+  // @ts-expect-error manifest protocol request builders reject unknown route ids.
+  'users.missing',
+  { id: '1' }
+);
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
 const typedStandaloneRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
   standaloneRouteRequest;

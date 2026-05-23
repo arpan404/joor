@@ -569,6 +569,140 @@ export type RpcStreamRouteProtocolRequest<
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamProtocolRequest<TRoutes, TId>;
 
+export interface RpcProtocolRequestOptions {
+  traceId?: string;
+}
+
+const createProtocolRequestObject = <TId extends string>(
+  id: TId,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest<TId> =>
+  ({
+    id,
+    input: input as JsonValue,
+    ...(options?.traceId === undefined ? {} : { traceId: options.traceId }),
+  }) as RpcRequest<TId>;
+
+export function createRouteProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteProtocolRequest<TRoutes, TId>;
+export function createRouteProtocolRequest(
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export function createRouteUnaryProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteUnaryProtocolRequest<TRoutes, TId>;
+export function createRouteUnaryProtocolRequest(
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export const createUnaryRouteProtocolRequest: typeof createRouteUnaryProtocolRequest =
+  createRouteUnaryProtocolRequest;
+
+export function createRouteStreamProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteStreamProtocolRequest<TRoutes, TId>;
+export function createRouteStreamProtocolRequest(
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export const createStreamRouteProtocolRequest: typeof createRouteStreamProtocolRequest =
+  createRouteStreamProtocolRequest;
+
+export function createManifestRouteProtocolRequest<
+  const TManifest extends JoorManifest,
+  TId extends RpcRouteId<JoorManifestRoutes<TManifest>> = RpcRouteId<
+    JoorManifestRoutes<TManifest>
+  >,
+>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+export function createManifestRouteProtocolRequest(
+  _manifest: JoorManifest,
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export function createManifestRouteUnaryProtocolRequest<
+  const TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> = RpcRouteUnaryId<
+    JoorManifestRoutes<TManifest>
+  >,
+>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteUnaryProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+export function createManifestRouteUnaryProtocolRequest(
+  _manifest: JoorManifest,
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export const createManifestUnaryRouteProtocolRequest: typeof createManifestRouteUnaryProtocolRequest =
+  createManifestRouteUnaryProtocolRequest;
+
+export function createManifestRouteStreamProtocolRequest<
+  const TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  options?: RpcProtocolRequestOptions
+): RpcRouteStreamProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+export function createManifestRouteStreamProtocolRequest(
+  _manifest: JoorManifest,
+  id: string,
+  input: unknown,
+  options?: RpcProtocolRequestOptions
+): RpcRequest {
+  return createProtocolRequestObject(id, input, options);
+}
+
+export const createManifestStreamRouteProtocolRequest: typeof createManifestRouteStreamProtocolRequest =
+  createManifestRouteStreamProtocolRequest;
+
 export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcRouteId<TRoutes>]: RpcRouteProtocolRequest<TRoutes, TId>;
 }[RpcRouteId<TRoutes>];
