@@ -2600,29 +2600,25 @@ export type BatchFunction = <const TRequests extends RouteBatchRequest>(
 export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
   url?: string;
 };
-export type UnaryRouteTransport<TId extends UnaryRouteId> = {
+export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
+export type RouteUnaryTransport<TId extends RouteUnaryId> = {
   call(...args: [id: TId, ...ClientArgs<TId>]): Promise<RouteResult<TId>>;
   request(...args: [id: TId, ...ClientArgs<TId>]): RouteRequest<TId>;
 };
-
-export type RouteUnaryTransport<TId extends RouteUnaryId> =
-  UnaryRouteTransport<TId>;
-
-export type StreamRouteTransport<TId extends StreamRouteId> = {
+export type UnaryRouteTransport<TId extends UnaryRouteId> =
+  RouteUnaryTransport<TId>;
+export type RouteStreamTransport<TId extends RouteStreamId> = {
   stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
-
-export type RouteStreamTransport<TId extends RouteStreamId> =
-  StreamRouteTransport<TId>;
-
-export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
-export type UnaryRouteTransportClient = Pick<
+export type StreamRouteTransport<TId extends StreamRouteId> =
+  RouteStreamTransport<TId>;
+export type RouteUnaryTransportClient = Pick<
   RouteTransportClient,
   'call' | 'request' | 'batch'
 >;
-export type RouteUnaryTransportClient = UnaryRouteTransportClient;
-export type StreamRouteTransportClient = Pick<RouteTransportClient, 'stream'>;
-export type RouteStreamTransportClient = StreamRouteTransportClient;
+export type UnaryRouteTransportClient = RouteUnaryTransportClient;
+export type RouteStreamTransportClient = Pick<RouteTransportClient, 'stream'>;
+export type StreamRouteTransportClient = RouteStreamTransportClient;
 export type TransportClient = RouteTransportClient;
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};

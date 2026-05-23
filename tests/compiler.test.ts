@@ -416,6 +416,30 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteTransport');
       expect(clientSource).toContain('export type UnaryRouteTransportClient');
       expect(clientSource).toContain('export type StreamRouteTransportClient');
+      expect(clientSource).toContain(
+        'export type RouteUnaryTransport<TId extends RouteUnaryId> = {'
+      );
+      expect(clientSource).toContain(
+        'export type UnaryRouteTransport<TId extends UnaryRouteId> =\n  RouteUnaryTransport<TId>;'
+      );
+      expect(clientSource).toContain(
+        'export type RouteStreamTransport<TId extends RouteStreamId> = {'
+      );
+      expect(clientSource).toContain(
+        'export type StreamRouteTransport<TId extends StreamRouteId> =\n  RouteStreamTransport<TId>;'
+      );
+      expect(clientSource).toContain(
+        "export type RouteUnaryTransportClient = Pick<\n  RouteTransportClient,\n  'call' | 'request' | 'batch'\n>;"
+      );
+      expect(clientSource).toContain(
+        'export type UnaryRouteTransportClient = RouteUnaryTransportClient;'
+      );
+      expect(clientSource).toContain(
+        "export type RouteStreamTransportClient = Pick<RouteTransportClient, 'stream'>;"
+      );
+      expect(clientSource).toContain(
+        'export type StreamRouteTransportClient = RouteStreamTransportClient;'
+      );
       expect(clientSource).toContain('export type GeneratedClient');
       expect(clientSource).toContain(
         'export const createTransport = (\n  options: GeneratedClientOptions = {}\n): TransportClient =>'
@@ -671,13 +695,14 @@ const options: GeneratedClientOptions = { headers: { authorization: 'token' } };
 createClient(options).users.watch({ userId: '1' });
 const generatedTransport: TransportClient = createTransport(options);
 const generatedRouteTransport: RouteTransportClient = generatedTransport;
-const generatedUnaryTransport: UnaryRouteTransportClient = generatedRouteTransport;
 const generatedRouteUnaryTransport: RouteUnaryTransportClient =
-  generatedUnaryTransport;
-const generatedStreamTransport: StreamRouteTransportClient =
   generatedRouteTransport;
 const generatedRouteStreamTransport: RouteStreamTransportClient =
-  generatedStreamTransport;
+  generatedRouteTransport;
+const generatedUnaryTransport: UnaryRouteTransportClient =
+  generatedRouteUnaryTransport;
+const generatedStreamTransport: StreamRouteTransportClient =
+  generatedRouteStreamTransport;
 generatedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   if (result.ok) result.data.name.toUpperCase();
 });

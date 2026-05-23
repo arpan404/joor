@@ -311,8 +311,10 @@ import {
   type JoorManifestRouteStreamEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
+  type JoorManifestRouteStreamTransportClient,
   type JoorManifestRouteUnaryProtocolRequest,
   type JoorManifestRouteUnaryProtocolRequestUnion,
+  type JoorManifestRouteUnaryTransportClient,
   type JoorManifestRoutes,
   type JoorManifestStreamRouteProtocolRequest,
   type JoorManifestStreamRouteProtocolRequestUnion,
@@ -569,6 +571,8 @@ import {
   type RpcRouteUnaryProtocolRequestUnion,
   type RouteRpcTransportClient,
   type RpcManifestClientOptions,
+  type RpcManifestRouteStreamTransportClient,
+  type RpcManifestRouteUnaryTransportClient,
   type RpcManifestStreamRouteTransportClient,
   type RpcManifestTransportClient,
   type RpcManifestUnaryRouteTransportClient,
@@ -597,6 +601,8 @@ import {
   type RpcRouteClientArgs,
   type RpcRouteClientHeaders,
   type RpcRouteRequestOptions,
+  type RpcRouteStreamTransportClient,
+  type RpcRouteUnaryTransportClient,
   type RpcStreamRouteId,
   type RpcStreamRouteTransportClient,
   type RpcUnaryProcedure,
@@ -2577,16 +2583,29 @@ const rootManifestClient = createRootClient({ url: '/rpc', manifest });
 const rootManifestClientShape: RpcManifestTransportClient<typeof manifest> =
   rootManifestClient;
 rootManifestClientShape.call('users.authenticated', { ok: true });
-const rootManifestUnaryClientShape: RpcManifestUnaryRouteTransportClient<
+const rootManifestRouteUnaryClientShape: RpcManifestRouteUnaryTransportClient<
   typeof manifest
 > = rootManifestClient;
+rootManifestRouteUnaryClientShape.call('users.authenticated', { ok: true });
+rootManifestRouteUnaryClientShape.batch([
+  rootManifestRouteUnaryClientShape.request('users.authenticated', {
+    ok: true,
+  }),
+] as const);
+const rootManifestUnaryClientShape: RpcManifestUnaryRouteTransportClient<
+  typeof manifest
+> = rootManifestRouteUnaryClientShape;
 rootManifestUnaryClientShape.call('users.authenticated', { ok: true });
 rootManifestUnaryClientShape.batch([
   rootManifestUnaryClientShape.request('users.authenticated', { ok: true }),
 ] as const);
-const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
+const rootManifestRouteStreamClientShape: RpcManifestRouteStreamTransportClient<
   typeof manifest
 > = rootManifestClient;
+rootManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
+const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
+  typeof manifest
+> = rootManifestRouteStreamClientShape;
 rootManifestStreamClientShape.stream('users.watch', { userId: '1' });
 const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
   typeof manifest
@@ -2594,13 +2613,21 @@ const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
 rpcSubpathManifestClientShape.call('users.authenticated', { ok: true });
 const joorManifestClientShape: JoorManifestTransportClient<typeof manifest> =
   rootManifestClient;
+const joorManifestRouteUnaryClientShape: JoorManifestRouteUnaryTransportClient<
+  typeof manifest
+> = joorManifestClientShape;
+joorManifestRouteUnaryClientShape.call('users.authenticated', { ok: true });
 const joorManifestUnaryClientShape: JoorManifestUnaryRouteTransportClient<
   typeof manifest
-> = joorManifestClientShape;
+> = joorManifestRouteUnaryClientShape;
 joorManifestUnaryClientShape.call('users.authenticated', { ok: true });
-const joorManifestStreamClientShape: JoorManifestStreamRouteTransportClient<
+const joorManifestRouteStreamClientShape: JoorManifestRouteStreamTransportClient<
   typeof manifest
 > = joorManifestClientShape;
+joorManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
+const joorManifestStreamClientShape: JoorManifestStreamRouteTransportClient<
+  typeof manifest
+> = joorManifestRouteStreamClientShape;
 joorManifestStreamClientShape.stream('users.watch', { userId: '1' });
 const joorSubpathManifestClientShape: JoorSubpathManifestTransportClient<
   typeof manifestFromSubpath
@@ -8615,7 +8642,9 @@ const _wrongRouteBody: RpcRouteBody<Routes> = [
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
 const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
-const unaryRouteClientShape: RpcUnaryRouteTransportClient<Routes> = routeClient;
+const routeUnaryClientShape: RpcRouteUnaryTransportClient<Routes> = routeClient;
+const unaryRouteClientShape: RpcUnaryRouteTransportClient<Routes> =
+  routeUnaryClientShape;
 unaryRouteClientShape.call(
   'users.get',
   { id: '1' },
@@ -8628,8 +8657,10 @@ unaryRouteClientShape.batch([
     { headers: { 'x-tenant-id': 'tenant-1' } }
   ),
 ] as const);
-const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
+const routeStreamClientShape: RpcRouteStreamTransportClient<Routes> =
   routeClient;
+const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
+  routeStreamClientShape;
 streamRouteClientShape.stream('users.watch', { userId: '1' });
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
