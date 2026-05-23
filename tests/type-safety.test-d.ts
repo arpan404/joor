@@ -34,12 +34,14 @@ import {
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
   isJsonObject,
+  isSerializedJsonEnvelope,
   listen,
   parseJson,
   serveBun,
   serveDeno,
   t,
   toJsonSchema,
+  transportResultToResponse,
   validate,
   type ArrayChain,
   type BatchResults,
@@ -186,6 +188,7 @@ import {
   type ProcedureRuntime,
   type ProcedureServices,
   type ProcedureSuccess,
+  type SerializedJsonEnvelope,
   type RpcEnvelope,
   type RpcBatchRequest,
   type RpcBodyHandler,
@@ -228,6 +231,7 @@ import {
   type RpcRouteBody,
   type RpcRouteBodyResult,
   type RpcRouteBodyResultFor,
+  type TransportBodyResult,
   type RpcRouteHasHeaders,
   type RpcRouteHasResponseHeaders,
   type RpcRouteRequest,
@@ -448,6 +452,8 @@ import {
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
+  transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
   type BunRpcRequestHandler as RuntimeSubpathBunRpcRequestHandler,
   type BunTransportBodyResultFor as RuntimeSubpathBunTransportBodyResultFor,
@@ -479,6 +485,8 @@ import {
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultFor as RuntimeSubpathNodeTransportBodyResultFor,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
+  type SerializedJsonEnvelope as RuntimeSubpathSerializedJsonEnvelope,
+  type TransportBodyResult as RuntimeSubpathTransportBodyResult,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
   type CloudflareWorkerOptionsFor as RuntimeSubpathCloudflareWorkerOptionsFor,
@@ -2968,6 +2976,23 @@ const compiledSerializedEnvelope: CompiledSerializedEnvelope = {
   responseHeaders: { 'cache-control': 'private' },
 };
 compiledSerializedEnvelope.headers?.['cache-control']?.toUpperCase();
+const serializedJsonEnvelope: SerializedJsonEnvelope =
+  compiledSerializedEnvelope;
+const runtimeSubpathSerializedJsonEnvelope: RuntimeSubpathSerializedJsonEnvelope =
+  serializedJsonEnvelope;
+const transportBodyResult: TransportBodyResult = serializedJsonEnvelope;
+const runtimeSubpathTransportBodyResult: RuntimeSubpathTransportBodyResult =
+  transportBodyResult;
+if (isSerializedJsonEnvelope(transportBodyResult)) {
+  transportBodyResult.body.toUpperCase();
+}
+if (isRuntimeSubpathSerializedJsonEnvelope(runtimeSubpathTransportBodyResult)) {
+  runtimeSubpathTransportBodyResult.body.toUpperCase();
+}
+transportResultToResponse(manifestRouteEnvelope).headers.get('content-type');
+runtimeSubpathTransportResultToResponse(
+  runtimeSubpathSerializedJsonEnvelope
+).headers.get('content-type');
 const rootCompiledSerializedEnvelope: RootCompiledSerializedEnvelope =
   compiledSerializedEnvelope;
 rootCompiledSerializedEnvelope.body.toUpperCase();

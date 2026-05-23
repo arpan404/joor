@@ -35,6 +35,10 @@ export {
   createNodeTransportRequestHandler,
   listen,
 } from './runtime/node.js';
+export {
+  isSerializedJsonEnvelope,
+  transportResultToResponse,
+} from './runtime/response.js';
 export { createVercelFetch } from './runtime/vercel.js';
 export {
   createCompiledRpcBodyResultHandler,
@@ -334,6 +338,10 @@ export type {
   VercelFetchHandler,
   VercelFetchOptionsFor,
 } from './runtime/vercel.js';
+export type {
+  SerializedJsonEnvelope,
+  TransportBodyResult,
+} from './runtime/response.js';
 export type {
   ArrayChain,
   BooleanChain,

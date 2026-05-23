@@ -14,4 +14,12 @@ export * from './fetch.js';
 export * from './netlify.js';
 export * from './next.js';
 export * from './node.js';
+export {
+  isSerializedJsonEnvelope,
+  transportResultToResponse,
+} from './response.js';
+export type {
+  SerializedJsonEnvelope,
+  TransportBodyResult,
+} from './response.js';
 export * from './vercel.js';
