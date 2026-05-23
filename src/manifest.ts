@@ -11,8 +11,14 @@ import type {
   RpcManifestBody,
   RpcManifestBodyResult,
   RpcManifestBodyResultFor,
+  RpcManifestStreamRouteBodyHandler,
+  RpcManifestStreamRouteBodyResultHandler,
+  RpcManifestStreamRouteTransportBodyResultHandler,
   RpcManifestRequiredServices,
   RpcManifestRouteServices,
+  RpcManifestUnaryRouteBodyHandler,
+  RpcManifestUnaryRouteBodyResultHandler,
+  RpcManifestUnaryRouteTransportBodyResultHandler,
 } from './rpc/dispatcher.js';
 import type {
   RpcRouteBody,
@@ -124,6 +130,28 @@ export type JoorManifestUnaryRouteTransportClient<
 export type JoorManifestStreamRouteTransportClient<
   TManifest extends JoorManifest,
 > = RpcManifestStreamRouteTransportClient<TManifest>;
+
+export type JoorManifestUnaryRouteBodyResultHandler<
+  TManifest extends JoorManifest,
+> = RpcManifestUnaryRouteBodyResultHandler<TManifest>;
+
+export type JoorManifestStreamRouteBodyResultHandler<
+  TManifest extends JoorManifest,
+> = RpcManifestStreamRouteBodyResultHandler<TManifest>;
+
+export type JoorManifestUnaryRouteBodyHandler<TManifest extends JoorManifest> =
+  RpcManifestUnaryRouteBodyHandler<TManifest>;
+
+export type JoorManifestStreamRouteBodyHandler<TManifest extends JoorManifest> =
+  RpcManifestStreamRouteBodyHandler<TManifest>;
+
+export type JoorManifestUnaryRouteTransportBodyResultHandler<
+  TManifest extends JoorManifest,
+> = RpcManifestUnaryRouteTransportBodyResultHandler<TManifest>;
+
+export type JoorManifestStreamRouteTransportBodyResultHandler<
+  TManifest extends JoorManifest,
+> = RpcManifestStreamRouteTransportBodyResultHandler<TManifest>;
 
 export type JoorManifestClientOptions<TManifest extends JoorManifest> =
   RpcManifestClientOptions<TManifest>;

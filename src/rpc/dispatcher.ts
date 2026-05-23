@@ -670,10 +670,38 @@ export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
   body: TBody
 ) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
+export type RpcManifestUnaryRouteBodyResultHandler<
+  TManifest extends RpcManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: Request,
+  body: TBody
+) => Promise<RpcManifestUnaryRouteBodyResultFor<TManifest, TBody>>;
+
+export type RpcManifestStreamRouteBodyResultHandler<
+  TManifest extends RpcManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: Request,
+  body: TBody
+) => Promise<RpcManifestStreamRouteBodyResultFor<TManifest, TBody>>;
+
 export type RpcRequestHandler = (request: Request) => Promise<Response>;
 
 export type RpcBodyHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
+>(
+  request: Request,
+  body: TBody
+) => Promise<Response>;
+
+export type RpcManifestUnaryRouteBodyHandler<TManifest extends RpcManifest> = <
+  const TBody extends RpcManifestUnaryRouteBody<TManifest>,
+>(
+  request: Request,
+  body: TBody
+) => Promise<Response>;
+
+export type RpcManifestStreamRouteBodyHandler<TManifest extends RpcManifest> = <
+  const TBody extends RpcManifestStreamRouteBody<TManifest>,
 >(
   request: Request,
   body: TBody
@@ -685,6 +713,20 @@ export type RpcTransportBodyResultHandler<TManifest extends RpcManifest> = <
   request: ContextRequestSource,
   body: TBody
 ) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
+
+export type RpcManifestUnaryRouteTransportBodyResultHandler<
+  TManifest extends RpcManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<RpcManifestUnaryRouteBodyResultFor<TManifest, TBody>>;
+
+export type RpcManifestStreamRouteTransportBodyResultHandler<
+  TManifest extends RpcManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<RpcManifestStreamRouteBodyResultFor<TManifest, TBody>>;
 
 interface PreparedProcedure {
   procedure: ProcedureRuntime;

@@ -146,8 +146,11 @@ import {
   type JoorManifestStreamRouteClientArgs,
   type JoorManifestStreamRouteClientHeaders,
   type JoorManifestStreamRouteBody,
+  type JoorManifestStreamRouteBodyHandler,
   type JoorManifestStreamRouteBodyResult,
   type JoorManifestStreamRouteBodyResultFor,
+  type JoorManifestStreamRouteBodyResultHandler,
+  type JoorManifestStreamRouteTransportBodyResultHandler,
   type JoorManifestStreamRouteErrorCode,
   type JoorManifestStreamRouteErrorDetails,
   type JoorManifestStreamRouteEvent,
@@ -180,8 +183,10 @@ import {
   type JoorManifestUnaryRouteClientArgs,
   type JoorManifestUnaryRouteClientHeaders,
   type JoorManifestUnaryRouteBody,
+  type JoorManifestUnaryRouteBodyHandler,
   type JoorManifestUnaryRouteBodyResult,
   type JoorManifestUnaryRouteBodyResultFor,
+  type JoorManifestUnaryRouteBodyResultHandler,
   type JoorManifestUnaryRouteEnvelope,
   type JoorManifestUnaryRouteEnvelopeUnion,
   type JoorManifestUnaryRouteErrorCode,
@@ -204,6 +209,7 @@ import {
   type JoorManifestUnaryRouteRequiresHeaders,
   type JoorManifestUnaryRouteRequiresResponseHeaders,
   type JoorManifestUnaryRouteRequestOptions,
+  type JoorManifestUnaryRouteTransportBodyResultHandler,
   type JoorManifestUnaryRouteTransportClient,
   type JoorManifestUnaryRouteId,
   type LegacyRpcTransportClient,
@@ -267,8 +273,11 @@ import {
   type RpcManifestStreamRouteClientArgs,
   type RpcManifestStreamRouteClientHeaders,
   type RpcManifestStreamRouteBody,
+  type RpcManifestStreamRouteBodyHandler,
   type RpcManifestStreamRouteBodyResult,
   type RpcManifestStreamRouteBodyResultFor,
+  type RpcManifestStreamRouteBodyResultHandler,
+  type RpcManifestStreamRouteTransportBodyResultHandler,
   type RpcManifestStreamRouteErrorCode,
   type RpcManifestStreamRouteErrorDetails,
   type RpcManifestStreamRouteEvent,
@@ -299,8 +308,10 @@ import {
   type RpcManifestUnaryRouteClientArgs,
   type RpcManifestUnaryRouteClientHeaders,
   type RpcManifestUnaryRouteBody,
+  type RpcManifestUnaryRouteBodyHandler,
   type RpcManifestUnaryRouteBodyResult,
   type RpcManifestUnaryRouteBodyResultFor,
+  type RpcManifestUnaryRouteBodyResultHandler,
   type RpcManifestUnaryRouteEnvelope,
   type RpcManifestUnaryRouteEnvelopeUnion,
   type RpcManifestUnaryRouteErrorCode,
@@ -323,6 +334,7 @@ import {
   type RpcManifestUnaryRouteRequiresHeaders,
   type RpcManifestUnaryRouteRequiresResponseHeaders,
   type RpcManifestUnaryRouteRequestOptions,
+  type RpcManifestUnaryRouteTransportBodyResultHandler,
   type RpcManifestUnaryRouteId,
   type RpcProtocolEnvelope,
   type RpcProtocolError,
@@ -490,9 +502,15 @@ import {
   type RpcManifestRouteInput as RpcSubpathManifestRouteInput,
   type RpcManifestRouteOutput as RpcSubpathManifestRouteOutput,
   type RpcManifestStreamRouteClientArgs as RpcSubpathManifestStreamRouteClientArgs,
+  type RpcManifestStreamRouteBodyHandler as RpcSubpathManifestStreamRouteBodyHandler,
+  type RpcManifestStreamRouteBodyResultHandler as RpcSubpathManifestStreamRouteBodyResultHandler,
+  type RpcManifestStreamRouteTransportBodyResultHandler as RpcSubpathManifestStreamRouteTransportBodyResultHandler,
   type RpcManifestStreamRouteProcedure as RpcSubpathManifestStreamRouteProcedure,
   type RpcManifestStreamRouteRequestOptions as RpcSubpathManifestStreamRouteRequestOptions,
   type RpcManifestUnaryRouteClientArgs as RpcSubpathManifestUnaryRouteClientArgs,
+  type RpcManifestUnaryRouteBodyHandler as RpcSubpathManifestUnaryRouteBodyHandler,
+  type RpcManifestUnaryRouteBodyResultHandler as RpcSubpathManifestUnaryRouteBodyResultHandler,
+  type RpcManifestUnaryRouteTransportBodyResultHandler as RpcSubpathManifestUnaryRouteTransportBodyResultHandler,
   type RpcManifestUnaryRouteProcedure as RpcSubpathManifestUnaryRouteProcedure,
   type RpcManifestUnaryRouteRequestOptions as RpcSubpathManifestUnaryRouteRequestOptions,
   type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
@@ -538,9 +556,15 @@ import {
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
   type JoorManifestStreamRouteClientArgs as JoorSubpathManifestStreamRouteClientArgs,
+  type JoorManifestStreamRouteBodyHandler as JoorSubpathManifestStreamRouteBodyHandler,
+  type JoorManifestStreamRouteBodyResultHandler as JoorSubpathManifestStreamRouteBodyResultHandler,
+  type JoorManifestStreamRouteTransportBodyResultHandler as JoorSubpathManifestStreamRouteTransportBodyResultHandler,
   type JoorManifestStreamRouteProcedure as JoorSubpathManifestStreamRouteProcedure,
   type JoorManifestStreamRouteRequestOptions as JoorSubpathManifestStreamRouteRequestOptions,
   type JoorManifestUnaryRouteClientArgs as JoorSubpathManifestUnaryRouteClientArgs,
+  type JoorManifestUnaryRouteBodyHandler as JoorSubpathManifestUnaryRouteBodyHandler,
+  type JoorManifestUnaryRouteBodyResultHandler as JoorSubpathManifestUnaryRouteBodyResultHandler,
+  type JoorManifestUnaryRouteTransportBodyResultHandler as JoorSubpathManifestUnaryRouteTransportBodyResultHandler,
   type JoorManifestUnaryRouteProcedure as JoorSubpathManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteRequestOptions as JoorSubpathManifestUnaryRouteRequestOptions,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
@@ -3819,6 +3843,202 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
   // @ts-expect-error low-level typed batch bodies reject stream routes.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+
+const publicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicManifestStreamRouteBodyHandler: RpcManifestStreamRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicManifestUnaryRouteBodyResultHandler: RpcManifestUnaryRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const publicManifestStreamRouteBodyResultHandler: RpcManifestStreamRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const publicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const publicManifestStreamRouteTransportBodyResultHandler: RpcManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const publicJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const publicJoorManifestStreamRouteBodyResultHandler: JoorManifestStreamRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const publicJoorManifestUnaryRouteTransportBodyResultHandler: JoorManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const publicJoorManifestStreamRouteTransportBodyResultHandler: JoorManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const rpcSubpathManifestUnaryRouteBodyHandler: RpcSubpathManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const rpcSubpathManifestStreamRouteBodyHandler: RpcSubpathManifestStreamRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const rpcSubpathManifestUnaryRouteBodyResultHandler: RpcSubpathManifestUnaryRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const rpcSubpathManifestStreamRouteBodyResultHandler: RpcSubpathManifestStreamRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const rpcSubpathManifestUnaryRouteTransportBodyResultHandler: RpcSubpathManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const rpcSubpathManifestStreamRouteTransportBodyResultHandler: RpcSubpathManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const joorSubpathManifestUnaryRouteBodyHandler: JoorSubpathManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const joorSubpathManifestStreamRouteBodyHandler: JoorSubpathManifestStreamRouteBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const joorSubpathManifestUnaryRouteBodyResultHandler: JoorSubpathManifestUnaryRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const joorSubpathManifestStreamRouteBodyResultHandler: JoorSubpathManifestStreamRouteBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const joorSubpathManifestUnaryRouteTransportBodyResultHandler: JoorSubpathManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+const joorSubpathManifestStreamRouteTransportBodyResultHandler: JoorSubpathManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = rpcTransportResultHandler;
+
+publicManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+publicManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+publicManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error unary route body handlers reject stream route bodies.
+  manifestStreamRouteBody
+);
+publicManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error stream route body handlers reject unary route bodies.
+  manifestUnaryRouteBody
+);
+publicManifestUnaryRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+).then((result) => {
+  const exactResult: RpcManifestUnaryRouteBodyResultFor<
+    typeof manifest,
+    typeof manifestUnaryRouteBody
+  > = result;
+  if (!(exactResult instanceof Response)) {
+    if (exactResult.ok) exactResult.data.name.toUpperCase();
+  }
+});
+publicManifestStreamRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+).then((result) => result.headers.get('content-type'));
+publicManifestUnaryRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+).then((result) => {
+  const exactResult: JoorManifestUnaryRouteBodyResultFor<
+    typeof manifest,
+    typeof manifestUnaryRouteBody
+  > = result;
+  if (!(exactResult instanceof Response)) {
+    if (exactResult.ok) exactResult.data.name.toUpperCase();
+  }
+});
+publicManifestStreamRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+).then((result) => result.headers.get('content-type'));
+publicJoorManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+publicJoorManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+publicJoorManifestUnaryRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+publicJoorManifestStreamRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+publicJoorManifestUnaryRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+publicJoorManifestStreamRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+rpcSubpathManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+rpcSubpathManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+rpcSubpathManifestUnaryRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+rpcSubpathManifestStreamRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+rpcSubpathManifestUnaryRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rpcSubpathManifestStreamRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+joorSubpathManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+joorSubpathManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+joorSubpathManifestUnaryRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+joorSubpathManifestStreamRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+joorSubpathManifestUnaryRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+joorSubpathManifestStreamRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
 
 // @ts-expect-error low-level runtime handlers only accept typed procedure manifests.
 createRpcBodyResultHandler({ procedures: { broken: { input: t.string() } } });
