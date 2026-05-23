@@ -133,6 +133,27 @@ const emitValidatorFunction = (
   }
   const invalid = (message: string): string =>
     `return { path, message: ${JSON.stringify(message)} };`;
+  const emitJsonEquals = (): void => {
+    if (definitions.some((definition) => definition.startsWith('const compiledJsonEquals = '))) {
+      return;
+    }
+    definitions.push(`const compiledJsonEquals = (left: JsonValue | undefined, right: JsonValue | undefined): boolean => {
+  if (left === right) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right)) return false;
+    if (left.length !== right.length) return false;
+    return left.every((item, index) => compiledJsonEquals(item, right[index]));
+  }
+  if (left === undefined || right === undefined) return false;
+  if (!isJsonObject(left) || !isJsonObject(right)) return false;
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  if (leftKeys.length !== rightKeys.length) return false;
+  return leftKeys.every((key) =>
+    Object.hasOwn(right, key) ? compiledJsonEquals(left[key], right[key]) : false
+  );
+};`);
+  };
 
   switch (schema.kind) {
     case 'string': {
@@ -221,8 +242,9 @@ const emitValidatorFunction = (
 };`);
       return;
     case 'literal':
+      emitJsonEquals();
       definitions.push(`const ${name} = (value: JsonValue | undefined, path = '') => {
-  if (value !== ${JSON.stringify(schema.value)}) {
+  if (!compiledJsonEquals(value, ${JSON.stringify(schema.value)})) {
     ${invalid('Expected literal')}
   }
   return undefined;

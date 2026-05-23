@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
 import { emitArtifacts } from '../src/compiler/emit.js';
 import { loadProcedures } from '../src/compiler/load.js';
+import { defineProcedure, t } from '../src/index.js';
 
 const execFileAsync = promisify(execFile);
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -746,6 +747,44 @@ describe('compiler', () => {
       } finally {
         await rm(trustedOutDir, { recursive: true, force: true });
       }
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('emits structural validators for JSON literals', async () => {
+    const procedure = defineProcedure({
+      input: t.object({
+        expected: t.literal({ role: 'admin', scopes: ['read', 'write'] }),
+      }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx) {
+        return ctx.ok({ ok: true });
+      },
+    });
+    const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
+    try {
+      await emitArtifacts(
+        {
+          procedures: [
+            {
+              id: 'literal.check',
+              importPath: join(outDir, 'literal.check.rpc.ts'),
+              exportName: 'literal_check',
+              procedure,
+            },
+          ],
+        },
+        { outDir, config: {} }
+      );
+      const safeDispatcher = await readFile(
+        join(outDir, 'dispatcher.safe.ts'),
+        'utf8'
+      );
+
+      expect(safeDispatcher).toContain('const compiledJsonEquals =');
+      expect(safeDispatcher).toContain('!compiledJsonEquals(value, {');
+      expect(safeDispatcher).not.toContain('value !== {"role":"admin"');
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

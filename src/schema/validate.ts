@@ -16,6 +16,26 @@ const issue = (path: string, message: string): ValidationIssue => ({
 const childPath = (path: string, key: string): string =>
   path === '' ? key : `${path}.${key}`;
 
+const jsonEquals = (
+  left: JsonValue | undefined,
+  right: JsonValue | undefined
+): boolean => {
+  if (left === right) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right)) return false;
+    if (left.length !== right.length) return false;
+    return left.every((item, index) => jsonEquals(item, right[index]));
+  }
+  if (left === undefined || right === undefined) return false;
+  if (!isJsonObject(left) || !isJsonObject(right)) return false;
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  if (leftKeys.length !== rightKeys.length) return false;
+  return leftKeys.every((key) =>
+    Object.hasOwn(right, key) ? jsonEquals(left[key], right[key]) : false
+  );
+};
+
 const validateObject = <TSchema extends Schema>(
   schema: TSchema,
   value: JsonValue | undefined,
@@ -90,7 +110,7 @@ export const validate = <TSchema extends Schema>(
       return { ok: true, value: value as InferSchema<TSchema> };
     }
     case 'literal': {
-      if (value !== schema.value)
+      if (!jsonEquals(value, schema.value))
         return { ok: false, issues: [issue(path, 'Expected literal')] };
       return { ok: true, value: value as InferSchema<TSchema> };
     }

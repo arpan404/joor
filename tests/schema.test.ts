@@ -27,6 +27,25 @@ describe('schema', () => {
     expect(result.ok).toBe(false);
   });
 
+  it('validates object and array literals structurally', () => {
+    const objectResult = validate(
+      t.literal({ role: 'admin', scopes: ['read', 'write'] }),
+      { scopes: ['read', 'write'], role: 'admin' }
+    );
+    const arrayResult = validate(t.literal(['a', { b: true }]), [
+      'a',
+      { b: true },
+    ]);
+    const mismatch = validate(t.literal({ role: 'admin' }), {
+      role: 'admin',
+      extra: true,
+    });
+
+    expect(objectResult.ok).toBe(true);
+    expect(arrayResult.ok).toBe(true);
+    expect(mismatch.ok).toBe(false);
+  });
+
   it('emits json schema', () => {
     const schema = toJsonSchema(t.object({ id: t.string() }));
 
