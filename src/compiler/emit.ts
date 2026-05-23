@@ -1288,12 +1288,12 @@ ${nodeFastCases}
     nativeRuntime,
     nativeTransport,
     nativeUnaryDispatch,
-    configuredPath,
+    path,
     bodyLimit
   );`
     : `return createDenoTransportRequestHandlerWithPath(
     nativeTransport,
-    configuredPath,
+    path,
     bodyLimit
   );`;
 
@@ -1785,6 +1785,7 @@ ${nodeFastContextlessUnary}
 
 export interface NodeNativeOptions {
   hostname?: string;
+  path?: string;
   maxBodyBytes?: number;
 }
 
@@ -1809,7 +1810,7 @@ export const createHandler = (
   options: NodeNativeOptions = {}
 ): NodeNativeHandler => {
   const hostname = options.hostname ?? '0.0.0.0';
-  const path = configuredPath;
+  const path = options.path ?? configuredPath;
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
@@ -2261,6 +2262,7 @@ ${bunFastContextlessUnary}
 
 export interface BunNativeOptions {
   hostname?: string;
+  path?: string;
   maxBodyBytes?: number;
   port?: number;
 }
@@ -2279,7 +2281,7 @@ export interface BunNativeServer {
 export const createFetch = (
   options: BunNativeOptions = {}
 ): BunNativeFetchHandler => {
-  const path = configuredPath;
+  const path = options.path ?? configuredPath;
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
@@ -2358,6 +2360,7 @@ const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
 
 export interface DenoNativeOptions {
   hostname?: string;
+  path?: string;
   maxBodyBytes?: number;
   port?: number;
 }
@@ -2374,6 +2377,7 @@ export interface DenoNativeServer {
 export const createFetch = (
   options: DenoNativeOptions = {}
 ): DenoNativeFetchHandler => {
+  const path = options.path ?? configuredPath;
   const bodyLimit =
     options.maxBodyBytes ?? configuredMaxBodyBytes;
   ${denoCreateFetchReturn}
