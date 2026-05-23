@@ -2181,16 +2181,17 @@ type UnaryRouteTransport<TId extends UnaryRouteId> = {
 type StreamRouteTransport<TId extends StreamRouteId> = {
   stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
+export type TransportClient = JoorManifestTransportClient<Manifest>;
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
 
-export const createTransport = (options: GeneratedClientOptions = {}) =>
+export const createTransport = (
+  options: GeneratedClientOptions = {}
+): TransportClient =>
   createTransportClient(manifest, {
     ...options,
     url: options.url ?? defaultUrl,
   });
-
-export type TransportClient = JoorManifestTransportClient<Manifest>;
 
 export type GeneratedClient = {
 ${clientTypeBody}
@@ -2221,7 +2222,7 @@ ${clientBody}
   };
 };
 
-export const client = createClient();
+export const client: GeneratedClient = createClient();
 `
   );
 };

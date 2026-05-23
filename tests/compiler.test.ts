@@ -292,6 +292,9 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteFunction');
       expect(clientSource).toContain('export type BatchFunction');
       expect(clientSource).toContain('export type GeneratedClient');
+      expect(clientSource).toContain(
+        'export const createTransport = (\n  options: GeneratedClientOptions = {}\n): TransportClient =>'
+      );
       expect(clientSource).toContain('"get": UnaryRouteFunction<"users.get">');
       expect(clientSource).toContain(
         '"watch": StreamRouteFunction<"users.watch">'
@@ -446,7 +449,9 @@ describe('compiler', () => {
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
 
       expect(clientSource).toContain('const defaultUrl = "/api/rpc"');
-      expect(clientSource).toContain('export const client = createClient()');
+      expect(clientSource).toContain(
+        'export const client: GeneratedClient = createClient()'
+      );
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
