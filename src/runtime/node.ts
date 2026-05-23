@@ -296,12 +296,18 @@ export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = NodeRouteStreamRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
-export type NodeRpcRequestHandler = (
-  incoming: IncomingMessage,
-  outgoing: ServerResponse<IncomingMessage>
+export type NodeRpcRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+> = (
+  incoming: TIncoming,
+  outgoing: TOutgoing
 ) => void | Promise<void>;
 
-export type NodeTransportRequestHandler = NodeRpcRequestHandler;
+export type NodeTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+> = NodeRpcRequestHandler<TIncoming, TOutgoing>;
 
 export type NodeTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
@@ -604,6 +610,29 @@ export const createNodeTransportRequestHandler = <
   };
 };
 
+export const createNodeTransportRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+  >() =>
+  <
+    TBody = JsonValue,
+    TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
+  >(
+    handler: NodeTransportBodyResultHandler<TBody, TResult>,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>
+  ): NodeTransportRequestHandler<TIncoming, TOutgoing> =>
+    createNodeTransportRequestHandler(
+      handler,
+      hostname,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders
+    ) as NodeTransportRequestHandler<TIncoming, TOutgoing>;
+
 export const createNodeTransportRequestHandlerWithPath = <
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
@@ -619,6 +648,27 @@ export const createNodeTransportRequestHandlerWithPath = <
     maxBodyBytes,
     createRpcRequestPreflight({ path })
   );
+
+export const createNodeTransportRequestHandlerWithPathFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+  >() =>
+  <
+    TBody = JsonValue,
+    TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
+  >(
+    handler: NodeTransportBodyResultHandler<TBody, TResult>,
+    path: string,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): NodeTransportRequestHandler<TIncoming, TOutgoing> =>
+    createNodeTransportRequestHandlerWithPath(
+      handler,
+      path,
+      hostname,
+      maxBodyBytes
+    ) as NodeTransportRequestHandler<TIncoming, TOutgoing>;
 
 export function listen<
   TManifest extends JoorManifest,
@@ -643,6 +693,27 @@ export function listen<TManifest extends JoorManifest>(
   return server;
 }
 
+const createNodeRpcRequestHandlerWithOptions = <
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options: HandlerOptions = {},
+  hostname = '0.0.0.0'
+): NodeRpcRequestHandler => {
+  const handler = createRpcTransportBodyResultHandler(
+    manifest,
+    options as HandlerOptionsFor<TManifest>,
+    false
+  );
+  return createNodeTransportRequestHandler(
+    (request, body) => handler(request, body as RpcManifestBody<TManifest>),
+    hostname,
+    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options.cors)
+  );
+};
+
 export function createNodeRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -659,16 +730,25 @@ export function createNodeRpcRequestHandler<TManifest extends JoorManifest>(
   options: HandlerOptions = {},
   hostname = '0.0.0.0'
 ): NodeRpcRequestHandler {
-  const handler = createRpcTransportBodyResultHandler(
-    manifest,
-    options as HandlerOptionsFor<TManifest>,
-    false
-  );
-  return createNodeTransportRequestHandler(
-    (request, body) => handler(request, body as RpcManifestBody<TManifest>),
-    hostname,
-    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
-    createRpcRequestPreflight(options),
-    createCorsHeaderRecord(options.cors)
-  );
+  return createNodeRpcRequestHandlerWithOptions(manifest, options, hostname);
 }
+
+export const createNodeRpcRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: NodeRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
+  ): NodeRpcRequestHandler<TIncoming, TOutgoing> => {
+    const options = (args[0] ?? {}) as HandlerOptions;
+    return createNodeRpcRequestHandlerWithOptions(
+      manifest,
+      options,
+      args[1] ?? '0.0.0.0'
+    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
+  };

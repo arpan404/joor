@@ -117,8 +117,11 @@ export {
 } from './runtime/next.js';
 export {
   createNodeRpcRequestHandler,
+  createNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath,
+  createNodeTransportRequestHandlerWithPathFor,
   listen,
 } from './runtime/node.js';
 export {

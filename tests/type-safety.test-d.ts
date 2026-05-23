@@ -1,3 +1,4 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import {
   createPlugin,
   createAuthPolicy,
@@ -54,8 +55,11 @@ import {
   createNextRouteHandlers,
   createNextRouteHandlersFor,
   createNodeRpcRequestHandler,
+  createNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath,
+  createNodeTransportRequestHandlerWithPathFor,
   createVercelFetch,
   createVercelFunction,
   createClient as createRootClient,
@@ -1411,8 +1415,12 @@ import {
   createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNextRouteHandlersFor as createRuntimeSubpathNextRouteHandlersFor,
+  createNodeRpcRequestHandler as createRuntimeSubpathNodeRpcRequestHandler,
+  createNodeRpcRequestHandlerFor as createRuntimeSubpathNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerFor as createRuntimeSubpathNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
+  createNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathNodeTransportRequestHandlerWithPathFor,
   createVercelFetch as createRuntimeSubpathVercelFetch,
   createVercelFunction as createRuntimeSubpathVercelFunction,
   appendJsonStringHeaders as runtimeSubpathAppendJsonStringHeaders,
@@ -1673,6 +1681,7 @@ import {
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultFor as RuntimeSubpathNodeTransportBodyResultFor,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
+  type NodeRpcRequestHandler as RuntimeSubpathNodeRpcRequestHandler,
   type NodeTransportRequestHandler as RuntimeSubpathNodeTransportRequestHandler,
   type NodeRpcRequestHandlerOptionsArgs as RuntimeSubpathNodeRpcRequestHandlerOptionsArgs,
   type NodeRpcRequestHandlerOptionsFor as RuntimeSubpathNodeRpcRequestHandlerOptionsFor,
@@ -12231,9 +12240,47 @@ createHonoHandler(manifest);
 createTypedHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
+const runtimeSubpathNodeRpcRequestHandler =
+  createRuntimeSubpathNodeRpcRequestHandler(manifest, handlerOptions);
+runtimeSubpathNodeRpcRequestHandler.length.toFixed();
 const syncNodeRpcRequestHandler: NodeRpcRequestHandler = () => undefined;
 const syncNodeTransportRequestHandler: NodeTransportRequestHandler =
   syncNodeRpcRequestHandler;
+interface NodeAppRequest extends IncomingMessage {
+  user: {
+    id: string;
+  };
+}
+interface NodeAppResponse extends ServerResponse<IncomingMessage> {
+  locals: {
+    requestId: string;
+  };
+}
+const createTypedNodeRpcRequestHandler = createNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  NodeAppResponse
+>();
+const typedNodeRpcRequestHandler: NodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeRpcRequestHandler(manifest, handlerOptions, '127.0.0.1');
+const createRuntimeSubpathTypedNodeRpcRequestHandler =
+  createRuntimeSubpathNodeRpcRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeRpcRequestHandler(
+  manifest,
+  handlerOptions,
+  '127.0.0.1'
+);
+const nodeAppRequest = {} as NodeAppRequest;
+const nodeAppResponse = {} as NodeAppResponse;
+nodeAppRequest.user.id.toUpperCase();
+nodeAppResponse.locals.requestId.toUpperCase();
 syncNodeRpcRequestHandler(
   {} as Parameters<NodeRpcRequestHandler>[0],
   {} as Parameters<NodeRpcRequestHandler>[1]
@@ -12242,8 +12289,12 @@ syncNodeTransportRequestHandler(
   {} as Parameters<NodeTransportRequestHandler>[0],
   {} as Parameters<NodeTransportRequestHandler>[1]
 );
+typedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
+runtimeSubpathTypedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Node adapter plugins.
+createTypedNodeRpcRequestHandler(manifest);
 const typedListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12611,13 +12662,64 @@ const transportResult: RpcBodyResult = {
 };
 const nodeTransportRequestHandler: NodeTransportRequestHandler =
   createNodeTransportRequestHandler(async () => transportResult);
+const createTypedNodeTransportRequestHandler =
+  createNodeTransportRequestHandlerFor<NodeAppRequest, NodeAppResponse>();
+const typedNodeTransportRequestHandler: NodeTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeTransportRequestHandler(async () => transportResult);
+const createTypedNodeTransportRequestHandlerWithPath =
+  createNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeTransportRequestHandlerWithPath: NodeTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeTransportRequestHandlerWithPath(
+  async () => transportResult,
+  '/rpc'
+);
 const syncNodeTransportHandler: NodeTransportBodyResultHandler = () =>
   transportResult;
 createNodeTransportRequestHandler(syncNodeTransportHandler);
 createNodeTransportRequestHandlerWithPath(syncNodeTransportHandler, '/rpc');
+typedNodeTransportRequestHandler(nodeAppRequest, nodeAppResponse);
+typedNodeTransportRequestHandlerWithPath(nodeAppRequest, nodeAppResponse);
 const runtimeSubpathNodeTransportRequestHandler: RuntimeSubpathNodeTransportRequestHandler =
   nodeTransportRequestHandler;
+const createRuntimeSubpathTypedNodeTransportRequestHandler =
+  createRuntimeSubpathNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeTransportRequestHandler: RuntimeSubpathNodeTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeTransportRequestHandler(
+  async () => transportResult
+);
+const createRuntimeSubpathTypedNodeTransportRequestHandlerWithPath =
+  createRuntimeSubpathNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeTransportRequestHandlerWithPath: RuntimeSubpathNodeTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeTransportRequestHandlerWithPath(
+  async () => transportResult,
+  '/rpc'
+);
 runtimeSubpathNodeTransportRequestHandler.length.toFixed();
+runtimeSubpathTypedNodeTransportRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
 const _nodeTransportResult: NodeTransportBodyResult = transportResult;
 const nodeTransportResultFor: NodeTransportBodyResultFor<typeof manifest> =
   denoCompiledTransportResultFor;

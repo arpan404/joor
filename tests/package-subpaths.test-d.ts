@@ -12,6 +12,9 @@ import {
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
   createKoaHandlerFor as createRootKoaHandlerFor,
+  createNodeRpcRequestHandlerFor as createRootNodeRpcRequestHandlerFor,
+  createNodeTransportRequestHandlerFor as createRootNodeTransportRequestHandlerFor,
+  createNodeTransportRequestHandlerWithPathFor as createRootNodeTransportRequestHandlerWithPathFor,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -87,7 +90,10 @@ import {
   createNextRouteHandlersFor,
 } from 'joor/runtime/next';
 import {
+  createNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerFor,
+  createNodeTransportRequestHandlerWithPathFor,
   listen,
 } from 'joor/runtime/node';
 import {
@@ -298,7 +304,10 @@ const packageSubpathValues = [
   createNextHandlerFor,
   createNextHandler,
   createNextRouteHandlersFor,
+  createNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerFor,
+  createNodeTransportRequestHandlerWithPathFor,
   createRuntimeContext,
   createRootRuntimeContext,
   createRootElysiaHandlerFor,
@@ -306,6 +315,9 @@ const packageSubpathValues = [
   createRootFastifyHandlerFor,
   createRootHonoHandlerFor,
   createRootKoaHandlerFor,
+  createRootNodeRpcRequestHandlerFor,
+  createRootNodeTransportRequestHandlerFor,
+  createRootNodeTransportRequestHandlerWithPathFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
   createRootNextRouteHandlersFor,
