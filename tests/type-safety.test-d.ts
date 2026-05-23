@@ -230,10 +230,12 @@ import {
   type KoaStreamRouteHandlerOptionsFor,
   type KoaUnaryRouteHandlerOptionsArgs,
   type KoaUnaryRouteHandlerOptionsFor,
+  type ClientBatchRequest,
   type ClientBatchOptions,
   type ClientFetch,
   type ClientHeaderValues,
   type ClientOptions,
+  type ClientProtocolBatchRequest,
   type ClientProcedureHeaders,
   type ClientRequestInit,
   type ClientRequestOptions,
@@ -521,6 +523,7 @@ import {
   type JoorManifestUnaryRouteTransportBodyResultHandler,
   type JoorManifestUnaryRouteTransportClient,
   type JoorManifestUnaryRouteId,
+  type LegacyBatchRequest,
   type LegacyRpcTransportClient,
   type ListenOptionsArgs,
   type ListenOptionsFor,
@@ -938,9 +941,12 @@ import {
   createUnaryRouteRequest as createRpcSubpathUnaryRouteRequest,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
+  type ClientBatchRequest as RpcSubpathClientBatchRequest,
   type ClientFetch as RpcSubpathClientFetch,
   type ClientOptions as RpcSubpathClientOptions,
+  type ClientProtocolBatchRequest as RpcSubpathClientProtocolBatchRequest,
   type ClientProcedureHeaders as RpcSubpathClientProcedureHeaders,
+  type LegacyBatchRequest as RpcSubpathLegacyBatchRequest,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
@@ -3374,6 +3380,31 @@ const legacyUntypedRequest: PendingRpcRequest = {
   headers: legacyClientHeaderValues,
 };
 legacyUntypedRequest.headers?.['authorization']?.toUpperCase();
+const legacyProtocolBatchRequest = {
+  id: 'users.untyped',
+  input: { id: '1' },
+  traceId: 'trace-1',
+} as const satisfies ClientProtocolBatchRequest;
+const legacyClientBatchRequest: ClientBatchRequest = legacyProtocolBatchRequest;
+const legacyClientBatchRequestAlias: LegacyBatchRequest =
+  legacyClientBatchRequest;
+const rpcSubpathLegacyProtocolBatchRequest: RpcSubpathClientProtocolBatchRequest =
+  legacyProtocolBatchRequest;
+const rpcSubpathLegacyClientBatchRequest: RpcSubpathClientBatchRequest =
+  legacyClientBatchRequestAlias;
+const rpcSubpathLegacyBatchRequestAlias: RpcSubpathLegacyBatchRequest =
+  rpcSubpathLegacyClientBatchRequest;
+legacyProtocolBatchRequest.traceId?.toUpperCase();
+legacyClientBatchRequestAlias.id.toUpperCase();
+rpcSubpathLegacyProtocolBatchRequest.traceId?.toUpperCase();
+rpcSubpathLegacyBatchRequestAlias.id.toUpperCase();
+const _wrongLegacyProtocolBatchRequest: ClientProtocolBatchRequest = {
+  id: 'users.untyped',
+  input: { id: '1' },
+  // @ts-expect-error protocol batch request aliases do not carry pending-request headers.
+  headers: { authorization: 'Bearer token' },
+};
+_wrongLegacyProtocolBatchRequest.id.toUpperCase();
 const _wrongLegacyUntypedRequest: PendingRpcRequest = {
   id: 'users.untyped',
   input: { id: '1' },
@@ -3396,18 +3427,14 @@ legacyClient
       first.headers?.['cache-control']?.toUpperCase();
     }
   });
-legacyClient
-  .batch([
-    { id: 'users.untyped', input: { id: '1' }, traceId: 'trace-1' },
-  ] as const)
-  .then((results) => {
-    const first = results[0];
-    const firstId: 'users.untyped' = first.id;
-    firstId.toUpperCase();
-    if (first.ok && first.data !== null) {
-      first.data.valueOf();
-    }
-  });
+legacyClient.batch([legacyProtocolBatchRequest] as const).then((results) => {
+  const first = results[0];
+  const firstId: 'users.untyped' = first.id;
+  firstId.toUpperCase();
+  if (first.ok && first.data !== null) {
+    first.data.valueOf();
+  }
+});
 legacyClient.batch(
   [{ id: 'users.untyped', input: { id: '1' } }] as const,
   clientBatchOptions

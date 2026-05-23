@@ -30,13 +30,16 @@ export { createSseResponse, encodeSse } from './stream.js';
 
 export type {
   BatchResults,
+  ClientBatchRequest,
   ClientBatchOptions,
   ClientFetch,
   ClientHeaderValues,
   ClientOptions,
+  ClientProtocolBatchRequest,
   ClientProcedureHeaders,
   ClientRequestInit,
   ClientRequestOptions,
+  LegacyBatchRequest,
   LegacyRpcTransportClient,
   PendingRpcRequest,
   RouteRpcTransportClient,

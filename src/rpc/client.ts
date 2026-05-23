@@ -1174,9 +1174,11 @@ type BatchResultFor<TRequest> =
       ? RpcEnvelope<JsonValue, TId, RpcResponseHeaderValues, RpcError>
       : never;
 
-type LegacyProtocolBatchRequest = RpcRequest & { headers?: never };
+export type ClientProtocolBatchRequest = RpcRequest & { headers?: never };
 
-type LegacyBatchRequest = PendingRpcRequest | LegacyProtocolBatchRequest;
+export type ClientBatchRequest = PendingRpcRequest | ClientProtocolBatchRequest;
+
+export type LegacyBatchRequest = ClientBatchRequest;
 
 export type BatchResults<
   TRequests extends readonly LegacyBatchRequest[] =

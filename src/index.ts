@@ -292,13 +292,16 @@ export type {
 } from './manifest.js';
 export type {
   BatchResults,
+  ClientBatchRequest,
   ClientBatchOptions,
   ClientFetch,
   ClientOptions,
   ClientHeaderValues,
+  ClientProtocolBatchRequest,
   ClientRequestInit,
   ClientProcedureHeaders,
   ClientRequestOptions,
+  LegacyBatchRequest,
   LegacyRpcTransportClient,
   PendingRpcRequest,
   RouteRpcTransportClient,
