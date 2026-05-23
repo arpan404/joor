@@ -39,6 +39,7 @@ export {
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
 } from './rpc/dispatcher.js';
+export { createSseResponse, encodeSse } from './rpc/stream.js';
 export {
   createAwsLambdaHandler,
   createAwsLambdaHttpApiHandler,

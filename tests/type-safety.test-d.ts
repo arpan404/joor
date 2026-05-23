@@ -62,6 +62,7 @@ import {
   createStreamRouteProtocolRequest,
   createUnaryRouteProtocolRequest,
   createUnaryRouteRequest,
+  createSseResponse,
   createRpcBodyHandler,
   createRpcBodyResultHandler,
   createRpcHandler,
@@ -72,6 +73,7 @@ import {
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
+  encodeSse,
   appendJsonStringHeaders,
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
@@ -2262,6 +2264,17 @@ const rpcSseErrorId: 'users.get' = rpcSseErrorEvent.data.id;
 rpcSseErrorId.toUpperCase();
 // @ts-expect-error SSE error events preserve the route id literal.
 const _wrongRpcSseErrorId: 'users.list' = rpcSseErrorEvent.data.id;
+const rootEncodedSse = encodeSse('error', rpcSseErrorEvent.data);
+rootEncodedSse.byteLength.toFixed();
+const rootSseResponse = createSseResponse(
+  new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(rootEncodedSse);
+      controller.close();
+    },
+  })
+);
+rootSseResponse.headers.get('content-type')?.toUpperCase();
 const procedureEnvelopeWithHeaders: RpcEnvelope<
   { id: string; name: string },
   'users.get',

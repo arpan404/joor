@@ -5,6 +5,7 @@ import {
   defineManifest,
   defineProcedure,
   errorStatus,
+  encodeSse as rootEncodeSse,
   listen as rootListen,
   ok as rootOk,
   serveBun as rootServeBun,
@@ -21,6 +22,7 @@ import {
   createOpenApiDocument,
 } from 'joor/compiler';
 import { ok } from 'joor/procedure';
+import { encodeSse as rpcEncodeSse } from 'joor/rpc';
 import { createJoorHandler } from 'joor/runtime';
 import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
@@ -182,10 +184,12 @@ const packageSubpathValues = [
   jsonOkResponseInit,
   listen,
   ok,
+  rootEncodeSse,
   rootListen,
   rootOk,
   rootServeBun,
   rootServeDeno,
+  rpcEncodeSse,
 ] as const;
 packageSubpathValues.length.toFixed();
 
