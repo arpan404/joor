@@ -12734,6 +12734,18 @@ const runtimeSubpathElysiaHandlerOptions: RuntimeSubpathElysiaHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = elysiaHandlerOptions;
+const requestTypedElysiaHandlerOptions: ElysiaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const runtimeSubpathRequestTypedElysiaHandlerOptions: RuntimeSubpathElysiaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedElysiaHandlerOptions;
 const elysiaRouteUnaryHandlerOptions: ElysiaRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12751,6 +12763,14 @@ const elysiaStreamRouteHandlerOptions: ElysiaStreamRouteHandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = elysiaRouteStreamHandlerOptions;
 runtimeSubpathElysiaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+requestTypedElysiaHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedElysiaHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 elysiaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 elysiaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const elysiaHandlerOptionsArgs: ElysiaHandlerOptionsArgs<
@@ -12795,9 +12815,19 @@ interface ElysiaAppContext extends ElysiaContext {
     requestId: string;
   };
 }
+interface ElysiaHookContext extends ElysiaContext<HookAppRequest> {
+  store: {
+    requestId: string;
+  };
+}
 const createTypedElysiaHandler = createElysiaHandlerFor<ElysiaAppContext>();
 const typedElysiaHandler: ElysiaHandler<ElysiaAppContext> =
   createTypedElysiaHandler(manifest, elysiaHandlerOptions);
+const hookTypedElysiaHandler =
+  createElysiaHandlerFor<ElysiaHookContext>()(
+    manifest,
+    typedRequestHandlerOptions
+  );
 const createRuntimeSubpathTypedElysiaHandler =
   createRuntimeSubpathElysiaHandlerFor<
     RuntimeSubpathElysiaContext & ElysiaAppContext
@@ -12812,11 +12842,18 @@ const elysiaAppContext: ElysiaAppContext = {
   request: new Request('https://example.com/rpc'),
   store: { requestId: 'req_1' },
 };
+const elysiaHookContext: ElysiaHookContext = {
+  request: hookAppRequest,
+  store: { requestId: 'req_1' },
+};
 elysiaHandler(elysiaContext);
 runtimeSubpathElysiaHandler(elysiaContext);
 runtimeSubpathSyncElysiaHandler(elysiaContext);
 typedElysiaHandler(elysiaAppContext);
 runtimeSubpathTypedElysiaHandler(elysiaAppContext);
+hookTypedElysiaHandler(elysiaHookContext);
+// @ts-expect-error typed Elysia handlers preserve hook request context types.
+hookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
 createElysiaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Elysia adapter plugins.
@@ -13077,6 +13114,18 @@ const runtimeSubpathHonoHandlerOptions: RuntimeSubpathHonoHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = honoHandlerOptions;
+const requestTypedHonoHandlerOptions: HonoHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const runtimeSubpathRequestTypedHonoHandlerOptions: RuntimeSubpathHonoHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedHonoHandlerOptions;
 const honoRouteUnaryHandlerOptions: HonoRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13094,6 +13143,14 @@ const honoStreamRouteHandlerOptions: HonoStreamRouteHandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = honoRouteStreamHandlerOptions;
 runtimeSubpathHonoHandlerOptions.plugins?.[0]?.name.toUpperCase();
+requestTypedHonoHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedHonoHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 honoUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 honoStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const honoHandlerOptionsArgs: HonoHandlerOptionsArgs<
@@ -13136,11 +13193,19 @@ interface HonoAppContext extends HonoContext {
   };
   get(name: 'requestId'): string;
 }
+interface HonoHookContext extends HonoContext<HookAppRequest> {
+  env: {
+    requestId: string;
+  };
+  get(name: 'requestId'): string;
+}
 const createTypedHonoHandler = createHonoHandlerFor<HonoAppContext>();
 const typedHonoHandler: HonoHandler<HonoAppContext> = createTypedHonoHandler(
   manifest,
   honoHandlerOptions
 );
+const hookTypedHonoHandler =
+  createHonoHandlerFor<HonoHookContext>()(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedHonoHandler =
   createRuntimeSubpathHonoHandlerFor<
     RuntimeSubpathHonoContext & HonoAppContext
@@ -13156,11 +13221,19 @@ const honoAppContext: HonoAppContext = {
   env: { requestId: 'req_1' },
   get: (name) => name,
 };
+const honoHookContext: HonoHookContext = {
+  req: { raw: hookAppRequest },
+  env: { requestId: 'req_1' },
+  get: (name) => name,
+};
 honoHandler(honoContext);
 runtimeSubpathHonoHandler(honoContext);
 runtimeSubpathSyncHonoHandler(honoContext);
 typedHonoHandler(honoAppContext);
 runtimeSubpathTypedHonoHandler(honoAppContext);
+hookTypedHonoHandler(honoHookContext);
+// @ts-expect-error typed Hono handlers preserve hook request context types.
+hookTypedHonoHandler(honoContext);
 // @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
 createHonoHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Hono adapter plugins.

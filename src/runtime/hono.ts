@@ -8,7 +8,7 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface HonoContext<TRequest extends Request = Request> {
   req: {
@@ -20,12 +20,16 @@ export type HonoHandler<TContext extends HonoContext = HonoContext> = (
   context: TContext
 ) => Response | Promise<Response>;
 
+type HonoContextRequest<TContext extends HonoContext> =
+  TContext extends HonoContext<infer TRequest> ? TRequest : Request;
+
 export type HonoHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -33,7 +37,8 @@ export type HonoRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HonoHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -41,7 +46,8 @@ export type HonoUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HonoRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -49,7 +55,8 @@ export type HonoRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HonoHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -57,14 +64,16 @@ export type HonoStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HonoRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -72,7 +81,8 @@ export type HonoRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HonoHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -80,7 +90,8 @@ export type HonoUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HonoRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -88,7 +99,8 @@ export type HonoRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HonoHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type HonoStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -96,14 +108,15 @@ export type HonoStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HonoRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HonoRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export function createHonoHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: HonoHandlerOptionsArgs<TManifest, TPlugins>
 ): HonoHandler;
 export function createHonoHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -123,11 +136,21 @@ export const createHonoHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: HonoHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: HonoHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      HonoContextRequest<TContext>
+    >
   ): HonoHandler<TContext> => {
-    const fetch = createJoorHandler(
+    const fetch = createJoorHandlerFor<HonoContextRequest<TContext>>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        HonoContextRequest<TContext>
+      >
     );
-    return (context) => fetch(context.req.raw);
+    return (context) => fetch(context.req.raw as HonoContextRequest<TContext>);
   };

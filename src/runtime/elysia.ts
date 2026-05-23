@@ -8,7 +8,7 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import { createJoorHandler } from './fetch.js';
+import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface ElysiaContext<TRequest extends Request = Request> {
   request: TRequest;
@@ -18,12 +18,16 @@ export type ElysiaHandler<TContext extends ElysiaContext = ElysiaContext> = (
   context: TContext
 ) => Response | Promise<Response>;
 
+type ElysiaContextRequest<TContext extends ElysiaContext> =
+  TContext extends ElysiaContext<infer TRequest> ? TRequest : Request;
+
 export type ElysiaHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -31,7 +35,8 @@ export type ElysiaRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -39,7 +44,8 @@ export type ElysiaUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = ElysiaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -47,7 +53,8 @@ export type ElysiaRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -55,14 +62,16 @@ export type ElysiaStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = ElysiaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -70,7 +79,8 @@ export type ElysiaRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -78,7 +88,8 @@ export type ElysiaUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = ElysiaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -86,7 +97,8 @@ export type ElysiaRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -94,14 +106,15 @@ export type ElysiaStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = ElysiaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = ElysiaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export function createElysiaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: ElysiaHandlerOptionsArgs<TManifest, TPlugins>
 ): ElysiaHandler;
 export function createElysiaHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -121,11 +134,21 @@ export const createElysiaHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: ElysiaHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: ElysiaHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      ElysiaContextRequest<TContext>
+    >
   ): ElysiaHandler<TContext> => {
-    const fetch = createJoorHandler(
+    const fetch = createJoorHandlerFor<ElysiaContextRequest<TContext>>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        ElysiaContextRequest<TContext>
+      >
     );
-    return (context) => fetch(context.request);
+    return (context) => fetch(context.request as ElysiaContextRequest<TContext>);
   };
