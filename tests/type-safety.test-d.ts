@@ -206,6 +206,8 @@ import {
   type DefineRouteStreamConfigFor,
   type DefineRouteUnaryConfigFor,
   type DefineHandlerOptions,
+  type DefineRouteStreamHandlerOptions,
+  type DefineRouteUnaryHandlerOptions,
   type DefineStreamRouteConfigFor,
   type DefineStreamRouteHandlerOptions,
   type DefineUnaryRouteConfigFor,
@@ -723,6 +725,8 @@ import {
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
   type DefineHandlerOptions as RpcSubpathDefineHandlerOptions,
+  type DefineRouteStreamHandlerOptions as RpcSubpathDefineRouteStreamHandlerOptions,
+  type DefineRouteUnaryHandlerOptions as RpcSubpathDefineRouteUnaryHandlerOptions,
   type DefineStreamRouteHandlerOptions as RpcSubpathDefineStreamRouteHandlerOptions,
   type DefineUnaryRouteHandlerOptions as RpcSubpathDefineUnaryRouteHandlerOptions,
   type HandlerOptionsArgs as RpcSubpathHandlerOptionsArgs,
@@ -4594,18 +4598,36 @@ exactDefinedHandlerOptions.hooks?.beforeRequest?.(
 );
 const definedHandlerOptionsFactory: DefineHandlerOptions<typeof manifest> =
   defineHandlerOptions(manifest);
+const definedRouteUnaryHandlerOptionsFactory: DefineRouteUnaryHandlerOptions<
+  typeof manifest
+> = defineHandlerOptions(manifest);
+const definedRouteStreamHandlerOptionsFactory: DefineRouteStreamHandlerOptions<
+  typeof manifest
+> = defineHandlerOptions(manifest);
 const definedUnaryRouteHandlerOptionsFactory: DefineUnaryRouteHandlerOptions<
   typeof manifest
-> = defineHandlerOptions(manifest);
+> = definedRouteUnaryHandlerOptionsFactory;
 const definedStreamRouteHandlerOptionsFactory: DefineStreamRouteHandlerOptions<
   typeof manifest
-> = defineHandlerOptions(manifest);
+> = definedRouteStreamHandlerOptionsFactory;
+const definedRouteUnaryHandlerOptions =
+  definedRouteUnaryHandlerOptionsFactory(manifestUnaryRouteHandlerOptions);
+const definedRouteStreamHandlerOptions =
+  definedRouteStreamHandlerOptionsFactory(manifestStreamRouteHandlerOptions);
 const definedUnaryRouteHandlerOptions = definedUnaryRouteHandlerOptionsFactory(
-  manifestUnaryRouteHandlerOptions
+  definedRouteUnaryHandlerOptions
 );
 const definedStreamRouteHandlerOptions =
-  definedStreamRouteHandlerOptionsFactory(manifestStreamRouteHandlerOptions);
+  definedStreamRouteHandlerOptionsFactory(definedRouteStreamHandlerOptions);
 definedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
+definedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+definedRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 definedUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -4655,18 +4677,36 @@ rpcSubpathDefinedHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const rpcSubpathDefinedHandlerOptionsFactory: RpcSubpathDefineHandlerOptions<
   typeof manifest
 > = defineRpcSubpathHandlerOptions(manifest);
+const rpcSubpathDefinedRouteUnaryHandlerOptionsFactory: RpcSubpathDefineRouteUnaryHandlerOptions<
+  typeof manifest
+> = defineRpcSubpathHandlerOptions(manifest);
+const rpcSubpathDefinedRouteStreamHandlerOptionsFactory: RpcSubpathDefineRouteStreamHandlerOptions<
+  typeof manifest
+> = defineRpcSubpathHandlerOptions(manifest);
 const rpcSubpathDefinedUnaryRouteHandlerOptionsFactory: RpcSubpathDefineUnaryRouteHandlerOptions<
   typeof manifest
-> = defineRpcSubpathHandlerOptions(manifest);
+> = rpcSubpathDefinedRouteUnaryHandlerOptionsFactory;
 const rpcSubpathDefinedStreamRouteHandlerOptionsFactory: RpcSubpathDefineStreamRouteHandlerOptions<
   typeof manifest
-> = defineRpcSubpathHandlerOptions(manifest);
+> = rpcSubpathDefinedRouteStreamHandlerOptionsFactory;
 rpcSubpathDefinedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
+rpcSubpathDefinedRouteUnaryHandlerOptionsFactory(
+  rpcSubpathManifestUnaryRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
 rpcSubpathDefinedUnaryRouteHandlerOptionsFactory(
   rpcSubpathManifestUnaryRouteHandlerOptions
 ).hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+rpcSubpathDefinedRouteStreamHandlerOptionsFactory(
+  rpcSubpathManifestStreamRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
 );
 rpcSubpathDefinedStreamRouteHandlerOptionsFactory(
   rpcSubpathManifestStreamRouteHandlerOptions

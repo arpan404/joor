@@ -957,21 +957,27 @@ export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   options: HandlerOptionsFor<TManifest, TPlugins, TBody>
 ) => HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
-export type DefineUnaryRouteHandlerOptions<TManifest extends RpcManifest> = <
+export type DefineRouteUnaryHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
 >(
-  options: RpcManifestUnaryRouteHandlerOptionsFor<TManifest, TPlugins, TBody>
-) => RpcManifestUnaryRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  options: RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>
+) => RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
-export type DefineStreamRouteHandlerOptions<TManifest extends RpcManifest> = <
+export type DefineUnaryRouteHandlerOptions<TManifest extends RpcManifest> =
+  DefineRouteUnaryHandlerOptions<TManifest>;
+
+export type DefineRouteStreamHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
 >(
-  options: RpcManifestStreamRouteHandlerOptionsFor<TManifest, TPlugins, TBody>
-) => RpcManifestStreamRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  options: RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>
+) => RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DefineStreamRouteHandlerOptions<TManifest extends RpcManifest> =
+  DefineRouteStreamHandlerOptions<TManifest>;
 
 export function defineHandlerOptions<TManifest extends RpcManifest>(
   manifest: TManifest
@@ -1352,12 +1358,6 @@ export type RpcManifestStreamRouteHandlerOptionsArgs<
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = RpcManifestRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type DefineRouteUnaryHandlerOptions<TManifest extends RpcManifest> =
-  DefineUnaryRouteHandlerOptions<TManifest>;
-
-export type DefineRouteStreamHandlerOptions<TManifest extends RpcManifest> =
-  DefineStreamRouteHandlerOptions<TManifest>;
 
 export type RpcManifestUnaryRouteHandlerHookContextFor<
   TManifest extends RpcManifest,
