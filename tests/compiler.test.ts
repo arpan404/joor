@@ -2407,6 +2407,20 @@ const nativeHandlerOptionsFor: NativeHandlerOptionsFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
 > = nativeHandlerOptions;
+const nativeRequestTypedHandlerOptions: NativeHandlerOptionsFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.runtimeTag.toUpperCase();
+      context.body?.input.id.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const nativeUnaryRouteHandlerOptions: NativeUnaryRouteHandlerOptions<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -2423,6 +2437,11 @@ const nativeRouteUnaryHandlerOptionsFor: NativeRouteUnaryHandlerOptionsFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteUnaryBody
 > = nativeRouteUnaryHandlerOptions;
+const nativeRequestTypedRouteUnaryHandlerOptionsFor: NativeRouteUnaryHandlerOptionsFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody,
+  GeneratedRequest
+> = nativeRequestTypedHandlerOptions;
 const nativeStreamRouteHandlerOptions: NativeStreamRouteHandlerOptions<
   readonly [typeof nativeUsersPlugin],
   typeof nativeStreamRouteBody
@@ -2450,6 +2469,16 @@ const nativeHandlerOptionsArgsFor: NativeHandlerOptionsArgsFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
 > = nativeHandlerOptionsArgs;
+const nativeRequestTypedHandlerOptionsArgs: NativeHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = [nativeRequestTypedHandlerOptions];
+const nativeRequestTypedRouteUnaryHandlerOptionsArgs: NativeRouteUnaryHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody,
+  GeneratedRequest
+> = [nativeRequestTypedRouteUnaryHandlerOptionsFor];
 const nativeUnaryRouteHandlerOptionsArgs: NativeUnaryRouteHandlerOptionsArgs<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -2564,12 +2593,20 @@ nativeDefineRouteStreamHandlerOptions(nativeRouteStreamHandlerOptions)
     nativeRouteStreamHandlerHookContext
   );
 nativeHandlerOptionsFor.plugins?.[0]?.name.toUpperCase();
+nativeRequestTypedHandlerOptions.hooks?.beforeRequest?.(
+  generatedRequest,
+  nativeUnaryRouteHandlerHookContext
+);
 nativeUnaryRouteHandlerOptionsFor.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   nativeUnaryRouteHandlerHookContext
 );
 nativeRouteUnaryHandlerOptionsFor.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  nativeRouteUnaryHandlerHookContext
+);
+nativeRequestTypedRouteUnaryHandlerOptionsFor.hooks?.beforeRequest?.(
+  generatedRequest,
   nativeRouteUnaryHandlerHookContext
 );
 nativeStreamRouteHandlerOptionsFor.hooks?.beforeRequest?.(
@@ -2581,6 +2618,14 @@ nativeRouteStreamHandlerOptionsFor.hooks?.beforeRequest?.(
   nativeRouteStreamHandlerHookContext
 );
 nativeHandlerOptionsArgsFor[0]?.plugins?.[0]?.name.toUpperCase();
+nativeRequestTypedHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  generatedRequest,
+  nativeUnaryRouteHandlerHookContext
+);
+nativeRequestTypedRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  generatedRequest,
+  nativeRouteUnaryHandlerHookContext
+);
 nativeRouteUnaryHandlerOptionsArgs[0]?.middleware?.concat(
   nativeRouteUnaryMiddleware
 );
