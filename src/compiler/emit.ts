@@ -2621,18 +2621,24 @@ export type UnaryRouteClientArgs<TId extends RouteUnaryId = RouteUnaryId> = Rout
 export type RouteStreamClientArgs<TId extends RouteStreamId = RouteStreamId> = JoorManifestRouteStreamClientArgs<Manifest, TId>;
 export type StreamRouteClientArgs<TId extends RouteStreamId = RouteStreamId> = RouteStreamClientArgs<TId>;
 export type ClientArgs<TId extends RouteId = RouteId> = RouteClientArgs<TId>;
-export type RouteUnaryFunction<TId extends RouteUnaryId> = {
+type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   request(...args: RouteUnaryClientArgs<TId>): RouteRequest<TId>;
 };
-export type UnaryRouteFunction<TId extends RouteUnaryId> =
+export type RouteUnaryFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: RouteUnaryFunctionFor<TRouteId>;
+}[TId];
+export type UnaryRouteFunction<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryFunction<TId>;
-export type RouteStreamFunction<TId extends RouteStreamId> = {
+type RouteStreamFunctionFor<TId extends RouteStreamId> = {
   (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
-export type StreamRouteFunction<TId extends RouteStreamId> =
+export type RouteStreamFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: RouteStreamFunctionFor<TRouteId>;
+}[TId];
+export type StreamRouteFunction<TId extends RouteStreamId = RouteStreamId> =
   RouteStreamFunction<TId>;
 export type BatchFunction = <const TRequests extends RouteBatchRequest>(
   requests: TRequests
@@ -2641,16 +2647,22 @@ export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, '
   url?: string;
 };
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
-export type RouteUnaryTransport<TId extends RouteUnaryId> = {
+type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
   call(...args: [id: TId, ...ClientArgs<TId>]): Promise<RouteResult<TId>>;
   request(...args: [id: TId, ...ClientArgs<TId>]): RouteRequest<TId>;
 };
-export type UnaryRouteTransport<TId extends RouteUnaryId> =
+export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: RouteUnaryTransportFor<TRouteId>;
+}[TId];
+export type UnaryRouteTransport<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryTransport<TId>;
-export type RouteStreamTransport<TId extends RouteStreamId> = {
+type RouteStreamTransportFor<TId extends RouteStreamId> = {
   stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
 };
-export type StreamRouteTransport<TId extends RouteStreamId> =
+export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: RouteStreamTransportFor<TRouteId>;
+}[TId];
+export type StreamRouteTransport<TId extends RouteStreamId = RouteStreamId> =
   RouteStreamTransport<TId>;
 export type RouteUnaryTransportClient = Pick<
   RouteTransportClient,
