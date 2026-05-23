@@ -219,12 +219,16 @@ export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
-> = (request: Request, body: TBody) => MaybePromise<TResult>;
+  TRequest extends Request = Request,
+> = (request: TRequest, body: TBody) => MaybePromise<TResult>;
 
-export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
+export type CompiledRpcBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
@@ -268,6 +272,24 @@ type CompiledHookBody<TConfig> = TConfig extends {
     ? TBody
     : JsonValue;
 
+type CompiledHookRequest<TConfig> = TConfig extends {
+  hooks?: HandlerHooks<
+    infer _TServices extends object,
+    infer _TBody,
+    infer TRequest extends Request
+  >;
+}
+  ? TRequest
+  : TConfig extends {
+        middleware?: readonly JoorMiddleware<
+          infer _TServices extends object,
+          infer _TBody,
+          infer TRequest extends Request
+        >[];
+      }
+    ? TRequest
+    : Request;
+
 type CompiledConfigManifest<TConfig> =
   HandlerOptionsManifest<TConfig> extends infer TManifest
     ? TManifest extends JoorManifest
@@ -291,8 +313,33 @@ export type CompiledRpcTransportBodyResultHandlerForConfig<TConfig> = [
 export type CompiledRpcBodyResultHandlerForConfig<TConfig> = [
   CompiledConfigManifest<TConfig>,
 ] extends [never]
-  ? CompiledRpcBodyResultHandler<CompiledConfigBody<TConfig>>
-  : CompiledRpcBodyResultHandlerFor<CompiledConfigManifest<TConfig>>;
+  ? CompiledRpcBodyResultHandler<
+      CompiledConfigBody<TConfig>,
+      CompiledBodyResult,
+      CompiledHookRequest<TConfig>
+    >
+  : CompiledRpcBodyResultHandlerFor<
+      CompiledConfigManifest<TConfig>,
+      CompiledHookRequest<TConfig>
+    >;
+
+export type CompiledRpcRequestHandlerForConfig<TConfig> =
+  CompiledRpcRequestHandler<CompiledHookRequest<TConfig>>;
+
+type IsDefaultRequest<TRequest extends Request> = [Request] extends [TRequest]
+  ? true
+  : false;
+
+type CompiledConfigAcceptsRequest<
+  TConfig,
+  TRequest extends Request,
+> = IsDefaultRequest<CompiledHookRequest<TConfig>> extends true
+  ? unknown
+  : TRequest extends CompiledHookRequest<TConfig>
+    ? unknown
+    : {
+        readonly __joorRequestTypeMismatch: CompiledHookRequest<TConfig>;
+      };
 
 export type CompiledUnaryDispatch<TServices extends object = object> = (
   body: JsonObject,
@@ -1193,7 +1240,7 @@ export const createCompiledRpcHandler = <
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
-): CompiledRpcRequestHandler => {
+): CompiledRpcRequestHandlerForConfig<TConfig> => {
   const handlerConfig = (config ?? {}) as TConfig;
   const bodyLimit = normalizeMaxBodyBytes(
     handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
@@ -1206,7 +1253,7 @@ export const createCompiledRpcHandler = <
     false,
     'response'
   ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
-  return async (request: Request): Promise<Response> => {
+  return (async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
     const early = requestPreflight(
       source,
@@ -1236,18 +1283,18 @@ export const createCompiledRpcHandler = <
     }
     const result = await handleTransport(source, body);
     return transportResultToResponse(result, extraHeaders);
-  };
+  }) as CompiledRpcRequestHandlerForConfig<TConfig>;
 };
 
 export const createCompiledRpcHandlerFor =
   <TRequest extends Request>() =>
   <const TConfig extends JoorConfig = Record<string, never>>(
     dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
-    config?: TConfig,
+    config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,
     unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
   ): CompiledRpcRequestHandler<TRequest> =>
     createCompiledRpcHandler(
       dispatch,
       config,
       unaryDispatch
-    ) as CompiledRpcRequestHandler<TRequest>;
+    ) as unknown as CompiledRpcRequestHandler<TRequest>;

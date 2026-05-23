@@ -10459,6 +10459,28 @@ createCompiledRpcHandler(
   manifestAwareConfig,
   _serviceTypedCompiledUnaryDispatch
 );
+const requestTypedConfigCompiledRpcHandler: CompiledRpcRequestHandler<HookAppRequest> =
+  createCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    exactManifestAwareConfig,
+    _serviceTypedCompiledUnaryDispatch
+  );
+requestTypedConfigCompiledRpcHandler(hookAppRequest);
+requestTypedConfigCompiledRpcHandler(
+  // @ts-expect-error config-aware compiled handlers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+createCompiledRpcHandlerFor<HookAppRequest>()(
+  _serviceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+createCompiledRpcHandlerFor<Request>()(
+  _serviceTypedCompiledDispatch,
+  // @ts-expect-error typed compiled handler factories reject requests too broad for config hooks.
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
 const configTypedCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
   typeof manifestAwareConfig
 > = createCompiledRpcBodyResultHandler(
@@ -10485,6 +10507,19 @@ configTypedCompiledBodyHandler(
   new Request('https://example.com/rpc'),
   // @ts-expect-error config-aware compiled body handlers preserve route input.
   { id: 'users.get', input: { ok: true } }
+);
+const requestTypedConfigCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = createCompiledRpcBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+requestTypedConfigCompiledBodyHandler(hookAppRequest, manifestRouteRequest);
+requestTypedConfigCompiledBodyHandler(
+  // @ts-expect-error config-aware compiled body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteRequest
 );
 createRootCompiledRpcTransportBodyResultHandler(
   _rootServiceTypedCompiledDispatch,
