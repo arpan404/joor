@@ -11,6 +11,7 @@ import {
   createExpressHandlerFor as createRootExpressHandlerFor,
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
+  createJoorHandlerFor as createRootJoorHandlerFor,
   createKoaHandlerFor as createRootKoaHandlerFor,
   createNodeRpcRequestHandlerFor as createRootNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandlerFor as createRootNodeTransportRequestHandlerFor,
@@ -44,7 +45,7 @@ import {
   createManifestRouteStreamRequest,
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
-import { createJoorHandler } from 'joor/runtime';
+import { createJoorHandler, createJoorHandlerFor } from 'joor/runtime';
 import {
   createAwsLambdaHandler,
   createAwsLambdaHandlerFor,
@@ -296,6 +297,7 @@ const packageSubpathValues = [
   createHonoHandler,
   createHonoHandlerFor,
   createJoorHandler,
+  createJoorHandlerFor,
   createKoaHandler,
   createKoaHandlerFor,
   createNetlifyEdgeFunction,
@@ -314,6 +316,7 @@ const packageSubpathValues = [
   createRootExpressHandlerFor,
   createRootFastifyHandlerFor,
   createRootHonoHandlerFor,
+  createRootJoorHandlerFor,
   createRootKoaHandlerFor,
   createRootNodeRpcRequestHandlerFor,
   createRootNodeTransportRequestHandlerFor,

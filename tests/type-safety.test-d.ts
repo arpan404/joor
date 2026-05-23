@@ -45,6 +45,7 @@ import {
   createHonoHandler,
   createHonoHandlerFor,
   createJoorHandler,
+  createJoorHandlerFor,
   createKoaHandler,
   createKoaHandlerFor,
   createNetlifyEdgeFunction,
@@ -1406,6 +1407,7 @@ import {
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
   createJoorHandler as createRuntimeSubpathJoorHandler,
+  createJoorHandlerFor as createRuntimeSubpathJoorHandlerFor,
   createKoaHandler as createRuntimeSubpathKoaHandler,
   createKoaHandlerFor as createRuntimeSubpathKoaHandlerFor,
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
@@ -7192,11 +7194,29 @@ const runtimeSubpathTypedFetchHandler: RuntimeSubpathJoorFetchHandler =
   typedFetchHandler;
 const runtimeSubpathSyncTypedFetchHandler: RuntimeSubpathJoorFetchHandler =
   syncTypedFetchHandler;
+interface AppFetchRequest extends Request {
+  readonly requestId: string;
+}
+const createTypedJoorHandler = createJoorHandlerFor<AppFetchRequest>();
+const typedJoorHandler: JoorFetchHandler<AppFetchRequest> =
+  createTypedJoorHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedJoorHandler =
+  createRuntimeSubpathJoorHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedJoorHandler: RuntimeSubpathJoorFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedJoorHandler(manifest, handlerOptions);
+const appFetchRequest = Object.assign(new Request('https://example.com/rpc'), {
+  requestId: 'req_1',
+}) as AppFetchRequest;
+appFetchRequest.requestId.toUpperCase();
 fetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedFetchHandler(new Request('https://example.com/rpc'));
+typedJoorHandler(appFetchRequest);
+runtimeSubpathTypedJoorHandler(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching fetch handler plugins.
 createJoorHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed fetch handler plugins.
+createTypedJoorHandler(manifest);
 
 // @ts-expect-error runtime adapters only accept typed procedure manifests.
 createJoorHandler({ procedures: { broken: { input: t.string() } } });

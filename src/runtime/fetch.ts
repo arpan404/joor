@@ -10,7 +10,9 @@ import {
 import type { JoorManifest } from '../manifest.js';
 import type { JoorPlugin } from '../context/plugin.js';
 
-export type JoorFetchHandler = (request: Request) => Response | Promise<Response>;
+export type JoorFetchHandler<TRequest extends Request = Request> = (
+  request: TRequest
+) => Response | Promise<Response>;
 
 export type JoorHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -106,3 +108,17 @@ export function createJoorHandler<TManifest extends JoorManifest>(
     (options ?? {}) as HandlerOptionsFor<TManifest>
   );
 }
+
+export const createJoorHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: JoorHandlerOptionsArgs<TManifest, TPlugins>
+  ): JoorFetchHandler<TRequest> =>
+    createRpcHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    ) as JoorFetchHandler<TRequest>;

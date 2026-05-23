@@ -102,7 +102,7 @@ export {
   createFastifyHandlerFor,
 } from './runtime/fastify.js';
 export { createHonoHandler, createHonoHandlerFor } from './runtime/hono.js';
-export { createJoorHandler } from './runtime/fetch.js';
+export { createJoorHandler, createJoorHandlerFor } from './runtime/fetch.js';
 export { createKoaHandler, createKoaHandlerFor } from './runtime/koa.js';
 export {
   createNetlifyEdgeFunction,
