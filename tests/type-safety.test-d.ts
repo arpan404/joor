@@ -12753,7 +12753,20 @@ koaContext.originalUrl = '/rpc';
 koaContext.respond = false;
 const koaNext: KoaNext = async () => undefined;
 const syncKoaNext: KoaNext = () => undefined;
-interface KoaAppContext extends KoaContext {
+interface KoaAppRequest extends IncomingMessage {
+  userId: string;
+}
+interface KoaAppResponse extends ServerResponse<KoaAppRequest> {
+  locals: {
+    requestId: string;
+  };
+}
+interface KoaMismatchedResponse extends ServerResponse<IncomingMessage> {
+  locals: {
+    requestId: string;
+  };
+}
+interface KoaAppContext extends KoaContext<KoaAppRequest, KoaAppResponse> {
   state: {
     userId: string;
   };
@@ -12780,12 +12793,17 @@ const runtimeSubpathTypedKoaMiddleware: RuntimeSubpathKoaMiddleware<
 const koaAppContext = {} as KoaAppContext;
 const koaAppNext: KoaAppNext = async () => 'ok';
 koaAppContext.state.userId.toUpperCase();
+koaAppContext.req.userId.toUpperCase();
+koaAppContext.res.locals.requestId.toUpperCase();
 koaMiddleware(koaContext, koaNext);
 syncKoaMiddleware(koaContext, syncKoaNext);
 runtimeSubpathKoaMiddleware(koaContext, koaNext);
 runtimeSubpathSyncKoaMiddleware(koaContext, syncKoaNext);
 typedKoaMiddleware(koaAppContext, koaAppNext);
 runtimeSubpathTypedKoaMiddleware(koaAppContext, koaAppNext);
+const _koaMismatchedContext =
+  // @ts-expect-error typed Koa contexts preserve the response's request type.
+  {} as KoaContext<KoaAppRequest, KoaMismatchedResponse>;
 // @ts-expect-error service-dependent manifests require matching Koa adapter plugins.
 createKoaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Koa adapter plugins.

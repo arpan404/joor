@@ -11,9 +11,12 @@ import type {
 } from '../rpc/dispatcher.js';
 import { createNodeRpcRequestHandler } from './node.js';
 
-export interface KoaContext {
-  req: IncomingMessage;
-  res: ServerResponse<IncomingMessage>;
+export interface KoaContext<
+  TRequest extends IncomingMessage = IncomingMessage,
+  TResponse extends ServerResponse<TRequest> = ServerResponse<TRequest>,
+> {
+  req: TRequest;
+  res: TResponse;
   originalUrl?: string;
   respond?: boolean;
 }
