@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { spawn } from 'node:child_process';
 import { watch } from 'node:fs';
 import { dirname, resolve } from 'node:path';
