@@ -405,15 +405,30 @@ export type RpcManifestRouteProtocolRequest<
   ? RpcManifestRouteProtocolRequestFor<TManifest, TId>
   : never;
 
+export type RpcManifestProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
+> = RpcManifestRouteProtocolRequest<TManifest, TId>;
+
 export type RpcManifestRouteUnaryProtocolRequest<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteProtocolRequest<TManifest, TId>;
 
+export type RpcManifestUnaryProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
+> = RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
+
 export type RpcManifestRouteStreamProtocolRequest<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteProtocolRequest<TManifest, TId>;
+
+export type RpcManifestStreamProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
+> = RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
 
 export type RpcManifestUnaryRouteProtocolRequest<
   TManifest extends RpcManifest,
@@ -434,6 +449,9 @@ export type RpcManifestRouteProtocolRequestUnion<
   >;
 }[RpcManifestRouteId<TManifest>];
 
+export type RpcManifestProtocolRequestUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteProtocolRequestUnion<TManifest>;
+
 export type RpcManifestRouteUnaryProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = {
@@ -442,6 +460,10 @@ export type RpcManifestRouteUnaryProtocolRequestUnion<
     TId
   >;
 }[RpcManifestRouteUnaryId<TManifest>];
+
+export type RpcManifestUnaryProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryProtocolRequestUnion<TManifest>;
 
 export type RpcManifestUnaryRouteProtocolRequestUnion<
   TManifest extends RpcManifest,
@@ -503,6 +525,10 @@ export type RpcManifestRouteStreamProtocolRequestUnion<
     TId
   >;
 }[RpcManifestRouteStreamId<TManifest>];
+
+export type RpcManifestStreamProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
 
 export type RpcManifestStreamRouteProtocolRequestUnion<
   TManifest extends RpcManifest,
