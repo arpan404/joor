@@ -9400,13 +9400,28 @@ const serviceTypedCompiledRuntimeState: CompiledRuntimeState<Services> =
   typedCompiledRuntimeState;
 serviceTypedCompiledRuntimeState.getServices()?.users.findById('1');
 const compiledUnaryDispatch: CompiledFixedUnaryDispatch = async () => undefined;
+const syncCompiledUnaryDispatch: CompiledFixedUnaryDispatch = () => undefined;
 const _serviceTypedCompiledUnaryDispatch: CompiledFixedUnaryDispatch<
   Services
 > = async (_body, _request, services) => {
   services.users.findById('1').name.toUpperCase();
   return undefined;
 };
+const _syncServiceTypedCompiledUnaryDispatch: CompiledFixedUnaryDispatch<
+  Services
+> = (_body, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return undefined;
+};
 const _serviceTypedCompiledDispatch: CompiledDispatch<Services> = async (
+  _rpcRequest,
+  _request,
+  services
+) => {
+  services.users.findById('1').name.toUpperCase();
+  return manifestRouteEnvelope;
+};
+const _syncServiceTypedCompiledDispatch: CompiledDispatch<Services> = (
   _rpcRequest,
   _request,
   services
@@ -9421,13 +9436,22 @@ const routeTypedCompiledDispatch: CompiledDispatch<
   services.users.findById('1').name.toUpperCase();
   return procedureEnvelope;
 };
-routeTypedCompiledDispatch(
-  compiledRouteRequest,
-  createFetchRequestSourceForTypes(),
-  procedureServices,
-  {} as Parameters<typeof routeTypedCompiledDispatch>[3],
-  compiledUncachedExecutionState,
-  false
+const syncRouteTypedCompiledDispatch: CompiledDispatch<
+  Services,
+  typeof procedureEnvelope
+> = (_rpcRequest, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return procedureEnvelope;
+};
+Promise.resolve(
+  routeTypedCompiledDispatch(
+    compiledRouteRequest,
+    createFetchRequestSourceForTypes(),
+    procedureServices,
+    {} as Parameters<typeof routeTypedCompiledDispatch>[3],
+    compiledUncachedExecutionState,
+    false
+  )
 ).then((result) => {
   const typedCompiledDispatchId: 'users.get' = result.id;
   typedCompiledDispatchId.toUpperCase();
@@ -9442,16 +9466,25 @@ const routeTypedCompiledFixedDispatch: CompiledFixedDispatch<
   services.users.findById('1').name.toUpperCase();
   return procedureEnvelope;
 };
+const syncRouteTypedCompiledFixedDispatch: CompiledFixedDispatch<
+  Services,
+  typeof procedureEnvelope
+> = (_rpcRequest, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return procedureEnvelope;
+};
 const rootRouteTypedCompiledFixedDispatch: RootCompiledFixedDispatch<
   Services,
   typeof procedureEnvelope
 > = routeTypedCompiledFixedDispatch;
-rootRouteTypedCompiledFixedDispatch(
-  compiledRouteRequest,
-  createFetchRequestSourceForTypes(),
-  procedureServices,
-  {} as Parameters<typeof rootRouteTypedCompiledFixedDispatch>[3],
-  compiledUncachedExecutionState
+Promise.resolve(
+  rootRouteTypedCompiledFixedDispatch(
+    compiledRouteRequest,
+    createFetchRequestSourceForTypes(),
+    procedureServices,
+    {} as Parameters<typeof rootRouteTypedCompiledFixedDispatch>[3],
+    compiledUncachedExecutionState
+  )
 ).then((result) => {
   const typedCompiledFixedDispatchId: 'users.get' = result.id;
   typedCompiledFixedDispatchId.toUpperCase();
@@ -9463,10 +9496,40 @@ const _rootServiceTypedCompiledUnaryDispatch: RootCompiledFixedUnaryDispatch<Ser
   _serviceTypedCompiledUnaryDispatch;
 const _rootServiceTypedCompiledDispatch: RootCompiledDispatch<Services> =
   _serviceTypedCompiledDispatch;
+syncCompiledUnaryDispatch(
+  {},
+  createFetchRequestSourceForTypes(),
+  {},
+  {} as Parameters<typeof syncCompiledUnaryDispatch>[3],
+  compiledUncachedExecutionState
+);
+syncRouteTypedCompiledDispatch(
+  compiledRouteRequest,
+  createFetchRequestSourceForTypes(),
+  procedureServices,
+  {} as Parameters<typeof syncRouteTypedCompiledDispatch>[3],
+  compiledUncachedExecutionState,
+  false
+);
+syncRouteTypedCompiledFixedDispatch(
+  compiledRouteRequest,
+  createFetchRequestSourceForTypes(),
+  procedureServices,
+  {} as Parameters<typeof syncRouteTypedCompiledFixedDispatch>[3],
+  compiledUncachedExecutionState
+);
 createCompiledRpcTransportBodyResultHandler(
   _serviceTypedCompiledDispatch,
   config,
   _serviceTypedCompiledUnaryDispatch,
+  false,
+  true,
+  typedCompiledRuntimeState
+);
+createCompiledRpcTransportBodyResultHandler(
+  _syncServiceTypedCompiledDispatch,
+  config,
+  _syncServiceTypedCompiledUnaryDispatch,
   false,
   true,
   typedCompiledRuntimeState

@@ -296,7 +296,7 @@ export type CompiledUnaryDispatch<TServices extends object = object> = (
   runtime: CompiledRuntime,
   state: CompiledExecutionState,
   serialize: CompiledSerializationMode
-) => Promise<CompiledBodyResult | undefined>;
+) => MaybePromise<CompiledBodyResult | undefined>;
 
 export type CompiledFixedUnaryDispatch<
   TServices extends object = object,
@@ -307,7 +307,7 @@ export type CompiledFixedUnaryDispatch<
   services: TServices,
   runtime: CompiledRuntime,
   state: CompiledExecutionState
-) => Promise<TResult | undefined>;
+) => MaybePromise<TResult | undefined>;
 
 export type CompiledDispatch<
   TServices extends object = object,
@@ -325,7 +325,7 @@ export type CompiledDispatch<
   runtime: CompiledRuntime,
   state: CompiledExecutionState,
   serialize: CompiledSerializationMode
-) => Promise<TResult>;
+) => MaybePromise<TResult>;
 
 export type CompiledFixedDispatch<
   TServices extends object = object,
@@ -342,7 +342,7 @@ export type CompiledFixedDispatch<
   services: TServices,
   runtime: CompiledRuntime,
   state: CompiledExecutionState
-) => Promise<TResult>;
+) => MaybePromise<TResult>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
 const compiledProcedureSuccessCache =
