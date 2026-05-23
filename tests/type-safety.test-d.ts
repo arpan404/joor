@@ -2961,8 +2961,9 @@ const manifestUnaryRouteBodyResultFor: JoorManifestUnaryRouteBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
 > = manifestRouteEnvelope;
-const manifestStreamRouteBodyResult: JoorManifestStreamRouteBodyResult =
-  new Response();
+const manifestStreamRouteBodyResult: JoorManifestStreamRouteBodyResult<
+  typeof manifest
+> = new Response();
 const manifestStreamRouteBodyResultFor: JoorManifestStreamRouteBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
@@ -3456,8 +3457,9 @@ const publicManifestUnaryRouteBodyResultFor: RpcManifestUnaryRouteBodyResultFor<
   typeof manifest,
   typeof publicManifestUnaryRouteBody
 > = manifestRouteEnvelope;
-const publicManifestStreamRouteBodyResult: RpcManifestStreamRouteBodyResult =
-  new Response();
+const publicManifestStreamRouteBodyResult: RpcManifestStreamRouteBodyResult<
+  typeof manifest
+> = new Response();
 const publicManifestStreamRouteBodyResultFor: RpcManifestStreamRouteBodyResultFor<
   typeof manifest,
   typeof publicManifestStreamRouteBody
@@ -6651,7 +6653,7 @@ routeUnaryResult.id.toUpperCase();
 rpcSubpathRouteResultUnion.id.toUpperCase();
 const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
 const unaryRouteBodyResult: RpcUnaryRouteBodyResult<Routes> = routeBodyResult;
-const streamRouteBodyResult: RpcStreamRouteBodyResult = new Response();
+const streamRouteBodyResult: RpcStreamRouteBodyResult<Routes> = new Response();
 const unaryRouteBatchResults: RpcUnaryRouteBatchResults<
   Routes,
   [typeof typedUnaryRouteRequest]

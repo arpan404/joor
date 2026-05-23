@@ -407,7 +407,9 @@ export type RpcRouteBodyResult<TRoutes extends RpcRouteMap> =
 export type RpcUnaryRouteBodyResult<TRoutes extends RpcRouteMap> =
   RpcRouteBodyResult<TRoutes>;
 
-export type RpcStreamRouteBodyResult = Response;
+export type RpcStreamRouteBodyResult<
+  _TRoutes extends RpcRouteMap = RpcRouteMap,
+> = Response;
 
 type RpcRouteProtocolBodyResultFor<
   TRoutes extends RpcRouteMap,

@@ -482,7 +482,9 @@ export type JoorManifestRouteBodyResult<TManifest> =
 export type JoorManifestUnaryRouteBodyResult<TManifest> =
   RpcUnaryRouteBodyResult<JoorManifestRoutes<TManifest>>;
 
-export type JoorManifestStreamRouteBodyResult = RpcStreamRouteBodyResult;
+export type JoorManifestStreamRouteBodyResult<
+  TManifest extends JoorManifest = JoorManifest,
+> = RpcStreamRouteBodyResult<JoorManifestRoutes<TManifest>>;
 
 export type JoorManifestRouteBodyResultFor<TManifest, TBody> =
   TManifest extends JoorManifest

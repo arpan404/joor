@@ -494,7 +494,9 @@ export type RpcManifestBodyResult<TManifest extends RpcManifest> =
 export type RpcManifestUnaryRouteBodyResult<TManifest extends RpcManifest> =
   RpcManifestBodyResult<TManifest>;
 
-export type RpcManifestStreamRouteBodyResult = Response;
+export type RpcManifestStreamRouteBodyResult<
+  _TManifest extends RpcManifest = RpcManifest,
+> = Response;
 
 type RpcManifestOptionalHeaderKeys<THeaders extends object> = keyof {
   [TKey in keyof THeaders as undefined extends THeaders[TKey]
