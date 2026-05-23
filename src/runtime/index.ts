@@ -8,7 +8,11 @@ export type {
   DenoCompiledTransportBodyResultFor,
   DenoCompiledTransportBodyResultHandler,
   DenoCompiledTransportBodyResultHandlerFor,
+  DenoCompiledStreamRouteTransportBodyResultFor,
+  DenoCompiledStreamRouteTransportBodyResultHandlerFor,
   DenoCompiledTransportRequestHandler,
+  DenoCompiledUnaryRouteTransportBodyResultFor,
+  DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from './deno-compiled-transport.js';
 export * from './fetch.js';
 export * from './netlify.js';

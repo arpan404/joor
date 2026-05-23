@@ -441,7 +441,11 @@ export type {
   BunTransportBodyResultFor,
   BunTransportBodyResultHandler,
   BunTransportBodyResultHandlerFor,
+  BunStreamRouteTransportBodyResultFor,
+  BunStreamRouteTransportBodyResultHandlerFor,
   BunTransportRequestHandler,
+  BunUnaryRouteTransportBodyResultFor,
+  BunUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/bun.js';
 export type {
   CloudflareFetchHandler,
@@ -481,7 +485,11 @@ export type {
   DenoCompiledTransportBodyResultFor,
   DenoCompiledTransportBodyResultHandler,
   DenoCompiledTransportBodyResultHandlerFor,
+  DenoCompiledStreamRouteTransportBodyResultFor,
+  DenoCompiledStreamRouteTransportBodyResultHandlerFor,
   DenoCompiledTransportRequestHandler,
+  DenoCompiledUnaryRouteTransportBodyResultFor,
+  DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno-compiled-transport.js';
 export type {
   DenoFetchHandler,
@@ -493,7 +501,11 @@ export type {
   DenoTransportBodyResultFor,
   DenoTransportBodyResultHandler,
   DenoTransportBodyResultHandlerFor,
+  DenoStreamRouteTransportBodyResultFor,
+  DenoStreamRouteTransportBodyResultHandlerFor,
   DenoTransportRequestHandler,
+  DenoUnaryRouteTransportBodyResultFor,
+  DenoUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
 export type {
   JoorFetchHandler,
@@ -519,6 +531,10 @@ export type {
   NodeTransportBodyResultFor,
   NodeTransportBodyResultHandler,
   NodeTransportBodyResultHandlerFor,
+  NodeStreamRouteTransportBodyResultFor,
+  NodeStreamRouteTransportBodyResultHandlerFor,
+  NodeUnaryRouteTransportBodyResultFor,
+  NodeUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/node.js';
 export type {
   VercelFetchHandler,

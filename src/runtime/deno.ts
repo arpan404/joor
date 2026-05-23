@@ -5,6 +5,8 @@ import type {
   HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -59,6 +61,16 @@ export type DenoTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = TransportBodyResultFor<TManifest, TBody>;
+export type DenoUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
+export type DenoStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type DenoFetchHandler = JoorFetchHandler;
 export type DenoRpcRequestHandler = JoorFetchHandler;
 export type DenoTransportRequestHandler = JoorFetchHandler;
@@ -73,6 +85,20 @@ export type DenoTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
     request: ContextRequestSource,
     body: TBody
   ) => Promise<DenoTransportBodyResultFor<TManifest, TBody>>;
+
+export type DenoUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<DenoUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type DenoStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<DenoStreamRouteTransportBodyResultFor<TManifest, TBody>>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

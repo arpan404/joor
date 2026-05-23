@@ -3,7 +3,11 @@ import {
   type ContextRequestSource,
 } from '../context/context.js';
 import type { JoorManifest } from '../manifest.js';
-import type { RpcManifestBody } from '../rpc/dispatcher.js';
+import type {
+  RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
+} from '../rpc/dispatcher.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
@@ -11,7 +15,9 @@ import {
   type CompiledFixedUnaryDispatch,
   type CompiledRpcTransportBodyResultHandler,
   type CompiledRuntimeState,
+  type CompiledStreamRouteTransportBodyResultFor,
   type CompiledTransportBodyResultFor,
+  type CompiledUnaryRouteTransportBodyResultFor,
 } from './compiled.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -31,6 +37,16 @@ export type DenoCompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
+export type DenoCompiledUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+export type DenoCompiledStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,
@@ -44,6 +60,20 @@ export type DenoCompiledTransportBodyResultHandlerFor<
   request: ContextRequestSource,
   body: TBody
 ) => Promise<DenoCompiledTransportBodyResultFor<TManifest, TBody>>;
+
+export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<DenoCompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<DenoCompiledStreamRouteTransportBodyResultFor<TManifest>>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

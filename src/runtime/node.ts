@@ -10,6 +10,8 @@ import type {
   HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -66,6 +68,16 @@ export type NodeTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = TransportBodyResultFor<TManifest, TBody>;
+export type NodeUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
+export type NodeStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type NodeTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
@@ -76,6 +88,20 @@ export type NodeTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
     request: ContextRequestSource,
     body: TBody
   ) => Promise<NodeTransportBodyResultFor<TManifest, TBody>>;
+
+export type NodeUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<NodeUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type NodeStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<NodeStreamRouteTransportBodyResultFor<TManifest, TBody>>;
 
 const neverAbortedSignal = new AbortController().signal;
 

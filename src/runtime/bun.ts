@@ -11,6 +11,8 @@ import type {
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -61,6 +63,16 @@ export type BunTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = TransportBodyResultFor<TManifest, TBody>;
+export type BunUnaryRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
+export type BunStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type BunFetchHandler = JoorFetchHandler;
 export type BunRpcRequestHandler = JoorFetchHandler;
 export type BunTransportRequestHandler = JoorFetchHandler;
@@ -76,6 +88,20 @@ export type BunTransportBodyResultHandlerFor<TManifest extends JoorManifest> = <
   request: ContextRequestSource,
   body: TBody
 ) => Promise<BunTransportBodyResultFor<TManifest, TBody>>;
+
+export type BunUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<BunUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type BunStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<BunStreamRouteTransportBodyResultFor<TManifest, TBody>>;
 
 const bodyReadFailure = (request: Request, error: object): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
