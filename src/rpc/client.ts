@@ -843,7 +843,9 @@ type BatchResultFor<TRequest> =
       ? RpcEnvelope<JsonValue, TId, RpcResponseHeaderValues, RpcError>
       : never;
 
-export type BatchResults<TRequests extends readonly PendingRpcRequest[]> = {
+export type BatchResults<
+  TRequests extends readonly PendingRpcRequest[] = readonly PendingRpcRequest[],
+> = {
   [TIndex in keyof TRequests]: BatchResultFor<TRequests[TIndex]>;
 };
 

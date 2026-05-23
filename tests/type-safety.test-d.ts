@@ -3037,14 +3037,31 @@ const untypedLegacyBatchResults: BatchResults<
     headers: { 'cache-control': 'private' },
   },
 ];
+const defaultUntypedLegacyBatchResults: BatchResults =
+  untypedLegacyBatchResults;
 if (untypedLegacyBatchResults[0].ok) {
   untypedLegacyBatchResults[0].headers?.['cache-control']?.toUpperCase();
+}
+const defaultUntypedLegacyBatchResult = defaultUntypedLegacyBatchResults[0];
+if (defaultUntypedLegacyBatchResult?.ok) {
+  defaultUntypedLegacyBatchResult.id.toUpperCase();
+  defaultUntypedLegacyBatchResult.headers?.['cache-control']?.toUpperCase();
 }
 const subpathUntypedLegacyBatchResults: RpcSubpathBatchResults<
   readonly [typeof legacyUntypedRequest]
 > = untypedLegacyBatchResults;
+const defaultSubpathUntypedLegacyBatchResults: RpcSubpathBatchResults =
+  subpathUntypedLegacyBatchResults;
 if (subpathUntypedLegacyBatchResults[0].ok) {
   subpathUntypedLegacyBatchResults[0].headers?.['cache-control']?.toUpperCase();
+}
+const defaultSubpathUntypedLegacyBatchResult =
+  defaultSubpathUntypedLegacyBatchResults[0];
+if (defaultSubpathUntypedLegacyBatchResult?.ok) {
+  defaultSubpathUntypedLegacyBatchResult.id.toUpperCase();
+  defaultSubpathUntypedLegacyBatchResult.headers?.[
+    'cache-control'
+  ]?.toUpperCase();
 }
 const _wrongUntypedLegacyBatchResults: BatchResults<
   readonly [typeof legacyUntypedRequest]
