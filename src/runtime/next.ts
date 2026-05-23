@@ -43,6 +43,22 @@ export type NextStreamRouteHandlersOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = NextRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
 
+export type NextRouteUnaryHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextRouteStreamHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
 export type NextHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -65,6 +81,22 @@ export type NextStreamRouteHandlerOptionsFor<
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
 > = NextStreamRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextRouteUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextRouteStreamHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type NextRouteHandlersOptionsArgs<
   TManifest extends JoorManifest,
@@ -89,6 +121,22 @@ export type NextStreamRouteHandlersOptionsArgs<
     RpcManifestStreamRouteBody<TManifest>,
 > = NextRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type NextRouteUnaryHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextRouteStreamHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type NextHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -111,6 +159,22 @@ export type NextStreamRouteHandlerOptionsArgs<
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
 > = NextStreamRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextRouteUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextRouteStreamHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,
