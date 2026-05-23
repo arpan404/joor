@@ -123,6 +123,8 @@ import {
   type JoorManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope,
   type JoorManifestRouteEnvelopeUnion,
+  type JoorManifestRouteResult,
+  type JoorManifestRouteResultUnion,
   type JoorManifestRouteError,
   type JoorManifestRouteErrorCode,
   type JoorManifestRouteErrorDetails,
@@ -340,6 +342,8 @@ import {
   type JoorManifestRouteClientHeaders as JoorSubpathManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
   type JoorManifestRouteEnvelopeUnion as JoorSubpathManifestRouteEnvelopeUnion,
+  type JoorManifestRouteResult as JoorSubpathManifestRouteResult,
+  type JoorManifestRouteResultUnion as JoorSubpathManifestRouteResultUnion,
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
@@ -2009,6 +2013,13 @@ const manifestRouteEnvelopeUnion: JoorManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
 manifestRouteEnvelopeUnion.id.toUpperCase();
+const manifestRouteResult: JoorManifestRouteResult<
+  typeof manifest,
+  'users.get'
+> = manifestRouteEnvelope;
+const manifestRouteResultUnion: JoorManifestRouteResultUnion<typeof manifest> =
+  manifestRouteResult;
+manifestRouteResultUnion.id.toUpperCase();
 // @ts-expect-error success envelopes require declared response headers.
 const _missingManifestRouteEnvelopeHeaders: JoorManifestRouteEnvelope<
   typeof manifest,
@@ -2177,6 +2188,14 @@ const manifestSubpathEnvelopeUnion: JoorSubpathManifestRouteEnvelopeUnion<
   typeof manifestFromSubpath
 > = manifestSubpathEnvelope;
 manifestSubpathEnvelopeUnion.id.toUpperCase();
+const manifestSubpathRouteResult: JoorSubpathManifestRouteResult<
+  typeof manifestFromSubpath,
+  'users.get'
+> = manifestSubpathEnvelope;
+const manifestSubpathRouteResultUnion: JoorSubpathManifestRouteResultUnion<
+  typeof manifestFromSubpath
+> = manifestSubpathRouteResult;
+manifestSubpathRouteResultUnion.id.toUpperCase();
 const manifestSubpathBodyResultFor: JoorSubpathManifestRouteBodyResultFor<
   typeof manifestFromSubpath,
   typeof manifestSubpathProtocolRequest

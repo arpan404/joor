@@ -172,6 +172,14 @@ export type JoorManifestRouteEnvelopeUnion<TManifest> = RpcRouteEnvelopeUnion<
   JoorManifestRoutes<TManifest>
 >;
 
+export type JoorManifestRouteResult<
+  TManifest,
+  TId extends JoorManifestUnaryRouteId<TManifest>,
+> = JoorManifestRouteEnvelope<TManifest, TId>;
+
+export type JoorManifestRouteResultUnion<TManifest> =
+  JoorManifestRouteEnvelopeUnion<TManifest>;
+
 export type JoorManifestRouteRequest<
   TManifest,
   TId extends JoorManifestUnaryRouteId<TManifest>,

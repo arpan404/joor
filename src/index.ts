@@ -78,6 +78,8 @@ export type {
   JoorManifestRouteClientHeaders,
   JoorManifestRouteEnvelope,
   JoorManifestRouteEnvelopeUnion,
+  JoorManifestRouteResult,
+  JoorManifestRouteResultUnion,
   JoorManifestRouteError,
   JoorManifestRouteErrorCode,
   JoorManifestRouteErrorDetails,
