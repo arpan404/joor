@@ -3,6 +3,7 @@ import type {
   ProcedureErrorCode,
   ProcedureErrorDetails,
   ProcedureRuntime,
+  ProcedureRequest,
   ProcedureServices,
 } from './procedure/types.js';
 import type {
@@ -101,7 +102,9 @@ import type {
   RpcManifestBody,
   RpcManifestBodyResult,
   RpcManifestBodyResultFor,
+  RpcManifestRequiredRuntimeRequest,
   RpcManifestRequiredServices,
+  RpcManifestRouteRuntimeRequest,
   RpcManifestRouteServices,
   RpcManifestRouteStreamBodyHandler,
   RpcManifestRouteStreamBodyResultHandler,
@@ -283,6 +286,13 @@ export type JoorManifestRouteServices<
   ? RpcManifestRouteServices<TManifest, TId & JoorManifestRouteId<TManifest>>
   : ProcedureServices<JoorManifestRouteProcedure<TManifest, TId>>;
 
+export type JoorManifestRouteRuntimeRequest<
+  TManifest,
+  TId extends JoorManifestRouteId<TManifest> = JoorManifestRouteId<TManifest>,
+> = TManifest extends JoorManifest
+  ? RpcManifestRouteRuntimeRequest<TManifest, TId & JoorManifestRouteId<TManifest>>
+  : ProcedureRequest<JoorManifestRouteProcedure<TManifest, TId>>;
+
 export type JoorManifestRequiredServices<TManifest> =
   TManifest extends JoorManifest
     ? RpcManifestRequiredServices<TManifest>
@@ -294,6 +304,24 @@ export type JoorManifestRequiredServices<TManifest> =
           >;
         }[JoorManifestRouteId<TManifest>]
       >;
+
+type JoorManifestRequestContribution<TRequest> = [Request] extends [TRequest]
+  ? never
+  : TRequest;
+
+type JoorManifestRequestContributions<TManifest> = {
+  [TId in JoorManifestRouteId<TManifest>]: JoorManifestRequestContribution<
+    JoorManifestRouteRuntimeRequest<TManifest, TId>
+  >;
+}[JoorManifestRouteId<TManifest>];
+
+export type JoorManifestRequiredRuntimeRequest<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRequiredRuntimeRequest<TManifest>
+    : [JoorManifestRequestContributions<TManifest>] extends [never]
+      ? Request
+      : UnionToIntersection<JoorManifestRequestContributions<TManifest>> &
+          Request;
 
 export type JoorManifestRouteInput<
   TManifest,

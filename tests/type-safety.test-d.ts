@@ -591,7 +591,9 @@ import {
   type JoorManifestRouteRequiresResponseHeaders,
   type JoorManifestStreamRouteRequiresHeaders,
   type JoorManifestStreamRouteRequiresResponseHeaders,
+  type JoorManifestRequiredRuntimeRequest,
   type JoorManifestRequiredServices,
+  type JoorManifestRouteRuntimeRequest,
   type JoorManifestRouteServices,
   type JoorManifestRouteStreamBody,
   type JoorManifestRouteStreamBodyResult,
@@ -833,7 +835,9 @@ import {
   type RpcManifestRouteResponseHeaders,
   type RpcManifestRouteRequiresHeaders,
   type RpcManifestRouteRequiresResponseHeaders,
+  type RpcManifestRequiredRuntimeRequest,
   type RpcManifestRequiredServices,
+  type RpcManifestRouteRuntimeRequest,
   type RpcManifestRouteServices,
   type RpcManifestRoutes,
   type RpcManifestRouteStreamBody,
@@ -1981,6 +1985,45 @@ const defaultProcedureRequest: ProcedureRequest<typeof procedure> = new Request(
   'https://example.com/rpc'
 );
 defaultProcedureRequest.url.toUpperCase();
+const requestTypedManifest = defineManifest({
+  procedures: {
+    'request.get': requestTypedProcedure,
+  },
+});
+const requestTypedManifestRequiredRequest: RpcManifestRequiredRuntimeRequest<
+  typeof requestTypedManifest
+> = requestTypedProcedureRequest;
+requestTypedManifestRequiredRequest.requestId.toUpperCase();
+const requestTypedJoorManifestRequiredRequest: JoorManifestRequiredRuntimeRequest<
+  typeof requestTypedManifest
+> = requestTypedManifestRequiredRequest;
+requestTypedJoorManifestRequiredRequest.requestId.toUpperCase();
+const requestTypedManifestRouteRequest: RpcManifestRouteRuntimeRequest<
+  typeof requestTypedManifest,
+  'request.get'
+> = requestTypedProcedureRequest;
+const requestTypedJoorManifestRouteRequest: JoorManifestRouteRuntimeRequest<
+  typeof requestTypedManifest,
+  'request.get'
+> = requestTypedManifestRouteRequest;
+requestTypedJoorManifestRouteRequest.requestId.toUpperCase();
+const requestTypedManifestHandlerOptions: HandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  ProcedureAppRequest
+> = {
+  plugins: [usersPlugin] as const,
+};
+requestTypedManifestHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const _wrongRequestTypedManifestHandlerOptions: HandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  // @ts-expect-error manifests reject handlers whose request type is too broad.
+  __joorRequestTypeMismatch: undefined,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,

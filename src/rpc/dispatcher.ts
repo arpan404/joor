@@ -21,6 +21,7 @@ import type {
   ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
+  ProcedureRequest,
   ProcedureRequiresHeaders,
   ProcedureRequiresResponseHeaders,
   ProcedureRuntime,
@@ -228,6 +229,11 @@ export type RpcManifestRouteServices<
   TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
 > = ProcedureServices<RpcManifestRoutes<TManifest>[TId]>;
 
+export type RpcManifestRouteRuntimeRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
+> = ProcedureRequest<RpcManifestRoutes<TManifest>[TId]>;
+
 export type RpcManifestRouteProcedure<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
@@ -327,6 +333,22 @@ export type RpcManifestRequiredServices<TManifest extends RpcManifest> = [
 ] extends [never]
   ? Record<string, never>
   : UnionToIntersection<RpcManifestServiceContributions<TManifest>>;
+
+type RpcManifestRequestContribution<TRequest> = [Request] extends [TRequest]
+  ? never
+  : TRequest;
+
+type RpcManifestRequestContributions<TManifest extends RpcManifest> = {
+  [TId in RpcManifestRouteId<TManifest>]: RpcManifestRequestContribution<
+    RpcManifestRouteRuntimeRequest<TManifest, TId>
+  >;
+}[RpcManifestRouteId<TManifest>];
+
+export type RpcManifestRequiredRuntimeRequest<TManifest extends RpcManifest> = [
+  RpcManifestRequestContributions<TManifest>,
+] extends [never]
+  ? Request
+  : UnionToIntersection<RpcManifestRequestContributions<TManifest>> & Request;
 
 export type RpcManifestProcedureFrameworkError<TProcedure> = RpcError<
   Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,
@@ -1010,6 +1032,11 @@ type HandlerOptionsHaveRequiredServices<TRequiredServices, TAvailableServices> =
         : false
       : false;
 
+type HandlerOptionsRequestMatches<
+  TRequiredRequest extends Request,
+  TRequest extends Request,
+> = TRequest extends TRequiredRequest ? true : false;
+
 export type HandlerOptionsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -1029,6 +1056,15 @@ export type HandlerOptionsFor<
           readonly __joorMissingServices: RpcManifestRequiredServices<TManifest>;
         };
       })
+) & (
+  HandlerOptionsRequestMatches<
+    RpcManifestRequiredRuntimeRequest<TManifest>,
+    TRequest
+  > extends true
+    ? unknown
+    : {
+        readonly __joorRequestTypeMismatch: RpcManifestRequiredRuntimeRequest<TManifest>;
+      }
 );
 
 export type RpcManifestRouteUnaryHandlerOptionsFor<
