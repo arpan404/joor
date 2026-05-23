@@ -837,7 +837,9 @@ export type RpcManifestRouteStreamBodyResultHandler<
   body: TBody
 ) => MaybePromise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
 
-export type RpcRequestHandler = (request: Request) => MaybePromise<Response>;
+export type RpcRequestHandler<TRequest extends Request = Request> = (
+  request: TRequest
+) => MaybePromise<Response>;
 
 export type RpcBodyHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
@@ -2271,6 +2273,19 @@ export function createRpcHandler<TManifest extends RpcManifest>(
     return handleParsed(request, body as RpcManifestBody<TManifest>);
   };
 }
+export const createRpcHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ): RpcRequestHandler<TRequest> =>
+    createRpcHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    ) as RpcRequestHandler<TRequest>;
 
 export function createRpcBodyHandler<
   TManifest extends RpcManifest,

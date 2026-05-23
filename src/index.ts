@@ -39,6 +39,7 @@ export {
   createRpcBodyHandler,
   createRpcBodyResultHandler,
   createRpcHandler,
+  createRpcHandlerFor,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,

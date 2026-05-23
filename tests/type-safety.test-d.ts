@@ -106,6 +106,7 @@ import {
   createRpcBodyHandler,
   createRpcBodyResultHandler,
   createRpcHandler,
+  createRpcHandlerFor,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
@@ -1092,6 +1093,7 @@ import {
   createRpcBodyHandler as createRpcSubpathBodyHandler,
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcHandler as createRpcSubpathHandler,
+  createRpcHandlerFor as createRpcSubpathHandlerFor,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   createManifestRouteProtocolRequest as createRpcSubpathManifestRouteProtocolRequest,
   createManifestRouteRequest as createRpcSubpathManifestRouteRequest,
@@ -6730,6 +6732,13 @@ const syncRpcHandler: RpcRequestHandler = () => new Response();
 const rpcSubpathHandler = createRpcSubpathHandler(manifest, handlerOptions);
 const typedRpcSubpathHandler: RpcSubpathRequestHandler = rpcSubpathHandler;
 const syncRpcSubpathHandler: RpcSubpathRequestHandler = syncRpcHandler;
+const createTypedRpcHandler = createRpcHandlerFor<AppFetchRequest>();
+const typedAppRpcHandler: RpcRequestHandler<AppFetchRequest> =
+  createTypedRpcHandler(manifest, handlerOptions);
+const createTypedRpcSubpathHandler =
+  createRpcSubpathHandlerFor<AppFetchRequest>();
+const typedAppRpcSubpathHandler: RpcSubpathRequestHandler<AppFetchRequest> =
+  createTypedRpcSubpathHandler(manifest, handlerOptions);
 rpcHandler(new Request('https://example.com/rpc'));
 typedRpcHandler(new Request('https://example.com/rpc'));
 syncRpcHandler(new Request('https://example.com/rpc'));
@@ -6737,6 +6746,8 @@ typedRpcSubpathHandler(new Request('https://example.com/rpc'));
 syncRpcSubpathHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching handler plugins.
 createRpcHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed handler plugins.
+createTypedRpcHandler(manifest);
 const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
 const typedRpcBodyHandler: RpcBodyHandler<typeof manifest> = rpcBodyHandler;
 const syncRpcBodyHandler: RpcBodyHandler<typeof manifest> = () =>
@@ -7250,6 +7261,8 @@ const appFetchRequest = Object.assign(new Request('https://example.com/rpc'), {
   requestId: 'req_1',
 }) as AppFetchRequest;
 appFetchRequest.requestId.toUpperCase();
+typedAppRpcHandler(appFetchRequest);
+typedAppRpcSubpathHandler(appFetchRequest);
 fetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedFetchHandler(new Request('https://example.com/rpc'));

@@ -30,6 +30,7 @@ import {
   defineManifest,
   defineProcedure,
   errorStatus,
+  createRpcHandlerFor as createRootRpcHandlerFor,
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
@@ -58,6 +59,7 @@ import { ok } from 'joor/procedure';
 import {
   createManifestRouteStreamProtocolRequest,
   createManifestRouteStreamRequest,
+  createRpcHandlerFor,
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
 import {
@@ -348,6 +350,8 @@ const packageSubpathValues = [
   createRootCorsHeaderRecord,
   rootCompiledCreateProcedureCacheKey,
   createManifestRouteStreamProtocolRequest,
+  createRpcHandlerFor,
+  createRootRpcHandlerFor,
   createCompiledRpcHandlerFor,
   createRootCompiledRpcHandlerFor,
   createRuntimeCompiledRpcHandlerFor,
