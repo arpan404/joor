@@ -860,6 +860,7 @@ export type {
 } from './runtime/bun.js';
 export type {
   CloudflareFetchHandler,
+  CloudflareWorkerFetchHandler,
   CloudflareFetchOptionsArgs,
   CloudflareFetchOptionsFor,
   CloudflareRouteStreamFetchOptionsArgs,

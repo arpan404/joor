@@ -10,10 +10,28 @@ import type {
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
+type MaybePromise<TValue> = TValue | Promise<TValue>;
+
 export type CloudflareFetchHandler = JoorFetchHandler;
 
-export interface CloudflareWorker {
-  fetch: CloudflareFetchHandler;
+export type CloudflareWorkerFetchHandler<
+  TEnv = unknown,
+  TContext = unknown,
+> = (
+  request: Request,
+  env: TEnv,
+  context: TContext
+) => MaybePromise<Response>;
+
+type CloudflareWorkerFetch<
+  TEnv,
+  TContext,
+> = [TEnv] extends [never]
+  ? CloudflareFetchHandler
+  : CloudflareWorkerFetchHandler<TEnv, TContext>;
+
+export interface CloudflareWorker<TEnv = never, TContext = never> {
+  fetch: CloudflareWorkerFetch<TEnv, TContext>;
 }
 
 export type CloudflareFetchOptionsFor<

@@ -273,6 +273,7 @@ import {
   type ClientRequestInit,
   type ClientRequestOptions,
   type CloudflareFetchHandler,
+  type CloudflareWorkerFetchHandler,
   type CloudflareFetchOptionsArgs,
   type CloudflareFetchOptionsFor,
   type CloudflareRouteStreamFetchOptionsArgs,
@@ -1481,6 +1482,7 @@ import {
   type CloudflareStreamRouteWorkerOptionsFor as RuntimeSubpathCloudflareStreamRouteWorkerOptionsFor,
   type CloudflareUnaryRouteWorkerOptionsArgs as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsArgs,
   type CloudflareUnaryRouteWorkerOptionsFor as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsFor,
+  type CloudflareWorkerFetchHandler as RuntimeSubpathCloudflareWorkerFetchHandler,
   type CloudflareWorkerOptionsArgs as RuntimeSubpathCloudflareWorkerOptionsArgs,
   type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
   type DenoCompiledTransportBodyResult as RuntimeSubpathDenoCompiledTransportBodyResult,
@@ -10760,6 +10762,7 @@ const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
   manifest,
   handlerOptions
 );
+cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 const cloudflareFetch: CloudflareFetchHandler = cloudflareWorker.fetch;
 const directCloudflareFetch: CloudflareFetchHandler = createCloudflareFetch(
   manifest,
@@ -10769,6 +10772,40 @@ const runtimeSubpathDirectCloudflareFetch: RuntimeSubpathCloudflareFetchHandler 
   createRuntimeSubpathCloudflareFetch(manifest, handlerOptions);
 const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
   cloudflareFetch;
+interface CloudflareEnvForTypes {
+  readonly accountId: string;
+}
+interface CloudflareContextForTypes {
+  waitUntil(promise: Promise<unknown>): void;
+}
+const cloudflareWorkerFetch: CloudflareWorkerFetchHandler<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+> = (request, env, context) => {
+  request.url.toUpperCase();
+  env.accountId.toUpperCase();
+  context.waitUntil(Promise.resolve());
+  return new Response();
+};
+const runtimeSubpathCloudflareWorkerFetch: RuntimeSubpathCloudflareWorkerFetchHandler<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+> = cloudflareWorkerFetch;
+const typedCloudflareWorker: CloudflareWorker<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+> = {
+  fetch: runtimeSubpathCloudflareWorkerFetch,
+};
+typedCloudflareWorker.fetch(
+  new Request('https://example.com/rpc'),
+  { accountId: 'acct_1' },
+  {
+    waitUntil(promise) {
+      promise.then(Boolean);
+    },
+  }
+);
 const cloudflareFetchOptions: CloudflareFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
