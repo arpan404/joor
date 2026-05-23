@@ -197,6 +197,7 @@ import {
   type RpcManifestBodyResultFor,
   type RpcManifestRouteBatchResults,
   type RpcManifestRouteEnvelopeUnion,
+  type RpcManifestRouteResultUnion,
   type RpcManifestRouteBatchRequest,
   type RpcManifestRouteId,
   type RpcManifestRouteProtocolRequest,
@@ -221,6 +222,8 @@ import {
   type RpcRouteErrorDetails,
   type RpcRouteEnvelope,
   type RpcRouteEnvelopeUnion,
+  type RpcRouteResult,
+  type RpcRouteResultUnion,
   type RpcRouteBody,
   type RpcRouteBodyResult,
   type RpcRouteBodyResultFor,
@@ -319,6 +322,7 @@ import {
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
   type RpcBodyHandler as RpcSubpathBodyHandler,
   type RpcRequestHandler as RpcSubpathRequestHandler,
   type RpcRouteBody as RpcSubpathRouteBody,
@@ -328,6 +332,8 @@ import {
   type RpcRouteErrorCode as RpcSubpathRouteErrorCode,
   type RpcRouteErrorDetails as RpcSubpathRouteErrorDetails,
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
+  type RpcRouteResult as RpcSubpathRouteResult,
+  type RpcRouteResultUnion as RpcSubpathRouteResultUnion,
   type RpcRouteRequestOptions as RpcSubpathRouteRequestOptions,
   type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
@@ -2323,6 +2329,12 @@ const publicManifestBatchResults: RpcManifestRouteBatchResults<
 const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
+const publicManifestResultUnion: RpcManifestRouteResultUnion<typeof manifest> =
+  publicManifestEnvelopeUnion;
+const rpcSubpathManifestResultUnion: RpcSubpathManifestRouteResultUnion<
+  typeof manifest
+> = publicManifestResultUnion;
+rpcSubpathManifestResultUnion.id.toUpperCase();
 const publicManifestBodyResult: RpcManifestBodyResult<typeof manifest> =
   publicManifestEnvelopeUnion;
 const publicManifestBodyResultFor: RpcManifestBodyResultFor<
@@ -3916,6 +3928,14 @@ const _missingRouteEnvelopeHeaders: RpcRouteEnvelope<Routes, 'users.get'> = {
 };
 _missingRouteEnvelopeHeaders;
 const routeEnvelopeUnion: RpcRouteEnvelopeUnion<Routes> = routeEnvelope;
+const routeResult: RpcRouteResult<Routes, 'users.get'> = routeEnvelope;
+const routeResultUnion: RpcRouteResultUnion<Routes> = routeResult;
+const rpcSubpathRouteResult: RpcSubpathRouteResult<Routes, 'users.get'> =
+  routeResult;
+const rpcSubpathRouteResultUnion: RpcSubpathRouteResultUnion<Routes> =
+  routeResultUnion;
+rpcSubpathRouteResult.id.toUpperCase();
+rpcSubpathRouteResultUnion.id.toUpperCase();
 const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
 const routeBodyResultFor: RpcRouteBodyResultFor<
   Routes,

@@ -163,6 +163,14 @@ export type RpcRouteEnvelopeUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcUnaryRouteId<TRoutes>]: RpcRouteEnvelope<TRoutes, TId>;
 }[RpcUnaryRouteId<TRoutes>];
 
+export type RpcRouteResult<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteEnvelope<TRoutes, TId>;
+
+export type RpcRouteResultUnion<TRoutes extends RpcRouteMap> =
+  RpcRouteEnvelopeUnion<TRoutes>;
+
 export type RpcRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
