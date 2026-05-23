@@ -203,6 +203,8 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
+  Context.HandlerOptionsBody<typeof packageSubpathConfig>,
+  Context.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Deno.DenoRpcRequestHandler,
   DenoCompiledTransport.DenoCompiledTransportRequestHandler,
   DenoTransport.DenoTransportRequestHandler,

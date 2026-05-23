@@ -969,6 +969,8 @@ import {
   type DefineConfigFor as ContextSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as ContextSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as ContextSubpathDefineUnaryRouteConfigFor,
+  type HandlerOptionsBody as ContextSubpathHandlerOptionsBody,
+  type HandlerOptionsManifest as ContextSubpathHandlerOptionsManifest,
   type JoorConfig as ContextSubpathConfig,
   type JoorConfigFor as ContextSubpathConfigFor,
   type JoorConfigContext as ContextSubpathConfigContext,
@@ -3132,7 +3134,10 @@ const rootManifestAwareConfigManifest: HandlerOptionsManifest<
 const rpcSubpathManifestAwareConfigManifest: RpcSubpathHandlerOptionsManifest<
   typeof manifestAwareConfig
 > = rootManifestAwareConfigManifest;
-rpcSubpathManifestAwareConfigManifest.procedures['users.get'].valueOf();
+const contextSubpathManifestAwareConfigManifest: ContextSubpathHandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = rpcSubpathManifestAwareConfigManifest;
+contextSubpathManifestAwareConfigManifest.procedures['users.get'].valueOf();
 const manifestAwareConfigBody: HandlerOptionsBody<typeof manifestAwareConfig> =
   { id: 'users.get', input: { id: '1' } };
 const rootManifestAwareConfigBody: HandlerOptionsBody<
@@ -3141,13 +3146,16 @@ const rootManifestAwareConfigBody: HandlerOptionsBody<
 const rpcSubpathManifestAwareConfigBody: RpcSubpathHandlerOptionsBody<
   typeof manifestAwareConfig
 > = rootManifestAwareConfigBody;
+const contextSubpathManifestAwareConfigBody: ContextSubpathHandlerOptionsBody<
+  typeof manifestAwareConfig
+> = rpcSubpathManifestAwareConfigBody;
 if (
-  !Array.isArray(rpcSubpathManifestAwareConfigBody) &&
-  rpcSubpathManifestAwareConfigBody.id === 'users.get'
+  !Array.isArray(contextSubpathManifestAwareConfigBody) &&
+  contextSubpathManifestAwareConfigBody.id === 'users.get'
 ) {
-  rpcSubpathManifestAwareConfigBody.input.id.toUpperCase();
+  contextSubpathManifestAwareConfigBody.input.id.toUpperCase();
   // @ts-expect-error manifest-aware config body metadata keeps route input exact.
-  rpcSubpathManifestAwareConfigBody.input.ok;
+  contextSubpathManifestAwareConfigBody.input.ok;
 }
 const manifestRouteUnaryConfigShape: JoorRouteUnaryConfigFor<
   typeof manifest,

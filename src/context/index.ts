@@ -25,6 +25,8 @@ export type {
   DefineRouteUnaryConfigFor,
   DefineStreamRouteConfigFor,
   DefineUnaryRouteConfigFor,
+  HandlerOptionsBody,
+  HandlerOptionsManifest,
   JoorConfig,
   JoorConfigFor,
   JoorConfigContext,
