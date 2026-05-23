@@ -2367,6 +2367,8 @@ const routeStreamEvent: RpcStreamRouteEvent<Routes, 'users.watch'> = {
   userId: '1',
 };
 routeStreamEvent.userId.toUpperCase();
+const defaultRouteStreamEvent: RpcStreamRouteEvent<Routes> = routeStreamEvent;
+defaultRouteStreamEvent.userId.toUpperCase();
 const routeUnaryOutput: RpcUnaryRouteOutput<Routes, 'users.get'> = {
   id: '1',
   name: 'Ada',
@@ -2458,22 +2460,34 @@ const routeStreamRequiresResponseHeaders: RpcStreamRouteRequiresResponseHeaders<
 routeStreamRequiresResponseHeaders.valueOf();
 const routeUnaryErrorCode: RpcUnaryRouteErrorCode<Routes, 'users.get'> =
   'NOT_FOUND';
+const defaultRouteUnaryErrorCode: RpcUnaryRouteErrorCode<Routes> =
+  routeUnaryErrorCode;
 routeUnaryErrorCode.toUpperCase();
+defaultRouteUnaryErrorCode.toUpperCase();
 const routeUnaryErrorDetails: RpcUnaryRouteErrorDetails<
   Routes,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
+const defaultRouteUnaryErrorDetails: RpcUnaryRouteErrorDetails<Routes> =
+  routeUnaryErrorDetails;
 routeUnaryErrorDetails.message.toUpperCase();
+defaultRouteUnaryErrorDetails.valueOf();
 const routeStreamErrorCode: RpcStreamRouteErrorCode<Routes, 'users.watch'> =
   'VALIDATION_ERROR';
+const defaultRouteStreamErrorCode: RpcStreamRouteErrorCode<Routes> =
+  routeStreamErrorCode;
 routeStreamErrorCode.toUpperCase();
+defaultRouteStreamErrorCode.toUpperCase();
 const routeStreamErrorDetails: RpcStreamRouteErrorDetails<
   Routes,
   'users.watch',
   'VALIDATION_ERROR'
 > = { issue: 'input' };
+const defaultRouteStreamErrorDetails: RpcStreamRouteErrorDetails<Routes> =
+  routeStreamErrorDetails;
 routeStreamErrorDetails.valueOf();
+defaultRouteStreamErrorDetails.valueOf();
 const routeHasHeaders: RpcRouteHasHeaders<Routes, 'users.get'> = true;
 routeHasHeaders.valueOf();
 const routeRequiresHeaders: RpcRouteRequiresHeaders<Routes, 'users.get'> = true;
@@ -2505,6 +2519,18 @@ const streamRouteHasResponseHeaders: RpcRouteHasResponseHeaders<
   'users.watch'
 > = false;
 streamRouteHasResponseHeaders.valueOf();
+const routeError: RpcRouteError<Routes> = {
+  code: 'NOT_FOUND',
+  message: 'Missing',
+  status: 404,
+  details: { message: 'Missing' },
+};
+routeError.code.toUpperCase();
+const defaultRouteErrorCode: RpcRouteErrorCode<Routes> = routeUnaryErrorCode;
+defaultRouteErrorCode.toUpperCase();
+const defaultRouteErrorDetails: RpcRouteErrorDetails<Routes> =
+  routeUnaryErrorDetails;
+defaultRouteErrorDetails.valueOf();
 const subpathRouteRequiresHeaders: RpcSubpathRouteRequiresHeaders<
   Routes,
   'users.get'
@@ -3284,6 +3310,10 @@ const manifestStreamRouteEvent: JoorManifestStreamRouteEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 manifestStreamRouteEvent.userId.toUpperCase();
+const defaultManifestStreamRouteEvent: JoorManifestStreamRouteEvent<
+  typeof manifest
+> = manifestStreamRouteEvent;
+defaultManifestStreamRouteEvent.userId.toUpperCase();
 type ManifestRouteStreamOutputIsNever = [
   JoorManifestRouteOutput<typeof manifest, 'users.watch'>,
 ] extends [never]
@@ -3351,29 +3381,49 @@ const manifestStreamRouteError: JoorManifestStreamRouteError<
   status: 400,
   details: { issue: 'input' },
 };
+const defaultManifestStreamRouteError: JoorManifestStreamRouteError<
+  typeof manifest
+> = manifestStreamRouteError;
 manifestStreamRouteError.code.toUpperCase();
+defaultManifestStreamRouteError.code.toUpperCase();
 const manifestUnaryRouteErrorCode: JoorManifestUnaryRouteErrorCode<
   typeof manifest,
   'users.get'
 > = 'NOT_FOUND';
+const defaultManifestUnaryRouteErrorCode: JoorManifestUnaryRouteErrorCode<
+  typeof manifest
+> = manifestUnaryRouteErrorCode;
 manifestUnaryRouteErrorCode.toUpperCase();
+defaultManifestUnaryRouteErrorCode.toUpperCase();
 const manifestUnaryRouteErrorDetails: JoorManifestUnaryRouteErrorDetails<
   typeof manifest,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
+const defaultManifestUnaryRouteErrorDetails: JoorManifestUnaryRouteErrorDetails<
+  typeof manifest
+> = manifestUnaryRouteErrorDetails;
 manifestUnaryRouteErrorDetails.message.toUpperCase();
+defaultManifestUnaryRouteErrorDetails.valueOf();
 const manifestStreamRouteErrorCode: JoorManifestStreamRouteErrorCode<
   typeof manifest,
   'users.watch'
 > = 'VALIDATION_ERROR';
+const defaultManifestStreamRouteErrorCode: JoorManifestStreamRouteErrorCode<
+  typeof manifest
+> = manifestStreamRouteErrorCode;
 manifestStreamRouteErrorCode.toUpperCase();
+defaultManifestStreamRouteErrorCode.toUpperCase();
 const manifestStreamRouteErrorDetails: JoorManifestStreamRouteErrorDetails<
   typeof manifest,
   'users.watch',
   'VALIDATION_ERROR'
 > = { issue: 'input' };
+const defaultManifestStreamRouteErrorDetails: JoorManifestStreamRouteErrorDetails<
+  typeof manifest
+> = manifestStreamRouteErrorDetails;
 manifestStreamRouteErrorDetails.valueOf();
+defaultManifestStreamRouteErrorDetails.valueOf();
 const manifestRouteOutput: JoorManifestRouteOutput<
   typeof manifest,
   'users.get'
@@ -3448,12 +3498,18 @@ const manifestRouteError: JoorManifestRouteError<typeof manifest, 'users.get'> =
     status: 404,
     details: { message: 'User not found' },
   };
+const defaultManifestRouteError: JoorManifestRouteError<typeof manifest> =
+  manifestRouteError;
 manifestRouteError.code.toUpperCase();
+defaultManifestRouteError.code.toUpperCase();
 const manifestRouteErrorCode: JoorManifestRouteErrorCode<
   typeof manifest,
   'users.get'
 > = 'NOT_FOUND';
+const defaultManifestRouteErrorCode: JoorManifestRouteErrorCode<typeof manifest> =
+  manifestRouteErrorCode;
 manifestRouteErrorCode.toUpperCase();
+defaultManifestRouteErrorCode.toUpperCase();
 const manifestRouteFrameworkErrorCode: JoorManifestRouteErrorCode<
   typeof manifest,
   'users.get'
@@ -3464,7 +3520,11 @@ const manifestRouteErrorDetails: JoorManifestRouteErrorDetails<
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
+const defaultManifestRouteErrorDetails: JoorManifestRouteErrorDetails<
+  typeof manifest
+> = manifestRouteErrorDetails;
 manifestRouteErrorDetails.message.toUpperCase();
+defaultManifestRouteErrorDetails.valueOf();
 const manifestRouteFrameworkErrorDetails: JoorManifestRouteErrorDetails<
   typeof manifest,
   'users.get',
@@ -3678,6 +3738,10 @@ const manifestStreamEvent: JoorManifestRouteStreamEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 manifestStreamEvent.userId.toUpperCase();
+const defaultManifestRouteStreamEvent: JoorManifestRouteStreamEvent<
+  typeof manifest
+> = manifestStreamEvent;
+defaultManifestRouteStreamEvent.userId.toUpperCase();
 const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
@@ -4062,6 +4126,10 @@ const publicManifestStreamRouteEvent: RpcManifestStreamRouteEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 publicManifestStreamRouteEvent.userId.toUpperCase();
+const defaultPublicManifestStreamRouteEvent: RpcManifestStreamRouteEvent<
+  typeof manifest
+> = publicManifestStreamRouteEvent;
+defaultPublicManifestStreamRouteEvent.userId.toUpperCase();
 const publicManifestUnaryRouteHasHeaders: RpcManifestUnaryRouteHasHeaders<
   typeof manifest,
   'users.get'
@@ -4110,29 +4178,49 @@ const publicManifestStreamRouteError: RpcManifestStreamRouteError<
   typeof manifest,
   'users.watch'
 > = manifestStreamRouteError;
+const defaultPublicManifestStreamRouteError: RpcManifestStreamRouteError<
+  typeof manifest
+> = publicManifestStreamRouteError;
 publicManifestStreamRouteError.code.toUpperCase();
+defaultPublicManifestStreamRouteError.code.toUpperCase();
 const publicManifestUnaryRouteErrorCode: RpcManifestUnaryRouteErrorCode<
   typeof manifest,
   'users.get'
 > = 'NOT_FOUND';
+const defaultPublicManifestUnaryRouteErrorCode: RpcManifestUnaryRouteErrorCode<
+  typeof manifest
+> = publicManifestUnaryRouteErrorCode;
 publicManifestUnaryRouteErrorCode.toUpperCase();
+defaultPublicManifestUnaryRouteErrorCode.toUpperCase();
 const publicManifestUnaryRouteErrorDetails: RpcManifestUnaryRouteErrorDetails<
   typeof manifest,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
+const defaultPublicManifestUnaryRouteErrorDetails: RpcManifestUnaryRouteErrorDetails<
+  typeof manifest
+> = publicManifestUnaryRouteErrorDetails;
 publicManifestUnaryRouteErrorDetails.message.toUpperCase();
+defaultPublicManifestUnaryRouteErrorDetails.valueOf();
 const publicManifestStreamRouteErrorCode: RpcManifestStreamRouteErrorCode<
   typeof manifest,
   'users.watch'
 > = 'VALIDATION_ERROR';
+const defaultPublicManifestStreamRouteErrorCode: RpcManifestStreamRouteErrorCode<
+  typeof manifest
+> = publicManifestStreamRouteErrorCode;
 publicManifestStreamRouteErrorCode.toUpperCase();
+defaultPublicManifestStreamRouteErrorCode.toUpperCase();
 const publicManifestStreamRouteErrorDetails: RpcManifestStreamRouteErrorDetails<
   typeof manifest,
   'users.watch',
   'VALIDATION_ERROR'
 > = { issue: 'input' };
+const defaultPublicManifestStreamRouteErrorDetails: RpcManifestStreamRouteErrorDetails<
+  typeof manifest
+> = publicManifestStreamRouteErrorDetails;
 publicManifestStreamRouteErrorDetails.valueOf();
+defaultPublicManifestStreamRouteErrorDetails.valueOf();
 const publicManifestRouteInput: RpcManifestRouteInput<
   typeof manifest,
   'users.get'
@@ -4315,18 +4403,29 @@ const publicManifestRouteError: RpcManifestRouteError<
   status: 404,
   details: { message: 'Missing' },
 };
+const defaultPublicManifestRouteError: RpcManifestRouteError<typeof manifest> =
+  publicManifestRouteError;
 publicManifestRouteError.code.toUpperCase();
+defaultPublicManifestRouteError.code.toUpperCase();
 const publicManifestRouteErrorCode: RpcManifestRouteErrorCode<
   typeof manifest,
   'users.get'
 > = 'NOT_FOUND';
+const defaultPublicManifestRouteErrorCode: RpcManifestRouteErrorCode<
+  typeof manifest
+> = publicManifestRouteErrorCode;
 publicManifestRouteErrorCode.toUpperCase();
+defaultPublicManifestRouteErrorCode.toUpperCase();
 const publicManifestRouteErrorDetails: RpcManifestRouteErrorDetails<
   typeof manifest,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
+const defaultPublicManifestRouteErrorDetails: RpcManifestRouteErrorDetails<
+  typeof manifest
+> = publicManifestRouteErrorDetails;
 publicManifestRouteErrorDetails.message.toUpperCase();
+defaultPublicManifestRouteErrorDetails.valueOf();
 const publicManifestUnaryRouteId: RpcManifestUnaryRouteId<typeof manifest> =
   'users.authenticated';
 publicManifestUnaryRouteId.toUpperCase();
@@ -4338,6 +4437,10 @@ const publicManifestRouteStreamEvent: RpcManifestRouteStreamEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 publicManifestRouteStreamEvent.userId.toUpperCase();
+const defaultPublicManifestRouteStreamEvent: RpcManifestRouteStreamEvent<
+  typeof manifest
+> = publicManifestRouteStreamEvent;
+defaultPublicManifestRouteStreamEvent.userId.toUpperCase();
 const rpcSubpathManifestRouteStreamEvent: RpcSubpathManifestRouteStreamEvent<
   typeof manifest,
   'users.watch'

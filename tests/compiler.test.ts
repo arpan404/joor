@@ -1026,29 +1026,54 @@ nativeRouteRequiresResponseHeaders.valueOf();
 const nativeUnaryRouteRequiresResponseHeaders: NativeUnaryRouteRequiresResponseHeaders<'users.get'> = true;
 nativeUnaryRouteRequiresResponseHeaders.valueOf();
 const nativeRouteErrorCode: NativeRouteErrorCode<'users.get'> = 'NOT_FOUND';
+const defaultNativeRouteErrorCode: NativeRouteErrorCode = nativeRouteErrorCode;
 nativeRouteErrorCode.toUpperCase();
+defaultNativeRouteErrorCode.toUpperCase();
 const nativeUnaryRouteErrorCode: NativeUnaryRouteErrorCode<'users.get'> = 'NOT_FOUND';
+const defaultNativeUnaryRouteErrorCode: NativeUnaryRouteErrorCode =
+  nativeUnaryRouteErrorCode;
 nativeUnaryRouteErrorCode.toUpperCase();
+defaultNativeUnaryRouteErrorCode.toUpperCase();
 const nativeStreamRouteErrorCode: NativeStreamRouteErrorCode<'users.watch'> = 'VALIDATION_ERROR';
+const defaultNativeStreamRouteErrorCode: NativeStreamRouteErrorCode =
+  nativeStreamRouteErrorCode;
 nativeStreamRouteErrorCode.toUpperCase();
+defaultNativeStreamRouteErrorCode.toUpperCase();
 const nativeRouteErrorDetails: NativeRouteErrorDetails<'users.get', 'NOT_FOUND'> = {
   message: 'Missing',
 };
+const defaultNativeRouteErrorDetails: NativeRouteErrorDetails =
+  nativeRouteErrorDetails;
 nativeRouteErrorDetails.message.toUpperCase();
+defaultNativeRouteErrorDetails.valueOf();
 const nativeUnaryRouteErrorDetails: NativeUnaryRouteErrorDetails<'users.get', 'NOT_FOUND'> = nativeRouteErrorDetails;
+const defaultNativeUnaryRouteErrorDetails: NativeUnaryRouteErrorDetails =
+  nativeUnaryRouteErrorDetails;
 nativeUnaryRouteErrorDetails.message.toUpperCase();
+defaultNativeUnaryRouteErrorDetails.valueOf();
 const nativeStreamRouteErrorDetails: NativeStreamRouteErrorDetails<'users.watch', 'VALIDATION_ERROR'> = { issue: 'input' };
+const defaultNativeStreamRouteErrorDetails: NativeStreamRouteErrorDetails =
+  nativeStreamRouteErrorDetails;
 nativeStreamRouteErrorDetails.valueOf();
+defaultNativeStreamRouteErrorDetails.valueOf();
 const nativeRouteStreamEvent: NativeRouteStreamEvent<'users.watch'> = {
   type: 'user.updated',
   userId: '1',
 };
+const defaultNativeRouteStreamEvent: NativeRouteStreamEvent =
+  nativeRouteStreamEvent;
 nativeRouteStreamEvent.userId.toUpperCase();
+defaultNativeRouteStreamEvent.userId.toUpperCase();
 const nativeStreamRouteEvent: NativeStreamRouteEvent<'users.watch'> =
   nativeRouteStreamEvent;
 const nativeStreamEvent: NativeStreamEvent<'users.watch'> =
   nativeStreamRouteEvent;
+const defaultNativeStreamRouteEvent: NativeStreamRouteEvent =
+  nativeStreamRouteEvent;
+const defaultNativeStreamEvent: NativeStreamEvent = nativeStreamEvent;
 nativeStreamEvent.userId.toUpperCase();
+defaultNativeStreamRouteEvent.userId.toUpperCase();
+defaultNativeStreamEvent.userId.toUpperCase();
 
 client.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   const exact: RouteResult<'users.get'> = result;
@@ -1216,26 +1241,45 @@ usersWatchHasResponseHeaders.valueOf();
 const usersWatchStreamHasResponseHeaders: StreamRouteHasResponseHeaders<'users.watch'> = false;
 usersWatchStreamHasResponseHeaders.valueOf();
 const usersGetErrorCode: RouteErrorCode<'users.get'> = 'NOT_FOUND';
+const defaultRouteErrorCode: RouteErrorCode = usersGetErrorCode;
 usersGetErrorCode.toUpperCase();
+defaultRouteErrorCode.toUpperCase();
 const usersGetUnaryErrorCode: UnaryRouteErrorCode<'users.get'> = 'NOT_FOUND';
+const defaultUnaryRouteErrorCode: UnaryRouteErrorCode = usersGetUnaryErrorCode;
 usersGetUnaryErrorCode.toUpperCase();
+defaultUnaryRouteErrorCode.toUpperCase();
 const usersWatchStreamErrorCode: StreamRouteErrorCode<'users.watch'> = 'VALIDATION_ERROR';
+const defaultStreamRouteErrorCode: StreamRouteErrorCode =
+  usersWatchStreamErrorCode;
 usersWatchStreamErrorCode.toUpperCase();
+defaultStreamRouteErrorCode.toUpperCase();
 const usersGetErrorDetails: RouteErrorDetails<'users.get', 'NOT_FOUND'> = {
   message: 'Missing',
 };
+const defaultRouteErrorDetails: RouteErrorDetails = usersGetErrorDetails;
 usersGetErrorDetails.message.toUpperCase();
+defaultRouteErrorDetails.valueOf();
 const usersGetUnaryErrorDetails: UnaryRouteErrorDetails<'users.get', 'NOT_FOUND'> = usersGetErrorDetails;
+const defaultUnaryRouteErrorDetails: UnaryRouteErrorDetails =
+  usersGetUnaryErrorDetails;
 usersGetUnaryErrorDetails.message.toUpperCase();
+defaultUnaryRouteErrorDetails.valueOf();
 const usersWatchStreamErrorDetails: StreamRouteErrorDetails<'users.watch', 'VALIDATION_ERROR'> = { issue: 'input' };
+const defaultStreamRouteErrorDetails: StreamRouteErrorDetails =
+  usersWatchStreamErrorDetails;
 usersWatchStreamErrorDetails.valueOf();
+defaultStreamRouteErrorDetails.valueOf();
 const routeStreamEvent: RouteStreamEvent<'users.watch'> = {
   type: 'user.updated',
   userId: '1',
 };
+const defaultRouteStreamEvent: RouteStreamEvent = routeStreamEvent;
 routeStreamEvent.userId.toUpperCase();
+defaultRouteStreamEvent.userId.toUpperCase();
 const streamRouteEvent: StreamRouteEvent<'users.watch'> = routeStreamEvent;
+const defaultStreamRouteEvent: StreamRouteEvent = streamRouteEvent;
 streamRouteEvent.userId.toUpperCase();
+defaultStreamRouteEvent.userId.toUpperCase();
 client.tenants.current({ ok: true }, { headers: tenantHeaders }).then((result) => {
   const exact: RouteResult<'tenants.current'> = result;
   exact.id.toUpperCase();
@@ -2121,5 +2165,5 @@ invalidNativeBatch;
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
-  });
+  }, 10_000);
 });
