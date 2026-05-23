@@ -6,6 +6,7 @@ import {
   defineManifest,
   defineProcedure,
   resolvePluginServices,
+  createAwsLambdaHandler,
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
@@ -49,6 +50,19 @@ import {
   transportResultToResponse,
   validate,
   type ArrayChain,
+  type AwsLambdaHandler,
+  type AwsLambdaHandlerOptionsArgs,
+  type AwsLambdaHandlerOptionsFor,
+  type AwsLambdaHttpEventV2,
+  type AwsLambdaHttpResponseV2,
+  type AwsLambdaRouteStreamHandlerOptionsArgs,
+  type AwsLambdaRouteStreamHandlerOptionsFor,
+  type AwsLambdaRouteUnaryHandlerOptionsArgs,
+  type AwsLambdaRouteUnaryHandlerOptionsFor,
+  type AwsLambdaStreamRouteHandlerOptionsArgs,
+  type AwsLambdaStreamRouteHandlerOptionsFor,
+  type AwsLambdaUnaryRouteHandlerOptionsArgs,
+  type AwsLambdaUnaryRouteHandlerOptionsFor,
   type BatchResults,
   type BunFetchOptionsArgs,
   type BunFetchOptionsFor,
@@ -1062,6 +1076,7 @@ import type {
   CompiledUnaryRouteTransportBodyResultFor,
 } from '../src/runtime/compiled.js';
 import {
+  createAwsLambdaHandler as createRuntimeSubpathAwsLambdaHandler,
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
@@ -1078,6 +1093,8 @@ import {
   isRpcEnvelopeArray as isRuntimeSubpathRpcEnvelopeArray,
   isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
+  type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
+  type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -1724,8 +1741,10 @@ const _wrongCompiledRateLimitId: 'users.list' = (
 type CompiledExecuteProcedureResult = Awaited<
   ReturnType<typeof executeCompiledProcedure<typeof procedure, 'users.get'>>
 >;
-const compiledExecuteProcedureEnvelope =
-  {} as Exclude<CompiledExecuteProcedureResult, Response>;
+const compiledExecuteProcedureEnvelope = {} as Exclude<
+  CompiledExecuteProcedureResult,
+  Response
+>;
 const compiledExecuteProcedureId: 'users.get' =
   compiledExecuteProcedureEnvelope.id;
 compiledExecuteProcedureId.toUpperCase();
@@ -1768,8 +1787,7 @@ if (
   !isSerializedJsonEnvelope(typedTransportBodyResult) &&
   !Array.isArray(typedTransportBodyResult)
 ) {
-  const typedTransportBodyResultId: 'users.get' =
-    typedTransportBodyResult.id;
+  const typedTransportBodyResultId: 'users.get' = typedTransportBodyResult.id;
   typedTransportBodyResultId.toUpperCase();
   // @ts-expect-error typed transport body results preserve the route id literal.
   const _wrongTypedTransportBodyResultId: 'users.list' =
@@ -1785,19 +1803,19 @@ if (
   !isSerializedJsonEnvelope(typedRootCompiledBodyResult) &&
   !Array.isArray(typedRootCompiledBodyResult)
 ) {
-  const typedCompiledBodyResultId: 'users.get' =
-    typedRootCompiledBodyResult.id;
+  const typedCompiledBodyResultId: 'users.get' = typedRootCompiledBodyResult.id;
   typedCompiledBodyResultId.toUpperCase();
   // @ts-expect-error typed compiled body results preserve the route id literal.
   const _wrongTypedCompiledBodyResultId: 'users.list' =
     typedRootCompiledBodyResult.id;
 }
-type RuntimeBodyResultRouteId<T> = Exclude<
-  T,
-  Response | SerializedJsonEnvelope | readonly RpcEnvelope[]
-> extends { id: infer TId }
-  ? TId
-  : never;
+type RuntimeBodyResultRouteId<T> =
+  Exclude<
+    T,
+    Response | SerializedJsonEnvelope | readonly RpcEnvelope[]
+  > extends { id: infer TId }
+    ? TId
+    : never;
 const getTypedTransportEnvelopeId = <TEnvelope extends RpcEnvelope>(
   result: TransportBodyResult<TEnvelope>
 ): TEnvelope['id'] | undefined => {
@@ -2408,11 +2426,7 @@ const clientRequestOptions: ClientRequestOptions<typeof procedure> = {
   request: clientRequestInit,
 };
 clientRequestOptions.headers['x-tenant-id'].toUpperCase();
-client.call<typeof procedure>(
-  'users.get',
-  { id: '1' },
-  clientRequestOptions
-);
+client.call<typeof procedure>('users.get', { id: '1' }, clientRequestOptions);
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
 
@@ -2564,9 +2578,7 @@ const routeUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<
   Routes,
   'users.get'
 > = true;
-const defaultRouteUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<
-  Routes
-> = false;
+const defaultRouteUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<Routes> = false;
 routeUnaryRequiresResponseHeaders.valueOf();
 defaultRouteUnaryRequiresResponseHeaders.valueOf();
 const routeStreamHasResponseHeaders: RpcStreamRouteHasResponseHeaders<
@@ -2620,9 +2632,7 @@ const routeRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
   Routes,
   'users.get'
 > = true;
-const defaultRouteRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
-  Routes
-> = false;
+const defaultRouteRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<Routes> = false;
 routeRequiresResponseHeaders.valueOf();
 defaultRouteRequiresResponseHeaders.valueOf();
 const authenticatedRouteHasHeaders: RpcRouteHasHeaders<
@@ -3631,8 +3641,9 @@ const manifestRouteErrorCode: JoorManifestRouteErrorCode<
   typeof manifest,
   'users.get'
 > = 'NOT_FOUND';
-const defaultManifestRouteErrorCode: JoorManifestRouteErrorCode<typeof manifest> =
-  manifestRouteErrorCode;
+const defaultManifestRouteErrorCode: JoorManifestRouteErrorCode<
+  typeof manifest
+> = manifestRouteErrorCode;
 manifestRouteErrorCode.toUpperCase();
 defaultManifestRouteErrorCode.toUpperCase();
 const manifestRouteFrameworkErrorCode: JoorManifestRouteErrorCode<
@@ -3680,7 +3691,10 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
 const defaultManifestRouteEnvelope: JoorManifestRouteEnvelope<typeof manifest> =
   manifestRouteEnvelope;
 manifestRouteEnvelope.id.toUpperCase();
-if (defaultManifestRouteEnvelope.id === 'users.get' && defaultManifestRouteEnvelope.ok) {
+if (
+  defaultManifestRouteEnvelope.id === 'users.get' &&
+  defaultManifestRouteEnvelope.ok
+) {
   defaultManifestRouteEnvelope.data.name.toUpperCase();
   defaultManifestRouteEnvelope.headers['cache-control'].toUpperCase();
 }
@@ -3807,9 +3821,7 @@ const defaultManifestStreamRouteRequestOptions: JoorManifestStreamRouteRequestOp
 manifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
 defaultManifestRouteRequestOptions.headers?.['x-tenant-id']?.toUpperCase();
 manifestUnaryRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
-defaultManifestUnaryRouteRequestOptions.headers?.[
-  'x-tenant-id'
-]?.toUpperCase();
+defaultManifestUnaryRouteRequestOptions.headers?.['x-tenant-id']?.toUpperCase();
 defaultManifestStreamRouteRequestOptions.valueOf();
 const manifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest,
@@ -3847,8 +3859,9 @@ const defaultOptionalManifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest
 > = optionalManifestRouteClientArgs;
 defaultOptionalManifestRouteClientArgs[0].ok.valueOf();
-const _missingDefaultManifestRouteClientArgs:
-  JoorManifestRouteClientArgs<typeof manifest> =
+const _missingDefaultManifestRouteClientArgs: JoorManifestRouteClientArgs<
+  typeof manifest
+> =
   // @ts-expect-error default manifest route client args preserve route-specific required headers.
   [{ id: '1' }];
 _missingDefaultManifestRouteClientArgs[0].valueOf();
@@ -3956,9 +3969,9 @@ if (defaultManifestProtocolRequestAlias.id === 'users.get') {
   defaultManifestProtocolRequestAlias.input.id.toUpperCase();
 }
 // @ts-expect-error default manifest protocol requests preserve id/input correlation.
-const _wrongDefaultManifestProtocolRequest:
-  JoorManifestRouteProtocolRequest<typeof manifest> =
-  { id: 'users.get', input: { userId: '1' } };
+const _wrongDefaultManifestProtocolRequest: JoorManifestRouteProtocolRequest<
+  typeof manifest
+> = { id: 'users.get', input: { userId: '1' } };
 _wrongDefaultManifestProtocolRequest.id.toUpperCase();
 const _extraManifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
@@ -4000,10 +4013,14 @@ const manifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequest<
   'users.get'
 > = manifestUnaryProtocolRequest;
 manifestUnaryRouteProtocolRequest.input.id.toUpperCase();
-const manifestRouteUnaryBody = manifestUnaryProtocolRequest satisfies
-  JoorManifestRouteUnaryBody<typeof manifest>;
-const manifestUnaryRouteBody = manifestUnaryRouteProtocolRequest satisfies
-  JoorManifestUnaryRouteBody<typeof manifest>;
+const manifestRouteUnaryBody =
+  manifestUnaryProtocolRequest satisfies JoorManifestRouteUnaryBody<
+    typeof manifest
+  >;
+const manifestUnaryRouteBody =
+  manifestUnaryRouteProtocolRequest satisfies JoorManifestUnaryRouteBody<
+    typeof manifest
+  >;
 manifestRouteUnaryBody.input.id.toUpperCase();
 manifestUnaryRouteBody.input.id.toUpperCase();
 const manifestUnaryProtocolRequestUnion: JoorManifestRouteUnaryProtocolRequestUnion<
@@ -4075,10 +4092,14 @@ manifestStreamRequest.input.userId.toUpperCase();
 defaultManifestStreamRequest.input.userId.toUpperCase();
 manifestStreamRouteRequest.input.userId.toUpperCase();
 manifestSubpathStreamRouteRequest.input.userId.toUpperCase();
-const manifestRouteStreamBody = manifestStreamProtocolRequest satisfies
-  JoorManifestRouteStreamBody<typeof manifest>;
-const manifestStreamRouteBody = manifestStreamRouteProtocolRequest satisfies
-  JoorManifestStreamRouteBody<typeof manifest>;
+const manifestRouteStreamBody =
+  manifestStreamProtocolRequest satisfies JoorManifestRouteStreamBody<
+    typeof manifest
+  >;
+const manifestStreamRouteBody =
+  manifestStreamRouteProtocolRequest satisfies JoorManifestStreamRouteBody<
+    typeof manifest
+  >;
 manifestRouteStreamBody.input.userId.toUpperCase();
 manifestStreamRouteBody.input.userId.toUpperCase();
 const manifestStreamProtocolRequestUnion: JoorManifestRouteStreamProtocolRequestUnion<
@@ -4183,11 +4204,16 @@ const manifestStreamRouteBodyResultFor: JoorManifestStreamRouteBodyResultFor<
   typeof manifestStreamRouteBody
 > = manifestStreamRouteBodyResult;
 // @ts-expect-error route-unary body result helpers reject stream bodies.
-const _wrongManifestRouteUnaryBodyResultFor: JoorManifestRouteUnaryBodyResultFor<typeof manifest, typeof manifestRouteStreamBody> =
-  manifestRouteEnvelope;
-// @ts-expect-error route-stream body result helpers reject unary bodies.
-const _wrongManifestRouteStreamBodyResultFor: JoorManifestRouteStreamBodyResultFor<typeof manifest, typeof manifestRouteUnaryBody> =
-  manifestRouteStreamBodyResult;
+const _wrongManifestRouteUnaryBodyResultFor: JoorManifestRouteUnaryBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error route-unary body result helpers reject stream bodies.
+  typeof manifestRouteStreamBody
+> = manifestRouteEnvelope;
+const _wrongManifestRouteStreamBodyResultFor: JoorManifestRouteStreamBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error route-stream body result helpers reject unary bodies.
+  typeof manifestRouteUnaryBody
+> = manifestRouteStreamBodyResult;
 manifestRouteUnaryBodyResult.valueOf();
 manifestUnaryRouteBodyResult.valueOf();
 manifestRouteStreamBodyResultFor.headers.get('content-type');
@@ -4693,8 +4719,9 @@ const _missingPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
   'users.get'
 > = [{ id: '1' }];
 _missingPublicManifestRouteClientArgs[0].id.toUpperCase();
-const _missingDefaultPublicManifestRouteClientArgs:
-  RpcManifestRouteClientArgs<typeof manifest> =
+const _missingDefaultPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest
+> =
   // @ts-expect-error default public manifest route client args preserve route-specific required headers.
   [{ id: '1' }];
 _missingDefaultPublicManifestRouteClientArgs[0].valueOf();
@@ -4801,9 +4828,9 @@ if (defaultPublicManifestProtocolRequest.id === 'users.get') {
 }
 publicManifestProtocolRequestAlias.input.id.toUpperCase();
 // @ts-expect-error default public manifest protocol requests preserve id/input correlation.
-const _wrongDefaultPublicManifestProtocolRequest:
-  RpcManifestRouteProtocolRequest<typeof manifest> =
-  { id: 'users.get', input: { userId: '1' } };
+const _wrongDefaultPublicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
+  typeof manifest
+> = { id: 'users.get', input: { userId: '1' } };
 _wrongDefaultPublicManifestProtocolRequest.id.toUpperCase();
 const publicManifestProtocolRequestUnion: RpcManifestRouteProtocolRequestUnion<
   typeof manifest
@@ -4817,8 +4844,9 @@ const publicManifestRouteRequest: RpcManifestRouteRequest<
   typeof manifest,
   'users.get'
 > = manifestRouteRequest;
-const defaultPublicManifestRouteRequest: RpcManifestRouteRequest<typeof manifest> =
-  publicManifestRouteRequest;
+const defaultPublicManifestRouteRequest: RpcManifestRouteRequest<
+  typeof manifest
+> = publicManifestRouteRequest;
 publicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
 if (defaultPublicManifestRouteRequest.id === 'users.get') {
   defaultPublicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
@@ -4949,18 +4977,24 @@ publicManifestStreamRequestUnion.input.userId.toUpperCase();
 publicManifestStreamRouteRequestUnion.input.userId.toUpperCase();
 const publicManifestBody: RpcManifestBody<typeof manifest> =
   publicManifestProtocolRequest;
-const publicManifestRouteUnaryBody = publicManifestUnaryProtocolRequest satisfies
-  RpcManifestRouteUnaryBody<typeof manifest>;
+const publicManifestRouteUnaryBody =
+  publicManifestUnaryProtocolRequest satisfies RpcManifestRouteUnaryBody<
+    typeof manifest
+  >;
 const publicManifestUnaryRouteBody =
-  publicManifestUnaryRouteProtocolRequest satisfies
-    RpcManifestUnaryRouteBody<typeof manifest>;
+  publicManifestUnaryRouteProtocolRequest satisfies RpcManifestUnaryRouteBody<
+    typeof manifest
+  >;
 publicManifestRouteUnaryBody.input.id.toUpperCase();
 publicManifestUnaryRouteBody.input.id.toUpperCase();
-const publicManifestRouteStreamBody = publicManifestStreamProtocolRequest satisfies
-  RpcManifestRouteStreamBody<typeof manifest>;
+const publicManifestRouteStreamBody =
+  publicManifestStreamProtocolRequest satisfies RpcManifestRouteStreamBody<
+    typeof manifest
+  >;
 const publicManifestStreamRouteBody =
-  publicManifestStreamRouteProtocolRequest satisfies
-    RpcManifestStreamRouteBody<typeof manifest>;
+  publicManifestStreamRouteProtocolRequest satisfies RpcManifestStreamRouteBody<
+    typeof manifest
+  >;
 publicManifestRouteStreamBody.input.userId.toUpperCase();
 publicManifestStreamRouteBody.input.userId.toUpperCase();
 const publicManifestRouteUnaryBodyResult: RpcManifestRouteUnaryBodyResult<
@@ -4992,11 +5026,16 @@ const publicManifestStreamRouteBodyResultFor: RpcManifestStreamRouteBodyResultFo
   typeof publicManifestStreamRouteBody
 > = publicManifestStreamRouteBodyResult;
 // @ts-expect-error RpcManifest route-unary body result helpers reject stream bodies.
-const _wrongPublicManifestRouteUnaryBodyResultFor: RpcManifestRouteUnaryBodyResultFor<typeof manifest, typeof publicManifestRouteStreamBody> =
-  manifestRouteEnvelope;
-// @ts-expect-error RpcManifest route-stream body result helpers reject unary bodies.
-const _wrongPublicManifestRouteStreamBodyResultFor: RpcManifestRouteStreamBodyResultFor<typeof manifest, typeof publicManifestRouteUnaryBody> =
-  publicManifestRouteStreamBodyResult;
+const _wrongPublicManifestRouteUnaryBodyResultFor: RpcManifestRouteUnaryBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error RpcManifest route-unary body result helpers reject stream bodies.
+  typeof publicManifestRouteStreamBody
+> = manifestRouteEnvelope;
+const _wrongPublicManifestRouteStreamBodyResultFor: RpcManifestRouteStreamBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error RpcManifest route-stream body result helpers reject unary bodies.
+  typeof publicManifestRouteUnaryBody
+> = publicManifestRouteStreamBodyResult;
 publicManifestRouteUnaryBodyResult.valueOf();
 publicManifestUnaryRouteBodyResult.valueOf();
 publicManifestRouteStreamBodyResultFor.headers.get('content-type');
@@ -5055,8 +5094,7 @@ const defaultPublicManifestUnaryBatchResults: RpcManifestUnaryRouteBatchResults<
   typeof manifest
 > = publicManifestUnaryRouteBatchResults;
 publicManifestUnaryRouteBatchResults[0].id.toUpperCase();
-const defaultPublicManifestBatchResult =
-  defaultPublicManifestBatchResults[0];
+const defaultPublicManifestBatchResult = defaultPublicManifestBatchResults[0];
 if (defaultPublicManifestBatchResult) {
   defaultPublicManifestBatchResult.id.toUpperCase();
 }
@@ -5658,8 +5696,9 @@ const definedUnaryRouteHandlerOptionsFactory: DefineUnaryRouteHandlerOptions<
 const definedStreamRouteHandlerOptionsFactory: DefineStreamRouteHandlerOptions<
   typeof manifest
 > = definedRouteStreamHandlerOptionsFactory;
-const definedRouteUnaryHandlerOptions =
-  definedRouteUnaryHandlerOptionsFactory(manifestUnaryRouteHandlerOptions);
+const definedRouteUnaryHandlerOptions = definedRouteUnaryHandlerOptionsFactory(
+  manifestUnaryRouteHandlerOptions
+);
 const definedRouteStreamHandlerOptions =
   definedRouteStreamHandlerOptionsFactory(manifestStreamRouteHandlerOptions);
 const definedUnaryRouteHandlerOptions = definedUnaryRouteHandlerOptionsFactory(
@@ -7263,7 +7302,10 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
 const bunTransportRequestHandler: BunTransportRequestHandler =
   createBunTransportRequestHandler(routeTypedBunTransportHandler);
 const bunTransportRequestHandlerWithPath: BunTransportRequestHandler =
-  createBunTransportRequestHandlerWithPath(routeTypedBunTransportHandler, '/rpc');
+  createBunTransportRequestHandlerWithPath(
+    routeTypedBunTransportHandler,
+    '/rpc'
+  );
 const runtimeSubpathBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler =
   bunTransportRequestHandler;
 bunTransportRequestHandler(new Request('https://example.com/rpc'));
@@ -8622,6 +8664,80 @@ const nextHandler: NextHandler = createNextHandler(
 );
 const runtimeSubpathNextHandler: RuntimeSubpathNextHandler =
   createRuntimeSubpathNextHandler(manifest, runtimeSubpathNextHandlerOptions);
+const awsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const exactAwsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
+const runtimeSubpathAwsLambdaHandlerOptions: RuntimeSubpathAwsLambdaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptions;
+exactAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const awsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptions;
+const awsLambdaUnaryRouteHandlerOptions: AwsLambdaUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRouteUnaryHandlerOptions;
+awsLambdaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const awsLambdaRouteStreamHandlerOptions: AwsLambdaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptions;
+const awsLambdaStreamRouteHandlerOptions: AwsLambdaStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRouteStreamHandlerOptions;
+awsLambdaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const awsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [awsLambdaHandlerOptions];
+const awsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptionsArgs;
+const awsLambdaUnaryRouteHandlerOptionsArgs: AwsLambdaUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRouteUnaryHandlerOptionsArgs;
+awsLambdaUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const awsLambdaRouteStreamHandlerOptionsArgs: AwsLambdaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptionsArgs;
+const awsLambdaStreamRouteHandlerOptionsArgs: AwsLambdaStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRouteStreamHandlerOptionsArgs;
+awsLambdaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
+  manifest,
+  handlerOptions
+);
+const runtimeSubpathAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathAwsLambdaHandler(manifest, handlerOptions);
+const awsLambdaEvent: AwsLambdaHttpEventV2 = {
+  rawPath: '/rpc',
+  headers: { 'content-type': 'application/json' },
+  body: '{}',
+  requestContext: { http: { method: 'POST' } },
+};
+awsLambdaHandler(awsLambdaEvent).then((response) => {
+  const typedResponse: AwsLambdaHttpResponseV2 = response;
+  typedResponse.statusCode.toFixed();
+});
+runtimeSubpathAwsLambdaHandler(awsLambdaEvent);
+// @ts-expect-error service-dependent manifests require matching AWS Lambda adapter plugins.
+createAwsLambdaHandler(manifest);
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
   nextRouteHandler;
@@ -8904,7 +9020,10 @@ createRuntimeSubpathCloudflareWorker(
   runtimeSubpathCloudflareWorkerOptions
 );
 createCloudflareFetch(manifest, cloudflareFetchOptions);
-createRuntimeSubpathCloudflareFetch(manifest, runtimeSubpathCloudflareFetchOptions);
+createRuntimeSubpathCloudflareFetch(
+  manifest,
+  runtimeSubpathCloudflareFetchOptions
+);
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 directCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathDirectCloudflareFetch(new Request('https://example.com/rpc'));
@@ -9594,7 +9713,10 @@ const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   return manifestRouteBodyResult;
 };
 createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
-createNodeTransportRequestHandlerWithPath(routeTypedNodeTransportHandler, '/rpc');
+createNodeTransportRequestHandlerWithPath(
+  routeTypedNodeTransportHandler,
+  '/rpc'
+);
 const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
@@ -10141,17 +10263,18 @@ const rpcSubpathStreamRequest: RpcSubpathRouteStreamRequest<
   Routes,
   'users.watch'
 > = streamOnlyRequest;
-const rpcSubpathProtocolRequest: RpcSubpathProtocolRequest<Routes, 'users.get'> =
-  routeProtocolRequest;
+const rpcSubpathProtocolRequest: RpcSubpathProtocolRequest<
+  Routes,
+  'users.get'
+> = routeProtocolRequest;
 const rpcSubpathProtocolRequestUnion: RpcSubpathProtocolRequestUnion<Routes> =
   protocolRequestUnionAlias;
 const rpcSubpathStreamProtocolRequest: RpcSubpathStreamProtocolRequest<
   Routes,
   'users.watch'
 > = streamProtocolRequestAlias;
-const rpcSubpathStreamProtocolRequestUnion: RpcSubpathStreamProtocolRequestUnion<
-  Routes
-> = streamProtocolRequestUnionAlias;
+const rpcSubpathStreamProtocolRequestUnion: RpcSubpathStreamProtocolRequestUnion<Routes> =
+  streamProtocolRequestUnionAlias;
 const rpcSubpathStreamRouteRequest: RpcSubpathStreamRouteRequest<
   Routes,
   'users.watch'
@@ -10191,9 +10314,8 @@ const rpcSubpathUnaryProtocolRequest: RpcSubpathUnaryProtocolRequest<
   Routes,
   'users.get'
 > = unaryProtocolRequestAlias;
-const rpcSubpathUnaryProtocolRequestUnion: RpcSubpathUnaryProtocolRequestUnion<
-  Routes
-> = unaryProtocolRequestUnionAlias;
+const rpcSubpathUnaryProtocolRequestUnion: RpcSubpathUnaryProtocolRequestUnion<Routes> =
+  unaryProtocolRequestUnionAlias;
 rpcSubpathUnaryProtocolRequest.input.id.toUpperCase();
 rpcSubpathUnaryProtocolRequestUnion.id.toUpperCase();
 const unaryRouteProtocolRequestUnionAlias: RpcUnaryRouteProtocolRequestUnion<Routes> =
@@ -10369,8 +10491,10 @@ const defaultNoHeaderRouteClientArgs: RpcRouteClientArgs<Routes> =
 routeClient.call('users.authenticated', ...noHeaderRouteClientArgs);
 routeClient.call('users.authenticated', ...defaultNoHeaderRouteClientArgs);
 defaultRouteClientArgs[0].id.toUpperCase();
-// @ts-expect-error default route client args preserve route-specific required headers.
-const _missingDefaultRouteClientArgs: RpcRouteClientArgs<Routes> = [{ id: '1' }];
+const _missingDefaultRouteClientArgs: RpcRouteClientArgs<Routes> = [
+  // @ts-expect-error default route client args preserve route-specific required headers.
+  { id: '1' },
+];
 _missingDefaultRouteClientArgs[0].valueOf();
 const _wrongRouteRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: {
@@ -10615,11 +10739,15 @@ const streamRouteBodyResultFor: RpcStreamRouteBodyResultFor<
   typeof streamRouteBodyAlias
 > = streamRouteBodyResult;
 // @ts-expect-error route-unary body result helpers reject route-stream bodies.
-const _wrongRouteUnaryBodyResultFor: RpcRouteUnaryBodyResultFor<Routes, typeof streamRouteBodyAlias> =
-  routeEnvelopeUnion;
+const _wrongRouteUnaryBodyResultFor: RpcRouteUnaryBodyResultFor<
+  Routes,
+  typeof streamRouteBodyAlias
+> = routeEnvelopeUnion;
 // @ts-expect-error route-stream body result helpers reject route-unary bodies.
-const _wrongRouteStreamBodyResultFor: RpcRouteStreamBodyResultFor<Routes, typeof unaryRouteBodyAlias> =
-  streamRouteBodyResult;
+const _wrongRouteStreamBodyResultFor: RpcRouteStreamBodyResultFor<
+  Routes,
+  typeof unaryRouteBodyAlias
+> = streamRouteBodyResult;
 unaryRouteBodyResult.valueOf();
 streamRouteBodyResultFor.headers.get('content-type');
 if (!(routeBodyResultFor instanceof Response)) {

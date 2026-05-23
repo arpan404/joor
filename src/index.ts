@@ -12,6 +12,7 @@ export {
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
 } from './rpc/dispatcher.js';
+export { createAwsLambdaHandler } from './runtime/aws-lambda.js';
 export {
   createBunFetch,
   createBunRpcRequestHandler,
@@ -666,6 +667,21 @@ export type {
   ProcedureResponseHeaderValues,
   ProcedureSuccess,
 } from './procedure/result.js';
+export type {
+  AwsLambdaHandler,
+  AwsLambdaHandlerOptionsArgs,
+  AwsLambdaHandlerOptionsFor,
+  AwsLambdaHttpEventV2,
+  AwsLambdaHttpResponseV2,
+  AwsLambdaRouteStreamHandlerOptionsArgs,
+  AwsLambdaRouteStreamHandlerOptionsFor,
+  AwsLambdaRouteUnaryHandlerOptionsArgs,
+  AwsLambdaRouteUnaryHandlerOptionsFor,
+  AwsLambdaStreamRouteHandlerOptionsArgs,
+  AwsLambdaStreamRouteHandlerOptionsFor,
+  AwsLambdaUnaryRouteHandlerOptionsArgs,
+  AwsLambdaUnaryRouteHandlerOptionsFor,
+} from './runtime/aws-lambda.js';
 export type {
   BunFetchOptionsArgs,
   BunFetchOptionsFor,

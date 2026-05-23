@@ -162,13 +162,10 @@ describe('client', () => {
         },
       }
     );
-    await client.batch(
-      [{ id: 'batch', input: { ok: true } }] as const,
-      {
-        headers: { 'x-batch': '1' },
-        request: { cache: 'no-store' },
-      }
-    );
+    await client.batch([{ id: 'batch', input: { ok: true } }] as const, {
+      headers: { 'x-batch': '1' },
+      request: { cache: 'no-store' },
+    });
     for await (const _event of client.stream<StreamTestProcedure>(
       'stream',
       { ok: true },
