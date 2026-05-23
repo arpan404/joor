@@ -1216,12 +1216,39 @@ const routeUnaryBodyResult: RouteUnaryBodyResult = unaryRouteBodyResult;
 const streamRouteBodyResult: StreamRouteBodyResult = new Response();
 const routeStreamBodyResult: RouteStreamBodyResult = streamRouteBodyResult;
 const routeBodyResultFor: RouteBodyResultFor<typeof protocolRequest> = routeBodyResult;
+const genericRouteBodyResult: RouteBodyResult<typeof protocolRequest> =
+  routeBodyResultFor;
+if (!(genericRouteBodyResult instanceof Response) && genericRouteBodyResult.ok) {
+  const genericRouteBodyResultId: 'users.get' = genericRouteBodyResult.id;
+  genericRouteBodyResultId.toUpperCase();
+  // @ts-expect-error generated route body result aliases preserve exact route ids.
+  const wrongGenericRouteBodyResultId: 'posts.list' =
+    genericRouteBodyResult.id;
+  wrongGenericRouteBodyResultId.toUpperCase();
+}
 const unaryRouteBodyResultFor: UnaryRouteBodyResultFor<typeof unaryRouteBody> =
   routeBodyResult;
+const genericUnaryRouteBodyResult: UnaryRouteBodyResult<typeof unaryRouteBody> =
+  unaryRouteBodyResultFor;
+if (
+  !(genericUnaryRouteBodyResult instanceof Response) &&
+  genericUnaryRouteBodyResult.ok
+) {
+  const genericUnaryRouteBodyResultId: 'users.get' =
+    genericUnaryRouteBodyResult.id;
+  genericUnaryRouteBodyResultId.toUpperCase();
+  // @ts-expect-error generated unary route body result aliases preserve exact route ids.
+  const wrongGenericUnaryRouteBodyResultId: 'posts.list' =
+    genericUnaryRouteBodyResult.id;
+  wrongGenericUnaryRouteBodyResultId.toUpperCase();
+}
 const routeUnaryBodyResultFor: RouteUnaryBodyResultFor<typeof routeUnaryBody> =
   unaryRouteBodyResultFor;
 const streamRouteBodyResultFor: StreamRouteBodyResultFor<typeof streamRouteBody> =
   routeStreamBodyResult;
+const genericStreamRouteBodyResult: StreamRouteBodyResult<typeof streamRouteBody> =
+  streamRouteBodyResultFor;
+genericStreamRouteBodyResult.headers.get('content-type');
 const routeStreamBodyResultFor: RouteStreamBodyResultFor<typeof routeStreamBody> =
   streamRouteBodyResultFor;
 const routeEnvelope: RouteEnvelope<'users.get'> = routeBodyResult;

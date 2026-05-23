@@ -2566,11 +2566,11 @@ export type RouteUnaryBody =
 export type UnaryRouteBody = RouteUnaryBody;
 export type RouteStreamBody = RouteStreamProtocolRequestUnion;
 export type StreamRouteBody = RouteStreamBody;
-export type RouteBodyResult = JoorManifestRouteBodyResult<Manifest>;
-export type RouteUnaryBodyResult = JoorManifestRouteUnaryBodyResult<Manifest>;
-export type UnaryRouteBodyResult = RouteUnaryBodyResult;
-export type RouteStreamBodyResult = JoorManifestRouteStreamBodyResult<Manifest>;
-export type StreamRouteBodyResult = RouteStreamBodyResult;
+export type RouteBodyResult<TBody extends RouteBody = RouteBody> = JoorManifestRouteBodyResultFor<Manifest, TBody>;
+export type RouteUnaryBodyResult<TBody extends RouteUnaryBody = RouteUnaryBody> = JoorManifestRouteUnaryBodyResultFor<Manifest, TBody>;
+export type UnaryRouteBodyResult<TBody extends RouteUnaryBody = RouteUnaryBody> = RouteUnaryBodyResult<TBody>;
+export type RouteStreamBodyResult<TBody extends RouteStreamBody = RouteStreamBody> = JoorManifestRouteStreamBodyResultFor<Manifest, TBody>;
+export type StreamRouteBodyResult<TBody extends RouteStreamBody = RouteStreamBody> = RouteStreamBodyResult<TBody>;
 export type RouteBodyResultFor<TBody extends RouteBody> = JoorManifestRouteBodyResultFor<Manifest, TBody>;
 export type RouteUnaryBodyResultFor<TBody extends RouteUnaryBody> = JoorManifestRouteUnaryBodyResultFor<Manifest, TBody>;
 export type UnaryRouteBodyResultFor<TBody extends RouteUnaryBody> = RouteUnaryBodyResultFor<TBody>;
