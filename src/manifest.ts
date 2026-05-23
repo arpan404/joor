@@ -653,12 +653,12 @@ export type JoorManifestUnaryRouteBatchResults<
 
 export type JoorManifestRouteStreamEvent<
   TManifest,
-  TId extends JoorManifestStreamRouteId<TManifest>,
+  TId extends JoorManifestRouteStreamId<TManifest>,
 > = RpcRouteStreamEvent<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestStreamRouteEvent<
   TManifest,
-  TId extends JoorManifestStreamRouteId<TManifest>,
+  TId extends JoorManifestRouteStreamId<TManifest>,
 > = JoorManifestRouteStreamEvent<TManifest, TId>;
 
 export type JoorManifestRouteProtocolRequest<
