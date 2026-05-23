@@ -60,6 +60,10 @@
       "types": "./dist/runtime/index.d.ts",
       "import": "./dist/runtime/index.js"
     },
+    "./runtime/aws-lambda": {
+      "types": "./dist/runtime/aws-lambda.d.ts",
+      "import": "./dist/runtime/aws-lambda.js"
+    },
     "./runtime/fetch": {
       "types": "./dist/runtime/fetch.d.ts",
       "import": "./dist/runtime/fetch.js"
