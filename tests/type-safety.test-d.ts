@@ -6487,21 +6487,29 @@ const rpcPreflight = createRpcRequestPreflight(handlerOptions);
 rpcPreflight(createFetchRequestSourceForTypes());
 const rpcHandler = createRpcHandler(manifest, handlerOptions);
 const typedRpcHandler: RpcRequestHandler = rpcHandler;
+const syncRpcHandler: RpcRequestHandler = () => new Response();
 const rpcSubpathHandler = createRpcSubpathHandler(manifest, handlerOptions);
 const typedRpcSubpathHandler: RpcSubpathRequestHandler = rpcSubpathHandler;
+const syncRpcSubpathHandler: RpcSubpathRequestHandler = syncRpcHandler;
 rpcHandler(new Request('https://example.com/rpc'));
 typedRpcHandler(new Request('https://example.com/rpc'));
+syncRpcHandler(new Request('https://example.com/rpc'));
 typedRpcSubpathHandler(new Request('https://example.com/rpc'));
+syncRpcSubpathHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching handler plugins.
 createRpcHandler(manifest);
 const rpcBodyHandler = createRpcBodyHandler(manifest, handlerOptions);
 const typedRpcBodyHandler: RpcBodyHandler<typeof manifest> = rpcBodyHandler;
+const syncRpcBodyHandler: RpcBodyHandler<typeof manifest> = () =>
+  new Response();
 const rpcSubpathBodyHandler = createRpcSubpathBodyHandler(
   manifest,
   handlerOptions
 );
 const typedRpcSubpathBodyHandler: RpcSubpathBodyHandler<typeof manifest> =
   rpcSubpathBodyHandler;
+const syncRpcSubpathBodyHandler: RpcSubpathBodyHandler<typeof manifest> =
+  syncRpcBodyHandler;
 // @ts-expect-error service-dependent manifests require matching body handler plugins.
 createRpcBodyHandler(manifest);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
@@ -6509,7 +6517,12 @@ rpcBodyHandler(new Request('https://example.com/rpc'), {
   input: { id: '1' },
 });
 typedRpcBodyHandler(new Request('https://example.com/rpc'), manifestRouteBody);
+syncRpcBodyHandler(new Request('https://example.com/rpc'), manifestRouteBody);
 typedRpcSubpathBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteBody
+);
+syncRpcSubpathBodyHandler(
   new Request('https://example.com/rpc'),
   manifestRouteBody
 );
@@ -6595,9 +6608,15 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
 const publicManifestRouteUnaryBodyHandler: RpcManifestRouteUnaryBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncPublicManifestRouteUnaryBodyHandler: RpcManifestRouteUnaryBodyHandler<
+  typeof manifest
+> = () => new Response();
 const publicManifestRouteStreamBodyHandler: RpcManifestRouteStreamBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncPublicManifestRouteStreamBodyHandler: RpcManifestRouteStreamBodyHandler<
+  typeof manifest
+> = () => new Response();
 const publicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
@@ -6627,9 +6646,15 @@ const syncPublicManifestRouteStreamBodyResultHandler: RpcManifestRouteStreamBody
 const publicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
   typeof manifest
 > = publicManifestRouteUnaryBodyHandler;
+const syncPublicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestRouteUnaryBodyHandler;
 const publicManifestStreamRouteBodyHandler: RpcManifestStreamRouteBodyHandler<
   typeof manifest
 > = publicManifestRouteStreamBodyHandler;
+const syncPublicManifestStreamRouteBodyHandler: RpcManifestStreamRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestRouteStreamBodyHandler;
 const publicManifestUnaryRouteBodyResultHandler: RpcManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = publicManifestRouteUnaryBodyResultHandler;
@@ -6665,9 +6690,15 @@ const syncPublicManifestStreamRouteTransportBodyResultHandler: RpcManifestStream
 const publicJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncPublicJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestUnaryRouteBodyHandler;
 const publicJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncPublicJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestStreamRouteBodyHandler;
 const publicJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
@@ -6695,9 +6726,15 @@ const syncPublicJoorManifestStreamRouteTransportBodyResultHandler: JoorManifestS
 const rpcSubpathManifestUnaryRouteBodyHandler: RpcSubpathManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncRpcSubpathManifestUnaryRouteBodyHandler: RpcSubpathManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestUnaryRouteBodyHandler;
 const rpcSubpathManifestStreamRouteBodyHandler: RpcSubpathManifestStreamRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncRpcSubpathManifestStreamRouteBodyHandler: RpcSubpathManifestStreamRouteBodyHandler<
+  typeof manifest
+> = syncPublicManifestStreamRouteBodyHandler;
 const rpcSubpathManifestUnaryRouteBodyResultHandler: RpcSubpathManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
@@ -6713,9 +6750,15 @@ const rpcSubpathManifestStreamRouteTransportBodyResultHandler: RpcSubpathManifes
 const joorSubpathManifestUnaryRouteBodyHandler: JoorSubpathManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncJoorSubpathManifestUnaryRouteBodyHandler: JoorSubpathManifestUnaryRouteBodyHandler<
+  typeof manifest
+> = syncPublicJoorManifestUnaryRouteBodyHandler;
 const joorSubpathManifestStreamRouteBodyHandler: JoorSubpathManifestStreamRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
+const syncJoorSubpathManifestStreamRouteBodyHandler: JoorSubpathManifestStreamRouteBodyHandler<
+  typeof manifest
+> = syncPublicJoorManifestStreamRouteBodyHandler;
 const joorSubpathManifestUnaryRouteBodyResultHandler: JoorSubpathManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
@@ -6733,7 +6776,15 @@ publicManifestRouteUnaryBodyHandler(
   new Request('https://example.com/rpc'),
   publicManifestRouteUnaryBody
 );
+syncPublicManifestRouteUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteUnaryBody
+);
 publicManifestRouteStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteStreamBody
+);
+syncPublicManifestRouteStreamBodyHandler(
   new Request('https://example.com/rpc'),
   publicManifestRouteStreamBody
 );
@@ -6741,7 +6792,15 @@ publicManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncPublicManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 publicManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncPublicManifestStreamRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );
@@ -6819,7 +6878,15 @@ publicJoorManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncPublicJoorManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 publicJoorManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncPublicJoorManifestStreamRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );
@@ -6859,7 +6926,15 @@ rpcSubpathManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncRpcSubpathManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 rpcSubpathManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncRpcSubpathManifestStreamRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );
@@ -6883,7 +6958,15 @@ joorSubpathManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncJoorSubpathManifestUnaryRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 joorSubpathManifestStreamRouteBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncJoorSubpathManifestStreamRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );

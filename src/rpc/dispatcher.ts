@@ -838,28 +838,28 @@ export type RpcManifestRouteStreamBodyResultHandler<
   body: TBody
 ) => MaybePromise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
 
-export type RpcRequestHandler = (request: Request) => Promise<Response>;
+export type RpcRequestHandler = (request: Request) => MaybePromise<Response>;
 
 export type RpcBodyHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
   request: Request,
   body: TBody
-) => Promise<Response>;
+) => MaybePromise<Response>;
 
 export type RpcManifestRouteUnaryBodyHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestRouteUnaryBody<TManifest>,
 >(
   request: Request,
   body: TBody
-) => Promise<Response>;
+) => MaybePromise<Response>;
 
 export type RpcManifestRouteStreamBodyHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestRouteStreamBody<TManifest>,
 >(
   request: Request,
   body: TBody
-) => Promise<Response>;
+) => MaybePromise<Response>;
 
 export type RpcManifestUnaryRouteBodyHandler<TManifest extends RpcManifest> =
   RpcManifestRouteUnaryBodyHandler<TManifest>;
