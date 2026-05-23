@@ -1355,6 +1355,10 @@ const protocolRequest: RouteProtocolRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
 };
+const defaultProtocolRequest: RouteProtocolRequest = protocolRequest;
+if (defaultProtocolRequest.id === 'users.get') {
+  defaultProtocolRequest.input.id.toUpperCase();
+}
 const _extraProtocolRequest: RouteProtocolRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
@@ -1364,9 +1368,15 @@ const _extraProtocolRequest: RouteProtocolRequest<'users.get'> = {
 _extraProtocolRequest.id.toUpperCase();
 const protocolRequestUnion: RouteProtocolRequestUnion = protocolRequest;
 const unaryProtocolRequest: RouteUnaryProtocolRequest<'users.get'> = protocolRequest;
+const defaultUnaryProtocolRequest: RouteUnaryProtocolRequest =
+  unaryProtocolRequest;
 const unaryRouteProtocolRequest: UnaryRouteProtocolRequest<'users.get'> =
   unaryProtocolRequest;
+const defaultUnaryRouteProtocolRequest: UnaryRouteProtocolRequest =
+  unaryRouteProtocolRequest;
 unaryRouteProtocolRequest.input.id.toUpperCase();
+defaultUnaryProtocolRequest.id.toUpperCase();
+defaultUnaryRouteProtocolRequest.id.toUpperCase();
 const unaryRouteProtocolRequestUnion: UnaryRouteProtocolRequestUnion =
   unaryRouteProtocolRequest;
 unaryRouteProtocolRequestUnion.id.toUpperCase();
@@ -1374,9 +1384,15 @@ const streamProtocolRequest: RouteStreamProtocolRequest<'users.watch'> = {
   id: 'users.watch',
   input: { userId: '1' },
 };
+const defaultRouteStreamProtocolRequest: RouteStreamProtocolRequest =
+  streamProtocolRequest;
 const streamRouteProtocolRequest: StreamRouteProtocolRequest<'users.watch'> =
   streamProtocolRequest;
+const defaultStreamRouteProtocolRequest: StreamRouteProtocolRequest =
+  streamRouteProtocolRequest;
 streamRouteProtocolRequest.input.userId.toUpperCase();
+defaultRouteStreamProtocolRequest.input.userId.toUpperCase();
+defaultStreamRouteProtocolRequest.input.userId.toUpperCase();
 const streamRouteProtocolRequestUnion: StreamRouteProtocolRequestUnion =
   streamRouteProtocolRequest;
 streamRouteProtocolRequestUnion.input.userId.toUpperCase();
@@ -1562,17 +1578,28 @@ const nativeUnaryBody: NativeRouteRequest<'users.get'> = {
 };
 const nativeUnaryProtocolBody: NativeRouteProtocolRequest<'users.get'> =
   nativeUnaryBody;
+const defaultNativeRouteProtocolRequest: NativeRouteProtocolRequest =
+  nativeUnaryProtocolBody;
 nativeUnaryProtocolBody.input.id.toUpperCase();
+if (defaultNativeRouteProtocolRequest.id === 'users.get') {
+  defaultNativeRouteProtocolRequest.input.id.toUpperCase();
+}
 const nativeUnaryRequestUnion: NativeUnaryProtocolRequest = nativeUnaryBody;
 const nativeRouteProtocolRequestUnion: NativeRouteProtocolRequestUnion =
   nativeUnaryProtocolBody;
 nativeRouteProtocolRequestUnion.id.toUpperCase();
 const nativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequest<'users.get'> =
   nativeUnaryProtocolBody;
+const defaultNativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequest =
+  nativeRouteUnaryProtocolRequest;
 nativeRouteUnaryProtocolRequest.input.id.toUpperCase();
+defaultNativeRouteUnaryProtocolRequest.id.toUpperCase();
 const nativeUnaryRouteProtocolRequest: NativeUnaryRouteProtocolRequest<'users.get'> =
   nativeRouteUnaryProtocolRequest;
+const defaultNativeUnaryRouteProtocolRequest: NativeUnaryRouteProtocolRequest =
+  nativeUnaryRouteProtocolRequest;
 nativeUnaryRouteProtocolRequest.input.id.toUpperCase();
+defaultNativeUnaryRouteProtocolRequest.id.toUpperCase();
 const nativeRouteUnaryProtocolRequestUnion: NativeRouteUnaryProtocolRequestUnion =
   nativeRouteUnaryProtocolRequest;
 nativeRouteUnaryProtocolRequestUnion.id.toUpperCase();
@@ -1591,10 +1618,16 @@ const nativeStreamBody: NativeStreamProtocolRequest = {
 };
 const nativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequest<'users.watch'> =
   nativeStreamBody;
+const defaultNativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequest =
+  nativeRouteStreamProtocolRequest;
 nativeRouteStreamProtocolRequest.input.userId.toUpperCase();
+defaultNativeRouteStreamProtocolRequest.input.userId.toUpperCase();
 const nativeStreamRouteProtocolRequest: NativeStreamRouteProtocolRequest<'users.watch'> =
   nativeRouteStreamProtocolRequest;
+const defaultNativeStreamRouteProtocolRequest: NativeStreamRouteProtocolRequest =
+  nativeStreamRouteProtocolRequest;
 nativeStreamRouteProtocolRequest.input.userId.toUpperCase();
+defaultNativeStreamRouteProtocolRequest.input.userId.toUpperCase();
 const nativeRouteStreamProtocolRequestUnion: NativeRouteStreamProtocolRequestUnion =
   nativeStreamRouteProtocolRequest;
 nativeRouteStreamProtocolRequestUnion.input.userId.toUpperCase();
@@ -2143,6 +2176,13 @@ const invalidProtocolRequest: RouteProtocolRequest<'users.get'> = {
   input: { ok: true },
 };
 invalidProtocolRequest;
+
+// @ts-expect-error generated default route protocol requests preserve id/input correlation.
+const invalidDefaultProtocolRequest: RouteProtocolRequest = {
+  id: 'users.get',
+  input: { userId: '1' },
+};
+invalidDefaultProtocolRequest.id.toUpperCase();
 
 const invalidProtocolBatch: RouteProtocolBatchRequest<
   // @ts-expect-error generated route protocol batches reject stream requests.

@@ -501,7 +501,7 @@ export type RpcRouteUnaryResultUnion<TRoutes extends RpcRouteMap> =
 export type RpcUnaryRouteResultUnion<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryResultUnion<TRoutes>;
 
-export type RpcRouteProtocolRequest<
+type RpcRouteProtocolRequestFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
 > = {
@@ -510,24 +510,31 @@ export type RpcRouteProtocolRequest<
   traceId?: string;
 };
 
+export type RpcRouteProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
+> = TId extends RpcRouteId<TRoutes>
+  ? RpcRouteProtocolRequestFor<TRoutes, TId>
+  : never;
+
 export type RpcRouteUnaryProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteProtocolRequest<TRoutes, TId>;
 
 export type RpcRouteStreamProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteProtocolRequest<TRoutes, TId>;
 
 export type RpcUnaryRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 
 export type RpcStreamRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamProtocolRequest<TRoutes, TId>;
 
 export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {

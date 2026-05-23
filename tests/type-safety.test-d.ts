@@ -3781,7 +3781,18 @@ const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
 > = { id: 'users.get', input: { id: '1' } };
+const defaultManifestProtocolRequest: JoorManifestRouteProtocolRequest<
+  typeof manifest
+> = manifestProtocolRequest;
 manifestProtocolRequest.input.id.toUpperCase();
+if (defaultManifestProtocolRequest.id === 'users.get') {
+  defaultManifestProtocolRequest.input.id.toUpperCase();
+}
+// @ts-expect-error default manifest protocol requests preserve id/input correlation.
+const _wrongDefaultManifestProtocolRequest:
+  JoorManifestRouteProtocolRequest<typeof manifest> =
+  { id: 'users.get', input: { userId: '1' } };
+_wrongDefaultManifestProtocolRequest.id.toUpperCase();
 const _extraManifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
@@ -3803,7 +3814,11 @@ const manifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
 > = manifestProtocolRequest;
+const defaultManifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
+  typeof manifest
+> = manifestUnaryProtocolRequest;
 manifestUnaryProtocolRequest.input.id.toUpperCase();
+defaultManifestUnaryProtocolRequest.id.toUpperCase();
 const manifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequest<
   typeof manifest,
   'users.get'
@@ -3827,7 +3842,11 @@ const manifestStreamProtocolRequest: JoorManifestRouteStreamProtocolRequest<
   typeof manifest,
   'users.watch'
 > = { id: 'users.watch', input: { userId: '1' } };
+const defaultManifestStreamProtocolRequest: JoorManifestRouteStreamProtocolRequest<
+  typeof manifest
+> = manifestStreamProtocolRequest;
 manifestStreamProtocolRequest.input.userId.toUpperCase();
+defaultManifestStreamProtocolRequest.input.userId.toUpperCase();
 const manifestStreamRouteProtocolRequest: JoorManifestStreamRouteProtocolRequest<
   typeof manifest,
   'users.watch'
@@ -4522,7 +4541,18 @@ const publicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
 > = { id: 'users.get', input: { id: '1' } };
+const defaultPublicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
+  typeof manifest
+> = publicManifestProtocolRequest;
 publicManifestProtocolRequest.input.id.toUpperCase();
+if (defaultPublicManifestProtocolRequest.id === 'users.get') {
+  defaultPublicManifestProtocolRequest.input.id.toUpperCase();
+}
+// @ts-expect-error default public manifest protocol requests preserve id/input correlation.
+const _wrongDefaultPublicManifestProtocolRequest:
+  RpcManifestRouteProtocolRequest<typeof manifest> =
+  { id: 'users.get', input: { userId: '1' } };
+_wrongDefaultPublicManifestProtocolRequest.id.toUpperCase();
 const publicManifestProtocolRequestUnion: RpcManifestRouteProtocolRequestUnion<
   typeof manifest
 > = publicManifestProtocolRequest;
@@ -4557,7 +4587,11 @@ const publicManifestUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
 > = publicManifestProtocolRequest;
+const defaultPublicManifestUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequest<
+  typeof manifest
+> = publicManifestUnaryProtocolRequest;
 publicManifestUnaryProtocolRequest.input.id.toUpperCase();
+defaultPublicManifestUnaryProtocolRequest.id.toUpperCase();
 const publicManifestUnaryRouteProtocolRequest: RpcManifestUnaryRouteProtocolRequest<
   typeof manifest,
   'users.get'
@@ -4575,7 +4609,11 @@ const publicManifestStreamProtocolRequest: RpcManifestRouteStreamProtocolRequest
   typeof manifest,
   'users.watch'
 > = { id: 'users.watch', input: { userId: '1' } };
+const defaultPublicManifestStreamProtocolRequest: RpcManifestRouteStreamProtocolRequest<
+  typeof manifest
+> = publicManifestStreamProtocolRequest;
 publicManifestStreamProtocolRequest.input.userId.toUpperCase();
+defaultPublicManifestStreamProtocolRequest.input.userId.toUpperCase();
 const publicManifestStreamRouteProtocolRequest: RpcManifestStreamRouteProtocolRequest<
   typeof manifest,
   'users.watch'
@@ -9387,7 +9425,18 @@ const routeProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> = {
   input: { id: '1' },
   traceId: 'trace-1',
 };
+const defaultRouteProtocolRequest: RpcRouteProtocolRequest<Routes> =
+  routeProtocolRequest;
 routeProtocolRequest.input.id.toUpperCase();
+if (defaultRouteProtocolRequest.id === 'users.get') {
+  defaultRouteProtocolRequest.input.id.toUpperCase();
+}
+// @ts-expect-error default route protocol requests preserve id/input correlation.
+const _wrongDefaultRouteProtocolRequest: RpcRouteProtocolRequest<Routes> = {
+  id: 'users.get',
+  input: { userId: '1' },
+};
+_wrongDefaultRouteProtocolRequest.id.toUpperCase();
 const _extraRouteProtocolRequest: RpcRouteProtocolRequest<Routes, 'users.get'> =
   {
     id: 'users.get',
@@ -9410,7 +9459,10 @@ const streamOnlyProtocolRequest: RpcRouteStreamProtocolRequest<
   Routes,
   'users.watch'
 > = streamProtocolRequest;
+const defaultStreamOnlyProtocolRequest: RpcRouteStreamProtocolRequest<Routes> =
+  streamOnlyProtocolRequest;
 streamOnlyProtocolRequest.input.userId.toUpperCase();
+defaultStreamOnlyProtocolRequest.input.userId.toUpperCase();
 const streamRouteProtocolRequestAlias: RpcStreamRouteProtocolRequest<
   Routes,
   'users.watch'
@@ -9427,12 +9479,18 @@ const streamRouteProtocolRequestUnionAlias: RpcStreamRouteProtocolRequestUnion<R
 streamRouteProtocolRequestUnionAlias.input.userId.toUpperCase();
 const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<Routes, 'users.get'> =
   routeProtocolRequest;
+const defaultUnaryProtocolRequest: RpcRouteUnaryProtocolRequest<Routes> =
+  unaryProtocolRequest;
 unaryProtocolRequest.input.id.toUpperCase();
+defaultUnaryProtocolRequest.id.toUpperCase();
 const unaryRouteProtocolRequestAlias: RpcUnaryRouteProtocolRequest<
   Routes,
   'users.get'
 > = unaryProtocolRequest;
+const defaultUnaryRouteProtocolRequestAlias: RpcUnaryRouteProtocolRequest<Routes> =
+  unaryRouteProtocolRequestAlias;
 unaryRouteProtocolRequestAlias.input.id.toUpperCase();
+defaultUnaryRouteProtocolRequestAlias.id.toUpperCase();
 const unaryRouteBodyAlias: RpcUnaryRouteBody<Routes> =
   unaryRouteProtocolRequestAlias;
 unaryRouteBodyAlias.input.id.toUpperCase();
