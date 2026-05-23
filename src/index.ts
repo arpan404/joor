@@ -86,10 +86,13 @@ export {
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
   serveDeno as serveStandaloneDeno,
 } from './runtime/deno-transport.js';
-export { createElysiaHandler } from './runtime/elysia.js';
+export {
+  createElysiaHandler,
+  createElysiaHandlerFor,
+} from './runtime/elysia.js';
 export { createExpressHandler } from './runtime/express.js';
 export { createFastifyHandler } from './runtime/fastify.js';
-export { createHonoHandler } from './runtime/hono.js';
+export { createHonoHandler, createHonoHandlerFor } from './runtime/hono.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createKoaHandler } from './runtime/koa.js';
 export {

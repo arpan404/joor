@@ -4,6 +4,8 @@ import {
   createCloudflareWorker as createRootCloudflareWorker,
   createCloudflareWorkerFor as createRootCloudflareWorkerFor,
   createCorsHeaderRecord as createRootCorsHeaderRecord,
+  createElysiaHandlerFor as createRootElysiaHandlerFor,
+  createHonoHandlerFor as createRootHonoHandlerFor,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -49,10 +51,13 @@ import {
 import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';
 import { createDenoRpcRequestHandler } from 'joor/runtime/deno';
 import { createDenoTransportRequestHandler } from 'joor/runtime/deno-transport';
-import { createElysiaHandler } from 'joor/runtime/elysia';
+import {
+  createElysiaHandler,
+  createElysiaHandlerFor,
+} from 'joor/runtime/elysia';
 import { createExpressHandler } from 'joor/runtime/express';
 import { createFastifyHandler } from 'joor/runtime/fastify';
-import { createHonoHandler } from 'joor/runtime/hono';
+import { createHonoHandler, createHonoHandlerFor } from 'joor/runtime/hono';
 import { createKoaHandler } from 'joor/runtime/koa';
 import {
   createNetlifyEdgeFunction,
@@ -254,9 +259,11 @@ const packageSubpathValues = [
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
   createElysiaHandler,
+  createElysiaHandlerFor,
   createExpressHandler,
   createFastifyHandler,
   createHonoHandler,
+  createHonoHandlerFor,
   createJoorHandler,
   createKoaHandler,
   createNetlifyEdgeFunction,
@@ -268,6 +275,8 @@ const packageSubpathValues = [
   createNodeTransportRequestHandler,
   createRuntimeContext,
   createRootRuntimeContext,
+  createRootElysiaHandlerFor,
+  createRootHonoHandlerFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
   createRootNextRouteHandlersFor,

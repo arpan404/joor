@@ -33,9 +33,11 @@ import {
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
   createElysiaHandler,
+  createElysiaHandlerFor,
   createExpressHandler,
   createFastifyHandler,
   createHonoHandler,
+  createHonoHandlerFor,
   createJoorHandler,
   createKoaHandler,
   createNetlifyEdgeFunction,
@@ -1383,9 +1385,11 @@ import {
   createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createElysiaHandler as createRuntimeSubpathElysiaHandler,
+  createElysiaHandlerFor as createRuntimeSubpathElysiaHandlerFor,
   createExpressHandler as createRuntimeSubpathExpressHandler,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createHonoHandler as createRuntimeSubpathHonoHandler,
+  createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createKoaHandler as createRuntimeSubpathKoaHandler,
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
@@ -1428,12 +1432,14 @@ import {
   type AwsLambdaHttpApiUnaryRouteHandlerOptionsFor as RuntimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsFor,
   type AwsLambdaRestApiHandler as RuntimeSubpathAwsLambdaRestApiHandler,
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
+  type ElysiaContext as RuntimeSubpathElysiaContext,
   type ElysiaHandler as RuntimeSubpathElysiaHandler,
   type ElysiaHandlerOptionsFor as RuntimeSubpathElysiaHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
   type FastifyHandler as RuntimeSubpathFastifyHandler,
   type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
+  type HonoContext as RuntimeSubpathHonoContext,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
   type KoaHandlerOptionsFor as RuntimeSubpathKoaHandlerOptionsFor,
@@ -11741,11 +11747,37 @@ const runtimeSubpathSyncElysiaHandler: RuntimeSubpathElysiaHandler =
 const elysiaContext: ElysiaContext = {
   request: new Request('https://example.com/rpc'),
 };
+interface ElysiaAppContext extends ElysiaContext {
+  store: {
+    requestId: string;
+  };
+}
+const createTypedElysiaHandler = createElysiaHandlerFor<ElysiaAppContext>();
+const typedElysiaHandler: ElysiaHandler<ElysiaAppContext> =
+  createTypedElysiaHandler(manifest, elysiaHandlerOptions);
+const createRuntimeSubpathTypedElysiaHandler =
+  createRuntimeSubpathElysiaHandlerFor<
+    RuntimeSubpathElysiaContext & ElysiaAppContext
+  >();
+const runtimeSubpathTypedElysiaHandler: RuntimeSubpathElysiaHandler<
+  RuntimeSubpathElysiaContext & ElysiaAppContext
+> = createRuntimeSubpathTypedElysiaHandler(
+  manifest,
+  runtimeSubpathElysiaHandlerOptions
+);
+const elysiaAppContext: ElysiaAppContext = {
+  request: new Request('https://example.com/rpc'),
+  store: { requestId: 'req_1' },
+};
 elysiaHandler(elysiaContext);
 runtimeSubpathElysiaHandler(elysiaContext);
 runtimeSubpathSyncElysiaHandler(elysiaContext);
+typedElysiaHandler(elysiaAppContext);
+runtimeSubpathTypedElysiaHandler(elysiaAppContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
 createElysiaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Elysia adapter plugins.
+createTypedElysiaHandler(manifest);
 const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
 fastifyHandlerOptionsBase.useOriginalUrl = false;
 const fastifyHandlerOptions: FastifyHandlerOptionsFor<
@@ -11952,11 +11984,41 @@ const runtimeSubpathSyncHonoHandler: RuntimeSubpathHonoHandler =
 const honoContext: HonoContext = {
   req: { raw: new Request('https://example.com/rpc') },
 };
+interface HonoAppContext extends HonoContext {
+  env: {
+    requestId: string;
+  };
+  get(name: 'requestId'): string;
+}
+const createTypedHonoHandler = createHonoHandlerFor<HonoAppContext>();
+const typedHonoHandler: HonoHandler<HonoAppContext> = createTypedHonoHandler(
+  manifest,
+  honoHandlerOptions
+);
+const createRuntimeSubpathTypedHonoHandler =
+  createRuntimeSubpathHonoHandlerFor<
+    RuntimeSubpathHonoContext & HonoAppContext
+  >();
+const runtimeSubpathTypedHonoHandler: RuntimeSubpathHonoHandler<
+  RuntimeSubpathHonoContext & HonoAppContext
+> = createRuntimeSubpathTypedHonoHandler(
+  manifest,
+  runtimeSubpathHonoHandlerOptions
+);
+const honoAppContext: HonoAppContext = {
+  req: { raw: new Request('https://example.com/rpc') },
+  env: { requestId: 'req_1' },
+  get: (name) => name,
+};
 honoHandler(honoContext);
 runtimeSubpathHonoHandler(honoContext);
 runtimeSubpathSyncHonoHandler(honoContext);
+typedHonoHandler(honoAppContext);
+runtimeSubpathTypedHonoHandler(honoAppContext);
 // @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
 createHonoHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Hono adapter plugins.
+createTypedHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
 const syncNodeRpcRequestHandler: NodeRpcRequestHandler = () => undefined;

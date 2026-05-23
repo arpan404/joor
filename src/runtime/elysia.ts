@@ -10,12 +10,12 @@ import type {
 } from '../rpc/dispatcher.js';
 import { createJoorHandler } from './fetch.js';
 
-export interface ElysiaContext {
-  request: Request;
+export interface ElysiaContext<TRequest extends Request = Request> {
+  request: TRequest;
 }
 
-export type ElysiaHandler = (
-  context: ElysiaContext
+export type ElysiaHandler<TContext extends ElysiaContext = ElysiaContext> = (
+  context: TContext
 ) => Response | Promise<Response>;
 
 export type ElysiaHandlerOptionsFor<
@@ -113,3 +113,19 @@ export function createElysiaHandler<TManifest extends JoorManifest>(
   );
   return (context) => fetch(context.request);
 }
+
+export const createElysiaHandlerFor =
+  <TContext extends ElysiaContext>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: ElysiaHandlerOptionsArgs<TManifest, TPlugins>
+  ): ElysiaHandler<TContext> => {
+    const fetch = createJoorHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+    return (context) => fetch(context.request);
+  };

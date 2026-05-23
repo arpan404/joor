@@ -10,13 +10,15 @@ import type {
 } from '../rpc/dispatcher.js';
 import { createJoorHandler } from './fetch.js';
 
-export interface HonoContext {
+export interface HonoContext<TRequest extends Request = Request> {
   req: {
-    raw: Request;
+    raw: TRequest;
   };
 }
 
-export type HonoHandler = (context: HonoContext) => Response | Promise<Response>;
+export type HonoHandler<TContext extends HonoContext = HonoContext> = (
+  context: TContext
+) => Response | Promise<Response>;
 
 export type HonoHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -113,3 +115,19 @@ export function createHonoHandler<TManifest extends JoorManifest>(
   );
   return (context) => fetch(context.req.raw);
 }
+
+export const createHonoHandlerFor =
+  <TContext extends HonoContext>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HonoHandlerOptionsArgs<TManifest, TPlugins>
+  ): HonoHandler<TContext> => {
+    const fetch = createJoorHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+    return (context) => fetch(context.req.raw);
+  };
