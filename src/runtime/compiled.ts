@@ -77,6 +77,7 @@ import { validate } from '../schema/validate.js';
 import {
   validationDetails,
   type RpcEnvelope,
+  type RpcFailure,
   type RpcRequest,
 } from '../rpc/protocol.js';
 import { createSseResponse, encodeSse } from '../rpc/stream.js';
@@ -339,7 +340,7 @@ const failure = (
   message: string,
   status: number,
   details?: JsonValue
-): RpcEnvelope =>
+): RpcFailure =>
   details === undefined
     ? { ok: false, id, traceId: trace, error: { code, message, status } }
     : {
@@ -610,7 +611,7 @@ const streamResponse = async <TProcedure extends ProcedureRuntime>(
                   'Stream event failed validation',
                   500,
                   validationDetails(eventResult.issues)
-                ) as unknown as JsonValue
+                )
               )
             );
             break;

@@ -8,7 +8,10 @@ export type StreamEvent<TData extends JsonValue = JsonValue> =
 
 const encoder = new TextEncoder();
 
-export const encodeSse = (event: string, data: JsonValue): Uint8Array =>
+export const encodeSse = (
+  event: string,
+  data: JsonValue | RpcFailure
+): Uint8Array =>
   encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 
 export const createSseResponse = (

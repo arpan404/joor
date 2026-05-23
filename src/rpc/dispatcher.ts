@@ -2039,7 +2039,7 @@ const executeStream = async (
                   'Stream event failed validation',
                   500,
                   validationDetails(eventResult.issues)
-                ) as unknown as JsonValue
+                )
               )
             );
             break;
@@ -2059,7 +2059,7 @@ const executeStream = async (
               'INTERNAL_ERROR',
               message,
               500
-            ) as unknown as JsonValue
+            )
           )
         );
       } finally {
