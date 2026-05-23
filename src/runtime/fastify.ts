@@ -34,7 +34,10 @@ import {
   type TransportBodyResult,
 } from './response.js';
 
-export interface FastifyRequest<TBody = unknown> {
+export interface FastifyRequest<
+  TBody = unknown,
+  TIncoming extends IncomingMessage = IncomingMessage,
+> {
   body?: TBody;
   headers: IncomingHttpHeaders;
   hostname?: string;
@@ -42,18 +45,26 @@ export interface FastifyRequest<TBody = unknown> {
   method: string;
   originalUrl?: string;
   protocol?: string;
-  raw?: IncomingMessage;
+  raw?: TIncoming;
   url: string;
 }
 
-export interface FastifyReply {
-  raw: ServerResponse<IncomingMessage>;
+export interface FastifyReply<
+  TIncoming extends IncomingMessage = IncomingMessage,
+> {
+  raw: ServerResponse<TIncoming>;
   hijack?(): void;
 }
 
+type FastifyRequestIncoming<TRequest extends FastifyRequest> =
+  TRequest extends FastifyRequest<unknown, infer TIncoming>
+    ? TIncoming
+    : IncomingMessage;
+
 export type FastifyHandler<
   TRequest extends FastifyRequest = FastifyRequest,
-  TReply extends FastifyReply = FastifyReply,
+  TReply extends FastifyReply<FastifyRequestIncoming<TRequest>> =
+    FastifyReply<FastifyRequestIncoming<TRequest>>,
 > = (
   request: TRequest,
   reply: TReply
@@ -411,7 +422,8 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
 export const createFastifyHandlerFor =
   <
     TRequest extends FastifyRequest = FastifyRequest,
-    TReply extends FastifyReply = FastifyReply,
+    TReply extends FastifyReply<FastifyRequestIncoming<TRequest>> =
+      FastifyReply<FastifyRequestIncoming<TRequest>>,
   >() =>
   <
     TManifest extends JoorManifest,

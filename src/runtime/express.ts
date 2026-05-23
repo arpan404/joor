@@ -15,13 +15,15 @@ export interface ExpressRequest extends IncomingMessage {
   originalUrl?: string;
 }
 
-export type ExpressResponse = ServerResponse<IncomingMessage>;
+export type ExpressResponse<
+  TRequest extends IncomingMessage = IncomingMessage,
+> = ServerResponse<TRequest>;
 
 export type ExpressNextFunction = (error?: unknown) => void;
 
 export type ExpressRequestHandler<
   TRequest extends ExpressRequest = ExpressRequest,
-  TResponse extends ExpressResponse = ExpressResponse,
+  TResponse extends ExpressResponse<TRequest> = ExpressResponse<TRequest>,
   TNext extends ExpressNextFunction = ExpressNextFunction,
 > = (
   request: TRequest,
@@ -161,7 +163,7 @@ export function createExpressHandler<TManifest extends JoorManifest>(
 export const createExpressHandlerFor =
   <
     TRequest extends ExpressRequest = ExpressRequest,
-    TResponse extends ExpressResponse = ExpressResponse,
+    TResponse extends ExpressResponse<TRequest> = ExpressResponse<TRequest>,
     TNext extends ExpressNextFunction = ExpressNextFunction,
   >() =>
   <

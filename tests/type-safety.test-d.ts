@@ -12412,7 +12412,12 @@ interface ExpressAppRequest extends ExpressRequest {
     id: string;
   };
 }
-interface ExpressAppResponse extends ExpressResponse {
+interface ExpressAppResponse extends ExpressResponse<ExpressAppRequest> {
+  locals: {
+    requestId: string;
+  };
+}
+interface ExpressMismatchedResponse extends ExpressResponse {
   locals: {
     requestId: string;
   };
@@ -12454,6 +12459,8 @@ runtimeSubpathTypedExpressHandler(
   expressAppResponse,
   expressNext
 );
+// @ts-expect-error typed Express handlers preserve the response's request type.
+createExpressHandlerFor<ExpressAppRequest, ExpressMismatchedResponse>();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Express adapter plugins.
@@ -12624,12 +12631,21 @@ fastifyReply.raw.statusCode.toFixed();
 interface FastifyAppBody {
   id: string;
 }
-interface FastifyAppRequest extends FastifyRequest<FastifyAppBody> {
+interface FastifyAppIncoming extends IncomingMessage {
+  requestId: string;
+}
+interface FastifyAppRequest
+  extends FastifyRequest<FastifyAppBody, FastifyAppIncoming> {
   params: {
     id: string;
   };
 }
-interface FastifyAppReply extends FastifyReply {
+interface FastifyAppReply extends FastifyReply<FastifyAppIncoming> {
+  locals: {
+    requestId: string;
+  };
+}
+interface FastifyMismatchedReply extends FastifyReply {
   locals: {
     requestId: string;
   };
@@ -12657,6 +12673,7 @@ const runtimeSubpathTypedFastifyHandler: RuntimeSubpathFastifyHandler<
 const fastifyAppRequest = {} as FastifyAppRequest;
 const fastifyAppReply = {} as FastifyAppReply;
 fastifyAppRequest.body?.id.toUpperCase();
+fastifyAppRequest.raw?.requestId.toUpperCase();
 fastifyAppRequest.params.id.toUpperCase();
 fastifyAppReply.locals.requestId.toUpperCase();
 fastifyHandler(fastifyRequest, fastifyReply);
@@ -12665,6 +12682,8 @@ runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
 typedFastifyHandler(fastifyAppRequest, fastifyAppReply);
 runtimeSubpathTypedFastifyHandler(fastifyAppRequest, fastifyAppReply);
+// @ts-expect-error typed Fastify handlers preserve the reply's incoming message type.
+createFastifyHandlerFor<FastifyAppRequest, FastifyMismatchedReply>();
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
 createFastifyHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Fastify adapter plugins.
