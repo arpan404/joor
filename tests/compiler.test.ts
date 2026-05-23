@@ -534,7 +534,9 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'call(...args: [id: TId, ...ClientArgs<TId>])'
       );
-      expect(clientSource).toContain('Object.assign(call, { call, request })');
+      expect(clientSource).toContain(
+        'Object.assign(call, { call, request, protocolRequest })'
+      );
       expect(clientSource).not.toContain('ProcedureInput');
       expect(clientSource).toContain('export type RouteProcedure');
       expect(clientSource).toContain('export type UnaryRouteProcedure');
@@ -623,6 +625,9 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export const createStreamRouteProtocolRequest: typeof createRouteStreamProtocolRequest'
       );
+      expect(clientSource).toContain('protocolRequest(');
+      expect(clientSource).toContain('input: RouteUnaryInput<TId>');
+      expect(clientSource).toContain('input: RouteStreamInput<TId>');
       expect(clientSource).toContain('export type RouteRequestBuilder');
       expect(clientSource).toContain('export const createRouteRequest');
       expect(clientSource).toContain(
@@ -814,6 +819,19 @@ const defaultStreamRouteFunction: StreamRouteFunction =
   defaultRouteStreamFunction;
 generatedRouteUnaryFunction({ id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedRouteStreamFunction({ userId: '1' });
+const generatedLeafProtocolRequest =
+  generatedRouteUnaryFunction.protocolRequest(
+    { id: '550e8400-e29b-41d4-a716-446655440000' },
+    { traceId: 'trace-leaf' }
+  );
+const generatedLeafStreamProtocolRequest =
+  generatedRouteStreamFunction.protocolRequest({ userId: '1' });
+const typedGeneratedLeafProtocolRequest: RouteUnaryProtocolRequest<'users.get'> =
+  generatedLeafProtocolRequest;
+const typedGeneratedLeafStreamProtocolRequest: RouteStreamProtocolRequest<'users.watch'> =
+  generatedLeafStreamProtocolRequest;
+typedGeneratedLeafProtocolRequest.traceId?.toUpperCase();
+typedGeneratedLeafStreamProtocolRequest.input.userId.toUpperCase();
 defaultUnaryRouteFunction.valueOf();
 defaultStreamRouteFunction.valueOf();
 generatedClientAlias.users.get({ id: '550e8400-e29b-41d4-a716-446655440000' });
@@ -2517,6 +2535,16 @@ client.users.get.stream({ id: '550e8400-e29b-41d4-a716-446655440000' });
 
 // @ts-expect-error stream routes do not expose unary request methods.
 client.users.watch.request({ userId: '1' });
+
+client.users.get.protocolRequest(
+  // @ts-expect-error generated unary leaf protocol requests validate input by route id.
+  { ok: true }
+);
+
+client.users.watch.protocolRequest(
+  // @ts-expect-error generated stream leaf protocol requests validate input by route id.
+  { id: '550e8400-e29b-41d4-a716-446655440000' }
+);
 
 const invalidProtocolRequest: RouteProtocolRequest<'users.get'> = {
   id: 'users.get',

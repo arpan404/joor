@@ -2787,6 +2787,10 @@ type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   request(...args: RouteUnaryClientArgs<TId>): RouteRequest<TId>;
+  protocolRequest(
+    input: RouteUnaryInput<TId>,
+    options?: ProtocolRequestOptions
+  ): RouteUnaryProtocolRequest<TId>;
 };
 export type RouteUnaryFunction<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryFunctionFor<TRouteId>;
@@ -2796,6 +2800,10 @@ export type UnaryRouteFunction<TId extends RouteUnaryId = RouteUnaryId> =
 type RouteStreamFunctionFor<TId extends RouteStreamId> = {
   (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
+  protocolRequest(
+    input: RouteStreamInput<TId>,
+    options?: ProtocolRequestOptions
+  ): RouteStreamProtocolRequest<TId>;
 };
 export type RouteStreamFunction<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamFunctionFor<TRouteId>;
@@ -2965,13 +2973,21 @@ export const createClient = (options: GeneratedClientOptions = {}): GeneratedCli
       routeTransport.call(id, ...args);
     const request = (...args: ClientArgs<TId>) =>
       routeTransport.request(id, ...args);
-    return Object.assign(call, { call, request });
+    const protocolRequest = (
+      input: RouteUnaryInput<TId>,
+      options?: ProtocolRequestOptions
+    ) => createRouteUnaryProtocolRequest(id, input, options);
+    return Object.assign(call, { call, request, protocolRequest });
   };
   const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
     const routeTransport = transport as RouteStreamTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
-    return Object.assign(stream, { stream });
+    const protocolRequest = (
+      input: RouteStreamInput<TId>,
+      options?: ProtocolRequestOptions
+    ) => createRouteStreamProtocolRequest(id, input, options);
+    return Object.assign(stream, { stream, protocolRequest });
   };
   const batch: BatchFunction = (requests, options) =>
     transport.batch(requests, options);
