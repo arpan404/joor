@@ -3658,22 +3658,43 @@ const manifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest,
   'users.get'
 > = [{ id: '1' }, manifestRouteRequestOptions];
+const defaultManifestRouteClientArgs: JoorManifestRouteClientArgs<
+  typeof manifest
+> = manifestRouteClientArgs;
 const manifestUnaryRouteClientArgs: JoorManifestUnaryRouteClientArgs<
   typeof manifest,
   'users.get'
 > = manifestRouteClientArgs;
+const defaultManifestUnaryRouteClientArgs: JoorManifestUnaryRouteClientArgs<
+  typeof manifest
+> = manifestUnaryRouteClientArgs;
 const manifestStreamRouteClientArgs: JoorManifestStreamRouteClientArgs<
   typeof manifest,
   'users.watch'
 > = [{ userId: '1' }, manifestStreamRouteRequestOptions];
+const defaultManifestStreamRouteClientArgs: JoorManifestStreamRouteClientArgs<
+  typeof manifest
+> = manifestStreamRouteClientArgs;
 manifestRouteClientArgs[0].id.toUpperCase();
+defaultManifestRouteClientArgs[0].id.toUpperCase();
 manifestUnaryRouteClientArgs[0].id.toUpperCase();
+defaultManifestUnaryRouteClientArgs[0].id.toUpperCase();
 manifestStreamRouteClientArgs[0].userId.toUpperCase();
+defaultManifestStreamRouteClientArgs[0].userId.toUpperCase();
 const optionalManifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest,
   'users.authenticated'
 > = [{ ok: true }];
 optionalManifestRouteClientArgs[0].ok.valueOf();
+const defaultOptionalManifestRouteClientArgs: JoorManifestRouteClientArgs<
+  typeof manifest
+> = optionalManifestRouteClientArgs;
+defaultOptionalManifestRouteClientArgs[0].ok.valueOf();
+const _missingDefaultManifestRouteClientArgs:
+  JoorManifestRouteClientArgs<typeof manifest> =
+  // @ts-expect-error default manifest route client args preserve route-specific required headers.
+  [{ id: '1' }];
+_missingDefaultManifestRouteClientArgs[0].valueOf();
 const manifestSubpathRouteRequestOptions: JoorSubpathManifestRouteRequestOptions<
   typeof manifestFromSubpath,
   'users.get'
@@ -4353,17 +4374,29 @@ const publicManifestRouteClientArgs: RpcManifestRouteClientArgs<
   typeof manifest,
   'users.get'
 > = [{ id: '1' }, publicManifestRouteRequestOptions];
+const defaultPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest
+> = publicManifestRouteClientArgs;
 const publicManifestUnaryRouteClientArgs: RpcManifestUnaryRouteClientArgs<
   typeof manifest,
   'users.get'
 > = publicManifestRouteClientArgs;
+const defaultPublicManifestUnaryRouteClientArgs: RpcManifestUnaryRouteClientArgs<
+  typeof manifest
+> = publicManifestUnaryRouteClientArgs;
 const publicManifestStreamRouteClientArgs: RpcManifestStreamRouteClientArgs<
   typeof manifest,
   'users.watch'
 > = [{ userId: '1' }, publicManifestStreamRouteRequestOptions];
+const defaultPublicManifestStreamRouteClientArgs: RpcManifestStreamRouteClientArgs<
+  typeof manifest
+> = publicManifestStreamRouteClientArgs;
 publicManifestRouteClientArgs[0].id.toUpperCase();
+defaultPublicManifestRouteClientArgs[0].id.toUpperCase();
 publicManifestUnaryRouteClientArgs[0].id.toUpperCase();
+defaultPublicManifestUnaryRouteClientArgs[0].id.toUpperCase();
 publicManifestStreamRouteClientArgs[0].userId.toUpperCase();
+defaultPublicManifestStreamRouteClientArgs[0].userId.toUpperCase();
 const rpcSubpathManifestRouteClientArgs: RpcSubpathManifestRouteClientArgs<
   typeof manifest,
   'users.get'
@@ -4384,12 +4417,21 @@ const publicOptionalManifestRouteClientArgs: RpcManifestRouteClientArgs<
   'users.authenticated'
 > = [{ ok: true }];
 publicOptionalManifestRouteClientArgs[0].ok.valueOf();
+const defaultPublicOptionalManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest
+> = publicOptionalManifestRouteClientArgs;
+defaultPublicOptionalManifestRouteClientArgs[0].ok.valueOf();
 // @ts-expect-error required public manifest route headers need options.
 const _missingPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
   typeof manifest,
   'users.get'
 > = [{ id: '1' }];
 _missingPublicManifestRouteClientArgs[0].id.toUpperCase();
+const _missingDefaultPublicManifestRouteClientArgs:
+  RpcManifestRouteClientArgs<typeof manifest> =
+  // @ts-expect-error default public manifest route client args preserve route-specific required headers.
+  [{ id: '1' }];
+_missingDefaultPublicManifestRouteClientArgs[0].valueOf();
 const _wrongPublicManifestRouteRequestOptions: RpcManifestRouteRequestOptions<
   typeof manifest,
   'users.get'
@@ -9532,8 +9574,11 @@ const routeClientArgs: RpcRouteClientArgs<Routes, 'users.get'> = [
   { id: '1' },
   routeRequestOptions,
 ];
+const defaultRouteClientArgs: RpcRouteClientArgs<Routes> = routeClientArgs;
 const unaryRouteClientArgs: RpcUnaryRouteClientArgs<Routes, 'users.get'> =
   routeClientArgs;
+const defaultUnaryRouteClientArgs: RpcUnaryRouteClientArgs<Routes> =
+  unaryRouteClientArgs;
 const rpcSubpathRouteClientArgs: RpcSubpathRouteClientArgs<
   Routes,
   'users.get'
@@ -9545,20 +9590,31 @@ const rpcSubpathUnaryRouteClientArgs: RpcSubpathUnaryRouteClientArgs<
 routeClient.call('users.get', ...routeClientArgs);
 routeClient.call('users.get', ...rpcSubpathRouteClientArgs);
 routeClient.call('users.get', ...rpcSubpathUnaryRouteClientArgs);
+routeClient.call('users.get', ...defaultUnaryRouteClientArgs);
 const streamRouteClientArgs: RpcStreamRouteClientArgs<Routes, 'users.watch'> = [
   { userId: '1' },
   streamRouteRequestOptions,
 ];
+const defaultStreamRouteClientArgs: RpcStreamRouteClientArgs<Routes> =
+  streamRouteClientArgs;
 const rpcSubpathStreamRouteClientArgs: RpcSubpathStreamRouteClientArgs<
   Routes,
   'users.watch'
 > = streamRouteClientArgs;
 routeClient.stream('users.watch', ...rpcSubpathStreamRouteClientArgs);
+routeClient.stream('users.watch', ...defaultStreamRouteClientArgs);
 const noHeaderRouteClientArgs: RpcRouteClientArgs<
   Routes,
   'users.authenticated'
 > = [{ ok: true }];
+const defaultNoHeaderRouteClientArgs: RpcRouteClientArgs<Routes> =
+  noHeaderRouteClientArgs;
 routeClient.call('users.authenticated', ...noHeaderRouteClientArgs);
+routeClient.call('users.authenticated', ...defaultNoHeaderRouteClientArgs);
+defaultRouteClientArgs[0].id.toUpperCase();
+// @ts-expect-error default route client args preserve route-specific required headers.
+const _missingDefaultRouteClientArgs: RpcRouteClientArgs<Routes> = [{ id: '1' }];
+_missingDefaultRouteClientArgs[0].valueOf();
 const _wrongRouteRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: {
     // @ts-expect-error route request options preserve declared header value types.

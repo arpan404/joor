@@ -342,11 +342,11 @@ export type NativeRouteUnaryRequestOptions<TId extends NativeRouteUnaryId = Nati
 export type NativeUnaryRouteRequestOptions<TId extends NativeRouteUnaryId = NativeRouteUnaryId> = NativeRouteUnaryRequestOptions<TId>;
 export type NativeRouteStreamRequestOptions<TId extends NativeRouteStreamId = NativeRouteStreamId> = JoorManifestRouteStreamRequestOptions<NativeManifest, TId>;
 export type NativeStreamRouteRequestOptions<TId extends NativeRouteStreamId = NativeRouteStreamId> = NativeRouteStreamRequestOptions<TId>;
-export type NativeRouteClientArgs<TId extends NativeRouteId> = JoorManifestRouteClientArgs<NativeManifest, TId>;
-export type NativeRouteUnaryClientArgs<TId extends NativeRouteUnaryId> = JoorManifestRouteUnaryClientArgs<NativeManifest, TId>;
-export type NativeUnaryRouteClientArgs<TId extends NativeRouteUnaryId> = NativeRouteUnaryClientArgs<TId>;
-export type NativeRouteStreamClientArgs<TId extends NativeRouteStreamId> = JoorManifestRouteStreamClientArgs<NativeManifest, TId>;
-export type NativeStreamRouteClientArgs<TId extends NativeRouteStreamId> = NativeRouteStreamClientArgs<TId>;
+export type NativeRouteClientArgs<TId extends NativeRouteId = NativeRouteId> = JoorManifestRouteClientArgs<NativeManifest, TId>;
+export type NativeRouteUnaryClientArgs<TId extends NativeRouteUnaryId = NativeRouteUnaryId> = JoorManifestRouteUnaryClientArgs<NativeManifest, TId>;
+export type NativeUnaryRouteClientArgs<TId extends NativeRouteUnaryId = NativeRouteUnaryId> = NativeRouteUnaryClientArgs<TId>;
+export type NativeRouteStreamClientArgs<TId extends NativeRouteStreamId = NativeRouteStreamId> = JoorManifestRouteStreamClientArgs<NativeManifest, TId>;
+export type NativeStreamRouteClientArgs<TId extends NativeRouteStreamId = NativeRouteStreamId> = NativeRouteStreamClientArgs<TId>;
 export type NativeRouteHasHeaders<TId extends NativeRouteId = NativeRouteId> = JoorManifestRouteHasHeaders<NativeManifest, TId>;
 export type NativeRouteUnaryHasHeaders<TId extends NativeRouteUnaryId = NativeRouteUnaryId> = JoorManifestRouteUnaryHasHeaders<NativeManifest, TId>;
 export type NativeUnaryRouteHasHeaders<TId extends NativeRouteUnaryId = NativeRouteUnaryId> = NativeRouteUnaryHasHeaders<TId>;
@@ -2615,12 +2615,12 @@ export type RouteUnaryRequestOptions<TId extends RouteUnaryId = RouteUnaryId> = 
 export type UnaryRouteRequestOptions<TId extends RouteUnaryId = RouteUnaryId> = RouteUnaryRequestOptions<TId>;
 export type RouteStreamRequestOptions<TId extends RouteStreamId = RouteStreamId> = JoorManifestRouteStreamRequestOptions<Manifest, TId>;
 export type StreamRouteRequestOptions<TId extends RouteStreamId = RouteStreamId> = RouteStreamRequestOptions<TId>;
-export type RouteClientArgs<TId extends RouteId> = JoorManifestRouteClientArgs<Manifest, TId>;
-export type RouteUnaryClientArgs<TId extends RouteUnaryId> = JoorManifestRouteUnaryClientArgs<Manifest, TId>;
-export type UnaryRouteClientArgs<TId extends RouteUnaryId> = RouteUnaryClientArgs<TId>;
-export type RouteStreamClientArgs<TId extends RouteStreamId> = JoorManifestRouteStreamClientArgs<Manifest, TId>;
-export type StreamRouteClientArgs<TId extends RouteStreamId> = RouteStreamClientArgs<TId>;
-export type ClientArgs<TId extends RouteId> = RouteClientArgs<TId>;
+export type RouteClientArgs<TId extends RouteId = RouteId> = JoorManifestRouteClientArgs<Manifest, TId>;
+export type RouteUnaryClientArgs<TId extends RouteUnaryId = RouteUnaryId> = JoorManifestRouteUnaryClientArgs<Manifest, TId>;
+export type UnaryRouteClientArgs<TId extends RouteUnaryId = RouteUnaryId> = RouteUnaryClientArgs<TId>;
+export type RouteStreamClientArgs<TId extends RouteStreamId = RouteStreamId> = JoorManifestRouteStreamClientArgs<Manifest, TId>;
+export type StreamRouteClientArgs<TId extends RouteStreamId = RouteStreamId> = RouteStreamClientArgs<TId>;
+export type ClientArgs<TId extends RouteId = RouteId> = RouteClientArgs<TId>;
 export type RouteUnaryFunction<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;

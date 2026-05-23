@@ -839,27 +839,27 @@ export type JoorManifestStreamRouteRequestOptions<
 
 export type JoorManifestRouteClientArgs<
   TManifest,
-  TId extends JoorManifestRouteId<TManifest>,
+  TId extends JoorManifestRouteId<TManifest> = JoorManifestRouteId<TManifest>,
 > = RpcRouteClientArgs<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestRouteUnaryClientArgs<
   TManifest,
-  TId extends JoorManifestRouteUnaryId<TManifest>,
+  TId extends JoorManifestRouteUnaryId<TManifest> = JoorManifestRouteUnaryId<TManifest>,
 > = RpcRouteUnaryClientArgs<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestUnaryRouteClientArgs<
   TManifest,
-  TId extends JoorManifestRouteUnaryId<TManifest>,
+  TId extends JoorManifestRouteUnaryId<TManifest> = JoorManifestRouteUnaryId<TManifest>,
 > = JoorManifestRouteUnaryClientArgs<TManifest, TId>;
 
 export type JoorManifestRouteStreamClientArgs<
   TManifest,
-  TId extends JoorManifestRouteStreamId<TManifest>,
+  TId extends JoorManifestRouteStreamId<TManifest> = JoorManifestRouteStreamId<TManifest>,
 > = RpcRouteStreamClientArgs<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestStreamRouteClientArgs<
   TManifest,
-  TId extends JoorManifestRouteStreamId<TManifest>,
+  TId extends JoorManifestRouteStreamId<TManifest> = JoorManifestRouteStreamId<TManifest>,
 > = JoorManifestRouteStreamClientArgs<TManifest, TId>;
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(

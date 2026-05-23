@@ -623,7 +623,7 @@ export type RpcManifestRouteStreamRequestOptions<
   TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteRequestOptions<TManifest, TId>;
 
-export type RpcManifestRouteClientArgs<
+type RpcManifestRouteClientArgsFor<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
 > =
@@ -637,14 +637,21 @@ export type RpcManifestRouteClientArgs<
         options: RpcManifestRouteRequestOptions<TManifest, TId>,
       ];
 
+export type RpcManifestRouteClientArgs<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
+> = TId extends RpcManifestRouteId<TManifest>
+  ? RpcManifestRouteClientArgsFor<TManifest, TId>
+  : never;
+
 export type RpcManifestRouteUnaryClientArgs<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteClientArgs<TManifest, TId>;
 
 export type RpcManifestRouteStreamClientArgs<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteStreamId<TManifest>,
+  TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteClientArgs<TManifest, TId>;
 
 export type RpcManifestRouteRequest<
@@ -1328,12 +1335,12 @@ export type RpcManifestStreamRouteRequestOptions<
 
 export type RpcManifestUnaryRouteClientArgs<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteUnaryClientArgs<TManifest, TId>;
 
 export type RpcManifestStreamRouteClientArgs<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteStreamId<TManifest>,
+  TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteStreamClientArgs<TManifest, TId>;
 
 export type RpcManifestUnaryRouteBodyResultHandler<

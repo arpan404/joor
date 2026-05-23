@@ -1156,16 +1156,29 @@ const tenantRouteClientArgs: RouteClientArgs<'tenants.current'> = [
   { ok: true },
   tenantRequestOptions,
 ];
+const defaultRouteClientArgs: RouteClientArgs = tenantRouteClientArgs;
 tenantRouteClientArgs[0].ok.valueOf();
+defaultRouteClientArgs[0].valueOf();
 const tenantUnaryClientArgs: UnaryRouteClientArgs<'tenants.current'> = tenantRouteClientArgs;
+const defaultUnaryRouteClientArgs: UnaryRouteClientArgs = tenantUnaryClientArgs;
 const tenantRouteUnaryClientArgs: RouteUnaryClientArgs<'tenants.current'> = tenantUnaryClientArgs;
+const defaultRouteUnaryClientArgs: RouteUnaryClientArgs =
+  tenantRouteUnaryClientArgs;
 tenantRouteUnaryClientArgs[0].ok.valueOf();
+defaultUnaryRouteClientArgs[0].valueOf();
+defaultRouteUnaryClientArgs[0].valueOf();
 const watchStreamClientArgs: StreamRouteClientArgs<'users.watch'> = [
   { userId: '1' },
   watchStreamRequestOptions,
 ];
+const defaultStreamRouteClientArgs: StreamRouteClientArgs =
+  watchStreamClientArgs;
 const watchRouteStreamClientArgs: RouteStreamClientArgs<'users.watch'> = watchStreamClientArgs;
+const defaultRouteStreamClientArgs: RouteStreamClientArgs =
+  watchRouteStreamClientArgs;
 watchRouteStreamClientArgs[0].userId.toUpperCase();
+defaultStreamRouteClientArgs[0].userId.toUpperCase();
+defaultRouteStreamClientArgs[0].userId.toUpperCase();
 const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
 const defaultNativeRouteHeaders: NativeRouteHeaders = nativeRouteHeaders;
 nativeRouteHeaders['x-tenant-id'].toUpperCase();
@@ -1220,20 +1233,39 @@ const nativeTenantClientArgs: NativeRouteClientArgs<'tenants.current'> = [
   { ok: true },
   nativeTenantRequestOptions,
 ];
+const defaultNativeRouteClientArgs: NativeRouteClientArgs =
+  nativeTenantClientArgs;
 nativeTenantClientArgs[0].ok.valueOf();
+defaultNativeRouteClientArgs[0].valueOf();
 const nativeTenantUnaryClientArgs: NativeUnaryRouteClientArgs<'tenants.current'> = nativeTenantClientArgs;
+const defaultNativeUnaryRouteClientArgs: NativeUnaryRouteClientArgs =
+  nativeTenantUnaryClientArgs;
 const nativeTenantRouteUnaryClientArgs: NativeRouteUnaryClientArgs<'tenants.current'> = nativeTenantUnaryClientArgs;
+const defaultNativeRouteUnaryClientArgs: NativeRouteUnaryClientArgs =
+  nativeTenantRouteUnaryClientArgs;
 nativeTenantRouteUnaryClientArgs[0].ok.valueOf();
+defaultNativeUnaryRouteClientArgs[0].valueOf();
+defaultNativeRouteUnaryClientArgs[0].valueOf();
 const nativeWatchStreamClientArgs: NativeStreamRouteClientArgs<'users.watch'> = [
   { userId: '1' },
   nativeWatchStreamRequestOptions,
 ];
+const defaultNativeStreamRouteClientArgs: NativeStreamRouteClientArgs =
+  nativeWatchStreamClientArgs;
 const nativeWatchRouteStreamClientArgs: NativeRouteStreamClientArgs<'users.watch'> = nativeWatchStreamClientArgs;
+const defaultNativeRouteStreamClientArgs: NativeRouteStreamClientArgs =
+  nativeWatchRouteStreamClientArgs;
 nativeWatchRouteStreamClientArgs[0].userId.toUpperCase();
+defaultNativeStreamRouteClientArgs[0].userId.toUpperCase();
+defaultNativeRouteStreamClientArgs[0].userId.toUpperCase();
 const nativeUserClientArgs: NativeRouteClientArgs<'users.get'> = [
   { id: '550e8400-e29b-41d4-a716-446655440000' },
 ];
+const defaultNativeUserClientArgs: NativeRouteClientArgs = nativeUserClientArgs;
 nativeUserClientArgs[0].id.toUpperCase();
+if ('id' in defaultNativeUserClientArgs[0]) {
+  defaultNativeUserClientArgs[0].id.toUpperCase();
+}
 const usersGetHasHeaders: RouteHasHeaders<'users.get'> = true;
 const defaultRouteHasHeaders: RouteHasHeaders = usersGetHasHeaders;
 usersGetHasHeaders.valueOf();
@@ -2082,6 +2114,10 @@ client.users.get({ ok: true });
 
 // @ts-expect-error generated callable leaves require route headers.
 client.tenants.current({ ok: true });
+
+// @ts-expect-error generated default route client args preserve route-specific required headers.
+const missingDefaultRouteClientArgs: RouteClientArgs = [{ ok: true }];
+missingDefaultRouteClientArgs[0].valueOf();
 
 // @ts-expect-error generated callable leaves validate required route headers.
 client.tenants.current({ ok: true }, { headers: {} });
