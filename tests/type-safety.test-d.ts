@@ -220,6 +220,7 @@ import {
   type JoorManifestStreamRouteHasResponseHeaders,
   type JoorManifestStreamRouteHeaders,
   type JoorManifestStreamRouteInput,
+  type JoorManifestStreamRouteOutput,
   type JoorManifestStreamRouteProcedure,
   type JoorManifestStreamRouteResponseHeaders,
   type JoorManifestStreamRouteRequestOptions,
@@ -379,6 +380,7 @@ import {
   type RpcManifestStreamRouteHasResponseHeaders,
   type RpcManifestStreamRouteHeaders,
   type RpcManifestStreamRouteInput,
+  type RpcManifestStreamRouteOutput,
   type RpcManifestStreamRouteProcedure,
   type RpcManifestStreamRouteResponseHeaders,
   type RpcManifestStreamRouteRequiresHeaders,
@@ -485,6 +487,7 @@ import {
   type RpcStreamRouteHasResponseHeaders,
   type RpcStreamRouteHeaders,
   type RpcStreamRouteInput,
+  type RpcStreamRouteOutput,
   type RpcStreamRouteProtocolRequest,
   type RpcStreamRouteProtocolRequestUnion,
   type RpcStreamRouteProcedure,
@@ -635,6 +638,7 @@ import {
   type RpcManifestStreamRouteBodyResultHandler as RpcSubpathManifestStreamRouteBodyResultHandler,
   type RpcManifestStreamRouteTransportBodyResultHandler as RpcSubpathManifestStreamRouteTransportBodyResultHandler,
   type RpcManifestStreamRouteProcedure as RpcSubpathManifestStreamRouteProcedure,
+  type RpcManifestStreamRouteOutput as RpcSubpathManifestStreamRouteOutput,
   type RpcManifestStreamRouteResponseHeaders as RpcSubpathManifestStreamRouteResponseHeaders,
   type RpcManifestStreamRouteRequestOptions as RpcSubpathManifestStreamRouteRequestOptions,
   type RpcManifestUnaryRouteClientArgs as RpcSubpathManifestUnaryRouteClientArgs,
@@ -663,6 +667,7 @@ import {
   type RpcRouteResultUnion as RpcSubpathRouteResultUnion,
   type RpcStreamRouteClientArgs as RpcSubpathStreamRouteClientArgs,
   type RpcStreamRouteProcedure as RpcSubpathStreamRouteProcedure,
+  type RpcStreamRouteOutput as RpcSubpathStreamRouteOutput,
   type RpcStreamRouteResponseHeaders as RpcSubpathStreamRouteResponseHeaders,
   type RpcStreamRouteRequestOptions as RpcSubpathStreamRouteRequestOptions,
   type RpcRouteRequestOptions as RpcSubpathRouteRequestOptions,
@@ -692,6 +697,7 @@ import {
   type JoorManifestStreamRouteBodyResultHandler as JoorSubpathManifestStreamRouteBodyResultHandler,
   type JoorManifestStreamRouteTransportBodyResultHandler as JoorSubpathManifestStreamRouteTransportBodyResultHandler,
   type JoorManifestStreamRouteProcedure as JoorSubpathManifestStreamRouteProcedure,
+  type JoorManifestStreamRouteOutput as JoorSubpathManifestStreamRouteOutput,
   type JoorManifestStreamRouteResponseHeaders as JoorSubpathManifestStreamRouteResponseHeaders,
   type JoorManifestStreamRouteRequestOptions as JoorSubpathManifestStreamRouteRequestOptions,
   type JoorManifestUnaryRouteClientArgs as JoorSubpathManifestUnaryRouteClientArgs,
@@ -1879,6 +1885,20 @@ const routeStreamInput: RpcStreamRouteInput<Routes, 'users.watch'> = {
   userId: '1',
 };
 routeStreamInput.userId.toUpperCase();
+type RouteStreamOutputIsNever = [
+  RpcStreamRouteOutput<Routes, 'users.watch'>,
+] extends [never]
+  ? true
+  : false;
+const routeStreamOutputIsNever: RouteStreamOutputIsNever = true;
+routeStreamOutputIsNever.valueOf();
+type RpcSubpathStreamRouteOutputIsNever = [
+  RpcSubpathStreamRouteOutput<Routes, 'users.watch'>,
+] extends [never]
+  ? true
+  : false;
+const rpcSubpathStreamRouteOutputIsNever: RpcSubpathStreamRouteOutputIsNever = true;
+rpcSubpathStreamRouteOutputIsNever.valueOf();
 const routeStreamEvent: RpcStreamRouteEvent<Routes, 'users.watch'> = {
   type: 'user.updated',
   userId: '1',
@@ -2613,6 +2633,23 @@ const manifestStreamRouteInput: JoorManifestStreamRouteInput<
   'users.watch'
 > = { userId: '1' };
 manifestStreamRouteInput.userId.toUpperCase();
+type ManifestStreamRouteOutputIsNever = [
+  JoorManifestStreamRouteOutput<typeof manifest, 'users.watch'>,
+] extends [never]
+  ? true
+  : false;
+const manifestStreamRouteOutputIsNever: ManifestStreamRouteOutputIsNever = true;
+manifestStreamRouteOutputIsNever.valueOf();
+type ManifestSubpathStreamRouteOutputIsNever = [
+  JoorSubpathManifestStreamRouteOutput<
+    typeof manifestFromSubpath,
+    'users.watch'
+  >,
+] extends [never]
+  ? true
+  : false;
+const manifestSubpathStreamRouteOutputIsNever: ManifestSubpathStreamRouteOutputIsNever = true;
+manifestSubpathStreamRouteOutputIsNever.valueOf();
 const manifestUnaryRouteOutput: JoorManifestUnaryRouteOutput<
   typeof manifest,
   'users.get'
@@ -3272,6 +3309,20 @@ const publicManifestStreamRouteInput: RpcManifestStreamRouteInput<
   'users.watch'
 > = { userId: '1' };
 publicManifestStreamRouteInput.userId.toUpperCase();
+type PublicManifestStreamRouteOutputIsNever = [
+  RpcManifestStreamRouteOutput<typeof manifest, 'users.watch'>,
+] extends [never]
+  ? true
+  : false;
+const publicManifestStreamRouteOutputIsNever: PublicManifestStreamRouteOutputIsNever = true;
+publicManifestStreamRouteOutputIsNever.valueOf();
+type RpcSubpathManifestStreamRouteOutputIsNever = [
+  RpcSubpathManifestStreamRouteOutput<typeof manifest, 'users.watch'>,
+] extends [never]
+  ? true
+  : false;
+const rpcSubpathManifestStreamRouteOutputIsNever: RpcSubpathManifestStreamRouteOutputIsNever = true;
+rpcSubpathManifestStreamRouteOutputIsNever.valueOf();
 const publicManifestUnaryRouteOutput: RpcManifestUnaryRouteOutput<
   typeof manifest,
   'users.get'

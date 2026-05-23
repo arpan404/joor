@@ -182,6 +182,11 @@ export type RpcUnaryRouteOutput<
   TId extends RpcUnaryRouteId<TRoutes>,
 > = RpcRouteOutput<TRoutes, TId>;
 
+export type RpcStreamRouteOutput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteOutput<TRoutes, TId>;
+
 export type RpcUnaryRouteHeaders<
   TRoutes extends RpcRouteMap,
   TId extends RpcUnaryRouteId<TRoutes>,

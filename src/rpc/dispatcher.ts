@@ -135,6 +135,11 @@ export type RpcManifestUnaryRouteOutput<
   TId extends RpcManifestUnaryRouteId<TManifest>,
 > = RpcManifestRouteOutput<TManifest, TId>;
 
+export type RpcManifestStreamRouteOutput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteOutput<TManifest, TId>;
+
 export type RpcManifestUnaryRouteHasHeaders<
   TManifest extends RpcManifest,
   TId extends RpcManifestUnaryRouteId<TManifest>,
