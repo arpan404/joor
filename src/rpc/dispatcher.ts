@@ -949,6 +949,19 @@ export type HandlerOptionServices<TOptions> =
     ? PluginServices<TPlugins>
     : Record<string, never>;
 
+declare const handlerOptionsManifest: unique symbol;
+
+export type HandlerOptionsManifest<TOptions> = TOptions extends {
+  readonly [handlerOptionsManifest]?: infer TManifest;
+}
+  ? TManifest
+  : never;
+
+export type HandlerOptionsBody<TOptions> =
+  TOptions extends HandlerOptions<readonly JoorPlugin<object>[], infer TBody>
+    ? TBody
+    : never;
+
 type HandlerOptionsHaveRequiredServices<TRequiredServices, TAvailableServices> =
   [TRequiredServices] extends [Record<string, never>]
     ? true
@@ -963,7 +976,9 @@ export type HandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptions<TPlugins, TBody> &
+> = HandlerOptions<TPlugins, TBody> & {
+  readonly [handlerOptionsManifest]?: TManifest;
+} & (
   (HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
@@ -973,7 +988,8 @@ export type HandlerOptionsFor<
         plugins: TPlugins & {
           readonly __joorMissingServices: RpcManifestRequiredServices<TManifest>;
         };
-      });
+      })
+);
 
 export type RpcManifestRouteUnaryHandlerOptionsFor<
   TManifest extends RpcManifest,

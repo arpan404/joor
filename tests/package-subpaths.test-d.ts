@@ -15,6 +15,7 @@ import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
 import { createBunFetch } from 'joor/runtime/bun';
 import { createCloudflareFetch } from 'joor/runtime/cloudflare';
+import { createCompiledRpcBodyResultHandler } from 'joor/runtime/compiled';
 import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';
 import { createDenoRpcRequestHandler } from 'joor/runtime/deno';
 import { createDenoTransportRequestHandler } from 'joor/runtime/deno-transport';
@@ -126,6 +127,7 @@ const packageSubpathValues = [
   createAwsLambdaHandler,
   createBunFetch,
   createCloudflareFetch,
+  createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
@@ -196,6 +198,11 @@ export type PackageSubpathSurface = [
   Bun.BunFetchHandler,
   Cloudflare.CloudflareFetchHandler,
   Compiled.CompiledRpcRequestHandler,
+  Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
+  Root.CompiledRpcTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Deno.DenoRpcRequestHandler,
   DenoCompiledTransport.DenoCompiledTransportRequestHandler,
   DenoTransport.DenoTransportRequestHandler,

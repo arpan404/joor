@@ -42,6 +42,8 @@ import type { ProcedureResult } from '../procedure/result.js';
 import type {
   HandlerHookContext,
   HandlerHooks,
+  HandlerOptionsBody,
+  HandlerOptionsManifest,
   JoorMiddleware,
   RpcBodyResult,
   RpcManifestBody,
@@ -240,6 +242,32 @@ type CompiledHookBody<TConfig> = TConfig extends {
       }
     ? TBody
     : JsonValue;
+
+type CompiledConfigManifest<TConfig> =
+  HandlerOptionsManifest<TConfig> extends infer TManifest
+    ? TManifest extends JoorManifest
+      ? TManifest
+      : never
+    : never;
+
+type CompiledConfigBody<TConfig> =
+  [HandlerOptionsBody<TConfig>] extends [never]
+    ? JsonValue
+    : HandlerOptionsBody<TConfig> extends JsonValue
+      ? HandlerOptionsBody<TConfig>
+      : JsonValue;
+
+export type CompiledRpcTransportBodyResultHandlerForConfig<TConfig> = [
+  CompiledConfigManifest<TConfig>,
+] extends [never]
+  ? CompiledRpcTransportBodyResultHandler<CompiledConfigBody<TConfig>>
+  : CompiledRpcTransportBodyResultHandlerFor<CompiledConfigManifest<TConfig>>;
+
+export type CompiledRpcBodyResultHandlerForConfig<TConfig> = [
+  CompiledConfigManifest<TConfig>,
+] extends [never]
+  ? CompiledRpcBodyResultHandler<CompiledConfigBody<TConfig>>
+  : CompiledRpcBodyResultHandlerFor<CompiledConfigManifest<TConfig>>;
 
 export type CompiledUnaryDispatch<TServices extends object = object> = (
   body: JsonObject,
@@ -915,7 +943,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
   preflight = true,
   serializationMode: CompiledSerializationMode = true,
   runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
-): CompiledRpcTransportBodyResultHandler => {
+): CompiledRpcTransportBodyResultHandlerForConfig<TConfig> => {
   const handlerConfig = (config ?? {}) as TConfig;
   const compiled = (runtimeState ??
     createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
@@ -1044,8 +1072,10 @@ export const createCompiledRpcTransportBodyResultHandler = <
       serializationMode
     );
   };
-  if (!hasBeforeHooks && !hasAfterHooks) return execute;
-  return async (
+  if (!hasBeforeHooks && !hasAfterHooks) {
+    return execute as CompiledRpcTransportBodyResultHandlerForConfig<TConfig>;
+  }
+  return (async (
     request: ContextRequestSource,
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
@@ -1058,7 +1088,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
     const result = await execute(request, body);
     if (!hasAfterHooks) return result;
     return runAfter(transportResultToResponse(result), request, hookBody);
-  };
+  }) as CompiledRpcTransportBodyResultHandlerForConfig<TConfig>;
 };
 
 export const createCompiledRpcBodyResultHandler = <
@@ -1067,14 +1097,20 @@ export const createCompiledRpcBodyResultHandler = <
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
-): CompiledRpcBodyResultHandler => {
+): CompiledRpcBodyResultHandlerForConfig<TConfig> => {
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
     config,
     unaryDispatch
-  );
-  return (request: Request, body: JsonValue): Promise<CompiledBodyResult> =>
-    handleTransport(createFetchRequestSource(request), body);
+  ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
+  return ((
+    request: Request,
+    body: JsonValue
+  ): Promise<CompiledBodyResult> =>
+    handleTransport(
+      createFetchRequestSource(request),
+      body
+    )) as CompiledRpcBodyResultHandlerForConfig<TConfig>;
 };
 
 export const createCompiledRpcHandler = <
@@ -1094,7 +1130,7 @@ export const createCompiledRpcHandler = <
     unaryDispatch,
     false,
     'response'
-  );
+  ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
     const early = requestPreflight(source, handlerConfig.path ?? '/rpc');

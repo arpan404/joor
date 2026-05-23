@@ -1,12 +1,16 @@
 import type { JoorPlugin, PluginServices } from './context/plugin.js';
 import type {
+  HandlerOptionsBody,
   HandlerOptions,
   HandlerOptionsFor,
+  HandlerOptionsManifest,
   RpcManifest,
   RpcManifestBody,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from './rpc/dispatcher.js';
+
+export type { HandlerOptionsBody, HandlerOptionsManifest };
 
 export type JoorConfig<
   TPlugins extends readonly JoorPlugin<object>[] =

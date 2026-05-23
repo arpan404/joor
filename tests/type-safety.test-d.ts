@@ -63,6 +63,7 @@ import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   createCompiledRpcHandler as createRootCompiledRpcHandler,
+  createCompiledRpcBodyResultHandler as createRootCompiledRpcBodyResultHandler,
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
@@ -288,6 +289,7 @@ import {
   type CompiledFixedDispatch as RootCompiledFixedDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
+  type CompiledRpcBodyResultHandlerForConfig as RootCompiledRpcBodyResultHandlerForConfig,
   type CompiledRpcRouteStreamBodyResultHandlerFor as RootCompiledRpcRouteStreamBodyResultHandlerFor,
   type CompiledRpcRouteStreamTransportBodyResultHandlerFor as RootCompiledRpcRouteStreamTransportBodyResultHandlerFor,
   type CompiledRpcRouteUnaryBodyResultHandlerFor as RootCompiledRpcRouteUnaryBodyResultHandlerFor,
@@ -296,6 +298,7 @@ import {
   type CompiledRpcStreamRouteTransportBodyResultHandlerFor as RootCompiledRpcStreamRouteTransportBodyResultHandlerFor,
   type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
+  type CompiledRpcTransportBodyResultHandlerForConfig as RootCompiledRpcTransportBodyResultHandlerForConfig,
   type CompiledRpcUnaryRouteBodyResultHandlerFor as RootCompiledRpcUnaryRouteBodyResultHandlerFor,
   type CompiledRpcUnaryRouteTransportBodyResultHandlerFor as RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
@@ -420,9 +423,11 @@ import {
   type HandlerHooks,
   type HandlerHooksFor,
   type HandlerOptionServices,
+  type HandlerOptionsBody,
   type HandlerOptionsArgs,
   type HandlerOptionsArgsFor,
   type HandlerOptionsFor,
+  type HandlerOptionsManifest,
   type HandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs,
   type HandlerOptions,
@@ -1039,8 +1044,10 @@ import {
   type DefineRouteUnaryHandlerOptions as RpcSubpathDefineRouteUnaryHandlerOptions,
   type DefineStreamRouteHandlerOptions as RpcSubpathDefineStreamRouteHandlerOptions,
   type DefineUnaryRouteHandlerOptions as RpcSubpathDefineUnaryRouteHandlerOptions,
+  type HandlerOptionsBody as RpcSubpathHandlerOptionsBody,
   type HandlerOptionsArgs as RpcSubpathHandlerOptionsArgs,
   type HandlerOptionsArgsFor as RpcSubpathHandlerOptionsArgsFor,
+  type HandlerOptionsManifest as RpcSubpathHandlerOptionsManifest,
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
@@ -1256,6 +1263,7 @@ import {
   compiledUncachedExecutionState,
   compiledAuthenticate,
   compiledAuthenticateUncached,
+  createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
   createCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState,
@@ -1276,6 +1284,7 @@ import type {
   CompiledFixedDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcBodyResultHandlerForConfig,
   CompiledRpcRouteStreamBodyResultHandlerFor,
   CompiledRpcRouteStreamTransportBodyResultHandlerFor,
   CompiledRpcRouteUnaryBodyResultHandlerFor,
@@ -1284,6 +1293,7 @@ import type {
   CompiledRpcStreamRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
   CompiledRpcTransportBodyResultHandlerFor,
+  CompiledRpcTransportBodyResultHandlerForConfig,
   CompiledRpcUnaryRouteBodyResultHandlerFor,
   CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRuntimeState,
@@ -3113,6 +3123,32 @@ const manifestAwareConfigShape: JoorConfigFor<
   readonly [typeof usersPlugin]
 > = manifestAwareConfig;
 manifestAwareConfigShape.plugins?.[0]?.name.toUpperCase();
+const manifestAwareConfigManifest: HandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = manifest;
+const rootManifestAwareConfigManifest: HandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = manifestAwareConfigManifest;
+const rpcSubpathManifestAwareConfigManifest: RpcSubpathHandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = rootManifestAwareConfigManifest;
+rpcSubpathManifestAwareConfigManifest.procedures['users.get'].valueOf();
+const manifestAwareConfigBody: HandlerOptionsBody<typeof manifestAwareConfig> =
+  { id: 'users.get', input: { id: '1' } };
+const rootManifestAwareConfigBody: HandlerOptionsBody<
+  typeof manifestAwareConfig
+> = manifestAwareConfigBody;
+const rpcSubpathManifestAwareConfigBody: RpcSubpathHandlerOptionsBody<
+  typeof manifestAwareConfig
+> = rootManifestAwareConfigBody;
+if (
+  !Array.isArray(rpcSubpathManifestAwareConfigBody) &&
+  rpcSubpathManifestAwareConfigBody.id === 'users.get'
+) {
+  rpcSubpathManifestAwareConfigBody.input.id.toUpperCase();
+  // @ts-expect-error manifest-aware config body metadata keeps route input exact.
+  rpcSubpathManifestAwareConfigBody.input.ok;
+}
 const manifestRouteUnaryConfigShape: JoorRouteUnaryConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9044,10 +9080,64 @@ createCompiledRpcTransportBodyResultHandler(
   manifestAwareConfig,
   _serviceTypedCompiledUnaryDispatch
 );
+const configTypedCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerForConfig<
+  typeof manifestAwareConfig
+> = createCompiledRpcTransportBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+const rootConfigTypedCompiledTransportHandler: RootCompiledRpcTransportBodyResultHandlerForConfig<
+  typeof manifestAwareConfig
+> = createRootCompiledRpcTransportBodyResultHandler(
+  _rootServiceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _rootServiceTypedCompiledUnaryDispatch
+);
+configTypedCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rootConfigTypedCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteUnaryBody
+);
+configTypedCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error config-aware compiled transport handlers preserve route input.
+  { id: 'users.get', input: { ok: true } }
+);
 createCompiledRpcHandler(
   _serviceTypedCompiledDispatch,
   manifestAwareConfig,
   _serviceTypedCompiledUnaryDispatch
+);
+const configTypedCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
+  typeof manifestAwareConfig
+> = createCompiledRpcBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+const rootConfigTypedCompiledBodyHandler: RootCompiledRpcBodyResultHandlerForConfig<
+  typeof manifestAwareConfig
+> = createRootCompiledRpcBodyResultHandler(
+  _rootServiceTypedCompiledDispatch,
+  manifestAwareConfig,
+  _rootServiceTypedCompiledUnaryDispatch
+);
+configTypedCompiledBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+rootConfigTypedCompiledBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteUnaryBody
+);
+configTypedCompiledBodyHandler(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error config-aware compiled body handlers preserve route input.
+  { id: 'users.get', input: { ok: true } }
 );
 createRootCompiledRpcTransportBodyResultHandler(
   _rootServiceTypedCompiledDispatch,
