@@ -4,6 +4,8 @@ import type {
   HandlerOptionsFor,
   RpcManifest,
   RpcManifestBody,
+  RpcManifestRouteStreamBody,
+  RpcManifestRouteUnaryBody,
   RpcManifestStreamRouteBody,
   RpcManifestUnaryRouteBody,
 } from './rpc/dispatcher.js';
@@ -31,8 +33,8 @@ export type JoorRouteUnaryConfigFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = JoorConfigFor<TManifest, TPlugins, TBody>;
 
 export type JoorUnaryRouteConfigFor<
@@ -47,8 +49,8 @@ export type JoorRouteStreamConfigFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = JoorConfigFor<TManifest, TPlugins, TBody>;
 
 export type JoorStreamRouteConfigFor<
@@ -83,8 +85,8 @@ export type DefineConfigFor<TManifest extends RpcManifest> = <
 
 export type DefineRouteUnaryConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
-  const TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  const TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 >(
   config: JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody>
 ) => JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody>;
@@ -94,8 +96,8 @@ export type DefineUnaryRouteConfigFor<TManifest extends RpcManifest> =
 
 export type DefineRouteStreamConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
-  const TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  const TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 >(
   config: JoorRouteStreamConfigFor<TManifest, TPlugins, TBody>
 ) => JoorRouteStreamConfigFor<TManifest, TPlugins, TBody>;
