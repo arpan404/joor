@@ -21,6 +21,7 @@ import type {
   RpcRouteBatchRequest,
   RpcUnaryRouteBatchRequest,
   RpcRouteBatchResults,
+  RpcUnaryRouteBatchResults,
   RpcManifestClientOptions,
   RpcManifestTransportClient,
   RpcRouteClientArgs,
@@ -396,6 +397,14 @@ export type JoorManifestRouteBatchResults<
     | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
   )[],
 > = RpcRouteBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type JoorManifestUnaryRouteBatchResults<
+  TManifest,
+  TRequests extends readonly (
+    | JoorManifestUnaryRouteRequestUnion<TManifest>
+    | JoorManifestUnaryRouteProtocolRequestUnion<TManifest>
+  )[],
+> = RpcUnaryRouteBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestRouteStreamEvent<
   TManifest,

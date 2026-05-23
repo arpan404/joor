@@ -539,6 +539,11 @@ export type RpcRouteBatchResults<
   >;
 };
 
+export type RpcUnaryRouteBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[],
+> = RpcRouteBatchResults<TRoutes, TRequests>;
+
 export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
   ? { headers?: ClientHeaderValues }
   : ProcedureRequiresHeaders<TProcedure> extends false

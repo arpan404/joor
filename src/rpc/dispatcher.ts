@@ -449,6 +449,11 @@ export type RpcManifestRouteBatchResults<
   >;
 };
 
+export type RpcManifestUnaryRouteBatchResults<
+  TManifest extends RpcManifest,
+  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[],
+> = RpcManifestRouteBatchResults<TManifest, TRequests>;
+
 export type RpcManifestRouteStreamProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = {
