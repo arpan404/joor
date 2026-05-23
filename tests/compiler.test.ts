@@ -603,7 +603,9 @@ describe('compiler', () => {
         usageFile,
         `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteUnaryBatchRequest, type RouteUnaryBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientArgs, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteInput, type RouteOutput, type RouteProcedure, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResponseHeaders, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamBody, type RouteStreamBodyResult, type RouteStreamBodyResultFor, type RouteStreamClientArgs, type RouteStreamClientHeaders, type RouteStreamEvent, type RouteStreamHeaders, type RouteStreamInput, type RouteStreamProcedure, type RouteStreamProtocolRequest, type RouteStreamRequestOptions, type RouteStreamTransport, type RouteStreamTransportClient, type RouteTransportClient, type RouteUnaryBody, type RouteUnaryBodyResult, type RouteUnaryBodyResultFor, type RouteUnaryClientArgs, type RouteUnaryClientHeaders, type RouteUnaryEnvelope, type RouteUnaryEnvelopeUnion, type RouteUnaryHeaders, type RouteUnaryInput, type RouteUnaryOutput, type RouteUnaryProcedure, type RouteUnaryProtocolRequest, type RouteUnaryRequest, type RouteUnaryRequestOptions, type RouteUnaryRequestUnion, type RouteUnaryResponseHeaders, type RouteUnaryResult, type RouteUnaryResultUnion, type RouteUnaryTransport, type RouteUnaryTransportClient, type StreamRouteBody, type StreamRouteBodyResult, type StreamRouteBodyResultFor, type StreamRouteClientArgs, type StreamRouteErrorCode, type StreamRouteErrorDetails, type StreamRouteEvent, type StreamRouteHasResponseHeaders, type StreamRouteInput, type StreamRouteProtocolRequest, type StreamRouteProtocolRequestUnion, type StreamRouteRequestOptions, type StreamRouteTransport, type StreamRouteTransportClient, type TransportClient, type UnaryRouteBatchResults, type UnaryRouteBody, type UnaryRouteBodyResult, type UnaryRouteBodyResultFor, type UnaryRouteClientArgs, type UnaryRouteEnvelope, type UnaryRouteEnvelopeUnion, type UnaryRouteErrorCode, type UnaryRouteErrorDetails, type UnaryRouteHasHeaders, type UnaryRouteHasResponseHeaders, type UnaryRouteBatchRequest, type UnaryRouteInput, type UnaryRouteOutput, type UnaryRouteProtocolRequest, type UnaryRouteProtocolRequestUnion, type UnaryRouteRequest, type UnaryRouteRequestOptions, type UnaryRouteRequestUnion, type UnaryRouteRequiresHeaders, type UnaryRouteRequiresResponseHeaders, type UnaryRouteResponseHeaders, type UnaryRouteResult, type UnaryRouteResultUnion, type UnaryRouteTransport, type UnaryRouteTransportClient } from './client.js';
 import { fetch as nativeFetch, nativeBody as nativeBodyValue, nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeCompiledBodyResult, type NativeCompiledBodyResultFor, type NativeCompiledTransportResult, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeRouteUnaryBatchRequest, type NativeRouteUnaryBatchResults, type NativeRequiredServices, type NativeRouteBatchRequest, type NativeRouteBatchResults, type NativeUnaryRouteBatchRequest, type NativeUnaryRouteBatchResults, type NativeRouteBody, type NativeRouteBodyResult, type NativeRouteBodyResultFor, type NativeRouteClientArgs, type NativeRouteClientHeaders, type NativeRouteEnvelope, type NativeRouteEnvelopeUnion, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteProcedure, type NativeRouteProtocolRequest, type NativeRouteProtocolRequestUnion, type NativeRouteRequest, type NativeRouteRequestOptions, type NativeRouteRequestUnion, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteStreamBody, type NativeRouteStreamBodyResult, type NativeRouteStreamBodyResultFor, type NativeRouteUnaryBody, type NativeRouteUnaryBodyResult, type NativeRouteUnaryBodyResultFor, type NativeRouteUnaryEnvelopeUnion, type NativeRouteUnaryResultUnion, type NativeRouteServices, type NativeRouteStreamClientArgs, type NativeRouteStreamClientHeaders, type NativeRouteStreamEvent, type NativeRouteStreamHeaders, type NativeRouteStreamInput, type NativeRouteStreamProcedure, type NativeRouteStreamProtocolRequest, type NativeRouteStreamProtocolRequestUnion, type NativeRouteStreamRequestOptions, type NativeRouteUnaryClientArgs, type NativeRouteUnaryClientHeaders, type NativeRouteUnaryEnvelope, type NativeRouteUnaryHeaders, type NativeRouteUnaryInput, type NativeRouteUnaryOutput, type NativeRouteUnaryProcedure, type NativeRouteUnaryProtocolRequest, type NativeRouteUnaryProtocolRequestUnion, type NativeRouteUnaryRequestOptions, type NativeRouteUnaryResponseHeaders, type NativeRouteUnaryResult, type NativeRuntimeState, type NativeServices, type NativeStreamEvent, type NativeStreamProtocolRequest, type NativeStreamRouteBody, type NativeStreamRouteBodyResult, type NativeStreamRouteBodyResultFor, type NativeStreamRouteClientArgs, type NativeStreamRouteClientHeaders, type NativeStreamRouteErrorCode, type NativeStreamRouteErrorDetails, type NativeStreamRouteEvent, type NativeStreamRouteHasResponseHeaders, type NativeStreamRouteHeaders, type NativeStreamRouteInput, type NativeStreamRouteProcedure, type NativeStreamRouteProtocolRequest, type NativeStreamRouteProtocolRequestUnion, type NativeStreamRouteRequest, type NativeStreamRouteRequestOptions, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest, type NativeUnaryRouteBody, type NativeUnaryRouteBodyResult, type NativeUnaryRouteBodyResultFor, type NativeUnaryRouteClientArgs, type NativeUnaryRouteClientHeaders, type NativeUnaryRouteEnvelope, type NativeUnaryRouteEnvelopeUnion, type NativeUnaryRouteErrorCode, type NativeUnaryRouteErrorDetails, type NativeUnaryRouteHasHeaders, type NativeUnaryRouteHasResponseHeaders, type NativeUnaryRouteHeaders, type NativeUnaryRouteInput, type NativeUnaryRouteOutput, type NativeUnaryRouteProcedure, type NativeUnaryRouteProtocolRequest, type NativeUnaryRouteProtocolRequestUnion, type NativeUnaryRouteRequest, type NativeUnaryRouteRequestOptions, type NativeUnaryRouteRequiresHeaders, type NativeUnaryRouteRequiresResponseHeaders, type NativeUnaryRouteResponseHeaders, type NativeUnaryRouteResult, type NativeUnaryRouteResultUnion } from './dispatcher.safe.js';
+import type { NativeConfig, NativeDefineConfig, NativeDefineHandlerOptions, NativeDefineRouteStreamConfig, NativeDefineRouteStreamHandlerOptions, NativeDefineRouteUnaryConfig, NativeDefineRouteUnaryHandlerOptions, NativeDefineStreamRouteConfig, NativeDefineStreamRouteHandlerOptions, NativeDefineUnaryRouteConfig, NativeDefineUnaryRouteHandlerOptions, NativeHandlerHookContext, NativeHandlerHooks, NativeHandlerOptionServices, NativeHandlerOptions, NativeHandlerOptionsArgs, NativeHandlerOptionsArgsFor, NativeMiddleware, NativeRouteStreamConfig, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamMiddleware, NativeRouteUnaryConfig, NativeRouteUnaryHandlerHookContext, NativeRouteUnaryHandlerHooks, NativeRouteUnaryHandlerOptions, NativeRouteUnaryHandlerOptionsArgs, NativeRouteUnaryMiddleware, NativeStreamRouteConfig, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteMiddleware, NativeUnaryRouteConfig, NativeUnaryRouteHandlerHookContext, NativeUnaryRouteHandlerHooks, NativeUnaryRouteHandlerOptions, NativeUnaryRouteHandlerOptionsArgs, NativeUnaryRouteMiddleware } from './dispatcher.safe.js';
 import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
+import { createPlugin } from 'joor';
 import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
 import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeServer } from './node.js';
@@ -672,6 +674,12 @@ const requiredServices: RequiredServices = {
     },
   },
 };
+const nativeUsersPlugin = createPlugin({
+  name: 'users',
+  setup() {
+    return requiredServices;
+  },
+});
 const routeServices: RouteServices<'users.get'> = requiredServices;
 routeServices.users.findById('1')?.name.toUpperCase();
 const routeInput: RouteInput<'users.get'> = {
@@ -1200,6 +1208,194 @@ const nativeRouteUnaryBody: NativeRouteUnaryBody = nativeUnaryRouteBody;
 const nativeStreamRouteBody: NativeStreamRouteBody =
   nativeStreamRouteProtocolRequest;
 const nativeRouteStreamBody: NativeRouteStreamBody = nativeStreamRouteBody;
+const nativeConfig: NativeConfig<readonly [typeof nativeUsersPlugin]> = {
+  plugins: [nativeUsersPlugin] as const,
+};
+const nativeUnaryRouteConfig: NativeUnaryRouteConfig<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeConfig;
+const nativeRouteUnaryConfig: NativeRouteUnaryConfig<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteConfig;
+const nativeStreamRouteConfig: NativeStreamRouteConfig<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = nativeConfig;
+const nativeRouteStreamConfig: NativeRouteStreamConfig<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteConfig;
+const nativeHandlerHooks: NativeHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = {
+  beforeRequest(_request, context) {
+    context.body?.input.id.toUpperCase();
+    context.services.users.findById('1')?.name.toUpperCase();
+    return undefined;
+  },
+};
+const nativeUnaryRouteHandlerHooks: NativeUnaryRouteHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeHandlerHooks;
+const nativeRouteUnaryHandlerHooks: NativeRouteUnaryHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteHandlerHooks;
+const nativeStreamRouteHandlerHooks: NativeStreamRouteHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = {
+  beforeRequest(_request, context) {
+    context.body?.input.userId.toUpperCase();
+    context.services.users.findById('1')?.id.toUpperCase();
+    return undefined;
+  },
+};
+const nativeRouteStreamHandlerHooks: NativeRouteStreamHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteHandlerHooks;
+const nativeHandlerOptions: NativeHandlerOptions<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: nativeHandlerHooks,
+};
+const nativeUnaryRouteHandlerOptions: NativeUnaryRouteHandlerOptions<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeHandlerOptions;
+const nativeRouteUnaryHandlerOptions: NativeRouteUnaryHandlerOptions<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteHandlerOptions;
+const nativeStreamRouteHandlerOptions: NativeStreamRouteHandlerOptions<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: nativeStreamRouteHandlerHooks,
+};
+const nativeRouteStreamHandlerOptions: NativeRouteStreamHandlerOptions<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteHandlerOptions;
+const nativeHandlerOptionsArgs: NativeHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = [nativeHandlerOptions];
+const nativeHandlerOptionsArgsFor: NativeHandlerOptionsArgsFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeHandlerOptionsArgs;
+const nativeUnaryRouteHandlerOptionsArgs: NativeUnaryRouteHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = [nativeUnaryRouteHandlerOptions];
+const nativeRouteUnaryHandlerOptionsArgs: NativeRouteUnaryHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteHandlerOptionsArgs;
+const nativeStreamRouteHandlerOptionsArgs: NativeStreamRouteHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = [nativeStreamRouteHandlerOptions];
+const nativeRouteStreamHandlerOptionsArgs: NativeRouteStreamHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteHandlerOptionsArgs;
+const nativeHandlerHookContext: NativeHandlerHookContext<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = {
+  services: requiredServices,
+  body: nativeUnaryRouteBody,
+};
+const nativeUnaryRouteHandlerHookContext: NativeUnaryRouteHandlerHookContext<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeHandlerHookContext;
+const nativeRouteUnaryHandlerHookContext: NativeRouteUnaryHandlerHookContext<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteHandlerHookContext;
+const nativeStreamRouteHandlerHookContext: NativeStreamRouteHandlerHookContext<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = {
+  services: requiredServices,
+  body: nativeStreamRouteBody,
+};
+const nativeRouteStreamHandlerHookContext: NativeRouteStreamHandlerHookContext<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteHandlerHookContext;
+const nativeMiddleware: NativeMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = { name: 'native', ...nativeHandlerHooks };
+const nativeUnaryRouteMiddleware: NativeUnaryRouteMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody
+> = nativeMiddleware;
+const nativeRouteUnaryMiddleware: NativeRouteUnaryMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody
+> = nativeUnaryRouteMiddleware;
+const nativeStreamRouteMiddleware: NativeStreamRouteMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody
+> = { name: 'native-stream', ...nativeStreamRouteHandlerHooks };
+const nativeRouteStreamMiddleware: NativeRouteStreamMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody
+> = nativeStreamRouteMiddleware;
+const nativeHandlerOptionServices: NativeHandlerOptionServices<
+  typeof nativeHandlerOptions
+> = requiredServices;
+nativeHandlerOptionServices.users.findById('1')?.name.toUpperCase();
+const nativeDefineConfig: NativeDefineConfig = (config) => config;
+const nativeDefineUnaryRouteConfig: NativeDefineUnaryRouteConfig = nativeDefineConfig;
+const nativeDefineRouteUnaryConfig: NativeDefineRouteUnaryConfig =
+  nativeDefineUnaryRouteConfig;
+const nativeDefineStreamRouteConfig: NativeDefineStreamRouteConfig =
+  nativeDefineConfig;
+const nativeDefineRouteStreamConfig: NativeDefineRouteStreamConfig =
+  nativeDefineStreamRouteConfig;
+nativeDefineRouteUnaryConfig(nativeRouteUnaryConfig).plugins?.[0]?.name.toUpperCase();
+nativeDefineRouteStreamConfig(nativeRouteStreamConfig).plugins?.[0]?.name.toUpperCase();
+const nativeDefineHandlerOptions: NativeDefineHandlerOptions = (options) =>
+  options;
+const nativeDefineUnaryRouteHandlerOptions: NativeDefineUnaryRouteHandlerOptions =
+  nativeDefineHandlerOptions;
+const nativeDefineRouteUnaryHandlerOptions: NativeDefineRouteUnaryHandlerOptions =
+  nativeDefineUnaryRouteHandlerOptions;
+const nativeDefineStreamRouteHandlerOptions: NativeDefineStreamRouteHandlerOptions =
+  nativeDefineHandlerOptions;
+const nativeDefineRouteStreamHandlerOptions: NativeDefineRouteStreamHandlerOptions =
+  nativeDefineStreamRouteHandlerOptions;
+nativeDefineRouteUnaryHandlerOptions(nativeRouteUnaryHandlerOptions)
+  .hooks?.beforeRequest?.(
+    new Request('https://example.com/rpc'),
+    nativeRouteUnaryHandlerHookContext
+  );
+nativeDefineRouteStreamHandlerOptions(nativeRouteStreamHandlerOptions)
+  .hooks?.beforeRequest?.(
+    new Request('https://example.com/rpc'),
+    nativeRouteStreamHandlerHookContext
+  );
+nativeHandlerOptionsArgsFor[0]?.plugins?.[0]?.name.toUpperCase();
+nativeRouteUnaryHandlerOptionsArgs[0]?.middleware?.concat(
+  nativeRouteUnaryMiddleware
+);
+nativeRouteStreamHandlerOptionsArgs[0]?.middleware?.concat(
+  nativeRouteStreamMiddleware
+);
 const nativeBody: NativeBody = nativeUnaryBody;
 const nativeRouteBodyResult: NativeRouteBodyResult = routeBodyResult;
 const nativeUnaryRouteBodyResult: NativeUnaryRouteBodyResult =
