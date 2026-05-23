@@ -1,4 +1,10 @@
-import type { ProcedureRuntime, ProcedureServices } from './procedure/types.js';
+import type { JsonValue } from './schema/json.js';
+import type {
+  ProcedureErrorCode,
+  ProcedureErrorDetails,
+  ProcedureRuntime,
+  ProcedureServices,
+} from './procedure/types.js';
 import type { UnionToIntersection } from './context/plugin.js';
 import type {
   RpcManifest,
@@ -22,7 +28,6 @@ import type {
   RpcRouteEnvelopeUnion,
   RpcRouteError,
   RpcRouteErrorCode,
-  RpcRouteErrorDetails,
   RpcRouteHasHeaders,
   RpcRouteHasResponseHeaders,
   RpcRouteHeaders,
@@ -161,7 +166,10 @@ export type JoorManifestRouteErrorDetails<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
   TCode extends JoorManifestRouteErrorCode<TManifest, TId>,
-> = RpcRouteErrorDetails<JoorManifestRoutes<TManifest>, TId, TCode>;
+> =
+  TCode extends ProcedureErrorCode<JoorManifestRouteProcedure<TManifest, TId>>
+    ? ProcedureErrorDetails<JoorManifestRouteProcedure<TManifest, TId>, TCode>
+    : JsonValue | undefined;
 
 export type JoorManifestRouteEnvelope<
   TManifest,

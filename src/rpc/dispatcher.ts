@@ -168,7 +168,12 @@ export type RpcManifestRouteError<
 export type RpcManifestRouteErrorCode<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
-> = RpcManifestRouteError<TManifest, TId>['code'];
+> =
+  | ProcedureErrorCode<RpcManifestRouteProcedure<TManifest, TId>>
+  | Exclude<
+      RpcFrameworkErrorCode,
+      ProcedureErrorCode<RpcManifestRouteProcedure<TManifest, TId>>
+    >;
 
 export type RpcManifestRouteErrorDetails<
   TManifest extends RpcManifest,

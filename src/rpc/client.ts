@@ -111,13 +111,21 @@ export type RpcRouteError<
 export type RpcRouteErrorCode<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
-> = ProcedureErrorCode<RpcRouteProcedure<TRoutes, TId>>;
+> =
+  | ProcedureErrorCode<RpcRouteProcedure<TRoutes, TId>>
+  | Exclude<
+      RpcFrameworkErrorCode,
+      ProcedureErrorCode<RpcRouteProcedure<TRoutes, TId>>
+    >;
 
 export type RpcRouteErrorDetails<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
   TCode extends RpcRouteErrorCode<TRoutes, TId>,
-> = ProcedureErrorDetails<RpcRouteProcedure<TRoutes, TId>, TCode>;
+> =
+  TCode extends ProcedureErrorCode<RpcRouteProcedure<TRoutes, TId>>
+    ? ProcedureErrorDetails<RpcRouteProcedure<TRoutes, TId>, TCode>
+    : JsonValue | undefined;
 
 export type RpcRouteStreamEvent<
   TRoutes extends RpcRouteMap,

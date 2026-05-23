@@ -1493,21 +1493,45 @@ const subpathRouteRequiresResponseHeaders: RpcSubpathRouteRequiresResponseHeader
 subpathRouteRequiresResponseHeaders.valueOf();
 const routeErrorCode: RpcRouteErrorCode<Routes, 'users.get'> = 'NOT_FOUND';
 routeErrorCode.toUpperCase();
+const routeFrameworkErrorCode: RpcRouteErrorCode<Routes, 'users.get'> =
+  'VALIDATION_ERROR';
+routeFrameworkErrorCode.toUpperCase();
 const routeErrorDetails: RpcRouteErrorDetails<
   Routes,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
 routeErrorDetails.message.toUpperCase();
+const routeFrameworkErrorDetails: RpcRouteErrorDetails<
+  Routes,
+  'users.get',
+  'VALIDATION_ERROR'
+> = { issue: 'input' };
+if (isJsonObject(routeFrameworkErrorDetails)) {
+  routeFrameworkErrorDetails['issue'];
+}
 const subpathRouteErrorCode: RpcSubpathRouteErrorCode<Routes, 'users.get'> =
   'NOT_FOUND';
 subpathRouteErrorCode.toUpperCase();
+const subpathRouteFrameworkErrorCode: RpcSubpathRouteErrorCode<
+  Routes,
+  'users.get'
+> = routeFrameworkErrorCode;
+subpathRouteFrameworkErrorCode.toUpperCase();
 const subpathRouteErrorDetails: RpcSubpathRouteErrorDetails<
   Routes,
   'users.get',
   'NOT_FOUND'
 > = routeErrorDetails;
 subpathRouteErrorDetails.message.toUpperCase();
+const subpathRouteFrameworkErrorDetails: RpcSubpathRouteErrorDetails<
+  Routes,
+  'users.get',
+  'VALIDATION_ERROR'
+> = routeFrameworkErrorDetails;
+if (isJsonObject(subpathRouteFrameworkErrorDetails)) {
+  subpathRouteFrameworkErrorDetails['issue'];
+}
 // @ts-expect-error route error details preserve the selected error schema.
 const _wrongRouteErrorDetails: RpcRouteErrorDetails<
   Routes,
@@ -2031,12 +2055,25 @@ const manifestRouteErrorCode: JoorManifestRouteErrorCode<
   'users.get'
 > = 'NOT_FOUND';
 manifestRouteErrorCode.toUpperCase();
+const manifestRouteFrameworkErrorCode: JoorManifestRouteErrorCode<
+  typeof manifest,
+  'users.get'
+> = 'VALIDATION_ERROR';
+manifestRouteFrameworkErrorCode.toUpperCase();
 const manifestRouteErrorDetails: JoorManifestRouteErrorDetails<
   typeof manifest,
   'users.get',
   'NOT_FOUND'
 > = { message: 'Missing' };
 manifestRouteErrorDetails.message.toUpperCase();
+const manifestRouteFrameworkErrorDetails: JoorManifestRouteErrorDetails<
+  typeof manifest,
+  'users.get',
+  'VALIDATION_ERROR'
+> = { issue: 'input' };
+if (isJsonObject(manifestRouteFrameworkErrorDetails)) {
+  manifestRouteFrameworkErrorDetails['issue'];
+}
 // @ts-expect-error declared manifest route errors require schema-backed details.
 const _missingManifestRouteErrorDetails: JoorManifestRouteError<
   typeof manifest,
