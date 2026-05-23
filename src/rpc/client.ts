@@ -733,7 +733,8 @@ type RpcRouteBatchResultFor<
 
 export type RpcRouteBatchResults<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[],
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[] =
+    readonly RpcRouteBatchResultRequest<TRoutes>[],
 > = {
   [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
     TRoutes,
@@ -743,12 +744,14 @@ export type RpcRouteBatchResults<
 
 export type RpcRouteUnaryBatchResults<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[],
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[] =
+    readonly RpcRouteBatchResultRequest<TRoutes>[],
 > = RpcRouteBatchResults<TRoutes, TRequests>;
 
 export type RpcUnaryRouteBatchResults<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[],
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[] =
+    readonly RpcRouteBatchResultRequest<TRoutes>[],
 > = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
 
 export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]

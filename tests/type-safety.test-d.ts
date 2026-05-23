@@ -3545,8 +3545,23 @@ const manifestUnaryRouteBatchResults: JoorManifestUnaryRouteBatchResults<
   typeof manifest,
   [typeof manifestUnaryRouteRequest]
 > = manifestRouteBatchResults;
+const defaultManifestRouteBatchResults: JoorManifestRouteBatchResults<
+  typeof manifest
+> = manifestRouteBatchResults;
+const defaultManifestUnaryRouteBatchResults: JoorManifestUnaryRouteBatchResults<
+  typeof manifest
+> = manifestUnaryRouteBatchResults;
 manifestRouteBatchResults[0].id.toUpperCase();
 manifestUnaryRouteBatchResults[0].id.toUpperCase();
+const defaultManifestRouteBatchResult = defaultManifestRouteBatchResults[0];
+if (defaultManifestRouteBatchResult) {
+  defaultManifestRouteBatchResult.id.toUpperCase();
+}
+const defaultManifestUnaryRouteBatchResult =
+  defaultManifestUnaryRouteBatchResults[0];
+if (defaultManifestUnaryRouteBatchResult) {
+  defaultManifestUnaryRouteBatchResult.id.toUpperCase();
+}
 const manifestStreamEvent: JoorManifestRouteStreamEvent<
   typeof manifest,
   'users.watch'
@@ -4301,7 +4316,23 @@ const publicManifestUnaryRouteBatchResults: RpcManifestUnaryRouteBatchResults<
   typeof manifest,
   readonly [typeof publicManifestUnaryRouteRequest]
 > = publicManifestBatchResults;
+const defaultPublicManifestBatchResults: RpcManifestRouteBatchResults<
+  typeof manifest
+> = publicManifestBatchResults;
+const defaultPublicManifestUnaryBatchResults: RpcManifestUnaryRouteBatchResults<
+  typeof manifest
+> = publicManifestUnaryRouteBatchResults;
 publicManifestUnaryRouteBatchResults[0].id.toUpperCase();
+const defaultPublicManifestBatchResult =
+  defaultPublicManifestBatchResults[0];
+if (defaultPublicManifestBatchResult) {
+  defaultPublicManifestBatchResult.id.toUpperCase();
+}
+const defaultPublicManifestUnaryBatchResult =
+  defaultPublicManifestUnaryBatchResults[0];
+if (defaultPublicManifestUnaryBatchResult) {
+  defaultPublicManifestUnaryBatchResult.id.toUpperCase();
+}
 const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
@@ -9371,7 +9402,13 @@ const unaryRouteBatchResults: RpcUnaryRouteBatchResults<
   Routes,
   [typeof typedUnaryRouteRequest]
 > = [routeEnvelope];
+const defaultRouteBatchResults: RpcUnaryRouteBatchResults<Routes> =
+  unaryRouteBatchResults;
 unaryRouteBatchResults[0].id.toUpperCase();
+const defaultRouteBatchResult = defaultRouteBatchResults[0];
+if (defaultRouteBatchResult) {
+  defaultRouteBatchResult.id.toUpperCase();
+}
 const routeBodyResultFor: RpcRouteBodyResultFor<
   Routes,
   typeof routeProtocolRequest

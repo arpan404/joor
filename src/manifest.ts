@@ -632,6 +632,9 @@ export type JoorManifestRouteBatchResults<
   TRequests extends readonly (
     | JoorManifestRouteRequestUnion<TManifest>
     | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
+  )[] = readonly (
+    | JoorManifestRouteRequestUnion<TManifest>
+    | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
   )[],
 > = RpcRouteBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
 
@@ -640,12 +643,18 @@ export type JoorManifestRouteUnaryBatchResults<
   TRequests extends readonly (
     | JoorManifestRouteUnaryRequestUnion<TManifest>
     | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
+  )[] = readonly (
+    | JoorManifestRouteUnaryRequestUnion<TManifest>
+    | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
   )[],
 > = RpcRouteUnaryBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestUnaryRouteBatchResults<
   TManifest,
   TRequests extends readonly (
+    | JoorManifestRouteUnaryRequestUnion<TManifest>
+    | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
+  )[] = readonly (
     | JoorManifestRouteUnaryRequestUnion<TManifest>
     | JoorManifestRouteUnaryProtocolRequestUnion<TManifest>
   )[],

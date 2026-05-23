@@ -1316,14 +1316,23 @@ configured.batch([request] as const).then((results) => {
   const exactUnary: UnaryRouteBatchResults<readonly [typeof request]> = exact;
   const exactRouteUnary: RouteUnaryBatchResults<readonly [typeof request]> =
     exactUnary;
+  const defaultResults: RouteBatchResults = results;
+  const defaultUnaryResults: UnaryRouteBatchResults = exactUnary;
   const firstId: 'users.get' = exact[0].id;
   firstId.toUpperCase();
   if (exact[0].ok) exact[0].data.name.toUpperCase();
   if (exactRouteUnary[0].ok) exactRouteUnary[0].data.name.toUpperCase();
+  const defaultResult = defaultResults[0];
+  if (defaultResult) defaultResult.id.toUpperCase();
+  const defaultUnaryResult = defaultUnaryResults[0];
+  if (defaultUnaryResult) defaultUnaryResult.id.toUpperCase();
 });
 batchFunction([request] as const).then((results) => {
   const exact: RouteBatchResults<readonly [typeof request]> = results;
+  const defaultResults: RouteBatchResults = exact;
   if (exact[0].ok) exact[0].data.name.toUpperCase();
+  const defaultResult = defaultResults[0];
+  if (defaultResult) defaultResult.id.toUpperCase();
 });
 type _WrongRouteBatchResults = RouteBatchResults<
   // @ts-expect-error generated route batch result helpers reject invalid request tuples.

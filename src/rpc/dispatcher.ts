@@ -452,7 +452,8 @@ type RpcManifestRouteBatchResultFor<
 
 export type RpcManifestRouteBatchResults<
   TManifest extends RpcManifest,
-  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[],
+  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[] =
+    readonly RpcManifestRouteBatchResultRequest<TManifest>[],
 > = {
   [TIndex in keyof TRequests]: RpcManifestRouteBatchResultFor<
     TManifest,
@@ -462,7 +463,8 @@ export type RpcManifestRouteBatchResults<
 
 export type RpcManifestRouteUnaryBatchResults<
   TManifest extends RpcManifest,
-  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[],
+  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[] =
+    readonly RpcManifestRouteBatchResultRequest<TManifest>[],
 > = RpcManifestRouteBatchResults<TManifest, TRequests>;
 
 export type RpcManifestRouteStreamProtocolRequestUnion<
@@ -1282,7 +1284,8 @@ export type RpcManifestUnaryRouteBatchRequest<
 
 export type RpcManifestUnaryRouteBatchResults<
   TManifest extends RpcManifest,
-  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[],
+  TRequests extends readonly RpcManifestRouteBatchResultRequest<TManifest>[] =
+    readonly RpcManifestRouteBatchResultRequest<TManifest>[],
 > = RpcManifestRouteUnaryBatchResults<TManifest, TRequests>;
 
 export type RpcManifestUnaryRouteBodyResultFor<
