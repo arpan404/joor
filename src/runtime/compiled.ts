@@ -261,22 +261,40 @@ export type CompiledFixedUnaryDispatch<
   state: ExecutionState
 ) => Promise<TResult | undefined>;
 
-export type CompiledDispatch<TServices extends object = object> = (
+export type CompiledDispatch<
+  TServices extends object = object,
+  TResult extends
+    | RpcEnvelope
+    | Response
+    | CompiledSerializedEnvelope =
+    | RpcEnvelope
+    | Response
+    | CompiledSerializedEnvelope,
+> = (
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
   state: ExecutionState,
   serialize: CompiledSerializationMode
-) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
+) => Promise<TResult>;
 
-export type CompiledFixedDispatch<TServices extends object = object> = (
+export type CompiledFixedDispatch<
+  TServices extends object = object,
+  TResult extends
+    | RpcEnvelope
+    | Response
+    | CompiledSerializedEnvelope =
+    | RpcEnvelope
+    | Response
+    | CompiledSerializedEnvelope,
+> = (
   rpcRequest: RpcRequest,
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
   state: ExecutionState
-) => Promise<RpcEnvelope | Response | CompiledSerializedEnvelope>;
+) => Promise<TResult>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
 const compiledProcedureSuccessCache = new Map<string, CachedProcedureSuccess>();

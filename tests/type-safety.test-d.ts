@@ -121,6 +121,7 @@ import {
   type CompiledBodyResult as RootCompiledBodyResult,
   type CompiledBodyResultFor as RootCompiledBodyResultFor,
   type CompiledDispatch as RootCompiledDispatch,
+  type CompiledFixedDispatch as RootCompiledFixedDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
   type CompiledRpcRouteStreamBodyResultHandlerFor as RootCompiledRpcRouteStreamBodyResultHandlerFor,
@@ -958,6 +959,7 @@ import type {
   CompiledBodyResult,
   CompiledBodyResultFor,
   CompiledDispatch,
+  CompiledFixedDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
   CompiledRpcRouteStreamBodyResultHandlerFor,
@@ -7167,6 +7169,51 @@ const _serviceTypedCompiledDispatch: CompiledDispatch<Services> = async (
   services.users.findById('1').name.toUpperCase();
   return manifestRouteEnvelope;
 };
+const routeTypedCompiledDispatch: CompiledDispatch<
+  Services,
+  typeof procedureEnvelope
+> = async (_rpcRequest, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return procedureEnvelope;
+};
+routeTypedCompiledDispatch(
+  compiledRouteRequest,
+  createFetchRequestSourceForTypes(),
+  procedureServices,
+  {} as Parameters<typeof routeTypedCompiledDispatch>[3],
+  compiledUncachedExecutionState,
+  false
+).then((result) => {
+  const typedCompiledDispatchId: 'users.get' = result.id;
+  typedCompiledDispatchId.toUpperCase();
+  // @ts-expect-error typed compiled dispatch results preserve the route id literal.
+  const _wrongTypedCompiledDispatchId: 'users.list' = result.id;
+  _wrongTypedCompiledDispatchId;
+});
+const routeTypedCompiledFixedDispatch: CompiledFixedDispatch<
+  Services,
+  typeof procedureEnvelope
+> = async (_rpcRequest, _request, services) => {
+  services.users.findById('1').name.toUpperCase();
+  return procedureEnvelope;
+};
+const rootRouteTypedCompiledFixedDispatch: RootCompiledFixedDispatch<
+  Services,
+  typeof procedureEnvelope
+> = routeTypedCompiledFixedDispatch;
+rootRouteTypedCompiledFixedDispatch(
+  compiledRouteRequest,
+  createFetchRequestSourceForTypes(),
+  procedureServices,
+  {} as Parameters<typeof rootRouteTypedCompiledFixedDispatch>[3],
+  compiledUncachedExecutionState
+).then((result) => {
+  const typedCompiledFixedDispatchId: 'users.get' = result.id;
+  typedCompiledFixedDispatchId.toUpperCase();
+  // @ts-expect-error typed fixed compiled dispatch results preserve the route id literal.
+  const _wrongTypedCompiledFixedDispatchId: 'users.list' = result.id;
+  _wrongTypedCompiledFixedDispatchId;
+});
 const _rootServiceTypedCompiledUnaryDispatch: RootCompiledFixedUnaryDispatch<Services> =
   _serviceTypedCompiledUnaryDispatch;
 const _rootServiceTypedCompiledDispatch: RootCompiledDispatch<Services> =
