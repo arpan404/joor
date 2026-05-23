@@ -208,6 +208,8 @@ import {
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteResultUnion,
   type RpcManifestRouteBatchRequest,
+  type RpcManifestRouteClientArgs,
+  type RpcManifestRouteClientHeaders,
   type RpcManifestRouteError,
   type RpcManifestRouteErrorCode,
   type RpcManifestRouteErrorDetails,
@@ -221,6 +223,7 @@ import {
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
   type RpcManifestRouteRequest,
+  type RpcManifestRouteRequestOptions,
   type RpcManifestRouteRequestUnion,
   type RpcManifestRouteResponseHeaders,
   type RpcManifestRouteRequiresHeaders,
@@ -354,7 +357,10 @@ import {
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcManifestRouteInput as RpcSubpathManifestRouteInput,
   type RpcManifestRouteOutput as RpcSubpathManifestRouteOutput,
+  type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
+  type RpcManifestRouteClientHeaders as RpcSubpathManifestRouteClientHeaders,
   type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
+  type RpcManifestRouteRequestOptions as RpcSubpathManifestRouteRequestOptions,
   type RpcManifestRouteRequestUnion as RpcSubpathManifestRouteRequestUnion,
   type RpcManifestRouteStreamEvent as RpcSubpathManifestRouteStreamEvent,
   type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
@@ -2386,6 +2392,16 @@ const publicManifestRouteHeaders: RpcManifestRouteHeaders<
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
 publicManifestRouteHeaders['x-tenant-id'].toUpperCase();
+const publicManifestRouteClientHeaders: RpcManifestRouteClientHeaders<
+  typeof manifest,
+  'users.get'
+> = { 'x-tenant-id': 'tenant-1', authorization: undefined };
+publicManifestRouteClientHeaders.authorization?.toUpperCase();
+const rpcSubpathManifestRouteClientHeaders: RpcSubpathManifestRouteClientHeaders<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteClientHeaders;
+rpcSubpathManifestRouteClientHeaders['x-tenant-id'].toUpperCase();
 const publicManifestRouteHasHeaders: RpcManifestRouteHasHeaders<
   typeof manifest,
   'users.get'
@@ -2396,6 +2412,47 @@ const publicManifestRouteRequiresHeaders: RpcManifestRouteRequiresHeaders<
   'users.get'
 > = true;
 publicManifestRouteRequiresHeaders.valueOf();
+const publicManifestRouteRequestOptions: RpcManifestRouteRequestOptions<
+  typeof manifest,
+  'users.get'
+> = { headers: publicManifestRouteClientHeaders };
+publicManifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
+const rpcSubpathManifestRouteRequestOptions: RpcSubpathManifestRouteRequestOptions<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteRequestOptions;
+rpcSubpathManifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
+const publicManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest,
+  'users.get'
+> = [{ id: '1' }, publicManifestRouteRequestOptions];
+publicManifestRouteClientArgs[0].id.toUpperCase();
+const rpcSubpathManifestRouteClientArgs: RpcSubpathManifestRouteClientArgs<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteClientArgs;
+rpcSubpathManifestRouteClientArgs[0].id.toUpperCase();
+const publicOptionalManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest,
+  'users.authenticated'
+> = [{ ok: true }];
+publicOptionalManifestRouteClientArgs[0].ok.valueOf();
+// @ts-expect-error required public manifest route headers need options.
+const _missingPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
+  typeof manifest,
+  'users.get'
+> = [{ id: '1' }];
+_missingPublicManifestRouteClientArgs[0].id.toUpperCase();
+const _wrongPublicManifestRouteRequestOptions: RpcManifestRouteRequestOptions<
+  typeof manifest,
+  'users.get'
+> = {
+  headers: {
+    // @ts-expect-error public manifest route header values must match the route schema.
+    'x-tenant-id': 1,
+  },
+};
+_wrongPublicManifestRouteRequestOptions.headers['x-tenant-id'].toUpperCase();
 const publicManifestRouteResponseHeaders: RpcManifestRouteResponseHeaders<
   typeof manifest,
   'users.get'

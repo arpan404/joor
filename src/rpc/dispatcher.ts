@@ -353,8 +353,10 @@ type RpcManifestOptionalHeaderFields<THeaders extends object> = {
 };
 
 type RpcManifestRouteRequestHeaders<TManifest extends RpcManifest, TId> =
-  TId extends RpcManifestUnaryRouteId<TManifest>
-    ? ProcedureHeaders<RpcManifestRoutes<TManifest>[TId]> extends infer THeaders
+  TId extends RpcManifestRouteId<TManifest>
+    ? ProcedureHeaders<
+        RpcManifestRouteProcedure<TManifest, TId>
+      > extends infer THeaders
       ? THeaders extends object
         ? RpcManifestRequiredHeaderFields<THeaders> &
             RpcManifestOptionalHeaderFields<THeaders>
@@ -362,15 +364,44 @@ type RpcManifestRouteRequestHeaders<TManifest extends RpcManifest, TId> =
       : never
     : never;
 
+export type RpcManifestRouteClientHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = RpcManifestRouteRequestHeaders<TManifest, TId>;
+
+export type RpcManifestRouteRequestOptions<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> =
+  ProcedureRequiresHeaders<
+    RpcManifestRouteProcedure<TManifest, TId>
+  > extends false
+    ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
+    : { headers: RpcManifestRouteClientHeaders<TManifest, TId> };
+
+export type RpcManifestRouteClientArgs<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> =
+  RpcManifestRouteRequiresHeaders<TManifest, TId> extends false
+    ? [
+        input: RpcManifestRouteInput<TManifest, TId>,
+        options?: RpcManifestRouteRequestOptions<TManifest, TId>,
+      ]
+    : [
+        input: RpcManifestRouteInput<TManifest, TId>,
+        options: RpcManifestRouteRequestOptions<TManifest, TId>,
+      ];
+
 export type RpcManifestRouteRequest<
   TManifest extends RpcManifest,
   TId extends RpcManifestUnaryRouteId<TManifest>,
 > = {
   id: TId;
-  input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]>;
-} & (ProcedureRequiresHeaders<RpcManifestRoutes<TManifest>[TId]> extends false
-  ? { headers?: RpcManifestRouteRequestHeaders<TManifest, TId> }
-  : { headers: RpcManifestRouteRequestHeaders<TManifest, TId> });
+  input: RpcManifestRouteInput<TManifest, TId>;
+} & (RpcManifestRouteRequiresHeaders<TManifest, TId> extends false
+  ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
+  : { headers: RpcManifestRouteClientHeaders<TManifest, TId> });
 
 export type RpcManifestRouteRequestUnion<TManifest extends RpcManifest> = {
   [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRouteRequest<
