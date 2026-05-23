@@ -7487,6 +7487,8 @@ const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
 const createTypedBunFetch = createBunFetchFor<AppFetchRequest>();
 const typedAppBunFetch: BunFetchHandler<AppFetchRequest> =
   createTypedBunFetch(manifest, handlerOptions);
+const hookTypedBunFetch =
+  createBunFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedBunFetch =
   createRuntimeSubpathBunFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppBunFetch: RuntimeSubpathBunFetchHandler<AppFetchRequest> =
@@ -7496,6 +7498,9 @@ runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedBunFetch(new Request('https://example.com/rpc'));
 typedAppBunFetch(appFetchRequest);
 runtimeSubpathTypedAppBunFetch(appFetchRequest);
+hookTypedBunFetch(hookAppRequest);
+// @ts-expect-error typed Bun fetch factories preserve hook request types.
+hookTypedBunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
 createBunFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Bun fetch plugins.
@@ -7510,6 +7515,11 @@ const createTypedBunRpcHandler =
   createBunRpcRequestHandlerFor<AppFetchRequest>();
 const typedBunRpcHandler: BunRpcRequestHandler<AppFetchRequest> =
   createTypedBunRpcHandler(manifest, handlerOptions);
+const hookTypedBunRpcHandler =
+  createBunRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    typedRequestHandlerOptions
+  );
 const createRuntimeSubpathTypedBunRpcHandler =
   createRuntimeSubpathBunRpcRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<AppFetchRequest> =
@@ -7517,6 +7527,9 @@ const runtimeSubpathTypedBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<AppFe
 runtimeSubpathBunRpcHandler(new Request('https://example.com/rpc'));
 typedBunRpcHandler(appFetchRequest);
 runtimeSubpathTypedBunRpcHandler(appFetchRequest);
+hookTypedBunRpcHandler(hookAppRequest);
+// @ts-expect-error typed Bun RPC factories preserve hook request types.
+hookTypedBunRpcHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching typed Bun RPC plugins.
 createTypedBunRpcHandler(manifest);
 const bunFetchOptions: BunFetchOptionsFor<
@@ -7866,11 +7879,29 @@ const exactBunFetchOptions: BunFetchOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const requestTypedBunFetchOptions: BunFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 const exactBunRpcRequestHandlerOptions: BunRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const requestTypedBunRpcRequestHandlerOptions: BunRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const requestTypedBunServeOptions: BunServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 exactBunServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -7881,6 +7912,18 @@ exactBunFetchOptions.hooks?.beforeRequest?.(
 );
 exactBunRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+requestTypedBunFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedBunRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedBunServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   exactManifestHandlerHookContext
 );
 const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
@@ -7895,6 +7938,8 @@ const runtimeSubpathTypedDenoFetch: RuntimeSubpathDenoFetchHandler =
 const createTypedDenoFetch = createDenoFetchFor<AppFetchRequest>();
 const typedAppDenoFetch: DenoFetchHandler<AppFetchRequest> =
   createTypedDenoFetch(manifest, handlerOptions);
+const hookTypedDenoFetch =
+  createDenoFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedDenoFetch =
   createRuntimeSubpathDenoFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppDenoFetch: RuntimeSubpathDenoFetchHandler<AppFetchRequest> =
@@ -7903,6 +7948,9 @@ denoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoFetch(new Request('https://example.com/rpc'));
 typedAppDenoFetch(appFetchRequest);
 runtimeSubpathTypedAppDenoFetch(appFetchRequest);
+hookTypedDenoFetch(hookAppRequest);
+// @ts-expect-error typed Deno fetch factories preserve hook request types.
+hookTypedDenoFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
 createDenoFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Deno fetch plugins.
@@ -8254,11 +8302,23 @@ const exactDenoFetchOptions: DenoFetchOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactBunFetchOptions;
+const requestTypedDenoFetchOptions: DenoFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedBunFetchOptions;
 const exactDenoRpcRequestHandlerOptions: DenoRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactBunRpcRequestHandlerOptions;
+const requestTypedDenoRpcRequestHandlerOptions: DenoRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedBunRpcRequestHandlerOptions;
 exactDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -8269,6 +8329,14 @@ exactDenoFetchOptions.hooks?.beforeRequest?.(
 );
 exactDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+requestTypedDenoFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   exactManifestHandlerHookContext
 );
 const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
@@ -8288,6 +8356,11 @@ const createTypedDenoHandler =
   createDenoRpcRequestHandlerFor<AppFetchRequest>();
 const typedAppDenoHandler: DenoRpcRequestHandler<AppFetchRequest> =
   createTypedDenoHandler(manifest, handlerOptions);
+const hookTypedDenoHandler =
+  createDenoRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    typedRequestHandlerOptions
+  );
 const createRuntimeSubpathTypedDenoHandler =
   createRuntimeSubpathDenoRpcRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedAppDenoHandler: RuntimeSubpathDenoRpcRequestHandler<AppFetchRequest> =
@@ -8296,6 +8369,9 @@ denoHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoHandler(new Request('https://example.com/rpc'));
 typedAppDenoHandler(appFetchRequest);
 runtimeSubpathTypedAppDenoHandler(appFetchRequest);
+hookTypedDenoHandler(hookAppRequest);
+// @ts-expect-error typed Deno RPC factories preserve hook request types.
+hookTypedDenoHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno RPC adapter plugins.
 createDenoRpcRequestHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Deno RPC adapter plugins.
@@ -8314,6 +8390,11 @@ const createTypedStandaloneDenoHandler =
   createStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
 const typedAppStandaloneDenoHandler: StandaloneDenoRpcRequestHandler<AppFetchRequest> =
   createTypedStandaloneDenoHandler(manifest, handlerOptions);
+const hookTypedStandaloneDenoHandler =
+  createStandaloneDenoRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    typedRequestHandlerOptions
+  );
 const createRootTypedStandaloneDenoHandler =
   createRootStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
 const rootTypedAppStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler<AppFetchRequest> =
@@ -8329,6 +8410,9 @@ runtimeSubpathStandaloneDenoHandler(new Request('https://example.com/rpc'));
 typedAppStandaloneDenoHandler(appFetchRequest);
 rootTypedAppStandaloneDenoHandler(appFetchRequest);
 runtimeSubpathTypedAppStandaloneDenoHandler(appFetchRequest);
+hookTypedStandaloneDenoHandler(hookAppRequest);
+// @ts-expect-error typed standalone Deno RPC factories preserve hook request types.
+hookTypedStandaloneDenoHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching typed standalone Deno RPC plugins.
 createTypedStandaloneDenoHandler(manifest);
 const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
@@ -8709,17 +8793,37 @@ const exactStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactDenoServeOptions;
+const requestTypedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedBunServeOptions;
 const exactStandaloneDenoRpcRequestHandlerOptions: StandaloneDenoRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactDenoRpcRequestHandlerOptions;
+const requestTypedStandaloneDenoRpcRequestHandlerOptions: StandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedDenoRpcRequestHandlerOptions;
 exactStandaloneDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
 exactStandaloneDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+requestTypedStandaloneDenoServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedStandaloneDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   exactManifestHandlerHookContext
 );
 const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(

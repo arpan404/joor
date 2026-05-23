@@ -43,7 +43,8 @@ import {
 export interface BunServeOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> extends HandlerOptions<TPlugins> {
+  TRequest extends Request = Request,
+> extends HandlerOptions<TPlugins, unknown, TRequest> {
   port?: number;
   hostname?: string;
 }
@@ -62,7 +63,9 @@ export type BunServeOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunServeOptions<TPlugins, TRequest> &
+  HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryServeOptionsFor<
   TManifest extends JoorManifest,
@@ -70,7 +73,8 @@ export type BunRouteUnaryServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunServeOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteServeOptionsFor<
   TManifest extends JoorManifest,
@@ -78,7 +82,8 @@ export type BunUnaryRouteServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteStreamServeOptionsFor<
   TManifest extends JoorManifest,
@@ -86,7 +91,8 @@ export type BunRouteStreamServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunServeOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteServeOptionsFor<
   TManifest extends JoorManifest,
@@ -94,14 +100,16 @@ export type BunStreamRouteServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamServeOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -109,7 +117,8 @@ export type BunRouteUnaryFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunFetchOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -117,7 +126,8 @@ export type BunUnaryRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteStreamFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -125,7 +135,8 @@ export type BunRouteStreamFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunFetchOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -133,14 +144,16 @@ export type BunStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -148,7 +161,8 @@ export type BunRouteUnaryRpcRequestHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -156,7 +170,13 @@ export type BunUnaryRouteRpcRequestHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type BunRouteStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -164,7 +184,8 @@ export type BunRouteStreamRpcRequestHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -172,14 +193,21 @@ export type BunStreamRouteRpcRequestHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type BunFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -187,7 +215,8 @@ export type BunRouteUnaryFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunFetchOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -195,7 +224,8 @@ export type BunUnaryRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -203,7 +233,8 @@ export type BunRouteStreamFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunFetchOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -211,14 +242,16 @@ export type BunStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -226,7 +259,8 @@ export type BunRouteUnaryRpcRequestHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -234,7 +268,13 @@ export type BunUnaryRouteRpcRequestHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type BunRouteStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -242,7 +282,8 @@ export type BunRouteStreamRpcRequestHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -250,18 +291,28 @@ export type BunStreamRouteRpcRequestHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type BunServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+  TRequest extends Request = Request,
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  BunServeOptions<TPlugins>,
-  TBody
+  BunServeOptions<TPlugins, TRequest>,
+  TBody,
+  BunServeOptions<TPlugins, TRequest> &
+    HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
+  TRequest
 >;
 
 export type BunRouteUnaryServeOptionsArgs<
@@ -270,7 +321,8 @@ export type BunRouteUnaryServeOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunServeOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunUnaryRouteServeOptionsArgs<
   TManifest extends JoorManifest,
@@ -278,7 +330,8 @@ export type BunUnaryRouteServeOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = BunRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteStreamServeOptionsArgs<
   TManifest extends JoorManifest,
@@ -286,7 +339,8 @@ export type BunRouteStreamServeOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunServeOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteServeOptionsArgs<
   TManifest extends JoorManifest,
@@ -294,7 +348,8 @@ export type BunStreamRouteServeOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = BunRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = BunRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
@@ -393,7 +448,7 @@ export function createBunFetch<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: BunFetchOptionsArgs<TManifest, TPlugins>
 ): BunFetchHandler;
 export function createBunFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -412,11 +467,21 @@ export const createBunFetchFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: BunFetchOptionsArgs<TManifest, TPlugins>
+    ...args: BunFetchOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): BunFetchHandler<TRequest> =>
     createJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        TRequest
+      >
     );
 
 export const createBunTransportRequestHandler = <
@@ -504,7 +569,7 @@ export function createBunRpcRequestHandler<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
 ): BunRpcRequestHandler;
 export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -531,12 +596,26 @@ export const createBunRpcRequestHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: BunRpcRequestHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): BunRpcRequestHandler<TRequest> => {
-    const options = (args[0] ?? {}) as HandlerOptions;
+    const options = (args[0] ?? {}) as HandlerOptions<
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >;
     const handler = createRpcBodyResultHandler(
       manifest,
-      options as HandlerOptionsFor<TManifest>,
+      options as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        TRequest
+      >,
       false
     );
     return createBunTransportRequestHandler(
@@ -553,7 +632,7 @@ export function serveBun<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgsFor<TManifest, TPlugins, BunServeOptions<TPlugins>>
+  ...args: BunServeOptionsArgs<TManifest, TPlugins>
 ): BunServer;
 export function serveBun<TManifest extends JoorManifest>(
   manifest: TManifest,
