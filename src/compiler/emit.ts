@@ -428,6 +428,8 @@ export type NativeRouteStreamRequest<TId extends NativeRouteStreamId = NativeRou
   NativeRouteStreamProtocolRequest<TId>;
 export type NativeStreamRouteRequest<TId extends NativeRouteStreamId = NativeRouteStreamId> =
   NativeRouteStreamRequest<TId>;
+export type NativeRouteStreamRequestUnion = NativeRouteStreamProtocolRequestUnion;
+export type NativeStreamRouteRequestUnion = NativeRouteStreamRequestUnion;
 export type NativeStreamProtocolRequest<TId extends NativeRouteStreamId = NativeRouteStreamId> =
   NativeStreamRouteRequest<TId>;
 export type NativeRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
