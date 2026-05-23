@@ -34,7 +34,7 @@ export interface ClientOptions<
   maxStreamEventBytes?: number;
 }
 
-export type ClientFetch = (request: Request) => Promise<Response>;
+export type ClientFetch = (request: Request) => Response | Promise<Response>;
 
 export type ClientHeaderValues = Record<string, string | undefined>;
 

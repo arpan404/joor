@@ -3568,8 +3568,12 @@ joorManifestClientShape.call('users.authenticated', { ok: true });
 joorSubpathManifestClientShape.call('users.authenticated', { ok: true });
 const clientFetch: ClientFetch = async (request) => new Response(request.url);
 const rpcSubpathClientFetch: RpcSubpathClientFetch = clientFetch;
+const syncClientFetch: ClientFetch = (request) => new Response(request.url);
+const syncRpcSubpathClientFetch: RpcSubpathClientFetch = syncClientFetch;
 clientFetch(new Request('https://example.com/rpc'));
 rpcSubpathClientFetch(new Request('https://example.com/rpc'));
+syncClientFetch(new Request('https://example.com/rpc'));
+syncRpcSubpathClientFetch(new Request('https://example.com/rpc'));
 const procedureClientHeaders: ClientProcedureHeaders<typeof procedure> = {
   authorization: undefined,
   'x-tenant-id': 'tenant-1',
