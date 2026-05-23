@@ -133,6 +133,7 @@ const emitProfileDispatcher = async (
     ...(usesCache ? ['compiledReadCache', 'compiledWriteCache'] : []),
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
+    'type CompiledBodyResultFor',
     'type CompiledRuntimeState',
     'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
@@ -243,7 +244,8 @@ export type NativeBatchBody = NativeProtocolBatchRequest;
 export type NativeBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
 export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
-export type NativeTransportResult = NativeBodyResult | CompiledSerializedEnvelope;
+export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
+export type NativeTransportResult = NativeCompiledBodyResult;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   NativeBodyResultFor<TBody> | CompiledSerializedEnvelope;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
