@@ -19,10 +19,14 @@ export type ExpressResponse = ServerResponse<IncomingMessage>;
 
 export type ExpressNextFunction = (error?: unknown) => void;
 
-export type ExpressRequestHandler = (
-  request: ExpressRequest,
-  response: ExpressResponse,
-  next: ExpressNextFunction
+export type ExpressRequestHandler<
+  TRequest extends ExpressRequest = ExpressRequest,
+  TResponse extends ExpressResponse = ExpressResponse,
+  TNext extends ExpressNextFunction = ExpressNextFunction,
+> = (
+  request: TRequest,
+  response: TResponse,
+  next: TNext
 ) => void;
 
 export interface ExpressHandlerOptions<
@@ -117,17 +121,10 @@ export type ExpressStreamRouteHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = ExpressRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
-export function createExpressHandler<
-  TManifest extends JoorManifest,
-  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
->(
-  manifest: TManifest,
-  ...args: ExpressHandlerOptionsArgs<TManifest, TPlugins>
-): ExpressRequestHandler;
-export function createExpressHandler<TManifest extends JoorManifest>(
+const createExpressHandlerWithOptions = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: ExpressHandlerOptions = {}
-): ExpressRequestHandler {
+): ExpressRequestHandler => {
   const handler = createNodeRpcRequestHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,
@@ -145,4 +142,36 @@ export function createExpressHandler<TManifest extends JoorManifest>(
         request.url = originalUrl;
       });
   };
+};
+
+export function createExpressHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: ExpressHandlerOptionsArgs<TManifest, TPlugins>
+): ExpressRequestHandler;
+export function createExpressHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: ExpressHandlerOptions = {}
+): ExpressRequestHandler {
+  return createExpressHandlerWithOptions(manifest, options);
 }
+
+export const createExpressHandlerFor =
+  <
+    TRequest extends ExpressRequest = ExpressRequest,
+    TResponse extends ExpressResponse = ExpressResponse,
+    TNext extends ExpressNextFunction = ExpressNextFunction,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: ExpressHandlerOptionsArgs<TManifest, TPlugins>
+  ): ExpressRequestHandler<TRequest, TResponse, TNext> =>
+    createExpressHandlerWithOptions(
+      manifest,
+      (args[0] ?? {}) as ExpressHandlerOptions
+    ) as ExpressRequestHandler<TRequest, TResponse, TNext>;

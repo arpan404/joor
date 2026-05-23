@@ -51,9 +51,12 @@ export interface FastifyReply {
   hijack?(): void;
 }
 
-export type FastifyHandler = (
-  request: FastifyRequest,
-  reply: FastifyReply
+export type FastifyHandler<
+  TRequest extends FastifyRequest = FastifyRequest,
+  TReply extends FastifyReply = FastifyReply,
+> = (
+  request: TRequest,
+  reply: TReply
 ) => void | Promise<void>;
 
 export interface FastifyHandlerOptions<
@@ -341,17 +344,10 @@ const parsedBodyWithinLimit = (
 const bodyFromFastifyRequest = (request: FastifyRequest): JsonValue =>
   request.body === undefined ? {} : (request.body as JsonValue);
 
-export function createFastifyHandler<
-  TManifest extends JoorManifest,
-  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
->(
-  manifest: TManifest,
-  ...args: FastifyHandlerOptionsArgs<TManifest, TPlugins>
-): FastifyHandler;
-export function createFastifyHandler<TManifest extends JoorManifest>(
+const createFastifyHandlerWithOptions = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: FastifyHandlerOptions = {}
-): FastifyHandler {
+): FastifyHandler => {
   const handler = createRpcTransportBodyResultHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,
@@ -396,4 +392,35 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
       extraResponseHeaders
     );
   };
+};
+
+export function createFastifyHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: FastifyHandlerOptionsArgs<TManifest, TPlugins>
+): FastifyHandler;
+export function createFastifyHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: FastifyHandlerOptions = {}
+): FastifyHandler {
+  return createFastifyHandlerWithOptions(manifest, options);
 }
+
+export const createFastifyHandlerFor =
+  <
+    TRequest extends FastifyRequest = FastifyRequest,
+    TReply extends FastifyReply = FastifyReply,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: FastifyHandlerOptionsArgs<TManifest, TPlugins>
+  ): FastifyHandler<TRequest, TReply> =>
+    createFastifyHandlerWithOptions(
+      manifest,
+      (args[0] ?? {}) as FastifyHandlerOptions
+    ) as FastifyHandler<TRequest, TReply>;

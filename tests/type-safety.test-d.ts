@@ -35,11 +35,14 @@ import {
   createElysiaHandler,
   createElysiaHandlerFor,
   createExpressHandler,
+  createExpressHandlerFor,
   createFastifyHandler,
+  createFastifyHandlerFor,
   createHonoHandler,
   createHonoHandlerFor,
   createJoorHandler,
   createKoaHandler,
+  createKoaHandlerFor,
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
@@ -1387,11 +1390,14 @@ import {
   createElysiaHandler as createRuntimeSubpathElysiaHandler,
   createElysiaHandlerFor as createRuntimeSubpathElysiaHandlerFor,
   createExpressHandler as createRuntimeSubpathExpressHandler,
+  createExpressHandlerFor as createRuntimeSubpathExpressHandlerFor,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
+  createFastifyHandlerFor as createRuntimeSubpathFastifyHandlerFor,
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createKoaHandler as createRuntimeSubpathKoaHandler,
+  createKoaHandlerFor as createRuntimeSubpathKoaHandlerFor,
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor as createRuntimeSubpathNetlifyEdgeFunctionFor,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
@@ -1436,14 +1442,20 @@ import {
   type ElysiaHandler as RuntimeSubpathElysiaHandler,
   type ElysiaHandlerOptionsFor as RuntimeSubpathElysiaHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
+  type ExpressRequest as RuntimeSubpathExpressRequest,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
+  type ExpressResponse as RuntimeSubpathExpressResponse,
   type FastifyHandler as RuntimeSubpathFastifyHandler,
   type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
+  type FastifyReply as RuntimeSubpathFastifyReply,
+  type FastifyRequest as RuntimeSubpathFastifyRequest,
   type HonoContext as RuntimeSubpathHonoContext,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
+  type KoaContext as RuntimeSubpathKoaContext,
   type KoaHandlerOptionsFor as RuntimeSubpathKoaHandlerOptionsFor,
   type KoaMiddleware as RuntimeSubpathKoaMiddleware,
+  type KoaNext as RuntimeSubpathKoaNext,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -11681,8 +11693,57 @@ const expressRequest = {} as ExpressRequest;
 const expressResponse = {} as ExpressResponse;
 expressRequest.originalUrl = '/rpc';
 expressResponse.statusCode.toFixed();
+interface ExpressAppRequest extends ExpressRequest {
+  user: {
+    id: string;
+  };
+}
+interface ExpressAppResponse extends ExpressResponse {
+  locals: {
+    requestId: string;
+  };
+}
+interface ExpressAppNext extends ExpressNextFunction {
+  traceId?: string;
+}
+const createTypedExpressHandler = createExpressHandlerFor<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+>();
+const typedExpressHandler: ExpressRequestHandler<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+> = createTypedExpressHandler(manifest, expressHandlerOptions);
+const createRuntimeSubpathTypedExpressHandler =
+  createRuntimeSubpathExpressHandlerFor<
+    RuntimeSubpathExpressRequest & ExpressAppRequest,
+    RuntimeSubpathExpressResponse & ExpressAppResponse,
+    ExpressAppNext
+  >();
+const runtimeSubpathTypedExpressHandler: RuntimeSubpathExpressRequestHandler<
+  RuntimeSubpathExpressRequest & ExpressAppRequest,
+  RuntimeSubpathExpressResponse & ExpressAppResponse,
+  ExpressAppNext
+> = createRuntimeSubpathTypedExpressHandler(
+  manifest,
+  runtimeSubpathExpressHandlerOptions
+);
+const expressAppRequest = {} as ExpressAppRequest;
+const expressAppResponse = {} as ExpressAppResponse;
+expressAppRequest.user.id.toUpperCase();
+expressAppResponse.locals.requestId.toUpperCase();
+typedExpressHandler(expressAppRequest, expressAppResponse, expressNext);
+runtimeSubpathTypedExpressHandler(
+  expressAppRequest,
+  expressAppResponse,
+  expressNext
+);
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Express adapter plugins.
+createTypedExpressHandler(manifest);
 const elysiaHandlerOptions: ElysiaHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11846,12 +11907,54 @@ const fastifyReply = {} as FastifyReply;
 fastifyRequest.body;
 fastifyRequest.originalUrl = '/rpc';
 fastifyReply.raw.statusCode.toFixed();
+interface FastifyAppBody {
+  id: string;
+}
+interface FastifyAppRequest extends FastifyRequest<FastifyAppBody> {
+  params: {
+    id: string;
+  };
+}
+interface FastifyAppReply extends FastifyReply {
+  locals: {
+    requestId: string;
+  };
+}
+const createTypedFastifyHandler = createFastifyHandlerFor<
+  FastifyAppRequest,
+  FastifyAppReply
+>();
+const typedFastifyHandler: FastifyHandler<
+  FastifyAppRequest,
+  FastifyAppReply
+> = createTypedFastifyHandler(manifest, fastifyHandlerOptions);
+const createRuntimeSubpathTypedFastifyHandler =
+  createRuntimeSubpathFastifyHandlerFor<
+    RuntimeSubpathFastifyRequest<FastifyAppBody> & FastifyAppRequest,
+    RuntimeSubpathFastifyReply & FastifyAppReply
+  >();
+const runtimeSubpathTypedFastifyHandler: RuntimeSubpathFastifyHandler<
+  RuntimeSubpathFastifyRequest<FastifyAppBody> & FastifyAppRequest,
+  RuntimeSubpathFastifyReply & FastifyAppReply
+> = createRuntimeSubpathTypedFastifyHandler(
+  manifest,
+  runtimeSubpathFastifyHandlerOptions
+);
+const fastifyAppRequest = {} as FastifyAppRequest;
+const fastifyAppReply = {} as FastifyAppReply;
+fastifyAppRequest.body?.id.toUpperCase();
+fastifyAppRequest.params.id.toUpperCase();
+fastifyAppReply.locals.requestId.toUpperCase();
 fastifyHandler(fastifyRequest, fastifyReply);
 syncFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
+typedFastifyHandler(fastifyAppRequest, fastifyAppReply);
+runtimeSubpathTypedFastifyHandler(fastifyAppRequest, fastifyAppReply);
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
 createFastifyHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Fastify adapter plugins.
+createTypedFastifyHandler(manifest);
 const koaHandlerOptionsBase: KoaHandlerOptions = { hostname: 'app' };
 koaHandlerOptionsBase.useOriginalUrl = false;
 const koaHandlerOptions: KoaHandlerOptionsFor<
@@ -11917,12 +12020,43 @@ koaContext.originalUrl = '/rpc';
 koaContext.respond = false;
 const koaNext: KoaNext = async () => undefined;
 const syncKoaNext: KoaNext = () => undefined;
+interface KoaAppContext extends KoaContext {
+  state: {
+    userId: string;
+  };
+}
+type KoaAppNext = () => Promise<'ok'>;
+const createTypedKoaHandler = createKoaHandlerFor<
+  KoaAppContext,
+  KoaAppNext
+>();
+const typedKoaMiddleware: KoaMiddleware<KoaAppContext, KoaAppNext> =
+  createTypedKoaHandler(manifest, koaHandlerOptions);
+const createRuntimeSubpathTypedKoaHandler =
+  createRuntimeSubpathKoaHandlerFor<
+    RuntimeSubpathKoaContext & KoaAppContext,
+    RuntimeSubpathKoaNext & KoaAppNext
+  >();
+const runtimeSubpathTypedKoaMiddleware: RuntimeSubpathKoaMiddleware<
+  RuntimeSubpathKoaContext & KoaAppContext,
+  RuntimeSubpathKoaNext & KoaAppNext
+> = createRuntimeSubpathTypedKoaHandler(
+  manifest,
+  runtimeSubpathKoaHandlerOptions
+);
+const koaAppContext = {} as KoaAppContext;
+const koaAppNext: KoaAppNext = async () => 'ok';
+koaAppContext.state.userId.toUpperCase();
 koaMiddleware(koaContext, koaNext);
 syncKoaMiddleware(koaContext, syncKoaNext);
 runtimeSubpathKoaMiddleware(koaContext, koaNext);
 runtimeSubpathSyncKoaMiddleware(koaContext, syncKoaNext);
+typedKoaMiddleware(koaAppContext, koaAppNext);
+runtimeSubpathTypedKoaMiddleware(koaAppContext, koaAppNext);
 // @ts-expect-error service-dependent manifests require matching Koa adapter plugins.
 createKoaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Koa adapter plugins.
+createTypedKoaHandler(manifest);
 const honoHandlerOptions: HonoHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]

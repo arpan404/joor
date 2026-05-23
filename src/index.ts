@@ -90,11 +90,17 @@ export {
   createElysiaHandler,
   createElysiaHandlerFor,
 } from './runtime/elysia.js';
-export { createExpressHandler } from './runtime/express.js';
-export { createFastifyHandler } from './runtime/fastify.js';
+export {
+  createExpressHandler,
+  createExpressHandlerFor,
+} from './runtime/express.js';
+export {
+  createFastifyHandler,
+  createFastifyHandlerFor,
+} from './runtime/fastify.js';
 export { createHonoHandler, createHonoHandlerFor } from './runtime/hono.js';
 export { createJoorHandler } from './runtime/fetch.js';
-export { createKoaHandler } from './runtime/koa.js';
+export { createKoaHandler, createKoaHandlerFor } from './runtime/koa.js';
 export {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,

@@ -20,9 +20,12 @@ export interface KoaContext {
 
 export type KoaNext = () => unknown | Promise<unknown>;
 
-export type KoaMiddleware = (
-  context: KoaContext,
-  next: KoaNext
+export type KoaMiddleware<
+  TContext extends KoaContext = KoaContext,
+  TNext extends KoaNext = KoaNext,
+> = (
+  context: TContext,
+  next: TNext
 ) => void | Promise<void>;
 
 export interface KoaHandlerOptions<
@@ -116,17 +119,10 @@ export type KoaStreamRouteHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = KoaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
-export function createKoaHandler<
-  TManifest extends JoorManifest,
-  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
->(
-  manifest: TManifest,
-  ...args: KoaHandlerOptionsArgs<TManifest, TPlugins>
-): KoaMiddleware;
-export function createKoaHandler<TManifest extends JoorManifest>(
+const createKoaHandlerWithOptions = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: KoaHandlerOptions = {}
-): KoaMiddleware {
+): KoaMiddleware => {
   const handler = createNodeRpcRequestHandler(
     manifest,
     options as HandlerOptionsFor<TManifest>,
@@ -145,4 +141,35 @@ export function createKoaHandler<TManifest extends JoorManifest>(
       context.req.url = originalUrl;
     }
   };
+};
+
+export function createKoaHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: KoaHandlerOptionsArgs<TManifest, TPlugins>
+): KoaMiddleware;
+export function createKoaHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: KoaHandlerOptions = {}
+): KoaMiddleware {
+  return createKoaHandlerWithOptions(manifest, options);
 }
+
+export const createKoaHandlerFor =
+  <
+    TContext extends KoaContext = KoaContext,
+    TNext extends KoaNext = KoaNext,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: KoaHandlerOptionsArgs<TManifest, TPlugins>
+  ): KoaMiddleware<TContext, TNext> =>
+    createKoaHandlerWithOptions(
+      manifest,
+      (args[0] ?? {}) as KoaHandlerOptions
+    ) as KoaMiddleware<TContext, TNext>;

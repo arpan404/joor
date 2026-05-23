@@ -5,7 +5,10 @@ import {
   createCloudflareWorkerFor as createRootCloudflareWorkerFor,
   createCorsHeaderRecord as createRootCorsHeaderRecord,
   createElysiaHandlerFor as createRootElysiaHandlerFor,
+  createExpressHandlerFor as createRootExpressHandlerFor,
+  createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
+  createKoaHandlerFor as createRootKoaHandlerFor,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -55,10 +58,16 @@ import {
   createElysiaHandler,
   createElysiaHandlerFor,
 } from 'joor/runtime/elysia';
-import { createExpressHandler } from 'joor/runtime/express';
-import { createFastifyHandler } from 'joor/runtime/fastify';
+import {
+  createExpressHandler,
+  createExpressHandlerFor,
+} from 'joor/runtime/express';
+import {
+  createFastifyHandler,
+  createFastifyHandlerFor,
+} from 'joor/runtime/fastify';
 import { createHonoHandler, createHonoHandlerFor } from 'joor/runtime/hono';
-import { createKoaHandler } from 'joor/runtime/koa';
+import { createKoaHandler, createKoaHandlerFor } from 'joor/runtime/koa';
 import {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
@@ -261,11 +270,14 @@ const packageSubpathValues = [
   createElysiaHandler,
   createElysiaHandlerFor,
   createExpressHandler,
+  createExpressHandlerFor,
   createFastifyHandler,
+  createFastifyHandlerFor,
   createHonoHandler,
   createHonoHandlerFor,
   createJoorHandler,
   createKoaHandler,
+  createKoaHandlerFor,
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
@@ -276,7 +288,10 @@ const packageSubpathValues = [
   createRuntimeContext,
   createRootRuntimeContext,
   createRootElysiaHandlerFor,
+  createRootExpressHandlerFor,
+  createRootFastifyHandlerFor,
   createRootHonoHandlerFor,
+  createRootKoaHandlerFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
   createRootNextRouteHandlersFor,
