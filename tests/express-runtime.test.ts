@@ -59,4 +59,54 @@ describe('express runtime', () => {
       });
     }
   });
+
+  it('writes configured CORS headers on successful Express responses', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const app = express();
+    app.use(
+      '/api/rpc',
+      createExpressHandler(
+        { procedures: { ping: procedure } },
+        {
+          path: '/api/rpc',
+          cors: { origin: 'https://app.example' },
+        }
+      )
+    );
+    const server = await new Promise<ReturnType<typeof app.listen>>(
+      (resolve) => {
+        const listening = app.listen(0, '127.0.0.1', () => {
+          resolve(listening);
+        });
+      }
+    );
+    try {
+      const address = server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://app.example'
+      );
+      expect(body.ok).toBe(true);
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
 });

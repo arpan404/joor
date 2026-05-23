@@ -97,6 +97,7 @@ export {
 } from './runtime/node.js';
 export {
   appendJsonStringHeaders,
+  createCorsHeaderRecord,
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
   isRpcEnvelopeArray,
@@ -1199,6 +1200,7 @@ export type {
   VercelUnaryRouteFetchOptionsFor,
 } from './runtime/vercel.js';
 export type {
+  CorsHeaderOptions,
   SerializedJsonEnvelope,
   TransportBodyResult,
   TransportBodyResultFor,

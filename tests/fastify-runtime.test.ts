@@ -102,4 +102,43 @@ describe('fastify runtime', () => {
       await app.close();
     }
   });
+
+  it('writes configured CORS headers on successful Fastify responses', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const app = fastify();
+    app.post(
+      '/api/rpc',
+      createFastifyHandler(
+        { procedures: { ping: procedure } },
+        {
+          path: '/api/rpc',
+          cors: { origin: 'https://app.example' },
+        }
+      )
+    );
+    await app.listen({ port: 0, host: '127.0.0.1' });
+    try {
+      const address = app.server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://app.example'
+      );
+      expect(body.ok).toBe(true);
+    } finally {
+      await app.close();
+    }
+  });
 });

@@ -78,6 +78,7 @@ export * from './next.js';
 export * from './node.js';
 export {
   appendJsonStringHeaders,
+  createCorsHeaderRecord,
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
   isRpcEnvelopeArray,
@@ -89,6 +90,7 @@ export {
   transportResultToResponse,
 } from './response.js';
 export type {
+  CorsHeaderOptions,
   SerializedJsonEnvelope,
   TransportBodyResult,
   TransportBodyResultFor,

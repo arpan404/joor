@@ -27,6 +27,7 @@ import {
 } from './body.js';
 import {
   appendJsonStringHeaders,
+  createCorsHeaderRecord,
   createJsonHeaderRecord,
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
@@ -271,20 +272,24 @@ const writeWebResponseBody = async (
 
 const writeFastifyResult = async <TEnvelope extends RpcEnvelope>(
   reply: FastifyReply,
-  result: TransportBodyResult<TEnvelope>
+  result: TransportBodyResult<TEnvelope>,
+  extraHeaders?: Record<string, string>
 ): Promise<void> => {
   reply.hijack?.();
   const response = reply.raw;
   if (isSerializedJsonEnvelope(result)) {
-    response.writeHead(
-      200,
-      createJsonHeaderRecord(result.responseHeaders ?? result.headers)
+    const headers = createJsonHeaderRecord(
+      result.responseHeaders ?? result.headers
     );
+    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    response.writeHead(200, headers);
     response.end(result.body);
     return;
   }
   if (result instanceof Response) {
-    response.writeHead(result.status, Object.fromEntries(result.headers));
+    const headers = Object.fromEntries(result.headers);
+    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    response.writeHead(result.status, headers);
     if (result.body === null) {
       response.end();
       return;
@@ -300,6 +305,7 @@ const writeFastifyResult = async <TEnvelope extends RpcEnvelope>(
   ) {
     appendJsonStringHeaders(headers, result.headers);
   }
+  if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
   response.writeHead(200, headers);
   response.end(JSON.stringify(result));
 };
@@ -353,6 +359,7 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
   );
   const preflight = createRpcRequestPreflight(options);
   const hostname = options.hostname ?? '0.0.0.0';
+  const extraResponseHeaders = createCorsHeaderRecord(options.cors);
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
@@ -367,13 +374,17 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
     );
     const early = preflight(source);
     if (early !== undefined) {
-      await writeFastifyResult(reply, early);
+      await writeFastifyResult(reply, early, extraResponseHeaders);
       return;
     }
     if (!parsedBodyWithinLimit(request, body, bodyLimit)) {
       const error = new BodySizeLimitError(bodyLimit);
       options.onError?.(error, source.toRequest());
-      await writeFastifyResult(reply, payloadTooLargeBody(source));
+      await writeFastifyResult(
+        reply,
+        payloadTooLargeBody(source),
+        extraResponseHeaders
+      );
       return;
     }
     await writeFastifyResult(
@@ -381,7 +392,8 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
       (await handler(
         source,
         body as RpcManifestBody<TManifest>
-      )) as TransportBodyResult
+      )) as TransportBodyResult,
+      extraResponseHeaders
     );
   };
 }

@@ -29,6 +29,7 @@ import {
 } from './body.js';
 import {
   appendJsonStringHeaders,
+  createCorsHeaderRecord,
   createJsonHeaderRecord,
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
@@ -472,18 +473,22 @@ const writeWebResponseBody = async (
 
 const writeResult = async <TEnvelope extends RpcEnvelope = RpcEnvelope>(
   outgoing: ServerResponse<IncomingMessage>,
-  result: NodeTransportBodyResult<TEnvelope>
+  result: NodeTransportBodyResult<TEnvelope>,
+  extraHeaders?: Record<string, string>
 ): Promise<void> => {
   if (isSerializedJsonEnvelope(result)) {
-    outgoing.writeHead(
-      200,
-      createJsonHeaderRecord(result.responseHeaders ?? result.headers)
+    const headers = createJsonHeaderRecord(
+      result.responseHeaders ?? result.headers
     );
+    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    outgoing.writeHead(200, headers);
     outgoing.end(result.body);
     return;
   }
   if (result instanceof Response) {
-    outgoing.writeHead(result.status, Object.fromEntries(result.headers));
+    const headers = Object.fromEntries(result.headers);
+    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    outgoing.writeHead(result.status, headers);
     if (result.body === null) {
       outgoing.end();
       return;
@@ -499,6 +504,7 @@ const writeResult = async <TEnvelope extends RpcEnvelope = RpcEnvelope>(
   ) {
     appendJsonStringHeaders(headers, result.headers);
   }
+  if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
   outgoing.writeHead(200, headers);
   outgoing.end(JSON.stringify(result));
 };
@@ -549,7 +555,8 @@ export const createNodeTransportRequestHandler = <
   handler: NodeTransportBodyResultHandler<TBody, TResult>,
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
-  preflight?: RpcRequestPreflight | false
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>
 ): NodeRpcRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const requestPreflight =
@@ -560,7 +567,7 @@ export const createNodeTransportRequestHandler = <
     const request = requestSourceFromIncoming(incoming, hostname);
     const early = requestPreflight?.(request);
     if (early !== undefined) {
-      await writeResult(outgoing, early);
+      await writeResult(outgoing, early, extraResponseHeaders);
       return;
     }
     let json: JsonValue;
@@ -570,7 +577,8 @@ export const createNodeTransportRequestHandler = <
     } catch (error) {
       const payloadTooLarge =
         error instanceof Error && isBodySizeLimitError(error);
-      outgoing.writeHead(payloadTooLarge ? 413 : 400, createJsonHeaderRecord());
+      const headers = createJsonHeaderRecord(extraResponseHeaders);
+      outgoing.writeHead(payloadTooLarge ? 413 : 400, headers);
       outgoing.end(
         JSON.stringify({
           ok: false,
@@ -587,7 +595,11 @@ export const createNodeTransportRequestHandler = <
       );
       return;
     }
-    await writeResult(outgoing, await handler(request, json as TBody));
+    await writeResult(
+      outgoing,
+      await handler(request, json as TBody),
+      extraResponseHeaders
+    );
   };
 };
 
@@ -655,6 +667,7 @@ export function createNodeRpcRequestHandler<TManifest extends JoorManifest>(
     (request, body) => handler(request, body as RpcManifestBody<TManifest>),
     hostname,
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
-    createRpcRequestPreflight(options)
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options.cors)
   );
 }

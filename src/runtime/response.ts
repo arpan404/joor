@@ -12,6 +12,12 @@ export interface SerializedJsonEnvelope {
   responseHeaders?: Record<string, string>;
 }
 
+export interface CorsHeaderOptions {
+  origin?: string;
+  headers?: readonly string[];
+  methods?: readonly string[];
+}
+
 export type TransportBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
   | TEnvelope
   | readonly TEnvelope[]
@@ -133,6 +139,23 @@ export const createJsonHeaderRecord = (
   return headers;
 };
 
+export const createCorsHeaderRecord = (
+  cors?: CorsHeaderOptions | false
+): Record<string, string> | undefined => {
+  if (cors === undefined || cors === false || cors.origin === undefined) {
+    return undefined;
+  }
+  return {
+    'access-control-allow-origin': cors.origin,
+    'access-control-allow-methods': (
+      cors.methods ?? ['POST', 'OPTIONS']
+    ).join(', '),
+    'access-control-allow-headers': (
+      cors.headers ?? ['content-type', 'accept', 'x-request-id']
+    ).join(', '),
+  };
+};
+
 export const serializedEnvelopeToResponse = (
   result: SerializedJsonEnvelope
 ): Response =>
@@ -171,10 +194,31 @@ export const rpcEnvelopeToResponse = <TEnvelope extends RpcEnvelope>(
 };
 
 export const transportResultToResponse = <TEnvelope extends RpcEnvelope>(
-  result: TransportBodyResult<TEnvelope>
+  result: TransportBodyResult<TEnvelope>,
+  extraHeaders?: Record<string, string>
 ): Response => {
   if (isSerializedJsonEnvelope(result))
-    return serializedEnvelopeToResponse(result);
-  if (result instanceof Response) return result;
-  return rpcEnvelopeToResponse(result);
+    return result.responseHeaders === undefined && result.headers === undefined
+      ? new Response(result.body, {
+          status: 200,
+          headers: createJsonHeaderRecord(extraHeaders),
+        })
+      : new Response(result.body, {
+          status: 200,
+          headers: createJsonHeaderRecord({
+            ...(result.responseHeaders ?? result.headers),
+            ...extraHeaders,
+          }),
+        });
+  if (result instanceof Response) {
+    if (extraHeaders === undefined) return result;
+    const headers = new Headers(result.headers);
+    appendHeaders(headers, extraHeaders);
+    return new Response(result.body, {
+      status: result.status,
+      statusText: result.statusText,
+      headers,
+    });
+  }
+  return rpcEnvelopeToResponse(result, extraHeaders);
 };

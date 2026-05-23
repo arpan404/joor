@@ -29,7 +29,8 @@ import {
 } from './body.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 import {
-  jsonContentHeaders,
+  createCorsHeaderRecord,
+  createJsonHeaderRecord,
   transportResultToResponse,
   type SerializedJsonEnvelope,
   type TransportBodyResultFor,
@@ -356,7 +357,11 @@ export type BunStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = BunRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
-const bodyReadFailure = (request: Request, error: object): Response => {
+const bodyReadFailure = (
+  request: Request,
+  error: object,
+  extraHeaders?: Record<string, string>
+): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
   const status = payloadTooLarge ? 413 : 400;
   const body = {
@@ -371,7 +376,7 @@ const bodyReadFailure = (request: Request, error: object): Response => {
   };
   return new Response(JSON.stringify(body), {
     status,
-    headers: jsonContentHeaders,
+    headers: createJsonHeaderRecord(extraHeaders),
   });
 };
 
@@ -398,7 +403,8 @@ export const createBunTransportRequestHandler = <
 >(
   handler: BunTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
-  preflight?: RpcRequestPreflight | false
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>
 ): BunTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const requestPreflight =
@@ -414,9 +420,12 @@ export const createBunTransportRequestHandler = <
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      return bodyReadFailure(request, error);
+      return bodyReadFailure(request, error, extraResponseHeaders);
     }
-    return transportResultToResponse(await handler(source, body as TBody));
+    return transportResultToResponse(
+      await handler(source, body as TBody),
+      extraResponseHeaders
+    );
   };
 };
 
@@ -454,7 +463,8 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
     (request, body) =>
       handler(request.toRequest(), body as RpcManifestBody<TManifest>),
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
-    createRpcRequestPreflight(options)
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options?.cors)
   );
 }
 

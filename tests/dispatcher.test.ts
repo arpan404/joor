@@ -15,8 +15,12 @@ import {
   createCompiledRpcBodyResultHandler,
   createCompiledRuntimeState,
 } from '../src/runtime/compiled.js';
-import { createBunTransportRequestHandlerWithPath } from '../src/runtime/bun.js';
+import {
+  createBunRpcRequestHandler,
+  createBunTransportRequestHandlerWithPath,
+} from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
+import { createDenoRpcRequestHandler } from '../src/runtime/deno.js';
 import { createNodeTransportRequestHandlerWithPath } from '../src/runtime/node.js';
 
 const manifest = {
@@ -474,6 +478,42 @@ describe('dispatcher', () => {
           else resolve();
         });
       });
+    }
+  });
+
+  it('applies configured CORS to Bun and Deno RPC successes', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const options = { cors: { origin: 'https://app.example' } };
+    const request = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const bun = createBunRpcRequestHandler(
+      { procedures: { ping: procedure } },
+      options
+    );
+    const deno = createDenoRpcRequestHandler(
+      { procedures: { ping: procedure } },
+      options
+    );
+
+    for (const response of [await bun(request()), await deno(request())]) {
+      expect(response.status).toBe(200);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://app.example'
+      );
+      expect(response.headers.get('access-control-allow-methods')).toBe(
+        'POST, OPTIONS'
+      );
+      expect((await response.json()).ok).toBe(true);
     }
   });
 

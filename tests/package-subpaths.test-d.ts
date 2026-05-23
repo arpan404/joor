@@ -2,6 +2,7 @@ import {
   createPlugin,
   createRuntimeContext as createRootRuntimeContext,
   createCloudflareWorker as createRootCloudflareWorker,
+  createCorsHeaderRecord as createRootCorsHeaderRecord,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -53,7 +54,10 @@ import {
   createNodeTransportRequestHandler,
   listen,
 } from 'joor/runtime/node';
-import { jsonOkResponseInit } from 'joor/runtime/response';
+import {
+  createCorsHeaderRecord,
+  jsonOkResponseInit,
+} from 'joor/runtime/response';
 import { createVercelFetch } from 'joor/runtime/vercel';
 import type * as Auth from 'joor/auth';
 import type * as Client from 'joor/client';
@@ -199,6 +203,12 @@ rootCompiledCreateProcedureCacheKey(
   {},
   {}
 ).toUpperCase();
+createCorsHeaderRecord({ origin: 'https://app.example' })?.[
+  'access-control-allow-origin'
+]?.toUpperCase();
+createRootCorsHeaderRecord({ origin: 'https://app.example' })?.[
+  'access-control-allow-origin'
+]?.toUpperCase();
 
 const packageSubpathValues = [
   build,
@@ -210,6 +220,8 @@ const packageSubpathValues = [
   createRootCloudflareWorker,
   createOpenApiDocument,
   compiledCreateProcedureCacheKey,
+  createCorsHeaderRecord,
+  createRootCorsHeaderRecord,
   rootCompiledCreateProcedureCacheKey,
   createManifestRouteStreamProtocolRequest,
   createCompiledRpcBodyResultHandler,
@@ -329,6 +341,7 @@ export type PackageSubpathSurface = [
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,
   Context.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Root.ContextRequestSource,
+  Root.CorsHeaderOptions,
   Deno.DenoRpcRequestHandler,
   DenoCompiledTransport.DenoCompiledTransportRequestHandler,
   DenoTransport.DenoTransportRequestHandler,
@@ -344,6 +357,7 @@ export type PackageSubpathSurface = [
   NodeRuntime.NodeServer,
   Root.NodeServer,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
+  ResponseRuntime.CorsHeaderOptions,
   ResponseRuntime.TransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathStreamBody

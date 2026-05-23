@@ -74,6 +74,7 @@ import {
   readJsonRequestBodyWithLimit,
 } from '../runtime/body.js';
 import {
+  createCorsHeaderRecord,
   jsonContentHeaders,
   rpcEnvelopeToResponse,
 } from '../runtime/response.js';
@@ -1569,17 +1570,7 @@ const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
 let traceCounter = 0;
 
 const corsHeaders = (options: HandlerOptions): Record<string, string> => {
-  if (options.cors === undefined) return {};
-  if (options.cors.origin === undefined) return {};
-  return {
-    'access-control-allow-origin': options.cors.origin,
-    'access-control-allow-methods': (
-      options.cors.methods ?? ['POST', 'OPTIONS']
-    ).join(', '),
-    'access-control-allow-headers': (
-      options.cors.headers ?? ['content-type', 'accept', 'x-request-id']
-    ).join(', '),
-  };
+  return createCorsHeaderRecord(options.cors) ?? {};
 };
 
 const traceId = (request: ContextRequestSource, requested?: string): string => {
