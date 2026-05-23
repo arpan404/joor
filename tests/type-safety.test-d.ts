@@ -44,6 +44,7 @@ import {
   createNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath,
   createVercelFetch,
+  createVercelFunction,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
   createManifestRouteProtocolRequest,
@@ -979,6 +980,7 @@ import {
   type VercelFetchHandler,
   type VercelFetchOptionsArgs,
   type VercelFetchOptionsFor,
+  type VercelFunction,
   type VercelRouteStreamFetchOptionsArgs,
   type VercelRouteStreamFetchOptionsFor,
   type VercelRouteUnaryFetchOptionsArgs,
@@ -1385,6 +1387,7 @@ import {
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  createVercelFunction as createRuntimeSubpathVercelFunction,
   appendJsonStringHeaders as runtimeSubpathAppendJsonStringHeaders,
   createJsonHeaderRecord as runtimeSubpathCreateJsonHeaderRecord,
   hasInvalidHeaderValue as runtimeSubpathHasInvalidHeaderValue,
@@ -1678,6 +1681,7 @@ import {
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
   type VercelFetchOptionsArgs as RuntimeSubpathVercelFetchOptionsArgs,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
+  type VercelFunction as RuntimeSubpathVercelFunction,
   type VercelRouteStreamFetchOptionsArgs as RuntimeSubpathVercelRouteStreamFetchOptionsArgs,
   type VercelRouteStreamFetchOptionsFor as RuntimeSubpathVercelRouteStreamFetchOptionsFor,
   type VercelRouteUnaryFetchOptionsArgs as RuntimeSubpathVercelRouteUnaryFetchOptionsArgs,
@@ -11310,6 +11314,12 @@ const vercelFetch = createVercelFetch(manifest, handlerOptions);
 const typedVercelFetch: VercelFetchHandler = vercelFetch;
 const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =
   typedVercelFetch;
+const vercelFunction: VercelFunction = createVercelFunction(
+  manifest,
+  handlerOptions
+);
+const runtimeSubpathVercelFunction: RuntimeSubpathVercelFunction =
+  createRuntimeSubpathVercelFunction(manifest, handlerOptions);
 const vercelFetchOptions: VercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11438,11 +11448,20 @@ runtimeSubpathVercelRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   manifestStreamRouteHandlerHookContext
 );
 createVercelFetch(manifest, vercelFetchOptions);
+createVercelFunction(manifest, vercelFetchOptions);
 createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
+createRuntimeSubpathVercelFunction(
+  manifest,
+  runtimeSubpathVercelFetchOptions
+);
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
+vercelFunction.fetch(new Request('https://example.com/rpc'));
+runtimeSubpathVercelFunction.fetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching Vercel function plugins.
+createVercelFunction(manifest);
 const expressHandlerOptions: ExpressHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]

@@ -12,6 +12,10 @@ import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
 export type VercelFetchHandler = JoorFetchHandler;
 
+export interface VercelFunction {
+  fetch: VercelFetchHandler;
+}
+
 export type VercelFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -105,4 +109,23 @@ export function createVercelFetch<TManifest extends JoorManifest>(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>
   );
+}
+
+export function createVercelFunction<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): VercelFunction;
+export function createVercelFunction<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): VercelFunction {
+  return {
+    fetch: createVercelFetch(
+      manifest,
+      (options ?? {}) as HandlerOptionsFor<TManifest>
+    ),
+  };
 }

@@ -112,7 +112,10 @@ export {
   serializedEnvelopeToResponse,
   transportResultToResponse,
 } from './runtime/response.js';
-export { createVercelFetch } from './runtime/vercel.js';
+export {
+  createVercelFetch,
+  createVercelFunction,
+} from './runtime/vercel.js';
 export {
   compiledCreateProcedureCacheKey,
   createCompiledRpcBodyResultHandler,
@@ -1212,6 +1215,7 @@ export type {
   VercelFetchHandler,
   VercelFetchOptionsArgs,
   VercelFetchOptionsFor,
+  VercelFunction,
   VercelRouteStreamFetchOptionsArgs,
   VercelRouteStreamFetchOptionsFor,
   VercelRouteUnaryFetchOptionsArgs,

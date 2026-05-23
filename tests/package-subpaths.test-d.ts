@@ -59,7 +59,10 @@ import {
   createCorsHeaderRecord,
   jsonOkResponseInit,
 } from 'joor/runtime/response';
-import { createVercelFetch } from 'joor/runtime/vercel';
+import {
+  createVercelFetch,
+  createVercelFunction,
+} from 'joor/runtime/vercel';
 import type * as Auth from 'joor/auth';
 import type * as Client from 'joor/client';
 import type * as Compiler from 'joor/compiler';
@@ -247,6 +250,7 @@ const packageSubpathValues = [
   createRuntimeContext,
   createRootRuntimeContext,
   createVercelFetch,
+  createVercelFunction,
   DEFAULT_MAX_BODY_BYTES,
   errorStatus,
   jsonOkResponseInit,
@@ -376,4 +380,6 @@ export type PackageSubpathSurface = [
     PackageSubpathStreamBody
   >,
   Vercel.VercelFetchHandler,
+  Vercel.VercelFunction,
+  Root.VercelFunction,
 ];
