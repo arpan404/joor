@@ -23,18 +23,44 @@ import type {
   RpcResponseHeaderValues,
 } from './protocol.js';
 
-export interface ClientOptions<
+type IsExactRequest<TRequest extends Request> = [Request] extends [TRequest]
+  ? [TRequest] extends [Request]
+    ? true
+    : false
+  : false;
+
+type ClientRequestFactoryOption<TRequest extends Request> =
+  IsExactRequest<TRequest> extends true
+    ? { createRequest?: ClientRequestFactory<TRequest> }
+    : { createRequest: ClientRequestFactory<TRequest> };
+
+export type ClientOptions<
   TManifest extends JoorManifest | undefined = undefined,
-> {
+  TRequest extends Request = Request,
+> = {
   url: string;
-  fetch?: ClientFetch;
+  fetch?: ClientFetch<TRequest>;
   headers?: ClientHeaderValues;
   request?: ClientRequestInit;
   manifest?: TManifest;
   maxStreamEventBytes?: number;
+} & ClientRequestFactoryOption<TRequest>;
+
+export type ClientFetch<TRequest extends Request = Request> = (
+  request: TRequest
+) => Response | Promise<Response>;
+
+export interface ClientRequestFactoryArgs {
+  url: string;
+  body: JsonValue;
+  headers: Headers;
+  baseRequest?: ClientRequestInit | undefined;
+  request?: ClientRequestInit | undefined;
 }
 
-export type ClientFetch = (request: Request) => Response | Promise<Response>;
+export type ClientRequestFactory<TRequest extends Request = Request> = (
+  args: ClientRequestFactoryArgs
+) => TRequest;
 
 export type ClientHeaderValues = Record<string, string | undefined>;
 
@@ -1345,8 +1371,11 @@ export type RpcManifestRouteStreamTransportClient<
   TManifest extends JoorManifest,
 > = RpcRouteStreamTransportClient<JoorManifestRoutes<TManifest>>;
 
-export type RpcManifestClientOptions<TManifest extends JoorManifest> = Omit<
-  ClientOptions<TManifest>,
+export type RpcManifestClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = Omit<
+  ClientOptions<TManifest, TRequest>,
   'manifest'
 >;
 
@@ -1387,6 +1416,15 @@ const createRpcRequest = (
     headers,
     body: JSON.stringify(body),
   });
+
+const createDefaultClientRequest = ({
+  url,
+  body,
+  headers,
+  baseRequest,
+  request,
+}: ClientRequestFactoryArgs): Request =>
+  createRpcRequest(url, body, headers, baseRequest, request);
 
 const defaultMaxStreamEventBytes = 1024 * 1024;
 
@@ -1482,18 +1520,26 @@ const assertSseResponse = async (response: Response): Promise<void> => {
   );
 };
 
-export function createClient<const TManifest extends JoorManifest>(
-  options: ClientOptions<TManifest> & { manifest: TManifest }
+export function createClient<
+  const TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+>(
+  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
 ): RpcManifestTransportClient<TManifest>;
-export function createClient<TRoutes extends RpcRouteMap = never>(
-  options: ClientOptions
+export function createClient<
+  TRoutes extends RpcRouteMap = never,
+  TRequest extends Request = Request,
+>(
+  options: ClientOptions<undefined, TRequest>
 ): RpcTransportClient<TRoutes>;
-export function createClient(
-  options: ClientOptions<JoorManifest | undefined>
+export function createClient<TRequest extends Request = Request>(
+  options: ClientOptions<JoorManifest | undefined, TRequest>
 ): LegacyRpcTransportClient | RouteRpcTransportClient<RpcRouteMap> {
   const fetcher =
     options.fetch ??
-    ((request: Request): Promise<Response> => globalThis.fetch(request));
+    ((request: TRequest): Promise<Response> => globalThis.fetch(request));
+  const requestFactory = (options.createRequest ??
+    createDefaultClientRequest) as ClientRequestFactory<TRequest>;
   const maxStreamEventBytes = normalizeMaxStreamEventBytes(
     options.maxStreamEventBytes
   );
@@ -1513,13 +1559,13 @@ export function createClient(
   > => {
     const [callOptions] = requestOptions;
     const response = await fetcher(
-      createRpcRequest(
-        options.url,
-        { id, input } as JsonValue,
-        createHeaders(options.headers, callOptions?.headers),
-        options.request,
-        callOptions?.request
-      )
+      requestFactory({
+        url: options.url,
+        body: { id, input } as JsonValue,
+        headers: createHeaders(options.headers, callOptions?.headers),
+        baseRequest: options.request,
+        request: callOptions?.request,
+      })
     );
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
@@ -1562,13 +1608,13 @@ export function createClient(
     }
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(
-      createRpcRequest(
-        options.url,
+      requestFactory({
+        url: options.url,
         body,
-        requestHeaders,
-        options.request,
-        batchOptions?.request
-      )
+        headers: requestHeaders,
+        baseRequest: options.request,
+        request: batchOptions?.request,
+      })
     );
     return (await response.json()) as BatchResults<TRequests>;
   };
@@ -1586,13 +1632,13 @@ export function createClient(
       );
       headers.set('accept', 'text/event-stream');
       const response = await fetcher(
-        createRpcRequest(
-          options.url,
-          { id, input } as JsonValue,
+        requestFactory({
+          url: options.url,
+          body: { id, input } as JsonValue,
           headers,
-          options.request,
-          requestOptions[0]?.request
-        )
+          baseRequest: options.request,
+          request: requestOptions[0]?.request,
+        })
       );
       await assertSseResponse(response);
       yield* parseSse<JsonValue>(
@@ -1609,8 +1655,14 @@ export function createClient(
   };
 }
 
-export const createManifestClient = <const TManifest extends JoorManifest>(
+export const createManifestClient = <
+  const TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+>(
   manifest: TManifest,
-  options: RpcManifestClientOptions<TManifest>
+  options: RpcManifestClientOptions<TManifest, TRequest>
 ): RpcManifestTransportClient<TManifest> =>
-  createClient({ ...options, manifest });
+  createClient<TManifest, TRequest>({
+    ...(options as ClientOptions<TManifest, TRequest>),
+    manifest,
+  });

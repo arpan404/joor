@@ -599,7 +599,7 @@ describe('compiler', () => {
       );
       expect(clientSource).toContain('export type GeneratedClient');
       expect(clientSource).toContain(
-        'export const createTransport = (\n  options: GeneratedClientOptions = {}\n): TransportClient =>'
+        'export function createTransport<TRequest extends Request>'
       );
       expect(clientSource).toContain('"get": RouteUnaryFunction<"users.get">');
       expect(clientSource).toContain(
@@ -681,7 +681,9 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type StreamRouteClientArgs');
       expect(clientSource).toContain('export type ProtocolRequestOptions');
       expect(clientSource).toContain('export type RouteTransportClient');
-      expect(clientSource).toContain('JoorManifestClientOptions<Manifest>');
+      expect(clientSource).toContain(
+        'JoorManifestClientOptions<Manifest, TRequest>'
+      );
       expect(clientSource).toContain(
         'createManifestRouteProtocolRequest as createTransportRouteProtocolRequest'
       );
@@ -1049,12 +1051,38 @@ const options: GeneratedClientOptions = {
   headers: { authorization: 'token' },
   request: { credentials: 'include' },
 };
+const typedGeneratedClientOptions: GeneratedClientOptions<GeneratedRequest> = {
+  createRequest(args) {
+    return new GeneratedRequest(args.url, {
+      ...args.baseRequest,
+      ...args.request,
+      method: 'POST',
+      headers: args.headers,
+      body: JSON.stringify(args.body),
+    });
+  },
+  fetch(request) {
+    return new Response(request.runtimeTag);
+  },
+};
+// @ts-expect-error generated typed client options require a matching request factory.
+const missingGeneratedClientRequestFactory: GeneratedClientOptions<GeneratedRequest> = {
+  fetch(request) {
+    return new Response(request.runtimeTag);
+  },
+};
 const batchOptions: BatchOptions = {
   headers: { 'x-batch': '1' },
   request: { cache: 'no-store' },
 };
 createClient(options).users.watch({ userId: '1' });
+createClient<GeneratedRequest>(typedGeneratedClientOptions).users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
 const generatedTransport: TransportClient = createTransport(options);
+const generatedTypedTransport: TransportClient = createTransport<GeneratedRequest>(
+  typedGeneratedClientOptions
+);
 const generatedRouteTransport: RouteTransportClient = generatedTransport;
 const generatedRouteUnaryTransport: RouteUnaryTransportClient =
   generatedRouteTransport;
@@ -1067,6 +1095,7 @@ const generatedStreamTransport: StreamRouteTransportClient =
 generatedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   if (result.ok) result.data.name.toUpperCase();
 });
+generatedTypedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedRouteTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedRouteUnaryTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedTransport.stream('users.watch', { userId: '1' });

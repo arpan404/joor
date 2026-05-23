@@ -43,6 +43,8 @@ export type {
   ClientHeaderValues,
   ClientOptions,
   ClientProtocolBatchRequest,
+  ClientRequestFactory,
+  ClientRequestFactoryArgs,
   ClientProcedureHeaders,
   ClientRequestInit,
   ClientRequestOptions,

@@ -218,6 +218,7 @@ Platform helpers expose typed deployment shapes when you do not use generated en
 Low-level RPC helpers expose the same pattern through `createRpcHandlerFor<Request>()`, `createRpcBodyHandlerFor<Request>()`, and `createRpcBodyResultHandlerFor<Request>()`.
 Compiled runtime helpers mirror the same request typing with `createCompiledRpcHandlerFor<Request>()` and `createDenoCompiledTransportRequestHandlerFor<Request>()`.
 Generated native dispatcher, Bun, Deno, Node, Cloudflare, Next.js, Vercel, and Netlify entrypoints also export typed factory helpers such as `createFetchFor<Request>()`, `.joor/node`'s `createHandler<Incoming, Outgoing>()`, and `.joor/next`'s `createHandlersFor<Context, Request>()` so generated handlers can preserve extended request types.
+Clients can also keep custom request types by pairing `ClientFetch<Request>()` with a matching `createRequest` factory, so the client transport never widens a typed fetch back to a plain `Request`.
 
 ## Next.js API Routes
 

@@ -3051,7 +3051,10 @@ export const createRouteStreamRequest: RouteStreamRequestBuilder = <
   ) as RouteStreamRequest<TId>;
 export const createStreamRouteRequest: typeof createRouteStreamRequest =
   createRouteStreamRequest;
-export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
+export type GeneratedClientOptions<TRequest extends Request = Request> = Omit<
+  JoorManifestClientOptions<Manifest, TRequest>,
+  'url'
+> & {
   url?: string;
 };
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
@@ -3083,13 +3086,19 @@ export type TransportClient = RouteTransportClient;
 
 const defaultUrl = ${JSON.stringify(defaultUrl)};
 
-export const createTransport = (
-  options: GeneratedClientOptions = {}
-): TransportClient =>
-  createTransportClient(manifest, {
-    ...options,
-    url: options.url ?? defaultUrl,
-  });
+export function createTransport(): TransportClient;
+export function createTransport<TRequest extends Request>(
+  options: GeneratedClientOptions<TRequest>
+): TransportClient;
+export function createTransport<TRequest extends Request = Request>(
+  options?: GeneratedClientOptions<TRequest>
+): TransportClient {
+  const resolved = options ?? ({} as GeneratedClientOptions<Request>);
+  return createTransportClient(manifest, {
+    ...(resolved as Omit<JoorManifestClientOptions<Manifest, TRequest>, 'url'>),
+    url: resolved.url ?? defaultUrl,
+  } as JoorManifestClientOptions<Manifest, TRequest>);
+}
 
 export type GeneratedClient = {
 ${clientTypeBody}
@@ -3097,8 +3106,15 @@ ${clientTypeBody}
 };
 export type Client = GeneratedClient;
 
-export const createClient = (options: GeneratedClientOptions = {}): GeneratedClient => {
-  const transport = createTransport(options);
+export function createClient(): GeneratedClient;
+export function createClient<TRequest extends Request>(
+  options: GeneratedClientOptions<TRequest>
+): GeneratedClient;
+export function createClient<TRequest extends Request = Request>(
+  options?: GeneratedClientOptions<TRequest>
+): GeneratedClient {
+  const transport =
+    options === undefined ? createTransport() : createTransport(options);
   const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
     const routeTransport = transport as RouteUnaryTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
@@ -3127,7 +3143,7 @@ export const createClient = (options: GeneratedClientOptions = {}): GeneratedCli
 ${clientBody}
     batch,
   };
-};
+}
 
 export const client: GeneratedClient = createClient();
 `

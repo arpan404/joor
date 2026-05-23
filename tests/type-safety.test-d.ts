@@ -309,6 +309,8 @@ import {
   type ClientHeaderValues,
   type ClientOptions,
   type ClientProtocolBatchRequest,
+  type ClientRequestFactory,
+  type ClientRequestFactoryArgs,
   type ClientProcedureHeaders,
   type ClientRequestInit,
   type ClientRequestOptions,
@@ -1126,6 +1128,8 @@ import {
   type ClientFetch as RpcSubpathClientFetch,
   type ClientOptions as RpcSubpathClientOptions,
   type ClientProtocolBatchRequest as RpcSubpathClientProtocolBatchRequest,
+  type ClientRequestFactory as RpcSubpathClientRequestFactory,
+  type ClientRequestFactoryArgs as RpcSubpathClientRequestFactoryArgs,
   type ClientProcedureHeaders as RpcSubpathClientProcedureHeaders,
   type LegacyBatchRequest as RpcSubpathLegacyBatchRequest,
   type HandlerHookContext as RpcSubpathHandlerHookContext,
@@ -3834,6 +3838,93 @@ clientFetch(new Request('https://example.com/rpc'));
 rpcSubpathClientFetch(new Request('https://example.com/rpc'));
 syncClientFetch(new Request('https://example.com/rpc'));
 syncRpcSubpathClientFetch(new Request('https://example.com/rpc'));
+interface ClientAppRequest extends Request {
+  readonly requestId: string;
+}
+const clientRequestFactoryArgs: ClientRequestFactoryArgs = {
+  url: '/rpc',
+  body: { id: 'users.get', input: { id: '1' } },
+  headers: new Headers(),
+};
+const rpcSubpathClientRequestFactoryArgs: RpcSubpathClientRequestFactoryArgs =
+  clientRequestFactoryArgs;
+const typedClientRequestFactory: ClientRequestFactory<ClientAppRequest> = ({
+  url,
+  body,
+  headers,
+  baseRequest,
+  request,
+}) =>
+  Object.assign(
+    new Request(url, {
+      ...baseRequest,
+      ...request,
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    }),
+    { requestId: 'req_1' }
+  ) as ClientAppRequest;
+const rpcSubpathTypedClientRequestFactory: RpcSubpathClientRequestFactory<ClientAppRequest> =
+  typedClientRequestFactory;
+const clientAppRequest = typedClientRequestFactory(clientRequestFactoryArgs);
+const rpcSubpathClientAppRequest = rpcSubpathTypedClientRequestFactory(
+  rpcSubpathClientRequestFactoryArgs
+);
+const typedClientFetch: ClientFetch<ClientAppRequest> = async (request) =>
+  new Response(request.requestId);
+const rpcSubpathTypedClientFetch: RpcSubpathClientFetch<ClientAppRequest> =
+  typedClientFetch;
+typedClientFetch(clientAppRequest);
+rpcSubpathTypedClientFetch(rpcSubpathClientAppRequest);
+const typedClientOptions: ClientOptions<undefined, ClientAppRequest> = {
+  url: '/rpc',
+  fetch: typedClientFetch,
+  createRequest: typedClientRequestFactory,
+};
+const rpcSubpathTypedClientOptions: RpcSubpathClientOptions<
+  undefined,
+  ClientAppRequest
+> = typedClientOptions;
+createClient<never, ClientAppRequest>(typedClientOptions);
+createClient<never, ClientAppRequest>(rpcSubpathTypedClientOptions);
+const typedManifestClientOptions: RpcManifestClientOptions<
+  typeof manifest,
+  ClientAppRequest
+> = {
+  url: '/rpc',
+  fetch: typedClientFetch,
+  createRequest: typedClientRequestFactory,
+};
+const typedJoorManifestClientOptions: JoorManifestClientOptions<
+  typeof manifest,
+  ClientAppRequest
+> = typedManifestClientOptions;
+const typedRpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
+  typeof manifest,
+  ClientAppRequest
+> = typedManifestClientOptions;
+const typedJoorSubpathManifestClientOptions: JoorSubpathManifestClientOptions<
+  typeof manifestFromSubpath,
+  ClientAppRequest
+> = typedJoorManifestClientOptions;
+createRootManifestClient(manifest, typedManifestClientOptions);
+createRootManifestClient(manifest, typedRpcSubpathManifestClientOptions);
+createRootManifestClient(manifest, typedJoorManifestClientOptions);
+createRootManifestClient(
+  manifestFromSubpath,
+  typedJoorSubpathManifestClientOptions
+);
+// @ts-expect-error typed client request options require a matching request factory.
+const _missingTypedClientRequestFactory: ClientOptions<
+  undefined,
+  ClientAppRequest
+> = {
+  url: '/rpc',
+  fetch: typedClientFetch,
+};
+// @ts-expect-error typed client fetches require the configured request subtype.
+typedClientFetch(new Request('https://example.com/rpc'));
 const procedureClientHeaders: ClientProcedureHeaders<typeof procedure> = {
   authorization: undefined,
   'x-tenant-id': 'tenant-1',

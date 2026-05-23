@@ -299,6 +299,52 @@ describe('client', () => {
     expect(seen[2]?.cache).toBe('reload');
   });
 
+  it('uses custom request factories for typed client fetches', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    interface AppRequest extends Request {
+      readonly requestId: string;
+    }
+
+    const seen: AppRequest[] = [];
+    const client = createClient<never, AppRequest>({
+      url: 'http://localhost/rpc',
+      createRequest(args) {
+        return Object.assign(
+          new Request(args.url, {
+            ...args.baseRequest,
+            ...args.request,
+            method: 'POST',
+            headers: args.headers,
+            body: JSON.stringify(args.body),
+          }),
+          { requestId: 'req_1' }
+        ) as AppRequest;
+      },
+      async fetch(request) {
+        seen.push(request);
+        const body = await request.json();
+        return Response.json(
+          Array.isArray(body)
+            ? body.map((entry) => ({ ok: true, id: entry.id, data: {} }))
+            : { ok: true, id: body.id, data: { ok: true } }
+        );
+      },
+    });
+
+    await client.call<typeof procedure>('call', { ok: true });
+    await client.batch([{ id: 'batch', input: { ok: true } }] as const);
+
+    expect(seen).toHaveLength(2);
+    expect(seen[0]?.requestId).toBe('req_1');
+    expect(seen[1]?.requestId).toBe('req_1');
+  });
+
   it('bounds SSE event buffering', async () => {
     const client = createClient({
       url: 'http://localhost/rpc',

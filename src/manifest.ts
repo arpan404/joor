@@ -188,8 +188,10 @@ export type JoorManifestStreamRouteTransportBodyResultHandler<
   TManifest extends JoorManifest,
 > = JoorManifestRouteStreamTransportBodyResultHandler<TManifest>;
 
-export type JoorManifestClientOptions<TManifest extends JoorManifest> =
-  RpcManifestClientOptions<TManifest>;
+export type JoorManifestClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = RpcManifestClientOptions<TManifest, TRequest>;
 
 export type JoorManifestRouteId<TManifest> = RpcRouteId<
   JoorManifestRoutes<TManifest>
