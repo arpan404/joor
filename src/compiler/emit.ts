@@ -1332,9 +1332,10 @@ ${nodeFastCases}
   const fetchFile = `${outDir}/fetch.ts`;
   await writeFile(
     fetchFile,
-    `import { fetch } from '${dispatcherImport}';
+    `import { createFetchFor, fetch, type NativeFetchHandler } from '${dispatcherImport}';
 
-export { fetch };
+export { createFetchFor, fetch };
+export type { NativeFetchHandler };
 export default fetch;
 `
   );
@@ -1342,9 +1343,20 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { fetch } from './fetch.js';
+import { createFetchFor, fetch } from './fetch.js';
 
 export { fetch };
+export const createWorkerFor = <
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>(): CloudflareWorker<TEnv, TContext, TRequest> => ({
+  fetch: createFetchFor<TRequest>() as CloudflareWorker<
+    TEnv,
+    TContext,
+    TRequest
+  >['fetch'],
+});
 export const worker: CloudflareWorker = { fetch };
 export default worker;
 `
@@ -1366,9 +1378,14 @@ export default handlers;
   await writeFile(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
-import { fetch } from './fetch.js';
+import { createFetchFor, fetch } from './fetch.js';
 
 export { fetch };
+export const createVercelFor = <
+  TRequest extends Request = Request,
+>(): VercelFunction<TRequest> => ({
+  fetch: createFetchFor<TRequest>(),
+});
 export const vercel: VercelFunction = { fetch };
 export default vercel;
 `
@@ -1377,9 +1394,16 @@ export default vercel;
   await writeFile(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
-import { fetch } from './fetch.js';
+import { createFetchFor, fetch } from './fetch.js';
 
 export { fetch };
+export const createEdgeFor =
+  <
+    TContext = unknown,
+    TRequest extends Request = Request,
+  >(): NetlifyEdgeFetchHandler<TContext, TRequest> =>
+  (request) =>
+    createFetchFor<TRequest>()(request);
 export const edge: NetlifyEdgeFetchHandler = (request) => fetch(request);
 export default edge;
 `

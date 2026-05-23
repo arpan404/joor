@@ -373,6 +373,15 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const createFetchFor =');
+      await expect(
+        readFile(join(outDir, 'cloudflare.ts'), 'utf8')
+      ).resolves.toContain('export const createWorkerFor =');
+      await expect(
+        readFile(join(outDir, 'vercel.ts'), 'utf8')
+      ).resolves.toContain('export const createVercelFor =');
+      await expect(
+        readFile(join(outDir, 'netlify.ts'), 'utf8')
+      ).resolves.toContain('export const createEdgeFor =');
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
@@ -921,12 +930,12 @@ import type { NativeConfig, NativeConfigFor, NativeDefineConfig, NativeDefineHan
 import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
 import { createPlugin } from 'joor';
 import { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
-import cloudflareWorker, { fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
+import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
 import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
-import netlifyEdge, { edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
+import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
 import nextHandlers, { GET, OPTIONS, POST, handlers as namedNextHandlers } from './next.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
-import vercelFunction, { fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
+import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
 import type { NetlifyEdgeFetchHandler, NetlifyEdgeResult } from 'joor/runtime/netlify';
 import type { NextRouteHandlers } from 'joor/runtime/next';
@@ -944,14 +953,25 @@ const generatedCloudflareWorker: CloudflareWorker = cloudflareWorker;
 const generatedCloudflareFetch: NativeFetchHandler = cloudflareFetch;
 const generatedTypedNativeFetch: NativeFetchHandler<GeneratedRequest> =
   createNativeFetchFor<GeneratedRequest>();
+const generatedTypedCloudflareWorker: CloudflareWorker<
+  never,
+  never,
+  GeneratedRequest
+> = createGeneratedCloudflareWorkerFor<never, never, GeneratedRequest>();
 const generatedNamedCloudflareWorker: CloudflareWorker = namedCloudflareWorker;
 const generatedNextHandlers: NextRouteHandlers = nextHandlers;
 const generatedNamedNextHandlers: NextRouteHandlers = namedNextHandlers;
 const generatedVercelFunction: VercelFunction = vercelFunction;
 const generatedVercelFetch: NativeFetchHandler = vercelFetch;
+const generatedTypedVercelFunction: VercelFunction<GeneratedRequest> =
+  createGeneratedVercelFor<GeneratedRequest>();
 const generatedNamedVercelFunction: VercelFunction = namedVercelFunction;
 const generatedNetlifyEdge: NetlifyEdgeFetchHandler = netlifyEdge;
 const generatedNetlifyFetch: NativeFetchHandler = netlifyFetch;
+const generatedTypedNetlifyEdge: NetlifyEdgeFetchHandler<
+  { site: string },
+  GeneratedRequest
+> = createGeneratedNetlifyEdgeFor<{ site: string }, GeneratedRequest>();
 const generatedNamedNetlifyEdge: NetlifyEdgeFetchHandler = namedNetlifyEdge;
 const generatedNetlifyEdgeResult: NetlifyEdgeResult | Promise<NetlifyEdgeResult> =
   generatedNamedNetlifyEdge(new Request('https://example.com/rpc'), {});
@@ -961,6 +981,9 @@ generatedTypedNativeFetch(generatedRequest);
 // @ts-expect-error generated typed native fetch handlers preserve custom request types.
 generatedTypedNativeFetch(new Request('https://example.com/rpc'));
 generatedNamedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+generatedTypedCloudflareWorker.fetch(generatedRequest);
+// @ts-expect-error generated typed Cloudflare workers preserve custom request types.
+generatedTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedNextHandlers.GET(new Request('https://example.com/rpc'));
 generatedNamedNextHandlers.POST(new Request('https://example.com/rpc'));
 GET(new Request('https://example.com/rpc'));
@@ -968,9 +991,11 @@ POST(new Request('https://example.com/rpc'));
 OPTIONS(new Request('https://example.com/rpc'));
 generatedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedVercelFetch(new Request('https://example.com/rpc'));
+generatedTypedVercelFunction.fetch(generatedRequest);
 generatedNamedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedNetlifyEdge(new Request('https://example.com/rpc'), {});
 generatedNetlifyFetch(new Request('https://example.com/rpc'));
+generatedTypedNetlifyEdge(generatedRequest, { site: 'docs' });
 generatedNetlifyEdgeResult;
 const generatedRouteUnaryFunction: RouteUnaryFunction<'users.get'> =
   generatedClient.users.get;
