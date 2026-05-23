@@ -1188,17 +1188,29 @@ export type HandlerOptionsWithPreflightArgs<
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  options: HandlerOptionsFor<TManifest, TPlugins, TBody>
-) => HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  options: HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>
+) => HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DefineRouteUnaryHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  options: RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>
-) => RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  options: RpcManifestRouteUnaryHandlerOptionsFor<
+    TManifest,
+    TPlugins,
+    TBody,
+    TRequest
+  >
+) => RpcManifestRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type DefineUnaryRouteHandlerOptions<TManifest extends RpcManifest> =
   DefineRouteUnaryHandlerOptions<TManifest>;
@@ -1207,9 +1219,20 @@ export type DefineRouteStreamHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  options: RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>
-) => RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  options: RpcManifestRouteStreamHandlerOptionsFor<
+    TManifest,
+    TPlugins,
+    TBody,
+    TRequest
+  >
+) => RpcManifestRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type DefineStreamRouteHandlerOptions<TManifest extends RpcManifest> =
   DefineRouteStreamHandlerOptions<TManifest>;
@@ -2397,7 +2420,12 @@ export const createRpcHandlerFor =
   ): RpcRequestHandler<TRequest> =>
     createRpcHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        TRequest
+      >
     ) as RpcRequestHandler<TRequest>;
 
 export function createRpcBodyHandler<
@@ -2445,7 +2473,12 @@ export const createRpcBodyHandlerFor =
   ): RpcBodyHandler<TManifest, TRequest> =>
     createRpcBodyHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        TRequest
+      >,
       args[1] ?? true
     ) as RpcBodyHandler<TManifest, TRequest>;
 
@@ -2491,7 +2524,12 @@ export const createRpcBodyResultHandlerFor =
   ): RpcBodyResultHandler<TManifest, TRequest> =>
     createRpcBodyResultHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<TManifest>,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestBody<TManifest>,
+        TRequest
+      >,
       args[1] ?? true
     ) as RpcBodyResultHandler<TManifest, TRequest>;
 

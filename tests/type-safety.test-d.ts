@@ -6764,6 +6764,15 @@ exactDefinedHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const requestTypedDefinedHandlerOptions = defineHandlerOptions(manifest)<
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+>(typedRequestHandlerOptions);
+requestTypedDefinedHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const definedHandlerOptionsFactory: DefineHandlerOptions<typeof manifest> =
   defineHandlerOptions(manifest);
 const definedRouteUnaryHandlerOptionsFactory: DefineRouteUnaryHandlerOptions<
@@ -6781,6 +6790,12 @@ const definedStreamRouteHandlerOptionsFactory: DefineStreamRouteHandlerOptions<
 const definedRouteUnaryHandlerOptions = definedRouteUnaryHandlerOptionsFactory(
   manifestUnaryRouteHandlerOptions
 );
+const requestTypedDefinedRouteUnaryHandlerOptions =
+  definedRouteUnaryHandlerOptionsFactory<
+    readonly [typeof usersPlugin],
+    typeof manifestRouteRequest,
+    HookAppRequest
+  >(typedRequestHandlerOptions);
 const definedRouteStreamHandlerOptions =
   definedRouteStreamHandlerOptionsFactory(manifestStreamRouteHandlerOptions);
 const definedUnaryRouteHandlerOptions = definedUnaryRouteHandlerOptionsFactory(
@@ -6792,6 +6807,10 @@ definedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
 definedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedDefinedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 definedRouteStreamHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -10783,6 +10802,12 @@ const exactJoorHandlerOptions: JoorHandlerOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const requestTypedJoorHandlerOptions: JoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 const runtimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10791,6 +10816,12 @@ const joorRouteUnaryHandlerOptions: JoorRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestUnaryRouteHandlerOptions;
+const requestTypedJoorRouteUnaryHandlerOptions: JoorRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 const joorUnaryRouteHandlerOptions: JoorUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10824,6 +10855,18 @@ const exactRuntimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactJoorHandlerOptions;
+const requestTypedRuntimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedJoorHandlerOptions;
+const requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions: RuntimeSubpathJoorRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteUnaryHandlerOptions;
 runtimeSubpathJoorUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -10844,6 +10887,14 @@ exactRuntimeSubpathJoorHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedRuntimeSubpathJoorHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const joorHandlerOptionsArgs: JoorHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10852,6 +10903,12 @@ const joorRouteUnaryHandlerOptionsArgs: JoorRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [joorRouteUnaryHandlerOptions];
+const requestTypedJoorRouteUnaryHandlerOptionsArgs: JoorRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedJoorRouteUnaryHandlerOptions];
 const joorUnaryRouteHandlerOptionsArgs: JoorUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10880,6 +10937,12 @@ const runtimeSubpathJoorRouteUnaryHandlerOptionsArgs: RuntimeSubpathJoorRouteUna
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorRouteUnaryHandlerOptionsArgs;
+const requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptionsArgs: RuntimeSubpathJoorRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteUnaryHandlerOptionsArgs;
 const runtimeSubpathJoorRouteStreamHandlerOptionsArgs: RuntimeSubpathJoorRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10896,6 +10959,10 @@ runtimeSubpathJoorStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 runtimeSubpathJoorRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 runtimeSubpathJoorRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
