@@ -62,9 +62,13 @@ export {
 } from './runtime/body.js';
 export {
   createBunFetch,
+  createBunFetchFor,
   createBunRpcRequestHandler,
+  createBunRpcRequestHandlerFor,
   createBunTransportRequestHandler,
+  createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath,
+  createBunTransportRequestHandlerWithPathFor,
   serveBun,
 } from './runtime/bun.js';
 export {

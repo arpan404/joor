@@ -21,9 +21,13 @@ import {
   BodySizeLimitError,
   DEFAULT_MAX_BODY_BYTES,
   createBunFetch,
+  createBunFetchFor,
   createBunRpcRequestHandler,
+  createBunRpcRequestHandlerFor,
   createBunTransportRequestHandler,
+  createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath,
+  createBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch,
   createCloudflareFetchFor,
   createCloudflareWorker,
@@ -1392,8 +1396,12 @@ import {
   createAwsLambdaHttpApiHandlerFor as createRuntimeSubpathAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler as createRuntimeSubpathAwsLambdaRestApiHandler,
   createAwsLambdaRestApiHandlerFor as createRuntimeSubpathAwsLambdaRestApiHandlerFor,
+  createBunFetchFor as createRuntimeSubpathBunFetchFor,
+  createBunRpcRequestHandlerFor as createRuntimeSubpathBunRpcRequestHandlerFor,
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
+  createBunTransportRequestHandlerFor as createRuntimeSubpathBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
+  createBunTransportRequestHandlerWithPathFor as createRuntimeSubpathBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareFetchFor as createRuntimeSubpathCloudflareFetchFor,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
@@ -7236,18 +7244,41 @@ const runtimeSubpathTypedBunFetch: RuntimeSubpathBunFetchHandler =
   typedBunFetch;
 const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
   syncTypedBunFetch;
+const createTypedBunFetch = createBunFetchFor<AppFetchRequest>();
+const typedAppBunFetch: BunFetchHandler<AppFetchRequest> =
+  createTypedBunFetch(manifest, handlerOptions);
+const createRuntimeSubpathTypedBunFetch =
+  createRuntimeSubpathBunFetchFor<AppFetchRequest>();
+const runtimeSubpathTypedAppBunFetch: RuntimeSubpathBunFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunFetch(manifest, handlerOptions);
 bunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedBunFetch(new Request('https://example.com/rpc'));
+typedAppBunFetch(appFetchRequest);
+runtimeSubpathTypedAppBunFetch(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
 createBunFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Bun fetch plugins.
+createTypedBunFetch(manifest);
 const bunRpcHandler: BunRpcRequestHandler = createBunRpcRequestHandler(
   manifest,
   handlerOptions
 );
 const runtimeSubpathBunRpcHandler: RuntimeSubpathBunRpcRequestHandler =
   bunRpcHandler;
+const createTypedBunRpcHandler =
+  createBunRpcRequestHandlerFor<AppFetchRequest>();
+const typedBunRpcHandler: BunRpcRequestHandler<AppFetchRequest> =
+  createTypedBunRpcHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedBunRpcHandler =
+  createRuntimeSubpathBunRpcRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunRpcHandler(manifest, handlerOptions);
 runtimeSubpathBunRpcHandler(new Request('https://example.com/rpc'));
+typedBunRpcHandler(appFetchRequest);
+runtimeSubpathTypedBunRpcHandler(appFetchRequest);
+// @ts-expect-error service-dependent manifests require matching typed Bun RPC plugins.
+createTypedBunRpcHandler(manifest);
 const bunFetchOptions: BunFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8654,15 +8685,43 @@ const bunTransportRequestHandlerWithPath: BunTransportRequestHandler =
     routeTypedBunTransportHandler,
     '/rpc'
   );
+const createTypedBunTransportRequestHandler =
+  createBunTransportRequestHandlerFor<AppFetchRequest>();
+const typedBunTransportRequestHandler: BunTransportRequestHandler<AppFetchRequest> =
+  createTypedBunTransportRequestHandler(routeTypedBunTransportHandler);
+const createTypedBunTransportRequestHandlerWithPath =
+  createBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedBunTransportRequestHandlerWithPath: BunTransportRequestHandler<AppFetchRequest> =
+  createTypedBunTransportRequestHandlerWithPath(
+    routeTypedBunTransportHandler,
+    '/rpc'
+  );
 createBunTransportRequestHandler(syncBunTransportHandler);
 createBunTransportRequestHandlerWithPath(syncBunTransportHandler, '/rpc');
 const runtimeSubpathBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler =
   bunTransportRequestHandler;
+const createRuntimeSubpathTypedBunTransportRequestHandler =
+  createRuntimeSubpathBunTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunTransportRequestHandler(
+    routeTypedBunTransportHandler
+  );
+const createRuntimeSubpathTypedBunTransportRequestHandlerWithPath =
+  createRuntimeSubpathBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedBunTransportRequestHandlerWithPath: RuntimeSubpathBunTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunTransportRequestHandlerWithPath(
+    routeTypedBunTransportHandler,
+    '/rpc'
+  );
 bunTransportRequestHandler(new Request('https://example.com/rpc'));
 bunTransportRequestHandlerWithPath(new Request('https://example.com/rpc'));
 runtimeSubpathBunTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
+typedBunTransportRequestHandler(appFetchRequest);
+typedBunTransportRequestHandlerWithPath(appFetchRequest);
+runtimeSubpathTypedBunTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedBunTransportRequestHandlerWithPath(appFetchRequest);
 const manifestBunTransportHandler: BunTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;

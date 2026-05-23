@@ -3,6 +3,10 @@ import {
   createAwsLambdaHandlerFor as createRootAwsLambdaHandlerFor,
   createAwsLambdaHttpApiHandlerFor as createRootAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandlerFor as createRootAwsLambdaRestApiHandlerFor,
+  createBunFetchFor as createRootBunFetchFor,
+  createBunRpcRequestHandlerFor as createRootBunRpcRequestHandlerFor,
+  createBunTransportRequestHandlerFor as createRootBunTransportRequestHandlerFor,
+  createBunTransportRequestHandlerWithPathFor as createRootBunTransportRequestHandlerWithPathFor,
   createRuntimeContext as createRootRuntimeContext,
   createCloudflareFetchFor as createRootCloudflareFetchFor,
   createCloudflareWorker as createRootCloudflareWorker,
@@ -57,7 +61,13 @@ import {
   createAwsLambdaRestApiHandlerFor,
 } from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
-import { createBunFetch } from 'joor/runtime/bun';
+import {
+  createBunFetch,
+  createBunFetchFor,
+  createBunRpcRequestHandlerFor,
+  createBunTransportRequestHandlerFor,
+  createBunTransportRequestHandlerWithPathFor,
+} from 'joor/runtime/bun';
 import {
   createCloudflareFetch,
   createCloudflareFetchFor,
@@ -281,6 +291,14 @@ const packageSubpathValues = [
   createRootAwsLambdaHttpApiHandlerFor,
   createRootAwsLambdaRestApiHandlerFor,
   createBunFetch,
+  createBunFetchFor,
+  createBunRpcRequestHandlerFor,
+  createBunTransportRequestHandlerFor,
+  createBunTransportRequestHandlerWithPathFor,
+  createRootBunFetchFor,
+  createRootBunRpcRequestHandlerFor,
+  createRootBunTransportRequestHandlerFor,
+  createRootBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch,
   createCloudflareFetchFor,
   createCloudflareWorker,
