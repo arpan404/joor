@@ -64,6 +64,10 @@
       "types": "./dist/runtime/aws-lambda.d.ts",
       "import": "./dist/runtime/aws-lambda.js"
     },
+    "./runtime/elysia": {
+      "types": "./dist/runtime/elysia.d.ts",
+      "import": "./dist/runtime/elysia.js"
+    },
     "./runtime/express": {
       "types": "./dist/runtime/express.d.ts",
       "import": "./dist/runtime/express.js"

@@ -21,6 +21,7 @@ import {
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
+  createElysiaHandler,
   createExpressHandler,
   createFastifyHandler,
   createHonoHandler,
@@ -139,6 +140,18 @@ import {
   type BunUnaryRouteServeOptionsFor,
   type BunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor,
+  type ElysiaContext,
+  type ElysiaHandler,
+  type ElysiaHandlerOptionsArgs,
+  type ElysiaHandlerOptionsFor,
+  type ElysiaRouteStreamHandlerOptionsArgs,
+  type ElysiaRouteStreamHandlerOptionsFor,
+  type ElysiaRouteUnaryHandlerOptionsArgs,
+  type ElysiaRouteUnaryHandlerOptionsFor,
+  type ElysiaStreamRouteHandlerOptionsArgs,
+  type ElysiaStreamRouteHandlerOptionsFor,
+  type ElysiaUnaryRouteHandlerOptionsArgs,
+  type ElysiaUnaryRouteHandlerOptionsFor,
   type ExpressHandlerOptions,
   type ExpressHandlerOptionsArgs,
   type ExpressHandlerOptionsFor,
@@ -1147,6 +1160,7 @@ import {
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
+  createElysiaHandler as createRuntimeSubpathElysiaHandler,
   createExpressHandler as createRuntimeSubpathExpressHandler,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createHonoHandler as createRuntimeSubpathHonoHandler,
@@ -1165,6 +1179,8 @@ import {
   type AwsLambdaHttpApiHandler as RuntimeSubpathAwsLambdaHttpApiHandler,
   type AwsLambdaRestApiHandler as RuntimeSubpathAwsLambdaRestApiHandler,
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
+  type ElysiaHandler as RuntimeSubpathElysiaHandler,
+  type ElysiaHandlerOptionsFor as RuntimeSubpathElysiaHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
   type FastifyHandler as RuntimeSubpathFastifyHandler,
@@ -9545,6 +9561,71 @@ expressRequest.originalUrl = '/rpc';
 expressResponse.statusCode.toFixed();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
+const elysiaHandlerOptions: ElysiaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathElysiaHandlerOptions: RuntimeSubpathElysiaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaHandlerOptions;
+const elysiaRouteUnaryHandlerOptions: ElysiaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaHandlerOptions;
+const elysiaUnaryRouteHandlerOptions: ElysiaUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteUnaryHandlerOptions;
+const elysiaRouteStreamHandlerOptions: ElysiaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaHandlerOptions;
+const elysiaStreamRouteHandlerOptions: ElysiaStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteStreamHandlerOptions;
+runtimeSubpathElysiaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+elysiaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+elysiaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const elysiaHandlerOptionsArgs: ElysiaHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [elysiaHandlerOptions];
+const elysiaRouteUnaryHandlerOptionsArgs: ElysiaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaHandlerOptionsArgs;
+const elysiaUnaryRouteHandlerOptionsArgs: ElysiaUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteUnaryHandlerOptionsArgs;
+const elysiaRouteStreamHandlerOptionsArgs: ElysiaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaHandlerOptionsArgs;
+const elysiaStreamRouteHandlerOptionsArgs: ElysiaStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteStreamHandlerOptionsArgs;
+elysiaUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+elysiaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const elysiaHandler: ElysiaHandler = createElysiaHandler(
+  manifest,
+  elysiaHandlerOptions
+);
+const runtimeSubpathElysiaHandler: RuntimeSubpathElysiaHandler =
+  createRuntimeSubpathElysiaHandler(
+    manifest,
+    runtimeSubpathElysiaHandlerOptions
+  );
+const elysiaContext: ElysiaContext = {
+  request: new Request('https://example.com/rpc'),
+};
+elysiaHandler(elysiaContext);
+runtimeSubpathElysiaHandler(elysiaContext);
+// @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
+createElysiaHandler(manifest);
 const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
 fastifyHandlerOptionsBase.useOriginalUrl = false;
 const fastifyHandlerOptions: FastifyHandlerOptionsFor<

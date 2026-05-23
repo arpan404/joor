@@ -39,6 +39,7 @@ export {
   createDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
+export { createElysiaHandler } from './runtime/elysia.js';
 export { createExpressHandler } from './runtime/express.js';
 export { createFastifyHandler } from './runtime/fastify.js';
 export { createHonoHandler } from './runtime/hono.js';
@@ -878,6 +879,20 @@ export type {
   DenoUnaryRouteTransportBodyResultFor,
   DenoUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
+export type {
+  ElysiaContext,
+  ElysiaHandler,
+  ElysiaHandlerOptionsArgs,
+  ElysiaHandlerOptionsFor,
+  ElysiaRouteStreamHandlerOptionsArgs,
+  ElysiaRouteStreamHandlerOptionsFor,
+  ElysiaRouteUnaryHandlerOptionsArgs,
+  ElysiaRouteUnaryHandlerOptionsFor,
+  ElysiaStreamRouteHandlerOptionsArgs,
+  ElysiaStreamRouteHandlerOptionsFor,
+  ElysiaUnaryRouteHandlerOptionsArgs,
+  ElysiaUnaryRouteHandlerOptionsFor,
+} from './runtime/elysia.js';
 export type {
   ExpressHandlerOptions,
   ExpressHandlerOptionsArgs,

@@ -22,6 +22,7 @@ export type {
   DenoCompiledUnaryRouteTransportBodyResultFor,
   DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from './deno-compiled-transport.js';
+export * from './elysia.js';
 export * from './fetch.js';
 export * from './express.js';
 export * from './fastify.js';
