@@ -11,7 +11,11 @@ import { createAuthPolicy } from 'joor/auth';
 import { createManifestClient } from 'joor/client';
 import { defineConfigFor } from 'joor/config';
 import { createRuntimeContext } from 'joor/context';
-import { build } from 'joor/compiler';
+import {
+  build,
+  createAiDocs,
+  createOpenApiDocument,
+} from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import { createJoorHandler } from 'joor/runtime';
 import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
@@ -125,11 +129,26 @@ const packageSubpathAuthPolicy = createAuthPolicy.withContext<PackageSubpathServ
 );
 packageSubpathAuthPolicy.name.toUpperCase();
 
+const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
+  procedures: [
+    {
+      id: 'users.get',
+      importPath: '/tmp/joor/users.get.ts',
+      exportName: 'users_get',
+      procedure: packageSubpathProcedure,
+    },
+  ],
+};
+createAiDocs(packageSubpathCompilerManifest)['framework'];
+createOpenApiDocument(packageSubpathCompilerManifest)['openapi'];
+
 const packageSubpathValues = [
   build,
+  createAiDocs,
   createAwsLambdaHandler,
   createBunFetch,
   createCloudflareFetch,
+  createOpenApiDocument,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
   createDenoRpcRequestHandler,
@@ -172,6 +191,11 @@ export type PackageSubpathSurface = [
   >,
   Client.ClientOptions,
   Compiler.BuildOptions,
+  Compiler.CompiledProcedureGenerationOptions,
+  Compiler.CompilerManifest,
+  Compiler.EmitOptions,
+  Compiler.LoadedProcedure,
+  Compiler.ProcedureFile,
   Config.JoorConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
