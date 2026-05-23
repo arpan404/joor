@@ -2332,6 +2332,20 @@ const nativeConfig: NativeConfig<readonly [typeof nativeUsersPlugin]> = {
 };
 const nativeConfigFor: NativeConfigFor<readonly [typeof nativeUsersPlugin]> =
   nativeConfig;
+const nativeRequestTypedConfigFor: NativeConfigFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.runtimeTag.toUpperCase();
+      context.body?.input.id.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const nativeUnaryRouteConfig: NativeUnaryRouteConfig<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -2348,6 +2362,11 @@ const nativeRouteUnaryConfigFor: NativeRouteUnaryConfigFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteUnaryBody
 > = nativeRouteUnaryConfig;
+const nativeRequestTypedRouteUnaryConfigFor: NativeRouteUnaryConfigFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody,
+  GeneratedRequest
+> = nativeRequestTypedConfigFor;
 const nativeStreamRouteConfig: NativeStreamRouteConfig<
   readonly [typeof nativeUsersPlugin],
   typeof nativeStreamRouteBody
@@ -2364,6 +2383,20 @@ const nativeRouteStreamConfigFor: NativeRouteStreamConfigFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteStreamBody
 > = nativeRouteStreamConfig;
+const nativeRequestTypedRouteStreamConfigFor: NativeRouteStreamConfigFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody,
+  GeneratedRequest
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.runtimeTag.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const nativeHandlerHooks: NativeHandlerHooks<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -2555,13 +2588,29 @@ const nativeDefineRouteStreamConfig: NativeDefineRouteStreamConfig =
   nativeDefineStreamRouteConfig;
 nativeDefineRouteUnaryConfig(nativeRouteUnaryConfig).plugins?.[0]?.name.toUpperCase();
 nativeDefineRouteStreamConfig(nativeRouteStreamConfig).plugins?.[0]?.name.toUpperCase();
+nativeDefineConfig<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+>(nativeRequestTypedConfigFor).hooks?.beforeRequest?.(
+  generatedRequest,
+  nativeUnaryRouteHandlerHookContext
+);
 nativeConfigFor.plugins?.[0]?.name.toUpperCase();
 nativeUnaryRouteConfigFor.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   nativeUnaryRouteHandlerHookContext
 );
+nativeRequestTypedConfigFor.hooks?.beforeRequest?.(
+  generatedRequest,
+  nativeUnaryRouteHandlerHookContext
+);
 nativeRouteUnaryConfigFor.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  nativeRouteUnaryHandlerHookContext
+);
+nativeRequestTypedRouteUnaryConfigFor.hooks?.beforeRequest?.(
+  generatedRequest,
   nativeRouteUnaryHandlerHookContext
 );
 nativeStreamRouteConfigFor.hooks?.beforeRequest?.(
@@ -2570,6 +2619,10 @@ nativeStreamRouteConfigFor.hooks?.beforeRequest?.(
 );
 nativeRouteStreamConfigFor.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  nativeRouteStreamHandlerHookContext
+);
+nativeRequestTypedRouteStreamConfigFor.hooks?.beforeRequest?.(
+  generatedRequest,
   nativeRouteStreamHandlerHookContext
 );
 const nativeDefineHandlerOptions: NativeDefineHandlerOptions = (options) =>

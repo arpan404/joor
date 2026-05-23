@@ -6827,16 +6827,23 @@ definedStreamRouteHandlerOptions.hooks?.beforeRequest?.(
 const exactManifestAwareConfigShape: JoorConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin],
-  typeof manifestRouteRequest
+  typeof manifestRouteRequest,
+  HookAppRequest
 > = {
   plugins: [usersPlugin] as const,
-  hooks: exactManifestAwareHandlerHooks,
+  hooks: typedRequestHandlerHooks,
 };
 const exactManifestAwareConfig = defineConfigFor(manifest)<
   readonly [typeof usersPlugin],
-  typeof manifestRouteRequest
+  typeof manifestRouteRequest,
+  HookAppRequest
 >(exactManifestAwareConfigShape);
 exactManifestAwareConfig.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+exactManifestAwareConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error typed configs preserve custom hook request types.
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );

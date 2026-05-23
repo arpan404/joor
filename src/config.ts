@@ -26,7 +26,8 @@ export type JoorConfigFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody> & {
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest> & {
   entry?: string;
   outDir?: string;
 };
@@ -37,7 +38,8 @@ export type JoorRouteUnaryConfigFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = JoorConfigFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorUnaryRouteConfigFor<
   TManifest extends RpcManifest,
@@ -45,7 +47,8 @@ export type JoorUnaryRouteConfigFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorRouteStreamConfigFor<
   TManifest extends RpcManifest,
@@ -53,7 +56,8 @@ export type JoorRouteStreamConfigFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = JoorConfigFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorStreamRouteConfigFor<
   TManifest extends RpcManifest,
@@ -61,7 +65,8 @@ export type JoorStreamRouteConfigFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = JoorRouteStreamConfigFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorConfigContext<TConfig> = TConfig extends {
   plugins?: infer TPlugins;
@@ -81,17 +86,19 @@ export function defineConfig(config: JoorConfig): JoorConfig {
 export type DefineConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  config: JoorConfigFor<TManifest, TPlugins, TBody>
-) => JoorConfigFor<TManifest, TPlugins, TBody>;
+  config: JoorConfigFor<TManifest, TPlugins, TBody, TRequest>
+) => JoorConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DefineRouteUnaryConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  config: JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody>
-) => JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody>;
+  config: JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>
+) => JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DefineUnaryRouteConfigFor<TManifest extends RpcManifest> =
   DefineRouteUnaryConfigFor<TManifest>;
@@ -100,9 +107,10 @@ export type DefineRouteStreamConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request = Request,
 >(
-  config: JoorRouteStreamConfigFor<TManifest, TPlugins, TBody>
-) => JoorRouteStreamConfigFor<TManifest, TPlugins, TBody>;
+  config: JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>
+) => JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DefineStreamRouteConfigFor<TManifest extends RpcManifest> =
   DefineRouteStreamConfigFor<TManifest>;
