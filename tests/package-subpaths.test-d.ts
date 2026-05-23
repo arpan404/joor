@@ -1,5 +1,6 @@
 import {
   createPlugin,
+  createRuntimeContext as createRootRuntimeContext,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -143,6 +144,7 @@ const packageSubpathValues = [
   createNextHandler,
   createNodeTransportRequestHandler,
   createRuntimeContext,
+  createRootRuntimeContext,
   createVercelFetch,
   DEFAULT_MAX_BODY_BYTES,
   errorStatus,
@@ -209,6 +211,7 @@ export type PackageSubpathSurface = [
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,
   Context.HandlerOptionsManifest<typeof packageSubpathConfig>,
+  Root.ContextRequestSource,
   Deno.DenoRpcRequestHandler,
   DenoCompiledTransport.DenoCompiledTransportRequestHandler,
   DenoTransport.DenoTransportRequestHandler,

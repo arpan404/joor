@@ -1,6 +1,8 @@
 import {
   createPlugin,
   createAuthPolicy,
+  createFetchRequestSource,
+  createRuntimeContext,
   defineConfig,
   defineConfigFor,
   defineManifest,
@@ -94,6 +96,7 @@ import {
   transportResultToResponse,
   validate,
   type ArrayChain,
+  type ContextRequestSource,
   type AwsLambdaHandler,
   type AwsLambdaHandlerOptionsArgs,
   type AwsLambdaHandlerOptionsFor,
@@ -5750,6 +5753,32 @@ function createFetchRequestSourceForTypes() {
     },
   };
 }
+
+const rootFetchRequestSource: ContextRequestSource = createFetchRequestSource(
+  new Request('https://example.com/rpc', {
+    headers: { 'x-tenant-id': 'tenant_1' },
+    method: 'POST',
+  })
+);
+rootFetchRequestSource.getHeader('x-tenant-id')?.toUpperCase();
+const rootRuntimeContext = createRuntimeContext<
+  RootPluginServices,
+  { 'x-tenant-id': string },
+  { 'cache-control': string },
+  { userId: string }
+>(
+  rootFetchRequestSource,
+  'trace-root',
+  rootPluginServices,
+  { 'x-tenant-id': 'tenant_1' },
+  { userId: 'user_1' }
+);
+rootRuntimeContext.services.users.findById('1').name.toUpperCase();
+rootRuntimeContext.headers['x-tenant-id'].toUpperCase();
+rootRuntimeContext.auth.userId.toUpperCase();
+rootRuntimeContext
+  .ok({ id: '1' }, { 'cache-control': 'private' })
+  .headers['cache-control'].toUpperCase();
 
 const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
   path: '/rpc',

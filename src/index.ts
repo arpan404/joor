@@ -1,4 +1,10 @@
 export { createAuthPolicy } from './auth/policy.js';
+export {
+  createFetchRequestSource,
+  createRuntimeContext,
+  emptyContextObject,
+  emptyJsonObject,
+} from './context/context.js';
 export { createPlugin, resolvePluginServices } from './context/plugin.js';
 export { defineConfig, defineConfigFor } from './config.js';
 export { defineManifest } from './manifest.js';
@@ -123,7 +129,7 @@ export type {
   DefineContextAuthPolicy,
   DefineAuthPolicy,
 } from './auth/policy.js';
-export type { JoorContext } from './context/context.js';
+export type { ContextRequestSource, JoorContext } from './context/context.js';
 export type { JoorPlugin, PluginServices } from './context/plugin.js';
 export type {
   DefineConfigFor,
