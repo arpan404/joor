@@ -125,6 +125,7 @@ const emitProfileDispatcher = async (
         ]
       : []),
     'createCompiledRuntimeState',
+    'createCompiledRpcBodyResultHandler',
     'createCompiledRpcHandler',
     'createCompiledRpcTransportBodyResultHandler',
     ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
@@ -440,7 +441,7 @@ const dispatch: ${compiledDispatchType} = ${transportDispatchName};
 export const nativeUnaryDispatch: NativeUnaryDispatch = ${nativeUnaryDispatchName};
 export const nativeResponseUnaryDispatch: NativeUnaryDispatch = ${nativeResponseUnaryDispatchName};
 export const nativeRuntime: NativeRuntimeState = createCompiledRuntimeState(${configValue});
-export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
+export const nativeTransport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
@@ -448,7 +449,7 @@ export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandler(
+export const nativeResponseTransport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
   ${configValue},
   nativeResponseUnaryDispatch,
@@ -456,7 +457,12 @@ export const nativeResponseTransport = createCompiledRpcTransportBodyResultHandl
   'response',
   nativeRuntime
 ) as NativeTransportHandler;
-export const transport = createCompiledRpcTransportBodyResultHandler(
+export const nativeBody: NativeBodyHandler = createCompiledRpcBodyResultHandler(
+  dispatch,
+  ${configValue},
+  nativeUnaryDispatch
+) as NativeBodyHandler;
+export const transport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
   nativeUnaryDispatch,
