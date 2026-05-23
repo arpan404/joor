@@ -1455,10 +1455,13 @@ const createJsonHeaderRecord = (
 
 const corsHeaders = (cors: NativeCorsOptions): Record<string, string> => {
   if (cors.origin === undefined) return {};
+  if (hasInvalidHeaderValue(cors.origin)) return {};
+  const methods = (cors.methods ?? ['POST', 'OPTIONS']).join(', ');
+  const headers = (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', ');
   return {
     'access-control-allow-origin': cors.origin,
-    'access-control-allow-methods': (cors.methods ?? ['POST', 'OPTIONS']).join(', '),
-    'access-control-allow-headers': (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', '),
+    ...(hasInvalidHeaderValue(methods) ? {} : { 'access-control-allow-methods': methods }),
+    ...(hasInvalidHeaderValue(headers) ? {} : { 'access-control-allow-headers': headers }),
   };
 };
 
@@ -2089,10 +2092,13 @@ const createJsonHeaderRecord = (
 
 const corsHeaders = (cors: NativeCorsOptions): Record<string, string> => {
   if (cors.origin === undefined) return {};
+  if (hasInvalidHeaderValue(cors.origin)) return {};
+  const methods = (cors.methods ?? ['POST', 'OPTIONS']).join(', ');
+  const headers = (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', ');
   return {
     'access-control-allow-origin': cors.origin,
-    'access-control-allow-methods': (cors.methods ?? ['POST', 'OPTIONS']).join(', '),
-    'access-control-allow-headers': (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', '),
+    ...(hasInvalidHeaderValue(methods) ? {} : { 'access-control-allow-methods': methods }),
+    ...(hasInvalidHeaderValue(headers) ? {} : { 'access-control-allow-headers': headers }),
   };
 };
 

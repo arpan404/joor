@@ -385,6 +385,13 @@ describe('compiler', () => {
       expect(nodeSource).toMatch(
         /createJsonHeaderRecord\(\s*result\.responseHeaders \?\? result\.headers\s*\)/
       );
+      expect(nodeSource).toContain('hasInvalidHeaderValue(cors.origin)');
+      expect(nodeSource).toContain('hasInvalidHeaderValue(methods)');
+      expect(nodeSource).toContain('hasInvalidHeaderValue(headers)');
+      const bunSource = await readFile(join(outDir, 'bun.ts'), 'utf8');
+      expect(bunSource).toContain('hasInvalidHeaderValue(cors.origin)');
+      expect(bunSource).toContain('hasInvalidHeaderValue(methods)');
+      expect(bunSource).toContain('hasInvalidHeaderValue(headers)');
       const postsListMatch = dispatcher.match(
         /const posts_list_execute_serialized: CompiledFixedDispatch<NativeServices> = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch<NativeServices> = async \(/
       );
