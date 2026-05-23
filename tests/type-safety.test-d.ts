@@ -37,6 +37,7 @@ import {
   createHonoHandler,
   createJoorHandler,
   createKoaHandler,
+  createNetlifyEdgeFunction,
   createNetlifyFetch,
   createNextHandler,
   createNextRouteHandlers,
@@ -620,6 +621,7 @@ import {
   type NodeListenOptionsArgs,
   type NodeListenOptionsFor,
   type NetlifyEdgeFetchHandler,
+  type NetlifyEdgeResult,
   type NetlifyFetchHandler,
   type NetlifyFetchOptionsArgs,
   type NetlifyRouteStreamFetchOptionsArgs,
@@ -1381,6 +1383,7 @@ import {
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createKoaHandler as createRuntimeSubpathKoaHandler,
+  createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
@@ -1596,6 +1599,7 @@ import {
   type JoorUnaryRouteHandlerOptionsArgs as RuntimeSubpathJoorUnaryRouteHandlerOptionsArgs,
   type JoorUnaryRouteHandlerOptionsFor as RuntimeSubpathJoorUnaryRouteHandlerOptionsFor,
   type NetlifyEdgeFetchHandler as RuntimeSubpathNetlifyEdgeFetchHandler,
+  type NetlifyEdgeResult as RuntimeSubpathNetlifyEdgeResult,
   type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
   type NetlifyFetchOptionsArgs as RuntimeSubpathNetlifyFetchOptionsArgs,
   type NetlifyFetchOptionsFor as RuntimeSubpathNetlifyFetchOptionsFor,
@@ -11165,6 +11169,16 @@ const netlifyEdgeFetch: NetlifyEdgeFetchHandler<NetlifyContextForTypes> = (
 const runtimeSubpathNetlifyEdgeFetch: RuntimeSubpathNetlifyEdgeFetchHandler<
   NetlifyContextForTypes
 > = netlifyEdgeFetch;
+const netlifyEdgeFunction: NetlifyEdgeFetchHandler =
+  createNetlifyEdgeFunction(manifest, handlerOptions);
+const runtimeSubpathNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler =
+  createRuntimeSubpathNetlifyEdgeFunction(manifest, handlerOptions);
+const netlifyEdgeUrlResult: NetlifyEdgeResult = new URL(
+  '/rewritten',
+  'https://example.com'
+);
+const runtimeSubpathNetlifyEdgeBypassResult: RuntimeSubpathNetlifyEdgeResult =
+  undefined;
 runtimeSubpathNetlifyEdgeFetch(new Request('https://example.com/rpc'), {
   cookies: {
     get: (name) => name,
@@ -11305,11 +11319,21 @@ runtimeSubpathNetlifyRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   manifestStreamRouteHandlerHookContext
 );
 createNetlifyFetch(manifest, netlifyFetchOptions);
+createNetlifyEdgeFunction(manifest, netlifyFetchOptions);
 createRuntimeSubpathNetlifyFetch(manifest, runtimeSubpathNetlifyFetchOptions);
+createRuntimeSubpathNetlifyEdgeFunction(
+  manifest,
+  runtimeSubpathNetlifyFetchOptions
+);
 netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
+netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+new Response(`${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`);
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching Netlify edge plugins.
+createNetlifyEdgeFunction(manifest);
 const vercelFetch = createVercelFetch(manifest, handlerOptions);
 const typedVercelFetch: VercelFetchHandler = vercelFetch;
 const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =

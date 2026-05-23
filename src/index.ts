@@ -91,7 +91,10 @@ export { createFastifyHandler } from './runtime/fastify.js';
 export { createHonoHandler } from './runtime/hono.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createKoaHandler } from './runtime/koa.js';
-export { createNetlifyFetch } from './runtime/netlify.js';
+export {
+  createNetlifyEdgeFunction,
+  createNetlifyFetch,
+} from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
 export {
   createNodeRpcRequestHandler,
@@ -1122,6 +1125,7 @@ export type {
 } from './runtime/koa.js';
 export type {
   NetlifyEdgeFetchHandler,
+  NetlifyEdgeResult,
   NetlifyFetchHandler,
   NetlifyFetchOptionsArgs,
   NetlifyFetchOptionsFor,

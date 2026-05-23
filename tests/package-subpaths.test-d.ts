@@ -7,6 +7,7 @@ import {
   defineProcedure,
   errorStatus,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
+  createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
   encodeSse as rootEncodeSse,
   listen as rootListen,
   ok as rootOk,
@@ -49,7 +50,10 @@ import { createExpressHandler } from 'joor/runtime/express';
 import { createFastifyHandler } from 'joor/runtime/fastify';
 import { createHonoHandler } from 'joor/runtime/hono';
 import { createKoaHandler } from 'joor/runtime/koa';
-import { createNetlifyFetch } from 'joor/runtime/netlify';
+import {
+  createNetlifyEdgeFunction,
+  createNetlifyFetch,
+} from 'joor/runtime/netlify';
 import { createNextHandler } from 'joor/runtime/next';
 import {
   createNodeTransportRequestHandler,
@@ -244,11 +248,13 @@ const packageSubpathValues = [
   createHonoHandler,
   createJoorHandler,
   createKoaHandler,
+  createNetlifyEdgeFunction,
   createNetlifyFetch,
   createNextHandler,
   createNodeTransportRequestHandler,
   createRuntimeContext,
   createRootRuntimeContext,
+  createRootNetlifyEdgeFunction,
   createVercelFetch,
   createVercelFunction,
   DEFAULT_MAX_BODY_BYTES,
@@ -363,8 +369,10 @@ export type PackageSubpathSurface = [
   Hono.HonoHandler,
   Koa.KoaMiddleware,
   Netlify.NetlifyEdgeFetchHandler,
+  Netlify.NetlifyEdgeResult,
   Netlify.NetlifyFetchHandler,
   Root.NetlifyEdgeFetchHandler,
+  Root.NetlifyEdgeResult,
   Next.NextRouteContext,
   Next.NextHandler,
   Next.NextRouteParamValue,

@@ -14,10 +14,12 @@ type MaybePromise<TValue> = TValue | Promise<TValue>;
 
 export type NetlifyFetchHandler = JoorFetchHandler;
 
+export type NetlifyEdgeResult = Response | URL | undefined;
+
 export type NetlifyEdgeFetchHandler<TContext = unknown> = (
   request: Request,
   context: TContext
-) => MaybePromise<Response>;
+) => MaybePromise<NetlifyEdgeResult>;
 
 export type NetlifyFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -112,4 +114,22 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
     manifest,
     (options ?? {}) as HandlerOptionsFor<TManifest>
   );
+}
+
+export function createNetlifyEdgeFunction<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): NetlifyEdgeFetchHandler;
+export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): NetlifyEdgeFetchHandler {
+  const fetch = createNetlifyFetch(
+    manifest,
+    (options ?? {}) as HandlerOptionsFor<TManifest>
+  );
+  return (request) => fetch(request);
 }
