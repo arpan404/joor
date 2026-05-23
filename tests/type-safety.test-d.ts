@@ -650,6 +650,7 @@ import {
   type NextUnaryRouteHandlerOptionsFor,
   type NextUnaryRouteHandlersOptionsArgs,
   type NextUnaryRouteHandlersOptionsFor,
+  type NodeRpcRequestHandler,
   type NodeRpcRequestHandlerOptionsArgs,
   type NodeRpcRequestHandlerOptionsFor,
   type NodeServer,
@@ -10461,16 +10462,37 @@ const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
   manifest,
   handlerOptions
 );
+const syncAwsLambdaHandler: AwsLambdaHandler = () => ({
+  statusCode: 200,
+  headers: {},
+  body: '',
+  isBase64Encoded: false,
+});
 const awsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const syncAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  syncAwsLambdaHandler;
 const awsLambdaRestApiHandler: AwsLambdaRestApiHandler =
   createAwsLambdaRestApiHandler(manifest, handlerOptions);
+const syncAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = () => ({
+  statusCode: 200,
+  headers: {},
+  multiValueHeaders: {},
+  body: '',
+  isBase64Encoded: false,
+});
 const runtimeSubpathAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
   createRuntimeSubpathAwsLambdaHandler(manifest, handlerOptions);
+const runtimeSubpathSyncAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  syncAwsLambdaHandler;
 const runtimeSubpathAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
   createRuntimeSubpathAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const runtimeSubpathSyncAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  syncAwsLambdaHttpApiHandler;
 const runtimeSubpathAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
   createRuntimeSubpathAwsLambdaRestApiHandler(manifest, handlerOptions);
+const runtimeSubpathSyncAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  syncAwsLambdaRestApiHandler;
 const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   rawPath: '/rpc',
   headers: { 'content-type': 'application/json' },
@@ -10484,18 +10506,25 @@ const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
   multiValueQueryStringParameters: { tag: ['one', 'two'] },
   body: '{}',
 };
-awsLambdaHandler(awsLambdaEvent).then((response) => {
+Promise.resolve(awsLambdaHandler(awsLambdaEvent)).then((response) => {
   const typedResponse: AwsLambdaHttpResponseV2 = response;
   typedResponse.statusCode.toFixed();
 });
 awsLambdaHttpApiHandler(awsLambdaEvent);
-awsLambdaRestApiHandler(awsLambdaRestApiEvent).then((response) => {
-  const typedResponse: AwsLambdaRestApiResponseV1 = response;
-  typedResponse.statusCode.toFixed();
-});
+syncAwsLambdaHttpApiHandler(awsLambdaEvent);
+Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
+  (response) => {
+    const typedResponse: AwsLambdaRestApiResponseV1 = response;
+    typedResponse.statusCode.toFixed();
+  }
+);
+syncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 runtimeSubpathAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathSyncAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathSyncAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+runtimeSubpathSyncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda adapter plugins.
 createAwsLambdaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda REST API adapter plugins.
@@ -11272,18 +11301,23 @@ const fastifyHandler: FastifyHandler = createFastifyHandler(
   manifest,
   fastifyHandlerOptions
 );
+const syncFastifyHandler: FastifyHandler = () => undefined;
 const runtimeSubpathFastifyHandler: RuntimeSubpathFastifyHandler =
   createRuntimeSubpathFastifyHandler(
     manifest,
     runtimeSubpathFastifyHandlerOptions
   );
+const runtimeSubpathSyncFastifyHandler: RuntimeSubpathFastifyHandler =
+  syncFastifyHandler;
 const fastifyRequest = {} as FastifyRequest;
 const fastifyReply = {} as FastifyReply;
 fastifyRequest.body;
 fastifyRequest.originalUrl = '/rpc';
 fastifyReply.raw.statusCode.toFixed();
 fastifyHandler(fastifyRequest, fastifyReply);
+syncFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
 createFastifyHandler(manifest);
 const koaHandlerOptionsBase: KoaHandlerOptions = { hostname: 'app' };
@@ -11341,14 +11375,20 @@ const koaMiddleware: KoaMiddleware = createKoaHandler(
   manifest,
   koaHandlerOptions
 );
+const syncKoaMiddleware: KoaMiddleware = () => undefined;
 const runtimeSubpathKoaMiddleware: RuntimeSubpathKoaMiddleware =
   createRuntimeSubpathKoaHandler(manifest, runtimeSubpathKoaHandlerOptions);
+const runtimeSubpathSyncKoaMiddleware: RuntimeSubpathKoaMiddleware =
+  syncKoaMiddleware;
 const koaContext = {} as KoaContext;
 koaContext.originalUrl = '/rpc';
 koaContext.respond = false;
 const koaNext: KoaNext = async () => undefined;
+const syncKoaNext: KoaNext = () => undefined;
 koaMiddleware(koaContext, koaNext);
+syncKoaMiddleware(koaContext, syncKoaNext);
 runtimeSubpathKoaMiddleware(koaContext, koaNext);
+runtimeSubpathSyncKoaMiddleware(koaContext, syncKoaNext);
 // @ts-expect-error service-dependent manifests require matching Koa adapter plugins.
 createKoaHandler(manifest);
 const honoHandlerOptions: HonoHandlerOptionsFor<
@@ -11419,6 +11459,17 @@ runtimeSubpathSyncHonoHandler(honoContext);
 createHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
+const syncNodeRpcRequestHandler: NodeRpcRequestHandler = () => undefined;
+const syncNodeTransportRequestHandler: NodeTransportRequestHandler =
+  syncNodeRpcRequestHandler;
+syncNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+syncNodeTransportRequestHandler(
+  {} as Parameters<NodeTransportRequestHandler>[0],
+  {} as Parameters<NodeTransportRequestHandler>[1]
+);
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
 const typedListenOptions: ListenOptionsFor<

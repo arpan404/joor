@@ -72,13 +72,13 @@ export interface AwsLambdaRestApiResponseV1 {
 
 export type AwsLambdaHandler = (
   event: AwsLambdaHttpEventV2
-) => Promise<AwsLambdaHttpResponseV2>;
+) => AwsLambdaHttpResponseV2 | Promise<AwsLambdaHttpResponseV2>;
 
 export type AwsLambdaHttpApiHandler = AwsLambdaHandler;
 
 export type AwsLambdaRestApiHandler = (
   event: AwsLambdaRestApiEventV1
-) => Promise<AwsLambdaRestApiResponseV1>;
+) => AwsLambdaRestApiResponseV1 | Promise<AwsLambdaRestApiResponseV1>;
 
 export type AwsLambdaHandlerOptionsFor<
   TManifest extends JoorManifest,

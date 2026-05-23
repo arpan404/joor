@@ -18,12 +18,12 @@ export interface KoaContext {
   respond?: boolean;
 }
 
-export type KoaNext = () => Promise<unknown>;
+export type KoaNext = () => unknown | Promise<unknown>;
 
 export type KoaMiddleware = (
   context: KoaContext,
   next: KoaNext
-) => Promise<void>;
+) => void | Promise<void>;
 
 export interface KoaHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =

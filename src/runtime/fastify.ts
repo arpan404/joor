@@ -54,7 +54,7 @@ export interface FastifyReply {
 export type FastifyHandler = (
   request: FastifyRequest,
   reply: FastifyReply
-) => Promise<void>;
+) => void | Promise<void>;
 
 export interface FastifyHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =

@@ -31,7 +31,7 @@ describe('koa runtime', () => {
         res: response,
         ...(request.url === undefined ? {} : { originalUrl: request.url }),
       };
-      handler(context, async () => undefined).catch((error) => {
+      Promise.resolve(handler(context, async () => undefined)).catch((error) => {
         response.statusCode = 500;
         response.end(String(error));
       });

@@ -299,7 +299,7 @@ export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
 export type NodeRpcRequestHandler = (
   incoming: IncomingMessage,
   outgoing: ServerResponse<IncomingMessage>
-) => Promise<void>;
+) => void | Promise<void>;
 
 export type NodeTransportRequestHandler = NodeRpcRequestHandler;
 

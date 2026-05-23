@@ -139,7 +139,7 @@ export function createExpressHandler<TManifest extends JoorManifest>(
     if (useOriginalUrl && request.originalUrl !== undefined) {
       request.url = request.originalUrl;
     }
-    handler(request, response)
+    Promise.resolve(handler(request, response))
       .catch(next)
       .finally(() => {
         request.url = originalUrl;
