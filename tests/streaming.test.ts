@@ -15,6 +15,12 @@ import {
 } from '../src/runtime/compiled.js';
 
 describe('streaming', () => {
+  const streamEvents = async function* (ok: boolean): AsyncIterable<{
+    ok: boolean;
+  }> {
+    yield { ok };
+  };
+
   it('emits typed sse events', async () => {
     const handler = createJoorHandler(
       {
@@ -70,6 +76,35 @@ describe('streaming', () => {
       'https://app.example'
     );
     expect(text).toContain('event: data');
+    expect(text).toContain('event: done');
+  });
+
+  it('accepts async stream factories', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async handler() {
+        return streamEvents(true);
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { 'events.watch': streamingProcedure },
+    });
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'events.watch', input: {} }),
+      })
+    );
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(text).toContain('event: data');
+    expect(text).toContain('"ok":true');
     expect(text).toContain('event: done');
   });
 
@@ -151,6 +186,44 @@ describe('streaming', () => {
       'https://app.example'
     );
     expect(text).toContain('event: data');
+    expect(text).toContain('event: done');
+  });
+
+  it('accepts async stream factories in compiled dispatch', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async handler() {
+        return streamEvents(true);
+      },
+    });
+    const request = new Request('http://localhost/rpc', {
+      method: 'POST',
+      headers: {
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+    });
+    const runtimeState = createCompiledRuntimeState();
+    const response = await executeCompiledProcedure(
+      'events.watch',
+      streamingProcedure,
+      { id: 'events.watch', input: {} },
+      createFetchRequestSource(request),
+      {},
+      runtimeState.runtime,
+      compiledUncachedExecutionState,
+      false
+    );
+
+    if (!(response instanceof Response)) {
+      throw new Error('Expected compiled stream response');
+    }
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(text).toContain('event: data');
+    expect(text).toContain('"ok":true');
     expect(text).toContain('event: done');
   });
 });

@@ -48,8 +48,9 @@ export interface ProcedureTypes<
 }
 
 export type ProcedureRuntimeValue =
-  | MaybePromise<ProcedureResult<JsonValue, string> | JsonValue>
-  | AsyncIterable<JsonValue>;
+  MaybePromise<
+    ProcedureResult<JsonValue, string> | JsonValue | AsyncIterable<JsonValue>
+  >;
 
 export type ContextlessProcedureHandler = (
   input: JsonValue

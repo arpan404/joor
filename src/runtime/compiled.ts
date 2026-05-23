@@ -34,7 +34,6 @@ import type { JoorConfig, JoorConfigContext } from '../config.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
   ProcedureRuntime,
-  ProcedureRuntimeValue,
   ProcedureServices,
 } from '../procedure/types.js';
 import type { ProcedureResult } from '../procedure/result.js';
@@ -485,7 +484,7 @@ const isProcedureResult = (
   (value.kind === 'success' || value.kind === 'error');
 
 const isAsyncIterable = (
-  value: ProcedureRuntimeValue
+  value: unknown
 ): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
 
 export const compiledAuthenticate = (
@@ -687,7 +686,7 @@ const streamResponse = async <
       runtime.cors
     );
   }
-  const iterable = procedure.handler(
+  const iterable = await procedure.handler(
     ctx,
     (inputResult.value ?? {}) as JsonValue
   );

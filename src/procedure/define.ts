@@ -135,7 +135,7 @@ export interface StreamProcedureConfig<
       ErrorDetails<TErrors>
     >,
     input: InferSchema<TInput>
-  ): AsyncIterable<InferSchema<TStream> & JsonValue>;
+  ): MaybePromise<AsyncIterable<InferSchema<TStream> & JsonValue>>;
 }
 
 export interface DefineProcedure<

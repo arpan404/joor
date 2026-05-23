@@ -2006,6 +2006,19 @@ const streamProcedure = defineProcedure({
     yield { type: 'user.updated' as const, userId: input.userId };
   },
 });
+const asyncStreamFactoryProcedure = defineProcedure({
+  input: t.object({ userId: t.string() }),
+  stream: t.object({
+    type: t.literal('user.updated'),
+    userId: t.string(),
+  }),
+  async handler(_ctx, input) {
+    return (async function* () {
+      yield { type: 'user.updated' as const, userId: input.userId };
+    })();
+  },
+});
+asyncStreamFactoryProcedure.stream;
 defineProcedure({
   input: t.object({ userId: t.string() }),
   // @ts-expect-error stream procedures cannot declare response headers.

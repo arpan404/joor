@@ -25,7 +25,6 @@ import type {
   ProcedureRequiresResponseHeaders,
   ProcedureRuntime,
   ProcedureResponseHeaders,
-  ProcedureRuntimeValue,
   ProcedureServices,
   StreamEvent,
 } from '../procedure/types.js';
@@ -1620,7 +1619,7 @@ const isRpcRequest = (value: JsonValue): value is JsonObject & RpcRequest =>
   (value['traceId'] === undefined || typeof value['traceId'] === 'string');
 
 const isAsyncIterable = (
-  value: ProcedureRuntimeValue
+  value: unknown
 ): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
 
 const headersToJsonObject = (
@@ -2159,7 +2158,7 @@ const executeStream = async <TId extends string>(
   }
 
   ctx.auth = authResult;
-  const iterable = procedure.handler(
+  const iterable = await procedure.handler(
     ctx,
     (inputResult.value ?? {}) as JsonValue
   );
