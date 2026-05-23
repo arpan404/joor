@@ -335,6 +335,9 @@ export type RpcManifestRouteEnvelopeUnion<TManifest extends RpcManifest> = {
   >;
 }[RpcManifestUnaryRouteId<TManifest>];
 
+export type RpcManifestUnaryRouteEnvelopeUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteEnvelopeUnion<TManifest>;
+
 export type RpcManifestRouteResult<
   TManifest extends RpcManifest,
   TId extends RpcManifestUnaryRouteId<TManifest>,
@@ -352,6 +355,9 @@ export type RpcManifestUnaryRouteResult<
 
 export type RpcManifestRouteResultUnion<TManifest extends RpcManifest> =
   RpcManifestRouteEnvelopeUnion<TManifest>;
+
+export type RpcManifestUnaryRouteResultUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteResultUnion<TManifest>;
 
 export type RpcManifestRouteProtocolRequest<
   TManifest extends RpcManifest,

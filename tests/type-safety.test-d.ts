@@ -176,6 +176,7 @@ import {
   type JoorManifestUnaryRouteClientArgs,
   type JoorManifestUnaryRouteClientHeaders,
   type JoorManifestUnaryRouteEnvelope,
+  type JoorManifestUnaryRouteEnvelopeUnion,
   type JoorManifestUnaryRouteErrorCode,
   type JoorManifestUnaryRouteErrorDetails,
   type JoorManifestUnaryRouteHasHeaders,
@@ -191,6 +192,7 @@ import {
   type JoorManifestUnaryRouteRequest,
   type JoorManifestUnaryRouteRequestUnion,
   type JoorManifestUnaryRouteResult,
+  type JoorManifestUnaryRouteResultUnion,
   type JoorManifestUnaryRouteRequiresHeaders,
   type JoorManifestUnaryRouteRequiresResponseHeaders,
   type JoorManifestUnaryRouteRequestOptions,
@@ -285,6 +287,7 @@ import {
   type RpcManifestUnaryRouteClientArgs,
   type RpcManifestUnaryRouteClientHeaders,
   type RpcManifestUnaryRouteEnvelope,
+  type RpcManifestUnaryRouteEnvelopeUnion,
   type RpcManifestUnaryRouteErrorCode,
   type RpcManifestUnaryRouteErrorDetails,
   type RpcManifestUnaryRouteHasHeaders,
@@ -300,6 +303,7 @@ import {
   type RpcManifestUnaryRouteRequest,
   type RpcManifestUnaryRouteRequestUnion,
   type RpcManifestUnaryRouteResult,
+  type RpcManifestUnaryRouteResultUnion,
   type RpcManifestUnaryRouteRequiresHeaders,
   type RpcManifestUnaryRouteRequiresResponseHeaders,
   type RpcManifestUnaryRouteRequestOptions,
@@ -361,6 +365,7 @@ import {
   type RpcUnaryRouteClientArgs,
   type RpcUnaryRouteClientHeaders,
   type RpcUnaryRouteEnvelope,
+  type RpcUnaryRouteEnvelopeUnion,
   type RpcUnaryRouteErrorCode,
   type RpcUnaryRouteErrorDetails,
   type RpcUnaryRouteHasHeaders,
@@ -376,6 +381,7 @@ import {
   type RpcUnaryRouteRequest,
   type RpcUnaryRouteRequestUnion,
   type RpcUnaryRouteResult,
+  type RpcUnaryRouteResultUnion,
   type RpcUnaryRouteRequiresHeaders,
   type RpcUnaryRouteRequiresResponseHeaders,
   type RpcUnaryRouteRequestOptions,
@@ -2429,6 +2435,10 @@ const manifestRouteEnvelopeUnion: JoorManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
 manifestRouteEnvelopeUnion.id.toUpperCase();
+const manifestUnaryRouteEnvelopeUnion: JoorManifestUnaryRouteEnvelopeUnion<
+  typeof manifest
+> = manifestUnaryRouteEnvelope;
+manifestUnaryRouteEnvelopeUnion.id.toUpperCase();
 const manifestRouteResult: JoorManifestRouteResult<
   typeof manifest,
   'users.get'
@@ -2441,6 +2451,10 @@ manifestUnaryRouteResult.id.toUpperCase();
 const manifestRouteResultUnion: JoorManifestRouteResultUnion<typeof manifest> =
   manifestRouteResult;
 manifestRouteResultUnion.id.toUpperCase();
+const manifestUnaryRouteResultUnion: JoorManifestUnaryRouteResultUnion<
+  typeof manifest
+> = manifestUnaryRouteResult;
+manifestUnaryRouteResultUnion.id.toUpperCase();
 // @ts-expect-error success envelopes require declared response headers.
 const _missingManifestRouteEnvelopeHeaders: JoorManifestRouteEnvelope<
   typeof manifest,
@@ -3157,6 +3171,10 @@ const publicManifestUnaryEnvelope: RpcManifestUnaryRouteEnvelope<
   'users.get'
 > = manifestRouteEnvelope;
 publicManifestUnaryEnvelope.id.toUpperCase();
+const publicManifestUnaryEnvelopeUnion: RpcManifestUnaryRouteEnvelopeUnion<
+  typeof manifest
+> = publicManifestUnaryEnvelope;
+publicManifestUnaryEnvelopeUnion.id.toUpperCase();
 const publicManifestResultUnion: RpcManifestRouteResultUnion<typeof manifest> =
   publicManifestEnvelopeUnion;
 const publicManifestUnaryResult: RpcManifestUnaryRouteResult<
@@ -3164,6 +3182,10 @@ const publicManifestUnaryResult: RpcManifestUnaryRouteResult<
   'users.get'
 > = publicManifestUnaryEnvelope;
 publicManifestUnaryResult.id.toUpperCase();
+const publicManifestUnaryResultUnion: RpcManifestUnaryRouteResultUnion<
+  typeof manifest
+> = publicManifestUnaryResult;
+publicManifestUnaryResultUnion.id.toUpperCase();
 const rpcSubpathManifestResultUnion: RpcSubpathManifestRouteResultUnion<
   typeof manifest
 > = publicManifestResultUnion;
@@ -5283,9 +5305,15 @@ const _missingRouteEnvelopeHeaders: RpcRouteEnvelope<Routes, 'users.get'> = {
 };
 _missingRouteEnvelopeHeaders;
 const routeEnvelopeUnion: RpcRouteEnvelopeUnion<Routes> = routeEnvelope;
+const unaryRouteEnvelopeUnion: RpcUnaryRouteEnvelopeUnion<Routes> =
+  routeUnaryEnvelope;
+unaryRouteEnvelopeUnion.id.toUpperCase();
 const routeResult: RpcRouteResult<Routes, 'users.get'> = routeEnvelope;
 const routeUnaryResult: RpcUnaryRouteResult<Routes, 'users.get'> = routeResult;
 const routeResultUnion: RpcRouteResultUnion<Routes> = routeResult;
+const unaryRouteResultUnion: RpcUnaryRouteResultUnion<Routes> =
+  routeUnaryResult;
+unaryRouteResultUnion.id.toUpperCase();
 const rpcSubpathRouteResult: RpcSubpathRouteResult<Routes, 'users.get'> =
   routeResult;
 const rpcSubpathRouteResultUnion: RpcSubpathRouteResultUnion<Routes> =

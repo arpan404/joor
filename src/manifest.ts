@@ -67,6 +67,7 @@ import type {
   RpcUnaryRouteClientArgs,
   RpcUnaryRouteClientHeaders,
   RpcUnaryRouteEnvelope,
+  RpcUnaryRouteEnvelopeUnion,
   RpcUnaryRouteError,
   RpcUnaryRouteErrorCode,
   RpcUnaryRouteErrorDetails,
@@ -77,6 +78,7 @@ import type {
   RpcUnaryRouteOutput,
   RpcUnaryRouteResponseHeaders,
   RpcUnaryRouteResult,
+  RpcUnaryRouteResultUnion,
   RpcUnaryRouteRequiresHeaders,
   RpcUnaryRouteRequiresResponseHeaders,
   RpcUnaryRouteRequestOptions,
@@ -345,6 +347,9 @@ export type JoorManifestRouteEnvelopeUnion<TManifest> = RpcRouteEnvelopeUnion<
   JoorManifestRoutes<TManifest>
 >;
 
+export type JoorManifestUnaryRouteEnvelopeUnion<TManifest> =
+  RpcUnaryRouteEnvelopeUnion<JoorManifestRoutes<TManifest>>;
+
 export type JoorManifestRouteResult<
   TManifest,
   TId extends JoorManifestUnaryRouteId<TManifest>,
@@ -357,6 +362,9 @@ export type JoorManifestUnaryRouteResult<
 
 export type JoorManifestRouteResultUnion<TManifest> =
   JoorManifestRouteEnvelopeUnion<TManifest>;
+
+export type JoorManifestUnaryRouteResultUnion<TManifest> =
+  RpcUnaryRouteResultUnion<JoorManifestRoutes<TManifest>>;
 
 export type JoorManifestRouteRequest<
   TManifest,
