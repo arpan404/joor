@@ -6378,6 +6378,23 @@ typedRequestHandlerHooks.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const requestTypedConfig = defineConfig<
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+>({
+  plugins: [usersPlugin] as const,
+  hooks: typedRequestHandlerHooks,
+});
+requestTypedConfig.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error typed configs preserve custom request types.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
   name: 'audit',
   beforeRequest(_request, context) {

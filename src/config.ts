@@ -15,7 +15,9 @@ export type { HandlerOptionsBody, HandlerOptionsManifest };
 export type JoorConfig<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = Omit<HandlerOptions<TPlugins>, 'plugins'> & {
+  TBody = unknown,
+  TRequest extends Request = Request,
+> = Omit<HandlerOptions<TPlugins, TBody, TRequest>, 'plugins'> & {
   entry?: string;
   outDir?: string;
   plugins?: TPlugins;
@@ -78,7 +80,11 @@ export type JoorConfigContext<TConfig> = TConfig extends {
 
 export function defineConfig<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
->(config: JoorConfig<TPlugins>): JoorConfig<TPlugins>;
+  TBody = unknown,
+  TRequest extends Request = Request,
+>(
+  config: JoorConfig<TPlugins, TBody, TRequest>
+): JoorConfig<TPlugins, TBody, TRequest>;
 export function defineConfig(config: JoorConfig): JoorConfig {
   return config;
 }
