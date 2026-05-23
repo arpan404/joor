@@ -934,6 +934,7 @@ import {
 } from '../src/runtime/deno-compiled-transport.js';
 import {
   compiledNotFound,
+  compiledRateLimitFailureStatic,
   compiledUncachedExecutionState,
   compiledAuthenticate,
   compiledAuthenticateUncached,
@@ -1593,6 +1594,24 @@ const compiledNotFoundId: 'users.get' = compiledNotFoundResult.id;
 compiledNotFoundId.toUpperCase();
 // @ts-expect-error compiled framework failures preserve the route id literal.
 const _wrongCompiledNotFoundId: 'users.list' = compiledNotFoundResult.id;
+const compiledRateLimitResult = compiledRateLimitFailureStatic(
+  'users.get',
+  1,
+  '1m',
+  60_000,
+  compiledRouteRequest,
+  {} as Parameters<typeof compiledRateLimitFailureStatic>[5],
+  'trace-1',
+  {} as Parameters<typeof compiledRateLimitFailureStatic>[7]
+);
+const compiledRateLimitId: 'users.get' = (
+  {} as NonNullable<typeof compiledRateLimitResult>
+).id;
+compiledRateLimitId.toUpperCase();
+// @ts-expect-error compiled static rate-limit failures preserve the route id literal.
+const _wrongCompiledRateLimitId: 'users.list' = (
+  {} as NonNullable<typeof compiledRateLimitResult>
+).id;
 type CompiledExecuteProcedureResult = Awaited<
   ReturnType<typeof executeCompiledProcedure<typeof procedure, 'users.get'>>
 >;

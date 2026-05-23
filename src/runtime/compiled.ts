@@ -446,16 +446,16 @@ const rateLimitFailure = <TId extends string>(
   return undefined;
 };
 
-export const compiledRateLimitFailureStatic = (
-  id: string,
+export const compiledRateLimitFailureStatic = <TId extends string>(
+  id: TId,
   limit: number,
   window: string,
   windowMs: number,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   trace: string,
   runtime: CompiledRuntime
-): RpcEnvelope | undefined => {
+): RpcEnvelope<JsonValue, TId> | undefined => {
   if (!runtime.enforceRateLimit) return undefined;
   const allowed = reserveRateLimitSlot(
     rateLimitWindows,
@@ -515,10 +515,13 @@ export const compiledWriteCache = (
   );
 };
 
-const streamResponse = async <TProcedure extends ProcedureRuntime>(
-  id: string,
+const streamResponse = async <
+  TProcedure extends ProcedureRuntime,
+  TId extends string,
+>(
+  id: TId,
   procedure: TProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
