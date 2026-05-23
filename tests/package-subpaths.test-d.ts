@@ -1,10 +1,14 @@
 import {
   createPlugin,
   createRuntimeContext as createRootRuntimeContext,
+  createCloudflareWorker as createRootCloudflareWorker,
   defineManifest,
   defineProcedure,
   errorStatus,
+  listen as rootListen,
   ok as rootOk,
+  serveBun as rootServeBun,
+  serveDeno as rootServeDeno,
   t,
 } from 'joor';
 import { createAuthPolicy } from 'joor/auth';
@@ -21,7 +25,10 @@ import { createJoorHandler } from 'joor/runtime';
 import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
 import { createBunFetch } from 'joor/runtime/bun';
-import { createCloudflareFetch } from 'joor/runtime/cloudflare';
+import {
+  createCloudflareFetch,
+  createCloudflareWorker,
+} from 'joor/runtime/cloudflare';
 import { createCompiledRpcBodyResultHandler } from 'joor/runtime/compiled';
 import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';
 import { createDenoRpcRequestHandler } from 'joor/runtime/deno';
@@ -33,7 +40,10 @@ import { createHonoHandler } from 'joor/runtime/hono';
 import { createKoaHandler } from 'joor/runtime/koa';
 import { createNetlifyFetch } from 'joor/runtime/netlify';
 import { createNextHandler } from 'joor/runtime/next';
-import { createNodeTransportRequestHandler } from 'joor/runtime/node';
+import {
+  createNodeTransportRequestHandler,
+  listen,
+} from 'joor/runtime/node';
 import { jsonOkResponseInit } from 'joor/runtime/response';
 import { createVercelFetch } from 'joor/runtime/vercel';
 import type * as Auth from 'joor/auth';
@@ -148,6 +158,8 @@ const packageSubpathValues = [
   createAwsLambdaHandler,
   createBunFetch,
   createCloudflareFetch,
+  createCloudflareWorker,
+  createRootCloudflareWorker,
   createOpenApiDocument,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
@@ -168,8 +180,12 @@ const packageSubpathValues = [
   DEFAULT_MAX_BODY_BYTES,
   errorStatus,
   jsonOkResponseInit,
+  listen,
   ok,
+  rootListen,
   rootOk,
+  rootServeBun,
+  rootServeDeno,
 ] as const;
 packageSubpathValues.length.toFixed();
 
@@ -226,7 +242,11 @@ export type PackageSubpathSurface = [
   >,
   Body.BodySizeLimitError,
   Bun.BunFetchHandler,
+  Bun.BunServer,
+  Root.BunServer,
   Cloudflare.CloudflareFetchHandler,
+  Cloudflare.CloudflareWorker,
+  Root.CloudflareWorker,
   Compiled.CompiledRpcRequestHandler,
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
@@ -248,6 +268,8 @@ export type PackageSubpathSurface = [
   Netlify.NetlifyFetchHandler,
   Next.NextHandler,
   NodeRuntime.NodeTransportRequestHandler,
+  NodeRuntime.NodeServer,
+  Root.NodeServer,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
   Vercel.VercelFetchHandler,
 ];
