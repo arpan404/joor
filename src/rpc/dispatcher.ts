@@ -822,21 +822,21 @@ export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
 >(
   request: Request,
   body: TBody
-) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteUnaryBodyResultHandler<
   TManifest extends RpcManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteStreamBodyResultHandler<
   TManifest extends RpcManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
 
 export type RpcRequestHandler = (request: Request) => Promise<Response>;
 
@@ -872,21 +872,21 @@ export type RpcTransportBodyResultHandler<TManifest extends RpcManifest> = <
 >(
   request: ContextRequestSource,
   body: TBody
-) => Promise<RpcManifestBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteUnaryTransportBodyResultHandler<
   TManifest extends RpcManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteStreamTransportBodyResultHandler<
   TManifest extends RpcManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
 
 interface PreparedProcedure {
   procedure: ProcedureRuntime;
@@ -2323,9 +2323,8 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
     request: Request,
     body: TBody
   ): Promise<RpcManifestBodyResultFor<TManifest, TBody>> =>
-    handleTransport(
-      createFetchRequestSource(request),
-      body
+    Promise.resolve(
+      handleTransport(createFetchRequestSource(request), body)
     )) as RpcBodyResultHandler<TManifest>;
 }
 

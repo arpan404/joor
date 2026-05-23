@@ -305,6 +305,7 @@ import {
   type CompiledFixedDispatch as RootCompiledFixedDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledProcedureCacheHeaderValues as RootCompiledProcedureCacheHeaderValues,
+  type CompiledRpcBodyResultHandler as RootCompiledRpcBodyResultHandler,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
   type CompiledRpcBodyResultHandlerForConfig as RootCompiledRpcBodyResultHandlerForConfig,
   type CompiledRpcRouteStreamBodyResultHandlerFor as RootCompiledRpcRouteStreamBodyResultHandlerFor,
@@ -1311,6 +1312,7 @@ import type {
   CompiledFixedDispatch,
   CompiledFixedUnaryDispatch,
   CompiledProcedureCacheHeaderValues,
+  CompiledRpcBodyResultHandler,
   CompiledRpcBodyResultHandlerFor,
   CompiledRpcBodyResultHandlerForConfig,
   CompiledRpcRouteStreamBodyResultHandlerFor,
@@ -6521,10 +6523,12 @@ const rpcBodyResultHandler = createRpcBodyResultHandler(
 );
 // @ts-expect-error service-dependent manifests require matching body result handler plugins.
 createRpcBodyResultHandler(manifest);
-rpcBodyResultHandler(new Request('https://example.com/rpc'), {
-  id: 'users.get',
-  input: { id: '1' },
-}).then((result) => {
+Promise.resolve(
+  rpcBodyResultHandler(new Request('https://example.com/rpc'), {
+    id: 'users.get',
+    input: { id: '1' },
+  })
+).then((result) => {
   const typedResult: JoorManifestRouteBodyResult<typeof manifest> = result;
   if (!(typedResult instanceof Response) && !Array.isArray(typedResult)) {
     typedResult.id.toUpperCase();
@@ -6533,9 +6537,11 @@ rpcBodyResultHandler(new Request('https://example.com/rpc'), {
     }
   }
 });
-rpcBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  manifestProtocolRequest
+Promise.resolve(
+  rpcBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestProtocolRequest
+  )
 ).then((result) => {
   const exactResult: JoorManifestRouteBodyResultFor<
     typeof manifest,
@@ -6545,9 +6551,11 @@ rpcBodyResultHandler(
     if (exactResult.ok) exactResult.data.name.toUpperCase();
   }
 });
-rpcBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  readonlyManifestBatchRequest
+Promise.resolve(
+  rpcBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    readonlyManifestBatchRequest
+  )
 ).then((result) => {
   if (!(result instanceof Response)) {
     if (result[0].ok) result[0].data.name.toUpperCase();
@@ -6564,10 +6572,12 @@ const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
 );
 // @ts-expect-error service-dependent manifests require matching transport handler plugins.
 createRpcTransportBodyResultHandler(manifest);
-rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
-  id: 'users.get',
-  input: { id: '1' },
-}).then((result) => {
+Promise.resolve(
+  rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
+    id: 'users.get',
+    input: { id: '1' },
+  })
+).then((result) => {
   const typedResult: RpcManifestBodyResult<typeof manifest> = result;
   if (!(typedResult instanceof Response) && !Array.isArray(typedResult)) {
     typedResult.id.toUpperCase();
@@ -6593,6 +6603,26 @@ const publicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyResult
 const publicManifestRouteStreamBodyResultHandler: RpcManifestRouteStreamBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
+const syncPublicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyResultHandler<
+  typeof manifest
+> = <const TBody extends JoorManifestRouteUnaryBody<typeof manifest>>(
+  _request: Request,
+  _body: TBody
+) =>
+  new Response() as RpcManifestRouteUnaryBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
+const syncPublicManifestRouteStreamBodyResultHandler: RpcManifestRouteStreamBodyResultHandler<
+  typeof manifest
+> = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
+  _request: Request,
+  _body: TBody
+) =>
+  new Response() as RpcManifestRouteStreamBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
 const publicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
   typeof manifest
 > = publicManifestRouteUnaryBodyHandler;
@@ -6611,6 +6641,26 @@ const publicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRouteT
 const publicManifestStreamRouteTransportBodyResultHandler: RpcManifestStreamRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
+const syncPublicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = <const TBody extends JoorManifestRouteUnaryBody<typeof manifest>>(
+  _request: ContextRequestSource,
+  _body: TBody
+) =>
+  new Response() as RpcManifestRouteUnaryBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
+const syncPublicManifestStreamRouteTransportBodyResultHandler: RpcManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
+  _request: ContextRequestSource,
+  _body: TBody
+) =>
+  new Response() as RpcManifestRouteStreamBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
 const publicJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
@@ -6629,6 +6679,18 @@ const publicJoorManifestUnaryRouteTransportBodyResultHandler: JoorManifestUnaryR
 const publicJoorManifestStreamRouteTransportBodyResultHandler: JoorManifestStreamRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
+const syncPublicJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteBodyResultHandler<
+  typeof manifest
+> = syncPublicManifestRouteUnaryBodyResultHandler;
+const syncPublicJoorManifestStreamRouteBodyResultHandler: JoorManifestStreamRouteBodyResultHandler<
+  typeof manifest
+> = syncPublicManifestRouteStreamBodyResultHandler;
+const syncPublicJoorManifestUnaryRouteTransportBodyResultHandler: JoorManifestUnaryRouteTransportBodyResultHandler<
+  typeof manifest
+> = syncPublicManifestUnaryRouteTransportBodyResultHandler;
+const syncPublicJoorManifestStreamRouteTransportBodyResultHandler: JoorManifestStreamRouteTransportBodyResultHandler<
+  typeof manifest
+> = syncPublicManifestStreamRouteTransportBodyResultHandler;
 const rpcSubpathManifestUnaryRouteBodyHandler: RpcSubpathManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
@@ -6692,9 +6754,11 @@ publicManifestStreamRouteBodyHandler(
   // @ts-expect-error stream route body handlers reject unary route bodies.
   manifestUnaryRouteBody
 );
-publicManifestRouteUnaryBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  publicManifestRouteUnaryBody
+Promise.resolve(
+  publicManifestRouteUnaryBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    publicManifestRouteUnaryBody
+  )
 ).then((result) => {
   const exactResult: RpcManifestRouteUnaryBodyResultFor<
     typeof manifest,
@@ -6704,13 +6768,17 @@ publicManifestRouteUnaryBodyResultHandler(
     if (exactResult.ok) exactResult.data.name.toUpperCase();
   }
 });
-publicManifestRouteStreamBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  publicManifestRouteStreamBody
+Promise.resolve(
+  publicManifestRouteStreamBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    publicManifestRouteStreamBody
+  )
 ).then((result) => result.headers.get('content-type'));
-publicManifestUnaryRouteBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  manifestUnaryRouteBody
+Promise.resolve(
+  publicManifestUnaryRouteBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestUnaryRouteBody
+  )
 ).then((result) => {
   const exactResult: RpcManifestUnaryRouteBodyResultFor<
     typeof manifest,
@@ -6720,13 +6788,17 @@ publicManifestUnaryRouteBodyResultHandler(
     if (exactResult.ok) exactResult.data.name.toUpperCase();
   }
 });
-publicManifestStreamRouteBodyResultHandler(
-  new Request('https://example.com/rpc'),
-  manifestStreamRouteBody
+Promise.resolve(
+  publicManifestStreamRouteBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestStreamRouteBody
+  )
 ).then((result) => result.headers.get('content-type'));
-publicManifestUnaryRouteTransportBodyResultHandler(
-  createFetchRequestSourceForTypes(),
-  manifestUnaryRouteBody
+Promise.resolve(
+  publicManifestUnaryRouteTransportBodyResultHandler(
+    createFetchRequestSourceForTypes(),
+    manifestUnaryRouteBody
+  )
 ).then((result) => {
   const exactResult: JoorManifestUnaryRouteBodyResultFor<
     typeof manifest,
@@ -6736,9 +6808,11 @@ publicManifestUnaryRouteTransportBodyResultHandler(
     if (exactResult.ok) exactResult.data.name.toUpperCase();
   }
 });
-publicManifestStreamRouteTransportBodyResultHandler(
-  createFetchRequestSourceForTypes(),
-  manifestStreamRouteBody
+Promise.resolve(
+  publicManifestStreamRouteTransportBodyResultHandler(
+    createFetchRequestSourceForTypes(),
+    manifestStreamRouteBody
+  )
 ).then((result) => result.headers.get('content-type'));
 publicJoorManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
@@ -6752,7 +6826,15 @@ publicJoorManifestUnaryRouteBodyResultHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncPublicJoorManifestUnaryRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 publicJoorManifestStreamRouteBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncPublicJoorManifestStreamRouteBodyResultHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );
@@ -6760,7 +6842,15 @@ publicJoorManifestUnaryRouteTransportBodyResultHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncPublicJoorManifestUnaryRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 publicJoorManifestStreamRouteTransportBodyResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+syncPublicJoorManifestStreamRouteTransportBodyResultHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -8938,13 +9028,30 @@ const manifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
   }
   return compiledSerializedEnvelope;
 };
+const syncCompiledBodyHandler: CompiledRpcBodyResultHandler = () =>
+  compiledSerializedEnvelope;
+const rootSyncCompiledBodyHandler: RootCompiledRpcBodyResultHandler =
+  syncCompiledBodyHandler;
+const syncManifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
+  typeof manifest
+> = (_request, body) => {
+  if ('id' in body && body.id === 'users.authenticated') {
+    body.input.ok.valueOf();
+  }
+  return compiledSerializedEnvelope;
+};
 const rootManifestCompiledBodyHandler: RootCompiledRpcBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledBodyHandler;
+rootSyncCompiledBodyHandler(new Request('https://example.com/rpc'), {});
 rootManifestCompiledBodyHandler(new Request('https://example.com/rpc'), [
   // @ts-expect-error manifest-aware compiled body handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+syncManifestCompiledBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteRequest
+);
 const manifestCompiledRouteUnaryTransportHandler: CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
@@ -8984,6 +9091,9 @@ const manifestCompiledRouteUnaryBodyHandler: CompiledRpcRouteUnaryBodyResultHand
 const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteUnaryBodyHandler;
+const syncManifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
+  typeof manifest
+> = () => compiledSerializedEnvelope;
 const rootManifestCompiledUnaryBodyHandler: RootCompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledUnaryBodyHandler;
@@ -8999,6 +9109,9 @@ const manifestCompiledRouteStreamBodyHandler: CompiledRpcRouteStreamBodyResultHa
 const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteStreamBodyHandler;
+const syncManifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
+  typeof manifest
+> = () => new Response();
 const rootManifestCompiledStreamBodyHandler: RootCompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledStreamBodyHandler;
@@ -9141,7 +9254,15 @@ manifestCompiledUnaryBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
 );
+syncManifestCompiledUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
 manifestCompiledStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+syncManifestCompiledStreamBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );

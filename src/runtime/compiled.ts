@@ -219,21 +219,21 @@ export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
-> = (request: Request, body: TBody) => Promise<TResult>;
+> = (request: Request, body: TBody) => MaybePromise<TResult>;
 
 export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
   request: Request,
   body: TBody
-) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<CompiledRouteUnaryBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledRouteUnaryBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcUnaryRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -244,7 +244,7 @@ export type CompiledRpcRouteStreamBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcStreamRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
