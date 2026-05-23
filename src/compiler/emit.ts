@@ -1067,6 +1067,7 @@ const emitRuntimeTargets = async (
   config?: JoorConfig
 ): Promise<void> => {
   const configuredPath = JSON.stringify(config?.path ?? '/rpc');
+  const configuredCors = JSON.stringify(config?.cors ?? null);
   const configuredMaxBodyBytes =
     typeof config?.maxBodyBytes === 'number' &&
     Number.isFinite(config.maxBodyBytes) &&
@@ -1142,9 +1143,9 @@ const emitRuntimeTargets = async (
       const result = ${entry.exportName}_fast_handler(body['input'] ?? {});
       return result instanceof Promise
         ? result.then((resolved) =>
-            fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved)
+            fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved, cors)
           )
-        : fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, result);
+        : fastContextlessResultToResponse(${JSON.stringify(JSON.stringify(entry.id))}, trace, result, cors);
     }`
     )
     .join('\n');
@@ -1158,11 +1159,11 @@ const emitRuntimeTargets = async (
       const result = ${entry.exportName}_fast_handler(body['input'] ?? {});
       if (result instanceof Promise) {
         await result.then((resolved) =>
-          writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved)
+          writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, resolved, cors)
         );
         return true;
       }
-      writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, result);
+      writeFastContextlessResult(outgoing, ${JSON.stringify(JSON.stringify(entry.id))}, trace, result, cors);
       return true;
     }`
     )
@@ -1171,13 +1172,16 @@ const emitRuntimeTargets = async (
     bunFastEntries.length === 0
       ? `const fastContextlessUnary = (
   _body: JsonObject,
-  _request: Request
+  _request: Request,
+  _cors?: Record<string, string>
 ): Promise<Response | undefined> | Response | undefined => undefined;`
       : `const fastContextlessResultToResponse = (
   idBody: string,
   trace: string,
-  result: JsonValue
+  result: JsonValue,
+  cors?: Record<string, string>
 ): Response => {
+  const headers = createJsonHeaderRecord(cors);
   if (
     typeof result === 'object' &&
     result !== null &&
@@ -1187,22 +1191,26 @@ const emitRuntimeTargets = async (
     if (result.kind === 'error') {
       return new Response(
         failureBodyFromIdBody(idBody, trace, result.error.code, result.error.message, result.error.status),
-        jsonOkResponseInit
+        { status: 200, headers }
       );
     }
     return result.headers === undefined
-      ? new Response(successBody(idBody, trace, result.data), jsonOkResponseInit)
-      : new Response(successBody(idBody, trace, result.data, result.headers), {
+      ? new Response(successBody(idBody, trace, result.data), { status: 200, headers })
+      : (() => {
+          appendJsonStringHeaders(headers, result.headers);
+          return new Response(successBody(idBody, trace, result.data, result.headers), {
           status: 200,
-          headers: createJsonHeaderRecord(result.headers),
+          headers,
         });
+        })();
   }
-  return new Response(successBody(idBody, trace, result), jsonOkResponseInit);
+  return new Response(successBody(idBody, trace, result), { status: 200, headers });
 };
 
 const fastContextlessUnary = (
   body: JsonObject,
-  request: Request
+  request: Request,
+  cors?: Record<string, string>
 ): Promise<Response | undefined> | Response | undefined => {
   const id = body['id'];
   const traceIdValue = body['traceId'];
@@ -1223,14 +1231,17 @@ ${bunFastCases}
       ? `const fastContextlessUnary = (
   _body: JsonObject,
   _incoming: IncomingMessage,
-  _outgoing: ServerResponse<IncomingMessage>
+  _outgoing: ServerResponse<IncomingMessage>,
+  _cors?: Record<string, string>
 ): Promise<boolean> | boolean => false;`
       : `const writeFastContextlessResult = (
   outgoing: ServerResponse<IncomingMessage>,
   idBody: string,
   trace: string,
-  result: JsonValue
+  result: JsonValue,
+  cors?: Record<string, string>
 ): void => {
+  const headers = createJsonHeaderRecord(cors);
   if (
     typeof result === 'object' &&
     result !== null &&
@@ -1238,29 +1249,31 @@ ${bunFastCases}
     'kind' in result
   ) {
     if (result.kind === 'error') {
-      outgoing.writeHead(200, jsonHeaders);
+      outgoing.writeHead(200, headers);
       outgoing.end(
         failureBodyFromIdBody(idBody, trace, result.error.code, result.error.message, result.error.status)
       );
       return;
     }
     if (result.headers === undefined) {
-      outgoing.writeHead(200, jsonHeaders);
+      outgoing.writeHead(200, headers);
       outgoing.end(successBody(idBody, trace, result.data));
       return;
     }
-    outgoing.writeHead(200, createJsonHeaderRecord(result.headers));
+    appendJsonStringHeaders(headers, result.headers);
+    outgoing.writeHead(200, headers);
     outgoing.end(successBody(idBody, trace, result.data, result.headers));
     return;
   }
-  outgoing.writeHead(200, jsonHeaders);
+  outgoing.writeHead(200, headers);
   outgoing.end(successBody(idBody, trace, result));
 };
 
 const fastContextlessUnary = async (
   body: JsonObject,
   incoming: IncomingMessage,
-  outgoing: ServerResponse<IncomingMessage>
+  outgoing: ServerResponse<IncomingMessage>,
+  cors?: Record<string, string>
 ): Promise<boolean> => {
   const id = body['id'];
   const traceIdValue = body['traceId'];
@@ -1278,23 +1291,23 @@ ${nodeFastCases}
 };`;
   const denoUseCompiledUnaryFastPath = useBareDispatcher;
   const denoTransportImport = denoUseCompiledUnaryFastPath
-    ? "import { createDenoCompiledTransportRequestHandlerWithPath } from 'joor/runtime/deno-compiled-transport';"
-    : "import { createDenoTransportRequestHandlerWithPath } from 'joor/runtime/deno-transport';";
+    ? "import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';"
+    : "import { createDenoTransportRequestHandler } from 'joor/runtime/deno-transport';";
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
     ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './deno-dispatcher.ts';"
     : "import { nativeTransport } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
-    ? `return createDenoCompiledTransportRequestHandlerWithPath(
+    ? `return createDenoCompiledTransportRequestHandler(
     nativeRuntime,
     nativeTransport,
     nativeUnaryDispatch,
-    path,
-    bodyLimit
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`
-    : `return createDenoTransportRequestHandlerWithPath(
+    : `return createDenoTransportRequestHandler(
     nativeTransport,
-    path,
-    bodyLimit
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`;
 
   const fetchFile = `${outDir}/fetch.ts`;
@@ -1339,6 +1352,7 @@ interface RequestSource {
 }
 
 const configuredPath = ${configuredPath};
+const configuredCors = ${configuredCors};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
 const checkContentType = ${bunFastEntries.length === 0 ? 'true' : 'false'};
 const defaultMaxBodyBytes = 1024 * 1024;
@@ -1421,6 +1435,24 @@ const createJsonHeaderRecord = (
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
   return headers;
+};
+
+const corsHeaders = (cors: NativeCorsOptions): Record<string, string> => {
+  if (cors.origin === undefined) return {};
+  return {
+    'access-control-allow-origin': cors.origin,
+    'access-control-allow-methods': (cors.methods ?? ['POST', 'OPTIONS']).join(', '),
+    'access-control-allow-headers': (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', '),
+  };
+};
+
+const resolveCorsHeaders = (
+  cors: NativeCorsOptions | false | undefined
+): Record<string, string> | undefined => {
+  if (cors === false) return undefined;
+  if (cors !== undefined) return corsHeaders(cors);
+  const configured = configuredCors as NativeCorsOptions | null;
+  return configured === null ? undefined : corsHeaders(configured);
 };
 
 const getIncomingHeader = (
@@ -1568,27 +1600,33 @@ const failureBody = (
 
 const preflight = (
   request: RequestSource,
-  path: string
+  path: string,
+  cors: Record<string, string> | undefined
 ): NativeTransportResult | undefined => {
   if (!matchesPath(request.url, path)) {
-    return new Response(null, { status: 404 });
+    return new Response(null, { status: 404, headers: cors ?? {} });
+  }
+  if (request.method === 'OPTIONS' && cors !== undefined) {
+    return new Response(null, { status: 204, headers: cors });
   }
   if (request.method !== 'POST') {
-    return new Response(null, { status: 405, headers: { allow: 'POST' } });
+    return new Response(null, {
+      status: 405,
+      headers: { allow: 'POST', ...cors },
+    });
   }
   const contentType = checkContentType
     ? (request.getHeader('content-type') ?? '')
     : 'application/json';
   if (checkContentType && !isJsonContentType(contentType)) {
-    return {
-      body: failureBody(
+    const body = failureBody(
         '',
         traceId(request),
         'UNSUPPORTED_MEDIA_TYPE',
         'Content-Type must be application/json',
         415
-      ),
-    };
+      );
+    return cors === undefined ? { body } : { body, headers: cors };
   }
   return undefined;
 };
@@ -1596,23 +1634,29 @@ const preflight = (
 const writeIncomingPreflightFailure = (
   outgoing: ServerResponse<IncomingMessage>,
   incoming: IncomingMessage,
-  path: string
+  path: string,
+  cors: Record<string, string> | undefined
 ): boolean => {
   const url = incoming.url ?? '/rpc';
   if (!matchesPath(url, path)) {
-    outgoing.writeHead(404);
+    outgoing.writeHead(404, cors);
+    outgoing.end();
+    return true;
+  }
+  if ((incoming.method ?? 'GET') === 'OPTIONS' && cors !== undefined) {
+    outgoing.writeHead(204, cors);
     outgoing.end();
     return true;
   }
   if ((incoming.method ?? 'GET') !== 'POST') {
-    outgoing.writeHead(405, { allow: 'POST' });
+    outgoing.writeHead(405, { allow: 'POST', ...cors });
     outgoing.end();
     return true;
   }
   if (checkContentType) {
     const contentType = getIncomingHeader(incoming, 'content-type') ?? '';
     if (!isJsonContentType(contentType)) {
-      outgoing.writeHead(200, jsonHeaders);
+      outgoing.writeHead(200, { ...jsonHeaders, ...cors });
       outgoing.end(
         failureBody(
           '',
@@ -1712,18 +1756,25 @@ const writeWebResponseBody = async (
 
 const writeResult = async (
   outgoing: ServerResponse<IncomingMessage>,
-  result: NativeTransportResult
+  result: NativeTransportResult,
+  cors?: Record<string, string>
 ): Promise<void> => {
   if (isSerializedEnvelope(result)) {
+    const headers =
+      result.responseHeaders ?? createJsonHeaderRecord(result.headers);
+    if (cors !== undefined) appendJsonStringHeaders(headers, cors);
     outgoing.writeHead(
       200,
-      result.responseHeaders ?? createJsonHeaderRecord(result.headers)
+      headers
     );
     outgoing.end(result.body);
     return;
   }
   if (result instanceof Response) {
-    outgoing.writeHead(result.status, Object.fromEntries(result.headers));
+    outgoing.writeHead(result.status, {
+      ...Object.fromEntries(result.headers),
+      ...cors,
+    });
     if (result.body === null) {
       outgoing.end();
       return;
@@ -1732,6 +1783,7 @@ const writeResult = async (
     return;
   }
   const headers = createJsonHeaderRecord();
+  if (cors !== undefined) appendJsonStringHeaders(headers, cors);
   if (isJsonObject(result) && result['ok'] === true) {
     const responseHeaders = result['headers'];
     if (isJsonObject(responseHeaders)) {
@@ -1745,11 +1797,12 @@ const writeResult = async (
 const writeBodyReadFailure = (
   outgoing: ServerResponse<IncomingMessage>,
   request: RequestSource,
-  error: object
+  error: object,
+  cors?: Record<string, string>
 ): void => {
   const payloadTooLarge = error instanceof BodySizeLimitError;
   const status = payloadTooLarge ? 413 : 400;
-  outgoing.writeHead(status, jsonHeaders);
+  outgoing.writeHead(status, { ...jsonHeaders, ...cors });
   outgoing.end(
     failureBody(
       '',
@@ -1764,11 +1817,12 @@ const writeBodyReadFailure = (
 const writeIncomingBodyReadFailure = (
   outgoing: ServerResponse<IncomingMessage>,
   incoming: IncomingMessage,
-  error: object
+  error: object,
+  cors?: Record<string, string>
 ): void => {
   const payloadTooLarge = error instanceof BodySizeLimitError;
   const status = payloadTooLarge ? 413 : 400;
-  outgoing.writeHead(status, jsonHeaders);
+  outgoing.writeHead(status, { ...jsonHeaders, ...cors });
   outgoing.end(
     failureBody(
       '',
@@ -1786,7 +1840,14 @@ ${nodeFastContextlessUnary}
 export interface NodeNativeOptions {
   hostname?: string;
   path?: string;
+  cors?: NativeCorsOptions | false;
   maxBodyBytes?: number;
+}
+
+export interface NativeCorsOptions {
+  origin?: string;
+  methods?: string[];
+  headers?: string[];
 }
 
 export interface NodeListenOptions extends NodeNativeOptions {
@@ -1811,6 +1872,7 @@ export const createHandler = (
 ): NodeNativeHandler => {
   const hostname = options.hostname ?? '0.0.0.0';
   const path = options.path ?? configuredPath;
+  const cors = resolveCorsHeaders(options.cors);
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
@@ -1822,12 +1884,12 @@ export const createHandler = (
     ${
       bunFastEntries.length === 0
         ? `request = new IncomingRequestSource(incoming, hostname);
-    const early = preflight(request, path);
+    const early = preflight(request, path, cors);
     if (early !== undefined) {
-      await writeResult(outgoing, early);
+      await writeResult(outgoing, early, cors);
       return;
     }`
-        : `if (writeIncomingPreflightFailure(outgoing, incoming, path)) return;`
+        : `if (writeIncomingPreflightFailure(outgoing, incoming, path, cors)) return;`
     }
     let body: JsonValue;
     try {
@@ -1835,12 +1897,12 @@ export const createHandler = (
       body = buffer.length === 0 ? {} : parseJson(buffer.toString('utf8'));
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      if (request === undefined) writeIncomingBodyReadFailure(outgoing, incoming, error);
-      else writeBodyReadFailure(outgoing, request, error);
+      if (request === undefined) writeIncomingBodyReadFailure(outgoing, incoming, error, cors);
+      else writeBodyReadFailure(outgoing, request, error, cors);
       return;
     }
     if (isJsonObject(body)) {
-      const handled = await fastContextlessUnary(body, incoming, outgoing);
+      const handled = await fastContextlessUnary(body, incoming, outgoing, cors);
       if (handled) return;
       request ??= new IncomingRequestSource(incoming, hostname);
       const services =
@@ -1853,14 +1915,15 @@ export const createHandler = (
         compiledUncachedExecutionState
       );
       if (result !== undefined) {
-        await writeResult(outgoing, result as NativeTransportResult);
+        await writeResult(outgoing, result as NativeTransportResult, cors);
         return;
       }
     }
     request ??= new IncomingRequestSource(incoming, hostname);
     await writeResult(
       outgoing,
-      await nativeTransport(request, body as NativeBody)
+      await nativeTransport(request, body as NativeBody),
+      cors
     );
   };
 };
@@ -1895,6 +1958,7 @@ interface SerializedJsonEnvelope {
 }
 
 const configuredPath = ${configuredPath};
+const configuredCors = ${configuredCors};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
 const checkContentType = ${bunFastEntries.length === 0 ? 'true' : 'false'};
 const defaultMaxBodyBytes = 1024 * 1024;
@@ -2006,6 +2070,24 @@ const createJsonHeaderRecord = (
   return headers;
 };
 
+const corsHeaders = (cors: NativeCorsOptions): Record<string, string> => {
+  if (cors.origin === undefined) return {};
+  return {
+    'access-control-allow-origin': cors.origin,
+    'access-control-allow-methods': (cors.methods ?? ['POST', 'OPTIONS']).join(', '),
+    'access-control-allow-headers': (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(', '),
+  };
+};
+
+const resolveCorsHeaders = (
+  cors: NativeCorsOptions | false | undefined
+): Record<string, string> | undefined => {
+  if (cors === false) return undefined;
+  if (cors !== undefined) return corsHeaders(cors);
+  const configured = configuredCors as NativeCorsOptions | null;
+  return configured === null ? undefined : corsHeaders(configured);
+};
+
 const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
   const cacheControl = source['cache-control'];
   if (
@@ -2025,29 +2107,45 @@ const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
   }
 };
 
-const transportResultToResponse = (result: NativeTransportResult): Response => {
+const transportResultToResponse = (
+  result: NativeTransportResult,
+  cors?: Record<string, string>
+): Response => {
   if (isSerializedEnvelope(result)) {
-    return result.responseHeaders !== undefined
-      ? new Response(result.body, {
-          status: 200,
-          headers: result.responseHeaders,
-        })
-      : result.headers === undefined
-        ? new Response(result.body, jsonOkResponseInit)
-        : new Response(result.body, {
-            status: 200,
-            headers: createJsonHeaderRecord(result.headers),
-          });
+    if (result.responseHeaders !== undefined) {
+      appendJsonStringHeaders(result.responseHeaders, cors ?? {});
+      return new Response(result.body, {
+        status: 200,
+        headers: result.responseHeaders,
+      });
+    }
+    const headers = createJsonHeaderRecord(cors);
+    if (result.headers !== undefined) {
+      appendJsonStringHeaders(headers, result.headers);
+    }
+    return new Response(result.body, {
+      status: 200,
+      headers,
+    });
   }
-  if (result instanceof Response) return result;
+  if (result instanceof Response) {
+    const responseHeaders = new Headers(result.headers);
+    if (cors !== undefined) appendJsonHeaders(responseHeaders, cors);
+    return new Response(result.body, {
+      status: result.status,
+      statusText: result.statusText,
+      headers: responseHeaders,
+    });
+  }
+  const headers = new Headers(jsonHeaders);
+  if (cors !== undefined) appendJsonHeaders(headers, cors);
   if (!isJsonObject(result) || result['ok'] !== true) {
-    return new Response(JSON.stringify(result), jsonOkResponseInit);
+    return new Response(JSON.stringify(result), { status: 200, headers });
   }
   const responseHeaders = result['headers'];
   if (!isJsonObject(responseHeaders)) {
-    return new Response(JSON.stringify(result), jsonOkResponseInit);
+    return new Response(JSON.stringify(result), { status: 200, headers });
   }
-  const headers = new Headers(jsonHeaders);
   appendJsonHeaders(headers, responseHeaders);
   return new Response(JSON.stringify(result), { status: 200, headers });
 };
@@ -2216,13 +2314,20 @@ const failureBody = (
 
 const preflight = (
   request: Request,
-  path: string
+  path: string,
+  cors: Record<string, string> | undefined
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {
-    return new Response(null, { status: 404 });
+    return new Response(null, { status: 404, headers: cors ?? {} });
+  }
+  if (request.method === 'OPTIONS' && cors !== undefined) {
+    return new Response(null, { status: 204, headers: cors });
   }
   if (request.method !== 'POST') {
-    return new Response(null, { status: 405, headers: { allow: 'POST' } });
+    return new Response(null, {
+      status: 405,
+      headers: { allow: 'POST', ...cors },
+    });
   }
   if (checkContentType) {
     const contentType = request.headers.get('content-type') ?? '';
@@ -2235,14 +2340,18 @@ const preflight = (
           'Content-Type must be application/json',
           415
         ),
-        jsonOkResponseInit
+        { status: 200, headers: createJsonHeaderRecord(cors) }
       );
     }
   }
   return undefined;
 };
 
-const bodyReadFailure = (request: Request, error: object): Response => {
+const bodyReadFailure = (
+  request: Request,
+  error: object,
+  cors?: Record<string, string>
+): Response => {
   const payloadTooLarge = error instanceof BodySizeLimitError;
   const status = payloadTooLarge ? 413 : 400;
   return new Response(
@@ -2253,7 +2362,7 @@ const bodyReadFailure = (request: Request, error: object): Response => {
       payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
       status
     ),
-    { status, headers: jsonHeaders }
+    { status, headers: { ...jsonHeaders, ...cors } }
   );
 };
 
@@ -2263,8 +2372,15 @@ ${bunFastContextlessUnary}
 export interface BunNativeOptions {
   hostname?: string;
   path?: string;
+  cors?: NativeCorsOptions | false;
   maxBodyBytes?: number;
   port?: number;
+}
+
+export interface NativeCorsOptions {
+  origin?: string;
+  methods?: string[];
+  headers?: string[];
 }
 
 export type BunNativeFetchHandler = (request: Request) => Promise<Response>;
@@ -2282,12 +2398,13 @@ export const createFetch = (
   options: BunNativeOptions = {}
 ): BunNativeFetchHandler => {
   const path = options.path ?? configuredPath;
+  const cors = resolveCorsHeaders(options.cors);
   const bodyLimit = normalizeMaxBodyBytes(
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
   const unlimitedBody = bodyLimit >= Number.MAX_SAFE_INTEGER;
   return async (request: Request): Promise<Response> => {
-    const early = preflight(request, path);
+    const early = preflight(request, path, cors);
     if (early !== undefined) return early;
     let body: JsonValue;
     try {
@@ -2296,10 +2413,10 @@ export const createFetch = (
         : await readJsonBody(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      return bodyReadFailure(request, error);
+      return bodyReadFailure(request, error, cors);
     }
     if (isJsonObject(body)) {
-      const fastValue = fastContextlessUnary(body, request);
+      const fastValue = fastContextlessUnary(body, request, cors);
       const fast =
         fastValue instanceof Promise ? await fastValue : fastValue;
       if (fast !== undefined) return fast;
@@ -2316,11 +2433,12 @@ export const createFetch = (
         compiledUncachedExecutionState
       );
       if (result !== undefined) {
-        return transportResultToResponse(result as NativeTransportResult);
+        return transportResultToResponse(result as NativeTransportResult, cors);
       }
     }
     return transportResultToResponse(
-      await nativeTransport(source, body as NativeBody)
+      await nativeTransport(source, body as NativeBody),
+      cors
     );
   };
 };
@@ -2353,14 +2471,32 @@ export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
   await writeFile(
     denoFile,
     `${denoTransportImport}
+import { createRpcRequestPreflight } from 'joor';
 ${denoDispatcherImport}
 
 const configuredPath = ${configuredPath};
+const configuredCors = ${configuredCors};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
+
+export interface NativeCorsOptions {
+  origin?: string;
+  methods?: string[];
+  headers?: string[];
+}
+
+const resolveCorsOptions = (
+  cors: NativeCorsOptions | false | undefined
+): NativeCorsOptions | undefined => {
+  if (cors === false) return undefined;
+  if (cors !== undefined) return cors;
+  const configured = configuredCors as NativeCorsOptions | null;
+  return configured === null ? undefined : configured;
+};
 
 export interface DenoNativeOptions {
   hostname?: string;
   path?: string;
+  cors?: NativeCorsOptions | false;
   maxBodyBytes?: number;
   port?: number;
 }
@@ -2378,6 +2514,7 @@ export const createFetch = (
   options: DenoNativeOptions = {}
 ): DenoNativeFetchHandler => {
   const path = options.path ?? configuredPath;
+  const cors = resolveCorsOptions(options.cors);
   const bodyLimit =
     options.maxBodyBytes ?? configuredMaxBodyBytes;
   ${denoCreateFetchReturn}
