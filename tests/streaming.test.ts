@@ -9,6 +9,7 @@ import {
 } from '../src/index.js';
 import {
   compiledUncachedExecutionState,
+  createCompiledRpcHandler,
   createCompiledRuntimeState,
   executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
@@ -34,6 +35,40 @@ describe('streaming', () => {
     const text = await response.text();
 
     expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(text).toContain('event: data');
+    expect(text).toContain('event: done');
+  });
+
+  it('applies cors headers to typed sse responses', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler() {
+        yield { ok: true };
+      },
+    });
+    const handler = createJoorHandler(
+      {
+        procedures: { 'events.watch': streamingProcedure },
+      },
+      { cors: { origin: 'https://app.example' } }
+    );
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'events.watch', input: {} }),
+      })
+    );
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(response.headers.get('access-control-allow-origin')).toBe(
+      'https://app.example'
+    );
     expect(text).toContain('event: data');
     expect(text).toContain('event: done');
   });
@@ -75,5 +110,47 @@ describe('streaming', () => {
     expect(text).toContain('event: error');
     expect(text).toContain('INTERNAL_ERROR');
     expect(text).toContain('stream exploded');
+  });
+
+  it('applies cors headers to compiled sse responses', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler() {
+        yield { ok: true };
+      },
+    });
+    const handler = createCompiledRpcHandler(
+      (rpcRequest, request, services, runtime, state, serialize) =>
+        executeCompiledProcedure(
+          rpcRequest.id,
+          streamingProcedure,
+          rpcRequest,
+          request,
+          services,
+          runtime,
+          state,
+          serialize
+        ),
+      { cors: { origin: 'https://app.example' } }
+    );
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'events.watch', input: {} }),
+      })
+    );
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(response.headers.get('access-control-allow-origin')).toBe(
+      'https://app.example'
+    );
+    expect(text).toContain('event: data');
+    expect(text).toContain('event: done');
   });
 });

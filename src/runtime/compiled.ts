@@ -59,13 +59,12 @@ import {
 } from './body.js';
 import type { JoorFetchHandler } from './fetch.js';
 import {
+  createCorsHeaderRecord,
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
   isSerializedJsonEnvelope,
-  jsonContentHeaders,
   jsonOkResponseInit,
   rpcEnvelopeToResponse,
-  serializedEnvelopeToResponse,
   transportResultToResponse,
   type SerializedJsonEnvelope,
 } from './response.js';
@@ -91,6 +90,7 @@ export interface CompiledRuntime {
   validateOutput: boolean;
   validateResponseHeaders: boolean;
   enforceRateLimit: boolean;
+  cors?: Record<string, string>;
   cacheMaxEntries: number;
   maxBodyBytes: number;
   rateLimit: RateLimitRuntimeOptions;
@@ -380,13 +380,25 @@ const isJsonContentType = (value: string): boolean => {
 
 const requestPreflight = (
   request: ContextRequestSource,
-  path: string
+  path: string,
+  extraHeaders?: Record<string, string>
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {
-    return new Response(null, { status: 404 });
+    return new Response(
+      null,
+      extraHeaders === undefined
+        ? { status: 404 }
+        : { status: 404, headers: extraHeaders }
+    );
+  }
+  if (request.method === 'OPTIONS' && extraHeaders !== undefined) {
+    return new Response(null, { status: 204, headers: extraHeaders });
   }
   if (request.method !== 'POST') {
-    return new Response(null, { status: 405, headers: { allow: 'POST' } });
+    return new Response(null, {
+      status: 405,
+      headers: { allow: 'POST', ...extraHeaders },
+    });
   }
   const contentType = request.getHeader('content-type') ?? '';
   if (!isJsonContentType(contentType)) {
@@ -397,11 +409,17 @@ const requestPreflight = (
         'UNSUPPORTED_MEDIA_TYPE',
         'Content-Type must be application/json',
         415
-      )
+      ),
+      extraHeaders
     );
   }
   return undefined;
 };
+
+const compiledCorsHeaders = (
+  config: JoorConfig
+): Record<string, string> | undefined =>
+  config.cors === undefined ? undefined : (createCorsHeaderRecord(config.cors) ?? {});
 
 const failure = <TId extends string>(
   id: TId,
@@ -612,7 +630,7 @@ const streamResponse = async <
     trace,
     runtime
   );
-  if (limited !== undefined) return rpcEnvelopeToResponse(limited);
+  if (limited !== undefined) return rpcEnvelopeToResponse(limited, runtime.cors);
   const headers = headerObject(request, procedure);
   const ctx = createRuntimeContext(
     request,
@@ -627,12 +645,15 @@ const streamResponse = async <
       ? await authResultValue
       : authResultValue;
   if (isProcedureFailure(authResult)) {
-    return rpcEnvelopeToResponse({
-      ok: false,
-      id: rpcRequest.id,
-      traceId: trace,
-      error: authResult.error,
-    });
+    return rpcEnvelopeToResponse(
+      {
+        ok: false,
+        id: rpcRequest.id,
+        traceId: trace,
+        error: authResult.error,
+      },
+      runtime.cors
+    );
   }
   const inputResult = !runtime.validateInput
     ? ({ ok: true, value: rpcRequest.input } as const)
@@ -646,7 +667,8 @@ const streamResponse = async <
         'Validation failed',
         400,
         validationDetails(inputResult.issues)
-      )
+      ),
+      runtime.cors
     );
   }
   ctx.auth = authResult;
@@ -659,7 +681,8 @@ const streamResponse = async <
         'NOT_STREAMING',
         'Procedure is not streaming',
         400
-      )
+      ),
+      runtime.cors
     );
   }
   const iterable = procedure.handler(
@@ -674,7 +697,8 @@ const streamResponse = async <
         'NOT_STREAMING',
         'Procedure is not streaming',
         400
-      )
+      ),
+      runtime.cors
     );
   }
   const stream = new ReadableStream<Uint8Array>({
@@ -715,7 +739,7 @@ const streamResponse = async <
       }
     },
   });
-  return createSseResponse(stream);
+  return transportResultToResponse(createSseResponse(stream), runtime.cors);
 };
 
 export const executeCompiledProcedure = async <
@@ -933,12 +957,14 @@ export function createCompiledRuntimeState(
     services = {};
   }
   const path = config.path ?? '/rpc';
+  const cors = compiledCorsHeaders(config);
   const runtime: CompiledRuntime = {
     validateHeaders: config.validateHeaders ?? true,
     validateInput: config.validateInput ?? true,
     validateOutput: config.validateOutput ?? true,
     validateResponseHeaders: config.validateResponseHeaders ?? true,
     enforceRateLimit: config.enforceRateLimit ?? true,
+    ...(cors === undefined ? {} : { cors }),
     cacheMaxEntries:
       config.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
     maxBodyBytes: config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
@@ -986,6 +1012,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
     createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
     JoorConfigContext<TConfig>
   >;
+  const extraHeaders = compiled.runtime.cors ?? compiledCorsHeaders(handlerConfig);
   const middleware = handlerConfig.middleware ?? [];
   const hasBeforeHooks =
     handlerConfig.hooks?.beforeRequest !== undefined ||
@@ -1042,7 +1069,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
     body: JsonValue
   ): Promise<CompiledBodyResult> => {
     if (preflight) {
-      const early = requestPreflight(request, compiled.path);
+      const early = requestPreflight(request, compiled.path, extraHeaders);
       if (early !== undefined) return early;
     }
     const resolved = compiled.services ?? (await compiled.resolveServices());
@@ -1124,7 +1151,11 @@ export const createCompiledRpcTransportBodyResultHandler = <
       return hasAfterHooks ? await runAfter(early, request, hookBody) : early;
     const result = await execute(request, body);
     if (!hasAfterHooks) return result;
-    return runAfter(transportResultToResponse(result), request, hookBody);
+    return runAfter(
+      transportResultToResponse(result, extraHeaders),
+      request,
+      hookBody
+    );
   }) as CompiledRpcTransportBodyResultHandlerForConfig<TConfig>;
 };
 
@@ -1161,6 +1192,7 @@ export const createCompiledRpcHandler = <
   const bodyLimit = normalizeMaxBodyBytes(
     handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
+  const extraHeaders = compiledCorsHeaders(handlerConfig);
   const handleTransport = createCompiledRpcTransportBodyResultHandler(
     dispatch,
     handlerConfig,
@@ -1170,7 +1202,11 @@ export const createCompiledRpcHandler = <
   ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
-    const early = requestPreflight(source, handlerConfig.path ?? '/rpc');
+    const early = requestPreflight(
+      source,
+      handlerConfig.path ?? '/rpc',
+      extraHeaders
+    );
     if (early !== undefined) return early;
     let body: JsonValue;
     try {
@@ -1189,13 +1225,10 @@ export const createCompiledRpcHandler = <
             status
           )
         ),
-        { status, headers: jsonContentHeaders }
+        { status, headers: createJsonHeaderRecord(extraHeaders) }
       );
     }
     const result = await handleTransport(source, body);
-    if (result instanceof Response) return result;
-    return isSerializedJsonEnvelope(result)
-      ? serializedEnvelopeToResponse(result)
-      : rpcEnvelopeToResponse(result);
+    return transportResultToResponse(result, extraHeaders);
   };
 };

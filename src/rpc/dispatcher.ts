@@ -77,6 +77,7 @@ import {
   createCorsHeaderRecord,
   jsonContentHeaders,
   rpcEnvelopeToResponse,
+  transportResultToResponse,
 } from '../runtime/response.js';
 
 export interface RpcManifest<
@@ -902,7 +903,7 @@ interface PreparedProcedure {
 }
 
 interface RuntimeOptions {
-  cors: HeadersInit;
+  cors: Record<string, string>;
   cacheMaxEntries: number;
   enforceRateLimit: boolean;
   rateLimit: RateLimitRuntimeOptions;
@@ -1573,6 +1574,11 @@ const corsHeaders = (options: HandlerOptions): Record<string, string> => {
   return createCorsHeaderRecord(options.cors) ?? {};
 };
 
+const optionalCorsHeaders = (
+  options: HandlerOptions
+): Record<string, string> | undefined =>
+  options.cors === undefined ? undefined : corsHeaders(options);
+
 const traceId = (request: ContextRequestSource, requested?: string): string => {
   if (requested !== undefined) return requested;
   const headerTrace = request.getHeader('x-request-id');
@@ -1602,10 +1608,7 @@ const toResponse = (
   payload: RpcEnvelope | readonly RpcEnvelope[],
   options: HandlerOptions = {}
 ): Response =>
-  rpcEnvelopeToResponse(
-    payload,
-    options.cors === undefined ? undefined : corsHeaders(options)
-  );
+  rpcEnvelopeToResponse(payload, optionalCorsHeaders(options));
 
 export type RpcRequestPreflight = (
   request: ContextRequestSource
@@ -2073,6 +2076,8 @@ const executeStream = async <TId extends string>(
   runtime: RuntimeOptions,
   state: ExecutionState
 ): Promise<Response> => {
+  const toRuntimeResponse = (payload: RpcEnvelope): Response =>
+    rpcEnvelopeToResponse(payload, runtime.cors);
   const procedure = prepared.procedure;
   const trace = traceId(request, rpcRequest.traceId);
   const limited = rateLimitFailure(
@@ -2082,7 +2087,7 @@ const executeStream = async <TId extends string>(
     trace,
     runtime
   );
-  if (limited !== undefined) return toResponse(limited);
+  if (limited !== undefined) return toRuntimeResponse(limited);
   const headerValue =
     prepared.headers === undefined
       ? {}
@@ -2094,7 +2099,7 @@ const executeStream = async <TId extends string>(
         ? ({ ok: true, value: headerValue } as const)
         : validate(prepared.headers, headerValue, 'headers');
   if (!headerResult.ok) {
-    return toResponse(
+    return toRuntimeResponse(
       rpcFailure(
         rpcRequest.id,
         trace,
@@ -2118,7 +2123,7 @@ const executeStream = async <TId extends string>(
       ? await authResultValue
       : authResultValue;
   if (isProcedureFailure(authResult)) {
-    return toResponse({
+    return toRuntimeResponse({
       ok: false,
       id: rpcRequest.id,
       traceId: trace,
@@ -2129,7 +2134,7 @@ const executeStream = async <TId extends string>(
     ? ({ ok: true, value: rpcRequest.input } as const)
     : validate(procedure.input, rpcRequest.input, 'input');
   if (!inputResult.ok) {
-    return toResponse(
+    return toRuntimeResponse(
       rpcFailure(
         rpcRequest.id,
         trace,
@@ -2142,7 +2147,7 @@ const executeStream = async <TId extends string>(
   }
   const streamSchema = procedure.stream;
   if (streamSchema === undefined) {
-    return toResponse(
+    return toRuntimeResponse(
       rpcFailure(
         rpcRequest.id,
         trace,
@@ -2159,7 +2164,7 @@ const executeStream = async <TId extends string>(
     (inputResult.value ?? {}) as JsonValue
   );
   if (!isAsyncIterable(iterable)) {
-    return toResponse(
+    return toRuntimeResponse(
       rpcFailure(
         rpcRequest.id,
         trace,
@@ -2214,7 +2219,7 @@ const executeStream = async <TId extends string>(
       }
     },
   });
-  return createSseResponse(stream);
+  return transportResultToResponse(createSseResponse(stream), runtime.cors);
 };
 
 export function createRpcHandler<
@@ -2285,12 +2290,15 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
     options as HandlerOptionsFor<TManifest>,
     preflight
   );
+  const extraHeaders = optionalCorsHeaders(options);
   return async (
     request: Request,
     body: RpcManifestBody<TManifest>
   ): Promise<Response> => {
     const result = await handleResult(request, body);
-    return result instanceof Response ? result : toResponse(result, options);
+    return result instanceof Response
+      ? transportResultToResponse(result, extraHeaders)
+      : toResponse(result, options);
   };
 }
 
