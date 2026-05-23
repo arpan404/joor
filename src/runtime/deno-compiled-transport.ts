@@ -26,6 +26,14 @@ export type DenoCompiledTransportRequestHandler = (
   request: Request
 ) => Promise<Response>;
 
+export type DenoCompiledTransportBodyResult = DenoTransportBodyResult;
+
+export type DenoCompiledTransportBodyResultHandler<
+  TBody = JsonValue,
+  TResult extends DenoCompiledTransportBodyResult =
+    DenoCompiledTransportBodyResult,
+> = DenoTransportBodyResultHandler<TBody, TResult>;
+
 export type DenoCompiledTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoTransportBodyResultHandlerFor<TManifest>;
@@ -101,10 +109,11 @@ const requestPathPreflight = (
 export const createDenoCompiledTransportRequestHandlerWithPath = <
   TServices extends object = object,
   TBody = JsonValue,
-  TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+  TResult extends DenoCompiledTransportBodyResult =
+    DenoCompiledTransportBodyResult,
 >(
   runtimeState: CompiledRuntimeState<TServices>,
-  handler: DenoTransportBodyResultHandler<TBody, TResult>,
+  handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
   unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
   path: string,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES

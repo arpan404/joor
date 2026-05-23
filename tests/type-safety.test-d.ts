@@ -72,6 +72,8 @@ import {
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
+  type DenoCompiledTransportBodyResult as RootDenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultHandler as RootDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
   type DenoFetchHandler,
@@ -376,6 +378,8 @@ import {
 } from '../src/runtime/deno-transport.js';
 import {
   createDenoCompiledTransportRequestHandlerWithPath,
+  type DenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler,
 } from '../src/runtime/deno-compiled-transport.js';
@@ -421,6 +425,8 @@ import {
   type BunTransportRequestHandler as RuntimeSubpathBunTransportRequestHandler,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
   type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
+  type DenoCompiledTransportBodyResult as RuntimeSubpathDenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultHandler as RuntimeSubpathDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
   type DenoFetchHandler as RuntimeSubpathDenoFetchHandler,
@@ -3111,6 +3117,22 @@ const rootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyRes
 const runtimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestDenoCompiledTransportHandler;
+const denoCompiledTransportResult: DenoCompiledTransportBodyResult =
+  standaloneDenoTransportResult;
+const rootDenoCompiledTransportResult: RootDenoCompiledTransportBodyResult =
+  denoCompiledTransportResult;
+const _runtimeSubpathDenoCompiledTransportResult: RuntimeSubpathDenoCompiledTransportBodyResult =
+  rootDenoCompiledTransportResult;
+const denoCompiledTransportHandler: DenoCompiledTransportBodyResultHandler =
+  standaloneDenoTransportHandler;
+const rootDenoCompiledTransportHandler: RootDenoCompiledTransportBodyResultHandler =
+  denoCompiledTransportHandler;
+const runtimeSubpathDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandler =
+  rootDenoCompiledTransportHandler;
+runtimeSubpathDenoCompiledTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { id: '1' },
+});
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
   runtimeSubpathManifestDenoCompiledTransportHandler,
