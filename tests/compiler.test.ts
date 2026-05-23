@@ -1093,8 +1093,12 @@ requestId.toUpperCase();
 const requestUnion: RouteRequestUnion = request;
 requestUnion.id.toUpperCase();
 const unaryRouteRequest: UnaryRouteRequest<'users.get'> = request;
+const defaultUnaryRouteRequest: UnaryRouteRequest = unaryRouteRequest;
 const routeUnaryRequest: RouteUnaryRequest<'users.get'> = unaryRouteRequest;
+const defaultRouteUnaryRequest: RouteUnaryRequest = routeUnaryRequest;
 routeUnaryRequest.input.id.toUpperCase();
+defaultUnaryRouteRequest.id.toUpperCase();
+defaultRouteUnaryRequest.id.toUpperCase();
 const unaryRouteRequestUnion: UnaryRouteRequestUnion = unaryRouteRequest;
 const routeUnaryRequestUnion: RouteUnaryRequestUnion = unaryRouteRequestUnion;
 routeUnaryRequestUnion.id.toUpperCase();
@@ -1576,6 +1580,10 @@ const nativeUnaryBody: NativeRouteRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
 };
+const defaultNativeRouteRequest: NativeRouteRequest = nativeUnaryBody;
+if (defaultNativeRouteRequest.id === 'users.get') {
+  defaultNativeRouteRequest.input.id.toUpperCase();
+}
 const nativeUnaryProtocolBody: NativeRouteProtocolRequest<'users.get'> =
   nativeUnaryBody;
 const defaultNativeRouteProtocolRequest: NativeRouteProtocolRequest =
@@ -2014,6 +2022,8 @@ const isNativeResultArray = (
   result: NativeTransportResult
 ): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);
 const nativeRouteRequest: NativeRouteRequest<'users.get'> = nativeUnaryBody;
+const defaultNativeUnaryRouteRequest: NativeUnaryRouteRequest = nativeRouteRequest;
+defaultNativeUnaryRouteRequest.id.toUpperCase();
 const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
 const nativeReadonlyBatchBody: NativeBatchBody = [nativeUnaryBody] as const;
 const nativeExactBatchBody = [nativeUnaryBody] as const;
@@ -2151,6 +2161,13 @@ client.tenants.current({ ok: true });
 // @ts-expect-error generated default route client args preserve route-specific required headers.
 const missingDefaultRouteClientArgs: RouteClientArgs = [{ ok: true }];
 missingDefaultRouteClientArgs[0].valueOf();
+
+// @ts-expect-error generated default route requests preserve route-specific required headers.
+const missingDefaultRouteRequestHeaders: RouteRequest = {
+  id: 'tenants.current',
+  input: { ok: true },
+};
+missingDefaultRouteRequestHeaders.id.toUpperCase();
 
 // @ts-expect-error generated callable leaves validate required route headers.
 client.tenants.current({ ok: true }, { headers: {} });

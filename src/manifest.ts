@@ -619,17 +619,17 @@ export type JoorManifestUnaryRouteResultUnion<TManifest> =
 
 export type JoorManifestRouteRequest<
   TManifest,
-  TId extends JoorManifestRouteUnaryId<TManifest>,
+  TId extends JoorManifestRouteUnaryId<TManifest> = JoorManifestRouteUnaryId<TManifest>,
 > = RpcRouteRequest<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestRouteUnaryRequest<
   TManifest,
-  TId extends JoorManifestRouteUnaryId<TManifest>,
+  TId extends JoorManifestRouteUnaryId<TManifest> = JoorManifestRouteUnaryId<TManifest>,
 > = RpcRouteUnaryRequest<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestUnaryRouteRequest<
   TManifest,
-  TId extends JoorManifestRouteUnaryId<TManifest>,
+  TId extends JoorManifestRouteUnaryId<TManifest> = JoorManifestRouteUnaryId<TManifest>,
 > = JoorManifestRouteUnaryRequest<TManifest, TId>;
 
 export type JoorManifestRouteRequestUnion<TManifest> = RpcRouteRequestUnion<

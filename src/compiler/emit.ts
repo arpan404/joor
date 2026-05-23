@@ -404,7 +404,7 @@ export type NativeStreamRouteEvent<TId extends NativeRouteStreamId = NativeRoute
 export type NativeStreamEvent<TId extends NativeRouteStreamId = NativeRouteStreamId> = NativeStreamRouteEvent<TId>;
 export type NativeRouteProtocolRequest<TId extends NativeRouteId = NativeRouteId> = JoorManifestRouteProtocolRequest<NativeManifest, TId>;
 export type NativeRouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<NativeManifest>;
-export type NativeRouteRequest<TId extends NativeRouteId> =
+export type NativeRouteRequest<TId extends NativeRouteId = NativeRouteId> =
   NativeRouteProtocolRequest<TId>;
 export type NativeRouteRequestUnion =
   NativeRouteProtocolRequestUnion;
@@ -2536,9 +2536,9 @@ export type StreamRouteErrorDetails<TId extends RouteStreamId = RouteStreamId, T
 export type RouteEnvelope<TId extends RouteUnaryId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type RouteUnaryEnvelope<TId extends RouteUnaryId> = JoorManifestRouteUnaryEnvelope<Manifest, TId>;
 export type UnaryRouteEnvelope<TId extends RouteUnaryId> = RouteUnaryEnvelope<TId>;
-export type RouteRequest<TId extends RouteUnaryId> = JoorManifestRouteRequest<Manifest, TId>;
-export type RouteUnaryRequest<TId extends RouteUnaryId> = JoorManifestRouteUnaryRequest<Manifest, TId>;
-export type UnaryRouteRequest<TId extends RouteUnaryId> = RouteUnaryRequest<TId>;
+export type RouteRequest<TId extends RouteUnaryId = RouteUnaryId> = JoorManifestRouteRequest<Manifest, TId>;
+export type RouteUnaryRequest<TId extends RouteUnaryId = RouteUnaryId> = JoorManifestRouteUnaryRequest<Manifest, TId>;
+export type UnaryRouteRequest<TId extends RouteUnaryId = RouteUnaryId> = RouteUnaryRequest<TId>;
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
 export type RouteUnaryRequestUnion = JoorManifestRouteUnaryRequestUnion<Manifest>;
 export type UnaryRouteRequestUnion = RouteUnaryRequestUnion;

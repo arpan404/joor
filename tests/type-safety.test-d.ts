@@ -3620,12 +3620,27 @@ const manifestRouteRequest: JoorManifestRouteRequest<
   input: { id: '1' },
   headers: { 'x-tenant-id': 'tenant-1' },
 };
+const defaultManifestRouteRequest: JoorManifestRouteRequest<typeof manifest> =
+  manifestRouteRequest;
 manifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+if (defaultManifestRouteRequest.id === 'users.get') {
+  defaultManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+  defaultManifestRouteRequest.input.id.toUpperCase();
+}
 const manifestUnaryRouteRequest: JoorManifestUnaryRouteRequest<
   typeof manifest,
   'users.get'
 > = manifestRouteRequest;
+const defaultManifestUnaryRouteRequest: JoorManifestUnaryRouteRequest<
+  typeof manifest
+> = manifestUnaryRouteRequest;
 manifestUnaryRouteRequest.input.id.toUpperCase();
+defaultManifestUnaryRouteRequest.id.toUpperCase();
+// @ts-expect-error default manifest route requests preserve route-specific required headers.
+const _missingDefaultManifestRouteRequestHeaders: JoorManifestRouteRequest<
+  typeof manifest
+> = { id: 'users.get', input: { id: '1' } };
+_missingDefaultManifestRouteRequestHeaders.id.toUpperCase();
 const manifestRouteRequestOptions: JoorManifestRouteRequestOptions<
   typeof manifest,
   'users.get'
@@ -4561,12 +4576,27 @@ const publicManifestRouteRequest: RpcManifestRouteRequest<
   typeof manifest,
   'users.get'
 > = manifestRouteRequest;
+const defaultPublicManifestRouteRequest: RpcManifestRouteRequest<typeof manifest> =
+  publicManifestRouteRequest;
 publicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+if (defaultPublicManifestRouteRequest.id === 'users.get') {
+  defaultPublicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+  defaultPublicManifestRouteRequest.input.id.toUpperCase();
+}
 const publicManifestUnaryRouteRequest: RpcManifestUnaryRouteRequest<
   typeof manifest,
   'users.get'
 > = publicManifestRouteRequest;
+const defaultPublicManifestUnaryRouteRequest: RpcManifestUnaryRouteRequest<
+  typeof manifest
+> = publicManifestUnaryRouteRequest;
 publicManifestUnaryRouteRequest.input.id.toUpperCase();
+defaultPublicManifestUnaryRouteRequest.id.toUpperCase();
+// @ts-expect-error default public manifest route requests preserve route-specific required headers.
+const _missingDefaultPublicManifestRouteRequestHeaders: RpcManifestRouteRequest<
+  typeof manifest
+> = { id: 'users.get', input: { id: '1' } };
+_missingDefaultPublicManifestRouteRequestHeaders.id.toUpperCase();
 const publicManifestRouteRequestUnion: RpcManifestRouteRequestUnion<
   typeof manifest
 > = publicManifestRouteRequest;
@@ -9724,11 +9754,25 @@ const routeRequest = routeClient.request(
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
+const defaultTypedRouteRequest: RpcRouteRequest<Routes> = typedRouteRequest;
 typedRouteRequest.input.id.toUpperCase();
 typedRouteRequest.headers['x-tenant-id'].toUpperCase();
+if (defaultTypedRouteRequest.id === 'users.get') {
+  defaultTypedRouteRequest.input.id.toUpperCase();
+  defaultTypedRouteRequest.headers['x-tenant-id'].toUpperCase();
+}
 const typedUnaryRouteRequest: RpcUnaryRouteRequest<Routes, 'users.get'> =
   typedRouteRequest;
+const defaultTypedUnaryRouteRequest: RpcUnaryRouteRequest<Routes> =
+  typedUnaryRouteRequest;
 typedUnaryRouteRequest.input.id.toUpperCase();
+defaultTypedUnaryRouteRequest.id.toUpperCase();
+// @ts-expect-error default route requests preserve route-specific required headers.
+const _missingDefaultRouteRequestHeaders: RpcRouteRequest<Routes> = {
+  id: 'users.get',
+  input: { id: '1' },
+};
+_missingDefaultRouteRequestHeaders.id.toUpperCase();
 const routeRequestId: 'users.get' = routeRequest.id;
 routeRequestId.toUpperCase();
 

@@ -713,20 +713,30 @@ export type PendingRpcRequest<
   input: PendingRpcRequestInput<TProcedure>;
 } & PendingRpcRequestHeaders<TProcedure>;
 
-export type RpcRouteRequest<
+type RpcRouteRequestFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes>,
 > = PendingRpcRequest<RpcRouteProcedure<TRoutes, TId>, TId> &
   PendingRpcRequestHeaders<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcRouteRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+> = {
+  [TRouteId in RpcRouteUnaryId<TRoutes>]: RpcRouteRequestFor<
+    TRoutes,
+    TRouteId
+  >;
+}[TId];
+
 export type RpcRouteUnaryRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteRequest<TRoutes, TId>;
 
 export type RpcUnaryRouteRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryRequest<TRoutes, TId>;
 
 export type RpcRouteRequestUnion<TRoutes extends RpcRouteMap> = {
