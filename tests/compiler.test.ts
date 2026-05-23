@@ -1320,49 +1320,51 @@ const nativeUnaryRequestUnion: NativeUnaryProtocolRequest = nativeUnaryBody;
 const nativeRouteProtocolRequestUnion: NativeRouteProtocolRequestUnion =
   nativeUnaryProtocolBody;
 nativeRouteProtocolRequestUnion.id.toUpperCase();
-const nativeUnaryRouteProtocolRequest: NativeUnaryRouteProtocolRequest<'users.get'> =
-  nativeUnaryProtocolBody;
-nativeUnaryRouteProtocolRequest.input.id.toUpperCase();
 const nativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequest<'users.get'> =
-  nativeUnaryRouteProtocolRequest;
+  nativeUnaryProtocolBody;
 nativeRouteUnaryProtocolRequest.input.id.toUpperCase();
-const nativeUnaryRouteProtocolRequestUnion: NativeUnaryRouteProtocolRequestUnion =
-  nativeUnaryRouteProtocolRequest;
-nativeUnaryRouteProtocolRequestUnion.id.toUpperCase();
+const nativeUnaryRouteProtocolRequest: NativeUnaryRouteProtocolRequest<'users.get'> =
+  nativeRouteUnaryProtocolRequest;
+nativeUnaryRouteProtocolRequest.input.id.toUpperCase();
 const nativeRouteUnaryProtocolRequestUnion: NativeRouteUnaryProtocolRequestUnion =
   nativeRouteUnaryProtocolRequest;
 nativeRouteUnaryProtocolRequestUnion.id.toUpperCase();
-const nativeUnaryRouteRequest: NativeUnaryRouteRequest = nativeUnaryRequestUnion;
+const nativeUnaryRouteProtocolRequestUnion: NativeUnaryRouteProtocolRequestUnion =
+  nativeRouteUnaryProtocolRequestUnion;
+nativeUnaryRouteProtocolRequestUnion.id.toUpperCase();
 const nativeRouteUnaryRequest: NativeRouteUnaryRequest =
-  nativeUnaryRouteRequest;
+  nativeRouteUnaryProtocolRequestUnion;
 nativeRouteUnaryRequest.id.toUpperCase();
+const nativeUnaryRouteRequest: NativeUnaryRouteRequest =
+  nativeRouteUnaryRequest;
 const nativeRouteRequestUnion: NativeRouteRequestUnion = nativeUnaryRequestUnion;
 const nativeStreamBody: NativeStreamProtocolRequest = {
   id: 'users.watch',
   input: { userId: '1' },
 };
-const nativeStreamRouteProtocolRequest: NativeStreamRouteProtocolRequest<'users.watch'> =
-  nativeStreamBody;
-nativeStreamRouteProtocolRequest.input.userId.toUpperCase();
 const nativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequest<'users.watch'> =
-  nativeStreamRouteProtocolRequest;
+  nativeStreamBody;
 nativeRouteStreamProtocolRequest.input.userId.toUpperCase();
-const nativeStreamRouteProtocolRequestUnion: NativeStreamRouteProtocolRequestUnion =
-  nativeStreamRouteProtocolRequest;
-nativeStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
-const nativeRouteStreamProtocolRequestUnion: NativeRouteStreamProtocolRequestUnion =
+const nativeStreamRouteProtocolRequest: NativeStreamRouteProtocolRequest<'users.watch'> =
   nativeRouteStreamProtocolRequest;
-nativeRouteStreamProtocolRequestUnion.input.userId.toUpperCase();
-const nativeStreamRouteRequest: NativeStreamRouteRequest = nativeStreamBody;
-const nativeRouteStreamRequest: NativeRouteStreamRequest =
-  nativeStreamRouteRequest;
-nativeRouteStreamRequest.input.userId.toUpperCase();
-const nativeRouteBody: NativeRouteBody = nativeUnaryBody;
-const nativeUnaryRouteBody: NativeUnaryRouteBody = nativeUnaryRouteProtocolRequest;
-const nativeRouteUnaryBody: NativeRouteUnaryBody = nativeUnaryRouteBody;
-const nativeStreamRouteBody: NativeStreamRouteBody =
+nativeStreamRouteProtocolRequest.input.userId.toUpperCase();
+const nativeRouteStreamProtocolRequestUnion: NativeRouteStreamProtocolRequestUnion =
   nativeStreamRouteProtocolRequest;
-const nativeRouteStreamBody: NativeRouteStreamBody = nativeStreamRouteBody;
+nativeRouteStreamProtocolRequestUnion.input.userId.toUpperCase();
+const nativeStreamRouteProtocolRequestUnion: NativeStreamRouteProtocolRequestUnion =
+  nativeRouteStreamProtocolRequestUnion;
+nativeStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
+const nativeRouteStreamRequest: NativeRouteStreamRequest =
+  nativeRouteStreamProtocolRequestUnion;
+nativeRouteStreamRequest.input.userId.toUpperCase();
+const nativeStreamRouteRequest: NativeStreamRouteRequest =
+  nativeRouteStreamRequest;
+const nativeRouteBody: NativeRouteBody = nativeUnaryBody;
+const nativeRouteUnaryBody: NativeRouteUnaryBody = nativeRouteUnaryProtocolRequest;
+const nativeUnaryRouteBody: NativeUnaryRouteBody = nativeRouteUnaryBody;
+const nativeRouteStreamBody: NativeRouteStreamBody =
+  nativeRouteStreamProtocolRequest;
+const nativeStreamRouteBody: NativeStreamRouteBody = nativeRouteStreamBody;
 const nativeConfig: NativeConfig<readonly [typeof nativeUsersPlugin]> = {
   plugins: [nativeUsersPlugin] as const,
 };
@@ -1697,17 +1699,17 @@ const nativeBatchBody: NativeBatchBody = [nativeUnaryBody];
 const nativeReadonlyBatchBody: NativeBatchBody = [nativeUnaryBody] as const;
 const nativeExactBatchBody = [nativeUnaryBody] as const;
 const nativeRouteBatchRequest: NativeRouteBatchRequest<readonly [typeof nativeUnaryBody]> = nativeExactBatchBody;
-const nativeUnaryRouteBatchRequest: NativeUnaryRouteBatchRequest<readonly [typeof nativeUnaryBody]> = nativeExactBatchBody;
-const nativeRouteUnaryBatchRequest: NativeRouteUnaryBatchRequest<readonly [typeof nativeUnaryBody]> = nativeUnaryRouteBatchRequest;
+const nativeRouteUnaryBatchRequest: NativeRouteUnaryBatchRequest<readonly [typeof nativeUnaryBody]> = nativeExactBatchBody;
+const nativeUnaryRouteBatchRequest: NativeUnaryRouteBatchRequest<readonly [typeof nativeUnaryBody]> = nativeRouteUnaryBatchRequest;
 const nativeProtocolBatchRequest: NativeProtocolBatchRequest<readonly [typeof nativeUnaryBody]> = nativeExactBatchBody;
 const nativeRouteBatchResults: NativeRouteBatchResults<readonly [typeof nativeUnaryBody]> =
   [nativeRouteEnvelope];
-const nativeUnaryRouteBatchResults: NativeUnaryRouteBatchResults<
-  readonly [typeof nativeUnaryBody]
-> = nativeRouteBatchResults;
 const nativeRouteUnaryBatchResults: NativeRouteUnaryBatchResults<
   readonly [typeof nativeUnaryBody]
-> = nativeUnaryRouteBatchResults;
+> = nativeRouteBatchResults;
+const nativeUnaryRouteBatchResults: NativeUnaryRouteBatchResults<
+  readonly [typeof nativeUnaryBody]
+> = nativeRouteUnaryBatchResults;
 nativeRouteBatchRequest[0].input.id.toUpperCase();
 nativeRouteUnaryBatchRequest[0].input.id.toUpperCase();
 nativeRouteUnaryBatchResults[0].id.toUpperCase();
