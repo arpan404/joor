@@ -692,6 +692,13 @@ import {
   type UnaryRouteListenOptionsFor,
   type NodeUnaryRouteRpcRequestHandlerOptionsFor,
   type PendingRpcRequest,
+  type ContextlessProcedureHandler,
+  type ContextlessUnaryProcedureConfig,
+  type DefineProcedure,
+  type ErrorCode,
+  type ErrorDetails,
+  type ErrorSchemas,
+  type MaybePromise,
   type Procedure,
   type ProcedureError,
   type ProcedureErrorCode,
@@ -705,9 +712,14 @@ import {
   type ProcedureResponseHeaders,
   type ProcedureRequiresHeaders,
   type ProcedureRequiresResponseHeaders,
+  type ProcedureMeta,
   type ProcedureRuntime,
+  type ProcedureRuntimeValue,
   type ProcedureServices,
   type ProcedureSuccess,
+  type ProcedureTypes,
+  type StreamProcedureConfig,
+  type UnaryProcedureConfig,
   type SerializedJsonEnvelope,
   type RpcEnvelope,
   type RpcBatchRequest,
@@ -2560,12 +2572,122 @@ const rootSchemaMeta: SchemaMeta = { description: 'User payload' };
 rootSchemaMeta.description?.toUpperCase();
 const rootHeaderValueSchema: HeaderValueSchema = t.string().optional();
 rootHeaderValueSchema.kind.toUpperCase();
-const rootHeaderSchema: HeaderObjectSchema = t.object({
+const rootProcedureHeaderSchema = t.object({
   authorization: t.string().optional(),
   'x-route-mode': t.enum(['read', 'write']),
 });
+const rootHeaderSchema: HeaderObjectSchema = rootProcedureHeaderSchema;
 const authorizationHeaderSchema = rootHeaderSchema.shape['authorization'];
 authorizationHeaderSchema?.kind.toUpperCase();
+const rootConfigInputSchema = t.object({ id: t.string() });
+const rootConfigOutputSchema = t.object({ ok: t.boolean() });
+const rootConfigStreamSchema = t.object({ ok: t.boolean() });
+const rootMaybePromise: MaybePromise<string> = Promise.resolve('ok');
+rootMaybePromise.valueOf();
+const rootProcedureMeta: ProcedureMeta = {
+  kind: 'query',
+  cache: { ttl: '1m', key: ['id'] },
+};
+rootProcedureMeta.kind?.toUpperCase();
+const rootProcedureErrors = {
+  NOT_FOUND: t.object({ message: t.string() }),
+} satisfies ErrorSchemas;
+const rootProcedureErrorCode: ErrorCode<typeof rootProcedureErrors> =
+  'NOT_FOUND';
+rootProcedureErrorCode.toUpperCase();
+const rootProcedureErrorDetails: ErrorDetails<typeof rootProcedureErrors> = {
+  NOT_FOUND: { message: 'Missing' },
+};
+rootProcedureErrorDetails.NOT_FOUND.message.toUpperCase();
+const rootContextlessHandler: ContextlessProcedureHandler = () => ({
+  ok: true,
+});
+const rootRuntimeValue: ProcedureRuntimeValue = rootContextlessHandler({});
+const rootRuntimeValueIsPromise = rootRuntimeValue instanceof Promise;
+rootRuntimeValueIsPromise.valueOf();
+const rootDefineProcedure: DefineProcedure = defineProcedure;
+rootDefineProcedure.withContext<Services>();
+const rootContextlessProcedureConfig: ContextlessUnaryProcedureConfig<
+  typeof rootConfigInputSchema,
+  typeof rootConfigOutputSchema,
+  typeof rootProcedureErrors
+> = {
+  context: false,
+  input: rootConfigInputSchema,
+  output: rootConfigOutputSchema,
+  errors: rootProcedureErrors,
+  handler(input) {
+    input.id.toUpperCase();
+    return { ok: true };
+  },
+};
+rootContextlessProcedureConfig.input.kind.toUpperCase();
+const rootUnaryProcedureConfig: UnaryProcedureConfig<
+  typeof rootConfigInputSchema,
+  typeof rootConfigOutputSchema,
+  typeof rootProcedureErrors,
+  Services,
+  typeof rootProcedureHeaderSchema,
+  typeof rootProcedureHeaderSchema,
+  Record<string, never>
+> = {
+  input: rootConfigInputSchema,
+  headers: rootProcedureHeaderSchema,
+  responseHeaders: rootProcedureHeaderSchema,
+  output: rootConfigOutputSchema,
+  errors: rootProcedureErrors,
+  handler(ctx, input) {
+    ctx.services.users.findById(input.id).name.toUpperCase();
+    ctx.headers['x-route-mode'].toUpperCase();
+    return ctx.ok({ ok: true }, { 'x-route-mode': 'read' });
+  },
+};
+rootUnaryProcedureConfig.output.kind.toUpperCase();
+const rootStreamProcedureConfig: StreamProcedureConfig<
+  typeof rootConfigInputSchema,
+  typeof rootConfigStreamSchema,
+  typeof rootProcedureErrors,
+  Services,
+  typeof rootProcedureHeaderSchema,
+  Record<string, never>
+> = {
+  input: rootConfigInputSchema,
+  headers: rootProcedureHeaderSchema,
+  stream: rootConfigStreamSchema,
+  errors: rootProcedureErrors,
+  async handler(ctx, input) {
+    return (async function* () {
+      yield {
+        ok:
+          ctx.services.users.findById(input.id).id === input.id &&
+          ctx.headers['x-route-mode'] === 'read',
+      };
+    })();
+  },
+};
+rootStreamProcedureConfig.stream.kind.toUpperCase();
+const rootProcedureTypes: ProcedureTypes<
+  { id: string },
+  { ok: boolean },
+  never,
+  'NOT_FOUND',
+  { 'x-route-mode': 'read' | 'write' },
+  Record<string, never>,
+  Record<string, never>,
+  Services,
+  { NOT_FOUND: { message: string } }
+> = {
+  input: { id: '1' },
+  output: { ok: true },
+  stream: undefined as never,
+  errors: 'NOT_FOUND',
+  headers: { 'x-route-mode': 'read' },
+  responseHeaders: {},
+  auth: {},
+  services: rootPluginServices,
+  errorDetails: { NOT_FOUND: { message: 'Missing' } },
+};
+rootProcedureTypes.services.users.findById(rootProcedureTypes.input.id);
 // @ts-expect-error header schemas must be object schemas.
 const _wrongHeaderSchema: HeaderObjectSchema = t.string();
 // @ts-expect-error header schema values must be string-like HTTP values.

@@ -731,6 +731,17 @@ export type {
   RpcSuccess,
 } from './rpc/protocol.js';
 export type {
+  ContextlessUnaryProcedureConfig,
+  DefineProcedure,
+  StreamProcedureConfig,
+  UnaryProcedureConfig,
+} from './procedure/define.js';
+export type {
+  ContextlessProcedureHandler,
+  ErrorCode,
+  ErrorDetails,
+  ErrorSchemas,
+  MaybePromise,
   Procedure,
   ProcedureAuth,
   ProcedureError,
@@ -745,9 +756,11 @@ export type {
   ProcedureResult,
   ProcedureRequiresHeaders,
   ProcedureRequiresResponseHeaders,
+  ProcedureMeta,
   ProcedureRuntime,
   ProcedureRuntimeValue,
   ProcedureServices,
+  ProcedureTypes,
   RpcEnvelope,
   RpcError,
   StreamEvent,
