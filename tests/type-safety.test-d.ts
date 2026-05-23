@@ -129,6 +129,16 @@ import {
   type HandlerOptions,
   type JoorMiddleware,
   type JoorMiddlewareFor,
+  type RpcManifestStreamRouteHandlerHookContextFor,
+  type RpcManifestStreamRouteHandlerHooksFor,
+  type RpcManifestStreamRouteHandlerOptionsArgs,
+  type RpcManifestStreamRouteHandlerOptionsFor,
+  type RpcManifestStreamRouteMiddlewareFor,
+  type RpcManifestUnaryRouteHandlerHookContextFor,
+  type RpcManifestUnaryRouteHandlerHooksFor,
+  type RpcManifestUnaryRouteHandlerOptionsArgs,
+  type RpcManifestUnaryRouteHandlerOptionsFor,
+  type RpcManifestUnaryRouteMiddlewareFor,
   type JoorConfig,
   type JoorConfigFor,
   type JoorConfigContext,
@@ -519,6 +529,16 @@ import {
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
+  type RpcManifestStreamRouteHandlerHookContextFor as RpcSubpathManifestStreamRouteHandlerHookContextFor,
+  type RpcManifestStreamRouteHandlerHooksFor as RpcSubpathManifestStreamRouteHandlerHooksFor,
+  type RpcManifestStreamRouteHandlerOptionsArgs as RpcSubpathManifestStreamRouteHandlerOptionsArgs,
+  type RpcManifestStreamRouteHandlerOptionsFor as RpcSubpathManifestStreamRouteHandlerOptionsFor,
+  type RpcManifestStreamRouteMiddlewareFor as RpcSubpathManifestStreamRouteMiddlewareFor,
+  type RpcManifestUnaryRouteHandlerHookContextFor as RpcSubpathManifestUnaryRouteHandlerHookContextFor,
+  type RpcManifestUnaryRouteHandlerHooksFor as RpcSubpathManifestUnaryRouteHandlerHooksFor,
+  type RpcManifestUnaryRouteHandlerOptionsArgs as RpcSubpathManifestUnaryRouteHandlerOptionsArgs,
+  type RpcManifestUnaryRouteHandlerOptionsFor as RpcSubpathManifestUnaryRouteHandlerOptionsFor,
+  type RpcManifestUnaryRouteMiddlewareFor as RpcSubpathManifestUnaryRouteMiddlewareFor,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
@@ -3506,6 +3526,39 @@ const rpcSubpathExactManifestHandlerHookContext: RpcSubpathHandlerHookContextFor
   typeof manifestRouteRequest
 > = exactManifestHandlerHookContext;
 rpcSubpathExactManifestHandlerHookContext.body?.input.id.toUpperCase();
+const manifestUnaryRouteHandlerHookContext: RpcManifestUnaryRouteHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  services: rootPluginServices,
+  body: manifestUnaryRouteBody,
+};
+const manifestStreamRouteHandlerHookContext: RpcManifestStreamRouteHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  services: rootPluginServices,
+  body: manifestStreamRouteBody,
+};
+const rpcSubpathManifestUnaryRouteHandlerHookContext: RpcSubpathManifestUnaryRouteHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteHandlerHookContext;
+const rpcSubpathManifestStreamRouteHandlerHookContext: RpcSubpathManifestStreamRouteHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteHandlerHookContext;
+if (
+  manifestUnaryRouteHandlerHookContext.body !== undefined &&
+  'id' in manifestUnaryRouteHandlerHookContext.body
+) {
+  manifestUnaryRouteHandlerHookContext.body.input.valueOf();
+}
+manifestStreamRouteHandlerHookContext.body?.input.userId.toUpperCase();
+rpcSubpathManifestUnaryRouteHandlerHookContext.services.users
+  .findById('1')
+  .name.toUpperCase();
+rpcSubpathManifestStreamRouteHandlerHookContext.body?.input.userId.toUpperCase();
 const _wrongManifestHandlerHookContext: HandlerHookContextFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -3517,6 +3570,17 @@ const _wrongManifestHandlerHookContext: HandlerHookContextFor<
     input: { id: '1' },
   },
 };
+const _wrongManifestUnaryRouteHandlerHookContext: RpcManifestUnaryRouteHandlerHookContextFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  services: rootPluginServices,
+  // @ts-expect-error unary route hook contexts reject stream route bodies.
+  body: manifestStreamRouteBody,
+};
+_wrongManifestUnaryRouteHandlerHookContext.services.users
+  .findById('1')
+  .name.toUpperCase();
 const serviceAwareHandlerHooks: HandlerHooks<RootPluginServices> = {
   beforeRequest(_request, context) {
     context.services.users.findById('1').name.toUpperCase();
@@ -3585,6 +3649,42 @@ rpcSubpathExactManifestAwareHandlerHooks.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const manifestUnaryRouteHandlerHooks: RpcManifestUnaryRouteHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  beforeRequest(_request, context) {
+    if (context.body !== undefined && 'id' in context.body) {
+      context.body.input.valueOf();
+    }
+    return undefined;
+  },
+};
+const manifestStreamRouteHandlerHooks: RpcManifestStreamRouteHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  beforeRequest(_request, context) {
+    context.body?.input.userId.toUpperCase();
+    return undefined;
+  },
+};
+const rpcSubpathManifestUnaryRouteHandlerHooks: RpcSubpathManifestUnaryRouteHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteHandlerHooks;
+const rpcSubpathManifestStreamRouteHandlerHooks: RpcSubpathManifestStreamRouteHandlerHooksFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteHandlerHooks;
+rpcSubpathManifestUnaryRouteHandlerHooks.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+rpcSubpathManifestStreamRouteHandlerHooks.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const manifestAwareMiddleware: JoorMiddlewareFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -3625,6 +3725,38 @@ const rpcSubpathExactManifestAwareMiddleware: RpcSubpathJoorMiddlewareFor<
   typeof manifestRouteRequest
 > = exactManifestAwareMiddleware;
 rpcSubpathExactManifestAwareMiddleware.name.toUpperCase();
+const manifestUnaryRouteMiddleware: RpcManifestUnaryRouteMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  name: 'unary-audit',
+  beforeRequest(_request, context) {
+    if (context.body !== undefined && 'id' in context.body) {
+      context.body.id.toUpperCase();
+    }
+    return undefined;
+  },
+};
+const manifestStreamRouteMiddleware: RpcManifestStreamRouteMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  name: 'stream-audit',
+  beforeRequest(_request, context) {
+    context.body?.input.userId.toUpperCase();
+    return undefined;
+  },
+};
+const rpcSubpathManifestUnaryRouteMiddleware: RpcSubpathManifestUnaryRouteMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteMiddleware;
+const rpcSubpathManifestStreamRouteMiddleware: RpcSubpathManifestStreamRouteMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteMiddleware;
+rpcSubpathManifestUnaryRouteMiddleware.name.toUpperCase();
+rpcSubpathManifestStreamRouteMiddleware.name.toUpperCase();
 const handlerOptionsWithHooks: HandlerOptions<readonly [typeof usersPlugin]> = {
   path: '/rpc',
   plugins: [usersPlugin] as const,
@@ -3685,6 +3817,40 @@ exactServiceAwareHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const manifestUnaryRouteHandlerOptions: RpcManifestUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: manifestUnaryRouteHandlerHooks,
+  middleware: [manifestUnaryRouteMiddleware],
+};
+const manifestStreamRouteHandlerOptions: RpcManifestStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: manifestStreamRouteHandlerHooks,
+  middleware: [manifestStreamRouteMiddleware],
+};
+const rpcSubpathManifestUnaryRouteHandlerOptions: RpcSubpathManifestUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteHandlerOptions;
+const rpcSubpathManifestStreamRouteHandlerOptions: RpcSubpathManifestStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteHandlerOptions;
+rpcSubpathManifestUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+rpcSubpathManifestStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const exactHandlerOptionsArgsFor: HandlerOptionsArgsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -3704,6 +3870,30 @@ const exactHandlerOptionsArgs: HandlerOptionsArgs<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = rpcSubpathExactHandlerOptionsArgsFor;
+const manifestUnaryRouteHandlerOptionsArgs: RpcManifestUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [manifestUnaryRouteHandlerOptions];
+const manifestStreamRouteHandlerOptionsArgs: RpcManifestStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [manifestStreamRouteHandlerOptions];
+const rpcSubpathManifestUnaryRouteHandlerOptionsArgs: RpcSubpathManifestUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteHandlerOptionsArgs;
+const rpcSubpathManifestStreamRouteHandlerOptionsArgs: RpcSubpathManifestStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteHandlerOptionsArgs;
+rpcSubpathManifestUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+rpcSubpathManifestStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const rpcSubpathExactHandlerOptionsArgs: RpcSubpathHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin],
