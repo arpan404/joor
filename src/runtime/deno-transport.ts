@@ -55,6 +55,22 @@ export type DenoServeOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DenoUnaryRouteServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoStreamRouteServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
+
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type DenoTransportBodyResultFor<
   TManifest extends JoorManifest,

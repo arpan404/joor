@@ -4,6 +4,8 @@ import type {
   HandlerOptionsArgs,
   HandlerOptionsFor,
   RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
@@ -25,12 +27,44 @@ export type NextRouteHandlersOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type NextUnaryRouteHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextStreamRouteHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
 export type NextHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = NextRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextUnaryRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NextStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
 
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,

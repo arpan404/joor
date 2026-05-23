@@ -66,9 +66,13 @@ export type { JoorContext } from './context/context.js';
 export type { JoorPlugin, PluginServices } from './context/plugin.js';
 export type {
   DefineConfigFor,
+  DefineStreamRouteConfigFor,
+  DefineUnaryRouteConfigFor,
   JoorConfig,
   JoorConfigFor,
   JoorConfigContext,
+  JoorStreamRouteConfigFor,
+  JoorUnaryRouteConfigFor,
 } from './config.js';
 export type {
   JoorManifest,
@@ -445,6 +449,7 @@ export type {
   BunFetchHandler,
   BunRpcRequestHandler,
   BunServer,
+  BunStreamRouteServeOptionsFor,
   BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
@@ -454,11 +459,14 @@ export type {
   BunStreamRouteTransportBodyResultFor,
   BunStreamRouteTransportBodyResultHandlerFor,
   BunTransportRequestHandler,
+  BunUnaryRouteServeOptionsFor,
   BunUnaryRouteTransportBodyResultFor,
   BunUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/bun.js';
 export type {
   CloudflareFetchHandler,
+  CloudflareStreamRouteWorkerOptionsFor,
+  CloudflareUnaryRouteWorkerOptionsFor,
   CloudflareWorker,
   CloudflareWorkerOptionsFor,
 } from './runtime/cloudflare.js';
@@ -505,6 +513,7 @@ export type {
   DenoFetchHandler,
   DenoRpcRequestHandler,
   DenoServer,
+  DenoStreamRouteServeOptionsFor,
   DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
@@ -514,41 +523,54 @@ export type {
   DenoStreamRouteTransportBodyResultFor,
   DenoStreamRouteTransportBodyResultHandlerFor,
   DenoTransportRequestHandler,
+  DenoUnaryRouteServeOptionsFor,
   DenoUnaryRouteTransportBodyResultFor,
   DenoUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
 export type {
   JoorFetchHandler,
   JoorHandlerOptionsFor,
+  JoorStreamRouteHandlerOptionsFor,
+  JoorUnaryRouteHandlerOptionsFor,
 } from './runtime/fetch.js';
 export type {
   NetlifyFetchHandler,
   NetlifyFetchOptionsFor,
+  NetlifyStreamRouteFetchOptionsFor,
+  NetlifyUnaryRouteFetchOptionsFor,
 } from './runtime/netlify.js';
 export type {
   NextHandler,
   NextHandlerOptionsFor,
+  NextStreamRouteHandlerOptionsFor,
+  NextStreamRouteHandlersOptionsFor,
   NextRouteHandler,
   NextRouteHandlers,
   NextRouteHandlersOptionsFor,
+  NextUnaryRouteHandlerOptionsFor,
+  NextUnaryRouteHandlersOptionsFor,
 } from './runtime/next.js';
 export type {
   ListenOptionsFor,
   ListenOptions,
   NodeServer,
   NodeRpcRequestHandler,
+  StreamRouteListenOptionsFor,
   NodeTransportBodyResult,
   NodeTransportBodyResultFor,
   NodeTransportBodyResultHandler,
   NodeTransportBodyResultHandlerFor,
   NodeStreamRouteTransportBodyResultFor,
   NodeStreamRouteTransportBodyResultHandlerFor,
+  UnaryRouteListenOptionsFor,
   NodeUnaryRouteTransportBodyResultFor,
   NodeUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/node.js';
 export type {
   VercelFetchHandler,
   VercelFetchOptionsFor,
+  VercelStreamRouteFetchOptionsFor,
+  VercelUnaryRouteFetchOptionsFor,
 } from './runtime/vercel.js';
 export type {
   SerializedJsonEnvelope,

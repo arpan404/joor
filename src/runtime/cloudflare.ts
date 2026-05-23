@@ -4,6 +4,8 @@ import type {
   HandlerOptionsArgs,
   HandlerOptionsFor,
   RpcManifestBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
@@ -20,6 +22,22 @@ export type CloudflareWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type CloudflareUnaryRouteWorkerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type CloudflareStreamRouteWorkerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
 
 export function createCloudflareWorker<
   TManifest extends JoorManifest,

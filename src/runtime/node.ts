@@ -58,6 +58,22 @@ export type ListenOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = ListenOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type UnaryRouteListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = ListenOptionsFor<TManifest, TPlugins, TBody>;
+
+export type StreamRouteListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = ListenOptionsFor<TManifest, TPlugins, TBody>;
+
 export type NodeRpcRequestHandler = (
   incoming: IncomingMessage,
   outgoing: ServerResponse<IncomingMessage>
