@@ -63,10 +63,15 @@ import {
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
+  appendJsonStringHeaders,
+  createJsonHeaderRecord,
+  hasInvalidHeaderValue,
   isBodySizeLimitError,
   isRpcEnvelopeArray,
   isJsonObject,
   isSerializedJsonEnvelope,
+  jsonContentHeaders,
+  jsonOkResponseInit,
   listen,
   normalizeMaxBodyBytes,
   parseJson,
@@ -76,6 +81,8 @@ import {
   serveDeno,
   t,
   toJsonSchema,
+  rpcEnvelopeToResponse,
+  serializedEnvelopeToResponse,
   transportResultToResponse,
   validate,
   type ArrayChain,
@@ -1256,12 +1263,19 @@ import {
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  appendJsonStringHeaders as runtimeSubpathAppendJsonStringHeaders,
+  createJsonHeaderRecord as runtimeSubpathCreateJsonHeaderRecord,
+  hasInvalidHeaderValue as runtimeSubpathHasInvalidHeaderValue,
   isBodySizeLimitError as isRuntimeSubpathBodySizeLimitError,
   isRpcEnvelopeArray as isRuntimeSubpathRpcEnvelopeArray,
   isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
+  jsonContentHeaders as runtimeSubpathJsonContentHeaders,
+  jsonOkResponseInit as runtimeSubpathJsonOkResponseInit,
   normalizeMaxBodyBytes as normalizeRuntimeSubpathMaxBodyBytes,
+  rpcEnvelopeToResponse as runtimeSubpathRpcEnvelopeToResponse,
   readJsonRequestBody as readRuntimeSubpathJsonRequestBody,
   readJsonRequestBodyWithLimit as readRuntimeSubpathJsonRequestBodyWithLimit,
+  serializedEnvelopeToResponse as runtimeSubpathSerializedEnvelopeToResponse,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
@@ -1509,7 +1523,14 @@ import {
   readJsonRequestBodyWithLimit as readRuntimeBodySubpathJsonRequestBodyWithLimit,
 } from '../src/runtime/body.js';
 import {
+  appendJsonStringHeaders as runtimeResponseSubpathAppendJsonStringHeaders,
+  createJsonHeaderRecord as runtimeResponseSubpathCreateJsonHeaderRecord,
+  hasInvalidHeaderValue as runtimeResponseSubpathHasInvalidHeaderValue,
   isSerializedJsonEnvelope as isRuntimeResponseSubpathSerializedJsonEnvelope,
+  jsonContentHeaders as runtimeResponseSubpathJsonContentHeaders,
+  jsonOkResponseInit as runtimeResponseSubpathJsonOkResponseInit,
+  rpcEnvelopeToResponse as runtimeResponseSubpathRpcEnvelopeToResponse,
+  serializedEnvelopeToResponse as runtimeResponseSubpathSerializedEnvelopeToResponse,
   transportResultToResponse as runtimeResponseSubpathTransportResultToResponse,
   type SerializedJsonEnvelope as RuntimeResponseSubpathSerializedJsonEnvelope,
   type TransportBodyResult as RuntimeResponseSubpathTransportBodyResult,
@@ -7914,6 +7935,52 @@ if (
 ) {
   runtimeResponseSubpathExactTransportBodyResultFor.data.name.toUpperCase();
 }
+const jsonHeaderRecord = createJsonHeaderRecord({
+  'cache-control': 'private',
+});
+const runtimeSubpathJsonHeaderRecord = runtimeSubpathCreateJsonHeaderRecord({
+  etag: '"v1"',
+});
+const runtimeResponseSubpathJsonHeaderRecord =
+  runtimeResponseSubpathCreateJsonHeaderRecord({
+    'x-ignored': 'value',
+  });
+appendJsonStringHeaders(jsonHeaderRecord, { etag: '"v2"' });
+runtimeSubpathAppendJsonStringHeaders(runtimeSubpathJsonHeaderRecord, {
+  'cache-control': 'private',
+});
+runtimeResponseSubpathAppendJsonStringHeaders(
+  runtimeResponseSubpathJsonHeaderRecord,
+  { etag: '"v3"' }
+);
+jsonHeaderRecord['content-type']?.toUpperCase();
+runtimeSubpathJsonHeaderRecord['etag']?.toUpperCase();
+runtimeResponseSubpathJsonHeaderRecord['x-ignored']?.toUpperCase();
+hasInvalidHeaderValue('ok').valueOf();
+runtimeSubpathHasInvalidHeaderValue('ok').valueOf();
+runtimeResponseSubpathHasInvalidHeaderValue('ok').valueOf();
+jsonContentHeaders['content-type'].toUpperCase();
+runtimeSubpathJsonContentHeaders['content-type'].toUpperCase();
+runtimeResponseSubpathJsonContentHeaders['content-type'].toUpperCase();
+jsonOkResponseInit.headers?.valueOf();
+runtimeSubpathJsonOkResponseInit.headers?.valueOf();
+runtimeResponseSubpathJsonOkResponseInit.headers?.valueOf();
+rpcEnvelopeToResponse(manifestRouteEnvelope).headers.get('content-type');
+runtimeSubpathRpcEnvelopeToResponse(manifestRouteEnvelope).headers.get(
+  'content-type'
+);
+runtimeResponseSubpathRpcEnvelopeToResponse(manifestRouteEnvelope).headers.get(
+  'content-type'
+);
+serializedEnvelopeToResponse(serializedJsonEnvelope).headers.get(
+  'content-type'
+);
+runtimeSubpathSerializedEnvelopeToResponse(
+  runtimeSubpathSerializedJsonEnvelope
+).headers.get('content-type');
+runtimeResponseSubpathSerializedEnvelopeToResponse(
+  runtimeResponseSubpathSerializedJsonEnvelope
+).headers.get('content-type');
 transportResultToResponse(manifestRouteEnvelope).headers.get('content-type');
 runtimeSubpathTransportResultToResponse(
   runtimeSubpathSerializedJsonEnvelope

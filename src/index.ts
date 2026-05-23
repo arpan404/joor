@@ -81,8 +81,15 @@ export {
   listen,
 } from './runtime/node.js';
 export {
+  appendJsonStringHeaders,
+  createJsonHeaderRecord,
+  hasInvalidHeaderValue,
   isRpcEnvelopeArray,
   isSerializedJsonEnvelope,
+  jsonContentHeaders,
+  jsonOkResponseInit,
+  rpcEnvelopeToResponse,
+  serializedEnvelopeToResponse,
   transportResultToResponse,
 } from './runtime/response.js';
 export { createVercelFetch } from './runtime/vercel.js';

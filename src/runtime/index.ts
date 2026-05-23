@@ -33,8 +33,15 @@ export * from './netlify.js';
 export * from './next.js';
 export * from './node.js';
 export {
+  appendJsonStringHeaders,
+  createJsonHeaderRecord,
+  hasInvalidHeaderValue,
   isRpcEnvelopeArray,
   isSerializedJsonEnvelope,
+  jsonContentHeaders,
+  jsonOkResponseInit,
+  rpcEnvelopeToResponse,
+  serializedEnvelopeToResponse,
   transportResultToResponse,
 } from './response.js';
 export type {
