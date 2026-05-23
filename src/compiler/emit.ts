@@ -2857,27 +2857,6 @@ export type RouteRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
 ) => RouteRequest<TId>;
-const createManifestRouteProtocolRequest =
-  createTransportRouteProtocolRequest as unknown as (
-    manifest: Manifest,
-    id: RouteId,
-    input: unknown,
-    options?: ProtocolRequestOptions
-  ) => unknown;
-const createManifestRouteUnaryProtocolRequest =
-  createTransportRouteUnaryProtocolRequest as unknown as (
-    manifest: Manifest,
-    id: RouteUnaryId,
-    input: unknown,
-    options?: ProtocolRequestOptions
-  ) => unknown;
-const createManifestRouteStreamProtocolRequest =
-  createTransportRouteStreamProtocolRequest as unknown as (
-    manifest: Manifest,
-    id: RouteStreamId,
-    input: unknown,
-    options?: ProtocolRequestOptions
-  ) => unknown;
 const createManifestRouteRequest = createTransportRouteRequest as unknown as (
   manifest: Manifest,
   id: RouteUnaryId,
@@ -2902,7 +2881,7 @@ export const createRouteProtocolRequest: RouteProtocolRequestBuilder = <
   input: RouteInput<TId>,
   options?: ProtocolRequestOptions
 ): RouteProtocolRequest<TId> =>
-  createManifestRouteProtocolRequest(
+  createTransportRouteProtocolRequest<Manifest, TId>(
     manifest,
     id,
     input,
@@ -2915,7 +2894,7 @@ export const createRouteUnaryProtocolRequest: RouteUnaryProtocolRequestBuilder =
   input: RouteUnaryInput<TId>,
   options?: ProtocolRequestOptions
 ): RouteUnaryProtocolRequest<TId> =>
-  createManifestRouteUnaryProtocolRequest(
+  createTransportRouteUnaryProtocolRequest<Manifest, TId>(
     manifest,
     id,
     input,
@@ -2930,7 +2909,7 @@ export const createRouteStreamProtocolRequest: RouteStreamProtocolRequestBuilder
   input: RouteStreamInput<TId>,
   options?: ProtocolRequestOptions
 ): RouteStreamProtocolRequest<TId> =>
-  createManifestRouteStreamProtocolRequest(
+  createTransportRouteStreamProtocolRequest<Manifest, TId>(
     manifest,
     id,
     input,
