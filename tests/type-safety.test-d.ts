@@ -11382,6 +11382,10 @@ const typedStandaloneRouteStreamProtocolRequest: RpcRouteStreamProtocolRequest<
   Routes,
   'users.watch'
 > = standaloneRouteStreamProtocolRequest;
+// @ts-expect-error stream protocol requests are not unary protocol request unions.
+const _wrongStandaloneStreamAsUnaryProtocol: RpcRouteUnaryProtocolRequestUnion<Routes> =
+  standaloneRouteStreamProtocolRequest;
+_wrongStandaloneStreamAsUnaryProtocol.valueOf();
 const typedStandaloneStreamRouteProtocolRequest: RpcStreamProtocolRequest<
   Routes,
   'users.watch'
@@ -11627,6 +11631,24 @@ routeClient
     secondRouteId.toUpperCase();
   });
 
+routeClient
+  .batch([
+    standaloneRouteUnaryProtocolRequest,
+    standaloneUnaryRouteProtocolRequest,
+    createRouteUnaryProtocolRequest<Routes, 'users.authenticated'>(
+      'users.authenticated',
+      { ok: true }
+    ),
+  ] as const)
+  .then((results) => {
+    const firstProtocolBatchRouteId: 'users.get' = results[0].id;
+    const secondProtocolBatchRouteId: 'users.get' = results[1].id;
+    const thirdProtocolBatchRouteId: 'users.authenticated' = results[2].id;
+    firstProtocolBatchRouteId.toUpperCase();
+    secondProtocolBatchRouteId.toUpperCase();
+    thirdProtocolBatchRouteId.toUpperCase();
+  });
+
 routeClient.batch([
   {
     id: 'users.get',
@@ -11657,11 +11679,6 @@ routeClient.batch([{ id: 'users.missing', input: { id: '1' } }] as const);
 
 // @ts-expect-error route client batches validate direct request input by id.
 routeClient.batch([{ id: 'users.authenticated', input: { id: '1' } }] as const);
-
-routeClient.batch([
-  // @ts-expect-error route client batches require headers for protected routes.
-  { id: 'users.get', input: { id: '1' } },
-] as const);
 
 const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: true,

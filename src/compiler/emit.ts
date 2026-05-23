@@ -2693,9 +2693,9 @@ export type UnaryRouteRequest<TId extends RouteUnaryId = RouteUnaryId> = RouteUn
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
 export type RouteUnaryRequestUnion = JoorManifestRouteUnaryRequestUnion<Manifest>;
 export type UnaryRouteRequestUnion = RouteUnaryRequestUnion;
-export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[] = readonly RouteRequestUnion[]> = TRequests;
-export type RouteUnaryBatchRequest<TRequests extends readonly RouteUnaryRequestUnion[] = readonly RouteUnaryRequestUnion[]> = JoorManifestRouteUnaryBatchRequest<Manifest, TRequests>;
-export type UnaryRouteBatchRequest<TRequests extends readonly RouteUnaryRequestUnion[] = readonly RouteUnaryRequestUnion[]> = RouteUnaryBatchRequest<TRequests>;
+export type RouteBatchRequest<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[] = readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
+export type RouteUnaryBatchRequest<TRequests extends readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[] = readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteUnaryBatchRequest<Manifest, TRequests>;
+export type UnaryRouteBatchRequest<TRequests extends readonly (UnaryRouteRequestUnion | UnaryRouteProtocolRequestUnion)[] = readonly (UnaryRouteRequestUnion | UnaryRouteProtocolRequestUnion)[]> = RouteUnaryBatchRequest<TRequests>;
 export type RouteBatchResults<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[] = readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteUnaryBatchResults<TRequests extends readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[] = readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteUnaryBatchResults<Manifest, TRequests>;
 export type UnaryRouteBatchResults<TRequests extends readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[] = readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[]> = RouteUnaryBatchResults<TRequests>;

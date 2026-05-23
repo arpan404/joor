@@ -1817,12 +1817,31 @@ configured.batch([request] as const, batchOptions).then((results) => {
   const defaultUnaryResult = defaultUnaryResults[0];
   if (defaultUnaryResult) defaultUnaryResult.id.toUpperCase();
 });
+configured
+  .batch([builtRouteUnaryProtocolRequest] as const, batchOptions)
+  .then((results) => {
+    const exact: RouteBatchResults<
+      readonly [typeof builtRouteUnaryProtocolRequest]
+    > = results;
+    const exactUnary: UnaryRouteBatchResults<
+      readonly [typeof builtRouteUnaryProtocolRequest]
+    > = exact;
+    const firstId: 'users.get' = exact[0].id;
+    firstId.toUpperCase();
+    if (exactUnary[0].ok) exactUnary[0].data.name.toUpperCase();
+  });
 batchFunction([request] as const).then((results) => {
   const exact: RouteBatchResults<readonly [typeof request]> = results;
   const defaultResults: RouteBatchResults = exact;
   if (exact[0].ok) exact[0].data.name.toUpperCase();
   const defaultResult = defaultResults[0];
   if (defaultResult) defaultResult.id.toUpperCase();
+});
+batchFunction([builtRouteUnaryProtocolRequest] as const).then((results) => {
+  const exact: RouteBatchResults<
+    readonly [typeof builtRouteUnaryProtocolRequest]
+  > = results;
+  if (exact[0].ok) exact[0].data.name.toUpperCase();
 });
 type _WrongRouteBatchResults = RouteBatchResults<
   // @ts-expect-error generated route batch result helpers reject invalid request tuples.

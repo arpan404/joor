@@ -517,6 +517,14 @@ export type RpcRouteUnaryResultUnion<TRoutes extends RpcRouteMap> =
 export type RpcUnaryRouteResultUnion<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryResultUnion<TRoutes>;
 
+declare const rpcRouteProtocolRequestKind: unique symbol;
+
+type RpcRouteProtocolRequestKind<TProcedure> = [
+  StreamEvent<TProcedure>,
+] extends [never]
+  ? { readonly [rpcRouteProtocolRequestKind]?: 'unary' }
+  : { readonly [rpcRouteProtocolRequestKind]?: 'stream' };
+
 type RpcRouteProtocolRequestFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
@@ -524,7 +532,7 @@ type RpcRouteProtocolRequestFor<
   id: TId;
   input: RpcRouteInput<TRoutes, TId> & JsonValue;
   traceId?: string;
-};
+} & RpcRouteProtocolRequestKind<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
@@ -954,16 +962,21 @@ type RpcRouteBatchResultFor<
     : never
   : never;
 
-export type RpcRouteBatchResults<
+type RpcRouteBatchResultsFor<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[] =
-    readonly RpcRouteBatchResultRequest<TRoutes>[],
+  TRequests extends readonly unknown[],
 > = {
   [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
     TRoutes,
     TRequests[TIndex]
   >;
 };
+
+export type RpcRouteBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly RpcRouteBatchResultRequest<TRoutes>[] =
+    readonly RpcRouteBatchResultRequest<TRoutes>[],
+> = RpcRouteBatchResultsFor<TRoutes, TRequests>;
 
 export type RpcRouteUnaryBatchResults<
   TRoutes extends RpcRouteMap,
@@ -1208,7 +1221,9 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ): RpcRouteRequest<TRoutes, TId>;
-  batch<const TRequests extends readonly RpcRouteRequestUnion<TRoutes>[]>(
+  batch<
+    const TRequests extends readonly [...RpcRouteBatchResultRequest<TRoutes>[]],
+  >(
     requests: TRequests,
     options?: ClientBatchOptions
   ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;

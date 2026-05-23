@@ -114,6 +114,25 @@ describe('client', () => {
     expect(manifestRouteRequest).toEqual(routeRequest);
   });
 
+  it('batches standalone protocol requests', async () => {
+    const handler = createJoorHandler(
+      { procedures: { protected: getUser } },
+      config
+    );
+    const client = createClient<{ protected: typeof getUser }>({
+      url: 'http://localhost/rpc',
+      fetch: handler,
+    });
+    const request = createRouteUnaryProtocolRequest<
+      { protected: typeof getUser },
+      'protected'
+    >('protected', { id: '550e8400-e29b-41d4-a716-446655440000' });
+
+    const [result] = await client.batch([request] as const);
+
+    expect(result?.ok).toBe(true);
+  });
+
   it('calls a local fetch handler', async () => {
     const handler = createJoorHandler(
       { procedures: { 'users.get': getUser } },
