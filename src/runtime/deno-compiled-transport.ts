@@ -47,6 +47,16 @@ export type DenoCompiledStreamRouteTransportBodyResultFor<
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
 > = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
+export type DenoCompiledRouteUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoCompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+export type DenoCompiledRouteStreamTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoCompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,
@@ -74,6 +84,14 @@ export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   request: ContextRequestSource,
   body: TBody
 ) => Promise<DenoCompiledStreamRouteTransportBodyResultFor<TManifest, TBody>>;
+
+export type DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoCompiledUnaryRouteTransportBodyResultHandlerFor<TManifest>;
+
+export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoCompiledStreamRouteTransportBodyResultHandlerFor<TManifest>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

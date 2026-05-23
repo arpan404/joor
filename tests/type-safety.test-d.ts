@@ -101,6 +101,10 @@ import {
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
+  type CompiledRpcRouteStreamBodyResultHandlerFor as RootCompiledRpcRouteStreamBodyResultHandlerFor,
+  type CompiledRpcRouteStreamTransportBodyResultHandlerFor as RootCompiledRpcRouteStreamTransportBodyResultHandlerFor,
+  type CompiledRpcRouteUnaryBodyResultHandlerFor as RootCompiledRpcRouteUnaryBodyResultHandlerFor,
+  type CompiledRpcRouteUnaryTransportBodyResultHandlerFor as RootCompiledRpcRouteUnaryTransportBodyResultHandlerFor,
   type CompiledRpcStreamRouteBodyResultHandlerFor as RootCompiledRpcStreamRouteBodyResultHandlerFor,
   type CompiledRpcStreamRouteTransportBodyResultHandlerFor as RootCompiledRpcStreamRouteTransportBodyResultHandlerFor,
   type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
@@ -109,6 +113,10 @@ import {
   type CompiledRpcUnaryRouteTransportBodyResultHandlerFor as RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
+  type CompiledRouteStreamBodyResultFor as RootCompiledRouteStreamBodyResultFor,
+  type CompiledRouteStreamTransportBodyResultFor as RootCompiledRouteStreamTransportBodyResultFor,
+  type CompiledRouteUnaryBodyResultFor as RootCompiledRouteUnaryBodyResultFor,
+  type CompiledRouteUnaryTransportBodyResultFor as RootCompiledRouteUnaryTransportBodyResultFor,
   type CompiledStreamRouteBodyResultFor as RootCompiledStreamRouteBodyResultFor,
   type CompiledStreamRouteTransportBodyResultFor as RootCompiledStreamRouteTransportBodyResultFor,
   type CompiledTransportBodyResultFor as RootCompiledTransportBodyResultFor,
@@ -118,6 +126,10 @@ import {
   type DenoCompiledTransportBodyResultFor as RootDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RootDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportBodyResultFor as RootDenoCompiledRouteStreamTransportBodyResultFor,
+  type DenoCompiledRouteStreamTransportBodyResultHandlerFor as RootDenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportBodyResultFor as RootDenoCompiledRouteUnaryTransportBodyResultFor,
+  type DenoCompiledRouteUnaryTransportBodyResultHandlerFor as RootDenoCompiledRouteUnaryTransportBodyResultHandlerFor,
   type DenoCompiledStreamRouteTransportBodyResultFor as RootDenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor as RootDenoCompiledStreamRouteTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
@@ -800,6 +812,10 @@ import {
   type DenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportBodyResultFor,
+  type DenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportBodyResultFor,
+  type DenoCompiledRouteUnaryTransportBodyResultHandlerFor,
   type DenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler,
@@ -828,6 +844,10 @@ import type {
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
+  CompiledRpcRouteStreamBodyResultHandlerFor,
+  CompiledRpcRouteStreamTransportBodyResultHandlerFor,
+  CompiledRpcRouteUnaryBodyResultHandlerFor,
+  CompiledRpcRouteUnaryTransportBodyResultHandlerFor,
   CompiledRpcStreamRouteBodyResultHandlerFor,
   CompiledRpcStreamRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
@@ -836,6 +856,10 @@ import type {
   CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
+  CompiledRouteStreamBodyResultFor,
+  CompiledRouteStreamTransportBodyResultFor,
+  CompiledRouteUnaryBodyResultFor,
+  CompiledRouteUnaryTransportBodyResultFor,
   CompiledStreamRouteBodyResultFor,
   CompiledStreamRouteTransportBodyResultFor,
   CompiledTransportBodyResultFor,
@@ -892,6 +916,10 @@ import {
   type DenoCompiledTransportBodyResultFor as RuntimeSubpathDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RuntimeSubpathDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportBodyResultFor as RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultFor,
+  type DenoCompiledRouteStreamTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportBodyResultFor as RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultFor,
+  type DenoCompiledRouteUnaryTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultHandlerFor,
   type DenoCompiledStreamRouteTransportBodyResultFor as RuntimeSubpathDenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledStreamRouteTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
@@ -5600,6 +5628,14 @@ const denoCompiledStreamRouteTransportResultFor: DenoCompiledStreamRouteTranspor
   typeof manifest,
   typeof manifestStreamRouteBody
 > = standaloneDenoStreamRouteTransportResultFor;
+const denoCompiledRouteUnaryTransportResultFor: DenoCompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = denoCompiledUnaryRouteTransportResultFor;
+const denoCompiledRouteStreamTransportResultFor: DenoCompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = denoCompiledStreamRouteTransportResultFor;
 const rootDenoCompiledUnaryRouteTransportResultFor: RootDenoCompiledUnaryRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
@@ -5608,8 +5644,18 @@ const rootDenoCompiledStreamRouteTransportResultFor: RootDenoCompiledStreamRoute
   typeof manifest,
   typeof manifestStreamRouteBody
 > = denoCompiledStreamRouteTransportResultFor;
+const rootDenoCompiledRouteUnaryTransportResultFor: RootDenoCompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = denoCompiledRouteUnaryTransportResultFor;
+const rootDenoCompiledRouteStreamTransportResultFor: RootDenoCompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = denoCompiledRouteStreamTransportResultFor;
 rootDenoCompiledUnaryRouteTransportResultFor.valueOf();
 rootDenoCompiledStreamRouteTransportResultFor.valueOf();
+rootDenoCompiledRouteUnaryTransportResultFor.valueOf();
+rootDenoCompiledRouteStreamTransportResultFor.valueOf();
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
 const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
@@ -5857,6 +5903,12 @@ const manifestCompiledUnaryTransportHandler: CompiledRpcUnaryRouteTransportBodyR
 const rootManifestCompiledUnaryTransportHandler: RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledUnaryTransportHandler;
+const manifestCompiledRouteUnaryTransportHandler: CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledUnaryTransportHandler;
+const rootManifestCompiledRouteUnaryTransportHandler: RootCompiledRpcRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledRouteUnaryTransportHandler;
 const manifestCompiledStreamTransportHandler: CompiledRpcStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
@@ -5866,6 +5918,12 @@ const manifestCompiledStreamTransportHandler: CompiledRpcStreamRouteTransportBod
 const rootManifestCompiledStreamTransportHandler: RootCompiledRpcStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledStreamTransportHandler;
+const manifestCompiledRouteStreamTransportHandler: CompiledRpcRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledStreamTransportHandler;
+const rootManifestCompiledRouteStreamTransportHandler: RootCompiledRpcRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledRouteStreamTransportHandler;
 const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
@@ -5875,6 +5933,12 @@ const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFo
 const rootManifestCompiledUnaryBodyHandler: RootCompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledUnaryBodyHandler;
+const manifestCompiledRouteUnaryBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledUnaryBodyHandler;
+const rootManifestCompiledRouteUnaryBodyHandler: RootCompiledRpcRouteUnaryBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledRouteUnaryBodyHandler;
 const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
@@ -5884,6 +5948,12 @@ const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandler
 const rootManifestCompiledStreamBodyHandler: RootCompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledStreamBodyHandler;
+const manifestCompiledRouteStreamBodyHandler: CompiledRpcRouteStreamBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledStreamBodyHandler;
+const rootManifestCompiledRouteStreamBodyHandler: RootCompiledRpcRouteStreamBodyResultHandlerFor<
+  typeof manifest
+> = manifestCompiledRouteStreamBodyHandler;
 const compiledUnaryRouteTransportResultFor: CompiledUnaryRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
@@ -5900,6 +5970,22 @@ const compiledStreamRouteBodyResultFor: CompiledStreamRouteBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
 > = compiledStreamRouteTransportResultFor;
+const compiledRouteUnaryTransportResultFor: CompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledUnaryRouteTransportResultFor;
+const compiledRouteStreamTransportResultFor: CompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledStreamRouteTransportResultFor;
+const compiledRouteUnaryBodyResultFor: CompiledRouteUnaryBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledUnaryRouteBodyResultFor;
+const compiledRouteStreamBodyResultFor: CompiledRouteStreamBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledStreamRouteBodyResultFor;
 const rootCompiledUnaryRouteTransportResultFor: RootCompiledUnaryRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
@@ -5916,10 +6002,30 @@ const rootCompiledStreamRouteBodyResultFor: RootCompiledStreamRouteBodyResultFor
   typeof manifest,
   typeof manifestStreamRouteBody
 > = compiledStreamRouteBodyResultFor;
+const rootCompiledRouteUnaryTransportResultFor: RootCompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledRouteUnaryTransportResultFor;
+const rootCompiledRouteStreamTransportResultFor: RootCompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledRouteStreamTransportResultFor;
+const rootCompiledRouteUnaryBodyResultFor: RootCompiledRouteUnaryBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledRouteUnaryBodyResultFor;
+const rootCompiledRouteStreamBodyResultFor: RootCompiledRouteStreamBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledRouteStreamBodyResultFor;
 rootCompiledUnaryRouteTransportResultFor.valueOf();
 rootCompiledStreamRouteTransportResultFor.valueOf();
 rootCompiledUnaryRouteBodyResultFor.valueOf();
 rootCompiledStreamRouteBodyResultFor.valueOf();
+rootCompiledRouteUnaryTransportResultFor.valueOf();
+rootCompiledRouteStreamTransportResultFor.valueOf();
+rootCompiledRouteUnaryBodyResultFor.valueOf();
+rootCompiledRouteStreamBodyResultFor.valueOf();
 manifestCompiledUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -5946,6 +6052,14 @@ rootManifestCompiledStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
+rootManifestCompiledRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rootManifestCompiledRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
 manifestCompiledUnaryBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
@@ -5959,6 +6073,14 @@ rootManifestCompiledUnaryBodyHandler(
   manifestUnaryRouteBody
 );
 rootManifestCompiledStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+rootManifestCompiledRouteUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+rootManifestCompiledRouteStreamBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
 );
@@ -6158,6 +6280,12 @@ const manifestDenoCompiledUnaryRouteTransportHandler: DenoCompiledUnaryRouteTran
 const manifestDenoCompiledStreamRouteTransportHandler: DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
+const manifestDenoCompiledRouteUnaryTransportHandler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoCompiledUnaryRouteTransportHandler;
+const manifestDenoCompiledRouteStreamTransportHandler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoCompiledStreamRouteTransportHandler;
 const rootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
@@ -6167,6 +6295,12 @@ const rootManifestDenoCompiledUnaryRouteTransportHandler: RootDenoCompiledUnaryR
 const rootManifestDenoCompiledStreamRouteTransportHandler: RootDenoCompiledStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledStreamRouteTransportHandler;
+const rootManifestDenoCompiledRouteUnaryTransportHandler: RootDenoCompiledRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoCompiledRouteUnaryTransportHandler;
+const rootManifestDenoCompiledRouteStreamTransportHandler: RootDenoCompiledRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestDenoCompiledRouteStreamTransportHandler;
 const runtimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestDenoCompiledTransportHandler;
@@ -6176,11 +6310,25 @@ const runtimeSubpathManifestDenoCompiledUnaryRouteTransportHandler: RuntimeSubpa
 const runtimeSubpathManifestDenoCompiledStreamRouteTransportHandler: RuntimeSubpathDenoCompiledStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestDenoCompiledStreamRouteTransportHandler;
+const runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler: RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestDenoCompiledRouteUnaryTransportHandler;
+const runtimeSubpathManifestDenoCompiledRouteStreamTransportHandler: RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestDenoCompiledRouteStreamTransportHandler;
 runtimeSubpathManifestDenoCompiledUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
 runtimeSubpathManifestDenoCompiledStreamRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+runtimeSubpathManifestDenoCompiledRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -7039,6 +7187,14 @@ const runtimeSubpathDenoCompiledStreamRouteTransportResultFor: RuntimeSubpathDen
   typeof manifest,
   typeof manifestStreamRouteBody
 > = runtimeSubpathDenoStreamRouteTransportResultFor;
+const runtimeSubpathDenoCompiledRouteUnaryTransportResultFor: RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = runtimeSubpathDenoCompiledUnaryRouteTransportResultFor;
+const runtimeSubpathDenoCompiledRouteStreamTransportResultFor: RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = runtimeSubpathDenoCompiledStreamRouteTransportResultFor;
 const runtimeSubpathNodeTransportResultFor: RuntimeSubpathNodeTransportBodyResultFor<
   typeof manifest
 > = runtimeSubpathDenoCompiledTransportResultFor;
@@ -7049,11 +7205,11 @@ const exactRuntimeSubpathNodeTransportResultFor: RuntimeSubpathNodeTransportBody
 const runtimeSubpathNodeUnaryRouteTransportResultFor: RuntimeSubpathNodeUnaryRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
-> = runtimeSubpathDenoCompiledUnaryRouteTransportResultFor;
+> = runtimeSubpathDenoCompiledRouteUnaryTransportResultFor;
 const runtimeSubpathNodeStreamRouteTransportResultFor: RuntimeSubpathNodeStreamRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
-> = runtimeSubpathDenoCompiledStreamRouteTransportResultFor;
+> = runtimeSubpathDenoCompiledRouteStreamTransportResultFor;
 if (
   !(runtimeSubpathNodeTransportResultFor instanceof Response) &&
   !Array.isArray(runtimeSubpathNodeTransportResultFor) &&
