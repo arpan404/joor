@@ -25,6 +25,7 @@ import {
   createBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath,
   createCloudflareFetch,
+  createCloudflareFetchFor,
   createCloudflareWorker,
   createCloudflareWorkerFor,
   createDenoFetch,
@@ -51,6 +52,7 @@ import {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
+  createNetlifyFetchFor,
   createNextHandler,
   createNextHandlerFor,
   createNextRouteHandlers,
@@ -62,7 +64,9 @@ import {
   createNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor,
   createVercelFetch,
+  createVercelFetchFor,
   createVercelFunction,
+  createVercelFunctionFor,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
   createManifestRouteProtocolRequest,
@@ -1391,6 +1395,7 @@ import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
+  createCloudflareFetchFor as createRuntimeSubpathCloudflareFetchFor,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createCloudflareWorkerFor as createRuntimeSubpathCloudflareWorkerFor,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
@@ -1413,6 +1418,7 @@ import {
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor as createRuntimeSubpathNetlifyEdgeFunctionFor,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
+  createNetlifyFetchFor as createRuntimeSubpathNetlifyFetchFor,
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
@@ -1424,7 +1430,9 @@ import {
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathNodeTransportRequestHandlerWithPathFor,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  createVercelFetchFor as createRuntimeSubpathVercelFetchFor,
   createVercelFunction as createRuntimeSubpathVercelFunction,
+  createVercelFunctionFor as createRuntimeSubpathVercelFunctionFor,
   appendJsonStringHeaders as runtimeSubpathAppendJsonStringHeaders,
   createJsonHeaderRecord as runtimeSubpathCreateJsonHeaderRecord,
   hasInvalidHeaderValue as runtimeSubpathHasInvalidHeaderValue,
@@ -11011,6 +11019,14 @@ const runtimeSubpathDirectCloudflareFetch: RuntimeSubpathCloudflareFetchHandler 
   createRuntimeSubpathCloudflareFetch(manifest, handlerOptions);
 const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
   cloudflareFetch;
+const createTypedCloudflareFetch =
+  createCloudflareFetchFor<AppFetchRequest>();
+const typedCloudflareFetch: CloudflareFetchHandler<AppFetchRequest> =
+  createTypedCloudflareFetch(manifest, handlerOptions);
+const createRuntimeSubpathTypedCloudflareFetch =
+  createRuntimeSubpathCloudflareFetchFor<AppFetchRequest>();
+const runtimeSubpathTypedCloudflareFetch: RuntimeSubpathCloudflareFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedCloudflareFetch(manifest, handlerOptions);
 interface CloudflareEnvForTypes {
   readonly accountId: string;
 }
@@ -11019,42 +11035,50 @@ interface CloudflareContextForTypes {
 }
 const cloudflareWorkerFetch: CloudflareWorkerFetchHandler<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 > = (request, env, context) => {
   request.url.toUpperCase();
+  request.requestId.toUpperCase();
   env.accountId.toUpperCase();
   context.waitUntil(Promise.resolve());
   return new Response();
 };
 const runtimeSubpathCloudflareWorkerFetch: RuntimeSubpathCloudflareWorkerFetchHandler<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 > = cloudflareWorkerFetch;
 const typedCloudflareWorker: CloudflareWorker<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 > = {
   fetch: runtimeSubpathCloudflareWorkerFetch,
 };
 const createTypedCloudflareWorker = createCloudflareWorkerFor<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 >();
 const typedCloudflareWorkerFromFactory: CloudflareWorker<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 > = createTypedCloudflareWorker(manifest, handlerOptions);
 const createRuntimeSubpathTypedCloudflareWorker =
   createRuntimeSubpathCloudflareWorkerFor<
     CloudflareEnvForTypes,
-    CloudflareContextForTypes
+    CloudflareContextForTypes,
+    AppFetchRequest
   >();
 const runtimeSubpathTypedCloudflareWorker: RuntimeSubpathCloudflareWorker<
   CloudflareEnvForTypes,
-  CloudflareContextForTypes
+  CloudflareContextForTypes,
+  AppFetchRequest
 > = createRuntimeSubpathTypedCloudflareWorker(manifest, handlerOptions);
 typedCloudflareWorker.fetch(
-  new Request('https://example.com/rpc'),
+  appFetchRequest,
   { accountId: 'acct_1' },
   {
     waitUntil(promise) {
@@ -11063,7 +11087,7 @@ typedCloudflareWorker.fetch(
   }
 );
 typedCloudflareWorkerFromFactory.fetch(
-  new Request('https://example.com/rpc'),
+  appFetchRequest,
   { accountId: 'acct_1' },
   {
     waitUntil(promise) {
@@ -11072,7 +11096,7 @@ typedCloudflareWorkerFromFactory.fetch(
   }
 );
 runtimeSubpathTypedCloudflareWorker.fetch(
-  new Request('https://example.com/rpc'),
+  appFetchRequest,
   { accountId: 'acct_1' },
   {
     waitUntil(promise) {
@@ -11348,8 +11372,12 @@ cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 directCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathDirectCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
+typedCloudflareFetch(appFetchRequest);
+runtimeSubpathTypedCloudflareFetch(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching Cloudflare fetch plugins.
 createCloudflareFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Cloudflare fetch plugins.
+createTypedCloudflareFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
 createCloudflareWorker(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Cloudflare adapter plugins.
@@ -11358,6 +11386,13 @@ const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
 const typedNetlifyFetch: NetlifyFetchHandler = netlifyFetch;
 const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =
   typedNetlifyFetch;
+const createTypedNetlifyFetch = createNetlifyFetchFor<AppFetchRequest>();
+const typedAppNetlifyFetch: NetlifyFetchHandler<AppFetchRequest> =
+  createTypedNetlifyFetch(manifest, handlerOptions);
+const createRuntimeSubpathTypedNetlifyFetch =
+  createRuntimeSubpathNetlifyFetchFor<AppFetchRequest>();
+const runtimeSubpathTypedAppNetlifyFetch: RuntimeSubpathNetlifyFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedNetlifyFetch(manifest, handlerOptions);
 interface NetlifyContextForTypes {
   cookies: {
     get(name: string): string | undefined;
@@ -11385,13 +11420,19 @@ const netlifyEdgeFunction: NetlifyEdgeFetchHandler =
 const runtimeSubpathNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler =
   createRuntimeSubpathNetlifyEdgeFunction(manifest, handlerOptions);
 const createTypedNetlifyEdgeFunction =
-  createNetlifyEdgeFunctionFor<NetlifyContextForTypes>();
-const typedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<NetlifyContextForTypes> =
-  createTypedNetlifyEdgeFunction(manifest, handlerOptions);
+  createNetlifyEdgeFunctionFor<NetlifyContextForTypes, AppFetchRequest>();
+const typedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<
+  NetlifyContextForTypes,
+  AppFetchRequest
+> = createTypedNetlifyEdgeFunction(manifest, handlerOptions);
 const createRuntimeSubpathTypedNetlifyEdgeFunction =
-  createRuntimeSubpathNetlifyEdgeFunctionFor<NetlifyContextForTypes>();
+  createRuntimeSubpathNetlifyEdgeFunctionFor<
+    NetlifyContextForTypes,
+    AppFetchRequest
+  >();
 const runtimeSubpathTypedNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler<
-  NetlifyContextForTypes
+  NetlifyContextForTypes,
+  AppFetchRequest
 > = createRuntimeSubpathTypedNetlifyEdgeFunction(manifest, handlerOptions);
 const netlifyEdgeUrlResult: NetlifyEdgeResult = new URL(
   '/rewritten',
@@ -11547,9 +11588,11 @@ createRuntimeSubpathNetlifyEdgeFunction(
 );
 netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
+typedAppNetlifyFetch(appFetchRequest);
+runtimeSubpathTypedAppNetlifyFetch(appFetchRequest);
 netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
-typedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
+typedNetlifyEdgeFunction(appFetchRequest, {
   cookies: {
     get: (name) => name,
   },
@@ -11557,7 +11600,7 @@ typedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
     city: 'San Francisco',
   },
 });
-runtimeSubpathTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
+runtimeSubpathTypedNetlifyEdgeFunction(appFetchRequest, {
   cookies: {
     get: (name) => name,
   },
@@ -11568,6 +11611,8 @@ runtimeSubpathTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
 new Response(`${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`);
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Netlify fetch plugins.
+createTypedNetlifyFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Netlify edge plugins.
 createNetlifyEdgeFunction(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Netlify edge plugins.
@@ -11576,12 +11621,26 @@ const vercelFetch = createVercelFetch(manifest, handlerOptions);
 const typedVercelFetch: VercelFetchHandler = vercelFetch;
 const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =
   typedVercelFetch;
+const createTypedVercelFetch = createVercelFetchFor<AppFetchRequest>();
+const typedAppVercelFetch: VercelFetchHandler<AppFetchRequest> =
+  createTypedVercelFetch(manifest, handlerOptions);
+const createRuntimeSubpathTypedVercelFetch =
+  createRuntimeSubpathVercelFetchFor<AppFetchRequest>();
+const runtimeSubpathTypedAppVercelFetch: RuntimeSubpathVercelFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedVercelFetch(manifest, handlerOptions);
 const vercelFunction: VercelFunction = createVercelFunction(
   manifest,
   handlerOptions
 );
 const runtimeSubpathVercelFunction: RuntimeSubpathVercelFunction =
   createRuntimeSubpathVercelFunction(manifest, handlerOptions);
+const createTypedVercelFunction = createVercelFunctionFor<AppFetchRequest>();
+const typedVercelFunction: VercelFunction<AppFetchRequest> =
+  createTypedVercelFunction(manifest, handlerOptions);
+const createRuntimeSubpathTypedVercelFunction =
+  createRuntimeSubpathVercelFunctionFor<AppFetchRequest>();
+const runtimeSubpathTypedVercelFunction: RuntimeSubpathVercelFunction<AppFetchRequest> =
+  createRuntimeSubpathTypedVercelFunction(manifest, handlerOptions);
 const vercelFetchOptions: VercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11718,12 +11777,20 @@ createRuntimeSubpathVercelFunction(
 );
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
+typedAppVercelFetch(appFetchRequest);
+runtimeSubpathTypedAppVercelFetch(appFetchRequest);
 vercelFunction.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFunction.fetch(new Request('https://example.com/rpc'));
+typedVercelFunction.fetch(appFetchRequest);
+runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Vercel fetch plugins.
+createTypedVercelFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Vercel function plugins.
 createVercelFunction(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Vercel function plugins.
+createTypedVercelFunction(manifest);
 const expressHandlerOptions: ExpressHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]

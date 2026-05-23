@@ -8,12 +8,17 @@ import type {
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+import {
+  createJoorHandler,
+  createJoorHandlerFor,
+  type JoorFetchHandler,
+} from './fetch.js';
 
-export type VercelFetchHandler = JoorFetchHandler;
+export type VercelFetchHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
 
-export interface VercelFunction {
-  fetch: VercelFetchHandler;
+export interface VercelFunction<TRequest extends Request = Request> {
+  fetch: VercelFetchHandler<TRequest>;
 }
 
 export type VercelFetchOptionsFor<
@@ -111,6 +116,20 @@ export function createVercelFetch<TManifest extends JoorManifest>(
   );
 }
 
+export const createVercelFetchFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: VercelFetchOptionsArgs<TManifest, TPlugins>
+  ): VercelFetchHandler<TRequest> =>
+    createJoorHandlerFor<TRequest>()(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+
 export function createVercelFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -129,3 +148,18 @@ export function createVercelFunction<TManifest extends JoorManifest>(
     ),
   };
 }
+
+export const createVercelFunctionFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: VercelFetchOptionsArgs<TManifest, TPlugins>
+  ): VercelFunction<TRequest> => ({
+    fetch: createJoorHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    ) as VercelFetchHandler<TRequest>,
+  });

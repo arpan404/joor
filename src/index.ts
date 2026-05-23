@@ -69,6 +69,7 @@ export {
 } from './runtime/bun.js';
 export {
   createCloudflareFetch,
+  createCloudflareFetchFor,
   createCloudflareWorker,
   createCloudflareWorkerFor,
 } from './runtime/cloudflare.js';
@@ -108,6 +109,7 @@ export {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
+  createNetlifyFetchFor,
 } from './runtime/netlify.js';
 export {
   createNextHandler,
@@ -139,7 +141,9 @@ export {
 } from './runtime/response.js';
 export {
   createVercelFetch,
+  createVercelFetchFor,
   createVercelFunction,
+  createVercelFunctionFor,
 } from './runtime/vercel.js';
 export {
   compiledCreateProcedureCacheKey,

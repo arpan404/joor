@@ -8,16 +8,24 @@ import type {
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+import {
+  createJoorHandler,
+  createJoorHandlerFor,
+  type JoorFetchHandler,
+} from './fetch.js';
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
 
-export type NetlifyFetchHandler = JoorFetchHandler;
+export type NetlifyFetchHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
 
 export type NetlifyEdgeResult = Response | URL | undefined;
 
-export type NetlifyEdgeFetchHandler<TContext = unknown> = (
-  request: Request,
+export type NetlifyEdgeFetchHandler<
+  TContext = unknown,
+  TRequest extends Request = Request,
+> = (
+  request: TRequest,
   context: TContext
 ) => MaybePromise<NetlifyEdgeResult>;
 
@@ -116,6 +124,20 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
   );
 }
 
+export const createNetlifyFetchFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: NetlifyFetchOptionsArgs<TManifest, TPlugins>
+  ): NetlifyFetchHandler<TRequest> =>
+    createJoorHandlerFor<TRequest>()(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+
 export function createNetlifyEdgeFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -135,17 +157,17 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
 }
 
 export const createNetlifyEdgeFunctionFor =
-  <TContext>() =>
+  <TContext, TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
     ...args: HandlerOptionsArgs<TManifest, TPlugins>
-  ): NetlifyEdgeFetchHandler<TContext> => {
-    const fetch = createNetlifyFetch(
+  ): NetlifyEdgeFetchHandler<TContext, TRequest> => {
+    const fetch = createJoorHandler(
       manifest,
       (args[0] ?? {}) as HandlerOptionsFor<TManifest>
-    );
+    ) as NetlifyFetchHandler<TRequest>;
     return (request) => fetch(request);
   };

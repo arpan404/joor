@@ -4,6 +4,7 @@ import {
   createAwsLambdaHttpApiHandlerFor as createRootAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandlerFor as createRootAwsLambdaRestApiHandlerFor,
   createRuntimeContext as createRootRuntimeContext,
+  createCloudflareFetchFor as createRootCloudflareFetchFor,
   createCloudflareWorker as createRootCloudflareWorker,
   createCloudflareWorkerFor as createRootCloudflareWorkerFor,
   createCorsHeaderRecord as createRootCorsHeaderRecord,
@@ -22,7 +23,10 @@ import {
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor as createRootNetlifyEdgeFunctionFor,
+  createNetlifyFetchFor as createRootNetlifyFetchFor,
   createNextRouteHandlersFor as createRootNextRouteHandlersFor,
+  createVercelFetchFor as createRootVercelFetchFor,
+  createVercelFunctionFor as createRootVercelFunctionFor,
   encodeSse as rootEncodeSse,
   listen as rootListen,
   ok as rootOk,
@@ -56,6 +60,7 @@ import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
 import { createBunFetch } from 'joor/runtime/bun';
 import {
   createCloudflareFetch,
+  createCloudflareFetchFor,
   createCloudflareWorker,
   createCloudflareWorkerFor,
 } from 'joor/runtime/cloudflare';
@@ -84,6 +89,7 @@ import {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
+  createNetlifyFetchFor,
 } from 'joor/runtime/netlify';
 import {
   createNextHandlerFor,
@@ -103,7 +109,9 @@ import {
 } from 'joor/runtime/response';
 import {
   createVercelFetch,
+  createVercelFetchFor,
   createVercelFunction,
+  createVercelFunctionFor,
 } from 'joor/runtime/vercel';
 import type * as Auth from 'joor/auth';
 import type * as Client from 'joor/client';
@@ -274,8 +282,10 @@ const packageSubpathValues = [
   createRootAwsLambdaRestApiHandlerFor,
   createBunFetch,
   createCloudflareFetch,
+  createCloudflareFetchFor,
   createCloudflareWorker,
   createCloudflareWorkerFor,
+  createRootCloudflareFetchFor,
   createRootCloudflareWorker,
   createRootCloudflareWorkerFor,
   createOpenApiDocument,
@@ -303,6 +313,7 @@ const packageSubpathValues = [
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
+  createNetlifyFetchFor,
   createNextHandlerFor,
   createNextHandler,
   createNextRouteHandlersFor,
@@ -323,9 +334,14 @@ const packageSubpathValues = [
   createRootNodeTransportRequestHandlerWithPathFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
+  createRootNetlifyFetchFor,
   createRootNextRouteHandlersFor,
+  createRootVercelFetchFor,
+  createRootVercelFunctionFor,
   createVercelFetch,
+  createVercelFetchFor,
   createVercelFunction,
+  createVercelFunctionFor,
   DEFAULT_MAX_BODY_BYTES,
   errorStatus,
   jsonOkResponseInit,

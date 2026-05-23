@@ -8,17 +8,23 @@ import type {
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
-import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
+import {
+  createJoorHandler,
+  createJoorHandlerFor,
+  type JoorFetchHandler,
+} from './fetch.js';
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
 
-export type CloudflareFetchHandler = JoorFetchHandler;
+export type CloudflareFetchHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
 
 export type CloudflareWorkerFetchHandler<
   TEnv = unknown,
   TContext = unknown,
+  TRequest extends Request = Request,
 > = (
-  request: Request,
+  request: TRequest,
   env: TEnv,
   context: TContext
 ) => MaybePromise<Response>;
@@ -26,12 +32,17 @@ export type CloudflareWorkerFetchHandler<
 type CloudflareWorkerFetch<
   TEnv,
   TContext,
+  TRequest extends Request,
 > = [TEnv] extends [never]
-  ? CloudflareFetchHandler
-  : CloudflareWorkerFetchHandler<TEnv, TContext>;
+  ? CloudflareFetchHandler<TRequest>
+  : CloudflareWorkerFetchHandler<TEnv, TContext, TRequest>;
 
-export interface CloudflareWorker<TEnv = never, TContext = never> {
-  fetch: CloudflareWorkerFetch<TEnv, TContext>;
+export interface CloudflareWorker<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+> {
+  fetch: CloudflareWorkerFetch<TEnv, TContext, TRequest>;
 }
 
 export type CloudflareFetchOptionsFor<
@@ -207,6 +218,20 @@ export function createCloudflareFetch<TManifest extends JoorManifest>(
   );
 }
 
+export const createCloudflareFetchFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: CloudflareFetchOptionsArgs<TManifest, TPlugins>
+  ): CloudflareFetchHandler<TRequest> =>
+    createJoorHandlerFor<TRequest>()(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+    );
+
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -227,17 +252,21 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
 }
 
 export const createCloudflareWorkerFor =
-  <TEnv = unknown, TContext = unknown>() =>
+  <
+    TEnv = unknown,
+    TContext = unknown,
+    TRequest extends Request = Request,
+  >() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
     ...args: HandlerOptionsArgs<TManifest, TPlugins>
-  ): CloudflareWorker<TEnv, TContext> =>
+  ): CloudflareWorker<TEnv, TContext, TRequest> =>
     ({
-      fetch: createCloudflareFetch(
+      fetch: createJoorHandler(
         manifest,
         (args[0] ?? {}) as HandlerOptionsFor<TManifest>
-      ),
-    }) as CloudflareWorker<TEnv, TContext>;
+      ) as CloudflareFetchHandler<TRequest>,
+    }) as CloudflareWorker<TEnv, TContext, TRequest>;
