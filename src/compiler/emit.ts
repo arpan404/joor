@@ -2138,7 +2138,7 @@ export type RouteErrorCode<TId extends RouteId> = JoorManifestRouteErrorCode<Man
 export type RouteErrorDetails<TId extends RouteId, TCode extends RouteErrorCode<TId>> = JoorManifestRouteErrorDetails<Manifest, TId, TCode>;
 export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Manifest, TId>;
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
-export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[]> = TRequests;
+export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[] = readonly RouteRequestUnion[]> = TRequests;
 export type RouteBatchResults<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteProtocolRequest<TId extends RouteId> = JoorManifestRouteProtocolRequest<Manifest, TId>;
 export type RouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<Manifest>;
@@ -2169,7 +2169,7 @@ export type StreamRouteFunction<TId extends StreamRouteId> = {
   (...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: ClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
-export type BatchFunction = <const TRequests extends readonly RouteRequestUnion[]>(
+export type BatchFunction = <const TRequests extends RouteBatchRequest>(
   requests: TRequests
 ) => Promise<RouteBatchResults<TRequests>>;
 export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
