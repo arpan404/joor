@@ -2989,9 +2989,17 @@ const runtimeSubpathTransportBodyResult: RuntimeSubpathTransportBodyResult =
   transportBodyResult;
 const transportBodyResultFor: TransportBodyResultFor<typeof manifest> =
   manifestRouteBodyResult;
+const exactTransportBodyResultFor: TransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = manifestRouteBodyResult;
 const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
   typeof manifest
 > = transportBodyResultFor;
+const runtimeSubpathExactTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactTransportBodyResultFor;
 if (isSerializedJsonEnvelope(transportBodyResult)) {
   transportBodyResult.body.toUpperCase();
 }
@@ -3002,6 +3010,13 @@ if (
   runtimeSubpathTransportBodyResultFor.ok
 ) {
   runtimeSubpathTransportBodyResultFor.data.name.toUpperCase();
+}
+if (
+  !(runtimeSubpathExactTransportBodyResultFor instanceof Response) &&
+  'ok' in runtimeSubpathExactTransportBodyResultFor &&
+  runtimeSubpathExactTransportBodyResultFor.ok
+) {
+  runtimeSubpathExactTransportBodyResultFor.data.name.toUpperCase();
 }
 if (isRuntimeSubpathSerializedJsonEnvelope(runtimeSubpathTransportBodyResult)) {
   runtimeSubpathTransportBodyResult.body.toUpperCase();
