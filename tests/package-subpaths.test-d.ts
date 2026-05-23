@@ -30,6 +30,8 @@ import {
   defineManifest,
   defineProcedure,
   errorStatus,
+  createRpcBodyHandlerFor as createRootRpcBodyHandlerFor,
+  createRpcBodyResultHandlerFor as createRootRpcBodyResultHandlerFor,
   createRpcHandlerFor as createRootRpcHandlerFor,
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
@@ -59,6 +61,8 @@ import { ok } from 'joor/procedure';
 import {
   createManifestRouteStreamProtocolRequest,
   createManifestRouteStreamRequest,
+  createRpcBodyHandlerFor,
+  createRpcBodyResultHandlerFor,
   createRpcHandlerFor,
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
@@ -350,6 +354,10 @@ const packageSubpathValues = [
   createRootCorsHeaderRecord,
   rootCompiledCreateProcedureCacheKey,
   createManifestRouteStreamProtocolRequest,
+  createRpcBodyHandlerFor,
+  createRootRpcBodyHandlerFor,
+  createRpcBodyResultHandlerFor,
+  createRootRpcBodyResultHandlerFor,
   createRpcHandlerFor,
   createRootRpcHandlerFor,
   createCompiledRpcHandlerFor,

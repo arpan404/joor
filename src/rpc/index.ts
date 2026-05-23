@@ -24,7 +24,9 @@ export {
 } from './client.js';
 export {
   createRpcBodyHandler,
+  createRpcBodyHandlerFor,
   createRpcBodyResultHandler,
+  createRpcBodyResultHandlerFor,
   createRpcHandler,
   createRpcHandlerFor,
   createRpcRequestPreflight,

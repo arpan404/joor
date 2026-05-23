@@ -37,7 +37,9 @@ export {
 } from './rpc/client.js';
 export {
   createRpcBodyHandler,
+  createRpcBodyHandlerFor,
   createRpcBodyResultHandler,
+  createRpcBodyResultHandlerFor,
   createRpcHandler,
   createRpcHandlerFor,
   createRpcRequestPreflight,

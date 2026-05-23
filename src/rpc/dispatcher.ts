@@ -816,24 +816,29 @@ export type RpcManifestRouteStreamBodyResultFor<
   TBody extends RpcManifestRouteStreamBody<TManifest>,
 > = RpcManifestBodyResultFor<TManifest, TBody>;
 
-export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
+export type RpcBodyResultHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<RpcManifestBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteUnaryBodyResultHandler<
   TManifest extends RpcManifest,
+  TRequest extends Request = Request,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>>;
 
 export type RpcManifestRouteStreamBodyResultHandler<
   TManifest extends RpcManifest,
+  TRequest extends Request = Request,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<RpcManifestRouteStreamBodyResultFor<TManifest, TBody>>;
 
@@ -841,32 +846,45 @@ export type RpcRequestHandler<TRequest extends Request = Request> = (
   request: TRequest
 ) => MaybePromise<Response>;
 
-export type RpcBodyHandler<TManifest extends RpcManifest> = <
+export type RpcBodyHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<Response>;
 
-export type RpcManifestRouteUnaryBodyHandler<TManifest extends RpcManifest> = <
+export type RpcManifestRouteUnaryBodyHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = <
   const TBody extends RpcManifestRouteUnaryBody<TManifest>,
 >(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<Response>;
 
-export type RpcManifestRouteStreamBodyHandler<TManifest extends RpcManifest> = <
+export type RpcManifestRouteStreamBodyHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = <
   const TBody extends RpcManifestRouteStreamBody<TManifest>,
 >(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<Response>;
 
-export type RpcManifestUnaryRouteBodyHandler<TManifest extends RpcManifest> =
-  RpcManifestRouteUnaryBodyHandler<TManifest>;
+export type RpcManifestUnaryRouteBodyHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryBodyHandler<TManifest, TRequest>;
 
-export type RpcManifestStreamRouteBodyHandler<TManifest extends RpcManifest> =
-  RpcManifestRouteStreamBodyHandler<TManifest>;
+export type RpcManifestStreamRouteBodyHandler<
+  TManifest extends RpcManifest,
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamBodyHandler<TManifest, TRequest>;
 
 export type RpcTransportBodyResultHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
@@ -1473,11 +1491,13 @@ export type RpcManifestStreamRouteClientArgs<
 
 export type RpcManifestUnaryRouteBodyResultHandler<
   TManifest extends RpcManifest,
-> = RpcManifestRouteUnaryBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryBodyResultHandler<TManifest, TRequest>;
 
 export type RpcManifestStreamRouteBodyResultHandler<
   TManifest extends RpcManifest,
-> = RpcManifestRouteStreamBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamBodyResultHandler<TManifest, TRequest>;
 
 export type RpcManifestUnaryRouteTransportBodyResultHandler<
   TManifest extends RpcManifest,
@@ -2316,6 +2336,21 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
   };
 }
 
+export const createRpcBodyHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+  ): RpcBodyHandler<TManifest, TRequest> =>
+    createRpcBodyHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>,
+      args[1] ?? true
+    ) as RpcBodyHandler<TManifest, TRequest>;
+
 export function createRpcBodyResultHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -2341,6 +2376,21 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
       handleTransport(createFetchRequestSource(request), body)
     )) as RpcBodyResultHandler<TManifest>;
 }
+
+export const createRpcBodyResultHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+  ): RpcBodyResultHandler<TManifest, TRequest> =>
+    createRpcBodyResultHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<TManifest>,
+      args[1] ?? true
+    ) as RpcBodyResultHandler<TManifest, TRequest>;
 
 export function createRpcTransportBodyResultHandler<
   TManifest extends RpcManifest,
