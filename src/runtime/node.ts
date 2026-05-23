@@ -298,7 +298,7 @@ export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
 
 export type NodeRpcRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
-  TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = (
   incoming: TIncoming,
   outgoing: TOutgoing
@@ -306,7 +306,7 @@ export type NodeRpcRequestHandler<
 
 export type NodeTransportRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
-  TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = NodeRpcRequestHandler<TIncoming, TOutgoing>;
 
 export type NodeTransportBodyResult<
@@ -613,7 +613,7 @@ export const createNodeTransportRequestHandler = <
 export const createNodeTransportRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
-    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
   >() =>
   <
     TBody = JsonValue,
@@ -652,7 +652,7 @@ export const createNodeTransportRequestHandlerWithPath = <
 export const createNodeTransportRequestHandlerWithPathFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
-    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
   >() =>
   <
     TBody = JsonValue,
@@ -736,7 +736,7 @@ export function createNodeRpcRequestHandler<TManifest extends JoorManifest>(
 export const createNodeRpcRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
-    TOutgoing extends ServerResponse<IncomingMessage> = ServerResponse<IncomingMessage>,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
   >() =>
   <
     TManifest extends JoorManifest,

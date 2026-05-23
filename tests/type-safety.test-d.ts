@@ -12880,7 +12880,12 @@ interface NodeAppRequest extends IncomingMessage {
     id: string;
   };
 }
-interface NodeAppResponse extends ServerResponse<IncomingMessage> {
+interface NodeAppResponse extends ServerResponse<NodeAppRequest> {
+  locals: {
+    requestId: string;
+  };
+}
+interface NodeMismatchedResponse extends ServerResponse<IncomingMessage> {
   locals: {
     requestId: string;
   };
@@ -12920,6 +12925,8 @@ syncNodeTransportRequestHandler(
 );
 typedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
 runtimeSubpathTypedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
+// @ts-expect-error typed Node handlers preserve the response's incoming message type.
+createNodeRpcRequestHandlerFor<NodeAppRequest, NodeMismatchedResponse>();
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Node adapter plugins.
@@ -13315,6 +13322,13 @@ createNodeTransportRequestHandler(syncNodeTransportHandler);
 createNodeTransportRequestHandlerWithPath(syncNodeTransportHandler, '/rpc');
 typedNodeTransportRequestHandler(nodeAppRequest, nodeAppResponse);
 typedNodeTransportRequestHandlerWithPath(nodeAppRequest, nodeAppResponse);
+// @ts-expect-error typed Node transport handlers preserve the response's incoming message type.
+createNodeTransportRequestHandlerFor<NodeAppRequest, NodeMismatchedResponse>();
+createNodeTransportRequestHandlerWithPathFor<
+  NodeAppRequest,
+  // @ts-expect-error typed Node transport handlers preserve the response's incoming message type.
+  NodeMismatchedResponse
+>();
 const runtimeSubpathNodeTransportRequestHandler: RuntimeSubpathNodeTransportRequestHandler =
   nodeTransportRequestHandler;
 const createRuntimeSubpathTypedNodeTransportRequestHandler =
