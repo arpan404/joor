@@ -15,6 +15,7 @@ import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { RpcEnvelope } from '../rpc/protocol.js';
 import {
   createFetchRequestSource,
   type ContextRequestSource,
@@ -209,7 +210,9 @@ export type DenoStreamRouteServeOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = DenoRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody>;
 
-export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type DenoTransportBodyResult<
+  TEnvelope extends RpcEnvelope = RpcEnvelope,
+> = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
 export type DenoTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,

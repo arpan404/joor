@@ -1686,6 +1686,68 @@ if (
   const _wrongTypedCompiledBodyResultId: 'users.list' =
     typedRootCompiledBodyResult.id;
 }
+type RuntimeBodyResultRouteId<T> = Exclude<
+  T,
+  Response | SerializedJsonEnvelope | readonly RpcEnvelope[]
+> extends { id: infer TId }
+  ? TId
+  : never;
+const typedBunTransportBodyResultId: RuntimeBodyResultRouteId<
+  BunTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedBunTransportBodyResultId.toUpperCase();
+// @ts-expect-error Bun transport body result aliases preserve the route id literal.
+const _wrongTypedBunTransportBodyResultId: RuntimeBodyResultRouteId<
+  BunTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedDenoTransportBodyResultId: RuntimeBodyResultRouteId<
+  DenoTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedDenoTransportBodyResultId.toUpperCase();
+// @ts-expect-error Deno transport body result aliases preserve the route id literal.
+const _wrongTypedDenoTransportBodyResultId: RuntimeBodyResultRouteId<
+  DenoTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedStandaloneDenoTransportBodyResultId: RuntimeBodyResultRouteId<
+  StandaloneDenoTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedStandaloneDenoTransportBodyResultId.toUpperCase();
+// @ts-expect-error standalone Deno transport body result aliases preserve the route id literal.
+const _wrongTypedStandaloneDenoTransportBodyResultId: RuntimeBodyResultRouteId<
+  StandaloneDenoTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedNodeTransportBodyResultId: RuntimeBodyResultRouteId<
+  NodeTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedNodeTransportBodyResultId.toUpperCase();
+// @ts-expect-error Node transport body result aliases preserve the route id literal.
+const _wrongTypedNodeTransportBodyResultId: RuntimeBodyResultRouteId<
+  NodeTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  DenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedDenoCompiledTransportBodyResultId.toUpperCase();
+// @ts-expect-error Deno compiled transport body result aliases preserve the route id literal.
+const _wrongTypedDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  DenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedRootDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  RootDenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedRootDenoCompiledTransportBodyResultId.toUpperCase();
+// @ts-expect-error root Deno compiled transport body result aliases preserve the route id literal.
+const _wrongTypedRootDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  RootDenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
+const typedRuntimeSubpathDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  RuntimeSubpathDenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.get';
+typedRuntimeSubpathDenoCompiledTransportBodyResultId.toUpperCase();
+// @ts-expect-error runtime subpath Deno compiled transport body result aliases preserve the route id literal.
+const _wrongTypedRuntimeSubpathDenoCompiledTransportBodyResultId: RuntimeBodyResultRouteId<
+  RuntimeSubpathDenoCompiledTransportBodyResult<typeof procedureEnvelope>
+> = 'users.list';
 const rpcSseErrorEvent: RpcSseEvent<{ userId: string }, 'users.get'> = {
   event: 'error',
   data: {

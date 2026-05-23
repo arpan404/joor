@@ -217,7 +217,9 @@ export type NodeRpcRequestHandler = (
   outgoing: ServerResponse<IncomingMessage>
 ) => Promise<void>;
 
-export type NodeTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type NodeTransportBodyResult<
+  TEnvelope extends RpcEnvelope = RpcEnvelope,
+> = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
 export type NodeTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
@@ -413,9 +415,9 @@ const writeResult = async (
   outgoing.end(JSON.stringify(result));
 };
 
-const isNodeRpcEnvelopeArray = (
-  result: NodeTransportBodyResult
-): result is readonly RpcEnvelope[] => Array.isArray(result);
+const isNodeRpcEnvelopeArray = <TEnvelope extends RpcEnvelope>(
+  result: NodeTransportBodyResult<TEnvelope>
+): result is readonly TEnvelope[] => Array.isArray(result);
 
 const chunkToBuffer = (chunk: string | Buffer): Buffer =>
   typeof chunk === 'string' ? Buffer.from(chunk) : chunk;

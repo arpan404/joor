@@ -19,6 +19,7 @@ import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import type { RpcEnvelope } from '../rpc/protocol.js';
 import type { JsonValue } from '../schema/json.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -290,7 +291,9 @@ export type BunStreamRouteServeOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = BunRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody>;
 
-export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type BunTransportBodyResult<
+  TEnvelope extends RpcEnvelope = RpcEnvelope,
+> = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
 export type BunTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,

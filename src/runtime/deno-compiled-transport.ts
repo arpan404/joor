@@ -8,6 +8,7 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
+import type { RpcEnvelope } from '../rpc/protocol.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
@@ -31,7 +32,9 @@ export type DenoCompiledTransportRequestHandler = (
   request: Request
 ) => Promise<Response>;
 
-export type DenoCompiledTransportBodyResult = CompiledBodyResult;
+export type DenoCompiledTransportBodyResult<
+  TEnvelope extends RpcEnvelope = RpcEnvelope,
+> = CompiledBodyResult<TEnvelope>;
 
 export type DenoCompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
