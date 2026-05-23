@@ -109,8 +109,10 @@ export type CompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope;
-export type CompiledBodyResultFor<TManifest extends JoorManifest> =
-  CompiledTransportBodyResultFor<TManifest>;
+export type CompiledBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
 export type CompiledRpcTransportBodyResultHandler<

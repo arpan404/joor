@@ -3059,6 +3059,14 @@ const compiledBodyResultFor: CompiledBodyResultFor<typeof manifest> =
   manifestRouteBodyResult;
 const rootCompiledBodyResultFor: RootCompiledBodyResultFor<typeof manifest> =
   compiledBodyResultFor;
+const exactCompiledBodyResultFor: CompiledBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = manifestRouteBodyResult;
+const exactRootCompiledBodyResultFor: RootCompiledBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactCompiledBodyResultFor;
 const compiledTransportBodyResultFor: CompiledTransportBodyResultFor<
   typeof manifest,
   typeof manifestRouteRequest
@@ -3074,6 +3082,13 @@ if (
   rootCompiledBodyResultFor.ok
 ) {
   rootCompiledBodyResultFor.data.name.toUpperCase();
+}
+if (
+  !(exactRootCompiledBodyResultFor instanceof Response) &&
+  'ok' in exactRootCompiledBodyResultFor &&
+  exactRootCompiledBodyResultFor.ok
+) {
+  exactRootCompiledBodyResultFor.data.name.toUpperCase();
 }
 if (
   !(rootCompiledTransportBodyResultFor instanceof Response) &&

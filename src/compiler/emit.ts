@@ -258,6 +258,8 @@ export type NativeRouteBodyResultFor<TBody extends NativeRouteBody> = JoorManife
 export type NativeBodyResultFor<TBody extends NativeBody> =
   NativeRouteBodyResultFor<TBody>;
 export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
+export type NativeCompiledBodyResultFor<TBody extends NativeBody> =
+  CompiledBodyResultFor<NativeManifest, TBody>;
 export type NativeCompiledTransportResult =
   CompiledTransportBodyResultFor<NativeManifest>;
 export type NativeTransportResult = NativeCompiledTransportResult;
