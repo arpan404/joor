@@ -71,12 +71,51 @@ export type DenoStreamRouteServeOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = DenoServeOptionsFor<TManifest, TPlugins, TBody>;
 
+export type DenoRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoUnaryRouteRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type DenoStreamRouteRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
 export type DenoRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type DenoUnaryRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type DenoStreamRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type DenoServeOptionsArgs<
   TManifest extends JoorManifest,
