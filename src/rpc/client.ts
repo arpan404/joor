@@ -447,7 +447,7 @@ export type RpcStreamRouteEvent<
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamEvent<TRoutes, TId>;
 
-export type RpcRouteEnvelope<
+type RpcRouteEnvelopeFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes>,
 > = RpcEnvelope<
@@ -456,6 +456,16 @@ export type RpcRouteEnvelope<
   RpcRouteResponseHeaders<TRoutes, TId>,
   RpcRouteError<TRoutes, TId>
 >;
+
+export type RpcRouteEnvelope<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+> = {
+  [TRouteId in RpcRouteUnaryId<TRoutes>]: RpcRouteEnvelopeFor<
+    TRoutes,
+    TRouteId
+  >;
+}[TId];
 
 export type RpcRouteEnvelopeUnion<TRoutes extends RpcRouteMap> = {
   [TId in RpcRouteUnaryId<TRoutes>]: RpcRouteEnvelope<TRoutes, TId>;
@@ -469,27 +479,27 @@ export type RpcUnaryRouteEnvelopeUnion<TRoutes extends RpcRouteMap> =
 
 export type RpcRouteResult<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteEnvelope<TRoutes, TId>;
 
 export type RpcRouteUnaryEnvelope<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteEnvelope<TRoutes, TId>;
 
 export type RpcUnaryRouteEnvelope<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryEnvelope<TRoutes, TId>;
 
 export type RpcRouteUnaryResult<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteResult<TRoutes, TId>;
 
 export type RpcUnaryRouteResult<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryResult<TRoutes, TId>;
 
 export type RpcRouteResultUnion<TRoutes extends RpcRouteMap> =

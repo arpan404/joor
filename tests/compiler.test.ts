@@ -1453,10 +1453,16 @@ genericStreamRouteBodyResult.headers.get('content-type');
 const routeStreamBodyResultFor: RouteStreamBodyResultFor<typeof routeStreamBody> =
   streamRouteBodyResultFor;
 const routeEnvelope: RouteEnvelope<'users.get'> = routeBodyResult;
+const defaultRouteEnvelope: RouteEnvelope = routeEnvelope;
 const unaryRouteEnvelope: UnaryRouteEnvelope<'users.get'> = routeEnvelope;
+const defaultUnaryRouteEnvelope: UnaryRouteEnvelope = unaryRouteEnvelope;
 const routeUnaryEnvelope: RouteUnaryEnvelope<'users.get'> = unaryRouteEnvelope;
+const defaultRouteUnaryEnvelope: RouteUnaryEnvelope = routeUnaryEnvelope;
 routeEnvelope.id.toUpperCase();
 routeUnaryEnvelope.id.toUpperCase();
+defaultRouteEnvelope.id.toUpperCase();
+defaultUnaryRouteEnvelope.id.toUpperCase();
+defaultRouteUnaryEnvelope.id.toUpperCase();
 const routeEnvelopeUnion: RouteEnvelopeUnion = routeBodyResult;
 const unaryRouteEnvelopeUnion: UnaryRouteEnvelopeUnion = routeEnvelopeUnion;
 const routeUnaryEnvelopeUnion: RouteUnaryEnvelopeUnion =
@@ -1465,8 +1471,12 @@ const routeResultUnion: RouteResultUnion = routeEnvelopeUnion;
 const unaryRouteResultUnion: UnaryRouteResultUnion = routeResultUnion;
 const routeUnaryResultUnion: RouteUnaryResultUnion = unaryRouteResultUnion;
 const unaryRouteResult: UnaryRouteResult<'users.get'> = routeEnvelope;
+const defaultUnaryRouteResult: UnaryRouteResult = unaryRouteResult;
 const routeUnaryResult: RouteUnaryResult<'users.get'> = unaryRouteResult;
+const defaultRouteUnaryResult: RouteUnaryResult = routeUnaryResult;
 routeUnaryResult.id.toUpperCase();
+defaultUnaryRouteResult.id.toUpperCase();
+defaultRouteUnaryResult.id.toUpperCase();
 const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
   unaryProtocolRequest,
 ];
@@ -1970,24 +1980,40 @@ const nativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResul
   nativeStreamRouteCompiledBodyResultFor;
 const nativeCompiledTransportResult: NativeCompiledTransportResult = nativeCompiledBodyResult;
 const nativeRouteEnvelope: NativeRouteEnvelope<'users.get'> = nativeBodyResult;
+const defaultNativeRouteEnvelope: NativeRouteEnvelope = nativeRouteEnvelope;
 nativeRouteEnvelope.id.toUpperCase();
+defaultNativeRouteEnvelope.id.toUpperCase();
 const nativeRouteEnvelopeUnion: NativeRouteEnvelopeUnion = nativeRouteEnvelope;
 const nativeUnaryRouteEnvelope: NativeUnaryRouteEnvelope<'users.get'> =
   nativeRouteEnvelope;
+const defaultNativeUnaryRouteEnvelope: NativeUnaryRouteEnvelope =
+  nativeUnaryRouteEnvelope;
 const nativeUnaryRouteEnvelopeUnion: NativeUnaryRouteEnvelopeUnion =
   nativeRouteEnvelopeUnion;
 const nativeRouteUnaryEnvelope: NativeRouteUnaryEnvelope<'users.get'> =
   nativeUnaryRouteEnvelope;
+const defaultNativeRouteUnaryEnvelope: NativeRouteUnaryEnvelope =
+  nativeRouteUnaryEnvelope;
 const nativeRouteUnaryEnvelopeUnion: NativeRouteUnaryEnvelopeUnion =
   nativeUnaryRouteEnvelopeUnion;
 nativeRouteUnaryEnvelope.id.toUpperCase();
+defaultNativeUnaryRouteEnvelope.id.toUpperCase();
+defaultNativeRouteUnaryEnvelope.id.toUpperCase();
 nativeRouteUnaryEnvelopeUnion.id.toUpperCase();
 const nativeRouteResult: NativeRouteResult<'users.get'> = nativeBodyResult;
+const defaultNativeRouteResult: NativeRouteResult = nativeRouteResult;
 const nativeUnaryRouteResult: NativeUnaryRouteResult<'users.get'> =
   nativeRouteResult;
+const defaultNativeUnaryRouteResult: NativeUnaryRouteResult =
+  nativeUnaryRouteResult;
 const nativeRouteUnaryResult: NativeRouteUnaryResult<'users.get'> =
   nativeUnaryRouteResult;
+const defaultNativeRouteUnaryResult: NativeRouteUnaryResult =
+  nativeRouteUnaryResult;
 nativeRouteUnaryResult.id.toUpperCase();
+defaultNativeRouteResult.id.toUpperCase();
+defaultNativeUnaryRouteResult.id.toUpperCase();
+defaultNativeRouteUnaryResult.id.toUpperCase();
 const nativeRouteResultUnion: NativeRouteResultUnion = nativeBodyResult;
 const nativeUnaryRouteResultUnion: NativeUnaryRouteResultUnion =
   nativeRouteResultUnion;

@@ -338,7 +338,7 @@ export type RpcManifestProcedureError<TProcedure> =
   | ProcedureError<TProcedure>
   | RpcManifestProcedureFrameworkError<TProcedure>;
 
-export type RpcManifestRouteEnvelope<
+type RpcManifestRouteEnvelopeFor<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest>,
 > = RpcEnvelope<
@@ -347,6 +347,16 @@ export type RpcManifestRouteEnvelope<
   ProcedureResponseHeaders<RpcManifestRoutes<TManifest>[TId]>,
   RpcManifestProcedureError<RpcManifestRoutes<TManifest>[TId]>
 >;
+
+export type RpcManifestRouteEnvelope<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
+> = {
+  [TRouteId in RpcManifestRouteUnaryId<TManifest>]: RpcManifestRouteEnvelopeFor<
+    TManifest,
+    TRouteId
+  >;
+}[TId];
 
 export type RpcManifestRouteEnvelopeUnion<TManifest extends RpcManifest> = {
   [TId in RpcManifestRouteUnaryId<TManifest>]: RpcManifestRouteEnvelope<
@@ -360,17 +370,17 @@ export type RpcManifestUnaryRouteEnvelopeUnion<TManifest extends RpcManifest> =
 
 export type RpcManifestRouteResult<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteEnvelope<TManifest, TId>;
 
 export type RpcManifestRouteUnaryEnvelope<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteEnvelope<TManifest, TId>;
 
 export type RpcManifestRouteUnaryResult<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteResult<TManifest, TId>;
 
 export type RpcManifestRouteResultUnion<TManifest extends RpcManifest> =
@@ -1295,7 +1305,7 @@ export type RpcManifestStreamRouteErrorDetails<
 
 export type RpcManifestUnaryRouteEnvelope<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteUnaryEnvelope<TManifest, TId>;
 
 export type RpcManifestRouteUnaryEnvelopeUnion<TManifest extends RpcManifest> =
@@ -1303,7 +1313,7 @@ export type RpcManifestRouteUnaryEnvelopeUnion<TManifest extends RpcManifest> =
 
 export type RpcManifestUnaryRouteResult<
   TManifest extends RpcManifest,
-  TId extends RpcManifestRouteUnaryId<TManifest>,
+  TId extends RpcManifestRouteUnaryId<TManifest> = RpcManifestRouteUnaryId<TManifest>,
 > = RpcManifestRouteUnaryResult<TManifest, TId>;
 
 export type RpcManifestRouteUnaryResultUnion<TManifest extends RpcManifest> =

@@ -3552,12 +3552,22 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
   data: { id: '1', name: 'Ada' },
   headers: { 'cache-control': 'private' },
 };
+const defaultManifestRouteEnvelope: JoorManifestRouteEnvelope<typeof manifest> =
+  manifestRouteEnvelope;
 manifestRouteEnvelope.id.toUpperCase();
+if (defaultManifestRouteEnvelope.id === 'users.get' && defaultManifestRouteEnvelope.ok) {
+  defaultManifestRouteEnvelope.data.name.toUpperCase();
+  defaultManifestRouteEnvelope.headers['cache-control'].toUpperCase();
+}
 const manifestUnaryRouteEnvelope: JoorManifestUnaryRouteEnvelope<
   typeof manifest,
   'users.get'
 > = manifestRouteEnvelope;
+const defaultManifestUnaryRouteEnvelope: JoorManifestUnaryRouteEnvelope<
+  typeof manifest
+> = manifestUnaryRouteEnvelope;
 manifestUnaryRouteEnvelope.id.toUpperCase();
+defaultManifestUnaryRouteEnvelope.id.toUpperCase();
 const manifestRouteEnvelopeUnion: JoorManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
@@ -3570,11 +3580,18 @@ const manifestRouteResult: JoorManifestRouteResult<
   typeof manifest,
   'users.get'
 > = manifestRouteEnvelope;
+const defaultManifestRouteResult: JoorManifestRouteResult<typeof manifest> =
+  manifestRouteResult;
 const manifestUnaryRouteResult: JoorManifestUnaryRouteResult<
   typeof manifest,
   'users.get'
 > = manifestRouteResult;
+const defaultManifestUnaryRouteResult: JoorManifestUnaryRouteResult<
+  typeof manifest
+> = manifestUnaryRouteResult;
 manifestUnaryRouteResult.id.toUpperCase();
+defaultManifestRouteResult.id.toUpperCase();
+defaultManifestUnaryRouteResult.id.toUpperCase();
 const manifestRouteResultUnion: JoorManifestRouteResultUnion<typeof manifest> =
   manifestRouteResult;
 manifestRouteResultUnion.id.toUpperCase();
@@ -4782,7 +4799,11 @@ const publicManifestUnaryEnvelope: RpcManifestUnaryRouteEnvelope<
   typeof manifest,
   'users.get'
 > = manifestRouteEnvelope;
+const defaultPublicManifestUnaryEnvelope: RpcManifestUnaryRouteEnvelope<
+  typeof manifest
+> = publicManifestUnaryEnvelope;
 publicManifestUnaryEnvelope.id.toUpperCase();
+defaultPublicManifestUnaryEnvelope.id.toUpperCase();
 const publicManifestUnaryEnvelopeUnion: RpcManifestUnaryRouteEnvelopeUnion<
   typeof manifest
 > = publicManifestUnaryEnvelope;
@@ -4793,7 +4814,11 @@ const publicManifestUnaryResult: RpcManifestUnaryRouteResult<
   typeof manifest,
   'users.get'
 > = publicManifestUnaryEnvelope;
+const defaultPublicManifestUnaryResult: RpcManifestUnaryRouteResult<
+  typeof manifest
+> = publicManifestUnaryResult;
 publicManifestUnaryResult.id.toUpperCase();
+defaultPublicManifestUnaryResult.id.toUpperCase();
 const publicManifestUnaryResultUnion: RpcManifestUnaryRouteResultUnion<
   typeof manifest
 > = publicManifestUnaryResult;
@@ -9868,10 +9893,18 @@ const routeEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   headers: { 'cache-control': 'private' },
   traceId: 'trace-1',
 };
+const defaultRouteEnvelope: RpcRouteEnvelope<Routes> = routeEnvelope;
 routeEnvelope.id.toUpperCase();
+if (defaultRouteEnvelope.id === 'users.get' && defaultRouteEnvelope.ok) {
+  defaultRouteEnvelope.data.name.toUpperCase();
+  defaultRouteEnvelope.headers['cache-control'].toUpperCase();
+}
 const routeUnaryEnvelope: RpcUnaryRouteEnvelope<Routes, 'users.get'> =
   routeEnvelope;
+const defaultRouteUnaryEnvelope: RpcUnaryRouteEnvelope<Routes> =
+  routeUnaryEnvelope;
 routeUnaryEnvelope.id.toUpperCase();
+defaultRouteUnaryEnvelope.id.toUpperCase();
 const _extraRouteEnvelope: RpcRouteEnvelope<Routes, 'users.get'> = {
   ok: true,
   id: 'users.get',
@@ -9895,11 +9928,15 @@ const unaryRouteEnvelopeUnion: RpcUnaryRouteEnvelopeUnion<Routes> =
   routeUnaryEnvelope;
 unaryRouteEnvelopeUnion.id.toUpperCase();
 const routeResult: RpcRouteResult<Routes, 'users.get'> = routeEnvelope;
+const defaultRouteResult: RpcRouteResult<Routes> = routeResult;
 const routeUnaryResult: RpcUnaryRouteResult<Routes, 'users.get'> = routeResult;
+const defaultRouteUnaryResult: RpcUnaryRouteResult<Routes> = routeUnaryResult;
 const routeResultUnion: RpcRouteResultUnion<Routes> = routeResult;
 const unaryRouteResultUnion: RpcUnaryRouteResultUnion<Routes> =
   routeUnaryResult;
 unaryRouteResultUnion.id.toUpperCase();
+defaultRouteResult.id.toUpperCase();
+defaultRouteUnaryResult.id.toUpperCase();
 const rpcSubpathRouteResult: RpcSubpathRouteResult<Routes, 'users.get'> =
   routeResult;
 const rpcSubpathRouteResultUnion: RpcSubpathRouteResultUnion<Routes> =
