@@ -9,6 +9,7 @@ import {
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
+  createBunTransportRequestHandlerWithPath,
   createCloudflareFetch,
   createCloudflareWorker,
   createDenoFetch,
@@ -1058,6 +1059,7 @@ import type {
 } from '../src/runtime/compiled.js';
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
+  createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
@@ -7232,9 +7234,12 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
 };
 const bunTransportRequestHandler: BunTransportRequestHandler =
   createBunTransportRequestHandler(routeTypedBunTransportHandler);
+const bunTransportRequestHandlerWithPath: BunTransportRequestHandler =
+  createBunTransportRequestHandlerWithPath(routeTypedBunTransportHandler, '/rpc');
 const runtimeSubpathBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler =
   bunTransportRequestHandler;
 bunTransportRequestHandler(new Request('https://example.com/rpc'));
+bunTransportRequestHandlerWithPath(new Request('https://example.com/rpc'));
 runtimeSubpathBunTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
@@ -9733,6 +9738,10 @@ const runtimeSubpathBunTransportHandler: RuntimeSubpathBunTransportBodyResultHan
 };
 createRuntimeSubpathBunTransportRequestHandler(
   runtimeSubpathBunTransportHandler
+);
+createRuntimeSubpathBunTransportRequestHandlerWithPath(
+  runtimeSubpathBunTransportHandler,
+  '/rpc'
 );
 createRuntimeSubpathDenoTransportRequestHandler(
   runtimeSubpathBunTransportHandler

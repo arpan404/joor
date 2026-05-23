@@ -14,6 +14,7 @@ import {
   createCompiledRpcBodyResultHandler,
   createCompiledRuntimeState,
 } from '../src/runtime/compiled.js';
+import { createBunTransportRequestHandlerWithPath } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
 
 const manifest = {
@@ -357,6 +358,54 @@ describe('dispatcher', () => {
       ok: true,
       id: 'users.get',
       traceId: 'trace-deno-compiled',
+      data: { ok: true },
+    });
+  });
+
+  it('handles path-scoped Bun transport requests', async () => {
+    const handler = createBunTransportRequestHandlerWithPath(
+      async (_request, body) => {
+        const id =
+          typeof body === 'object' &&
+          body !== null &&
+          'id' in body &&
+          typeof body['id'] === 'string'
+            ? body['id']
+            : 'unknown';
+        return {
+          ok: true,
+          id,
+          traceId: 'trace-bun-transport',
+          data: { ok: true },
+        };
+      },
+      '/rpc'
+    );
+
+    const wrongPath = await handler(
+      new Request('http://localhost/not-rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      })
+    );
+
+    expect(wrongPath.status).toBe(404);
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({
+      ok: true,
+      id: 'users.get',
+      traceId: 'trace-bun-transport',
       data: { ok: true },
     });
   });

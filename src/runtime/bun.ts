@@ -420,6 +420,20 @@ export const createBunTransportRequestHandler = <
   };
 };
 
+export const createBunTransportRequestHandlerWithPath = <
+  TBody = JsonValue,
+  TResult extends BunTransportBodyResult = BunTransportBodyResult,
+>(
+  handler: BunTransportBodyResultHandler<TBody, TResult>,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): BunTransportRequestHandler =>
+  createBunTransportRequestHandler(
+    handler,
+    maxBodyBytes,
+    createRpcRequestPreflight({ path })
+  );
+
 export function createBunRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

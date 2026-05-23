@@ -16,6 +16,7 @@ export {
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
+  createBunTransportRequestHandlerWithPath,
   serveBun,
 } from './runtime/bun.js';
 export {
