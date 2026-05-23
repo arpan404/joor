@@ -322,7 +322,7 @@ describe('compiler', () => {
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain(
-        '"get-profile": unaryRoute("admin-user.get-profile")'
+        '"get-profile": routeUnary("admin-user.get-profile")'
       );
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
@@ -402,9 +402,9 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export const createTransport = (\n  options: GeneratedClientOptions = {}\n): TransportClient =>'
       );
-      expect(clientSource).toContain('"get": UnaryRouteFunction<"users.get">');
+      expect(clientSource).toContain('"get": RouteUnaryFunction<"users.get">');
       expect(clientSource).toContain(
-        '"watch": StreamRouteFunction<"users.watch">'
+        '"watch": RouteStreamFunction<"users.watch">'
       );
       expect(clientSource).toContain('export type Client');
       expect(clientSource).not.toContain(
@@ -416,10 +416,10 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export type RouteRequiresResponseHeaders'
       );
-      expect(clientSource).toContain('"get": unaryRoute("users.get")');
-      expect(clientSource).toContain('"watch": streamRoute("users.watch")');
+      expect(clientSource).toContain('"get": routeUnary("users.get")');
+      expect(clientSource).toContain('"watch": routeStream("users.watch")');
       expect(clientSource).toContain(
-        '"current": unaryRoute("tenants.current")'
+        '"current": routeUnary("tenants.current")'
       );
       expect(clientSource).toContain(
         'call(...args: [id: TId, ...ClientArgs<TId>])'

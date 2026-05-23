@@ -2400,8 +2400,8 @@ ${indent}},`
         if (entry === undefined) return '';
         const methods =
           entry.procedure.stream === undefined
-            ? `unaryRoute(${JSON.stringify(id)})`
-            : `streamRoute(${JSON.stringify(id)})`;
+            ? `routeUnary(${JSON.stringify(id)})`
+            : `routeStream(${JSON.stringify(id)})`;
         return `${indent}${JSON.stringify(name)}: ${methods},`;
       })
       .join('\n');
@@ -2424,8 +2424,8 @@ ${indent}};`
         if (entry === undefined) return '';
         const typeName =
           entry.procedure.stream === undefined
-            ? 'UnaryRouteFunction'
-            : 'StreamRouteFunction';
+            ? 'RouteUnaryFunction'
+            : 'RouteStreamFunction';
         return `${indent}${JSON.stringify(name)}: ${typeName}<${JSON.stringify(id)}>;`;
       })
       .join('\n');
@@ -2581,19 +2581,19 @@ export type RouteUnaryClientArgs<TId extends RouteUnaryId> = UnaryRouteClientArg
 export type StreamRouteClientArgs<TId extends StreamRouteId> = JoorManifestStreamRouteClientArgs<Manifest, TId>;
 export type RouteStreamClientArgs<TId extends RouteStreamId> = StreamRouteClientArgs<TId>;
 export type ClientArgs<TId extends RouteId> = RouteClientArgs<TId>;
-export type UnaryRouteFunction<TId extends UnaryRouteId> = {
-  (...args: UnaryRouteClientArgs<TId>): Promise<RouteResult<TId>>;
-  call(...args: UnaryRouteClientArgs<TId>): Promise<RouteResult<TId>>;
-  request(...args: UnaryRouteClientArgs<TId>): RouteRequest<TId>;
+export type RouteUnaryFunction<TId extends RouteUnaryId> = {
+  (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
+  call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
+  request(...args: RouteUnaryClientArgs<TId>): RouteRequest<TId>;
 };
-export type RouteUnaryFunction<TId extends RouteUnaryId> =
-  UnaryRouteFunction<TId>;
-export type StreamRouteFunction<TId extends StreamRouteId> = {
-  (...args: StreamRouteClientArgs<TId>): AsyncIterable<Stream<TId>>;
-  stream(...args: StreamRouteClientArgs<TId>): AsyncIterable<Stream<TId>>;
+export type UnaryRouteFunction<TId extends UnaryRouteId> =
+  RouteUnaryFunction<TId>;
+export type RouteStreamFunction<TId extends RouteStreamId> = {
+  (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
+  stream(...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
-export type RouteStreamFunction<TId extends RouteStreamId> =
-  StreamRouteFunction<TId>;
+export type StreamRouteFunction<TId extends StreamRouteId> =
+  RouteStreamFunction<TId>;
 export type BatchFunction = <const TRequests extends RouteBatchRequest>(
   requests: TRequests
 ) => Promise<RouteBatchResults<TRequests>>;
@@ -2643,16 +2643,16 @@ export type Client = GeneratedClient;
 
 export const createClient = (options: GeneratedClientOptions = {}): GeneratedClient => {
   const transport = createTransport(options);
-  const unaryRoute = <TId extends UnaryRouteId>(id: TId): UnaryRouteFunction<TId> => {
-    const routeTransport = transport as UnaryRouteTransport<TId>;
+  const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
+    const routeTransport = transport as RouteUnaryTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
       routeTransport.call(id, ...args);
     const request = (...args: ClientArgs<TId>) =>
       routeTransport.request(id, ...args);
     return Object.assign(call, { call, request });
   };
-  const streamRoute = <TId extends StreamRouteId>(id: TId): StreamRouteFunction<TId> => {
-    const routeTransport = transport as StreamRouteTransport<TId>;
+  const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
+    const routeTransport = transport as RouteStreamTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
     return Object.assign(stream, { stream });
