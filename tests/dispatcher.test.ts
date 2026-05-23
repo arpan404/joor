@@ -477,6 +477,59 @@ describe('dispatcher', () => {
     }
   });
 
+  it('honors sanitized Node transport serialized response headers', async () => {
+    const handler = createNodeTransportRequestHandlerWithPath(
+      async () => ({
+        body: '{"ok":true}',
+        responseHeaders: {
+          'cache-control': 'private',
+          'content-length': '999',
+          'content-type': 'text/plain',
+          connection: 'close',
+          'x-bad': 'bad\r\nx-injected: yes',
+          'x-safe': 'ok',
+        },
+      }),
+      '/rpc',
+      '127.0.0.1'
+    );
+    const server = createServer((incoming, outgoing) => {
+      void handler(incoming, outgoing);
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    try {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        throw new Error('Expected Node test server to listen on a TCP port');
+      }
+      const response = await fetch(`http://127.0.0.1:${address.port}/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'application/json'
+      );
+      expect(response.headers.get('cache-control')).toBe('private');
+      expect(response.headers.get('content-length')).not.toBe('999');
+      expect(response.headers.get('connection')).not.toBe('close');
+      expect(response.headers.get('x-bad')).toBeNull();
+      expect(response.headers.get('x-safe')).toBe('ok');
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
   it('caches successful query responses when meta.cache is configured', async () => {
     let calls = 0;
     const cached = defineProcedure({

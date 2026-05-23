@@ -276,7 +276,10 @@ const writeFastifyResult = async <TEnvelope extends RpcEnvelope>(
   reply.hijack?.();
   const response = reply.raw;
   if (isSerializedJsonEnvelope(result)) {
-    response.writeHead(200, createJsonHeaderRecord(result.headers));
+    response.writeHead(
+      200,
+      createJsonHeaderRecord(result.responseHeaders ?? result.headers)
+    );
     response.end(result.body);
     return;
   }

@@ -475,7 +475,10 @@ const writeResult = async <TEnvelope extends RpcEnvelope = RpcEnvelope>(
   result: NodeTransportBodyResult<TEnvelope>
 ): Promise<void> => {
   if (isSerializedJsonEnvelope(result)) {
-    outgoing.writeHead(200, createJsonHeaderRecord(result.headers));
+    outgoing.writeHead(
+      200,
+      createJsonHeaderRecord(result.responseHeaders ?? result.headers)
+    );
     outgoing.end(result.body);
     return;
   }
