@@ -63,6 +63,8 @@ import {
   type CloudflareFetchHandler,
   type CloudflareWorkerOptionsFor,
   type CloudflareWorker,
+  type CompiledAuthResult as RootCompiledAuthResult,
+  type CompiledAuthResultLike as RootCompiledAuthResultLike,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
@@ -378,6 +380,9 @@ import {
   type DenoCompiledTransportRequestHandler,
 } from '../src/runtime/deno-compiled-transport.js';
 import {
+  compiledUncachedExecutionState,
+  compiledAuthenticate,
+  compiledAuthenticateUncached,
   createCompiledRpcHandler,
   createCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState,
@@ -390,6 +395,8 @@ import {
   type ProcedureCacheHeaderValues,
 } from '../src/runtime/internal/procedure-cache.js';
 import type {
+  CompiledAuthResult,
+  CompiledAuthResultLike,
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
   CompiledRpcBodyResultHandlerFor,
@@ -2843,6 +2850,30 @@ const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   },
 };
 _wrongCompiledSerializedEnvelopeHeaders.body.toUpperCase();
+const compiledAuthResult: CompiledAuthResult = {};
+const rootCompiledAuthResult: RootCompiledAuthResult = compiledAuthResult;
+const compiledAuthFailure: CompiledAuthResult = {
+  kind: 'error',
+  code: 'UNAUTHORIZED',
+  details: { message: 'nope' },
+};
+const compiledAuthResultLike: CompiledAuthResultLike =
+  Promise.resolve(compiledAuthFailure);
+const rootCompiledAuthResultLike: RootCompiledAuthResultLike =
+  compiledAuthResultLike;
+rootCompiledAuthResult.valueOf();
+Promise.resolve(rootCompiledAuthResultLike).then((result) => {
+  result.valueOf();
+});
+compiledAuthenticate(
+  authPolicy,
+  {} as JoorContext<object, object, object, object>,
+  compiledUncachedExecutionState
+);
+compiledAuthenticateUncached(
+  authPolicy,
+  {} as JoorContext<object, object, object, object>
+);
 const manifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {

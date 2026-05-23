@@ -2,6 +2,8 @@ import {
   authenticateOnce,
   authenticateUncached,
   createExecutionState,
+  type AuthResult,
+  type AuthResultLike,
   type ExecutionState,
   uncachedExecutionState,
 } from './internal/auth-execution.js';
@@ -99,6 +101,8 @@ export interface CompiledRuntimeState<TServices extends object = object> {
 
 export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
+export type CompiledAuthResult = AuthResult;
+export type CompiledAuthResultLike = AuthResultLike;
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
@@ -306,12 +310,12 @@ export const compiledAuthenticate = (
   policy: ProcedureRuntime['auth'],
   ctx: JoorContext<object, object, object, object>,
   state: ExecutionState
-): ReturnType<typeof authenticateOnce> => authenticateOnce(policy, ctx, state);
+): CompiledAuthResultLike => authenticateOnce(policy, ctx, state);
 
 export const compiledAuthenticateUncached = (
   policy: ProcedureRuntime['auth'],
   ctx: JoorContext<object, object, object, object>
-): ReturnType<typeof authenticateUncached> => authenticateUncached(policy, ctx);
+): CompiledAuthResultLike => authenticateUncached(policy, ctx);
 
 const rateLimitFailure = (
   id: string,

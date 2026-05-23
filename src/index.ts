@@ -258,6 +258,8 @@ export type {
   CloudflareWorkerOptionsFor,
 } from './runtime/cloudflare.js';
 export type {
+  CompiledAuthResult,
+  CompiledAuthResultLike,
   CompiledBodyResult,
   CompiledDispatch,
   CompiledFixedDispatch,
