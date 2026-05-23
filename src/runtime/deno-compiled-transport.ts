@@ -30,7 +30,9 @@ import {
 import type { JoorFetchHandler } from './fetch.js';
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
 
-export type DenoCompiledTransportRequestHandler = JoorFetchHandler;
+export type DenoCompiledTransportRequestHandler<
+  TRequest extends Request = Request,
+> = JoorFetchHandler<TRequest>;
 
 export type DenoCompiledTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
@@ -151,6 +153,28 @@ export const createDenoCompiledTransportRequestHandler = <
   };
 };
 
+export const createDenoCompiledTransportRequestHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TServices extends object = object,
+    TBody = JsonValue,
+    TResult extends DenoCompiledTransportBodyResult =
+      DenoCompiledTransportBodyResult,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false
+  ): DenoCompiledTransportRequestHandler<TRequest> =>
+    createDenoCompiledTransportRequestHandler(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      maxBodyBytes,
+      preflight
+    ) as DenoCompiledTransportRequestHandler<TRequest>;
+
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
   const pathStart =
@@ -258,3 +282,25 @@ export const createDenoCompiledTransportRequestHandlerWithPath = <
     return transportResultToResponse(await handler(source, body as TBody));
   };
 };
+
+export const createDenoCompiledTransportRequestHandlerWithPathFor =
+  <TRequest extends Request>() =>
+  <
+    TServices extends object = object,
+    TBody = JsonValue,
+    TResult extends DenoCompiledTransportBodyResult =
+      DenoCompiledTransportBodyResult,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): DenoCompiledTransportRequestHandler<TRequest> =>
+    createDenoCompiledTransportRequestHandlerWithPath(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      path,
+      maxBodyBytes
+    ) as DenoCompiledTransportRequestHandler<TRequest>;

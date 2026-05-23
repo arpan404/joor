@@ -8,6 +8,8 @@ import {
   createBunTransportRequestHandlerFor as createRootBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor as createRootBunTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRootDenoFetchFor,
+  createDenoCompiledTransportRequestHandlerFor as createRootDenoCompiledTransportRequestHandlerFor,
+  createDenoCompiledTransportRequestHandlerWithPathFor as createRootDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoRpcRequestHandlerFor as createRootDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandlerFor as createRootDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandlerWithPathFor as createRootDenoTransportRequestHandlerWithPathFor,
@@ -28,6 +30,7 @@ import {
   defineManifest,
   defineProcedure,
   errorStatus,
+  createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor as createRootNetlifyEdgeFunctionFor,
@@ -58,6 +61,9 @@ import {
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
 import {
+  createCompiledRpcHandlerFor as createRuntimeCompiledRpcHandlerFor,
+  createDenoCompiledTransportRequestHandlerFor as createRuntimeDenoCompiledTransportRequestHandlerFor,
+  createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRuntimeDenoFetchFor,
   createDenoRpcRequestHandlerFor as createRuntimeDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandlerFor as createRuntimeDenoTransportRequestHandlerFor,
@@ -91,8 +97,13 @@ import {
 import {
   compiledCreateProcedureCacheKey,
   createCompiledRpcBodyResultHandler,
+  createCompiledRpcHandlerFor,
 } from 'joor/runtime/compiled';
-import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';
+import {
+  createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor,
+  createDenoCompiledTransportRequestHandlerWithPathFor,
+} from 'joor/runtime/deno-compiled-transport';
 import {
   createDenoFetchFor,
   createDenoRpcRequestHandler,
@@ -337,8 +348,17 @@ const packageSubpathValues = [
   createRootCorsHeaderRecord,
   rootCompiledCreateProcedureCacheKey,
   createManifestRouteStreamProtocolRequest,
+  createCompiledRpcHandlerFor,
+  createRootCompiledRpcHandlerFor,
+  createRuntimeCompiledRpcHandlerFor,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor,
+  createDenoCompiledTransportRequestHandlerWithPathFor,
+  createRootDenoCompiledTransportRequestHandlerFor,
+  createRootDenoCompiledTransportRequestHandlerWithPathFor,
+  createRuntimeDenoCompiledTransportRequestHandlerFor,
+  createRuntimeDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoFetchFor,
   createDenoRpcRequestHandler,
   createDenoRpcRequestHandlerFor,

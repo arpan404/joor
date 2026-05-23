@@ -90,7 +90,9 @@ export {
 } from './runtime/deno.js';
 export {
   createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath,
+  createDenoCompiledTransportRequestHandlerWithPathFor,
 } from './runtime/deno-compiled-transport.js';
 export {
   createDenoRpcRequestHandlerFor as createStandaloneDenoRpcRequestHandlerFor,
@@ -160,6 +162,7 @@ export {
   compiledCreateProcedureCacheKey,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
+  createCompiledRpcHandlerFor,
   createCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState,
 } from './runtime/compiled.js';

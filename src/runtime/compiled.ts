@@ -177,7 +177,8 @@ export type CompiledStreamRouteBodyResultFor<
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
-export type CompiledRpcRequestHandler = JoorFetchHandler;
+export type CompiledRpcRequestHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
 
@@ -1232,3 +1233,16 @@ export const createCompiledRpcHandler = <
     return transportResultToResponse(result, extraHeaders);
   };
 };
+
+export const createCompiledRpcHandlerFor =
+  <TRequest extends Request>() =>
+  <const TConfig extends JoorConfig = Record<string, never>>(
+    dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+    config?: TConfig,
+    unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+  ): CompiledRpcRequestHandler<TRequest> =>
+    createCompiledRpcHandler(
+      dispatch,
+      config,
+      unaryDispatch
+    ) as CompiledRpcRequestHandler<TRequest>;

@@ -53,7 +53,9 @@ export type {
 } from './deno-transport.js';
 export {
   createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath,
+  createDenoCompiledTransportRequestHandlerWithPathFor,
 } from './deno-compiled-transport.js';
 export type {
   DenoCompiledTransportBodyResult,

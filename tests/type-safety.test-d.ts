@@ -35,7 +35,9 @@ import {
   createDenoFetch,
   createDenoFetchFor,
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor as createRootDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
+  createDenoCompiledTransportRequestHandlerWithPathFor as createRootDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoRpcRequestHandler,
   createDenoRpcRequestHandlerFor,
   createStandaloneDenoRpcRequestHandler as createRootStandaloneDenoRpcRequestHandler,
@@ -108,6 +110,7 @@ import {
   createRpcTransportBodyResultHandler,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createCompiledRpcHandler as createRootCompiledRpcHandler,
+  createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   createCompiledRpcBodyResultHandler as createRootCompiledRpcBodyResultHandler,
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
@@ -1329,7 +1332,9 @@ import {
 } from '../src/runtime/deno-transport.js';
 import {
   createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath,
+  createDenoCompiledTransportRequestHandlerWithPathFor,
   type DenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler,
@@ -1353,6 +1358,7 @@ import {
   compiledAuthenticateUncached,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
+  createCompiledRpcHandlerFor,
   createCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState,
   type executeCompiledProcedure,
@@ -1417,6 +1423,8 @@ import {
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createCloudflareWorkerFor as createRuntimeSubpathCloudflareWorkerFor,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerFor,
+  createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerWithPathFor,
   createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
   createStandaloneDenoRpcRequestHandlerFor as createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRuntimeSubpathStandaloneDenoTransportRequestHandler,
@@ -1424,6 +1432,7 @@ import {
   createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
   createStandaloneDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRuntimeSubpathDenoFetchFor,
+  createCompiledRpcHandlerFor as createRuntimeSubpathCompiledRpcHandlerFor,
   createDenoRpcRequestHandlerFor as createRuntimeSubpathDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createDenoTransportRequestHandlerFor as createRuntimeSubpathDenoTransportRequestHandlerFor,
@@ -10040,8 +10049,35 @@ const compiledRpcHandler: CompiledRpcRequestHandler = createCompiledRpcHandler(
 );
 const runtimeSubpathCompiledRpcHandler: RuntimeSubpathCompiledRpcRequestHandler =
   compiledRpcHandler;
+const createTypedCompiledRpcHandler =
+  createCompiledRpcHandlerFor<AppFetchRequest>();
+const typedAppCompiledRpcHandler: CompiledRpcRequestHandler<AppFetchRequest> =
+  createTypedCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const createRootTypedCompiledRpcHandler =
+  createRootCompiledRpcHandlerFor<AppFetchRequest>();
+const rootTypedAppCompiledRpcHandler: RootCompiledRpcRequestHandler<AppFetchRequest> =
+  createRootTypedCompiledRpcHandler(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+const createRuntimeSubpathTypedCompiledRpcHandler =
+  createRuntimeSubpathCompiledRpcHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedAppCompiledRpcHandler: RuntimeSubpathCompiledRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
 compiledRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathCompiledRpcHandler(new Request('https://example.com/rpc'));
+typedAppCompiledRpcHandler(appFetchRequest);
+rootTypedAppCompiledRpcHandler(appFetchRequest);
+runtimeSubpathTypedAppCompiledRpcHandler(appFetchRequest);
 createCompiledRpcTransportBodyResultHandler(
   _serviceTypedCompiledDispatch,
   manifestAwareConfig,
@@ -10128,6 +10164,8 @@ createRootCompiledRpcHandler(
 );
 // @ts-expect-error service-dependent compiled dispatches require matching config services.
 createCompiledRpcHandler(_serviceTypedCompiledDispatch);
+// @ts-expect-error service-dependent typed compiled dispatches require matching config services.
+createTypedCompiledRpcHandler(_serviceTypedCompiledDispatch);
 // @ts-expect-error root compiled dispatches require matching config services.
 createRootCompiledRpcHandler(_rootServiceTypedCompiledDispatch);
 // @ts-expect-error service-dependent compiled transports require matching config services.
@@ -10155,6 +10193,23 @@ createDenoCompiledTransportRequestHandlerWithPath(
   compiledUnaryDispatch,
   '/rpc'
 );
+const createTypedDenoCompiledTransportRequestHandler =
+  createDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const typedDenoCompiledTransportRequestHandler: DenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createTypedDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    syncDenoCompiledTransportHandler,
+    compiledUnaryDispatch
+  );
+const createTypedDenoCompiledTransportRequestHandlerWithPath =
+  createDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedDenoCompiledTransportRequestHandlerWithPath: DenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createTypedDenoCompiledTransportRequestHandlerWithPath(
+    compiledRuntimeState,
+    syncDenoCompiledTransportHandler,
+    compiledUnaryDispatch,
+    '/rpc'
+  );
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
@@ -10172,11 +10227,45 @@ createRootDenoCompiledTransportRequestHandlerWithPath(
   _rootServiceTypedCompiledUnaryDispatch,
   '/rpc'
 );
+const createRootTypedDenoCompiledTransportRequestHandler =
+  createRootDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const rootTypedDenoCompiledTransportRequestHandler: RootDenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createRootTypedDenoCompiledTransportRequestHandler(
+    rootCompiledRuntimeState,
+    routeTypedStandaloneDenoTransportHandler,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+const createRootTypedDenoCompiledTransportRequestHandlerWithPath =
+  createRootDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const rootTypedDenoCompiledTransportRequestHandlerWithPath: RootDenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createRootTypedDenoCompiledTransportRequestHandlerWithPath(
+    rootCompiledRuntimeState,
+    routeTypedStandaloneDenoTransportHandler,
+    _rootServiceTypedCompiledUnaryDispatch,
+    '/rpc'
+  );
 createRuntimeSubpathDenoCompiledTransportRequestHandler(
   typedCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
   _serviceTypedCompiledUnaryDispatch
 );
+const createRuntimeSubpathTypedDenoCompiledTransportRequestHandler =
+  createRuntimeSubpathDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoCompiledTransportRequestHandler(
+    typedCompiledRuntimeState,
+    routeTypedStandaloneDenoTransportHandler,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const createRuntimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath =
+  createRuntimeSubpathDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath: RuntimeSubpathDenoCompiledTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath(
+    typedCompiledRuntimeState,
+    routeTypedStandaloneDenoTransportHandler,
+    _serviceTypedCompiledUnaryDispatch,
+    '/rpc'
+  );
 createDenoCompiledTransportRequestHandlerWithPath(
   // @ts-expect-error compiled Deno transports require unary dispatch services to match runtime state services.
   compiledRuntimeState,
@@ -10211,6 +10300,14 @@ const rootSyncDenoCompiledTransportRequestHandler: RootDenoCompiledTransportRequ
   syncDenoCompiledTransportRequestHandler;
 const runtimeSubpathSyncDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledTransportRequestHandler =
   rootSyncDenoCompiledTransportRequestHandler;
+typedDenoCompiledTransportRequestHandler(appFetchRequest);
+typedDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
+rootTypedDenoCompiledTransportRequestHandler(appFetchRequest);
+rootTypedDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
+runtimeSubpathTypedDenoCompiledTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath(
+  appFetchRequest
+);
 const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
