@@ -7426,22 +7426,22 @@ const runtimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorkerOptio
   typeof manifest,
   readonly [typeof usersPlugin]
 > = cloudflareWorkerOptions;
-const cloudflareUnaryRouteWorkerOptions: CloudflareUnaryRouteWorkerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const cloudflareStreamRouteWorkerOptions: CloudflareStreamRouteWorkerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const cloudflareRouteUnaryWorkerOptions: CloudflareRouteUnaryWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = cloudflareUnaryRouteWorkerOptions;
+> = manifestUnaryRouteHandlerOptions;
+const cloudflareUnaryRouteWorkerOptions: CloudflareUnaryRouteWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryWorkerOptions;
 const cloudflareRouteStreamWorkerOptions: CloudflareRouteStreamWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = cloudflareStreamRouteWorkerOptions;
+> = manifestStreamRouteHandlerOptions;
+const cloudflareStreamRouteWorkerOptions: CloudflareStreamRouteWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamWorkerOptions;
 const runtimeSubpathCloudflareUnaryRouteWorkerOptions: RuntimeSubpathCloudflareUnaryRouteWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7487,22 +7487,22 @@ const cloudflareWorkerOptionsArgs: CloudflareWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareWorkerOptions];
-const cloudflareUnaryRouteWorkerOptionsArgs: CloudflareUnaryRouteWorkerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [cloudflareUnaryRouteWorkerOptions];
-const cloudflareStreamRouteWorkerOptionsArgs: CloudflareStreamRouteWorkerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [cloudflareStreamRouteWorkerOptions];
 const cloudflareRouteUnaryWorkerOptionsArgs: CloudflareRouteUnaryWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareRouteUnaryWorkerOptions];
+const cloudflareUnaryRouteWorkerOptionsArgs: CloudflareUnaryRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryWorkerOptionsArgs;
 const cloudflareRouteStreamWorkerOptionsArgs: CloudflareRouteStreamWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareRouteStreamWorkerOptions];
+const cloudflareStreamRouteWorkerOptionsArgs: CloudflareStreamRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamWorkerOptionsArgs;
 const runtimeSubpathCloudflareWorkerOptionsArgs: RuntimeSubpathCloudflareWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7557,22 +7557,22 @@ const netlifyFetchOptions: NetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-const netlifyUnaryRouteFetchOptions: NetlifyUnaryRouteFetchOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const netlifyStreamRouteFetchOptions: NetlifyStreamRouteFetchOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const netlifyRouteUnaryFetchOptions: NetlifyRouteUnaryFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = netlifyUnaryRouteFetchOptions;
+> = manifestUnaryRouteHandlerOptions;
+const netlifyUnaryRouteFetchOptions: NetlifyUnaryRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyRouteUnaryFetchOptions;
 const netlifyRouteStreamFetchOptions: NetlifyRouteStreamFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = netlifyStreamRouteFetchOptions;
+> = manifestStreamRouteHandlerOptions;
+const netlifyStreamRouteFetchOptions: NetlifyStreamRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyRouteStreamFetchOptions;
 const exactNetlifyFetchOptions: NetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -7631,22 +7631,22 @@ const rootSubpathNetlifyFetchOptionsArgs: RootSubpathNetlifyFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = netlifyFetchOptionsArgs;
-const netlifyUnaryRouteFetchOptionsArgs: NetlifyUnaryRouteFetchOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [netlifyUnaryRouteFetchOptions];
-const netlifyStreamRouteFetchOptionsArgs: NetlifyStreamRouteFetchOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [netlifyStreamRouteFetchOptions];
 const netlifyRouteUnaryFetchOptionsArgs: NetlifyRouteUnaryFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [netlifyRouteUnaryFetchOptions];
+const netlifyUnaryRouteFetchOptionsArgs: NetlifyUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyRouteUnaryFetchOptionsArgs;
 const netlifyRouteStreamFetchOptionsArgs: NetlifyRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [netlifyRouteStreamFetchOptions];
+const netlifyStreamRouteFetchOptionsArgs: NetlifyStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyRouteStreamFetchOptionsArgs;
 const runtimeSubpathNetlifyFetchOptionsArgs: RuntimeSubpathNetlifyFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7698,22 +7698,22 @@ const vercelFetchOptions: VercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-const vercelUnaryRouteFetchOptions: VercelUnaryRouteFetchOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const vercelStreamRouteFetchOptions: VercelStreamRouteFetchOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const vercelRouteUnaryFetchOptions: VercelRouteUnaryFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = vercelUnaryRouteFetchOptions;
+> = manifestUnaryRouteHandlerOptions;
+const vercelUnaryRouteFetchOptions: VercelUnaryRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelRouteUnaryFetchOptions;
 const vercelRouteStreamFetchOptions: VercelRouteStreamFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = vercelStreamRouteFetchOptions;
+> = manifestStreamRouteHandlerOptions;
+const vercelStreamRouteFetchOptions: VercelStreamRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelRouteStreamFetchOptions;
 const exactVercelFetchOptions: VercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -7768,22 +7768,22 @@ const vercelFetchOptionsArgs: VercelFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [vercelFetchOptions];
-const vercelUnaryRouteFetchOptionsArgs: VercelUnaryRouteFetchOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [vercelUnaryRouteFetchOptions];
-const vercelStreamRouteFetchOptionsArgs: VercelStreamRouteFetchOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [vercelStreamRouteFetchOptions];
 const vercelRouteUnaryFetchOptionsArgs: VercelRouteUnaryFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [vercelRouteUnaryFetchOptions];
+const vercelUnaryRouteFetchOptionsArgs: VercelUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelRouteUnaryFetchOptionsArgs;
 const vercelRouteStreamFetchOptionsArgs: VercelRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [vercelRouteStreamFetchOptions];
+const vercelStreamRouteFetchOptionsArgs: VercelStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelRouteStreamFetchOptionsArgs;
 const runtimeSubpathVercelFetchOptionsArgs: RuntimeSubpathVercelFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]

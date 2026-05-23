@@ -23,12 +23,28 @@ export type CloudflareWorkerOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type CloudflareRouteUnaryWorkerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
+
 export type CloudflareUnaryRouteWorkerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareRouteUnaryWorkerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type CloudflareRouteStreamWorkerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type CloudflareStreamRouteWorkerOptionsFor<
@@ -37,23 +53,7 @@ export type CloudflareStreamRouteWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
-
-export type CloudflareRouteUnaryWorkerOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = CloudflareUnaryRouteWorkerOptionsFor<TManifest, TPlugins, TBody>;
-
-export type CloudflareRouteStreamWorkerOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = CloudflareStreamRouteWorkerOptionsFor<TManifest, TPlugins, TBody>;
+> = CloudflareRouteStreamWorkerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type CloudflareWorkerOptionsArgs<
   TManifest extends JoorManifest,
@@ -62,12 +62,28 @@ export type CloudflareWorkerOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type CloudflareRouteUnaryWorkerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type CloudflareUnaryRouteWorkerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareRouteUnaryWorkerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type CloudflareRouteStreamWorkerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type CloudflareStreamRouteWorkerOptionsArgs<
@@ -76,23 +92,7 @@ export type CloudflareStreamRouteWorkerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type CloudflareRouteUnaryWorkerOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = CloudflareUnaryRouteWorkerOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type CloudflareRouteStreamWorkerOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = CloudflareStreamRouteWorkerOptionsArgs<TManifest, TPlugins, TBody>;
+> = CloudflareRouteStreamWorkerOptionsArgs<TManifest, TPlugins, TBody>;
 
 export function createCloudflareWorker<
   TManifest extends JoorManifest,

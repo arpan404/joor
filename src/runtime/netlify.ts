@@ -19,12 +19,28 @@ export type NetlifyFetchOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type NetlifyRouteUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NetlifyFetchOptionsFor<TManifest, TPlugins, TBody>;
+
 export type NetlifyUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = NetlifyRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody>;
+
+export type NetlifyRouteStreamFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = NetlifyFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type NetlifyStreamRouteFetchOptionsFor<
@@ -33,23 +49,7 @@ export type NetlifyStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = NetlifyFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type NetlifyRouteUnaryFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = NetlifyUnaryRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type NetlifyRouteStreamFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = NetlifyStreamRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
+> = NetlifyRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type NetlifyFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -58,12 +58,28 @@ export type NetlifyFetchOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type NetlifyRouteUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NetlifyFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type NetlifyUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = NetlifyRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NetlifyRouteStreamFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = NetlifyFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type NetlifyStreamRouteFetchOptionsArgs<
@@ -72,23 +88,7 @@ export type NetlifyStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = NetlifyFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type NetlifyRouteUnaryFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = NetlifyUnaryRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type NetlifyRouteStreamFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = NetlifyStreamRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
+> = NetlifyRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export function createNetlifyFetch<
   TManifest extends JoorManifest,

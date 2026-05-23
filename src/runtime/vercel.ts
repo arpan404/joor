@@ -19,12 +19,28 @@ export type VercelFetchOptionsFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type VercelRouteUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = VercelFetchOptionsFor<TManifest, TPlugins, TBody>;
+
 export type VercelUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = VercelRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody>;
+
+export type VercelRouteStreamFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = VercelFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type VercelStreamRouteFetchOptionsFor<
@@ -33,23 +49,7 @@ export type VercelStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = VercelFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type VercelRouteUnaryFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = VercelUnaryRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
-
-export type VercelRouteStreamFetchOptionsFor<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = VercelStreamRouteFetchOptionsFor<TManifest, TPlugins, TBody>;
+> = VercelRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody>;
 
 export type VercelFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -58,12 +58,28 @@ export type VercelFetchOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type VercelRouteUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = VercelFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type VercelUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
+> = VercelRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type VercelRouteStreamFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
 > = VercelFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export type VercelStreamRouteFetchOptionsArgs<
@@ -72,23 +88,7 @@ export type VercelStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = VercelFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type VercelRouteUnaryFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = VercelUnaryRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
-
-export type VercelRouteStreamFetchOptionsArgs<
-  TManifest extends JoorManifest,
-  TPlugins extends readonly JoorPlugin<object>[] =
-    readonly JoorPlugin<object>[],
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = VercelStreamRouteFetchOptionsArgs<TManifest, TPlugins, TBody>;
+> = VercelRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody>;
 
 export function createVercelFetch<
   TManifest extends JoorManifest,
