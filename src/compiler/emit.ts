@@ -175,22 +175,36 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteStreamEvent',
     'JoorManifestStreamRouteClientArgs',
     'JoorManifestStreamRouteClientHeaders',
+    'JoorManifestStreamRouteError',
+    'JoorManifestStreamRouteErrorCode',
+    'JoorManifestStreamRouteErrorDetails',
     'JoorManifestStreamRouteEvent',
+    'JoorManifestStreamRouteHasHeaders',
+    'JoorManifestStreamRouteHasResponseHeaders',
     'JoorManifestStreamRouteHeaders',
     'JoorManifestStreamRouteInput',
     'JoorManifestStreamRouteProcedure',
+    'JoorManifestStreamRouteRequiresHeaders',
+    'JoorManifestStreamRouteRequiresResponseHeaders',
     'JoorManifestStreamRouteRequestOptions',
     'JoorManifestRouteStreamProtocolRequest',
     'JoorManifestRouteStreamProtocolRequestUnion',
     'JoorManifestUnaryRouteClientArgs',
     'JoorManifestUnaryRouteClientHeaders',
     'JoorManifestUnaryRouteEnvelope',
+    'JoorManifestUnaryRouteError',
+    'JoorManifestUnaryRouteErrorCode',
+    'JoorManifestUnaryRouteErrorDetails',
+    'JoorManifestUnaryRouteHasHeaders',
+    'JoorManifestUnaryRouteHasResponseHeaders',
     'JoorManifestUnaryRouteHeaders',
     'JoorManifestUnaryRouteInput',
     'JoorManifestUnaryRouteOutput',
     'JoorManifestUnaryRouteProcedure',
     'JoorManifestUnaryRouteResponseHeaders',
     'JoorManifestUnaryRouteResult',
+    'JoorManifestUnaryRouteRequiresHeaders',
+    'JoorManifestUnaryRouteRequiresResponseHeaders',
     'JoorManifestUnaryRouteRequestOptions',
     'JoorManifestRouteUnaryProtocolRequest',
     'JoorManifestRouteUnaryProtocolRequestUnion',
@@ -269,15 +283,43 @@ export type NativeRouteUnaryClientArgs<TId extends NativeUnaryRouteId> = NativeU
 export type NativeStreamRouteClientArgs<TId extends NativeStreamRouteId> = JoorManifestStreamRouteClientArgs<NativeManifest, TId>;
 export type NativeRouteStreamClientArgs<TId extends NativeStreamRouteId> = NativeStreamRouteClientArgs<TId>;
 export type NativeRouteHasHeaders<TId extends NativeRouteId> = JoorManifestRouteHasHeaders<NativeManifest, TId>;
+export type NativeUnaryRouteHasHeaders<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteHasHeaders<NativeManifest, TId>;
+export type NativeRouteUnaryHasHeaders<TId extends NativeUnaryRouteId> = NativeUnaryRouteHasHeaders<TId>;
+export type NativeStreamRouteHasHeaders<TId extends NativeStreamRouteId> = JoorManifestStreamRouteHasHeaders<NativeManifest, TId>;
+export type NativeRouteStreamHasHeaders<TId extends NativeStreamRouteId> = NativeStreamRouteHasHeaders<TId>;
 export type NativeRouteRequiresHeaders<TId extends NativeRouteId> = JoorManifestRouteRequiresHeaders<NativeManifest, TId>;
+export type NativeUnaryRouteRequiresHeaders<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteRequiresHeaders<NativeManifest, TId>;
+export type NativeRouteUnaryRequiresHeaders<TId extends NativeUnaryRouteId> = NativeUnaryRouteRequiresHeaders<TId>;
+export type NativeStreamRouteRequiresHeaders<TId extends NativeStreamRouteId> = JoorManifestStreamRouteRequiresHeaders<NativeManifest, TId>;
+export type NativeRouteStreamRequiresHeaders<TId extends NativeStreamRouteId> = NativeStreamRouteRequiresHeaders<TId>;
 export type NativeRouteResponseHeaders<TId extends NativeUnaryRouteId> = JoorManifestRouteResponseHeaders<NativeManifest, TId>;
 export type NativeUnaryRouteResponseHeaders<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteResponseHeaders<NativeManifest, TId>;
 export type NativeRouteUnaryResponseHeaders<TId extends NativeUnaryRouteId> = NativeUnaryRouteResponseHeaders<TId>;
 export type NativeRouteHasResponseHeaders<TId extends NativeRouteId> = JoorManifestRouteHasResponseHeaders<NativeManifest, TId>;
+export type NativeUnaryRouteHasResponseHeaders<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteHasResponseHeaders<NativeManifest, TId>;
+export type NativeRouteUnaryHasResponseHeaders<TId extends NativeUnaryRouteId> = NativeUnaryRouteHasResponseHeaders<TId>;
+export type NativeStreamRouteHasResponseHeaders<TId extends NativeStreamRouteId> = JoorManifestStreamRouteHasResponseHeaders<NativeManifest, TId>;
+export type NativeRouteStreamHasResponseHeaders<TId extends NativeStreamRouteId> = NativeStreamRouteHasResponseHeaders<TId>;
 export type NativeRouteRequiresResponseHeaders<TId extends NativeRouteId> = JoorManifestRouteRequiresResponseHeaders<NativeManifest, TId>;
+export type NativeUnaryRouteRequiresResponseHeaders<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteRequiresResponseHeaders<NativeManifest, TId>;
+export type NativeRouteUnaryRequiresResponseHeaders<TId extends NativeUnaryRouteId> = NativeUnaryRouteRequiresResponseHeaders<TId>;
+export type NativeStreamRouteRequiresResponseHeaders<TId extends NativeStreamRouteId> = JoorManifestStreamRouteRequiresResponseHeaders<NativeManifest, TId>;
+export type NativeRouteStreamRequiresResponseHeaders<TId extends NativeStreamRouteId> = NativeStreamRouteRequiresResponseHeaders<TId>;
 export type NativeRouteError<TId extends NativeRouteId> = JoorManifestRouteError<NativeManifest, TId>;
+export type NativeUnaryRouteError<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteError<NativeManifest, TId>;
+export type NativeRouteUnaryError<TId extends NativeUnaryRouteId> = NativeUnaryRouteError<TId>;
+export type NativeStreamRouteError<TId extends NativeStreamRouteId> = JoorManifestStreamRouteError<NativeManifest, TId>;
+export type NativeRouteStreamError<TId extends NativeStreamRouteId> = NativeStreamRouteError<TId>;
 export type NativeRouteErrorCode<TId extends NativeRouteId> = JoorManifestRouteErrorCode<NativeManifest, TId>;
+export type NativeUnaryRouteErrorCode<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteErrorCode<NativeManifest, TId>;
+export type NativeRouteUnaryErrorCode<TId extends NativeUnaryRouteId> = NativeUnaryRouteErrorCode<TId>;
+export type NativeStreamRouteErrorCode<TId extends NativeStreamRouteId> = JoorManifestStreamRouteErrorCode<NativeManifest, TId>;
+export type NativeRouteStreamErrorCode<TId extends NativeStreamRouteId> = NativeStreamRouteErrorCode<TId>;
 export type NativeRouteErrorDetails<TId extends NativeRouteId, TCode extends NativeRouteErrorCode<TId>> = JoorManifestRouteErrorDetails<NativeManifest, TId, TCode>;
+export type NativeUnaryRouteErrorDetails<TId extends NativeUnaryRouteId, TCode extends NativeUnaryRouteErrorCode<TId>> = JoorManifestUnaryRouteErrorDetails<NativeManifest, TId, TCode>;
+export type NativeRouteUnaryErrorDetails<TId extends NativeUnaryRouteId, TCode extends NativeUnaryRouteErrorCode<TId>> = NativeUnaryRouteErrorDetails<TId, TCode>;
+export type NativeStreamRouteErrorDetails<TId extends NativeStreamRouteId, TCode extends NativeStreamRouteErrorCode<TId>> = JoorManifestStreamRouteErrorDetails<NativeManifest, TId, TCode>;
+export type NativeRouteStreamErrorDetails<TId extends NativeStreamRouteId, TCode extends NativeStreamRouteErrorCode<TId>> = NativeStreamRouteErrorDetails<TId, TCode>;
 export type NativeRouteEnvelope<TId extends NativeUnaryRouteId> = JoorManifestRouteEnvelope<NativeManifest, TId>;
 export type NativeUnaryRouteEnvelope<TId extends NativeUnaryRouteId> = JoorManifestUnaryRouteEnvelope<NativeManifest, TId>;
 export type NativeRouteUnaryEnvelope<TId extends NativeUnaryRouteId> = NativeUnaryRouteEnvelope<TId>;
@@ -2210,7 +2252,7 @@ ${indent}};`
   await writeFile(
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient } from 'joor/client';
-import type { JoorManifestClientOptions, JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteClientArgs, JoorManifestRouteClientHeaders, JoorManifestRouteEnvelope, JoorManifestRouteEnvelopeUnion, JoorManifestRouteError, JoorManifestRouteErrorCode, JoorManifestRouteErrorDetails, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProcedure, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestOptions, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteResult, JoorManifestRouteResultUnion, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteClientArgs, JoorManifestStreamRouteClientHeaders, JoorManifestStreamRouteEvent, JoorManifestStreamRouteHeaders, JoorManifestStreamRouteId, JoorManifestStreamRouteInput, JoorManifestStreamRouteProcedure, JoorManifestStreamRouteRequestOptions, JoorManifestTransportClient, JoorManifestUnaryRouteClientArgs, JoorManifestUnaryRouteClientHeaders, JoorManifestUnaryRouteEnvelope, JoorManifestUnaryRouteHeaders, JoorManifestUnaryRouteId, JoorManifestUnaryRouteInput, JoorManifestUnaryRouteOutput, JoorManifestUnaryRouteProcedure, JoorManifestUnaryRouteResponseHeaders, JoorManifestUnaryRouteResult, JoorManifestUnaryRouteRequestOptions } from 'joor/manifest';
+import type { JoorManifestClientOptions, JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteClientArgs, JoorManifestRouteClientHeaders, JoorManifestRouteEnvelope, JoorManifestRouteEnvelopeUnion, JoorManifestRouteError, JoorManifestRouteErrorCode, JoorManifestRouteErrorDetails, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProcedure, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestOptions, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteResult, JoorManifestRouteResultUnion, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteClientArgs, JoorManifestStreamRouteClientHeaders, JoorManifestStreamRouteError, JoorManifestStreamRouteErrorCode, JoorManifestStreamRouteErrorDetails, JoorManifestStreamRouteEvent, JoorManifestStreamRouteHasHeaders, JoorManifestStreamRouteHasResponseHeaders, JoorManifestStreamRouteHeaders, JoorManifestStreamRouteId, JoorManifestStreamRouteInput, JoorManifestStreamRouteProcedure, JoorManifestStreamRouteRequiresHeaders, JoorManifestStreamRouteRequiresResponseHeaders, JoorManifestStreamRouteRequestOptions, JoorManifestTransportClient, JoorManifestUnaryRouteClientArgs, JoorManifestUnaryRouteClientHeaders, JoorManifestUnaryRouteEnvelope, JoorManifestUnaryRouteError, JoorManifestUnaryRouteErrorCode, JoorManifestUnaryRouteErrorDetails, JoorManifestUnaryRouteHasHeaders, JoorManifestUnaryRouteHasResponseHeaders, JoorManifestUnaryRouteHeaders, JoorManifestUnaryRouteId, JoorManifestUnaryRouteInput, JoorManifestUnaryRouteOutput, JoorManifestUnaryRouteProcedure, JoorManifestUnaryRouteResponseHeaders, JoorManifestUnaryRouteResult, JoorManifestUnaryRouteRequiresHeaders, JoorManifestUnaryRouteRequiresResponseHeaders, JoorManifestUnaryRouteRequestOptions } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
 export type Manifest = typeof manifest;
@@ -2246,8 +2288,20 @@ export type RouteResponseHeaders<TId extends UnaryRouteId> = JoorManifestRouteRe
 export type UnaryRouteResponseHeaders<TId extends UnaryRouteId> = JoorManifestUnaryRouteResponseHeaders<Manifest, TId>;
 export type RouteUnaryResponseHeaders<TId extends UnaryRouteId> = UnaryRouteResponseHeaders<TId>;
 export type RouteError<TId extends RouteId> = JoorManifestRouteError<Manifest, TId>;
+export type UnaryRouteError<TId extends UnaryRouteId> = JoorManifestUnaryRouteError<Manifest, TId>;
+export type RouteUnaryError<TId extends UnaryRouteId> = UnaryRouteError<TId>;
+export type StreamRouteError<TId extends StreamRouteId> = JoorManifestStreamRouteError<Manifest, TId>;
+export type RouteStreamError<TId extends StreamRouteId> = StreamRouteError<TId>;
 export type RouteErrorCode<TId extends RouteId> = JoorManifestRouteErrorCode<Manifest, TId>;
+export type UnaryRouteErrorCode<TId extends UnaryRouteId> = JoorManifestUnaryRouteErrorCode<Manifest, TId>;
+export type RouteUnaryErrorCode<TId extends UnaryRouteId> = UnaryRouteErrorCode<TId>;
+export type StreamRouteErrorCode<TId extends StreamRouteId> = JoorManifestStreamRouteErrorCode<Manifest, TId>;
+export type RouteStreamErrorCode<TId extends StreamRouteId> = StreamRouteErrorCode<TId>;
 export type RouteErrorDetails<TId extends RouteId, TCode extends RouteErrorCode<TId>> = JoorManifestRouteErrorDetails<Manifest, TId, TCode>;
+export type UnaryRouteErrorDetails<TId extends UnaryRouteId, TCode extends UnaryRouteErrorCode<TId>> = JoorManifestUnaryRouteErrorDetails<Manifest, TId, TCode>;
+export type RouteUnaryErrorDetails<TId extends UnaryRouteId, TCode extends UnaryRouteErrorCode<TId>> = UnaryRouteErrorDetails<TId, TCode>;
+export type StreamRouteErrorDetails<TId extends StreamRouteId, TCode extends StreamRouteErrorCode<TId>> = JoorManifestStreamRouteErrorDetails<Manifest, TId, TCode>;
+export type RouteStreamErrorDetails<TId extends StreamRouteId, TCode extends StreamRouteErrorCode<TId>> = StreamRouteErrorDetails<TId, TCode>;
 export type RouteEnvelope<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type UnaryRouteEnvelope<TId extends UnaryRouteId> = JoorManifestUnaryRouteEnvelope<Manifest, TId>;
 export type RouteUnaryEnvelope<TId extends UnaryRouteId> = UnaryRouteEnvelope<TId>;
@@ -2276,9 +2330,25 @@ export type RouteStreamEvent<TId extends StreamRouteId> = JoorManifestRouteStrea
 export type StreamRouteEvent<TId extends StreamRouteId> = JoorManifestStreamRouteEvent<Manifest, TId>;
 export type Stream<TId extends StreamRouteId> = RouteStreamEvent<TId>;
 export type RouteHasHeaders<TId extends RouteId> = JoorManifestRouteHasHeaders<Manifest, TId>;
+export type UnaryRouteHasHeaders<TId extends UnaryRouteId> = JoorManifestUnaryRouteHasHeaders<Manifest, TId>;
+export type RouteUnaryHasHeaders<TId extends UnaryRouteId> = UnaryRouteHasHeaders<TId>;
+export type StreamRouteHasHeaders<TId extends StreamRouteId> = JoorManifestStreamRouteHasHeaders<Manifest, TId>;
+export type RouteStreamHasHeaders<TId extends StreamRouteId> = StreamRouteHasHeaders<TId>;
 export type RouteRequiresHeaders<TId extends RouteId> = JoorManifestRouteRequiresHeaders<Manifest, TId>;
+export type UnaryRouteRequiresHeaders<TId extends UnaryRouteId> = JoorManifestUnaryRouteRequiresHeaders<Manifest, TId>;
+export type RouteUnaryRequiresHeaders<TId extends UnaryRouteId> = UnaryRouteRequiresHeaders<TId>;
+export type StreamRouteRequiresHeaders<TId extends StreamRouteId> = JoorManifestStreamRouteRequiresHeaders<Manifest, TId>;
+export type RouteStreamRequiresHeaders<TId extends StreamRouteId> = StreamRouteRequiresHeaders<TId>;
 export type RouteHasResponseHeaders<TId extends RouteId> = JoorManifestRouteHasResponseHeaders<Manifest, TId>;
+export type UnaryRouteHasResponseHeaders<TId extends UnaryRouteId> = JoorManifestUnaryRouteHasResponseHeaders<Manifest, TId>;
+export type RouteUnaryHasResponseHeaders<TId extends UnaryRouteId> = UnaryRouteHasResponseHeaders<TId>;
+export type StreamRouteHasResponseHeaders<TId extends StreamRouteId> = JoorManifestStreamRouteHasResponseHeaders<Manifest, TId>;
+export type RouteStreamHasResponseHeaders<TId extends StreamRouteId> = StreamRouteHasResponseHeaders<TId>;
 export type RouteRequiresResponseHeaders<TId extends RouteId> = JoorManifestRouteRequiresResponseHeaders<Manifest, TId>;
+export type UnaryRouteRequiresResponseHeaders<TId extends UnaryRouteId> = JoorManifestUnaryRouteRequiresResponseHeaders<Manifest, TId>;
+export type RouteUnaryRequiresResponseHeaders<TId extends UnaryRouteId> = UnaryRouteRequiresResponseHeaders<TId>;
+export type StreamRouteRequiresResponseHeaders<TId extends StreamRouteId> = JoorManifestStreamRouteRequiresResponseHeaders<Manifest, TId>;
+export type RouteStreamRequiresResponseHeaders<TId extends StreamRouteId> = StreamRouteRequiresResponseHeaders<TId>;
 export type RouteRequestOptions<TId extends RouteId> = JoorManifestRouteRequestOptions<Manifest, TId>;
 export type UnaryRouteRequestOptions<TId extends UnaryRouteId> = JoorManifestUnaryRouteRequestOptions<Manifest, TId>;
 export type RouteUnaryRequestOptions<TId extends UnaryRouteId> = UnaryRouteRequestOptions<TId>;

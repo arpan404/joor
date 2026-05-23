@@ -135,6 +135,78 @@ export type RpcManifestUnaryRouteOutput<
   TId extends RpcManifestUnaryRouteId<TManifest>,
 > = RpcManifestRouteOutput<TManifest, TId>;
 
+export type RpcManifestUnaryRouteHasHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteHasHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteHasHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteHasHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteRequiresHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteRequiresHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteRequiresHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteRequiresHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteHasResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteHasResponseHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteHasResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteHasResponseHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteRequiresResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteRequiresResponseHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteRequiresResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteRequiresResponseHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteError<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteError<TManifest, TId>;
+
+export type RpcManifestStreamRouteError<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteError<TManifest, TId>;
+
+export type RpcManifestUnaryRouteErrorCode<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteErrorCode<TManifest, TId>;
+
+export type RpcManifestStreamRouteErrorCode<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteErrorCode<TManifest, TId>;
+
+export type RpcManifestUnaryRouteErrorDetails<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+  TCode extends RpcManifestUnaryRouteErrorCode<TManifest, TId>,
+> = RpcManifestRouteErrorDetails<TManifest, TId, TCode>;
+
+export type RpcManifestStreamRouteErrorDetails<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+  TCode extends RpcManifestStreamRouteErrorCode<TManifest, TId>,
+> = RpcManifestRouteErrorDetails<TManifest, TId, TCode>;
+
 export type RpcManifestRouteServices<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,

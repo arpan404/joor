@@ -145,7 +145,10 @@ import {
   type JoorManifestRouteProcedure,
   type JoorManifestStreamRouteClientArgs,
   type JoorManifestStreamRouteClientHeaders,
+  type JoorManifestStreamRouteErrorCode,
+  type JoorManifestStreamRouteErrorDetails,
   type JoorManifestStreamRouteEvent,
+  type JoorManifestStreamRouteHasResponseHeaders,
   type JoorManifestStreamRouteHeaders,
   type JoorManifestStreamRouteInput,
   type JoorManifestStreamRouteProcedure,
@@ -171,12 +174,18 @@ import {
   type JoorManifestUnaryRouteClientArgs,
   type JoorManifestUnaryRouteClientHeaders,
   type JoorManifestUnaryRouteEnvelope,
+  type JoorManifestUnaryRouteErrorCode,
+  type JoorManifestUnaryRouteErrorDetails,
+  type JoorManifestUnaryRouteHasHeaders,
+  type JoorManifestUnaryRouteHasResponseHeaders,
   type JoorManifestUnaryRouteHeaders,
   type JoorManifestUnaryRouteInput,
   type JoorManifestUnaryRouteOutput,
   type JoorManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteResponseHeaders,
   type JoorManifestUnaryRouteResult,
+  type JoorManifestUnaryRouteRequiresHeaders,
+  type JoorManifestUnaryRouteRequiresResponseHeaders,
   type JoorManifestUnaryRouteRequestOptions,
   type JoorManifestUnaryRouteId,
   type LegacyRpcTransportClient,
@@ -239,7 +248,10 @@ import {
   type RpcManifestRouteProcedure,
   type RpcManifestStreamRouteClientArgs,
   type RpcManifestStreamRouteClientHeaders,
+  type RpcManifestStreamRouteErrorCode,
+  type RpcManifestStreamRouteErrorDetails,
   type RpcManifestStreamRouteEvent,
+  type RpcManifestStreamRouteHasResponseHeaders,
   type RpcManifestStreamRouteHeaders,
   type RpcManifestStreamRouteInput,
   type RpcManifestStreamRouteProcedure,
@@ -264,12 +276,18 @@ import {
   type RpcManifestUnaryRouteClientArgs,
   type RpcManifestUnaryRouteClientHeaders,
   type RpcManifestUnaryRouteEnvelope,
+  type RpcManifestUnaryRouteErrorCode,
+  type RpcManifestUnaryRouteErrorDetails,
+  type RpcManifestUnaryRouteHasHeaders,
+  type RpcManifestUnaryRouteHasResponseHeaders,
   type RpcManifestUnaryRouteHeaders,
   type RpcManifestUnaryRouteInput,
   type RpcManifestUnaryRouteOutput,
   type RpcManifestUnaryRouteProcedure,
   type RpcManifestUnaryRouteResponseHeaders,
   type RpcManifestUnaryRouteResult,
+  type RpcManifestUnaryRouteRequiresHeaders,
+  type RpcManifestUnaryRouteRequiresResponseHeaders,
   type RpcManifestUnaryRouteRequestOptions,
   type RpcManifestUnaryRouteId,
   type RpcProtocolEnvelope,
@@ -311,7 +329,10 @@ import {
   type RpcStreamProcedure,
   type RpcStreamRouteClientArgs,
   type RpcStreamRouteClientHeaders,
+  type RpcStreamRouteErrorCode,
+  type RpcStreamRouteErrorDetails,
   type RpcStreamRouteEvent,
+  type RpcStreamRouteHasResponseHeaders,
   type RpcStreamRouteHeaders,
   type RpcStreamRouteInput,
   type RpcStreamRouteProcedure,
@@ -324,12 +345,18 @@ import {
   type RpcUnaryRouteClientArgs,
   type RpcUnaryRouteClientHeaders,
   type RpcUnaryRouteEnvelope,
+  type RpcUnaryRouteErrorCode,
+  type RpcUnaryRouteErrorDetails,
+  type RpcUnaryRouteHasHeaders,
+  type RpcUnaryRouteHasResponseHeaders,
   type RpcUnaryRouteHeaders,
   type RpcUnaryRouteInput,
   type RpcUnaryRouteOutput,
   type RpcUnaryRouteProcedure,
   type RpcUnaryRouteResponseHeaders,
   type RpcUnaryRouteResult,
+  type RpcUnaryRouteRequiresHeaders,
+  type RpcUnaryRouteRequiresResponseHeaders,
   type RpcUnaryRouteRequestOptions,
   type RpcUnaryRouteId,
   type Schema,
@@ -1580,6 +1607,46 @@ const routeUnaryResponseHeaders: RpcUnaryRouteResponseHeaders<
   'users.get'
 > = { 'cache-control': 'private' };
 routeUnaryResponseHeaders['cache-control'].toUpperCase();
+const routeUnaryHasHeaders: RpcUnaryRouteHasHeaders<Routes, 'users.get'> = true;
+routeUnaryHasHeaders.valueOf();
+const routeUnaryRequiresHeaders: RpcUnaryRouteRequiresHeaders<
+  Routes,
+  'users.get'
+> = true;
+routeUnaryRequiresHeaders.valueOf();
+const routeUnaryHasResponseHeaders: RpcUnaryRouteHasResponseHeaders<
+  Routes,
+  'users.get'
+> = true;
+routeUnaryHasResponseHeaders.valueOf();
+const routeUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<
+  Routes,
+  'users.get'
+> = true;
+routeUnaryRequiresResponseHeaders.valueOf();
+const routeStreamHasResponseHeaders: RpcStreamRouteHasResponseHeaders<
+  Routes,
+  'users.watch'
+> = false;
+routeStreamHasResponseHeaders.valueOf();
+const routeUnaryErrorCode: RpcUnaryRouteErrorCode<Routes, 'users.get'> =
+  'NOT_FOUND';
+routeUnaryErrorCode.toUpperCase();
+const routeUnaryErrorDetails: RpcUnaryRouteErrorDetails<
+  Routes,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+routeUnaryErrorDetails.message.toUpperCase();
+const routeStreamErrorCode: RpcStreamRouteErrorCode<Routes, 'users.watch'> =
+  'VALIDATION_ERROR';
+routeStreamErrorCode.toUpperCase();
+const routeStreamErrorDetails: RpcStreamRouteErrorDetails<
+  Routes,
+  'users.watch',
+  'VALIDATION_ERROR'
+> = { issue: 'input' };
+routeStreamErrorDetails.valueOf();
 const routeHasHeaders: RpcRouteHasHeaders<Routes, 'users.get'> = true;
 routeHasHeaders.valueOf();
 const routeRequiresHeaders: RpcRouteRequiresHeaders<Routes, 'users.get'> = true;
@@ -2178,6 +2245,53 @@ const manifestStreamRouteEvent: JoorManifestStreamRouteEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 manifestStreamRouteEvent.userId.toUpperCase();
+const manifestUnaryRouteHasHeaders: JoorManifestUnaryRouteHasHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestUnaryRouteHasHeaders.valueOf();
+const manifestUnaryRouteRequiresHeaders: JoorManifestUnaryRouteRequiresHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestUnaryRouteRequiresHeaders.valueOf();
+const manifestUnaryRouteHasResponseHeaders: JoorManifestUnaryRouteHasResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestUnaryRouteHasResponseHeaders.valueOf();
+const manifestUnaryRouteRequiresResponseHeaders: JoorManifestUnaryRouteRequiresResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+manifestUnaryRouteRequiresResponseHeaders.valueOf();
+const manifestStreamRouteHasResponseHeaders: JoorManifestStreamRouteHasResponseHeaders<
+  typeof manifest,
+  'users.watch'
+> = false;
+manifestStreamRouteHasResponseHeaders.valueOf();
+const manifestUnaryRouteErrorCode: JoorManifestUnaryRouteErrorCode<
+  typeof manifest,
+  'users.get'
+> = 'NOT_FOUND';
+manifestUnaryRouteErrorCode.toUpperCase();
+const manifestUnaryRouteErrorDetails: JoorManifestUnaryRouteErrorDetails<
+  typeof manifest,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+manifestUnaryRouteErrorDetails.message.toUpperCase();
+const manifestStreamRouteErrorCode: JoorManifestStreamRouteErrorCode<
+  typeof manifest,
+  'users.watch'
+> = 'VALIDATION_ERROR';
+manifestStreamRouteErrorCode.toUpperCase();
+const manifestStreamRouteErrorDetails: JoorManifestStreamRouteErrorDetails<
+  typeof manifest,
+  'users.watch',
+  'VALIDATION_ERROR'
+> = { issue: 'input' };
+manifestStreamRouteErrorDetails.valueOf();
 const manifestRouteOutput: JoorManifestRouteOutput<
   typeof manifest,
   'users.get'
@@ -2666,6 +2780,53 @@ const publicManifestStreamRouteEvent: RpcManifestStreamRouteEvent<
   'users.watch'
 > = { type: 'user.updated', userId: '1' };
 publicManifestStreamRouteEvent.userId.toUpperCase();
+const publicManifestUnaryRouteHasHeaders: RpcManifestUnaryRouteHasHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestUnaryRouteHasHeaders.valueOf();
+const publicManifestUnaryRouteRequiresHeaders: RpcManifestUnaryRouteRequiresHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestUnaryRouteRequiresHeaders.valueOf();
+const publicManifestUnaryRouteHasResponseHeaders: RpcManifestUnaryRouteHasResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestUnaryRouteHasResponseHeaders.valueOf();
+const publicManifestUnaryRouteRequiresResponseHeaders: RpcManifestUnaryRouteRequiresResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestUnaryRouteRequiresResponseHeaders.valueOf();
+const publicManifestStreamRouteHasResponseHeaders: RpcManifestStreamRouteHasResponseHeaders<
+  typeof manifest,
+  'users.watch'
+> = false;
+publicManifestStreamRouteHasResponseHeaders.valueOf();
+const publicManifestUnaryRouteErrorCode: RpcManifestUnaryRouteErrorCode<
+  typeof manifest,
+  'users.get'
+> = 'NOT_FOUND';
+publicManifestUnaryRouteErrorCode.toUpperCase();
+const publicManifestUnaryRouteErrorDetails: RpcManifestUnaryRouteErrorDetails<
+  typeof manifest,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+publicManifestUnaryRouteErrorDetails.message.toUpperCase();
+const publicManifestStreamRouteErrorCode: RpcManifestStreamRouteErrorCode<
+  typeof manifest,
+  'users.watch'
+> = 'VALIDATION_ERROR';
+publicManifestStreamRouteErrorCode.toUpperCase();
+const publicManifestStreamRouteErrorDetails: RpcManifestStreamRouteErrorDetails<
+  typeof manifest,
+  'users.watch',
+  'VALIDATION_ERROR'
+> = { issue: 'input' };
+publicManifestStreamRouteErrorDetails.valueOf();
 const publicManifestRouteInput: RpcManifestRouteInput<
   typeof manifest,
   'users.get'
