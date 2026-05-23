@@ -7145,38 +7145,38 @@ const nextHandlerOptions: NextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteHandlersOptions;
-const nextUnaryRouteHandlersOptions: NextUnaryRouteHandlersOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const nextStreamRouteHandlersOptions: NextStreamRouteHandlersOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const nextRouteUnaryHandlersOptions: NextRouteUnaryHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nextUnaryRouteHandlersOptions;
+> = manifestUnaryRouteHandlerOptions;
+const nextUnaryRouteHandlersOptions: NextUnaryRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteUnaryHandlersOptions;
 const nextRouteStreamHandlersOptions: NextRouteStreamHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nextStreamRouteHandlersOptions;
-const nextUnaryHandlerOptions: NextUnaryRouteHandlerOptionsFor<
+> = manifestStreamRouteHandlerOptions;
+const nextStreamRouteHandlersOptions: NextStreamRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nextUnaryRouteHandlersOptions;
-const nextStreamHandlerOptions: NextStreamRouteHandlerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = nextStreamRouteHandlersOptions;
+> = nextRouteStreamHandlersOptions;
 const nextRouteUnaryHandlerOptions: NextRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nextUnaryHandlerOptions;
+> = nextRouteUnaryHandlersOptions;
+const nextUnaryHandlerOptions: NextUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteUnaryHandlerOptions;
 const nextRouteStreamHandlerOptions: NextRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nextStreamHandlerOptions;
+> = nextRouteStreamHandlersOptions;
+const nextStreamHandlerOptions: NextStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteStreamHandlerOptions;
 const exactNextHandlerOptions: NextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -7280,38 +7280,38 @@ const nextHandlerOptionsArgs: NextHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextHandlerOptions];
-const nextUnaryRouteHandlersOptionsArgs: NextUnaryRouteHandlersOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [nextUnaryRouteHandlersOptions];
-const nextStreamRouteHandlersOptionsArgs: NextStreamRouteHandlersOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [nextStreamRouteHandlersOptions];
 const nextRouteUnaryHandlersOptionsArgs: NextRouteUnaryHandlersOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteUnaryHandlersOptions];
+const nextUnaryRouteHandlersOptionsArgs: NextUnaryRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteUnaryHandlersOptionsArgs;
 const nextRouteStreamHandlersOptionsArgs: NextRouteStreamHandlersOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteStreamHandlersOptions];
-const nextUnaryHandlerOptionsArgs: NextUnaryRouteHandlerOptionsArgs<
+const nextStreamRouteHandlersOptionsArgs: NextStreamRouteHandlersOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = [nextUnaryHandlerOptions];
-const nextStreamHandlerOptionsArgs: NextStreamRouteHandlerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [nextStreamHandlerOptions];
+> = nextRouteStreamHandlersOptionsArgs;
 const nextRouteUnaryHandlerOptionsArgs: NextRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteUnaryHandlerOptions];
+const nextUnaryHandlerOptionsArgs: NextUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteUnaryHandlerOptionsArgs;
 const nextRouteStreamHandlerOptionsArgs: NextRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteStreamHandlerOptions];
+const nextStreamHandlerOptionsArgs: NextStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteStreamHandlerOptionsArgs;
 const runtimeSubpathNextRouteHandlersOptionsArgs: RuntimeSubpathNextRouteHandlersOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
