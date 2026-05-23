@@ -5,8 +5,8 @@ import {
 import type { JoorManifest } from '../manifest.js';
 import type {
   RpcManifestBody,
-  RpcManifestStreamRouteBody,
-  RpcManifestUnaryRouteBody,
+  RpcManifestRouteStreamBody,
+  RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
@@ -39,26 +39,26 @@ export type DenoCompiledTransportBodyResultFor<
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type DenoCompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
@@ -76,7 +76,7 @@ export type DenoCompiledTransportBodyResultHandlerFor<
 
 export type DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
 ) => Promise<DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
@@ -87,7 +87,7 @@ export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
 
 export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
 ) => Promise<DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;

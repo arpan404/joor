@@ -48,8 +48,6 @@ import type {
   RpcManifestBodyResultFor,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
-  RpcManifestStreamRouteBody,
-  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -124,8 +122,8 @@ export type CompiledRouteUnaryTransportBodyResultFor<
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type CompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -134,8 +132,8 @@ export type CompiledRouteStreamTransportBodyResultFor<
 > = Response | CompiledSerializedEnvelope;
 export type CompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteUnaryBodyResultFor<
   TManifest extends JoorManifest,
@@ -144,8 +142,8 @@ export type CompiledRouteUnaryBodyResultFor<
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type CompiledUnaryRouteBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamBodyResultFor<
   TManifest extends JoorManifest,
@@ -154,8 +152,8 @@ export type CompiledRouteStreamBodyResultFor<
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledStreamRouteBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
