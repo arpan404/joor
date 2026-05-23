@@ -545,6 +545,14 @@ export const compiledRateLimitFailureStatic = <TId extends string>(
   return undefined;
 };
 
+export const compiledCreateProcedureCacheKey = (
+  id: string,
+  keyPaths: readonly string[] | undefined,
+  input: JsonValue,
+  headers: CompiledProcedureCacheHeaderValues,
+  auth: object
+): string => createProcedureCacheKey(id, keyPaths, input, headers, auth);
+
 export const compiledReadCache = (
   id: string,
   procedure: ProcedureRuntime,
@@ -557,7 +565,7 @@ export const compiledReadCache = (
   if (cacheConfig === undefined) return undefined;
   return readCachedProcedureSuccess(
     compiledProcedureSuccessCache,
-    createProcedureCacheKey(id, cacheConfig.key, input, headers, auth)
+    compiledCreateProcedureCacheKey(id, cacheConfig.key, input, headers, auth)
   );
 };
 
@@ -575,7 +583,7 @@ export const compiledWriteCache = (
   if (cacheConfig === undefined) return;
   writeCachedProcedureSuccess(
     compiledProcedureSuccessCache,
-    createProcedureCacheKey(id, cacheConfig.key, input, headers, auth),
+    compiledCreateProcedureCacheKey(id, cacheConfig.key, input, headers, auth),
     parseDurationMs(cacheConfig.ttl),
     data,
     responseHeaders,

@@ -1277,6 +1277,7 @@ import {
   type DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from '../src/runtime/deno-compiled-transport.js';
 import {
+  compiledCreateProcedureCacheKey,
   compiledNotFound,
   compiledRateLimitFailureStatic,
   compiledUncachedExecutionState,
@@ -1288,12 +1289,6 @@ import {
   createCompiledRuntimeState,
   type executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
-import {
-  createProcedureCacheKey,
-  type CachedProcedureHeaders,
-  type CachedProcedureSuccess,
-  type ProcedureCacheHeaderValues,
-} from '../src/runtime/internal/procedure-cache.js';
 import type {
   CompiledAuthResult,
   CompiledAuthResultLike,
@@ -9001,32 +8996,28 @@ rootManifestCompiledRouteStreamBodyHandler(
   new Request('https://example.com/rpc'),
   manifestRouteStreamBody
 );
-const cachedProcedureHeaders: CachedProcedureHeaders = {
+const cachedProcedureHeaders: CompiledCachedProcedureHeaders = {
   'cache-control': 'private',
 };
 cachedProcedureHeaders['cache-control']?.toUpperCase();
-const compiledCachedProcedureHeaders: CompiledCachedProcedureHeaders =
-  cachedProcedureHeaders;
 const rootCompiledCachedProcedureHeaders: RootCompiledCachedProcedureHeaders =
-  compiledCachedProcedureHeaders;
+  cachedProcedureHeaders;
 rootCompiledCachedProcedureHeaders['cache-control']?.toUpperCase();
-const procedureCacheHeaderValues: ProcedureCacheHeaderValues = {
+const procedureCacheHeaderValues: CompiledProcedureCacheHeaderValues = {
   authorization: 'Bearer token',
 };
 procedureCacheHeaderValues['authorization']?.toUpperCase();
-const compiledProcedureCacheHeaderValues: CompiledProcedureCacheHeaderValues =
-  procedureCacheHeaderValues;
 const rootCompiledProcedureCacheHeaderValues: RootCompiledProcedureCacheHeaderValues =
-  compiledProcedureCacheHeaderValues;
+  procedureCacheHeaderValues;
 rootCompiledProcedureCacheHeaderValues['authorization']?.toUpperCase();
-createProcedureCacheKey(
+compiledCreateProcedureCacheKey(
   'users.get',
   ['headers.authorization'],
   { id: '1' },
   procedureCacheHeaderValues,
   {}
 ).toUpperCase();
-createProcedureCacheKey(
+compiledCreateProcedureCacheKey(
   'users.get',
   ['headers.authorization'],
   { id: '1' },
@@ -9054,18 +9045,16 @@ const rootCompiledRuntimeRateLimit: RootCompiledRuntime['rateLimit'] =
 rootCompiledRuntimeRateLimit.identity?.(
   new Request('https://example.com/rpc')
 );
-const cachedProcedureSuccess: CachedProcedureSuccess = {
+const cachedProcedureSuccess: CompiledCachedProcedureSuccess = {
   data: { ok: true },
   headers: cachedProcedureHeaders,
   expiresAt: Date.now() + 1_000,
 };
 cachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
-const compiledCachedProcedureSuccess: CompiledCachedProcedureSuccess =
-  cachedProcedureSuccess;
 const rootCompiledCachedProcedureSuccess: RootCompiledCachedProcedureSuccess =
-  compiledCachedProcedureSuccess;
+  cachedProcedureSuccess;
 rootCompiledCachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
-const _wrongCachedProcedureSuccessHeaders: CachedProcedureSuccess = {
+const _wrongCachedProcedureSuccessHeaders: CompiledCachedProcedureSuccess = {
   data: { ok: true },
   headers: {
     // @ts-expect-error cached procedure headers must be HTTP string values.

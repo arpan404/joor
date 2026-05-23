@@ -31,7 +31,10 @@ import {
   createCloudflareFetch,
   createCloudflareWorker,
 } from 'joor/runtime/cloudflare';
-import { createCompiledRpcBodyResultHandler } from 'joor/runtime/compiled';
+import {
+  compiledCreateProcedureCacheKey,
+  createCompiledRpcBodyResultHandler,
+} from 'joor/runtime/compiled';
 import { createDenoCompiledTransportRequestHandler } from 'joor/runtime/deno-compiled-transport';
 import { createDenoRpcRequestHandler } from 'joor/runtime/deno';
 import { createDenoTransportRequestHandler } from 'joor/runtime/deno-transport';
@@ -153,6 +156,13 @@ const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
 };
 createAiDocs(packageSubpathCompilerManifest)['framework'];
 createOpenApiDocument(packageSubpathCompilerManifest)['openapi'];
+compiledCreateProcedureCacheKey(
+  'users.get',
+  ['input.id'],
+  { id: '1' },
+  {},
+  {}
+).toUpperCase();
 
 const packageSubpathValues = [
   build,
@@ -163,6 +173,7 @@ const packageSubpathValues = [
   createCloudflareWorker,
   createRootCloudflareWorker,
   createOpenApiDocument,
+  compiledCreateProcedureCacheKey,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
   createDenoRpcRequestHandler,
