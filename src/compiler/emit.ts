@@ -136,6 +136,7 @@ const emitProfileDispatcher = async (
     'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
+    'type CompiledRpcRequestHandler',
     'type CompiledRpcBodyResultHandlerFor',
     'type CompiledRpcTransportBodyResultHandler',
     'type CompiledRpcTransportBodyResultHandlerFor',
@@ -202,6 +203,7 @@ export type NativeServices = ${nativeServicesType};
 export type NativeRuntimeState = CompiledRuntimeState<NativeServices>;
 export type NativeDispatch = CompiledDispatch<NativeServices>;
 export type NativeUnaryDispatch = CompiledFixedUnaryDispatch<NativeServices>;
+export type NativeFetchHandler = CompiledRpcRequestHandler;
 export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
 export type NativeUnaryRouteId = JoorManifestUnaryRouteId<NativeManifest>;
 export type NativeStreamRouteId = JoorManifestStreamRouteId<NativeManifest>;
@@ -462,7 +464,7 @@ export const transport = createCompiledRpcTransportBodyResultHandler(
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const fetch = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
+export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
   );
 };
