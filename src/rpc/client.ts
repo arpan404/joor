@@ -925,6 +925,84 @@ export type RpcStreamRouteClientArgs<
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamClientArgs<TRoutes, TId>;
 
+const createPendingRpcRequest = <TProcedure, TId extends string>(
+  id: TId,
+  input: ProcedureInput<TProcedure>,
+  ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
+    ? [ClientRequestOptions<TProcedure>?]
+    : [ClientRequestOptions<TProcedure>]
+): PendingRpcRequest<TProcedure, TId> & PendingRpcRequestHeaders<TProcedure> =>
+  ({
+    id,
+    input,
+    ...(requestOptions[0]?.headers === undefined
+      ? {}
+      : { headers: requestOptions[0].headers }),
+  }) as PendingRpcRequest<TProcedure, TId> &
+    PendingRpcRequestHeaders<TProcedure>;
+
+export function createRouteRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+): RpcRouteRequest<TRoutes, TId>;
+export function createRouteRequest(
+  id: string,
+  input: unknown,
+  ...options: [{ headers?: object }?]
+): PendingRpcRequest {
+  return {
+    id,
+    input: input as JsonValue,
+    ...(options[0]?.headers === undefined
+      ? {}
+      : { headers: options[0].headers }),
+  } as PendingRpcRequest;
+}
+
+export const createRouteUnaryRequest: typeof createRouteRequest =
+  createRouteRequest;
+
+export const createUnaryRouteRequest: typeof createRouteUnaryRequest =
+  createRouteUnaryRequest;
+
+export function createManifestRouteRequest<
+  const TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> = RpcRouteUnaryId<
+    JoorManifestRoutes<TManifest>
+  >,
+>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  ...options: ClientRequestOptionsTuple<
+    RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>
+  >
+): RpcRouteRequest<JoorManifestRoutes<TManifest>, TId>;
+export function createManifestRouteRequest(
+  _manifest: JoorManifest,
+  id: string,
+  input: unknown,
+  ...options: [{ headers?: object }?]
+): PendingRpcRequest {
+  return {
+    id,
+    input: input as JsonValue,
+    ...(options[0]?.headers === undefined
+      ? {}
+      : { headers: options[0].headers }),
+  } as PendingRpcRequest;
+}
+
+export const createManifestRouteUnaryRequest: typeof createManifestRouteRequest =
+  createManifestRouteRequest;
+
+export const createManifestUnaryRouteRequest: typeof createManifestRouteUnaryRequest =
+  createManifestRouteUnaryRequest;
+
 type BatchResultData<TProcedure> = [TProcedure] extends [never]
   ? JsonValue
   : ProcedureOutput<TProcedure> & JsonValue;
@@ -1189,14 +1267,7 @@ export function createClient(
       : [ClientRequestOptions<TProcedure>]
   ): PendingRpcRequest<TProcedure, TId> &
     PendingRpcRequestHeaders<TProcedure> =>
-    ({
-      id,
-      input,
-      ...(requestOptions[0]?.headers === undefined
-        ? {}
-        : { headers: requestOptions[0].headers }),
-    }) as PendingRpcRequest<TProcedure, TId> &
-      PendingRpcRequestHeaders<TProcedure>;
+    createPendingRpcRequest(id, input, ...requestOptions);
   const batch = async <const TRequests extends readonly PendingRpcRequest[]>(
     requests: TRequests,
     batchOptions?: ClientBatchOptions

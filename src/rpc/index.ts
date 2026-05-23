@@ -1,4 +1,13 @@
-export { createClient, createManifestClient } from './client.js';
+export {
+  createClient,
+  createManifestClient,
+  createManifestRouteRequest,
+  createManifestRouteUnaryRequest,
+  createManifestUnaryRouteRequest,
+  createRouteRequest,
+  createRouteUnaryRequest,
+  createUnaryRouteRequest,
+} from './client.js';
 export {
   createRpcBodyHandler,
   createRpcBodyResultHandler,

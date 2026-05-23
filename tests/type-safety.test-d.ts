@@ -38,6 +38,12 @@ import {
   createVercelFetch,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
+  createManifestRouteRequest,
+  createManifestRouteUnaryRequest,
+  createManifestUnaryRouteRequest,
+  createRouteRequest,
+  createRouteUnaryRequest,
+  createUnaryRouteRequest,
   createRpcBodyHandler,
   createRpcBodyResultHandler,
   createRpcHandler,
@@ -903,6 +909,12 @@ import {
   createRpcBodyResultHandler as createRpcSubpathBodyResultHandler,
   createRpcHandler as createRpcSubpathHandler,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
+  createManifestRouteRequest as createRpcSubpathManifestRouteRequest,
+  createManifestRouteUnaryRequest as createRpcSubpathManifestRouteUnaryRequest,
+  createManifestUnaryRouteRequest as createRpcSubpathManifestUnaryRouteRequest,
+  createRouteRequest as createRpcSubpathRouteRequest,
+  createRouteUnaryRequest as createRpcSubpathRouteUnaryRequest,
+  createUnaryRouteRequest as createRpcSubpathUnaryRouteRequest,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
   type ClientFetch as RpcSubpathClientFetch,
@@ -11177,14 +11189,140 @@ const routeRequest = routeClient.request(
   { id: '1' },
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
+const standaloneRouteRequest = createRouteRequest<Routes, 'users.get'>(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const standaloneRouteUnaryRequest = createRouteUnaryRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const standaloneUnaryRouteRequest = createUnaryRouteRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const rpcSubpathRouteRequest = createRpcSubpathRouteRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const rpcSubpathRouteUnaryRequest = createRpcSubpathRouteUnaryRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const rpcSubpathUnaryRouteRequest = createRpcSubpathUnaryRouteRequest<
+  Routes,
+  'users.get'
+>('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } });
+const standaloneManifestRouteRequest = createManifestRouteRequest(
+  manifest,
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const standaloneManifestRouteUnaryRequest = createManifestRouteUnaryRequest(
+  manifest,
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const standaloneManifestUnaryRouteRequest = createManifestUnaryRouteRequest(
+  manifest,
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+const standaloneRpcSubpathManifestRouteRequest =
+  createRpcSubpathManifestRouteRequest(
+    manifest,
+    'users.get',
+    { id: '1' },
+    { headers: { 'x-tenant-id': 'tenant-1' } }
+  );
+const rpcSubpathManifestRouteUnaryRequest =
+  createRpcSubpathManifestRouteUnaryRequest(
+    manifest,
+    'users.get',
+    { id: '1' },
+    { headers: { 'x-tenant-id': 'tenant-1' } }
+  );
+const rpcSubpathManifestUnaryRouteRequest =
+  createRpcSubpathManifestUnaryRouteRequest(
+    manifest,
+    'users.get',
+    { id: '1' },
+    { headers: { 'x-tenant-id': 'tenant-1' } }
+  );
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
+const typedStandaloneRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneRouteRequest;
+const typedStandaloneRouteUnaryRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneRouteUnaryRequest;
+const typedStandaloneUnaryRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneUnaryRouteRequest;
+const typedRpcSubpathRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  rpcSubpathRouteRequest;
+const typedRpcSubpathRouteUnaryRequest: RpcRouteRequest<Routes, 'users.get'> =
+  rpcSubpathRouteUnaryRequest;
+const typedRpcSubpathUnaryRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  rpcSubpathUnaryRouteRequest;
+const typedManifestRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneManifestRouteRequest;
+const typedManifestRouteUnaryRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneManifestRouteUnaryRequest;
+const typedManifestUnaryRouteRequest: RpcRouteRequest<Routes, 'users.get'> =
+  standaloneManifestUnaryRouteRequest;
+const typedRpcSubpathManifestRouteRequest: RpcRouteRequest<
+  Routes,
+  'users.get'
+> = standaloneRpcSubpathManifestRouteRequest;
+const typedRpcSubpathManifestRouteUnaryRequest: RpcRouteRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathManifestRouteUnaryRequest;
+const typedRpcSubpathManifestUnaryRouteRequest: RpcRouteRequest<
+  Routes,
+  'users.get'
+> = rpcSubpathManifestUnaryRouteRequest;
 const defaultTypedRouteRequest: RpcRouteRequest<Routes> = typedRouteRequest;
 typedRouteRequest.input.id.toUpperCase();
 typedRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedStandaloneRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedStandaloneRouteUnaryRequest.headers['x-tenant-id'].toUpperCase();
+typedStandaloneUnaryRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathRouteUnaryRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathUnaryRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedManifestRouteUnaryRequest.headers['x-tenant-id'].toUpperCase();
+typedManifestUnaryRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathManifestRouteUnaryRequest.headers['x-tenant-id'].toUpperCase();
+typedRpcSubpathManifestUnaryRouteRequest.headers['x-tenant-id'].toUpperCase();
 if (defaultTypedRouteRequest.id === 'users.get') {
   defaultTypedRouteRequest.input.id.toUpperCase();
   defaultTypedRouteRequest.headers['x-tenant-id'].toUpperCase();
 }
+// @ts-expect-error standalone route request builders require declared headers.
+createRouteRequest<Routes, 'users.get'>('users.get', { id: '1' });
+createRouteRequest<Routes, 'users.get'>(
+  'users.get',
+  { id: '1' },
+  {
+    headers: {
+      // @ts-expect-error standalone route request builders validate header values.
+      'x-tenant-id': 1,
+    },
+  }
+);
+// @ts-expect-error standalone route request builders reject stream route ids.
+createRouteRequest<Routes, 'users.watch'>('users.watch', { userId: '1' });
+createManifestRouteRequest(
+  manifest,
+  // @ts-expect-error manifest route request builders reject unknown route ids.
+  'users.missing',
+  { id: '1' }
+);
 const typedUnaryRouteRequest: RpcUnaryRouteRequest<Routes, 'users.get'> =
   typedRouteRequest;
 const defaultTypedUnaryRouteRequest: RpcUnaryRouteRequest<Routes> =

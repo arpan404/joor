@@ -3,7 +3,9 @@ import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
 import {
   createClient,
+  createManifestRouteRequest,
   createJoorHandler,
+  createRouteRequest,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -23,6 +25,30 @@ type StreamTestProcedure = {
 };
 
 describe('client', () => {
+  it('builds standalone route requests for batches', () => {
+    const routeRequest = createRouteRequest<
+      { protected: typeof getUser },
+      'protected'
+    >(
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { headers: { authorization: 'Bearer token' } }
+    );
+    const manifestRouteRequest = createManifestRouteRequest(
+      { procedures: { protected: getUser } },
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { headers: { authorization: 'Bearer token' } }
+    );
+
+    expect(routeRequest).toEqual({
+      id: 'protected',
+      input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      headers: { authorization: 'Bearer token' },
+    });
+    expect(manifestRouteRequest).toEqual(routeRequest);
+  });
+
   it('calls a local fetch handler', async () => {
     const handler = createJoorHandler(
       { procedures: { 'users.get': getUser } },

@@ -3,7 +3,16 @@ export { createPlugin, resolvePluginServices } from './context/plugin.js';
 export { defineConfig, defineConfigFor } from './config.js';
 export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
-export { createClient, createManifestClient } from './rpc/client.js';
+export {
+  createClient,
+  createManifestClient,
+  createManifestRouteRequest,
+  createManifestRouteUnaryRequest,
+  createManifestUnaryRouteRequest,
+  createRouteRequest,
+  createRouteUnaryRequest,
+  createUnaryRouteRequest,
+} from './rpc/client.js';
 export {
   createRpcBodyHandler,
   createRpcBodyResultHandler,
