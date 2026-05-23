@@ -27,6 +27,7 @@ export type {
   ProcedureInput,
   ProcedureMeta,
   ProcedureOutput,
+  ProcedureRequest,
   ProcedureResponseHeaders,
   ProcedureRequiresHeaders,
   ProcedureRequiresResponseHeaders,

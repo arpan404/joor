@@ -7,6 +7,7 @@ export type {
   AuthPolicyHeaderValues,
   AuthPolicyResult,
   AuthPolicyResultLike,
+  AuthPolicyRequest,
   AuthPolicyServices,
   DefineContextAuthPolicy,
   DefineAuthPolicy,

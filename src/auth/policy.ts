@@ -1,6 +1,7 @@
 import type { JoorContext } from '../context/context.js';
 import type { ProcedureFailure } from '../procedure/result.js';
 import type { MaybePromise } from '../procedure/types.js';
+import type { JsonValue } from '../schema/json.js';
 
 export type AuthPolicyHeaderValues = Record<string, string | undefined>;
 
@@ -16,6 +17,7 @@ export interface AuthPolicy<
   TServices extends object,
   THeaders extends AuthPolicyHeaderValues,
   TAuth extends object,
+  TRequest extends Request = Request,
 > {
   name: string;
   authenticate(
@@ -23,7 +25,9 @@ export interface AuthPolicy<
       TServices,
       THeaders,
       Record<string, never>,
-      Record<string, never>
+      Record<string, never>,
+      Record<string, JsonValue>,
+      TRequest
     >
   ): AuthPolicyResultLike<TAuth>;
 }
@@ -41,24 +45,34 @@ export type AuthPolicyAuth<TPolicy> =
     ? TAuth
     : never;
 
-export type DefineContextAuthPolicy<TServices extends object> = <
+export type AuthPolicyRequest<TPolicy> =
+  TPolicy extends AuthPolicy<object, AuthPolicyHeaderValues, object, infer TRequest>
+    ? TRequest
+    : never;
+
+export type DefineContextAuthPolicy<
+  TServices extends object,
+  TRequest extends Request = Request,
+> = <
   THeaders extends AuthPolicyHeaderValues,
   TAuth extends object,
 >(
-  policy: AuthPolicy<TServices, THeaders, TAuth>
-) => AuthPolicy<TServices, THeaders, TAuth>;
+  policy: AuthPolicy<TServices, THeaders, TAuth, TRequest>
+) => AuthPolicy<TServices, THeaders, TAuth, TRequest>;
 
 export interface DefineAuthPolicy {
   <
     TServices extends object,
     THeaders extends AuthPolicyHeaderValues,
     TAuth extends object,
+    TRequest extends Request = Request,
   >(
-    policy: AuthPolicy<TServices, THeaders, TAuth>
-  ): AuthPolicy<TServices, THeaders, TAuth>;
+    policy: AuthPolicy<TServices, THeaders, TAuth, TRequest>
+  ): AuthPolicy<TServices, THeaders, TAuth, TRequest>;
   withContext<
     TNextServices extends object,
-  >(): DefineContextAuthPolicy<TNextServices>;
+    TNextRequest extends Request = Request,
+  >(): DefineContextAuthPolicy<TNextServices, TNextRequest>;
 }
 
 const createDefineAuthPolicy = (): DefineAuthPolicy => {
@@ -66,14 +80,15 @@ const createDefineAuthPolicy = (): DefineAuthPolicy => {
     TServices extends object,
     THeaders extends AuthPolicyHeaderValues,
     TAuth extends object,
+    TRequest extends Request = Request,
   >(
-    policy: AuthPolicy<TServices, THeaders, TAuth>
-  ): AuthPolicy<TServices, THeaders, TAuth> => policy;
+    policy: AuthPolicy<TServices, THeaders, TAuth, TRequest>
+  ): AuthPolicy<TServices, THeaders, TAuth, TRequest> => policy;
   return Object.assign(define, {
-    withContext<TNextServices extends object>() {
+    withContext<TNextServices extends object, TNextRequest extends Request = Request>() {
       return <THeaders extends AuthPolicyHeaderValues, TAuth extends object>(
-        policy: AuthPolicy<TNextServices, THeaders, TAuth>
-      ): AuthPolicy<TNextServices, THeaders, TAuth> => policy;
+        policy: AuthPolicy<TNextServices, THeaders, TAuth, TNextRequest>
+      ): AuthPolicy<TNextServices, THeaders, TAuth, TNextRequest> => policy;
     },
   });
 };

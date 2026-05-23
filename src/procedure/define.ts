@@ -43,6 +43,7 @@ export interface UnaryProcedureConfig<
   THeaders extends HeaderObjectSchema | undefined,
   TResponseHeaders extends HeaderObjectSchema | undefined,
   TAuth extends object,
+  TRequest extends Request = Request,
 > {
   input: TInput;
   headers?: THeaders;
@@ -52,7 +53,8 @@ export interface UnaryProcedureConfig<
     THeaders extends Schema
       ? InferSchema<THeaders> & object
       : Record<string, never>,
-    TAuth
+    TAuth,
+    TRequest
   >;
   output: TOutput;
   errors?: TErrors;
@@ -67,7 +69,8 @@ export interface UnaryProcedureConfig<
         ? InferSchema<TResponseHeaders> & object
         : Record<string, never>,
       TAuth,
-      ErrorDetails<TErrors>
+      ErrorDetails<TErrors>,
+      TRequest
     >,
     input: InferSchema<TInput>
   ): MaybePromise<
@@ -111,6 +114,7 @@ export interface StreamProcedureConfig<
   TServices extends object,
   THeaders extends HeaderObjectSchema | undefined,
   TAuth extends object,
+  TRequest extends Request = Request,
 > {
   input: TInput;
   headers?: THeaders;
@@ -119,7 +123,8 @@ export interface StreamProcedureConfig<
     THeaders extends Schema
       ? InferSchema<THeaders> & object
       : Record<string, never>,
-    TAuth
+    TAuth,
+    TRequest
   >;
   stream: TStream;
   errors?: TErrors;
@@ -132,7 +137,8 @@ export interface StreamProcedureConfig<
         : Record<string, never>,
       Record<string, never>,
       TAuth,
-      ErrorDetails<TErrors>
+      ErrorDetails<TErrors>,
+      TRequest
     >,
     input: InferSchema<TInput>
   ): MaybePromise<AsyncIterable<InferSchema<TStream> & JsonValue>>;
@@ -140,6 +146,7 @@ export interface StreamProcedureConfig<
 
 export interface DefineProcedure<
   TServices extends object = Record<string, never>,
+  TRequest extends Request = Request,
 > {
   <
     TInput extends Schema,
@@ -173,7 +180,8 @@ export interface DefineProcedure<
       TServices,
       THeaders,
       TResponseHeaders,
-      TAuth
+      TAuth,
+      TRequest
     >
   ): Procedure<
     TInput,
@@ -183,7 +191,8 @@ export interface DefineProcedure<
     THeaders,
     TResponseHeaders,
     TAuth,
-    TServices
+    TServices,
+    TRequest
   >;
 
   <
@@ -199,7 +208,8 @@ export interface DefineProcedure<
       TErrors,
       TServices,
       THeaders,
-      TAuth
+      TAuth,
+      TRequest
     >
   ): Procedure<
     TInput,
@@ -209,15 +219,20 @@ export interface DefineProcedure<
     THeaders,
     undefined,
     TAuth,
-    TServices
+    TServices,
+    TRequest
   >;
 
-  withContext<TNextServices extends object>(): DefineProcedure<TNextServices>;
+  withContext<
+    TNextServices extends object,
+    TNextRequest extends Request = Request,
+  >(): DefineProcedure<TNextServices, TNextRequest>;
 }
 
 const createDefineProcedure = <
   TServices extends object,
->(): DefineProcedure<TServices> => {
+  TRequest extends Request,
+>(): DefineProcedure<TServices, TRequest> => {
   const define = <
     TInput extends Schema,
     TOutput extends Schema,
@@ -226,6 +241,7 @@ const createDefineProcedure = <
     THeaders extends HeaderObjectSchema | undefined,
     TResponseHeaders extends HeaderObjectSchema | undefined,
     TAuth extends object,
+    TConfigRequest extends Request,
   >(
     config:
       | ContextlessUnaryProcedureConfig<TInput, TOutput, TErrors>
@@ -236,7 +252,8 @@ const createDefineProcedure = <
           TServices,
           THeaders,
           TResponseHeaders,
-          TAuth
+          TAuth,
+          TConfigRequest
         >
       | StreamProcedureConfig<
           TInput,
@@ -244,7 +261,8 @@ const createDefineProcedure = <
           TErrors,
           TServices,
           THeaders,
-          TAuth
+          TAuth,
+          TConfigRequest
         >
   ): Procedure => {
     const headers = 'headers' in config ? config.headers : undefined;
@@ -275,7 +293,14 @@ const createDefineProcedure = <
       ...(responseHeaders === undefined ? {} : { responseHeaders }),
       ...(auth === undefined
         ? {}
-        : { auth: auth as AuthPolicy<object, AuthPolicyHeaderValues, object> }),
+        : {
+            auth: auth as AuthPolicy<
+              object,
+              AuthPolicyHeaderValues,
+              object,
+              Request
+            >,
+          }),
       ...('output' in config ? { output: config.output } : {}),
       ...('stream' in config ? { stream: config.stream } : {}),
       errors: config.errors ?? {},
@@ -287,10 +312,16 @@ const createDefineProcedure = <
     };
   };
   return Object.assign(define, {
-    withContext<TNextServices extends object>() {
-      return createDefineProcedure<TNextServices>();
+    withContext<
+      TNextServices extends object,
+      TNextRequest extends Request = Request,
+    >() {
+      return createDefineProcedure<TNextServices, TNextRequest>();
     },
-  }) as DefineProcedure<TServices>;
+  }) as DefineProcedure<TServices, TRequest>;
 };
 
-export const defineProcedure = createDefineProcedure<Record<string, never>>();
+export const defineProcedure = createDefineProcedure<
+  Record<string, never>,
+  Request
+>();

@@ -16,8 +16,9 @@ export interface JoorContext<
   TResponseHeaders extends object = Record<string, never>,
   TAuth extends object = Record<string, never>,
   TErrors extends Record<string, JsonValue> = Record<string, JsonValue>,
+  TRequest extends Request = Request,
 > {
-  request: Request;
+  request: TRequest;
   traceId: string;
   signal: AbortSignal;
   headers: THeaders;
@@ -81,12 +82,14 @@ class RuntimeJoorContext<
   TResponseHeaders extends object,
   TAuth extends object,
   TErrors extends Record<string, JsonValue>,
+  TRequest extends Request,
 > implements JoorContext<
   TServices,
   THeaders,
   TResponseHeaders,
   TAuth,
-  TErrors
+  TErrors,
+  TRequest
 > {
   readonly traceId: string;
   readonly signal: AbortSignal;
@@ -108,8 +111,8 @@ class RuntimeJoorContext<
     this.auth = auth;
   }
 
-  get request(): Request {
-    return this.source.toRequest();
+  get request(): TRequest {
+    return this.source.toRequest() as TRequest;
   }
 
   get rawHeaders(): Headers {
@@ -148,14 +151,29 @@ export const createRuntimeContext = <
   TResponseHeaders extends object,
   TAuth extends object,
   TErrors extends Record<string, JsonValue> = Record<string, JsonValue>,
+  TRequest extends Request = Request,
 >(
   request: ContextRequestSource,
   traceId: string,
   services: TServices,
   headers: THeaders,
   auth: TAuth
-): JoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors> =>
-  new RuntimeJoorContext<TServices, THeaders, TResponseHeaders, TAuth, TErrors>(
+): JoorContext<
+  TServices,
+  THeaders,
+  TResponseHeaders,
+  TAuth,
+  TErrors,
+  TRequest
+> =>
+  new RuntimeJoorContext<
+    TServices,
+    THeaders,
+    TResponseHeaders,
+    TAuth,
+    TErrors,
+    TRequest
+  >(
     request,
     traceId,
     services,

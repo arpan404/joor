@@ -220,6 +220,7 @@ import {
   type AuthPolicyHeaderValues,
   type AuthPolicyResult,
   type AuthPolicyResultLike,
+  type AuthPolicyRequest,
   type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultFor,
@@ -756,6 +757,7 @@ import {
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
+  type ProcedureRequest,
   type ProcedureResponseHeaderValues,
   type ProcedureResponseHeaders,
   type ProcedureRequiresHeaders,
@@ -1926,6 +1928,10 @@ const annotatedConfigServices: AnnotatedConfigServices = {
 };
 annotatedConfigServices.users.findById('1').name.toUpperCase();
 
+interface ProcedureAppRequest extends Request {
+  readonly requestId: string;
+}
+
 const procedure = defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
   headers: t.object({
@@ -1954,6 +1960,27 @@ const procedure = defineProcedure.withContext<Services>()({
     return ctx.ok(user, { 'cache-control': 'private' });
   },
 });
+const requestTypedProcedure = defineProcedure.withContext<
+  Services,
+  ProcedureAppRequest
+>()({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
+  handler(ctx, input) {
+    ctx.request.requestId.toUpperCase();
+    ctx.services.users.findById(input.id);
+    return { id: input.id };
+  },
+});
+const requestTypedProcedureRequest: ProcedureRequest<typeof requestTypedProcedure> =
+  Object.assign(new Request('https://example.com/rpc'), {
+    requestId: 'req_1',
+  }) as ProcedureAppRequest;
+requestTypedProcedureRequest.requestId.toUpperCase();
+const defaultProcedureRequest: ProcedureRequest<typeof procedure> = new Request(
+  'https://example.com/rpc'
+);
+defaultProcedureRequest.url.toUpperCase();
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
@@ -1998,6 +2025,23 @@ const authPolicy = createAuthPolicy<
     return { userId: '1' };
   },
 });
+const requestTypedAuthPolicy = createAuthPolicy<
+  Services,
+  Record<string, never>,
+  { userId: string },
+  ProcedureAppRequest
+>({
+  name: 'request-session',
+  authenticate(ctx) {
+    ctx.request.requestId.toUpperCase();
+    ctx.services.users.findById('1');
+    return { userId: ctx.request.requestId };
+  },
+});
+const requestTypedAuthPolicyRequest: AuthPolicyRequest<
+  typeof requestTypedAuthPolicy
+> = requestTypedProcedureRequest;
+requestTypedAuthPolicyRequest.requestId.toUpperCase();
 type AuthPolicyServicesFromRoot = AuthPolicyServices<typeof authPolicy>;
 const authPolicyServicesFromRoot: AuthPolicyServicesFromRoot = {
   users: {
