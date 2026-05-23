@@ -306,6 +306,7 @@ export type NodeTransportRequestHandler = NodeRpcRequestHandler;
 export type NodeTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
 > = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
+type MaybePromise<TValue> = TValue | Promise<TValue>;
 export type NodeTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
@@ -333,20 +334,20 @@ export type NodeStreamRouteTransportBodyResultFor<
 export type NodeTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
-> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+> = (request: ContextRequestSource, body: TBody) => MaybePromise<TResult>;
 
 export type NodeTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
   <const TBody extends RpcManifestBody<TManifest>>(
     request: ContextRequestSource,
     body: TBody
-  ) => Promise<NodeTransportBodyResultFor<TManifest, TBody>>;
+  ) => MaybePromise<NodeTransportBodyResultFor<TManifest, TBody>>;
 
 export type NodeRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<NodeRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<NodeRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
 export type NodeUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -357,7 +358,7 @@ export type NodeRouteStreamTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<NodeRouteStreamTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<NodeRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type NodeStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,

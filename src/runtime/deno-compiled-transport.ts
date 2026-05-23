@@ -16,7 +16,6 @@ import {
   compiledUncachedExecutionState,
   type CompiledBodyResult,
   type CompiledFixedUnaryDispatch,
-  type CompiledRpcTransportBodyResultHandler,
   type CompiledRuntimeState,
   type CompiledRouteStreamTransportBodyResultFor,
   type CompiledRouteUnaryTransportBodyResultFor,
@@ -37,6 +36,7 @@ export type DenoCompiledTransportRequestHandler = (
 export type DenoCompiledTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
 > = CompiledBodyResult<TEnvelope>;
+type MaybePromise<TValue> = TValue | Promise<TValue>;
 
 export type DenoCompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -70,21 +70,26 @@ export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends DenoCompiledTransportBodyResult =
     DenoCompiledTransportBodyResult,
-> = CompiledRpcTransportBodyResultHandler<TBody, TResult>;
+> = (
+  request: ContextRequestSource,
+  body: TBody
+) => MaybePromise<TResult>;
 
 export type DenoCompiledTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<DenoCompiledTransportBodyResultFor<TManifest, TBody>>;
 
 export type DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<
+  DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>
+>;
 
 export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -95,7 +100,9 @@ export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<
+  DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>
+>;
 
 export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,

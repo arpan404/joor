@@ -218,6 +218,7 @@ export type DenoStreamRouteServeOptionsArgs<
 export type DenoTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
 > = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
+type MaybePromise<TValue> = TValue | Promise<TValue>;
 export type DenoTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
@@ -251,20 +252,20 @@ export type DenoTransportRequestHandler = JoorFetchHandler;
 export type DenoTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
-> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+> = (request: ContextRequestSource, body: TBody) => MaybePromise<TResult>;
 
 export type DenoTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
   <const TBody extends RpcManifestBody<TManifest>>(
     request: ContextRequestSource,
     body: TBody
-  ) => Promise<DenoTransportBodyResultFor<TManifest, TBody>>;
+  ) => MaybePromise<DenoTransportBodyResultFor<TManifest, TBody>>;
 
 export type DenoRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
 export type DenoUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -275,7 +276,7 @@ export type DenoRouteStreamTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoRouteStreamTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<DenoRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type DenoStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,

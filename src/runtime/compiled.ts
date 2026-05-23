@@ -180,24 +180,26 @@ export type CompiledStreamRouteBodyResultFor<
 > = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
+type MaybePromise<TValue> = TValue | Promise<TValue>;
+
 export type CompiledRpcTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
-> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+> = (request: ContextRequestSource, body: TBody) => MaybePromise<TResult>;
 
 export type CompiledRpcTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -208,7 +210,7 @@ export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -1175,9 +1177,8 @@ export const createCompiledRpcBodyResultHandler = <
     request: Request,
     body: JsonValue
   ): Promise<CompiledBodyResult> =>
-    handleTransport(
-      createFetchRequestSource(request),
-      body
+    Promise.resolve(
+      handleTransport(createFetchRequestSource(request), body)
     )) as CompiledRpcBodyResultHandlerForConfig<TConfig>;
 };
 

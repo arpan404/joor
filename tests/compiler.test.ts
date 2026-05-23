@@ -2609,7 +2609,7 @@ nativeStreamRouteBodyHandler(
   nativeUnaryRouteBody
 );
 nativeTransport(source, nativeStreamBody);
-nativeTransport(source, nativeUnaryBody).then((result) => {
+Promise.resolve(nativeTransport(source, nativeUnaryBody)).then((result) => {
   const exact: NativeTransportResultFor<typeof nativeUnaryBody> = result;
   if (!(exact instanceof Response) && !('body' in exact) && exact.ok) {
     exact.data.name.toUpperCase();
@@ -2617,14 +2617,14 @@ nativeTransport(source, nativeUnaryBody).then((result) => {
 });
 nativeTransport(source, nativeBatchBody);
 nativeTransport(source, nativeReadonlyBatchBody);
-nativeTransport(source, nativeExactBatchBody).then((result) => {
+Promise.resolve(nativeTransport(source, nativeExactBatchBody)).then((result) => {
   const exact: NativeTransportResultFor<typeof nativeExactBatchBody> = result;
   if (!(exact instanceof Response) && !('body' in exact)) {
     const firstId: 'users.get' = exact[0].id;
     firstId.toUpperCase();
   }
 });
-nativeTransportHandler(source, nativeUnaryBody).then((result) => {
+Promise.resolve(nativeTransportHandler(source, nativeUnaryBody)).then((result) => {
   const exact: NativeTransportResultFor<typeof nativeUnaryBody> = result;
   if (!(exact instanceof Response) && !('body' in exact) && exact.ok) {
     exact.data.name.toUpperCase();

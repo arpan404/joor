@@ -295,6 +295,7 @@ export type BunStreamRouteServeOptionsArgs<
 export type BunTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
 > = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;
+type MaybePromise<TValue> = TValue | Promise<TValue>;
 export type BunTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
@@ -326,21 +327,21 @@ export type BunTransportRequestHandler = JoorFetchHandler;
 export type BunTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends BunTransportBodyResult = BunTransportBodyResult,
-> = (request: ContextRequestSource, body: TBody) => Promise<TResult>;
+> = (request: ContextRequestSource, body: TBody) => MaybePromise<TResult>;
 
 export type BunTransportBodyResultHandlerFor<TManifest extends JoorManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
   request: ContextRequestSource,
   body: TBody
-) => Promise<BunTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<BunTransportBodyResultFor<TManifest, TBody>>;
 
 export type BunRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<BunRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<BunRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
 export type BunUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -351,7 +352,7 @@ export type BunRouteStreamTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<BunRouteStreamTransportBodyResultFor<TManifest, TBody>>;
+) => MaybePromise<BunRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type BunStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,

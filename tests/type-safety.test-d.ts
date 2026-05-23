@@ -314,6 +314,7 @@ import {
   type CompiledRpcStreamRouteBodyResultHandlerFor as RootCompiledRpcStreamRouteBodyResultHandlerFor,
   type CompiledRpcStreamRouteTransportBodyResultHandlerFor as RootCompiledRpcStreamRouteTransportBodyResultHandlerFor,
   type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
+  type CompiledRpcTransportBodyResultHandler as RootCompiledRpcTransportBodyResultHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRpcTransportBodyResultHandlerForConfig as RootCompiledRpcTransportBodyResultHandlerForConfig,
   type CompiledRpcUnaryRouteBodyResultHandlerFor as RootCompiledRpcUnaryRouteBodyResultHandlerFor,
@@ -1319,6 +1320,7 @@ import type {
   CompiledRpcStreamRouteBodyResultHandlerFor,
   CompiledRpcStreamRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
+  CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRpcTransportBodyResultHandlerForConfig,
   CompiledRpcUnaryRouteBodyResultHandlerFor,
@@ -8073,10 +8075,14 @@ if (
 }
 const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
+const syncDenoTransportHandler: DenoTransportBodyResultHandler = () =>
+  denoTransportResult;
 const denoTransportRequestHandler: DenoTransportRequestHandler =
   createDenoTransportRequestHandler(denoTransportHandler);
 const denoTransportRequestHandlerWithPath: DenoTransportRequestHandler =
   createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+createDenoTransportRequestHandler(syncDenoTransportHandler);
+createDenoTransportRequestHandlerWithPath(syncDenoTransportHandler, '/rpc');
 const runtimeSubpathDenoTransportRequestHandler: RuntimeSubpathDenoTransportRequestHandler =
   denoTransportRequestHandler;
 denoTransportRequestHandler(new Request('https://example.com/rpc'));
@@ -8112,12 +8118,30 @@ const manifestDenoTransportHandler: DenoTransportBodyResultHandlerFor<
     responseHeaders: { 'cache-control': 'private' },
   };
 };
+const syncManifestDenoTransportHandler: DenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = (_request, body) => {
+  if ('id' in body && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+  }
+  return {
+    body: '{"ok":true}',
+    headers: { 'cache-control': 'private' },
+    responseHeaders: { 'cache-control': 'private' },
+  };
+};
 const manifestDenoRouteUnaryTransportHandler: DenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const syncManifestDenoRouteUnaryTransportHandler: DenoRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoTransportHandler;
 const manifestDenoRouteStreamTransportHandler: DenoRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const syncManifestDenoRouteStreamTransportHandler: DenoRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoTransportHandler;
 const manifestDenoUnaryRouteTransportHandler: DenoUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoRouteUnaryTransportHandler;
@@ -8125,9 +8149,9 @@ const manifestDenoStreamRouteTransportHandler: DenoStreamRouteTransportBodyResul
   typeof manifest
 > = manifestDenoRouteStreamTransportHandler;
 createDenoTransportRequestHandler(manifestDenoTransportHandler);
-manifestDenoTransportHandler(
-  createFetchRequestSourceForTypes(),
-  manifestRouteRequest
+createDenoTransportRequestHandler(syncManifestDenoTransportHandler);
+Promise.resolve(
+  manifestDenoTransportHandler(createFetchRequestSourceForTypes(), manifestRouteRequest)
 ).then((result) => {
   if (!(result instanceof Response) && 'ok' in result && result.ok) {
     result.data.name.toUpperCase();
@@ -8150,7 +8174,15 @@ manifestDenoRouteUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncManifestDenoRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 manifestDenoRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+syncManifestDenoRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -8208,6 +8240,8 @@ const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   }
   return manifestRouteBodyResult;
 };
+const syncBunTransportHandler: BunTransportBodyResultHandler = () =>
+  denoTransportResult;
 const bunTransportRequestHandler: BunTransportRequestHandler =
   createBunTransportRequestHandler(routeTypedBunTransportHandler);
 const bunTransportRequestHandlerWithPath: BunTransportRequestHandler =
@@ -8215,6 +8249,8 @@ const bunTransportRequestHandlerWithPath: BunTransportRequestHandler =
     routeTypedBunTransportHandler,
     '/rpc'
   );
+createBunTransportRequestHandler(syncBunTransportHandler);
+createBunTransportRequestHandlerWithPath(syncBunTransportHandler, '/rpc');
 const runtimeSubpathBunTransportRequestHandler: RuntimeSubpathBunTransportRequestHandler =
   bunTransportRequestHandler;
 bunTransportRequestHandler(new Request('https://example.com/rpc'));
@@ -8225,12 +8261,21 @@ runtimeSubpathBunTransportRequestHandler(
 const manifestBunTransportHandler: BunTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const syncManifestBunTransportHandler: BunTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoTransportHandler;
 const manifestBunRouteUnaryTransportHandler: BunRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestBunTransportHandler;
+const syncManifestBunRouteUnaryTransportHandler: BunRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestBunTransportHandler;
 const manifestBunRouteStreamTransportHandler: BunRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestBunTransportHandler;
+const syncManifestBunRouteStreamTransportHandler: BunRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestBunTransportHandler;
 const manifestBunUnaryRouteTransportHandler: BunUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestBunRouteUnaryTransportHandler;
@@ -8238,6 +8283,7 @@ const manifestBunStreamRouteTransportHandler: BunStreamRouteTransportBodyResultH
   typeof manifest
 > = manifestBunRouteStreamTransportHandler;
 createBunTransportRequestHandler(manifestBunTransportHandler);
+createBunTransportRequestHandler(syncManifestBunTransportHandler);
 manifestBunUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -8250,7 +8296,15 @@ manifestBunRouteUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncManifestBunRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 manifestBunRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+syncManifestBunRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -8392,6 +8446,8 @@ rootDenoCompiledRouteUnaryTransportResultFor.valueOf();
 rootDenoCompiledRouteStreamTransportResultFor.valueOf();
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
+const syncStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
+  () => standaloneDenoTransportResult;
 const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
   createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 const rootStandaloneDenoTransportHandler: RootStandaloneDenoTransportBodyResultHandler =
@@ -8416,6 +8472,11 @@ runtimeSubpathStandaloneDenoTransportRequestHandler(
 createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 createStandaloneDenoTransportRequestHandlerWithPath(
   standaloneDenoTransportHandler,
+  '/rpc'
+);
+createStandaloneDenoTransportRequestHandler(syncStandaloneDenoTransportHandler);
+createStandaloneDenoTransportRequestHandlerWithPath(
+  syncStandaloneDenoTransportHandler,
   '/rpc'
 );
 createRootStandaloneDenoTransportRequestHandlerWithPath(
@@ -8445,12 +8506,21 @@ createStandaloneDenoTransportRequestHandlerWithPath(
 const manifestStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const syncManifestStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoTransportHandler;
 const manifestStandaloneDenoRouteUnaryTransportHandler: StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
+const syncManifestStandaloneDenoRouteUnaryTransportHandler: StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestStandaloneDenoTransportHandler;
 const manifestStandaloneDenoRouteStreamTransportHandler: StandaloneDenoRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
+const syncManifestStandaloneDenoRouteStreamTransportHandler: StandaloneDenoRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestStandaloneDenoTransportHandler;
 const manifestStandaloneDenoUnaryRouteTransportHandler: StandaloneDenoUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoRouteUnaryTransportHandler;
@@ -8516,7 +8586,15 @@ manifestStandaloneDenoRouteUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncManifestStandaloneDenoRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 manifestStandaloneDenoRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+syncManifestStandaloneDenoRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -8817,17 +8895,36 @@ const manifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor
   }
   return compiledSerializedEnvelope;
 };
+const syncCompiledTransportHandler: CompiledRpcTransportBodyResultHandler = () =>
+  compiledSerializedEnvelope;
+const rootSyncCompiledTransportHandler: RootCompiledRpcTransportBodyResultHandler =
+  syncCompiledTransportHandler;
+const syncManifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor<
+  typeof manifest
+> = (_request, body) => {
+  if ('id' in body && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+  }
+  return compiledSerializedEnvelope;
+};
 const rootManifestCompiledTransportHandler: RootCompiledRpcTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledTransportHandler;
-manifestCompiledTransportHandler(
-  createFetchRequestSourceForTypes(),
-  manifestRouteRequest
+rootSyncCompiledTransportHandler(createFetchRequestSourceForTypes(), {});
+Promise.resolve(
+  manifestCompiledTransportHandler(
+    createFetchRequestSourceForTypes(),
+    manifestRouteRequest
+  )
 ).then((result) => {
   if (!(result instanceof Response) && 'ok' in result && result.ok) {
     result.data.name.toUpperCase();
   }
 });
+syncManifestCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteRequest
+);
 // @ts-expect-error manifest-aware compiled transport handlers validate body input by route id.
 rootManifestCompiledTransportHandler(createFetchRequestSourceForTypes(), {
   id: 'users.get',
@@ -9362,6 +9459,19 @@ createDenoCompiledTransportRequestHandler(
   routeTypedStandaloneDenoTransportHandler,
   _serviceTypedCompiledUnaryDispatch
 );
+const syncDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandler =
+  () => standaloneDenoTransportResult;
+createDenoCompiledTransportRequestHandler(
+  compiledRuntimeState,
+  syncDenoCompiledTransportHandler,
+  compiledUnaryDispatch
+);
+createDenoCompiledTransportRequestHandlerWithPath(
+  compiledRuntimeState,
+  syncDenoCompiledTransportHandler,
+  compiledUnaryDispatch,
+  '/rpc'
+);
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
@@ -9415,12 +9525,21 @@ const runtimeSubpathTypedStandaloneDenoCompiledHandler: RuntimeSubpathDenoCompil
 const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
+const syncManifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestCompiledTransportHandler;
 const manifestDenoCompiledUnaryRouteTransportHandler: DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
+const syncManifestDenoCompiledUnaryRouteTransportHandler: DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoCompiledTransportHandler;
 const manifestDenoCompiledStreamRouteTransportHandler: DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
+const syncManifestDenoCompiledStreamRouteTransportHandler: DenoCompiledStreamRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoCompiledTransportHandler;
 const manifestDenoCompiledRouteUnaryTransportHandler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledUnaryRouteTransportHandler;
@@ -9461,7 +9580,15 @@ runtimeSubpathManifestDenoCompiledUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncManifestDenoCompiledUnaryRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 runtimeSubpathManifestDenoCompiledStreamRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+syncManifestDenoCompiledStreamRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
@@ -9472,6 +9599,10 @@ runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler(
 runtimeSubpathManifestDenoCompiledRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
+);
+syncManifestDenoCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteRequest
 );
 const exactManifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
@@ -9489,9 +9620,11 @@ const exactRootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBo
 const exactRuntimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = exactRootManifestDenoCompiledTransportHandler;
-exactRuntimeSubpathManifestDenoCompiledTransportHandler(
-  createFetchRequestSourceForTypes(),
-  manifestRouteRequest
+Promise.resolve(
+  exactRuntimeSubpathManifestDenoCompiledTransportHandler(
+    createFetchRequestSourceForTypes(),
+    manifestRouteRequest
+  )
 ).then((result) => {
   if (isSerializedJsonEnvelope(result)) result.body.toUpperCase();
 });
@@ -11443,6 +11576,10 @@ const transportResult: RpcBodyResult = {
 };
 const nodeTransportRequestHandler: NodeTransportRequestHandler =
   createNodeTransportRequestHandler(async () => transportResult);
+const syncNodeTransportHandler: NodeTransportBodyResultHandler = () =>
+  transportResult;
+createNodeTransportRequestHandler(syncNodeTransportHandler);
+createNodeTransportRequestHandlerWithPath(syncNodeTransportHandler, '/rpc');
 const runtimeSubpathNodeTransportRequestHandler: RuntimeSubpathNodeTransportRequestHandler =
   nodeTransportRequestHandler;
 runtimeSubpathNodeTransportRequestHandler.length.toFixed();
@@ -11486,19 +11623,29 @@ createNodeTransportRequestHandlerWithPath(
 const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const syncManifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestDenoTransportHandler;
 const manifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeTransportHandler;
+const syncManifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestNodeTransportHandler;
 const manifestNodeUnaryRouteTransportHandler: NodeUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeRouteUnaryTransportHandler;
 const manifestNodeRouteStreamTransportHandler: NodeRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeTransportHandler;
+const syncManifestNodeRouteStreamTransportHandler: NodeRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = syncManifestNodeTransportHandler;
 const manifestNodeStreamRouteTransportHandler: NodeStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeRouteStreamTransportHandler;
 createNodeTransportRequestHandler(manifestNodeTransportHandler);
+createNodeTransportRequestHandler(syncManifestNodeTransportHandler);
 manifestNodeUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -11511,14 +11658,24 @@ manifestNodeRouteUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
 );
+syncManifestNodeRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
 manifestNodeRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
-manifestNodeTransportHandler(createFetchRequestSourceForTypes(), {
-  id: 'users.authenticated',
-  input: { ok: true },
-}).then((result) => {
+syncManifestNodeRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+Promise.resolve(
+  manifestNodeTransportHandler(createFetchRequestSourceForTypes(), {
+    id: 'users.authenticated',
+    input: { ok: true },
+  })
+).then((result) => {
   if (!(result instanceof Response) && 'ok' in result && result.ok) {
     result.data.userId.toUpperCase();
   }
