@@ -244,9 +244,11 @@ export type NativeStreamRouteRequest =
   JoorManifestRouteStreamProtocolRequestUnion<NativeManifest>;
 export type NativeStreamProtocolRequest =
   NativeStreamRouteRequest;
-export type NativeProtocolBatchRequest<TRequests extends readonly NativeUnaryProtocolRequest[] = readonly NativeUnaryProtocolRequest[]> =
+export type NativeRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
-export type NativeBatchBody = NativeProtocolBatchRequest;
+export type NativeProtocolBatchRequest<TRequests extends readonly NativeUnaryProtocolRequest[] = readonly NativeUnaryProtocolRequest[]> =
+  NativeRouteBatchRequest<TRequests>;
+export type NativeBatchBody = NativeRouteBatchRequest;
 export type NativeBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBodyResult = JoorManifestRouteBodyResult<NativeManifest>;
 export type NativeBodyResultFor<TBody extends NativeBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
