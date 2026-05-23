@@ -232,8 +232,10 @@ export type NativeRouteResultUnion = JoorManifestRouteResultUnion<NativeManifest
 export type NativeRouteStreamEvent<TId extends NativeStreamRouteId> = JoorManifestRouteStreamEvent<NativeManifest, TId>;
 export type NativeRouteRequest<TId extends NativeRouteId> =
   JoorManifestRouteProtocolRequest<NativeManifest, TId>;
-export type NativeProtocolRequest =
+export type NativeRouteRequestUnion =
   JoorManifestRouteProtocolRequestUnion<NativeManifest>;
+export type NativeProtocolRequest =
+  NativeRouteRequestUnion;
 export type NativeUnaryProtocolRequest =
   JoorManifestRouteUnaryProtocolRequestUnion<NativeManifest>;
 export type NativeStreamProtocolRequest =
