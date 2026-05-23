@@ -203,6 +203,8 @@ import {
   type DenoUnaryRouteTransportBodyResultFor,
   type DenoUnaryRouteTransportBodyResultHandlerFor,
   type DefineConfigFor,
+  type DefineRouteStreamConfigFor,
+  type DefineRouteUnaryConfigFor,
   type DefineHandlerOptions,
   type DefineStreamRouteConfigFor,
   type DefineStreamRouteHandlerOptions,
@@ -242,6 +244,8 @@ import {
   type JoorConfig,
   type JoorConfigFor,
   type JoorConfigContext,
+  type JoorRouteStreamConfigFor,
+  type JoorRouteUnaryConfigFor,
   type JoorStreamRouteConfigFor,
   type JoorUnaryRouteConfigFor,
   type JoorContext,
@@ -2366,7 +2370,7 @@ const manifestAwareConfigShape: JoorConfigFor<
   readonly [typeof usersPlugin]
 > = manifestAwareConfig;
 manifestAwareConfigShape.plugins?.[0]?.name.toUpperCase();
-const manifestUnaryRouteConfigShape: JoorUnaryRouteConfigFor<
+const manifestRouteUnaryConfigShape: JoorRouteUnaryConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = {
@@ -2380,7 +2384,11 @@ const manifestUnaryRouteConfigShape: JoorUnaryRouteConfigFor<
     },
   },
 };
-const manifestStreamRouteConfigShape: JoorStreamRouteConfigFor<
+const manifestUnaryRouteConfigShape: JoorUnaryRouteConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestRouteUnaryConfigShape;
+const manifestRouteStreamConfigShape: JoorRouteStreamConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = {
@@ -2392,12 +2400,24 @@ const manifestStreamRouteConfigShape: JoorStreamRouteConfigFor<
     },
   },
 };
+const manifestStreamRouteConfigShape: JoorStreamRouteConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestRouteStreamConfigShape;
+const manifestRouteUnaryConfigFactory: DefineRouteUnaryConfigFor<
+  typeof manifest
+> = defineConfigFor(manifest);
 const manifestUnaryRouteConfigFactory: DefineUnaryRouteConfigFor<
+  typeof manifest
+> = manifestRouteUnaryConfigFactory;
+const manifestRouteStreamConfigFactory: DefineRouteStreamConfigFor<
   typeof manifest
 > = defineConfigFor(manifest);
 const manifestStreamRouteConfigFactory: DefineStreamRouteConfigFor<
   typeof manifest
-> = defineConfigFor(manifest);
+> = manifestRouteStreamConfigFactory;
+manifestRouteUnaryConfigFactory(manifestRouteUnaryConfigShape);
+manifestRouteStreamConfigFactory(manifestRouteStreamConfigShape);
 manifestUnaryRouteConfigFactory(manifestUnaryRouteConfigShape);
 manifestStreamRouteConfigFactory(manifestStreamRouteConfigShape);
 const manifestAwareConfigFactory: DefineConfigFor<typeof manifest> =
@@ -6992,22 +7012,22 @@ const runtimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorHandlerOptions;
-const joorUnaryRouteHandlerOptions: JoorUnaryRouteHandlerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const joorStreamRouteHandlerOptions: JoorStreamRouteHandlerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const joorRouteUnaryHandlerOptions: JoorRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = joorUnaryRouteHandlerOptions;
+> = manifestUnaryRouteHandlerOptions;
+const joorUnaryRouteHandlerOptions: JoorUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorRouteUnaryHandlerOptions;
 const joorRouteStreamHandlerOptions: JoorRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = joorStreamRouteHandlerOptions;
+> = manifestStreamRouteHandlerOptions;
+const joorStreamRouteHandlerOptions: JoorStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorRouteStreamHandlerOptions;
 const runtimeSubpathJoorUnaryRouteHandlerOptions: RuntimeSubpathJoorUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7053,22 +7073,22 @@ const joorHandlerOptionsArgs: JoorHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [joorHandlerOptions];
-const joorUnaryRouteHandlerOptionsArgs: JoorUnaryRouteHandlerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [joorUnaryRouteHandlerOptions];
-const joorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [joorStreamRouteHandlerOptions];
 const joorRouteUnaryHandlerOptionsArgs: JoorRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [joorRouteUnaryHandlerOptions];
+const joorUnaryRouteHandlerOptionsArgs: JoorUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorRouteUnaryHandlerOptionsArgs;
 const joorRouteStreamHandlerOptionsArgs: JoorRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [joorRouteStreamHandlerOptions];
+const joorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorRouteStreamHandlerOptionsArgs;
 const runtimeSubpathJoorHandlerOptionsArgs: RuntimeSubpathJoorHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
