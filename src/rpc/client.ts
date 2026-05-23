@@ -873,13 +873,13 @@ export interface LegacyRpcTransportClient {
   ): AsyncIterable<StreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue>;
 }
 
-export interface RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> {
-  call<TId extends RpcUnaryRouteId<TRoutes>>(
+export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
+  call<TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ): Promise<RpcRouteEnvelope<TRoutes, TId>>;
-  request<TId extends RpcUnaryRouteId<TRoutes>>(
+  request<TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
@@ -889,24 +889,24 @@ export interface RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> {
   ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
 }
 
-export interface RpcStreamRouteTransportClient<TRoutes extends RpcRouteMap> {
-  stream<TId extends RpcStreamRouteId<TRoutes>>(
+export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
+  stream<TId extends RpcRouteStreamId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ): AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
 }
 
-export type RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> =
-  RpcUnaryRouteTransportClient<TRoutes>;
+export type RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryTransportClient<TRoutes>;
 
-export type RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> =
-  RpcStreamRouteTransportClient<TRoutes>;
+export type RpcStreamRouteTransportClient<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamTransportClient<TRoutes>;
 
 export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap>
   extends
-    RpcUnaryRouteTransportClient<TRoutes>,
-    RpcStreamRouteTransportClient<TRoutes> {}
+    RpcRouteUnaryTransportClient<TRoutes>,
+    RpcRouteStreamTransportClient<TRoutes> {}
 
 export type RpcTransportClient<TRoutes extends RpcRouteMap = never> = [
   TRoutes,
@@ -919,19 +919,19 @@ export type RpcManifestTransportClient<TManifest extends JoorManifest> =
 
 export type RpcManifestUnaryRouteTransportClient<
   TManifest extends JoorManifest,
-> = RpcUnaryRouteTransportClient<JoorManifestRoutes<TManifest>>;
+> = RpcRouteUnaryTransportClient<JoorManifestRoutes<TManifest>>;
 
 export type RpcManifestRouteUnaryTransportClient<
   TManifest extends JoorManifest,
-> = RpcManifestUnaryRouteTransportClient<TManifest>;
+> = RpcRouteUnaryTransportClient<JoorManifestRoutes<TManifest>>;
 
 export type RpcManifestStreamRouteTransportClient<
   TManifest extends JoorManifest,
-> = RpcStreamRouteTransportClient<JoorManifestRoutes<TManifest>>;
+> = RpcRouteStreamTransportClient<JoorManifestRoutes<TManifest>>;
 
 export type RpcManifestRouteStreamTransportClient<
   TManifest extends JoorManifest,
-> = RpcManifestStreamRouteTransportClient<TManifest>;
+> = RpcRouteStreamTransportClient<JoorManifestRoutes<TManifest>>;
 
 export type RpcManifestClientOptions<TManifest extends JoorManifest> = Omit<
   ClientOptions<TManifest>,
