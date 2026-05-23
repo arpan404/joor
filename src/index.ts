@@ -40,6 +40,7 @@ export {
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
 export { createExpressHandler } from './runtime/express.js';
+export { createFastifyHandler } from './runtime/fastify.js';
 export { createHonoHandler } from './runtime/hono.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
@@ -894,6 +895,22 @@ export type {
   ExpressUnaryRouteHandlerOptionsArgs,
   ExpressUnaryRouteHandlerOptionsFor,
 } from './runtime/express.js';
+export type {
+  FastifyHandler,
+  FastifyHandlerOptions,
+  FastifyHandlerOptionsArgs,
+  FastifyHandlerOptionsFor,
+  FastifyReply,
+  FastifyRequest,
+  FastifyRouteStreamHandlerOptionsArgs,
+  FastifyRouteStreamHandlerOptionsFor,
+  FastifyRouteUnaryHandlerOptionsArgs,
+  FastifyRouteUnaryHandlerOptionsFor,
+  FastifyStreamRouteHandlerOptionsArgs,
+  FastifyStreamRouteHandlerOptionsFor,
+  FastifyUnaryRouteHandlerOptionsArgs,
+  FastifyUnaryRouteHandlerOptionsFor,
+} from './runtime/fastify.js';
 export type {
   HonoContext,
   HonoHandler,

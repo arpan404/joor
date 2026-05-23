@@ -68,6 +68,10 @@
       "types": "./dist/runtime/express.d.ts",
       "import": "./dist/runtime/express.js"
     },
+    "./runtime/fastify": {
+      "types": "./dist/runtime/fastify.d.ts",
+      "import": "./dist/runtime/fastify.js"
+    },
     "./runtime/hono": {
       "types": "./dist/runtime/hono.d.ts",
       "import": "./dist/runtime/hono.js"

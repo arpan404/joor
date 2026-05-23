@@ -22,6 +22,7 @@ import {
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
   createExpressHandler,
+  createFastifyHandler,
   createHonoHandler,
   createJoorHandler,
   createNetlifyFetch,
@@ -153,6 +154,20 @@ import {
   type ExpressStreamRouteHandlerOptionsFor,
   type ExpressUnaryRouteHandlerOptionsArgs,
   type ExpressUnaryRouteHandlerOptionsFor,
+  type FastifyHandler,
+  type FastifyHandlerOptions,
+  type FastifyHandlerOptionsArgs,
+  type FastifyHandlerOptionsFor,
+  type FastifyReply,
+  type FastifyRequest,
+  type FastifyRouteStreamHandlerOptionsArgs,
+  type FastifyRouteStreamHandlerOptionsFor,
+  type FastifyRouteUnaryHandlerOptionsArgs,
+  type FastifyRouteUnaryHandlerOptionsFor,
+  type FastifyStreamRouteHandlerOptionsArgs,
+  type FastifyStreamRouteHandlerOptionsFor,
+  type FastifyUnaryRouteHandlerOptionsArgs,
+  type FastifyUnaryRouteHandlerOptionsFor,
   type HonoContext,
   type HonoHandler,
   type HonoHandlerOptionsArgs,
@@ -1133,6 +1148,7 @@ import {
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createExpressHandler as createRuntimeSubpathExpressHandler,
+  createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
@@ -1151,6 +1167,8 @@ import {
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
+  type FastifyHandler as RuntimeSubpathFastifyHandler,
+  type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
@@ -9527,6 +9545,75 @@ expressRequest.originalUrl = '/rpc';
 expressResponse.statusCode.toFixed();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
+const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
+fastifyHandlerOptionsBase.useOriginalUrl = false;
+const fastifyHandlerOptions: FastifyHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = { ...handlerOptions, hostname: 'app' };
+const runtimeSubpathFastifyHandlerOptions: RuntimeSubpathFastifyHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyHandlerOptions;
+const fastifyRouteUnaryHandlerOptions: FastifyRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyHandlerOptions;
+const fastifyUnaryRouteHandlerOptions: FastifyUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteUnaryHandlerOptions;
+const fastifyRouteStreamHandlerOptions: FastifyRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyHandlerOptions;
+const fastifyStreamRouteHandlerOptions: FastifyStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteStreamHandlerOptions;
+runtimeSubpathFastifyHandlerOptions.plugins?.[0]?.name.toUpperCase();
+fastifyUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+fastifyStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const fastifyHandlerOptionsArgs: FastifyHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [fastifyHandlerOptions];
+const fastifyRouteUnaryHandlerOptionsArgs: FastifyRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyHandlerOptionsArgs;
+const fastifyUnaryRouteHandlerOptionsArgs: FastifyUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteUnaryHandlerOptionsArgs;
+const fastifyRouteStreamHandlerOptionsArgs: FastifyRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyHandlerOptionsArgs;
+const fastifyStreamRouteHandlerOptionsArgs: FastifyStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteStreamHandlerOptionsArgs;
+fastifyUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+fastifyStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const fastifyHandler: FastifyHandler = createFastifyHandler(
+  manifest,
+  fastifyHandlerOptions
+);
+const runtimeSubpathFastifyHandler: RuntimeSubpathFastifyHandler =
+  createRuntimeSubpathFastifyHandler(
+    manifest,
+    runtimeSubpathFastifyHandlerOptions
+  );
+const fastifyRequest = {} as FastifyRequest;
+const fastifyReply = {} as FastifyReply;
+fastifyRequest.body;
+fastifyRequest.originalUrl = '/rpc';
+fastifyReply.raw.statusCode.toFixed();
+fastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
+// @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
+createFastifyHandler(manifest);
 const honoHandlerOptions: HonoHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
