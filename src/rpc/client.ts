@@ -46,17 +46,17 @@ export type RpcRouteId<TRoutes extends RpcRouteMap> = Extract<
 
 export type RpcRouteProcedure<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
 > = TRoutes[TId];
 
 export type RpcRouteInput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
 > = ProcedureInput<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteOutput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes>,
+  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
 > = ProcedureOutput<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteHeaders<
@@ -165,62 +165,62 @@ export type RpcStreamRouteId<TRoutes extends RpcRouteMap> =
 
 export type RpcRouteUnaryProcedure<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteProcedure<TRoutes, TId>;
 
 export type RpcUnaryRouteProcedure<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryProcedure<TRoutes, TId>;
 
 export type RpcRouteStreamProcedure<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteProcedure<TRoutes, TId>;
 
 export type RpcStreamRouteProcedure<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamProcedure<TRoutes, TId>;
 
 export type RpcRouteUnaryInput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteInput<TRoutes, TId>;
 
 export type RpcUnaryRouteInput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryInput<TRoutes, TId>;
 
 export type RpcRouteStreamInput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteInput<TRoutes, TId>;
 
 export type RpcStreamRouteInput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamInput<TRoutes, TId>;
 
 export type RpcRouteUnaryOutput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteOutput<TRoutes, TId>;
 
 export type RpcUnaryRouteOutput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryOutput<TRoutes, TId>;
 
 export type RpcRouteStreamOutput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteOutput<TRoutes, TId>;
 
 export type RpcStreamRouteOutput<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamOutput<TRoutes, TId>;
 
 export type RpcRouteUnaryHeaders<

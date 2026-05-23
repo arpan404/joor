@@ -2318,7 +2318,10 @@ type Routes = {
 };
 const routeUnaryProcedure: RpcUnaryRouteProcedure<Routes, 'users.get'> =
   procedure;
+const defaultRouteUnaryProcedure: RpcUnaryRouteProcedure<Routes> =
+  routeUnaryProcedure;
 routeUnaryProcedure.output;
+defaultRouteUnaryProcedure.input;
 const rpcSubpathRouteUnaryProcedure: RpcSubpathUnaryRouteProcedure<
   Routes,
   'users.get'
@@ -2326,18 +2329,25 @@ const rpcSubpathRouteUnaryProcedure: RpcSubpathUnaryRouteProcedure<
 rpcSubpathRouteUnaryProcedure.output;
 const routeStreamProcedure: RpcStreamRouteProcedure<Routes, 'users.watch'> =
   streamProcedure;
+const defaultRouteStreamProcedure: RpcStreamRouteProcedure<Routes> =
+  routeStreamProcedure;
 routeStreamProcedure.stream;
+defaultRouteStreamProcedure.stream;
 const rpcSubpathRouteStreamProcedure: RpcSubpathStreamRouteProcedure<
   Routes,
   'users.watch'
 > = routeStreamProcedure;
 rpcSubpathRouteStreamProcedure.stream;
 const routeUnaryInput: RpcUnaryRouteInput<Routes, 'users.get'> = { id: '1' };
+const defaultRouteUnaryInput: RpcUnaryRouteInput<Routes> = routeUnaryInput;
 routeUnaryInput.id.toUpperCase();
+defaultRouteUnaryInput.id.toUpperCase();
 const routeStreamInput: RpcStreamRouteInput<Routes, 'users.watch'> = {
   userId: '1',
 };
+const defaultRouteStreamInput: RpcStreamRouteInput<Routes> = routeStreamInput;
 routeStreamInput.userId.toUpperCase();
+defaultRouteStreamInput.userId.toUpperCase();
 type RouteStreamOutputIsNever = [
   RpcStreamRouteOutput<Routes, 'users.watch'>,
 ] extends [never]
@@ -2361,7 +2371,9 @@ const routeUnaryOutput: RpcUnaryRouteOutput<Routes, 'users.get'> = {
   id: '1',
   name: 'Ada',
 };
+const defaultRouteUnaryOutput: RpcUnaryRouteOutput<Routes> = routeUnaryOutput;
 routeUnaryOutput.name.toUpperCase();
+defaultRouteUnaryOutput.name.toUpperCase();
 const routeUnaryHeaders: RpcUnaryRouteHeaders<Routes, 'users.get'> = {
   'x-tenant-id': 'tenant-1',
 };
@@ -2547,7 +2559,11 @@ const joorManifestRouteServices: JoorManifestRouteServices<
   typeof manifest,
   'users.get'
 > = procedureServices;
+const defaultJoorManifestRouteServices: JoorManifestRouteServices<
+  typeof manifest
+> = joorManifestRouteServices;
 joorManifestRouteServices.users.findById('1');
+defaultJoorManifestRouteServices.users.findById('1');
 const manifestRequiredServices: RpcManifestRequiredServices<typeof manifest> =
   procedureServices;
 manifestRequiredServices.users.findById('1').id.toUpperCase();
@@ -2555,7 +2571,10 @@ const manifestRouteServices: RpcManifestRouteServices<
   typeof manifest,
   'users.get'
 > = procedureServices;
+const defaultManifestRouteServices: RpcManifestRouteServices<typeof manifest> =
+  manifestRouteServices;
 manifestRouteServices.users.findById('1');
+defaultManifestRouteServices.users.findById('1');
 const manifestFromSubpath = defineManifestSubpath({
   procedures: {
     'users.get': procedure,
@@ -3104,22 +3123,39 @@ const manifestStreamRouteId: JoorManifestStreamRouteId<typeof manifest> =
 manifestStreamRouteId.toUpperCase();
 const manifestRouteInput: JoorManifestRouteInput<typeof manifest, 'users.get'> =
   { id: '1' };
+const defaultManifestRouteInput: JoorManifestRouteInput<typeof manifest> =
+  manifestRouteInput;
 manifestRouteInput.id.toUpperCase();
+if ('id' in defaultManifestRouteInput) {
+  defaultManifestRouteInput.id.toUpperCase();
+}
 const manifestRouteProcedure: JoorManifestRouteProcedure<
   typeof manifest,
   'users.get'
 > = procedure;
+const defaultManifestRouteProcedure: JoorManifestRouteProcedure<
+  typeof manifest
+> = manifestRouteProcedure;
 manifestRouteProcedure.output;
+defaultManifestRouteProcedure.input;
 const manifestUnaryRouteProcedure: JoorManifestUnaryRouteProcedure<
   typeof manifest,
   'users.get'
 > = manifestRouteProcedure;
+const defaultManifestUnaryRouteProcedure: JoorManifestUnaryRouteProcedure<
+  typeof manifest
+> = manifestUnaryRouteProcedure;
 manifestUnaryRouteProcedure.output;
+defaultManifestUnaryRouteProcedure.input;
 const manifestStreamRouteProcedure: JoorManifestStreamRouteProcedure<
   typeof manifest,
   'users.watch'
 > = streamProcedure;
+const defaultManifestStreamRouteProcedure: JoorManifestStreamRouteProcedure<
+  typeof manifest
+> = manifestStreamRouteProcedure;
 manifestStreamRouteProcedure.stream;
+defaultManifestStreamRouteProcedure.stream;
 const manifestSubpathUnaryRouteProcedure: JoorSubpathManifestUnaryRouteProcedure<
   typeof manifest,
   'users.get'
@@ -3134,12 +3170,20 @@ const manifestUnaryRouteInput: JoorManifestUnaryRouteInput<
   typeof manifest,
   'users.get'
 > = { id: '1' };
+const defaultManifestUnaryRouteInput: JoorManifestUnaryRouteInput<
+  typeof manifest
+> = manifestUnaryRouteInput;
 manifestUnaryRouteInput.id.toUpperCase();
+defaultManifestUnaryRouteInput.id.toUpperCase();
 const manifestStreamRouteInput: JoorManifestStreamRouteInput<
   typeof manifest,
   'users.watch'
 > = { userId: '1' };
+const defaultManifestStreamRouteInput: JoorManifestStreamRouteInput<
+  typeof manifest
+> = manifestStreamRouteInput;
 manifestStreamRouteInput.userId.toUpperCase();
+defaultManifestStreamRouteInput.userId.toUpperCase();
 type ManifestStreamRouteOutputIsNever = [
   JoorManifestStreamRouteOutput<typeof manifest, 'users.watch'>,
 ] extends [never]
@@ -3161,7 +3205,11 @@ const manifestUnaryRouteOutput: JoorManifestUnaryRouteOutput<
   typeof manifest,
   'users.get'
 > = { id: '1', name: 'Ada' };
+const defaultManifestUnaryRouteOutput: JoorManifestUnaryRouteOutput<
+  typeof manifest
+> = manifestUnaryRouteOutput;
 manifestUnaryRouteOutput.name.toUpperCase();
+defaultManifestUnaryRouteOutput.name.toUpperCase();
 const manifestUnaryRouteHeaders: JoorManifestUnaryRouteHeaders<
   typeof manifest,
   'users.get'
@@ -3847,17 +3895,29 @@ const publicManifestRouteProcedure: RpcManifestRouteProcedure<
   typeof manifest,
   'users.get'
 > = procedure;
+const defaultPublicManifestRouteProcedure: RpcManifestRouteProcedure<
+  typeof manifest
+> = publicManifestRouteProcedure;
 publicManifestRouteProcedure.output;
+defaultPublicManifestRouteProcedure.input;
 const publicManifestUnaryRouteProcedure: RpcManifestUnaryRouteProcedure<
   typeof manifest,
   'users.get'
 > = publicManifestRouteProcedure;
+const defaultPublicManifestUnaryRouteProcedure: RpcManifestUnaryRouteProcedure<
+  typeof manifest
+> = publicManifestUnaryRouteProcedure;
 publicManifestUnaryRouteProcedure.output;
+defaultPublicManifestUnaryRouteProcedure.input;
 const publicManifestStreamRouteProcedure: RpcManifestStreamRouteProcedure<
   typeof manifest,
   'users.watch'
 > = streamProcedure;
+const defaultPublicManifestStreamRouteProcedure: RpcManifestStreamRouteProcedure<
+  typeof manifest
+> = publicManifestStreamRouteProcedure;
 publicManifestStreamRouteProcedure.stream;
+defaultPublicManifestStreamRouteProcedure.stream;
 const rpcSubpathManifestUnaryRouteProcedure: RpcSubpathManifestUnaryRouteProcedure<
   typeof manifest,
   'users.get'
@@ -3872,12 +3932,20 @@ const publicManifestUnaryRouteInput: RpcManifestUnaryRouteInput<
   typeof manifest,
   'users.get'
 > = { id: '1' };
+const defaultPublicManifestUnaryRouteInput: RpcManifestUnaryRouteInput<
+  typeof manifest
+> = publicManifestUnaryRouteInput;
 publicManifestUnaryRouteInput.id.toUpperCase();
+defaultPublicManifestUnaryRouteInput.id.toUpperCase();
 const publicManifestStreamRouteInput: RpcManifestStreamRouteInput<
   typeof manifest,
   'users.watch'
 > = { userId: '1' };
+const defaultPublicManifestStreamRouteInput: RpcManifestStreamRouteInput<
+  typeof manifest
+> = publicManifestStreamRouteInput;
 publicManifestStreamRouteInput.userId.toUpperCase();
+defaultPublicManifestStreamRouteInput.userId.toUpperCase();
 type PublicManifestStreamRouteOutputIsNever = [
   RpcManifestStreamRouteOutput<typeof manifest, 'users.watch'>,
 ] extends [never]
@@ -3896,7 +3964,11 @@ const publicManifestUnaryRouteOutput: RpcManifestUnaryRouteOutput<
   typeof manifest,
   'users.get'
 > = { id: '1', name: 'Ada' };
+const defaultPublicManifestUnaryRouteOutput: RpcManifestUnaryRouteOutput<
+  typeof manifest
+> = publicManifestUnaryRouteOutput;
 publicManifestUnaryRouteOutput.name.toUpperCase();
+defaultPublicManifestUnaryRouteOutput.name.toUpperCase();
 const publicManifestUnaryRouteHeaders: RpcManifestUnaryRouteHeaders<
   typeof manifest,
   'users.get'
@@ -4007,7 +4079,12 @@ const publicManifestRouteInput: RpcManifestRouteInput<
   typeof manifest,
   'users.get'
 > = { id: '1' };
+const defaultPublicManifestRouteInput: RpcManifestRouteInput<typeof manifest> =
+  publicManifestRouteInput;
 publicManifestRouteInput.id.toUpperCase();
+if ('id' in defaultPublicManifestRouteInput) {
+  defaultPublicManifestRouteInput.id.toUpperCase();
+}
 const rpcSubpathManifestRouteInput: RpcSubpathManifestRouteInput<
   typeof manifest,
   'users.get'
@@ -4017,7 +4094,11 @@ const publicManifestRouteOutput: RpcManifestRouteOutput<
   typeof manifest,
   'users.get'
 > = { id: '1', name: 'Ada' };
+const defaultPublicManifestRouteOutput: RpcManifestRouteOutput<
+  typeof manifest
+> = publicManifestRouteOutput;
 publicManifestRouteOutput.name.toUpperCase();
+defaultPublicManifestRouteOutput.name.toUpperCase();
 type PublicManifestRouteStreamOutputIsNever = [
   RpcManifestRouteOutput<typeof manifest, 'users.watch'>,
 ] extends [never]

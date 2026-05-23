@@ -794,7 +794,9 @@ const nativeUsersPlugin = createPlugin({
   },
 });
 const routeServices: RouteServices<'users.get'> = requiredServices;
+const defaultRouteServices: RouteServices = routeServices;
 routeServices.users.findById('1')?.name.toUpperCase();
+defaultRouteServices.users.findById('1')?.name.toUpperCase();
 const routeUnaryId: RouteUnaryId = 'users.get';
 routeUnaryId.toUpperCase();
 const routeStreamId: RouteStreamId = 'users.watch';
@@ -802,15 +804,23 @@ routeStreamId.toUpperCase();
 const routeInput: RouteInput<'users.get'> = {
   id: '550e8400-e29b-41d4-a716-446655440000',
 };
+const defaultRouteInput: RouteInput = routeInput;
 routeInput.id.toUpperCase();
+if ('id' in defaultRouteInput) defaultRouteInput.id.toUpperCase();
 const unaryRouteInput: UnaryRouteInput<'users.get'> = routeInput;
 const routeUnaryInput: RouteUnaryInput<'users.get'> = unaryRouteInput;
+const defaultUnaryRouteInput: UnaryRouteInput = routeUnaryInput;
 routeUnaryInput.id.toUpperCase();
+defaultUnaryRouteInput.id.toUpperCase();
 const streamRouteInput: StreamRouteInput<'users.watch'> = { userId: '1' };
 const routeStreamInput: RouteStreamInput<'users.watch'> = streamRouteInput;
+const defaultStreamRouteInput: StreamRouteInput = routeStreamInput;
 routeStreamInput.userId.toUpperCase();
+defaultStreamRouteInput.userId.toUpperCase();
 const routeOutput: RouteOutput<'users.get'> = { id: '1', name: 'Ada' };
+const defaultRouteOutput: RouteOutput = routeOutput;
 routeOutput.name.toUpperCase();
+defaultRouteOutput.name.toUpperCase();
 type RouteStreamOutputIsNever = [RouteOutput<'users.watch'>] extends [never]
   ? true
   : false;
@@ -832,7 +842,9 @@ const routeStreamRouteOutputIsNever: RouteStreamRouteOutputIsNever = true;
 routeStreamRouteOutputIsNever.valueOf();
 const unaryRouteOutput: UnaryRouteOutput<'users.get'> = routeOutput;
 const routeUnaryOutput: RouteUnaryOutput<'users.get'> = unaryRouteOutput;
+const defaultUnaryRouteOutput: UnaryRouteOutput = routeUnaryOutput;
 routeUnaryOutput.name.toUpperCase();
+defaultUnaryRouteOutput.name.toUpperCase();
 const routeResponseHeaders: RouteResponseHeaders<'users.get'> = {
   'cache-control': 'private',
 };
@@ -848,7 +860,9 @@ const routeUnaryResponseHeaders: RouteUnaryResponseHeaders<'users.get'> =
   unaryRouteResponseHeaders;
 routeUnaryResponseHeaders['cache-control'].toUpperCase();
 const routeProcedure: RouteProcedure<'users.get'> = manifest.procedures['users.get'];
+const defaultRouteProcedure: RouteProcedure = routeProcedure;
 routeProcedure.output;
+defaultRouteProcedure.input;
 const routeUnaryProcedure: RouteUnaryProcedure<'users.get'> = routeProcedure;
 routeUnaryProcedure.output;
 const routeStreamProcedure: RouteStreamProcedure<'users.watch'> = manifest.procedures['users.watch'];
@@ -877,27 +891,39 @@ nativeRouteUnaryId.toUpperCase();
 const nativeRouteStreamId: NativeRouteStreamId = 'users.watch';
 nativeRouteStreamId.toUpperCase();
 const nativeRouteServices: NativeRouteServices<'users.get'> = requiredServices;
+const defaultNativeRouteServices: NativeRouteServices = nativeRouteServices;
 nativeRouteServices.users.findById('1')?.name.toUpperCase();
+defaultNativeRouteServices.users.findById('1')?.name.toUpperCase();
 const nativeRouteInput: NativeRouteInput<'users.get'> = {
   id: '550e8400-e29b-41d4-a716-446655440000',
 };
+const defaultNativeRouteInput: NativeRouteInput = nativeRouteInput;
 nativeRouteInput.id.toUpperCase();
+if ('id' in defaultNativeRouteInput) defaultNativeRouteInput.id.toUpperCase();
 const nativeUnaryRouteInput: NativeUnaryRouteInput<'users.get'> =
   nativeRouteInput;
 const nativeRouteUnaryInput: NativeRouteUnaryInput<'users.get'> =
   nativeUnaryRouteInput;
+const defaultNativeUnaryRouteInput: NativeUnaryRouteInput =
+  nativeRouteUnaryInput;
 nativeRouteUnaryInput.id.toUpperCase();
+defaultNativeUnaryRouteInput.id.toUpperCase();
 const nativeStreamRouteInput: NativeStreamRouteInput<'users.watch'> = {
   userId: '1',
 };
 const nativeRouteStreamInput: NativeRouteStreamInput<'users.watch'> =
   nativeStreamRouteInput;
+const defaultNativeStreamRouteInput: NativeStreamRouteInput =
+  nativeRouteStreamInput;
 nativeRouteStreamInput.userId.toUpperCase();
+defaultNativeStreamRouteInput.userId.toUpperCase();
 const nativeRouteOutput: NativeRouteOutput<'users.get'> = {
   id: '1',
   name: 'Ada',
 };
+const defaultNativeRouteOutput: NativeRouteOutput = nativeRouteOutput;
 nativeRouteOutput.name.toUpperCase();
+defaultNativeRouteOutput.name.toUpperCase();
 type NativeRouteStreamOutputIsNever = [
   NativeRouteOutput<'users.watch'>,
 ] extends [never]
@@ -923,9 +949,14 @@ const nativeUnaryRouteOutput: NativeUnaryRouteOutput<'users.get'> =
   nativeRouteOutput;
 const nativeRouteUnaryOutput: NativeRouteUnaryOutput<'users.get'> =
   nativeUnaryRouteOutput;
+const defaultNativeUnaryRouteOutput: NativeUnaryRouteOutput =
+  nativeRouteUnaryOutput;
 nativeRouteUnaryOutput.name.toUpperCase();
+defaultNativeUnaryRouteOutput.name.toUpperCase();
 const nativeRouteProcedure: NativeRouteProcedure<'users.get'> = manifest.procedures['users.get'];
+const defaultNativeRouteProcedure: NativeRouteProcedure = nativeRouteProcedure;
 nativeRouteProcedure.output;
+defaultNativeRouteProcedure.input;
 const nativeUnaryRouteProcedure: NativeUnaryRouteProcedure<'users.get'> =
   nativeRouteProcedure;
 nativeUnaryRouteProcedure.output;
