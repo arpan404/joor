@@ -21,6 +21,25 @@ const contextlessFixtureConfig = new URL(
   import.meta.url
 ).pathname;
 
+const expectRouteFirstAliasesPrimary = (source: string) => {
+  const routeFirstAliases = source.matchAll(
+    /^export type (?<name>(?:Native)?Route(?:Unary|Stream)\w*)[\s\S]*?;/gm
+  );
+
+  for (const match of routeFirstAliases) {
+    const alias = match.groups?.['name'];
+    if (alias === undefined) continue;
+
+    const legacyPrefix = alias.includes('RouteUnary')
+      ? '(?:Native)?UnaryRoute'
+      : '(?:Native)?StreamRoute';
+
+    expect(match[0], `${alias} should be route-first primary`).not.toMatch(
+      new RegExp(`=\\s*${legacyPrefix}`)
+    );
+  }
+};
+
 describe('compiler', () => {
   it('loads procedure files and derives ids', async () => {
     const manifest = await loadProcedures(fixture);
@@ -415,6 +434,12 @@ describe('compiler', () => {
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createManifestClient');
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
+      const dispatcherSafeSource = await readFile(
+        join(outDir, 'dispatcher.safe.ts'),
+        'utf8'
+      );
+      expectRouteFirstAliasesPrimary(clientSource);
+      expectRouteFirstAliasesPrimary(dispatcherSafeSource);
       expect(clientSource).toContain("from 'joor/manifest'");
       expect(clientSource).toContain('export type UnaryRouteFunction');
       expect(clientSource).toContain('export type StreamRouteFunction');

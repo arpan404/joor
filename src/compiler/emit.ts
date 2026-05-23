@@ -416,23 +416,23 @@ export type NativeRouteUnaryProtocolRequest<TId extends NativeRouteUnaryId> = Jo
 export type NativeUnaryRouteProtocolRequest<TId extends NativeUnaryRouteId> = NativeRouteUnaryProtocolRequest<TId>;
 export type NativeRouteUnaryProtocolRequestUnion = JoorManifestRouteUnaryProtocolRequestUnion<NativeManifest>;
 export type NativeUnaryRouteProtocolRequestUnion = NativeRouteUnaryProtocolRequestUnion;
-export type NativeUnaryRouteRequest =
-  NativeUnaryRouteProtocolRequestUnion;
 export type NativeRouteUnaryRequest =
-  NativeUnaryRouteRequest;
+  NativeRouteUnaryProtocolRequestUnion;
+export type NativeUnaryRouteRequest =
+  NativeRouteUnaryRequest;
 export type NativeUnaryProtocolRequest =
   NativeUnaryRouteRequest;
 export type NativeRouteStreamProtocolRequest<TId extends NativeRouteStreamId> = JoorManifestRouteStreamProtocolRequest<NativeManifest, TId>;
 export type NativeStreamRouteProtocolRequest<TId extends NativeStreamRouteId> = NativeRouteStreamProtocolRequest<TId>;
 export type NativeRouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolRequestUnion<NativeManifest>;
 export type NativeStreamRouteProtocolRequestUnion = NativeRouteStreamProtocolRequestUnion;
-export type NativeStreamRouteRequest =
-  NativeStreamRouteProtocolRequestUnion;
 export type NativeRouteStreamRequest =
-  NativeStreamRouteRequest;
+  NativeRouteStreamProtocolRequestUnion;
+export type NativeStreamRouteRequest =
+  NativeRouteStreamRequest;
 export type NativeStreamProtocolRequest =
   NativeStreamRouteRequest;
-export type NativeRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+export type NativeRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteUnaryBatchRequest<NativeManifest, TRequests>;
