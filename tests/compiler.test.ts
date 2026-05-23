@@ -318,6 +318,18 @@ describe('compiler', () => {
       expect(dispatcher).toContain(
         'DefineRouteStreamHandlerOptions<NativeManifest>'
       );
+      expect(dispatcher).toContain(
+        'CompiledRouteUnaryTransportBodyResultFor<NativeManifest'
+      );
+      expect(dispatcher).toContain(
+        'CompiledRouteStreamTransportBodyResultFor<NativeManifest'
+      );
+      expect(dispatcher).toContain(
+        'CompiledRpcRouteUnaryTransportBodyResultHandlerFor<NativeManifest>'
+      );
+      expect(dispatcher).toContain(
+        'CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
+      );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
       const postsListMatch = dispatcher.match(
@@ -1281,14 +1293,14 @@ consumeStream();
 const source = {} as NativeTransportRequest;
 const nativeTransportHandler: NativeTransportHandler = nativeTransport;
 const nativeBodyHandler: NativeBodyHandler = nativeBodyValue;
-const nativeUnaryRouteTransportHandler: NativeUnaryRouteTransportHandler =
-  nativeTransport;
 const nativeRouteUnaryTransportHandler: NativeRouteUnaryTransportHandler =
-  nativeUnaryRouteTransportHandler;
-const nativeStreamRouteTransportHandler: NativeStreamRouteTransportHandler =
   nativeTransport;
 const nativeRouteStreamTransportHandler: NativeRouteStreamTransportHandler =
-  nativeStreamRouteTransportHandler;
+  nativeTransport;
+const nativeUnaryRouteTransportHandler: NativeUnaryRouteTransportHandler =
+  nativeRouteUnaryTransportHandler;
+const nativeStreamRouteTransportHandler: NativeStreamRouteTransportHandler =
+  nativeRouteStreamTransportHandler;
 const nativeUnaryRouteBodyHandler: NativeUnaryRouteBodyHandler =
   nativeBodyValue;
 const nativeRouteUnaryBodyHandler: NativeRouteUnaryBodyHandler =
@@ -1669,14 +1681,14 @@ const nativeRouteUnaryResultUnion: NativeRouteUnaryResultUnion =
   nativeUnaryRouteResultUnion;
 const nativeTransportResult: NativeTransportResult = nativeCompiledTransportResult;
 const nativeUnaryTransportResult: NativeTransportResultFor<typeof nativeUnaryBody> = nativeBodyResult;
-const nativeUnaryRouteTransportResult: NativeUnaryRouteTransportResultFor<typeof nativeUnaryRouteBody> =
-  nativeBodyResult;
 const nativeRouteUnaryTransportResult: NativeRouteUnaryTransportResultFor<typeof nativeRouteUnaryBody> =
-  nativeUnaryRouteTransportResult;
-const nativeStreamRouteTransportResult: NativeStreamRouteTransportResultFor<typeof nativeStreamRouteBody> =
-  new Response();
+  nativeBodyResult;
 const nativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<typeof nativeRouteStreamBody> =
-  nativeStreamRouteTransportResult;
+  new Response();
+const nativeUnaryRouteTransportResult: NativeUnaryRouteTransportResultFor<typeof nativeUnaryRouteBody> =
+  nativeRouteUnaryTransportResult;
+const nativeStreamRouteTransportResult: NativeStreamRouteTransportResultFor<typeof nativeStreamRouteBody> =
+  nativeRouteStreamTransportResult;
 const isNativeResultArray = (
   result: NativeTransportResult
 ): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);

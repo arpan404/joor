@@ -134,22 +134,22 @@ const emitProfileDispatcher = async (
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
     'type CompiledBodyResultFor',
+    'type CompiledRouteStreamTransportBodyResultFor',
+    'type CompiledRouteUnaryTransportBodyResultFor',
     'type CompiledStreamRouteBodyResultFor',
-    'type CompiledStreamRouteTransportBodyResultFor',
     'type CompiledTransportBodyResultFor',
     'type CompiledUnaryRouteBodyResultFor',
-    'type CompiledUnaryRouteTransportBodyResultFor',
     'type CompiledRuntimeState',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
     'type CompiledRpcRequestHandler',
     'type CompiledRpcBodyResultHandlerFor',
+    'type CompiledRpcRouteStreamTransportBodyResultHandlerFor',
+    'type CompiledRpcRouteUnaryTransportBodyResultHandlerFor',
     'type CompiledRpcStreamRouteBodyResultHandlerFor',
-    'type CompiledRpcStreamRouteTransportBodyResultHandlerFor',
     'type CompiledRpcTransportBodyResultHandler',
     'type CompiledRpcTransportBodyResultHandlerFor',
     'type CompiledRpcUnaryRouteBodyResultHandlerFor',
-    'type CompiledRpcUnaryRouteTransportBodyResultHandlerFor',
   ];
   const manifestTypeImports = [
     'JoorManifestRouteBody',
@@ -540,21 +540,21 @@ export type NativeCompiledTransportResult =
 export type NativeTransportResult = NativeCompiledTransportResult;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   CompiledTransportBodyResultFor<NativeManifest, TBody>;
-export type NativeUnaryRouteTransportResultFor<TBody extends NativeUnaryRouteBody> =
-  CompiledUnaryRouteTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeRouteUnaryTransportResultFor<TBody extends NativeUnaryRouteBody> =
-  NativeUnaryRouteTransportResultFor<TBody>;
-export type NativeStreamRouteTransportResultFor<TBody extends NativeStreamRouteBody> =
-  CompiledStreamRouteTransportBodyResultFor<NativeManifest, TBody>;
+  CompiledRouteUnaryTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeUnaryRouteTransportResultFor<TBody extends NativeUnaryRouteBody> =
+  NativeRouteUnaryTransportResultFor<TBody>;
 export type NativeRouteStreamTransportResultFor<TBody extends NativeStreamRouteBody> =
-  NativeStreamRouteTransportResultFor<TBody>;
+  CompiledRouteStreamTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeStreamRouteTransportResultFor<TBody extends NativeStreamRouteBody> =
+  NativeRouteStreamTransportResultFor<TBody>;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
-export type NativeUnaryRouteTransportHandler =
-  CompiledRpcUnaryRouteTransportBodyResultHandlerFor<NativeManifest>;
-export type NativeRouteUnaryTransportHandler = NativeUnaryRouteTransportHandler;
-export type NativeStreamRouteTransportHandler =
-  CompiledRpcStreamRouteTransportBodyResultHandlerFor<NativeManifest>;
-export type NativeRouteStreamTransportHandler = NativeStreamRouteTransportHandler;
+export type NativeRouteUnaryTransportHandler =
+  CompiledRpcRouteUnaryTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeUnaryRouteTransportHandler = NativeRouteUnaryTransportHandler;
+export type NativeRouteStreamTransportHandler =
+  CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>;
+export type NativeStreamRouteTransportHandler = NativeRouteStreamTransportHandler;
 export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
 export type NativeUnaryRouteBodyHandler =
   CompiledRpcUnaryRouteBodyResultHandlerFor<NativeManifest>;
