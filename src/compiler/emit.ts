@@ -419,6 +419,9 @@ export type NativeRouteUnaryRequest<TId extends NativeRouteUnaryId = NativeRoute
   NativeRouteUnaryProtocolRequest<TId>;
 export type NativeUnaryRouteRequest<TId extends NativeRouteUnaryId = NativeRouteUnaryId> =
   NativeRouteUnaryRequest<TId>;
+export type NativeRouteUnaryRequestUnion = NativeRouteUnaryProtocolRequestUnion;
+export type NativeUnaryRouteRequestUnion = NativeRouteUnaryRequestUnion;
+export type NativeUnaryRequestUnion = NativeRouteUnaryRequestUnion;
 export type NativeUnaryProtocolRequest<TId extends NativeRouteUnaryId = NativeRouteUnaryId> =
   NativeUnaryRouteRequest<TId>;
 export type NativeUnaryProtocolRequestUnion =
