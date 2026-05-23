@@ -64,6 +64,10 @@
       "types": "./dist/runtime/aws-lambda.d.ts",
       "import": "./dist/runtime/aws-lambda.js"
     },
+    "./runtime/express": {
+      "types": "./dist/runtime/express.d.ts",
+      "import": "./dist/runtime/express.js"
+    },
     "./runtime/fetch": {
       "types": "./dist/runtime/fetch.d.ts",
       "import": "./dist/runtime/fetch.js"

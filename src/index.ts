@@ -39,6 +39,7 @@ export {
   createDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
+export { createExpressHandler } from './runtime/express.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
@@ -875,6 +876,23 @@ export type {
   DenoUnaryRouteTransportBodyResultFor,
   DenoUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
+export type {
+  ExpressHandlerOptions,
+  ExpressHandlerOptionsArgs,
+  ExpressHandlerOptionsFor,
+  ExpressNextFunction,
+  ExpressRequest,
+  ExpressRequestHandler,
+  ExpressResponse,
+  ExpressRouteStreamHandlerOptionsArgs,
+  ExpressRouteStreamHandlerOptionsFor,
+  ExpressRouteUnaryHandlerOptionsArgs,
+  ExpressRouteUnaryHandlerOptionsFor,
+  ExpressStreamRouteHandlerOptionsArgs,
+  ExpressStreamRouteHandlerOptionsFor,
+  ExpressUnaryRouteHandlerOptionsArgs,
+  ExpressUnaryRouteHandlerOptionsFor,
+} from './runtime/express.js';
 export type {
   JoorFetchHandler,
   JoorHandlerOptionsArgs,

@@ -21,6 +21,7 @@ import {
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
+  createExpressHandler,
   createJoorHandler,
   createNetlifyFetch,
   createNextHandler,
@@ -136,6 +137,21 @@ import {
   type BunUnaryRouteServeOptionsFor,
   type BunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor,
+  type ExpressHandlerOptions,
+  type ExpressHandlerOptionsArgs,
+  type ExpressHandlerOptionsFor,
+  type ExpressNextFunction,
+  type ExpressRequest,
+  type ExpressRequestHandler,
+  type ExpressResponse,
+  type ExpressRouteStreamHandlerOptionsArgs,
+  type ExpressRouteStreamHandlerOptionsFor,
+  type ExpressRouteUnaryHandlerOptionsArgs,
+  type ExpressRouteUnaryHandlerOptionsFor,
+  type ExpressStreamRouteHandlerOptionsArgs,
+  type ExpressStreamRouteHandlerOptionsFor,
+  type ExpressUnaryRouteHandlerOptionsArgs,
+  type ExpressUnaryRouteHandlerOptionsFor,
   type ClientBatchOptions,
   type ClientFetch,
   type ClientHeaderValues,
@@ -1103,6 +1119,7 @@ import {
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
+  createExpressHandler as createRuntimeSubpathExpressHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
@@ -1118,6 +1135,8 @@ import {
   type AwsLambdaHttpApiHandler as RuntimeSubpathAwsLambdaHttpApiHandler,
   type AwsLambdaRestApiHandler as RuntimeSubpathAwsLambdaRestApiHandler,
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
+  type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
+  type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -9416,6 +9435,82 @@ vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
+const expressHandlerOptions: ExpressHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = {
+  ...handlerOptions,
+  hostname: '127.0.0.1',
+  useOriginalUrl: true,
+};
+const expressHandlerOptionsBase: ExpressHandlerOptions<
+  readonly [typeof usersPlugin]
+> = expressHandlerOptions;
+const runtimeSubpathExpressHandlerOptions: RuntimeSubpathExpressHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressHandlerOptions;
+const expressRouteUnaryHandlerOptions: ExpressRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressHandlerOptions;
+const expressUnaryRouteHandlerOptions: ExpressUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteUnaryHandlerOptions;
+const expressRouteStreamHandlerOptions: ExpressRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressHandlerOptions;
+const expressStreamRouteHandlerOptions: ExpressStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteStreamHandlerOptions;
+expressHandlerOptionsBase.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathExpressHandlerOptions.plugins?.[0]?.name.toUpperCase();
+expressUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+expressStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const expressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [expressHandlerOptions];
+const expressRouteUnaryHandlerOptionsArgs: ExpressRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressHandlerOptionsArgs;
+const expressUnaryRouteHandlerOptionsArgs: ExpressUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteUnaryHandlerOptionsArgs;
+const expressRouteStreamHandlerOptionsArgs: ExpressRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressHandlerOptionsArgs;
+const expressStreamRouteHandlerOptionsArgs: ExpressStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteStreamHandlerOptionsArgs;
+expressUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+expressStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const expressHandler: ExpressRequestHandler = createExpressHandler(
+  manifest,
+  expressHandlerOptions
+);
+const runtimeSubpathExpressHandler: RuntimeSubpathExpressRequestHandler =
+  createRuntimeSubpathExpressHandler(
+    manifest,
+    runtimeSubpathExpressHandlerOptions
+  );
+const expressNext: ExpressNextFunction = (_error?: unknown) => undefined;
+expressHandler.valueOf();
+runtimeSubpathExpressHandler.valueOf();
+expressNext();
+const expressRequest = {} as ExpressRequest;
+const expressResponse = {} as ExpressResponse;
+expressRequest.originalUrl = '/rpc';
+expressResponse.statusCode.toFixed();
+// @ts-expect-error service-dependent manifests require matching Express adapter plugins.
+createExpressHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
