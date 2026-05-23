@@ -288,7 +288,10 @@ describe('compiler', () => {
       ).resolves.toContain('export type RouteProtocolBatchRequest');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
-      ).resolves.toContain('JoorManifestRouteEnvelope<Manifest');
+      ).resolves.toContain('JoorManifestRouteResult<Manifest');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteResultUnion');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createManifestClient');
@@ -494,7 +497,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientHeaders, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamEvent, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
+        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientHeaders, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamEvent, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
 import { fetch as nativeFetch, nativeBody as nativeBodyValue, nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeRequiredServices, type NativeRouteClientHeaders, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteServices, type NativeRouteStreamEvent, type NativeRuntimeState, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
 import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
@@ -703,6 +706,7 @@ const routeBodyResult: RouteBodyResult = {
 };
 const routeBodyResultFor: RouteBodyResultFor<typeof protocolRequest> = routeBodyResult;
 const routeEnvelopeUnion: RouteEnvelopeUnion = routeBodyResult;
+const routeResultUnion: RouteResultUnion = routeEnvelopeUnion;
 const protocolBatch: RouteProtocolBatchRequest<readonly [typeof unaryProtocolRequest]> = [
   unaryProtocolRequest,
 ];
@@ -715,6 +719,9 @@ if (!(routeBodyResult instanceof Response) && !Array.isArray(routeBodyResult) &&
 }
 if (routeEnvelopeUnion.ok) {
   routeEnvelopeUnion.data.name.toUpperCase();
+}
+if (routeResultUnion.ok) {
+  routeResultUnion.data.name.toUpperCase();
 }
 if (!(routeBodyResultFor instanceof Response) && routeBodyResultFor.ok) {
   routeBodyResultFor.data.name.toUpperCase();
