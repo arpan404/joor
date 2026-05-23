@@ -622,7 +622,7 @@ export type NativeTransportRequest = ContextRequestSource;`;
           mode === 'response' ? "'response'" : mode === 'serialized';
         return entry.procedure.output === undefined
           ? `    case ${JSON.stringify(entry.id)}:
-      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest, request, services as ProcedureServices<typeof ${entry.exportName}>, runtime, state, ${serialize});`
+      return executeCompiledProcedure(${JSON.stringify(entry.id)}, ${entry.exportName}, rpcRequest as NativeRouteProtocolRequest<${JSON.stringify(entry.id)}>, request, services as ProcedureServices<typeof ${entry.exportName}>, runtime, state, ${serialize});`
           : `    case ${JSON.stringify(entry.id)}:
       return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
       })

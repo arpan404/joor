@@ -248,13 +248,16 @@ export type CompiledUnaryDispatch<TServices extends object = object> = (
   serialize: CompiledSerializationMode
 ) => Promise<CompiledBodyResult | undefined>;
 
-export type CompiledFixedUnaryDispatch<TServices extends object = object> = (
+export type CompiledFixedUnaryDispatch<
+  TServices extends object = object,
+  TResult extends CompiledBodyResult = CompiledBodyResult,
+> = (
   body: JsonObject,
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
   state: ExecutionState
-) => Promise<CompiledBodyResult | undefined>;
+) => Promise<TResult | undefined>;
 
 export type CompiledDispatch<TServices extends object = object> = (
   rpcRequest: RpcRequest,
@@ -333,14 +336,14 @@ const requestPreflight = (
   return undefined;
 };
 
-const failure = (
-  id: string,
+const failure = <TId extends string>(
+  id: TId,
   trace: string,
   code: string,
   message: string,
   status: number,
   details?: JsonValue
-): RpcFailure =>
+): RpcFailure<TId> =>
   details === undefined
     ? { ok: false, id, traceId: trace, error: { code, message, status } }
     : {
@@ -408,14 +411,14 @@ export const compiledAuthenticateUncached = (
   ctx: JoorContext<object, object, object, object>
 ): CompiledAuthResultLike => authenticateUncached(policy, ctx);
 
-const rateLimitFailure = (
-  id: string,
+const rateLimitFailure = <TId extends string>(
+  id: TId,
   procedure: ProcedureRuntime,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   trace: string,
   runtime: CompiledRuntime
-): RpcEnvelope | undefined => {
+): RpcEnvelope<JsonValue, TId> | undefined => {
   if (!runtime.enforceRateLimit) return undefined;
   const limit = procedure.meta.rateLimit;
   if (limit === undefined) return undefined;
@@ -629,16 +632,17 @@ const streamResponse = async <TProcedure extends ProcedureRuntime>(
 
 export const executeCompiledProcedure = async <
   TProcedure extends ProcedureRuntime,
+  TId extends string = string,
 >(
-  id: string,
+  id: TId,
   procedure: TProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
   state: ExecutionState,
   _serialize: CompiledSerializationMode
-): Promise<RpcEnvelope | Response> => {
+): Promise<RpcEnvelope<JsonValue, TId> | Response> => {
   if (request.getHeader('accept')?.includes('text/event-stream') === true) {
     return streamResponse(
       id,
@@ -814,10 +818,10 @@ export const executeCompiledProcedure = async <
   return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
 };
 
-export const compiledNotFound = (
-  rpcRequest: RpcRequest,
+export const compiledNotFound = <TId extends string>(
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource
-): RpcEnvelope =>
+): RpcEnvelope<JsonValue, TId> =>
   failure(
     rpcRequest.id,
     traceId(request, rpcRequest.traceId),

@@ -933,6 +933,7 @@ import {
   type DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
 } from '../src/runtime/deno-compiled-transport.js';
 import {
+  compiledNotFound,
   compiledUncachedExecutionState,
   compiledAuthenticate,
   compiledAuthenticateUncached,
@@ -1579,6 +1580,30 @@ executeCompiledProcedureServices.users.findById('1');
 const _missingExecuteCompiledProcedureServices: Parameters<
   typeof executeCompiledProcedure<typeof procedure>
 >[4] = {};
+const compiledRouteRequest: RpcRequest<'users.get', { id: string }> = {
+  id: 'users.get',
+  input: { id: '1' },
+  traceId: 'trace-1',
+};
+const compiledNotFoundResult = compiledNotFound(
+  compiledRouteRequest,
+  {} as Parameters<typeof compiledNotFound>[1]
+);
+const compiledNotFoundId: 'users.get' = compiledNotFoundResult.id;
+compiledNotFoundId.toUpperCase();
+// @ts-expect-error compiled framework failures preserve the route id literal.
+const _wrongCompiledNotFoundId: 'users.list' = compiledNotFoundResult.id;
+type CompiledExecuteProcedureResult = Awaited<
+  ReturnType<typeof executeCompiledProcedure<typeof procedure, 'users.get'>>
+>;
+const compiledExecuteProcedureEnvelope =
+  {} as Exclude<CompiledExecuteProcedureResult, Response>;
+const compiledExecuteProcedureId: 'users.get' =
+  compiledExecuteProcedureEnvelope.id;
+compiledExecuteProcedureId.toUpperCase();
+// @ts-expect-error compiled execution results preserve the route id literal.
+const _wrongCompiledExecuteProcedureId: 'users.list' =
+  compiledExecuteProcedureEnvelope.id;
 
 // @ts-expect-error id is required and must be a string.
 const _invalidInput: ProcedureInput<typeof procedure> = { id: 1 };
