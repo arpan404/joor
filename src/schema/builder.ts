@@ -3,6 +3,7 @@ import type {
   ArraySchema,
   BooleanSchema,
   EnumSchema,
+  InferSchema,
   JsonSchema,
   LiteralSchema,
   NullableSchema,
@@ -17,13 +18,13 @@ import type {
   UnionSchema,
 } from './types.js';
 
-interface MetaChain<TSelf> {
+interface MetaChain<TSelf, TValue extends JsonValue> {
   describe(description: string): TSelf;
-  example(example: JsonValue): TSelf;
-  default(defaultValue: JsonValue): TSelf;
+  example(example: TValue): TSelf;
+  default(defaultValue: TValue): TSelf;
 }
 
-export interface StringChain extends StringSchema, MetaChain<StringChain> {
+export interface StringChain extends StringSchema, MetaChain<StringChain, string> {
   min(length: number): StringChain;
   max(length: number): StringChain;
   email(): StringChain;
@@ -32,7 +33,7 @@ export interface StringChain extends StringSchema, MetaChain<StringChain> {
   nullable(): NullableSchema<StringChain>;
 }
 
-export interface NumberChain extends NumberSchema, MetaChain<NumberChain> {
+export interface NumberChain extends NumberSchema, MetaChain<NumberChain, number> {
   int(): NumberChain;
   gte(value: number): NumberChain;
   lte(value: number): NumberChain;
@@ -40,25 +41,28 @@ export interface NumberChain extends NumberSchema, MetaChain<NumberChain> {
   nullable(): NullableSchema<NumberChain>;
 }
 
-export interface BooleanChain extends BooleanSchema, MetaChain<BooleanChain> {
+export interface BooleanChain
+  extends BooleanSchema,
+    MetaChain<BooleanChain, boolean> {
   optional(): OptionalSchema<BooleanChain>;
   nullable(): NullableSchema<BooleanChain>;
 }
 
 export interface LiteralChain<TValue extends JsonValue>
-  extends LiteralSchema<TValue>, MetaChain<LiteralChain<TValue>> {
+  extends LiteralSchema<TValue>, MetaChain<LiteralChain<TValue>, TValue> {
   optional(): OptionalSchema<LiteralChain<TValue>>;
   nullable(): NullableSchema<LiteralChain<TValue>>;
 }
 
 export interface EnumChain<TValue extends readonly string[]>
-  extends EnumSchema<TValue>, MetaChain<EnumChain<TValue>> {
+  extends EnumSchema<TValue>, MetaChain<EnumChain<TValue>, TValue[number]> {
   optional(): OptionalSchema<EnumChain<TValue>>;
   nullable(): NullableSchema<EnumChain<TValue>>;
 }
 
 export interface ArrayChain<TItem extends Schema>
-  extends ArraySchema<TItem>, MetaChain<ArrayChain<TItem>> {
+  extends ArraySchema<TItem>,
+    MetaChain<ArrayChain<TItem>, Extract<InferSchema<TItem>, JsonValue>[]> {
   min(length: number): ArrayChain<TItem>;
   max(length: number): ArrayChain<TItem>;
   optional(): OptionalSchema<ArrayChain<TItem>>;
@@ -66,25 +70,34 @@ export interface ArrayChain<TItem extends Schema>
 }
 
 export interface ObjectChain<TShape extends SchemaShape>
-  extends ObjectSchema<TShape>, MetaChain<ObjectChain<TShape>> {
+  extends ObjectSchema<TShape>,
+    MetaChain<ObjectChain<TShape>, InferSchema<ObjectSchema<TShape>>> {
   strict(): ObjectChain<TShape>;
   optional(): OptionalSchema<ObjectChain<TShape>>;
   nullable(): NullableSchema<ObjectChain<TShape>>;
 }
 
 export interface UnionChain<TVariants extends readonly Schema[]>
-  extends UnionSchema<TVariants>, MetaChain<UnionChain<TVariants>> {
+  extends UnionSchema<TVariants>,
+    MetaChain<
+      UnionChain<TVariants>,
+      Extract<InferSchema<TVariants[number]>, JsonValue>
+    > {
   optional(): OptionalSchema<UnionChain<TVariants>>;
   nullable(): NullableSchema<UnionChain<TVariants>>;
 }
 
 export interface RecordChain<TValue extends Schema>
-  extends RecordSchema<TValue>, MetaChain<RecordChain<TValue>> {
+  extends RecordSchema<TValue>,
+    MetaChain<
+      RecordChain<TValue>,
+      Record<string, Extract<InferSchema<TValue>, JsonValue>>
+    > {
   optional(): OptionalSchema<RecordChain<TValue>>;
   nullable(): NullableSchema<RecordChain<TValue>>;
 }
 
-export interface JsonChain extends JsonSchema, MetaChain<JsonChain> {
+export interface JsonChain extends JsonSchema, MetaChain<JsonChain, JsonValue> {
   optional(): OptionalSchema<JsonChain>;
   nullable(): NullableSchema<JsonChain>;
 }
@@ -122,10 +135,10 @@ const stringFrom = (base: Omit<StringSchema, 'type'>): StringChain => {
     describe(description: string) {
       return stringFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: string) {
       return stringFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: string) {
       return stringFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );
@@ -155,10 +168,10 @@ const numberFrom = (base: Omit<NumberSchema, 'type'>): NumberChain => {
     describe(description: string) {
       return numberFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: number) {
       return numberFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: number) {
       return numberFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );
@@ -179,10 +192,10 @@ const booleanFrom = (base: Omit<BooleanSchema, 'type'>): BooleanChain => {
     describe(description: string) {
       return booleanFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: boolean) {
       return booleanFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: boolean) {
       return booleanFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );
@@ -205,10 +218,10 @@ const literalFrom = <TValue extends JsonValue>(
     describe(description: string) {
       return literalFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: TValue) {
       return literalFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: TValue) {
       return literalFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );
@@ -231,10 +244,10 @@ const enumFrom = <TValue extends readonly string[]>(
     describe(description: string) {
       return enumFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: TValue[number]) {
       return enumFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: TValue[number]) {
       return enumFrom(withMeta(base, { ...base.meta, default: defaultValue }));
     },
     optional() {
@@ -261,10 +274,10 @@ const arrayFrom = <TItem extends Schema>(
     describe(description: string) {
       return arrayFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: Extract<InferSchema<TItem>, JsonValue>[]) {
       return arrayFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: Extract<InferSchema<TItem>, JsonValue>[]) {
       return arrayFrom(withMeta(base, { ...base.meta, default: defaultValue }));
     },
     optional() {
@@ -288,10 +301,10 @@ const objectFrom = <TShape extends SchemaShape>(
     describe(description: string) {
       return objectFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: InferSchema<ObjectSchema<TShape>>) {
       return objectFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: InferSchema<ObjectSchema<TShape>>) {
       return objectFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );
@@ -314,10 +327,10 @@ const unionFrom = <TVariants extends readonly Schema[]>(
     describe(description: string) {
       return unionFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: Extract<InferSchema<TVariants[number]>, JsonValue>) {
       return unionFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(defaultValue: Extract<InferSchema<TVariants[number]>, JsonValue>) {
       return unionFrom(withMeta(base, { ...base.meta, default: defaultValue }));
     },
     optional() {
@@ -338,10 +351,12 @@ const recordFrom = <TValue extends Schema>(
     describe(description: string) {
       return recordFrom(withMeta(base, { ...base.meta, description }));
     },
-    example(example: JsonValue) {
+    example(example: Record<string, Extract<InferSchema<TValue>, JsonValue>>) {
       return recordFrom(withMeta(base, { ...base.meta, example }));
     },
-    default(defaultValue: JsonValue) {
+    default(
+      defaultValue: Record<string, Extract<InferSchema<TValue>, JsonValue>>
+    ) {
       return recordFrom(
         withMeta(base, { ...base.meta, default: defaultValue })
       );

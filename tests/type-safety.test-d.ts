@@ -1676,6 +1676,39 @@ import {
   type TransportBodyResultFor as RuntimeResponseSubpathTransportBodyResultFor,
 } from '../src/runtime/response.js';
 
+const typedStringMeta = t.string().example('Ada').default('Grace');
+typedStringMeta.meta.example?.toString();
+// @ts-expect-error string schema metadata examples must be strings.
+t.string().example(1);
+// @ts-expect-error string schema metadata defaults must be strings.
+t.string().default(false);
+t.number().example(42).default(7);
+// @ts-expect-error number schema metadata examples must be numbers.
+t.number().example('42');
+t.boolean().example(true).default(false);
+// @ts-expect-error boolean schema metadata defaults must be booleans.
+t.boolean().default('false');
+t.literal('ready').example('ready').default('ready');
+// @ts-expect-error literal schema metadata must match the literal value.
+t.literal('ready').example('waiting');
+t.enum(['draft', 'published'] as const).example('draft').default('published');
+// @ts-expect-error enum metadata examples must be one of the enum values.
+t.enum(['draft', 'published'] as const).example('archived');
+t.array(t.string()).example(['a']).default(['b']);
+// @ts-expect-error array metadata examples must match the item schema.
+t.array(t.string()).example([1]);
+t.object({ id: t.string(), active: t.boolean().optional() }).example({
+  id: '1',
+});
+// @ts-expect-error object metadata examples must match the object schema.
+t.object({ id: t.string() }).example({ id: 1 });
+t.union([t.string(), t.number()] as const).default('id');
+// @ts-expect-error union metadata defaults must match one of the variants.
+t.union([t.string(), t.number()] as const).default(false);
+t.record(t.number()).example({ a: 1 }).default({ b: 2 });
+// @ts-expect-error record metadata examples must match the value schema.
+t.record(t.number()).example({ a: '1' });
+
 const usersPlugin = createPlugin({
   name: 'users',
   setup() {
