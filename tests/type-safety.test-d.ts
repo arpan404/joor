@@ -974,6 +974,16 @@ import {
   type JoorUnaryRouteConfigFor as ConfigSubpathUnaryRouteConfigFor,
 } from '../src/config.js';
 import {
+  defineConfigFor as definePackageConfigSubpathFor,
+  type DefineConfigFor as PackageConfigSubpathDefineConfigFor,
+  type DefineStreamRouteConfigFor as PackageConfigSubpathDefineStreamRouteConfigFor,
+  type DefineUnaryRouteConfigFor as PackageConfigSubpathDefineUnaryRouteConfigFor,
+  type JoorConfigFor as PackageConfigSubpathConfigFor,
+  type JoorConfigContext as PackageConfigSubpathConfigContext,
+  type JoorStreamRouteConfigFor as PackageConfigSubpathStreamRouteConfigFor,
+  type JoorUnaryRouteConfigFor as PackageConfigSubpathUnaryRouteConfigFor,
+} from 'joor/config';
+import {
   build as buildCompilerSubpath,
   createAiDocs as createCompilerSubpathAiDocs,
   createOpenApiDocument as createCompilerSubpathOpenApiDocument,
@@ -3206,6 +3216,51 @@ const configSubpathServices: ConfigSubpathServices = procedureServices;
 configSubpathServices.users.findById('1').name.toUpperCase();
 defineConfigSubpathFor(manifest)({
   // @ts-expect-error config subpath manifest-aware configs reject missing service plugins.
+  plugins: [] as const,
+});
+const packageConfigSubpathManifestAwareConfig =
+  definePackageConfigSubpathFor(manifest)({
+    plugins: [usersPlugin] as const,
+  });
+const packageConfigSubpathManifestAwareConfigShape: PackageConfigSubpathConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = packageConfigSubpathManifestAwareConfig;
+packageConfigSubpathManifestAwareConfigShape.plugins?.[0]?.setup;
+const packageConfigSubpathUnaryRouteConfigShape: PackageConfigSubpathUnaryRouteConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteConfigShape;
+const packageConfigSubpathStreamRouteConfigShape: PackageConfigSubpathStreamRouteConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteConfigShape;
+const packageConfigSubpathManifestAwareConfigFactory: PackageConfigSubpathDefineConfigFor<
+  typeof manifest
+> = definePackageConfigSubpathFor(manifest);
+const packageConfigSubpathUnaryRouteConfigFactory: PackageConfigSubpathDefineUnaryRouteConfigFor<
+  typeof manifest
+> = definePackageConfigSubpathFor(manifest);
+const packageConfigSubpathStreamRouteConfigFactory: PackageConfigSubpathDefineStreamRouteConfigFor<
+  typeof manifest
+> = definePackageConfigSubpathFor(manifest);
+packageConfigSubpathManifestAwareConfigFactory({
+  plugins: [usersPlugin] as const,
+});
+packageConfigSubpathUnaryRouteConfigFactory(
+  packageConfigSubpathUnaryRouteConfigShape
+);
+packageConfigSubpathStreamRouteConfigFactory(
+  packageConfigSubpathStreamRouteConfigShape
+);
+type PackageConfigSubpathServices = PackageConfigSubpathConfigContext<
+  typeof packageConfigSubpathManifestAwareConfig
+>;
+const packageConfigSubpathServices: PackageConfigSubpathServices =
+  procedureServices;
+packageConfigSubpathServices.users.findById('1').name.toUpperCase();
+definePackageConfigSubpathFor(manifest)({
+  // @ts-expect-error package config subpath manifest-aware configs reject missing service plugins.
   plugins: [] as const,
 });
 type ManifestSubpathRoutes = JoorSubpathManifestRoutes<
