@@ -640,6 +640,7 @@ import {
   type NextRouteUnaryHandlerOptionsFor,
   type NextRouteUnaryHandlersOptionsArgs,
   type NextRouteUnaryHandlersOptionsFor,
+  type NextRouteContext,
   type NextStreamRouteHandlerOptionsArgs,
   type NextStreamRouteHandlerOptionsFor,
   type NextStreamRouteHandlersOptionsArgs,
@@ -648,6 +649,8 @@ import {
   type NextRouteHandlers,
   type NextRouteHandlersOptionsArgs,
   type NextRouteHandlersOptionsFor,
+  type NextRouteParamValue,
+  type NextRouteParams,
   type NextUnaryRouteHandlerOptionsArgs,
   type NextUnaryRouteHandlerOptionsFor,
   type NextUnaryRouteHandlersOptionsArgs,
@@ -1612,10 +1615,13 @@ import {
   type NextStreamRouteHandlerOptionsFor as RuntimeSubpathNextStreamRouteHandlerOptionsFor,
   type NextStreamRouteHandlersOptionsArgs as RuntimeSubpathNextStreamRouteHandlersOptionsArgs,
   type NextStreamRouteHandlersOptionsFor as RuntimeSubpathNextStreamRouteHandlersOptionsFor,
+  type NextRouteContext as RuntimeSubpathNextRouteContext,
   type NextRouteHandler as RuntimeSubpathNextRouteHandler,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
   type NextRouteHandlersOptionsArgs as RuntimeSubpathNextRouteHandlersOptionsArgs,
   type NextRouteHandlersOptionsFor as RuntimeSubpathNextRouteHandlersOptionsFor,
+  type NextRouteParamValue as RuntimeSubpathNextRouteParamValue,
+  type NextRouteParams as RuntimeSubpathNextRouteParams,
   type NextRouteUnaryHandlerOptionsArgs as RuntimeSubpathNextRouteUnaryHandlerOptionsArgs,
   type NextRouteUnaryHandlerOptionsFor as RuntimeSubpathNextRouteUnaryHandlerOptionsFor,
   type NextRouteUnaryHandlersOptionsArgs as RuntimeSubpathNextRouteUnaryHandlersOptionsArgs,
@@ -10754,10 +10760,59 @@ createAwsLambdaRestApiHandler(manifest);
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
   nextRouteHandler;
+type NextDynamicRouteParamsForTypes = {
+  team: string;
+  slug?: string[];
+};
+const nextRouteParamValue: NextRouteParamValue = 'team';
+const runtimeSubpathNextRouteParamValue: RuntimeSubpathNextRouteParamValue =
+  nextRouteParamValue;
+const nextRouteParams: NextRouteParams = {
+  team: nextRouteParamValue,
+  slug: ['rpc'],
+};
+const runtimeSubpathNextRouteParams: RuntimeSubpathNextRouteParams =
+  nextRouteParams;
+const runtimeSubpathNextRouteSlug = runtimeSubpathNextRouteParams['slug'];
+const nextDynamicRouteHandler: NextRouteHandler<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+> = async (request, context) => {
+  const params = await context.params;
+  return new Response(`${params.team}:${params.slug?.join('/')}:${request.url}`);
+};
+const runtimeSubpathNextDynamicRouteHandler: RuntimeSubpathNextRouteHandler<
+  RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
+> = nextDynamicRouteHandler;
+const nextDynamicHandlers: NextRouteHandlers<
+  NextRouteContext<NextDynamicRouteParamsForTypes>
+> = {
+  GET: nextDynamicRouteHandler,
+  POST: nextDynamicRouteHandler,
+  OPTIONS: nextDynamicRouteHandler,
+};
+const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
+  NextDynamicRouteParamsForTypes
+> = {
+  params: Promise.resolve({
+    team: `${runtimeSubpathNextRouteParamValue}`,
+    ...(Array.isArray(runtimeSubpathNextRouteSlug)
+      ? { slug: runtimeSubpathNextRouteSlug }
+      : {}),
+  }),
+};
 nextHandler.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
 nextHandlers.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextRouteHandler(new Request('https://example.com/rpc'));
+runtimeSubpathNextDynamicRouteHandler(
+  new Request('https://example.com/rpc'),
+  runtimeSubpathNextDynamicRouteContext
+);
+nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
+  params: Promise.resolve({
+    team: 'core',
+  }),
+});
 // @ts-expect-error service-dependent manifests require matching Next adapter plugins.
 createNextRouteHandlers(manifest);
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(

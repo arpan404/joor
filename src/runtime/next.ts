@@ -10,15 +10,27 @@ import type {
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
-export type NextRouteHandler = JoorFetchHandler;
+type MaybePromise<TValue> = TValue | Promise<TValue>;
 
-export interface NextRouteHandlers {
-  GET: NextRouteHandler;
-  POST: NextRouteHandler;
-  OPTIONS: NextRouteHandler;
+export type NextRouteParamValue = string | string[] | undefined;
+
+export type NextRouteParams = Record<string, NextRouteParamValue>;
+
+export interface NextRouteContext<TParams extends object = NextRouteParams> {
+  params: Promise<TParams>;
 }
 
-export type NextHandler = NextRouteHandlers;
+export type NextRouteHandler<TContext = never> = [TContext] extends [never]
+  ? JoorFetchHandler
+  : (request: Request, context: TContext) => MaybePromise<Response>;
+
+export interface NextRouteHandlers<TContext = never> {
+  GET: NextRouteHandler<TContext>;
+  POST: NextRouteHandler<TContext>;
+  OPTIONS: NextRouteHandler<TContext>;
+}
+
+export type NextHandler<TContext = never> = NextRouteHandlers<TContext>;
 
 export type NextRouteHandlersOptionsFor<
   TManifest extends JoorManifest,
