@@ -9,6 +9,7 @@ import {
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
+  createCloudflareFetch,
   createCloudflareWorker,
   createDenoFetch,
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
@@ -106,6 +107,16 @@ import {
   type ClientOptions,
   type ClientProcedureHeaders,
   type CloudflareFetchHandler,
+  type CloudflareFetchOptionsArgs,
+  type CloudflareFetchOptionsFor,
+  type CloudflareRouteStreamFetchOptionsArgs,
+  type CloudflareRouteStreamFetchOptionsFor,
+  type CloudflareRouteUnaryFetchOptionsArgs,
+  type CloudflareRouteUnaryFetchOptionsFor,
+  type CloudflareStreamRouteFetchOptionsArgs,
+  type CloudflareStreamRouteFetchOptionsFor,
+  type CloudflareUnaryRouteFetchOptionsArgs,
+  type CloudflareUnaryRouteFetchOptionsFor,
   type CloudflareRouteStreamWorkerOptionsArgs,
   type CloudflareRouteStreamWorkerOptionsFor,
   type CloudflareRouteUnaryWorkerOptionsArgs,
@@ -1047,6 +1058,7 @@ import type {
 } from '../src/runtime/compiled.js';
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
+  createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
@@ -1103,6 +1115,16 @@ import {
   type BunUnaryRouteTransportBodyResultFor as RuntimeSubpathBunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathBunUnaryRouteTransportBodyResultHandlerFor,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
+  type CloudflareFetchOptionsArgs as RuntimeSubpathCloudflareFetchOptionsArgs,
+  type CloudflareFetchOptionsFor as RuntimeSubpathCloudflareFetchOptionsFor,
+  type CloudflareRouteStreamFetchOptionsArgs as RuntimeSubpathCloudflareRouteStreamFetchOptionsArgs,
+  type CloudflareRouteStreamFetchOptionsFor as RuntimeSubpathCloudflareRouteStreamFetchOptionsFor,
+  type CloudflareRouteUnaryFetchOptionsArgs as RuntimeSubpathCloudflareRouteUnaryFetchOptionsArgs,
+  type CloudflareRouteUnaryFetchOptionsFor as RuntimeSubpathCloudflareRouteUnaryFetchOptionsFor,
+  type CloudflareStreamRouteFetchOptionsArgs as RuntimeSubpathCloudflareStreamRouteFetchOptionsArgs,
+  type CloudflareStreamRouteFetchOptionsFor as RuntimeSubpathCloudflareStreamRouteFetchOptionsFor,
+  type CloudflareUnaryRouteFetchOptionsArgs as RuntimeSubpathCloudflareUnaryRouteFetchOptionsArgs,
+  type CloudflareUnaryRouteFetchOptionsFor as RuntimeSubpathCloudflareUnaryRouteFetchOptionsFor,
   type CloudflareRouteStreamWorkerOptionsArgs as RuntimeSubpathCloudflareRouteStreamWorkerOptionsArgs,
   type CloudflareRouteStreamWorkerOptionsFor as RuntimeSubpathCloudflareRouteStreamWorkerOptionsFor,
   type CloudflareRouteUnaryWorkerOptionsArgs as RuntimeSubpathCloudflareRouteUnaryWorkerOptionsArgs,
@@ -8581,8 +8603,64 @@ const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
   handlerOptions
 );
 const cloudflareFetch: CloudflareFetchHandler = cloudflareWorker.fetch;
+const directCloudflareFetch: CloudflareFetchHandler = createCloudflareFetch(
+  manifest,
+  handlerOptions
+);
+const runtimeSubpathDirectCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
+  createRuntimeSubpathCloudflareFetch(manifest, handlerOptions);
 const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
   cloudflareFetch;
+const cloudflareFetchOptions: CloudflareFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const exactCloudflareFetchOptions: CloudflareFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
+const runtimeSubpathCloudflareFetchOptions: RuntimeSubpathCloudflareFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareFetchOptions;
+const cloudflareRouteUnaryFetchOptions: CloudflareRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestUnaryRouteHandlerOptions;
+const cloudflareUnaryRouteFetchOptions: CloudflareUnaryRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryFetchOptions;
+const cloudflareRouteStreamFetchOptions: CloudflareRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = manifestStreamRouteHandlerOptions;
+const cloudflareStreamRouteFetchOptions: CloudflareStreamRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamFetchOptions;
+const runtimeSubpathCloudflareUnaryRouteFetchOptions: RuntimeSubpathCloudflareUnaryRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareUnaryRouteFetchOptions;
+const runtimeSubpathCloudflareStreamRouteFetchOptions: RuntimeSubpathCloudflareStreamRouteFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareStreamRouteFetchOptions;
+const runtimeSubpathCloudflareRouteUnaryFetchOptions: RuntimeSubpathCloudflareRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryFetchOptions;
+const runtimeSubpathCloudflareRouteStreamFetchOptions: RuntimeSubpathCloudflareRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamFetchOptions;
+const exactRuntimeSubpathCloudflareFetchOptions: RuntimeSubpathCloudflareFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactCloudflareFetchOptions;
 const cloudflareWorkerOptions: CloudflareWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8633,6 +8711,26 @@ const exactRuntimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorker
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactCloudflareWorkerOptions;
+runtimeSubpathCloudflareUnaryRouteFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathCloudflareStreamRouteFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathCloudflareRouteUnaryFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathCloudflareRouteStreamFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+exactRuntimeSubpathCloudflareFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 runtimeSubpathCloudflareUnaryRouteWorkerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -8657,6 +8755,26 @@ const cloudflareWorkerOptionsArgs: CloudflareWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareWorkerOptions];
+const cloudflareFetchOptionsArgs: CloudflareFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareFetchOptions];
+const cloudflareRouteUnaryFetchOptionsArgs: CloudflareRouteUnaryFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareRouteUnaryFetchOptions];
+const cloudflareUnaryRouteFetchOptionsArgs: CloudflareUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryFetchOptionsArgs;
+const cloudflareRouteStreamFetchOptionsArgs: CloudflareRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareRouteStreamFetchOptions];
+const cloudflareStreamRouteFetchOptionsArgs: CloudflareStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamFetchOptionsArgs;
 const cloudflareRouteUnaryWorkerOptionsArgs: CloudflareRouteUnaryWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8677,6 +8795,26 @@ const runtimeSubpathCloudflareWorkerOptionsArgs: RuntimeSubpathCloudflareWorkerO
   typeof manifest,
   readonly [typeof usersPlugin]
 > = cloudflareWorkerOptionsArgs;
+const runtimeSubpathCloudflareFetchOptionsArgs: RuntimeSubpathCloudflareFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareFetchOptionsArgs;
+const runtimeSubpathCloudflareUnaryRouteFetchOptionsArgs: RuntimeSubpathCloudflareUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareUnaryRouteFetchOptionsArgs;
+const runtimeSubpathCloudflareStreamRouteFetchOptionsArgs: RuntimeSubpathCloudflareStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareStreamRouteFetchOptionsArgs;
+const runtimeSubpathCloudflareRouteUnaryFetchOptionsArgs: RuntimeSubpathCloudflareRouteUnaryFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteUnaryFetchOptionsArgs;
+const runtimeSubpathCloudflareRouteStreamFetchOptionsArgs: RuntimeSubpathCloudflareRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareRouteStreamFetchOptionsArgs;
 const runtimeSubpathCloudflareUnaryRouteWorkerOptionsArgs: RuntimeSubpathCloudflareUnaryRouteWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8693,6 +8831,23 @@ const runtimeSubpathCloudflareRouteStreamWorkerOptionsArgs: RuntimeSubpathCloudf
   typeof manifest,
   readonly [typeof usersPlugin]
 > = cloudflareRouteStreamWorkerOptionsArgs;
+runtimeSubpathCloudflareFetchOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathCloudflareUnaryRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathCloudflareStreamRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathCloudflareRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathCloudflareRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathCloudflareWorkerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathCloudflareUnaryRouteWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -8715,8 +8870,14 @@ createRuntimeSubpathCloudflareWorker(
   manifest,
   runtimeSubpathCloudflareWorkerOptions
 );
+createCloudflareFetch(manifest, cloudflareFetchOptions);
+createRuntimeSubpathCloudflareFetch(manifest, runtimeSubpathCloudflareFetchOptions);
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
+directCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathDirectCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error service-dependent manifests require matching Cloudflare fetch plugins.
+createCloudflareFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
 createCloudflareWorker(manifest);
 const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);

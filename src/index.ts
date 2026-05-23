@@ -18,7 +18,10 @@ export {
   createBunTransportRequestHandler,
   serveBun,
 } from './runtime/bun.js';
-export { createCloudflareWorker } from './runtime/cloudflare.js';
+export {
+  createCloudflareFetch,
+  createCloudflareWorker,
+} from './runtime/cloudflare.js';
 export {
   createDenoFetch,
   createDenoRpcRequestHandler,
@@ -710,6 +713,16 @@ export type {
 } from './runtime/bun.js';
 export type {
   CloudflareFetchHandler,
+  CloudflareFetchOptionsArgs,
+  CloudflareFetchOptionsFor,
+  CloudflareRouteStreamFetchOptionsArgs,
+  CloudflareRouteStreamFetchOptionsFor,
+  CloudflareRouteUnaryFetchOptionsArgs,
+  CloudflareRouteUnaryFetchOptionsFor,
+  CloudflareStreamRouteFetchOptionsArgs,
+  CloudflareStreamRouteFetchOptionsFor,
+  CloudflareUnaryRouteFetchOptionsArgs,
+  CloudflareUnaryRouteFetchOptionsFor,
   CloudflareRouteStreamWorkerOptionsArgs,
   CloudflareRouteStreamWorkerOptionsFor,
   CloudflareRouteUnaryWorkerOptionsArgs,
