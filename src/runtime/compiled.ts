@@ -701,6 +701,15 @@ const streamResponse = async <
           controller.enqueue(encodeSse('data', eventResult.value as JsonValue));
         }
         controller.enqueue(encodeSse('done', {}));
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Stream failed';
+        controller.enqueue(
+          encodeSse(
+            'error',
+            failure(rpcRequest.id, trace, 'INTERNAL_ERROR', message, 500)
+          )
+        );
       } finally {
         controller.close();
       }
