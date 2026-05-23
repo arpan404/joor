@@ -1452,7 +1452,7 @@ export function createClient(
     requests: TRequests,
     batchOptions?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>> => {
-    const body: RpcRequest[] = requests.map((pending) => ({
+    const body: JsonValue = requests.map((pending): JsonValue => ({
       id: pending.id,
       input: pending.input as JsonValue,
       ...('traceId' in pending && pending.traceId === undefined
@@ -1475,7 +1475,7 @@ export function createClient(
     const response = await fetcher(
       createRpcRequest(
         options.url,
-        body as unknown as JsonValue,
+        body,
         requestHeaders,
         options.request,
         batchOptions?.request
