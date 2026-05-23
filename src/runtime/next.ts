@@ -66,6 +66,52 @@ export type NextStreamRouteHandlerOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = NextStreamRouteHandlersOptionsFor<TManifest, TPlugins, TBody>;
 
+export type NextRouteHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextUnaryRouteHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextStreamRouteHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = NextRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextUnaryRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = NextUnaryRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type NextStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = NextStreamRouteHandlersOptionsArgs<TManifest, TPlugins, TBody>;
+
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

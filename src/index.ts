@@ -467,9 +467,12 @@ export type {
 } from './runtime/bun.js';
 export type {
   CloudflareFetchHandler,
+  CloudflareStreamRouteWorkerOptionsArgs,
   CloudflareStreamRouteWorkerOptionsFor,
+  CloudflareUnaryRouteWorkerOptionsArgs,
   CloudflareUnaryRouteWorkerOptionsFor,
   CloudflareWorker,
+  CloudflareWorkerOptionsArgs,
   CloudflareWorkerOptionsFor,
 } from './runtime/cloudflare.js';
 export type {
@@ -531,25 +534,37 @@ export type {
 } from './runtime/deno.js';
 export type {
   JoorFetchHandler,
+  JoorHandlerOptionsArgs,
   JoorHandlerOptionsFor,
+  JoorStreamRouteHandlerOptionsArgs,
   JoorStreamRouteHandlerOptionsFor,
+  JoorUnaryRouteHandlerOptionsArgs,
   JoorUnaryRouteHandlerOptionsFor,
 } from './runtime/fetch.js';
 export type {
   NetlifyFetchHandler,
+  NetlifyFetchOptionsArgs,
   NetlifyFetchOptionsFor,
+  NetlifyStreamRouteFetchOptionsArgs,
   NetlifyStreamRouteFetchOptionsFor,
+  NetlifyUnaryRouteFetchOptionsArgs,
   NetlifyUnaryRouteFetchOptionsFor,
 } from './runtime/netlify.js';
 export type {
   NextHandler,
+  NextHandlerOptionsArgs,
   NextHandlerOptionsFor,
+  NextStreamRouteHandlerOptionsArgs,
   NextStreamRouteHandlerOptionsFor,
+  NextStreamRouteHandlersOptionsArgs,
   NextStreamRouteHandlersOptionsFor,
   NextRouteHandler,
   NextRouteHandlers,
+  NextRouteHandlersOptionsArgs,
   NextRouteHandlersOptionsFor,
+  NextUnaryRouteHandlerOptionsArgs,
   NextUnaryRouteHandlerOptionsFor,
+  NextUnaryRouteHandlersOptionsArgs,
   NextUnaryRouteHandlersOptionsFor,
 } from './runtime/next.js';
 export type {
@@ -570,8 +585,11 @@ export type {
 } from './runtime/node.js';
 export type {
   VercelFetchHandler,
+  VercelFetchOptionsArgs,
   VercelFetchOptionsFor,
+  VercelStreamRouteFetchOptionsArgs,
   VercelStreamRouteFetchOptionsFor,
+  VercelUnaryRouteFetchOptionsArgs,
   VercelUnaryRouteFetchOptionsFor,
 } from './runtime/vercel.js';
 export type {

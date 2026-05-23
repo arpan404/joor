@@ -35,6 +35,29 @@ export type JoorStreamRouteHandlerOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = JoorHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type JoorHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type JoorUnaryRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = JoorHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type JoorStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = JoorHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export function createJoorHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

@@ -39,6 +39,29 @@ export type CloudflareStreamRouteWorkerOptionsFor<
     RpcManifestStreamRouteBody<TManifest>,
 > = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody>;
 
+export type CloudflareWorkerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type CloudflareUnaryRouteWorkerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type CloudflareStreamRouteWorkerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

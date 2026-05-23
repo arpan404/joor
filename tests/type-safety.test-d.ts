@@ -73,8 +73,11 @@ import {
   type ClientOptions,
   type ClientProcedureHeaders,
   type CloudflareFetchHandler,
+  type CloudflareStreamRouteWorkerOptionsArgs,
   type CloudflareStreamRouteWorkerOptionsFor,
+  type CloudflareUnaryRouteWorkerOptionsArgs,
   type CloudflareUnaryRouteWorkerOptionsFor,
+  type CloudflareWorkerOptionsArgs,
   type CloudflareWorkerOptionsFor,
   type CloudflareWorker,
   type CompiledAuthResult as RootCompiledAuthResult,
@@ -140,7 +143,9 @@ import {
   type HandlerOptions,
   type JoorMiddleware,
   type JoorMiddlewareFor,
+  type JoorStreamRouteHandlerOptionsArgs,
   type JoorStreamRouteHandlerOptionsFor,
+  type JoorUnaryRouteHandlerOptionsArgs,
   type JoorUnaryRouteHandlerOptionsFor,
   type RpcManifestStreamRouteHandlerHookContextFor,
   type RpcManifestStreamRouteHandlerHooksFor,
@@ -165,6 +170,7 @@ import {
   type JsonObject,
   type JsonPrimitive,
   type JoorFetchHandler,
+  type JoorHandlerOptionsArgs,
   type JoorHandlerOptionsFor,
   type JoorManifestClientOptions,
   type JoorManifestRouteBody,
@@ -261,16 +267,25 @@ import {
   type ListenOptionsFor,
   type ListenOptions,
   type NetlifyFetchHandler,
+  type NetlifyFetchOptionsArgs,
+  type NetlifyStreamRouteFetchOptionsArgs,
   type NetlifyStreamRouteFetchOptionsFor,
+  type NetlifyUnaryRouteFetchOptionsArgs,
   type NetlifyUnaryRouteFetchOptionsFor,
   type NextHandler,
+  type NextHandlerOptionsArgs,
   type NextHandlerOptionsFor,
+  type NextStreamRouteHandlerOptionsArgs,
   type NextStreamRouteHandlerOptionsFor,
+  type NextStreamRouteHandlersOptionsArgs,
   type NextStreamRouteHandlersOptionsFor,
   type NextRouteHandler,
   type NextRouteHandlers,
+  type NextRouteHandlersOptionsArgs,
   type NextRouteHandlersOptionsFor,
+  type NextUnaryRouteHandlerOptionsArgs,
   type NextUnaryRouteHandlerOptionsFor,
+  type NextUnaryRouteHandlersOptionsArgs,
   type NextUnaryRouteHandlersOptionsFor,
   type NodeServer,
   type NodeTransportBodyResult,
@@ -489,10 +504,14 @@ import {
   type ValidationResult,
   type OpenApiSchema,
   type JsonValue,
+  type NetlifyFetchOptionsArgs as RootSubpathNetlifyFetchOptionsArgs,
   type NetlifyFetchOptionsFor,
   type VercelFetchHandler,
+  type VercelFetchOptionsArgs,
   type VercelFetchOptionsFor,
+  type VercelStreamRouteFetchOptionsArgs,
   type VercelStreamRouteFetchOptionsFor,
+  type VercelUnaryRouteFetchOptionsArgs,
   type VercelUnaryRouteFetchOptionsFor,
 } from '../src/index.js';
 import {
@@ -776,8 +795,11 @@ import {
   type BunUnaryRouteTransportBodyResultFor as RuntimeSubpathBunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathBunUnaryRouteTransportBodyResultHandlerFor,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
+  type CloudflareStreamRouteWorkerOptionsArgs as RuntimeSubpathCloudflareStreamRouteWorkerOptionsArgs,
   type CloudflareStreamRouteWorkerOptionsFor as RuntimeSubpathCloudflareStreamRouteWorkerOptionsFor,
+  type CloudflareUnaryRouteWorkerOptionsArgs as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsArgs,
   type CloudflareUnaryRouteWorkerOptionsFor as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsFor,
+  type CloudflareWorkerOptionsArgs as RuntimeSubpathCloudflareWorkerOptionsArgs,
   type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
   type DenoCompiledTransportBodyResult as RuntimeSubpathDenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor as RuntimeSubpathDenoCompiledTransportBodyResultFor,
@@ -801,21 +823,33 @@ import {
   type DenoUnaryRouteTransportBodyResultFor as RuntimeSubpathDenoUnaryRouteTransportBodyResultFor,
   type DenoUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathDenoUnaryRouteTransportBodyResultHandlerFor,
   type JoorFetchHandler as RuntimeSubpathJoorFetchHandler,
+  type JoorHandlerOptionsArgs as RuntimeSubpathJoorHandlerOptionsArgs,
   type JoorHandlerOptionsFor as RuntimeSubpathJoorHandlerOptionsFor,
+  type JoorStreamRouteHandlerOptionsArgs as RuntimeSubpathJoorStreamRouteHandlerOptionsArgs,
   type JoorStreamRouteHandlerOptionsFor as RuntimeSubpathJoorStreamRouteHandlerOptionsFor,
+  type JoorUnaryRouteHandlerOptionsArgs as RuntimeSubpathJoorUnaryRouteHandlerOptionsArgs,
   type JoorUnaryRouteHandlerOptionsFor as RuntimeSubpathJoorUnaryRouteHandlerOptionsFor,
   type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
+  type NetlifyFetchOptionsArgs as RuntimeSubpathNetlifyFetchOptionsArgs,
   type NetlifyFetchOptionsFor as RuntimeSubpathNetlifyFetchOptionsFor,
+  type NetlifyStreamRouteFetchOptionsArgs as RuntimeSubpathNetlifyStreamRouteFetchOptionsArgs,
   type NetlifyStreamRouteFetchOptionsFor as RuntimeSubpathNetlifyStreamRouteFetchOptionsFor,
+  type NetlifyUnaryRouteFetchOptionsArgs as RuntimeSubpathNetlifyUnaryRouteFetchOptionsArgs,
   type NetlifyUnaryRouteFetchOptionsFor as RuntimeSubpathNetlifyUnaryRouteFetchOptionsFor,
   type NextHandler as RuntimeSubpathNextHandler,
+  type NextHandlerOptionsArgs as RuntimeSubpathNextHandlerOptionsArgs,
   type NextHandlerOptionsFor as RuntimeSubpathNextHandlerOptionsFor,
+  type NextStreamRouteHandlerOptionsArgs as RuntimeSubpathNextStreamRouteHandlerOptionsArgs,
   type NextStreamRouteHandlerOptionsFor as RuntimeSubpathNextStreamRouteHandlerOptionsFor,
+  type NextStreamRouteHandlersOptionsArgs as RuntimeSubpathNextStreamRouteHandlersOptionsArgs,
   type NextStreamRouteHandlersOptionsFor as RuntimeSubpathNextStreamRouteHandlersOptionsFor,
   type NextRouteHandler as RuntimeSubpathNextRouteHandler,
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
+  type NextRouteHandlersOptionsArgs as RuntimeSubpathNextRouteHandlersOptionsArgs,
   type NextRouteHandlersOptionsFor as RuntimeSubpathNextRouteHandlersOptionsFor,
+  type NextUnaryRouteHandlerOptionsArgs as RuntimeSubpathNextUnaryRouteHandlerOptionsArgs,
   type NextUnaryRouteHandlerOptionsFor as RuntimeSubpathNextUnaryRouteHandlerOptionsFor,
+  type NextUnaryRouteHandlersOptionsArgs as RuntimeSubpathNextUnaryRouteHandlersOptionsArgs,
   type NextUnaryRouteHandlersOptionsFor as RuntimeSubpathNextUnaryRouteHandlersOptionsFor,
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultFor as RuntimeSubpathNodeTransportBodyResultFor,
@@ -830,8 +864,11 @@ import {
   type TransportBodyResult as RuntimeSubpathTransportBodyResult,
   type TransportBodyResultFor as RuntimeSubpathTransportBodyResultFor,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
+  type VercelFetchOptionsArgs as RuntimeSubpathVercelFetchOptionsArgs,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
+  type VercelStreamRouteFetchOptionsArgs as RuntimeSubpathVercelStreamRouteFetchOptionsArgs,
   type VercelStreamRouteFetchOptionsFor as RuntimeSubpathVercelStreamRouteFetchOptionsFor,
+  type VercelUnaryRouteFetchOptionsArgs as RuntimeSubpathVercelUnaryRouteFetchOptionsArgs,
   type VercelUnaryRouteFetchOptionsFor as RuntimeSubpathVercelUnaryRouteFetchOptionsFor,
   type CloudflareWorkerOptionsFor as RuntimeSubpathCloudflareWorkerOptionsFor,
 } from '../src/runtime/index.js';
@@ -5543,6 +5580,39 @@ exactRuntimeSubpathJoorHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const joorHandlerOptionsArgs: JoorHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [joorHandlerOptions];
+const joorUnaryRouteHandlerOptionsArgs: JoorUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [joorUnaryRouteHandlerOptions];
+const joorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [joorStreamRouteHandlerOptions];
+const runtimeSubpathJoorHandlerOptionsArgs: RuntimeSubpathJoorHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorHandlerOptionsArgs;
+const runtimeSubpathJoorUnaryRouteHandlerOptionsArgs: RuntimeSubpathJoorUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorUnaryRouteHandlerOptionsArgs;
+const runtimeSubpathJoorStreamRouteHandlerOptionsArgs: RuntimeSubpathJoorStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = joorStreamRouteHandlerOptionsArgs;
+runtimeSubpathJoorHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathJoorUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathJoorStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 createJoorHandler(manifest, joorHandlerOptions);
 createRuntimeSubpathJoorHandler(manifest, runtimeSubpathJoorHandlerOptions);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
@@ -5641,6 +5711,72 @@ exactRuntimeSubpathNextHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const nextRouteHandlersOptionsArgs: NextRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextRouteHandlersOptions];
+const nextHandlerOptionsArgs: NextHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextHandlerOptions];
+const nextUnaryRouteHandlersOptionsArgs: NextUnaryRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextUnaryRouteHandlersOptions];
+const nextStreamRouteHandlersOptionsArgs: NextStreamRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextStreamRouteHandlersOptions];
+const nextUnaryHandlerOptionsArgs: NextUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextUnaryHandlerOptions];
+const nextStreamHandlerOptionsArgs: NextStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nextStreamHandlerOptions];
+const runtimeSubpathNextRouteHandlersOptionsArgs: RuntimeSubpathNextRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextRouteHandlersOptionsArgs;
+const runtimeSubpathNextHandlerOptionsArgs: RuntimeSubpathNextHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextHandlerOptionsArgs;
+const runtimeSubpathNextUnaryRouteHandlersOptionsArgs: RuntimeSubpathNextUnaryRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextUnaryRouteHandlersOptionsArgs;
+const runtimeSubpathNextStreamRouteHandlersOptionsArgs: RuntimeSubpathNextStreamRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextStreamRouteHandlersOptionsArgs;
+const runtimeSubpathNextUnaryHandlerOptionsArgs: RuntimeSubpathNextUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextUnaryHandlerOptionsArgs;
+const runtimeSubpathNextStreamHandlerOptionsArgs: RuntimeSubpathNextStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nextStreamHandlerOptionsArgs;
+runtimeSubpathNextRouteHandlersOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNextHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNextUnaryRouteHandlersOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNextStreamRouteHandlersOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathNextUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNextStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 createNextRouteHandlers(manifest, nextRouteHandlersOptions);
 createRuntimeSubpathNextRouteHandlers(
   manifest,
@@ -5714,6 +5850,39 @@ exactRuntimeSubpathCloudflareWorkerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const cloudflareWorkerOptionsArgs: CloudflareWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareWorkerOptions];
+const cloudflareUnaryRouteWorkerOptionsArgs: CloudflareUnaryRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareUnaryRouteWorkerOptions];
+const cloudflareStreamRouteWorkerOptionsArgs: CloudflareStreamRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [cloudflareStreamRouteWorkerOptions];
+const runtimeSubpathCloudflareWorkerOptionsArgs: RuntimeSubpathCloudflareWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareWorkerOptionsArgs;
+const runtimeSubpathCloudflareUnaryRouteWorkerOptionsArgs: RuntimeSubpathCloudflareUnaryRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareUnaryRouteWorkerOptionsArgs;
+const runtimeSubpathCloudflareStreamRouteWorkerOptionsArgs: RuntimeSubpathCloudflareStreamRouteWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = cloudflareStreamRouteWorkerOptionsArgs;
+runtimeSubpathCloudflareWorkerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathCloudflareUnaryRouteWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathCloudflareStreamRouteWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 createCloudflareWorker(manifest, cloudflareWorkerOptions);
 createRuntimeSubpathCloudflareWorker(
   manifest,
@@ -5773,6 +5942,43 @@ exactRuntimeSubpathNetlifyFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const netlifyFetchOptionsArgs: NetlifyFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [netlifyFetchOptions];
+const rootSubpathNetlifyFetchOptionsArgs: RootSubpathNetlifyFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyFetchOptionsArgs;
+const netlifyUnaryRouteFetchOptionsArgs: NetlifyUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [netlifyUnaryRouteFetchOptions];
+const netlifyStreamRouteFetchOptionsArgs: NetlifyStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [netlifyStreamRouteFetchOptions];
+const runtimeSubpathNetlifyFetchOptionsArgs: RuntimeSubpathNetlifyFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootSubpathNetlifyFetchOptionsArgs;
+const runtimeSubpathNetlifyUnaryRouteFetchOptionsArgs: RuntimeSubpathNetlifyUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyUnaryRouteFetchOptionsArgs;
+const runtimeSubpathNetlifyStreamRouteFetchOptionsArgs: RuntimeSubpathNetlifyStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = netlifyStreamRouteFetchOptionsArgs;
+runtimeSubpathNetlifyFetchOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNetlifyUnaryRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNetlifyStreamRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 createNetlifyFetch(manifest, netlifyFetchOptions);
 createRuntimeSubpathNetlifyFetch(manifest, runtimeSubpathNetlifyFetchOptions);
 netlifyFetch(new Request('https://example.com/rpc'));
@@ -5828,6 +6034,39 @@ runtimeSubpathVercelStreamRouteFetchOptions.hooks?.beforeRequest?.(
 exactRuntimeSubpathVercelFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
+);
+const vercelFetchOptionsArgs: VercelFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [vercelFetchOptions];
+const vercelUnaryRouteFetchOptionsArgs: VercelUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [vercelUnaryRouteFetchOptions];
+const vercelStreamRouteFetchOptionsArgs: VercelStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [vercelStreamRouteFetchOptions];
+const runtimeSubpathVercelFetchOptionsArgs: RuntimeSubpathVercelFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelFetchOptionsArgs;
+const runtimeSubpathVercelUnaryRouteFetchOptionsArgs: RuntimeSubpathVercelUnaryRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelUnaryRouteFetchOptionsArgs;
+const runtimeSubpathVercelStreamRouteFetchOptionsArgs: RuntimeSubpathVercelStreamRouteFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = vercelStreamRouteFetchOptionsArgs;
+runtimeSubpathVercelFetchOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathVercelUnaryRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathVercelStreamRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
 );
 createVercelFetch(manifest, vercelFetchOptions);
 createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
