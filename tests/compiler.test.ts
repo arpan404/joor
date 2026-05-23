@@ -939,6 +939,7 @@ import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as na
 import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, handlers as namedNextHandlers } from './next.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
 import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
 import type { NetlifyEdgeFetchHandler, NetlifyEdgeResult } from 'joor/runtime/netlify';
 import type { NextRouteHandlers } from 'joor/runtime/next';
@@ -1121,12 +1122,41 @@ denoServer.finished.then(() => undefined);
 const nodeNativeCors: NodeNativeCorsOptions = { origin: 'https://example.com' };
 const nodeNativeOptions: NodeNativeOptions = { path: '/custom-rpc', cors: nodeNativeCors, maxBodyBytes: 1024 };
 const nodeHandler: NodeNativeHandler = createNodeNativeHandler(nodeNativeOptions);
+interface GeneratedIncomingMessage extends IncomingMessage {
+  readonly requestId: string;
+}
+type GeneratedServerResponse = ServerResponse<GeneratedIncomingMessage> & {
+  readonly locals: { traceId: string };
+};
+declare const generatedIncomingMessage: GeneratedIncomingMessage;
+declare const generatedServerResponse: GeneratedServerResponse;
+declare const baseIncomingMessage: IncomingMessage;
+declare const baseServerResponse: ServerResponse<IncomingMessage>;
+const typedNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createNodeNativeHandler<GeneratedIncomingMessage, GeneratedServerResponse>(
+  nodeNativeOptions
+);
 createNodeNativeHandler({ ...nodeNativeOptions, cors: false });
 const nodeDefaultHandler: NodeNativeHandler = nodeNativeHandler;
 const syncNodeHandler: NodeNativeHandler = () => undefined;
+const syncTypedNodeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = (incoming, outgoing) => {
+  incoming.requestId.toUpperCase();
+  outgoing.locals.traceId.toUpperCase();
+};
 nodeHandler;
 nodeDefaultHandler;
 syncNodeHandler;
+typedNodeNativeHandler(generatedIncomingMessage, generatedServerResponse);
+syncTypedNodeHandler(generatedIncomingMessage, generatedServerResponse);
+// @ts-expect-error generated typed Node handlers preserve custom incoming message types.
+typedNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
+// @ts-expect-error generated typed Node handlers preserve custom outgoing response types.
+typedNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
 const nodeServer: NodeNativeServer = listenNodeNative({ ...nodeNativeOptions, port: 3000 });
 nodeServer.close();
 nodeServer.address();

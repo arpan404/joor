@@ -1957,9 +1957,12 @@ export interface NodeListenOptions extends NodeNativeOptions {
   port?: number;
 }
 
-export type NodeNativeHandler = (
-  incoming: IncomingMessage,
-  outgoing: ServerResponse<IncomingMessage>
+export type NodeNativeHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = (
+  incoming: TIncoming,
+  outgoing: TOutgoing
 ) => void | Promise<void>;
 
 export interface NodeNativeServer {
@@ -1970,9 +1973,12 @@ export interface NodeNativeServer {
   unref(): this;
 }
 
-export const createHandler = (
+export const createHandler = <
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+>(
   options: NodeNativeOptions = {}
-): NodeNativeHandler => {
+): NodeNativeHandler<TIncoming, TOutgoing> => {
   const hostname = options.hostname ?? '0.0.0.0';
   const path = options.path ?? configuredPath;
   const cors = resolveCorsHeaders(options.cors);
@@ -1980,8 +1986,8 @@ export const createHandler = (
     options.maxBodyBytes ?? configuredMaxBodyBytes
   );
   return async (
-    incoming: IncomingMessage,
-    outgoing: ServerResponse<IncomingMessage>
+    incoming: TIncoming,
+    outgoing: TOutgoing
   ): Promise<void> => {
     let request: IncomingRequestSource | undefined;
     ${
