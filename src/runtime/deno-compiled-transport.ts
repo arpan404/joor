@@ -21,7 +21,6 @@ import type {
   DenoTransportBodyResult,
   DenoTransportBodyResultFor,
   DenoTransportBodyResultHandler,
-  DenoTransportBodyResultHandlerFor,
 } from './deno-transport.js';
 
 export type DenoCompiledTransportRequestHandler = (
@@ -43,7 +42,10 @@ export type DenoCompiledTransportBodyResultHandler<
 
 export type DenoCompiledTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = DenoTransportBodyResultHandlerFor<TManifest>;
+> = <const TBody extends RpcManifestBody<TManifest>>(
+  request: ContextRequestSource,
+  body: TBody
+) => Promise<DenoCompiledTransportBodyResultFor<TManifest, TBody>>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

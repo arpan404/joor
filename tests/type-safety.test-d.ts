@@ -3769,6 +3769,33 @@ const rootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyRes
 const runtimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestDenoCompiledTransportHandler;
+const exactManifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = async (_request, body) => {
+  if ('id' in body && body.id === 'users.get') {
+    body.input.id.toUpperCase();
+    // @ts-expect-error compiled Deno handlers keep route input exact.
+    body.input.ok;
+  }
+  return compiledSerializedEnvelope;
+};
+const exactRootManifestDenoCompiledTransportHandler: RootDenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = exactManifestDenoCompiledTransportHandler;
+const exactRuntimeSubpathManifestDenoCompiledTransportHandler: RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor<
+  typeof manifest
+> = exactRootManifestDenoCompiledTransportHandler;
+exactRuntimeSubpathManifestDenoCompiledTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteRequest
+).then((result) => {
+  if (isSerializedJsonEnvelope(result)) result.body.toUpperCase();
+});
+// @ts-expect-error compiled Deno handlers validate body input by route id.
+exactManifestDenoCompiledTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'users.get',
+  input: { ok: true },
+});
 const denoCompiledTransportResult: DenoCompiledTransportBodyResult =
   standaloneDenoTransportResult;
 const rootDenoCompiledTransportResult: RootDenoCompiledTransportBodyResult =
