@@ -309,6 +309,7 @@ import {
   type CompiledRpcTransportBodyResultHandlerForConfig as RootCompiledRpcTransportBodyResultHandlerForConfig,
   type CompiledRpcUnaryRouteBodyResultHandlerFor as RootCompiledRpcUnaryRouteBodyResultHandlerFor,
   type CompiledRpcUnaryRouteTransportBodyResultHandlerFor as RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor,
+  type CompiledRuntime as RootCompiledRuntime,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type CompiledRouteStreamBodyResultFor as RootCompiledRouteStreamBodyResultFor,
@@ -441,6 +442,8 @@ import {
   type HandlerOptions,
   type JoorMiddleware,
   type JoorMiddlewareFor,
+  type RateLimitIdentityResolver as RootRateLimitIdentityResolver,
+  type RateLimitRuntimeOptions as RootRateLimitRuntimeOptions,
   type JoorRouteStreamHandlerOptionsArgs,
   type JoorRouteStreamHandlerOptionsFor,
   type JoorRouteUnaryHandlerOptionsArgs,
@@ -1061,6 +1064,8 @@ import {
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
+  type RateLimitIdentityResolver as RpcSubpathRateLimitIdentityResolver,
+  type RateLimitRuntimeOptions as RpcSubpathRateLimitRuntimeOptions,
   type RpcManifestStreamRouteHandlerHookContextFor as RpcSubpathManifestStreamRouteHandlerHookContextFor,
   type RpcManifestStreamRouteHandlerHooksFor as RpcSubpathManifestStreamRouteHandlerHooksFor,
   type RpcManifestStreamRouteHandlerOptionsArgs as RpcSubpathManifestStreamRouteHandlerOptionsArgs,
@@ -1306,6 +1311,7 @@ import type {
   CompiledRpcTransportBodyResultHandlerForConfig,
   CompiledRpcUnaryRouteBodyResultHandlerFor,
   CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
+  CompiledRuntime,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
   CompiledRouteStreamBodyResultFor,
@@ -9011,6 +9017,24 @@ createProcedureCacheKey(
     authorization: 1,
   },
   {}
+);
+const rootRateLimitIdentity: RootRateLimitIdentityResolver = (request) =>
+  request.headers.get('x-user') ?? undefined;
+const rpcSubpathRateLimitIdentity: RpcSubpathRateLimitIdentityResolver =
+  rootRateLimitIdentity;
+const rootRateLimitOptions: RootRateLimitRuntimeOptions = {
+  trustProxy: true,
+  maxEntries: 100,
+  identity: rpcSubpathRateLimitIdentity,
+};
+const rpcSubpathRateLimitOptions: RpcSubpathRateLimitRuntimeOptions =
+  rootRateLimitOptions;
+const compiledRuntimeRateLimit: CompiledRuntime['rateLimit'] =
+  rpcSubpathRateLimitOptions;
+const rootCompiledRuntimeRateLimit: RootCompiledRuntime['rateLimit'] =
+  compiledRuntimeRateLimit;
+rootCompiledRuntimeRateLimit.identity?.(
+  new Request('https://example.com/rpc')
 );
 const cachedProcedureSuccess: CachedProcedureSuccess = {
   data: { ok: true },

@@ -227,10 +227,13 @@ export type PackageSubpathSurface = [
     'users.get'
   >,
   Procedure.ProcedureResult<{ name: string }, string>,
+  Rpc.RateLimitIdentityResolver,
+  Rpc.RateLimitRuntimeOptions,
   Rpc.RpcRouteUnaryProtocolRequest<
     Manifest.JoorManifestRoutes<PackageSubpathManifest>,
     'users.get'
   >,
+  Rpc.StreamEvent<Root.JsonObject, 'users.get'>,
   Schema.Infer<typeof packageSubpathOutputSchema>,
   Runtime.JoorFetchHandler,
   AwsLambda.AwsLambdaHandler,
@@ -252,10 +255,12 @@ export type PackageSubpathSurface = [
   Cloudflare.CloudflareWorker,
   Root.CloudflareWorker,
   Compiled.CompiledRpcRequestHandler,
+  Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
+  Root.RateLimitRuntimeOptions,
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,
   Context.HandlerOptionsManifest<typeof packageSubpathConfig>,

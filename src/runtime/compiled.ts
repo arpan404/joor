@@ -20,7 +20,6 @@ import {
   createRateLimitKey,
   DEFAULT_RATE_LIMIT_MAX_ENTRIES,
   reserveRateLimitSlot,
-  type RateLimitRuntimeOptions,
   type RateLimitWindow,
 } from './internal/rate-limit.js';
 import {
@@ -45,6 +44,7 @@ import type {
   HandlerOptionsBody,
   HandlerOptionsManifest,
   JoorMiddleware,
+  RateLimitRuntimeOptions,
   RpcBodyResult,
   RpcManifestBody,
   RpcManifestBodyResultFor,

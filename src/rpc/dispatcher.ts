@@ -56,8 +56,6 @@ import {
   createRateLimitKey,
   DEFAULT_RATE_LIMIT_MAX_ENTRIES,
   reserveRateLimitSlot,
-  type RateLimitIdentityResolver,
-  type RateLimitRuntimeOptions,
   type RateLimitWindow,
 } from '../runtime/internal/rate-limit.js';
 import {
@@ -911,6 +909,16 @@ interface RuntimeOptions {
   validateInput: boolean;
   validateOutput: boolean;
   validateResponseHeaders: boolean;
+}
+
+export type RateLimitIdentityResolver = (
+  request: Request
+) => string | undefined;
+
+export interface RateLimitRuntimeOptions {
+  trustProxy: boolean;
+  maxEntries: number;
+  identity?: RateLimitIdentityResolver;
 }
 
 export interface HandlerOptions<

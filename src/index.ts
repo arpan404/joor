@@ -518,6 +518,8 @@ export type {
   HandlerOptions,
   JoorMiddleware,
   JoorMiddlewareFor,
+  RateLimitIdentityResolver,
+  RateLimitRuntimeOptions,
   RpcManifestStreamRouteHandlerHookContextFor,
   RpcManifestStreamRouteHandlerHooksFor,
   RpcManifestStreamRouteHandlerOptionsArgs,
