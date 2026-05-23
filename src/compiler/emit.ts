@@ -2192,7 +2192,8 @@ export type RouteRequiresHeaders<TId extends RouteId> = JoorManifestRouteRequire
 export type RouteHasResponseHeaders<TId extends RouteId> = JoorManifestRouteHasResponseHeaders<Manifest, TId>;
 export type RouteRequiresResponseHeaders<TId extends RouteId> = JoorManifestRouteRequiresResponseHeaders<Manifest, TId>;
 export type RouteRequestOptions<TId extends RouteId> = JoorManifestRouteRequestOptions<Manifest, TId>;
-export type ClientArgs<TId extends RouteId> = JoorManifestRouteClientArgs<Manifest, TId>;
+export type RouteClientArgs<TId extends RouteId> = JoorManifestRouteClientArgs<Manifest, TId>;
+export type ClientArgs<TId extends RouteId> = RouteClientArgs<TId>;
 export type UnaryRouteFunction<TId extends UnaryRouteId> = {
   (...args: ClientArgs<TId>): Promise<RouteResult<TId>>;
   call(...args: ClientArgs<TId>): Promise<RouteResult<TId>>;

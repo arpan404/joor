@@ -358,6 +358,7 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type RouteStreamEvent');
       expect(clientSource).toContain('export type RouteClientHeaders');
       expect(clientSource).toContain('export type RouteRequestOptions');
+      expect(clientSource).toContain('export type RouteClientArgs');
       expect(clientSource).toContain('JoorManifestClientOptions<Manifest>');
       expect(clientSource).not.toContain(
         "import type { ClientOptions } from 'joor/client';"
@@ -515,7 +516,7 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamEvent, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
+        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientArgs, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamEvent, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
 import { fetch as nativeFetch, nativeBody as nativeBodyValue, nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeCompiledBodyResult, type NativeCompiledBodyResultFor, type NativeCompiledTransportResult, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeRequiredServices, type NativeRouteBatchRequest, type NativeRouteBody, type NativeRouteBodyResult, type NativeRouteBodyResultFor, type NativeRouteClientArgs, type NativeRouteClientHeaders, type NativeRouteEnvelope, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequestOptions, type NativeRouteRequestUnion, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteServices, type NativeRouteStreamEvent, type NativeRuntimeState, type NativeServices, type NativeStreamProtocolRequest, type NativeStreamRouteRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest, type NativeUnaryRouteRequest } from './dispatcher.safe.js';
 import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
 import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
@@ -656,6 +657,11 @@ const tenantClientHeaders: RouteClientHeaders<'tenants.current'> = { 'x-tenant-i
 tenantClientHeaders['x-tenant-id'].toUpperCase();
 const tenantRequestOptions: RouteRequestOptions<'tenants.current'> = { headers: tenantHeaders };
 tenantRequestOptions.headers['x-tenant-id'].toUpperCase();
+const tenantRouteClientArgs: RouteClientArgs<'tenants.current'> = [
+  { ok: true },
+  tenantRequestOptions,
+];
+tenantRouteClientArgs[0].ok.valueOf();
 const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
 nativeRouteHeaders['x-tenant-id'].toUpperCase();
 const nativeUserClientHeaders: NativeRouteClientHeaders<'users.get'> = { authorization: undefined };
