@@ -288,6 +288,7 @@ export type {
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
   CompiledSerializationMode,
+  CompiledTransportBodyResultFor,
   CompiledUnaryDispatch,
 } from './runtime/compiled.js';
 export type {

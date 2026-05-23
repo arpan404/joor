@@ -45,7 +45,6 @@ import type {
   JoorMiddleware,
   RpcBodyResult,
   RpcManifestBody,
-  RpcManifestBodyResult,
   RpcManifestBodyResultFor,
 } from '../rpc/dispatcher.js';
 import {
@@ -106,9 +105,12 @@ export type CompiledAuthResult = AuthResult;
 export type CompiledAuthResultLike = AuthResultLike;
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope;
 export type CompiledBodyResultFor<TManifest extends JoorManifest> =
-  | RpcManifestBodyResult<TManifest>
-  | CompiledSerializedEnvelope;
+  CompiledTransportBodyResultFor<TManifest>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
 export type CompiledRpcTransportBodyResultHandler<
@@ -121,9 +123,7 @@ export type CompiledRpcTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<
-  RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope
->;
+) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
@@ -135,9 +135,7 @@ export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
 >(
   request: Request,
   body: TBody
-) => Promise<
-  RpcManifestBodyResultFor<TManifest, TBody> | CompiledSerializedEnvelope
->;
+) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
   hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;

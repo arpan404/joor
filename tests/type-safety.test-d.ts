@@ -79,6 +79,7 @@ import {
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
+  type CompiledTransportBodyResultFor as RootCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResult as RootDenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor as RootDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RootDenoCompiledTransportBodyResultHandler,
@@ -442,6 +443,7 @@ import type {
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
+  CompiledTransportBodyResultFor,
 } from '../src/runtime/compiled.js';
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
@@ -3015,6 +3017,14 @@ const compiledBodyResultFor: CompiledBodyResultFor<typeof manifest> =
   manifestRouteBodyResult;
 const rootCompiledBodyResultFor: RootCompiledBodyResultFor<typeof manifest> =
   compiledBodyResultFor;
+const compiledTransportBodyResultFor: CompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = manifestRouteBodyResult;
+const rootCompiledTransportBodyResultFor: RootCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = compiledTransportBodyResultFor;
 if (
   !(rootCompiledBodyResultFor instanceof Response) &&
   !Array.isArray(rootCompiledBodyResultFor) &&
@@ -3022,6 +3032,13 @@ if (
   rootCompiledBodyResultFor.ok
 ) {
   rootCompiledBodyResultFor.data.name.toUpperCase();
+}
+if (
+  !(rootCompiledTransportBodyResultFor instanceof Response) &&
+  'ok' in rootCompiledTransportBodyResultFor &&
+  rootCompiledTransportBodyResultFor.ok
+) {
+  rootCompiledTransportBodyResultFor.data.name.toUpperCase();
 }
 const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   body: '{"ok":true}',
