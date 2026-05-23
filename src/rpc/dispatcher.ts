@@ -501,7 +501,10 @@ export type RpcManifestRouteStreamBody<TManifest extends RpcManifest> =
 export type RpcManifestStreamRouteBody<TManifest extends RpcManifest> =
   RpcManifestRouteStreamBody<TManifest>;
 
-export type RpcBodyResult = RpcEnvelope | readonly RpcEnvelope[] | Response;
+export type RpcBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
+  | TEnvelope
+  | readonly TEnvelope[]
+  | Response;
 
 export type RpcManifestBodyResult<TManifest extends RpcManifest> =
   | RpcManifestRouteEnvelopeUnion<TManifest>

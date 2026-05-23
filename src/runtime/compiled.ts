@@ -107,7 +107,9 @@ export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 export type CompiledAuthResult = AuthResult;
 export type CompiledAuthResultLike = AuthResultLike;
 export type CompiledSerializationMode = false | true | 'response';
-export type CompiledBodyResult = RpcBodyResult | CompiledSerializedEnvelope;
+export type CompiledBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
+  | RpcBodyResult<TEnvelope>
+  | CompiledSerializedEnvelope;
 export type CompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,

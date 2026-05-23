@@ -12,9 +12,9 @@ export interface SerializedJsonEnvelope {
   responseHeaders?: Record<string, string>;
 }
 
-export type TransportBodyResult =
-  | RpcEnvelope
-  | readonly RpcEnvelope[]
+export type TransportBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
+  | TEnvelope
+  | readonly TEnvelope[]
   | Response
   | SerializedJsonEnvelope;
 
@@ -63,9 +63,9 @@ export const isSerializedJsonEnvelope = (
 ): result is SerializedJsonEnvelope =>
   'body' in result && typeof result.body === 'string';
 
-const isRpcEnvelopeArray = (
-  result: RpcEnvelope | readonly RpcEnvelope[]
-): result is readonly RpcEnvelope[] => Array.isArray(result);
+const isRpcEnvelopeArray = <TEnvelope extends RpcEnvelope>(
+  result: TEnvelope | readonly TEnvelope[]
+): result is readonly TEnvelope[] => Array.isArray(result);
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
@@ -146,8 +146,8 @@ export const serializedEnvelopeToResponse = (
           headers: createJsonHeaderRecord(result.headers),
         });
 
-export const rpcEnvelopeToResponse = (
-  result: RpcEnvelope | readonly RpcEnvelope[],
+export const rpcEnvelopeToResponse = <TEnvelope extends RpcEnvelope>(
+  result: TEnvelope | readonly TEnvelope[],
   extraHeaders?: Record<string, string>
 ): Response => {
   if (
@@ -168,8 +168,8 @@ export const rpcEnvelopeToResponse = (
   return new Response(JSON.stringify(result), { status: 200, headers });
 };
 
-export const transportResultToResponse = (
-  result: TransportBodyResult
+export const transportResultToResponse = <TEnvelope extends RpcEnvelope>(
+  result: TransportBodyResult<TEnvelope>
 ): Response => {
   if (isSerializedJsonEnvelope(result))
     return serializedEnvelopeToResponse(result);

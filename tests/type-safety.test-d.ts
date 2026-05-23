@@ -117,6 +117,7 @@ import {
   type CloudflareWorker,
   type CompiledAuthResult as RootCompiledAuthResult,
   type CompiledAuthResultLike as RootCompiledAuthResultLike,
+  type CompiledBodyResult as RootCompiledBodyResult,
   type CompiledBodyResultFor as RootCompiledBodyResultFor,
   type CompiledDispatch as RootCompiledDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
@@ -953,6 +954,7 @@ import {
 import type {
   CompiledAuthResult,
   CompiledAuthResultLike,
+  CompiledBodyResult,
   CompiledBodyResultFor,
   CompiledDispatch,
   CompiledFixedUnaryDispatch,
@@ -1645,6 +1647,45 @@ const procedureEnvelope: RpcEnvelope<
 };
 const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
 procedureEnvelopeId.toUpperCase();
+const typedRpcBodyResult: RpcBodyResult<typeof procedureEnvelope> =
+  procedureEnvelope;
+if (!(typedRpcBodyResult instanceof Response)) {
+  const typedRpcBodyResultId: 'users.get' = typedRpcBodyResult.id;
+  typedRpcBodyResultId.toUpperCase();
+  // @ts-expect-error typed RPC body results preserve the route id literal.
+  const _wrongTypedRpcBodyResultId: 'users.list' = typedRpcBodyResult.id;
+}
+const typedTransportBodyResult: TransportBodyResult<typeof procedureEnvelope> =
+  procedureEnvelope;
+if (
+  !(typedTransportBodyResult instanceof Response) &&
+  !isSerializedJsonEnvelope(typedTransportBodyResult) &&
+  !Array.isArray(typedTransportBodyResult)
+) {
+  const typedTransportBodyResultId: 'users.get' =
+    typedTransportBodyResult.id;
+  typedTransportBodyResultId.toUpperCase();
+  // @ts-expect-error typed transport body results preserve the route id literal.
+  const _wrongTypedTransportBodyResultId: 'users.list' =
+    typedTransportBodyResult.id;
+}
+const typedCompiledBodyResult: CompiledBodyResult<typeof procedureEnvelope> =
+  procedureEnvelope;
+const typedRootCompiledBodyResult: RootCompiledBodyResult<
+  typeof procedureEnvelope
+> = typedCompiledBodyResult;
+if (
+  !(typedRootCompiledBodyResult instanceof Response) &&
+  !isSerializedJsonEnvelope(typedRootCompiledBodyResult) &&
+  !Array.isArray(typedRootCompiledBodyResult)
+) {
+  const typedCompiledBodyResultId: 'users.get' =
+    typedRootCompiledBodyResult.id;
+  typedCompiledBodyResultId.toUpperCase();
+  // @ts-expect-error typed compiled body results preserve the route id literal.
+  const _wrongTypedCompiledBodyResultId: 'users.list' =
+    typedRootCompiledBodyResult.id;
+}
 const rpcSseErrorEvent: RpcSseEvent<{ userId: string }, 'users.get'> = {
   event: 'error',
   data: {
