@@ -623,22 +623,22 @@ export type RpcRouteBodyResultFor<
 
 export type RpcRouteUnaryBodyResultFor<
   TRoutes extends RpcRouteMap,
-  TBody,
+  TBody extends RpcRouteUnaryBody<TRoutes>,
 > = RpcRouteBodyResultFor<TRoutes, TBody>;
 
 export type RpcUnaryRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
-  TBody,
+  TBody extends RpcRouteUnaryBody<TRoutes>,
 > = RpcRouteUnaryBodyResultFor<TRoutes, TBody>;
 
 export type RpcRouteStreamBodyResultFor<
   TRoutes extends RpcRouteMap,
-  TBody,
+  TBody extends RpcRouteStreamBody<TRoutes>,
 > = RpcRouteBodyResultFor<TRoutes, TBody>;
 
 export type RpcStreamRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
-  TBody,
+  TBody extends RpcRouteStreamBody<TRoutes>,
 > = RpcRouteStreamBodyResultFor<TRoutes, TBody>;
 
 type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]

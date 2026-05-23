@@ -686,12 +686,12 @@ export type RpcManifestBodyResultFor<
 
 export type RpcManifestRouteUnaryBodyResultFor<
   TManifest extends RpcManifest,
-  TBody,
+  TBody extends RpcManifestRouteUnaryBody<TManifest>,
 > = RpcManifestBodyResultFor<TManifest, TBody>;
 
 export type RpcManifestRouteStreamBodyResultFor<
   TManifest extends RpcManifest,
-  TBody,
+  TBody extends RpcManifestRouteStreamBody<TManifest>,
 > = RpcManifestBodyResultFor<TManifest, TBody>;
 
 export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
@@ -1284,12 +1284,12 @@ export type RpcManifestUnaryRouteBatchResults<
 
 export type RpcManifestUnaryRouteBodyResultFor<
   TManifest extends RpcManifest,
-  TBody,
+  TBody extends RpcManifestRouteUnaryBody<TManifest>,
 > = RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>;
 
 export type RpcManifestStreamRouteBodyResultFor<
   TManifest extends RpcManifest,
-  TBody,
+  TBody extends RpcManifestRouteStreamBody<TManifest>,
 > = RpcManifestRouteStreamBodyResultFor<TManifest, TBody>;
 
 export type RpcManifestUnaryRouteRequestOptions<

@@ -3480,6 +3480,12 @@ const manifestStreamRouteBodyResultFor: JoorManifestStreamRouteBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
 > = manifestStreamRouteBodyResult;
+// @ts-expect-error route-unary body result helpers reject stream bodies.
+const _wrongManifestRouteUnaryBodyResultFor: JoorManifestRouteUnaryBodyResultFor<typeof manifest, typeof manifestRouteStreamBody> =
+  manifestRouteEnvelope;
+// @ts-expect-error route-stream body result helpers reject unary bodies.
+const _wrongManifestRouteStreamBodyResultFor: JoorManifestRouteStreamBodyResultFor<typeof manifest, typeof manifestRouteUnaryBody> =
+  manifestRouteStreamBodyResult;
 manifestRouteUnaryBodyResult.valueOf();
 manifestUnaryRouteBodyResult.valueOf();
 manifestRouteStreamBodyResultFor.headers.get('content-type');
@@ -4058,6 +4064,12 @@ const publicManifestStreamRouteBodyResultFor: RpcManifestStreamRouteBodyResultFo
   typeof manifest,
   typeof publicManifestStreamRouteBody
 > = publicManifestStreamRouteBodyResult;
+// @ts-expect-error RpcManifest route-unary body result helpers reject stream bodies.
+const _wrongPublicManifestRouteUnaryBodyResultFor: RpcManifestRouteUnaryBodyResultFor<typeof manifest, typeof publicManifestRouteStreamBody> =
+  manifestRouteEnvelope;
+// @ts-expect-error RpcManifest route-stream body result helpers reject unary bodies.
+const _wrongPublicManifestRouteStreamBodyResultFor: RpcManifestRouteStreamBodyResultFor<typeof manifest, typeof publicManifestRouteUnaryBody> =
+  publicManifestRouteStreamBodyResult;
 publicManifestRouteUnaryBodyResult.valueOf();
 publicManifestUnaryRouteBodyResult.valueOf();
 publicManifestRouteStreamBodyResultFor.headers.get('content-type');
@@ -9131,6 +9143,12 @@ const streamRouteBodyResultFor: RpcStreamRouteBodyResultFor<
   Routes,
   typeof streamRouteBodyAlias
 > = streamRouteBodyResult;
+// @ts-expect-error route-unary body result helpers reject route-stream bodies.
+const _wrongRouteUnaryBodyResultFor: RpcRouteUnaryBodyResultFor<Routes, typeof streamRouteBodyAlias> =
+  routeEnvelopeUnion;
+// @ts-expect-error route-stream body result helpers reject route-unary bodies.
+const _wrongRouteStreamBodyResultFor: RpcRouteStreamBodyResultFor<Routes, typeof unaryRouteBodyAlias> =
+  streamRouteBodyResult;
 unaryRouteBodyResult.valueOf();
 streamRouteBodyResultFor.headers.get('content-type');
 if (!(routeBodyResultFor instanceof Response)) {

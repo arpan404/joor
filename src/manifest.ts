@@ -711,16 +711,28 @@ export type JoorManifestRouteBodyResultFor<TManifest, TBody> =
     ? RpcManifestBodyResultFor<TManifest, TBody>
     : RpcRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
 
-export type JoorManifestRouteUnaryBodyResultFor<TManifest, TBody> =
+export type JoorManifestRouteUnaryBodyResultFor<
+  TManifest,
+  TBody extends JoorManifestRouteUnaryBody<TManifest>,
+> =
   RpcRouteUnaryBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
 
-export type JoorManifestUnaryRouteBodyResultFor<TManifest, TBody> =
+export type JoorManifestUnaryRouteBodyResultFor<
+  TManifest,
+  TBody extends JoorManifestRouteUnaryBody<TManifest>,
+> =
   JoorManifestRouteUnaryBodyResultFor<TManifest, TBody>;
 
-export type JoorManifestRouteStreamBodyResultFor<TManifest, TBody> =
+export type JoorManifestRouteStreamBodyResultFor<
+  TManifest,
+  TBody extends JoorManifestRouteStreamBody<TManifest>,
+> =
   RpcRouteStreamBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
 
-export type JoorManifestStreamRouteBodyResultFor<TManifest, TBody> =
+export type JoorManifestStreamRouteBodyResultFor<
+  TManifest,
+  TBody extends JoorManifestRouteStreamBody<TManifest>,
+> =
   JoorManifestRouteStreamBodyResultFor<TManifest, TBody>;
 
 export type JoorManifestRouteUnaryProtocolRequest<
