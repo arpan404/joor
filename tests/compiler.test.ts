@@ -457,13 +457,13 @@ describe('compiler', () => {
         'export type RouteUnaryTransport<TId extends RouteUnaryId> = {'
       );
       expect(clientSource).toContain(
-        'export type UnaryRouteTransport<TId extends UnaryRouteId> =\n  RouteUnaryTransport<TId>;'
+        'export type UnaryRouteTransport<TId extends RouteUnaryId> =\n  RouteUnaryTransport<TId>;'
       );
       expect(clientSource).toContain(
         'export type RouteStreamTransport<TId extends RouteStreamId> = {'
       );
       expect(clientSource).toContain(
-        'export type StreamRouteTransport<TId extends StreamRouteId> =\n  RouteStreamTransport<TId>;'
+        'export type StreamRouteTransport<TId extends RouteStreamId> =\n  RouteStreamTransport<TId>;'
       );
       expect(clientSource).toContain(
         "export type RouteUnaryTransportClient = Pick<\n  RouteTransportClient,\n  'call' | 'request' | 'batch'\n>;"
