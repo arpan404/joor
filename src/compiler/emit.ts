@@ -134,8 +134,8 @@ const emitProfileDispatcher = async (
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
     'type CompiledBodyResultFor',
+    'type CompiledTransportBodyResultFor',
     'type CompiledRuntimeState',
-    'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
     'type CompiledRpcRequestHandler',
@@ -258,9 +258,11 @@ export type NativeRouteBodyResultFor<TBody extends NativeRouteBody> = JoorManife
 export type NativeBodyResultFor<TBody extends NativeBody> =
   NativeRouteBodyResultFor<TBody>;
 export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
-export type NativeTransportResult = NativeCompiledBodyResult;
+export type NativeCompiledTransportResult =
+  CompiledTransportBodyResultFor<NativeManifest>;
+export type NativeTransportResult = NativeCompiledTransportResult;
 export type NativeTransportResultFor<TBody extends NativeBody> =
-  NativeBodyResultFor<TBody> | CompiledSerializedEnvelope;
+  CompiledTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
 export type NativeTransportRequest = ContextRequestSource;`;
