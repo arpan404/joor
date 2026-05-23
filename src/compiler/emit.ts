@@ -582,11 +582,11 @@ export type NativeCompiledTransportResult =
 export type NativeTransportResult = NativeCompiledTransportResult;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   CompiledTransportBodyResultFor<NativeManifest, TBody>;
-export type NativeRouteUnaryTransportResultFor<TBody extends NativeUnaryRouteBody> =
+export type NativeRouteUnaryTransportResultFor<TBody extends NativeRouteUnaryBody> =
   CompiledRouteUnaryTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeUnaryRouteTransportResultFor<TBody extends NativeUnaryRouteBody> =
   NativeRouteUnaryTransportResultFor<TBody>;
-export type NativeRouteStreamTransportResultFor<TBody extends NativeStreamRouteBody> =
+export type NativeRouteStreamTransportResultFor<TBody extends NativeRouteStreamBody> =
   CompiledRouteStreamTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeStreamRouteTransportResultFor<TBody extends NativeStreamRouteBody> =
   NativeRouteStreamTransportResultFor<TBody>;

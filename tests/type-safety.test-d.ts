@@ -510,9 +510,19 @@ import {
   type RpcManifestRequiredServices,
   type RpcManifestRouteServices,
   type RpcManifestRoutes,
+  type RpcManifestRouteStreamBody,
+  type RpcManifestRouteStreamBodyHandler,
+  type RpcManifestRouteStreamBodyResult,
+  type RpcManifestRouteStreamBodyResultFor,
+  type RpcManifestRouteStreamBodyResultHandler,
   type RpcManifestRouteStreamEvent,
   type RpcManifestRouteStreamProtocolRequest,
   type RpcManifestRouteStreamProtocolRequestUnion,
+  type RpcManifestRouteUnaryBody,
+  type RpcManifestRouteUnaryBodyHandler,
+  type RpcManifestRouteUnaryBodyResult,
+  type RpcManifestRouteUnaryBodyResultFor,
+  type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryProtocolRequest,
   type RpcManifestRouteUnaryProtocolRequestUnion,
   type RpcManifestStreamRouteProtocolRequest,
@@ -4006,29 +4016,56 @@ const publicManifestStreamRouteProtocolRequestUnion: RpcManifestStreamRouteProto
 publicManifestStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
 const publicManifestBody: RpcManifestBody<typeof manifest> =
   publicManifestProtocolRequest;
-const publicManifestUnaryRouteBody: RpcManifestUnaryRouteBody<typeof manifest> =
-  publicManifestUnaryRouteProtocolRequest;
+const publicManifestRouteUnaryBody = publicManifestUnaryProtocolRequest satisfies
+  RpcManifestRouteUnaryBody<typeof manifest>;
+const publicManifestUnaryRouteBody =
+  publicManifestUnaryRouteProtocolRequest satisfies
+    RpcManifestUnaryRouteBody<typeof manifest>;
+publicManifestRouteUnaryBody.input.id.toUpperCase();
 publicManifestUnaryRouteBody.input.id.toUpperCase();
-const publicManifestStreamRouteBody: RpcManifestStreamRouteBody<
-  typeof manifest
-> = publicManifestStreamRouteProtocolRequest;
+const publicManifestRouteStreamBody = publicManifestStreamProtocolRequest satisfies
+  RpcManifestRouteStreamBody<typeof manifest>;
+const publicManifestStreamRouteBody =
+  publicManifestStreamRouteProtocolRequest satisfies
+    RpcManifestStreamRouteBody<typeof manifest>;
+publicManifestRouteStreamBody.input.userId.toUpperCase();
 publicManifestStreamRouteBody.input.userId.toUpperCase();
+const publicManifestRouteUnaryBodyResult: RpcManifestRouteUnaryBodyResult<
+  typeof manifest
+> = manifestRouteEnvelope;
 const publicManifestUnaryRouteBodyResult: RpcManifestUnaryRouteBodyResult<
   typeof manifest
+> = publicManifestRouteUnaryBodyResult;
+const publicManifestRouteUnaryBodyResultFor: RpcManifestRouteUnaryBodyResultFor<
+  typeof manifest,
+  typeof publicManifestRouteUnaryBody
 > = manifestRouteEnvelope;
 const publicManifestUnaryRouteBodyResultFor: RpcManifestUnaryRouteBodyResultFor<
   typeof manifest,
   typeof publicManifestUnaryRouteBody
-> = manifestRouteEnvelope;
-const publicManifestStreamRouteBodyResult: RpcManifestStreamRouteBodyResult<
+> = publicManifestRouteUnaryBodyResultFor;
+const publicManifestRouteStreamBodyResult: RpcManifestRouteStreamBodyResult<
   typeof manifest
 > = new Response();
+const publicManifestStreamRouteBodyResult: RpcManifestStreamRouteBodyResult<
+  typeof manifest
+> = publicManifestRouteStreamBodyResult;
+const publicManifestRouteStreamBodyResultFor: RpcManifestRouteStreamBodyResultFor<
+  typeof manifest,
+  typeof publicManifestRouteStreamBody
+> = publicManifestRouteStreamBodyResult;
 const publicManifestStreamRouteBodyResultFor: RpcManifestStreamRouteBodyResultFor<
   typeof manifest,
   typeof publicManifestStreamRouteBody
 > = publicManifestStreamRouteBodyResult;
+publicManifestRouteUnaryBodyResult.valueOf();
 publicManifestUnaryRouteBodyResult.valueOf();
+publicManifestRouteStreamBodyResultFor.headers.get('content-type');
 publicManifestStreamRouteBodyResultFor.headers.get('content-type');
+if (!(publicManifestRouteUnaryBodyResultFor instanceof Response)) {
+  if (publicManifestRouteUnaryBodyResultFor.ok)
+    publicManifestRouteUnaryBodyResultFor.data.name.toUpperCase();
+}
 if (!(publicManifestUnaryRouteBodyResultFor instanceof Response)) {
   if (publicManifestUnaryRouteBodyResultFor.ok)
     publicManifestUnaryRouteBodyResultFor.data.name.toUpperCase();
@@ -4857,18 +4894,30 @@ rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
   { id: 'users.watch', input: { userId: '1' } },
 ]);
 
+const publicManifestRouteUnaryBodyHandler: RpcManifestRouteUnaryBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicManifestRouteStreamBodyHandler: RpcManifestRouteStreamBodyHandler<
+  typeof manifest
+> = rpcBodyHandler;
+const publicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
+const publicManifestRouteStreamBodyResultHandler: RpcManifestRouteStreamBodyResultHandler<
+  typeof manifest
+> = rpcBodyResultHandler;
 const publicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
   typeof manifest
-> = rpcBodyHandler;
+> = publicManifestRouteUnaryBodyHandler;
 const publicManifestStreamRouteBodyHandler: RpcManifestStreamRouteBodyHandler<
   typeof manifest
-> = rpcBodyHandler;
+> = publicManifestRouteStreamBodyHandler;
 const publicManifestUnaryRouteBodyResultHandler: RpcManifestUnaryRouteBodyResultHandler<
   typeof manifest
-> = rpcBodyResultHandler;
+> = publicManifestRouteUnaryBodyResultHandler;
 const publicManifestStreamRouteBodyResultHandler: RpcManifestStreamRouteBodyResultHandler<
   typeof manifest
-> = rpcBodyResultHandler;
+> = publicManifestRouteStreamBodyResultHandler;
 const publicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
@@ -4930,6 +4979,14 @@ const joorSubpathManifestStreamRouteTransportBodyResultHandler: JoorSubpathManif
   typeof manifest
 > = rpcTransportResultHandler;
 
+publicManifestRouteUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteUnaryBody
+);
+publicManifestRouteStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteStreamBody
+);
 publicManifestUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
@@ -4948,6 +5005,22 @@ publicManifestStreamRouteBodyHandler(
   // @ts-expect-error stream route body handlers reject unary route bodies.
   manifestUnaryRouteBody
 );
+publicManifestRouteUnaryBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteUnaryBody
+).then((result) => {
+  const exactResult: RpcManifestRouteUnaryBodyResultFor<
+    typeof manifest,
+    typeof publicManifestRouteUnaryBody
+  > = result;
+  if (!(exactResult instanceof Response)) {
+    if (exactResult.ok) exactResult.data.name.toUpperCase();
+  }
+});
+publicManifestRouteStreamBodyResultHandler(
+  new Request('https://example.com/rpc'),
+  publicManifestRouteStreamBody
+).then((result) => result.headers.get('content-type'));
 publicManifestUnaryRouteBodyResultHandler(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteBody
@@ -6641,19 +6714,19 @@ const rootManifestCompiledRouteStreamBodyHandler: RootCompiledRpcRouteStreamBody
 > = manifestCompiledRouteStreamBodyHandler;
 const compiledRouteUnaryTransportResultFor: CompiledRouteUnaryTransportBodyResultFor<
   typeof manifest,
-  typeof manifestUnaryRouteBody
+  typeof manifestRouteUnaryBody
 > = compiledSerializedEnvelope;
 const compiledRouteStreamTransportResultFor: CompiledRouteStreamTransportBodyResultFor<
   typeof manifest,
-  typeof manifestStreamRouteBody
+  typeof manifestRouteStreamBody
 > = new Response();
 const compiledRouteUnaryBodyResultFor: CompiledRouteUnaryBodyResultFor<
   typeof manifest,
-  typeof manifestUnaryRouteBody
+  typeof manifestRouteUnaryBody
 > = compiledRouteUnaryTransportResultFor;
 const compiledRouteStreamBodyResultFor: CompiledRouteStreamBodyResultFor<
   typeof manifest,
-  typeof manifestStreamRouteBody
+  typeof manifestRouteStreamBody
 > = compiledRouteStreamTransportResultFor;
 const compiledUnaryRouteTransportResultFor: CompiledUnaryRouteTransportBodyResultFor<
   typeof manifest,
@@ -6689,19 +6762,19 @@ const rootCompiledStreamRouteBodyResultFor: RootCompiledStreamRouteBodyResultFor
 > = compiledStreamRouteBodyResultFor;
 const rootCompiledRouteUnaryTransportResultFor: RootCompiledRouteUnaryTransportBodyResultFor<
   typeof manifest,
-  typeof manifestUnaryRouteBody
+  typeof manifestRouteUnaryBody
 > = compiledRouteUnaryTransportResultFor;
 const rootCompiledRouteStreamTransportResultFor: RootCompiledRouteStreamTransportBodyResultFor<
   typeof manifest,
-  typeof manifestStreamRouteBody
+  typeof manifestRouteStreamBody
 > = compiledRouteStreamTransportResultFor;
 const rootCompiledRouteUnaryBodyResultFor: RootCompiledRouteUnaryBodyResultFor<
   typeof manifest,
-  typeof manifestUnaryRouteBody
+  typeof manifestRouteUnaryBody
 > = compiledRouteUnaryBodyResultFor;
 const rootCompiledRouteStreamBodyResultFor: RootCompiledRouteStreamBodyResultFor<
   typeof manifest,
-  typeof manifestStreamRouteBody
+  typeof manifestRouteStreamBody
 > = compiledRouteStreamBodyResultFor;
 rootCompiledUnaryRouteTransportResultFor.valueOf();
 rootCompiledStreamRouteTransportResultFor.valueOf();
@@ -6711,6 +6784,14 @@ rootCompiledRouteUnaryTransportResultFor.valueOf();
 rootCompiledRouteStreamTransportResultFor.valueOf();
 rootCompiledRouteUnaryBodyResultFor.valueOf();
 rootCompiledRouteStreamBodyResultFor.valueOf();
+manifestCompiledRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteUnaryBody
+);
+manifestCompiledRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestRouteStreamBody
+);
 manifestCompiledUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -6729,6 +6810,16 @@ manifestCompiledStreamTransportHandler(
   // @ts-expect-error compiled stream transport handlers reject unary route bodies.
   manifestUnaryRouteBody
 );
+manifestCompiledRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error compiled route-unary transport handlers reject route-stream bodies.
+  manifestRouteStreamBody
+);
+manifestCompiledRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error compiled route-stream transport handlers reject route-unary bodies.
+  manifestRouteUnaryBody
+);
 rootManifestCompiledUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -6739,11 +6830,19 @@ rootManifestCompiledStreamTransportHandler(
 );
 rootManifestCompiledRouteUnaryTransportHandler(
   createFetchRequestSourceForTypes(),
-  manifestUnaryRouteBody
+  manifestRouteUnaryBody
 );
 rootManifestCompiledRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
-  manifestStreamRouteBody
+  manifestRouteStreamBody
+);
+manifestCompiledRouteUnaryBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteUnaryBody
+);
+manifestCompiledRouteStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
 );
 manifestCompiledUnaryBodyHandler(
   new Request('https://example.com/rpc'),
@@ -6763,11 +6862,11 @@ rootManifestCompiledStreamBodyHandler(
 );
 rootManifestCompiledRouteUnaryBodyHandler(
   new Request('https://example.com/rpc'),
-  manifestUnaryRouteBody
+  manifestRouteUnaryBody
 );
 rootManifestCompiledRouteStreamBodyHandler(
   new Request('https://example.com/rpc'),
-  manifestStreamRouteBody
+  manifestRouteStreamBody
 );
 const cachedProcedureHeaders: CachedProcedureHeaders = {
   'cache-control': 'private',

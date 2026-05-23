@@ -46,6 +46,8 @@ import type {
   RpcBodyResult,
   RpcManifestBody,
   RpcManifestBodyResultFor,
+  RpcManifestRouteStreamBody,
+  RpcManifestRouteUnaryBody,
   RpcManifestStreamRouteBody,
   RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
@@ -117,8 +119,8 @@ export type CompiledBodyResultFor<
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type CompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -127,8 +129,8 @@ export type CompiledUnaryRouteTransportBodyResultFor<
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
-  _TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  _TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = Response | CompiledSerializedEnvelope;
 export type CompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -137,8 +139,8 @@ export type CompiledStreamRouteTransportBodyResultFor<
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteUnaryBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type CompiledUnaryRouteBodyResultFor<
   TManifest extends JoorManifest,
@@ -147,8 +149,8 @@ export type CompiledUnaryRouteBodyResultFor<
 > = CompiledRouteUnaryBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledStreamRouteBodyResultFor<
   TManifest extends JoorManifest,
@@ -171,7 +173,7 @@ export type CompiledRpcTransportBodyResultHandlerFor<
 
 export type CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
 ) => Promise<CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
@@ -182,7 +184,7 @@ export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
 
 export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
 ) => Promise<CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
@@ -205,7 +207,7 @@ export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
 
 export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: Request,
   body: TBody
 ) => Promise<CompiledRouteUnaryBodyResultFor<TManifest, TBody>>;
@@ -216,7 +218,7 @@ export type CompiledRpcUnaryRouteBodyResultHandlerFor<
 
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
+> = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: Request,
   body: TBody
 ) => Promise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
