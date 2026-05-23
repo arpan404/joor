@@ -2377,12 +2377,21 @@ defaultRouteUnaryOutput.name.toUpperCase();
 const routeUnaryHeaders: RpcUnaryRouteHeaders<Routes, 'users.get'> = {
   'x-tenant-id': 'tenant-1',
 };
+const defaultRouteUnaryHeaders: RpcUnaryRouteHeaders<Routes> =
+  routeUnaryHeaders;
 routeUnaryHeaders['x-tenant-id'].toUpperCase();
+defaultRouteUnaryHeaders['x-tenant-id']?.toUpperCase();
 const routeStreamHeaders: RpcStreamRouteHeaders<Routes, 'users.watch'> = {};
+const defaultRouteStreamHeaders: RpcStreamRouteHeaders<Routes> =
+  routeStreamHeaders;
 routeStreamHeaders.valueOf();
+defaultRouteStreamHeaders.valueOf();
 const routeUnaryClientHeaders: RpcUnaryRouteClientHeaders<Routes, 'users.get'> =
   { 'x-tenant-id': 'tenant-1', authorization: undefined };
+const defaultRouteUnaryClientHeaders: RpcUnaryRouteClientHeaders<Routes> =
+  routeUnaryClientHeaders;
 routeUnaryClientHeaders.authorization?.toUpperCase();
+defaultRouteUnaryClientHeaders['x-tenant-id']?.toUpperCase();
 const routeStreamClientHeaders: RpcStreamRouteClientHeaders<
   Routes,
   'users.watch'
@@ -2401,9 +2410,15 @@ const routeUnaryResponseHeaders: RpcUnaryRouteResponseHeaders<
   Routes,
   'users.get'
 > = { 'cache-control': 'private' };
+const defaultRouteUnaryResponseHeaders: RpcUnaryRouteResponseHeaders<Routes> =
+  routeUnaryResponseHeaders;
 routeUnaryResponseHeaders['cache-control'].toUpperCase();
+defaultRouteUnaryResponseHeaders['cache-control'].toUpperCase();
 const routeUnaryHasHeaders: RpcUnaryRouteHasHeaders<Routes, 'users.get'> = true;
+const defaultRouteUnaryHasHeaders: RpcUnaryRouteHasHeaders<Routes> =
+  routeUnaryHasHeaders;
 routeUnaryHasHeaders.valueOf();
+defaultRouteUnaryHasHeaders.valueOf();
 const routeStreamHasHeaders: RpcStreamRouteHasHeaders<Routes, 'users.watch'> =
   false;
 routeStreamHasHeaders.valueOf();
@@ -2426,7 +2441,11 @@ const routeUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<
   Routes,
   'users.get'
 > = true;
+const defaultRouteUnaryRequiresResponseHeaders: RpcUnaryRouteRequiresResponseHeaders<
+  Routes
+> = false;
 routeUnaryRequiresResponseHeaders.valueOf();
+defaultRouteUnaryRequiresResponseHeaders.valueOf();
 const routeStreamHasResponseHeaders: RpcStreamRouteHasResponseHeaders<
   Routes,
   'users.watch'
@@ -2466,7 +2485,11 @@ const routeRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
   Routes,
   'users.get'
 > = true;
+const defaultRouteRequiresResponseHeaders: RpcRouteRequiresResponseHeaders<
+  Routes
+> = false;
 routeRequiresResponseHeaders.valueOf();
+defaultRouteRequiresResponseHeaders.valueOf();
 const authenticatedRouteHasHeaders: RpcRouteHasHeaders<
   Routes,
   'users.authenticated'
@@ -3214,7 +3237,11 @@ const manifestUnaryRouteHeaders: JoorManifestUnaryRouteHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
+const defaultManifestUnaryRouteHeaders: JoorManifestUnaryRouteHeaders<
+  typeof manifest
+> = manifestUnaryRouteHeaders;
 manifestUnaryRouteHeaders['x-tenant-id'].toUpperCase();
+defaultManifestUnaryRouteHeaders['x-tenant-id']?.toUpperCase();
 const manifestStreamRouteHeaders: JoorManifestStreamRouteHeaders<
   typeof manifest,
   'users.watch'
@@ -3224,7 +3251,11 @@ const manifestUnaryRouteClientHeaders: JoorManifestUnaryRouteClientHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1', authorization: undefined };
+const defaultManifestUnaryRouteClientHeaders: JoorManifestUnaryRouteClientHeaders<
+  typeof manifest
+> = manifestUnaryRouteClientHeaders;
 manifestUnaryRouteClientHeaders.authorization?.toUpperCase();
+defaultManifestUnaryRouteClientHeaders['x-tenant-id']?.toUpperCase();
 const manifestStreamRouteClientHeaders: JoorManifestStreamRouteClientHeaders<
   typeof manifest,
   'users.watch'
@@ -3234,7 +3265,11 @@ const manifestUnaryRouteResponseHeaders: JoorManifestUnaryRouteResponseHeaders<
   typeof manifest,
   'users.get'
 > = { 'cache-control': 'private' };
+const defaultManifestUnaryRouteResponseHeaders: JoorManifestUnaryRouteResponseHeaders<
+  typeof manifest
+> = manifestUnaryRouteResponseHeaders;
 manifestUnaryRouteResponseHeaders['cache-control'].toUpperCase();
+defaultManifestUnaryRouteResponseHeaders['cache-control'].toUpperCase();
 const manifestStreamRouteResponseHeaders: JoorManifestStreamRouteResponseHeaders<
   typeof manifest,
   'users.watch'
@@ -3292,7 +3327,11 @@ const manifestUnaryRouteRequiresResponseHeaders: JoorManifestUnaryRouteRequiresR
   typeof manifest,
   'users.get'
 > = true;
+const defaultManifestUnaryRouteRequiresResponseHeaders: JoorManifestUnaryRouteRequiresResponseHeaders<
+  typeof manifest
+> = false;
 manifestUnaryRouteRequiresResponseHeaders.valueOf();
+defaultManifestUnaryRouteRequiresResponseHeaders.valueOf();
 const manifestStreamRouteHasResponseHeaders: JoorManifestStreamRouteHasResponseHeaders<
   typeof manifest,
   'users.watch'
@@ -3344,7 +3383,10 @@ const manifestRouteHeaders: JoorManifestRouteHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
+const defaultManifestRouteHeaders: JoorManifestRouteHeaders<typeof manifest> =
+  manifestRouteHeaders;
 manifestRouteHeaders['x-tenant-id'].toUpperCase();
+defaultManifestRouteHeaders['x-tenant-id']?.toUpperCase();
 const manifestRouteClientHeaders: JoorManifestRouteClientHeaders<
   typeof manifest,
   'users.get'
@@ -3384,7 +3426,11 @@ const manifestRouteRequiresResponseHeaders: JoorManifestRouteRequiresResponseHea
   typeof manifest,
   'users.get'
 > = true;
+const defaultManifestRouteRequiresResponseHeaders: JoorManifestRouteRequiresResponseHeaders<
+  typeof manifest
+> = false;
 manifestRouteRequiresResponseHeaders.valueOf();
+defaultManifestRouteRequiresResponseHeaders.valueOf();
 const manifestAuthenticatedRouteHasHeaders: JoorManifestRouteHasHeaders<
   typeof manifest,
   'users.authenticated'
@@ -3973,7 +4019,11 @@ const publicManifestUnaryRouteHeaders: RpcManifestUnaryRouteHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
+const defaultPublicManifestUnaryRouteHeaders: RpcManifestUnaryRouteHeaders<
+  typeof manifest
+> = publicManifestUnaryRouteHeaders;
 publicManifestUnaryRouteHeaders['x-tenant-id'].toUpperCase();
+defaultPublicManifestUnaryRouteHeaders['x-tenant-id']?.toUpperCase();
 const publicManifestStreamRouteHeaders: RpcManifestStreamRouteHeaders<
   typeof manifest,
   'users.watch'
@@ -3993,7 +4043,11 @@ const publicManifestUnaryRouteResponseHeaders: RpcManifestUnaryRouteResponseHead
   typeof manifest,
   'users.get'
 > = { 'cache-control': 'private' };
+const defaultPublicManifestUnaryRouteResponseHeaders: RpcManifestUnaryRouteResponseHeaders<
+  typeof manifest
+> = publicManifestUnaryRouteResponseHeaders;
 publicManifestUnaryRouteResponseHeaders['cache-control'].toUpperCase();
+defaultPublicManifestUnaryRouteResponseHeaders['cache-control'].toUpperCase();
 const publicManifestStreamRouteResponseHeaders: RpcManifestStreamRouteResponseHeaders<
   typeof manifest,
   'users.watch'
@@ -4037,7 +4091,11 @@ const publicManifestUnaryRouteRequiresResponseHeaders: RpcManifestUnaryRouteRequ
   typeof manifest,
   'users.get'
 > = true;
+const defaultPublicManifestUnaryRouteRequiresResponseHeaders: RpcManifestUnaryRouteRequiresResponseHeaders<
+  typeof manifest
+> = false;
 publicManifestUnaryRouteRequiresResponseHeaders.valueOf();
+defaultPublicManifestUnaryRouteRequiresResponseHeaders.valueOf();
 const publicManifestStreamRouteHasResponseHeaders: RpcManifestStreamRouteHasResponseHeaders<
   typeof manifest,
   'users.watch'
@@ -4115,12 +4173,20 @@ const publicManifestRouteHeaders: RpcManifestRouteHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1' };
+const defaultPublicManifestRouteHeaders: RpcManifestRouteHeaders<
+  typeof manifest
+> = publicManifestRouteHeaders;
 publicManifestRouteHeaders['x-tenant-id'].toUpperCase();
+defaultPublicManifestRouteHeaders['x-tenant-id']?.toUpperCase();
 const publicManifestRouteClientHeaders: RpcManifestRouteClientHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1', authorization: undefined };
+const defaultPublicManifestRouteClientHeaders: RpcManifestRouteClientHeaders<
+  typeof manifest
+> = publicManifestRouteClientHeaders;
 publicManifestRouteClientHeaders.authorization?.toUpperCase();
+defaultPublicManifestRouteClientHeaders['x-tenant-id']?.toUpperCase();
 const rpcSubpathManifestRouteClientHeaders: RpcSubpathManifestRouteClientHeaders<
   typeof manifest,
   'users.get'
@@ -4235,7 +4301,11 @@ const publicManifestRouteRequiresResponseHeaders: RpcManifestRouteRequiresRespon
   typeof manifest,
   'users.get'
 > = true;
+const defaultPublicManifestRouteRequiresResponseHeaders: RpcManifestRouteRequiresResponseHeaders<
+  typeof manifest
+> = false;
 publicManifestRouteRequiresResponseHeaders.valueOf();
+defaultPublicManifestRouteRequiresResponseHeaders.valueOf();
 const publicManifestRouteError: RpcManifestRouteError<
   typeof manifest,
   'users.get'

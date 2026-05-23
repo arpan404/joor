@@ -848,9 +848,14 @@ defaultUnaryRouteOutput.name.toUpperCase();
 const routeResponseHeaders: RouteResponseHeaders<'users.get'> = {
   'cache-control': 'private',
 };
+const defaultRouteResponseHeaders: RouteResponseHeaders = routeResponseHeaders;
+defaultRouteResponseHeaders['cache-control'].toUpperCase();
 const routeStreamResponseHeaders: RouteResponseHeaders<'users.watch'> = {};
 const streamRouteResponseHeaders: StreamRouteResponseHeaders<'users.watch'> =
   routeStreamResponseHeaders;
+const defaultStreamRouteResponseHeaders: StreamRouteResponseHeaders =
+  streamRouteResponseHeaders;
+defaultStreamRouteResponseHeaders.valueOf();
 const routeStreamRouteResponseHeaders: RouteStreamResponseHeaders<'users.watch'> =
   streamRouteResponseHeaders;
 routeStreamRouteResponseHeaders.valueOf();
@@ -858,7 +863,10 @@ const unaryRouteResponseHeaders: UnaryRouteResponseHeaders<'users.get'> =
   routeResponseHeaders;
 const routeUnaryResponseHeaders: RouteUnaryResponseHeaders<'users.get'> =
   unaryRouteResponseHeaders;
+const defaultUnaryRouteResponseHeaders: UnaryRouteResponseHeaders =
+  routeUnaryResponseHeaders;
 routeUnaryResponseHeaders['cache-control'].toUpperCase();
+defaultUnaryRouteResponseHeaders['cache-control'].toUpperCase();
 const routeProcedure: RouteProcedure<'users.get'> = manifest.procedures['users.get'];
 const defaultRouteProcedure: RouteProcedure = routeProcedure;
 routeProcedure.output;
@@ -970,17 +978,26 @@ const nativeRouteStreamProcedure: NativeRouteStreamProcedure<'users.watch'> =
   nativeStreamRouteProcedure;
 nativeRouteStreamProcedure.stream;
 const nativeRouteHasHeaders: NativeRouteHasHeaders<'tenants.current'> = true;
+const defaultNativeRouteHasHeaders: NativeRouteHasHeaders =
+  nativeRouteHasHeaders;
 nativeRouteHasHeaders.valueOf();
+defaultNativeRouteHasHeaders.valueOf();
 const nativeUnaryRouteHasHeaders: NativeUnaryRouteHasHeaders<'tenants.current'> = true;
 nativeUnaryRouteHasHeaders.valueOf();
 const nativeRouteRequiresHeaders: NativeRouteRequiresHeaders<'tenants.current'> = true;
+const defaultNativeRouteRequiresHeaders: NativeRouteRequiresHeaders =
+  false;
 nativeRouteRequiresHeaders.valueOf();
+defaultNativeRouteRequiresHeaders.valueOf();
 const nativeUnaryRouteRequiresHeaders: NativeUnaryRouteRequiresHeaders<'tenants.current'> = true;
 nativeUnaryRouteRequiresHeaders.valueOf();
 const nativeRouteResponseHeaders: NativeRouteResponseHeaders<'users.get'> = {
   'cache-control': 'private',
 };
+const defaultNativeRouteResponseHeaders: NativeRouteResponseHeaders =
+  nativeRouteResponseHeaders;
 nativeRouteResponseHeaders['cache-control'].toUpperCase();
+defaultNativeRouteResponseHeaders['cache-control'].toUpperCase();
 const nativeRouteStreamResponseHeaders: NativeRouteResponseHeaders<'users.watch'> =
   {};
 const nativeStreamRouteResponseHeaders: NativeStreamRouteResponseHeaders<'users.watch'> =
@@ -1065,7 +1082,11 @@ routeUnaryBatchRequest[0].input.id.toUpperCase();
 const defaultRouteBatchRequest: RouteBatchRequest = [request] as const;
 defaultRouteBatchRequest.length.toFixed();
 const tenantHeaders: RouteHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
+const defaultRouteHeaders: RouteHeaders = tenantHeaders;
 tenantHeaders['x-tenant-id'].toUpperCase();
+if ('x-tenant-id' in defaultRouteHeaders) {
+  defaultRouteHeaders['x-tenant-id']?.toUpperCase();
+}
 const tenantUnaryHeaders: RouteUnaryHeaders<'tenants.current'> = tenantHeaders;
 const tenantUnaryHeadersAlias: RouteUnaryHeaders<'tenants.current'> =
   tenantUnaryHeaders;
@@ -1075,7 +1096,11 @@ watchStreamHeaders.valueOf();
 const userClientHeaders: RouteClientHeaders<'users.get'> = { authorization: undefined };
 userClientHeaders.authorization?.toUpperCase();
 const tenantClientHeaders: RouteClientHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
+const defaultRouteClientHeaders: RouteClientHeaders = tenantClientHeaders;
 tenantClientHeaders['x-tenant-id'].toUpperCase();
+if ('x-tenant-id' in defaultRouteClientHeaders) {
+  defaultRouteClientHeaders['x-tenant-id']?.toUpperCase();
+}
 const tenantUnaryClientHeaders: RouteUnaryClientHeaders<'tenants.current'> = tenantClientHeaders;
 tenantUnaryClientHeaders['x-tenant-id'].toUpperCase();
 const watchStreamClientHeaders: RouteStreamClientHeaders<'users.watch'> = {};
@@ -1103,7 +1128,11 @@ const watchStreamClientArgs: StreamRouteClientArgs<'users.watch'> = [
 const watchRouteStreamClientArgs: RouteStreamClientArgs<'users.watch'> = watchStreamClientArgs;
 watchRouteStreamClientArgs[0].userId.toUpperCase();
 const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
+const defaultNativeRouteHeaders: NativeRouteHeaders = nativeRouteHeaders;
 nativeRouteHeaders['x-tenant-id'].toUpperCase();
+if ('x-tenant-id' in defaultNativeRouteHeaders) {
+  defaultNativeRouteHeaders['x-tenant-id']?.toUpperCase();
+}
 const nativeTenantUnaryHeaders: NativeUnaryRouteHeaders<'tenants.current'> = nativeRouteHeaders;
 const nativeTenantRouteUnaryHeaders: NativeRouteUnaryHeaders<'tenants.current'> = nativeTenantUnaryHeaders;
 nativeTenantRouteUnaryHeaders['x-tenant-id'].toUpperCase();
@@ -1113,7 +1142,12 @@ nativeWatchRouteStreamHeaders.valueOf();
 const nativeUserClientHeaders: NativeRouteClientHeaders<'users.get'> = { authorization: undefined };
 nativeUserClientHeaders.authorization?.toUpperCase();
 const nativeTenantClientHeaders: NativeRouteClientHeaders<'tenants.current'> = { 'x-tenant-id': 'tenant-1' };
+const defaultNativeRouteClientHeaders: NativeRouteClientHeaders =
+  nativeTenantClientHeaders;
 nativeTenantClientHeaders['x-tenant-id'].toUpperCase();
+if ('x-tenant-id' in defaultNativeRouteClientHeaders) {
+  defaultNativeRouteClientHeaders['x-tenant-id']?.toUpperCase();
+}
 const nativeTenantUnaryClientHeaders: NativeUnaryRouteClientHeaders<'tenants.current'> = nativeTenantClientHeaders;
 const nativeTenantRouteUnaryClientHeaders: NativeRouteUnaryClientHeaders<'tenants.current'> = nativeTenantUnaryClientHeaders;
 nativeTenantRouteUnaryClientHeaders['x-tenant-id'].toUpperCase();
@@ -1147,11 +1181,16 @@ const nativeUserClientArgs: NativeRouteClientArgs<'users.get'> = [
 ];
 nativeUserClientArgs[0].id.toUpperCase();
 const usersGetHasHeaders: RouteHasHeaders<'users.get'> = true;
+const defaultRouteHasHeaders: RouteHasHeaders = usersGetHasHeaders;
 usersGetHasHeaders.valueOf();
+defaultRouteHasHeaders.valueOf();
 const usersGetUnaryHasHeaders: UnaryRouteHasHeaders<'users.get'> = true;
 usersGetUnaryHasHeaders.valueOf();
 const usersGetRequiresHeaders: RouteRequiresHeaders<'users.get'> = false;
+const defaultRouteRequiresHeaders: RouteRequiresHeaders =
+  usersGetRequiresHeaders;
 usersGetRequiresHeaders.valueOf();
+defaultRouteRequiresHeaders.valueOf();
 const usersGetUnaryRequiresHeaders: UnaryRouteRequiresHeaders<'users.get'> = false;
 usersGetUnaryRequiresHeaders.valueOf();
 const tenantsCurrentHasHeaders: RouteHasHeaders<'tenants.current'> = true;
@@ -1159,11 +1198,17 @@ tenantsCurrentHasHeaders.valueOf();
 const tenantsCurrentRequiresHeaders: RouteRequiresHeaders<'tenants.current'> = true;
 tenantsCurrentRequiresHeaders.valueOf();
 const usersGetHasResponseHeaders: RouteHasResponseHeaders<'users.get'> = true;
+const defaultRouteHasResponseHeaders: RouteHasResponseHeaders =
+  usersGetHasResponseHeaders;
 usersGetHasResponseHeaders.valueOf();
+defaultRouteHasResponseHeaders.valueOf();
 const usersGetUnaryHasResponseHeaders: UnaryRouteHasResponseHeaders<'users.get'> = true;
 usersGetUnaryHasResponseHeaders.valueOf();
 const usersGetRequiresResponseHeaders: RouteRequiresResponseHeaders<'users.get'> = true;
+const defaultRouteRequiresResponseHeaders: RouteRequiresResponseHeaders =
+  false;
 usersGetRequiresResponseHeaders.valueOf();
+defaultRouteRequiresResponseHeaders.valueOf();
 const usersGetUnaryRequiresResponseHeaders: UnaryRouteRequiresResponseHeaders<'users.get'> = true;
 usersGetUnaryRequiresResponseHeaders.valueOf();
 const usersWatchHasResponseHeaders: RouteHasResponseHeaders<'users.watch'> = false;
