@@ -4,6 +4,14 @@ import type { MaybePromise } from '../procedure/types.js';
 
 export type AuthPolicyHeaderValues = Record<string, string | undefined>;
 
+export type AuthPolicyResult<TAuth extends object> =
+  | TAuth
+  | ProcedureFailure<string>;
+
+export type AuthPolicyResultLike<TAuth extends object> = MaybePromise<
+  AuthPolicyResult<TAuth>
+>;
+
 export interface AuthPolicy<
   TServices extends object,
   THeaders extends AuthPolicyHeaderValues,
@@ -17,7 +25,7 @@ export interface AuthPolicy<
       Record<string, never>,
       Record<string, never>
     >
-  ): MaybePromise<TAuth | ProcedureFailure<string>>;
+  ): AuthPolicyResultLike<TAuth>;
 }
 
 export type AuthPolicyServices<TPolicy> =

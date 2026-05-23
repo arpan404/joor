@@ -52,6 +52,8 @@ export type {
   AuthPolicyAuth,
   AuthPolicyHeaders,
   AuthPolicyHeaderValues,
+  AuthPolicyResult,
+  AuthPolicyResultLike,
   AuthPolicyServices,
   DefineContextAuthPolicy,
   DefineAuthPolicy,

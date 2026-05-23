@@ -1,9 +1,13 @@
-import type { AuthPolicy, AuthPolicyHeaderValues } from '../../auth/policy.js';
+import type {
+  AuthPolicy,
+  AuthPolicyHeaderValues,
+  AuthPolicyResult,
+  AuthPolicyResultLike,
+} from '../../auth/policy.js';
 import type { JoorContext } from '../../context/context.js';
-import type { ProcedureFailure } from '../../procedure/result.js';
 
-export type AuthResult = object | ProcedureFailure<string>;
-export type AuthResultLike = AuthResult | Promise<AuthResult>;
+export type AuthResult = AuthPolicyResult<object>;
+export type AuthResultLike = AuthPolicyResultLike<object>;
 
 export interface ExecutionState {
   cacheAuth: boolean;

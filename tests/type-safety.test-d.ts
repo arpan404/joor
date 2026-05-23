@@ -52,6 +52,8 @@ import {
   type AuthPolicy,
   type AuthPolicyHeaders,
   type AuthPolicyHeaderValues,
+  type AuthPolicyResult,
+  type AuthPolicyResultLike,
   type AuthPolicyServices,
   type BunTransportBodyResult,
   type BunTransportBodyResultHandler,
@@ -255,6 +257,8 @@ import {
   createAuthPolicy as createAuthPolicySubpath,
   type AuthPolicyAuth as AuthSubpathPolicyAuth,
   type AuthPolicyHeaders as AuthSubpathPolicyHeaders,
+  type AuthPolicyResult as AuthSubpathPolicyResult,
+  type AuthPolicyResultLike as AuthSubpathPolicyResultLike,
   type AuthPolicyServices as AuthSubpathPolicyServices,
 } from '../src/auth/index.js';
 import { createClient, createManifestClient } from '../src/rpc/client.js';
@@ -265,6 +269,8 @@ import {
   defineConfigFor as defineContextSubpathConfigFor,
   resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
+  type AuthPolicyResult as ContextSubpathAuthPolicyResult,
+  type AuthPolicyResultLike as ContextSubpathAuthPolicyResultLike,
   type DefineConfigFor as ContextSubpathDefineConfigFor,
   type JoorConfig as ContextSubpathConfig,
   type JoorConfigFor as ContextSubpathConfigFor,
@@ -628,6 +634,26 @@ const authPolicyAuthFromRoot: AuthPolicyAuth<typeof authPolicy> = {
   userId: '1',
 };
 authPolicyAuthFromRoot.userId.toUpperCase();
+const authPolicyResultFromRoot: AuthPolicyResult<
+  AuthPolicyAuth<typeof authPolicy>
+> = authPolicyAuthFromRoot;
+const authPolicyFailureFromRoot: AuthPolicyResult<
+  AuthPolicyAuth<typeof authPolicy>
+> = {
+  kind: 'error',
+  error: {
+    code: 'UNAUTHORIZED',
+    message: 'Missing session',
+    status: 401,
+  },
+};
+authPolicyFailureFromRoot.error.code.toUpperCase();
+const authPolicyResultLikeFromRoot: AuthPolicyResultLike<
+  AuthPolicyAuth<typeof authPolicy>
+> = Promise.resolve(authPolicyResultFromRoot);
+Promise.resolve(authPolicyResultLikeFromRoot).then((result) => {
+  result.valueOf();
+});
 const authSubpathPolicy = createAuthPolicySubpath.withContext<Services>()<
   { authorization: string },
   { userId: string; tenantId: string }
@@ -651,6 +677,13 @@ const authSubpathAuth: AuthSubpathPolicyAuth<typeof authSubpathPolicy> = {
   tenantId: 'tenant-1',
 };
 authSubpathAuth.tenantId.toUpperCase();
+const authSubpathResult: AuthSubpathPolicyResult<
+  AuthSubpathPolicyAuth<typeof authSubpathPolicy>
+> = authSubpathAuth;
+const authSubpathResultLike: AuthSubpathPolicyResultLike<
+  AuthSubpathPolicyAuth<typeof authSubpathPolicy>
+> = Promise.resolve(authSubpathResult);
+Promise.resolve(authSubpathResultLike).then((result) => result.valueOf());
 
 const authenticatedProcedure = defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
@@ -1277,6 +1310,16 @@ const contextSubpathTypedPolicy: ContextSubpathAuthPolicy<
   { userId: string }
 > = contextSubpathAuthPolicy;
 contextSubpathTypedPolicy.name.toUpperCase();
+const contextSubpathAuthResult: ContextSubpathAuthPolicyResult<{
+  userId: string;
+}> = { userId: '1' };
+contextSubpathAuthResult.userId.toUpperCase();
+const contextSubpathAuthResultLike: ContextSubpathAuthPolicyResultLike<{
+  userId: string;
+}> = Promise.resolve(contextSubpathAuthResult);
+Promise.resolve(contextSubpathAuthResultLike).then((result) =>
+  result.valueOf()
+);
 const _readContextSubpathContext = (
   ctx: ContextSubpathJoorContext<
     ContextSubpathConfigServices,
