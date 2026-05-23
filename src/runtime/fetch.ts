@@ -19,7 +19,8 @@ export type JoorHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -58,7 +59,8 @@ export type JoorHandlerOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -116,7 +118,12 @@ export const createJoorHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: JoorHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: JoorHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): JoorFetchHandler<TRequest> =>
     createRpcHandler(
       manifest,

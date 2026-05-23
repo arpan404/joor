@@ -251,13 +251,18 @@ export type CompiledRpcStreamRouteBodyResultHandlerFor<
 > = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
-  hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;
+  hooks?: HandlerHooks<
+    infer _TServices extends object,
+    infer TBody,
+    infer _TRequest extends Request
+  >;
 }
   ? TBody
   : TConfig extends {
         middleware?: readonly JoorMiddleware<
           infer _TServices extends object,
-          infer TBody
+          infer TBody,
+          infer _TRequest extends Request
         >[];
       }
     ? TBody

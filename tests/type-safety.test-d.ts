@@ -6346,6 +6346,38 @@ serviceAwareHandlerHooks.beforeRequest?.(
   new Request('https://example.com/rpc'),
   handlerHookContext
 );
+interface HookAppRequest extends Request {
+  readonly requestId: string;
+}
+const hookAppRequest = Object.assign(
+  new Request('https://example.com/rpc'),
+  { requestId: 'req_1' }
+) as HookAppRequest;
+const typedRequestHandlerHooks: HandlerHooks<
+  RootPluginServices,
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = {
+  beforeRequest(request, context) {
+    request.requestId.toUpperCase();
+    context.body?.input.id.toUpperCase();
+    return undefined;
+  },
+  afterResponse(response, request, context) {
+    request.requestId.toUpperCase();
+    context.body?.input.id.toUpperCase();
+    return response;
+  },
+};
+typedRequestHandlerHooks.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+typedRequestHandlerHooks.beforeRequest?.(
+  // @ts-expect-error typed handler hooks preserve custom request types.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
   name: 'audit',
   beforeRequest(_request, context) {
@@ -6476,6 +6508,23 @@ const rpcSubpathExactManifestAwareMiddleware: RpcSubpathJoorMiddlewareFor<
   typeof manifestRouteRequest
 > = exactManifestAwareMiddleware;
 rpcSubpathExactManifestAwareMiddleware.name.toUpperCase();
+const typedRequestMiddleware: JoorMiddlewareFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = {
+  name: 'typed-request-audit',
+  beforeRequest(request, context) {
+    request.requestId.toUpperCase();
+    context.body?.input.id.toUpperCase();
+    return undefined;
+  },
+};
+typedRequestMiddleware.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const manifestUnaryRouteMiddleware: RpcManifestUnaryRouteMiddlewareFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -6554,6 +6603,29 @@ const serviceAwareHandlerOptions: HandlerOptionsFor<
   },
 };
 serviceAwareHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const typedRequestHandlerOptions: HandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: typedRequestHandlerHooks,
+  middleware: [typedRequestMiddleware],
+  onError(_error, request) {
+    request.requestId.toUpperCase();
+  },
+};
+typedRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+const typedHookJoorHandler =
+  createJoorHandlerFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+typedHookJoorHandler(hookAppRequest);
+// @ts-expect-error typed fetch handlers preserve hook request types through options.
+typedHookJoorHandler(new Request('https://example.com/rpc'));
 const exactServiceAwareHandlerOptions: HandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],

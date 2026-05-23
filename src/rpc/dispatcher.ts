@@ -946,10 +946,15 @@ export interface HandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody = unknown,
+  TRequest extends Request = Request,
 > {
   plugins?: TPlugins;
-  middleware?: readonly JoorMiddleware<PluginServices<TPlugins>, TBody>[];
-  hooks?: HandlerHooks<PluginServices<TPlugins>, TBody>;
+  middleware?: readonly JoorMiddleware<
+    PluginServices<TPlugins>,
+    TBody,
+    TRequest
+  >[];
+  hooks?: HandlerHooks<PluginServices<TPlugins>, TBody, TRequest>;
   path?: string;
   cors?: {
     origin?: string;
@@ -970,7 +975,7 @@ export interface HandlerOptions<
   validateOutput?: boolean;
   validateResponseHeaders?: boolean;
   enforceRateLimit?: boolean;
-  onError?(error: Error, request: Request): void;
+  onError?(error: Error, request: TRequest): void;
 }
 
 export type HandlerOptionServices<TOptions> =
@@ -987,7 +992,10 @@ export type HandlerOptionsManifest<TOptions> = TOptions extends {
   : never;
 
 export type HandlerOptionsBody<TOptions> =
-  TOptions extends HandlerOptions<readonly JoorPlugin<object>[], infer TBody>
+  TOptions extends HandlerOptions<
+    readonly JoorPlugin<object>[],
+    infer TBody
+  >
     ? TBody
     : never;
 
@@ -1005,7 +1013,8 @@ export type HandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptions<TPlugins, TBody> & {
+  TRequest extends Request = Request,
+> = HandlerOptions<TPlugins, TBody, TRequest> & {
   readonly [handlerOptionsManifest]?: TManifest;
 } & (
   (HandlerOptionsHaveRequiredServices<
@@ -1026,7 +1035,8 @@ export type RpcManifestRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestRouteStreamHandlerOptionsFor<
   TManifest extends RpcManifest,
@@ -1034,7 +1044,8 @@ export type RpcManifestRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 type HandlerOptionsArgsBody<
   TManifest extends RpcManifest,
@@ -1074,20 +1085,35 @@ export type HandlerOptionsArgsFor<
     TOptionsOrBody,
     TBody
   >,
+  TRequest extends Request = Request,
 > =
   HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
-    ? [options?: TOptions & HandlerOptionsFor<TManifest, TPlugins, TBody>]
-    : [options: TOptions & HandlerOptionsFor<TManifest, TPlugins, TBody>];
+    ? [
+        options?: TOptions &
+          HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
+      ]
+    : [
+        options: TOptions &
+          HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
+      ];
 
 export type HandlerOptionsArgs<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgsFor<
+  TManifest,
+  TPlugins,
+  HandlerOptions<TPlugins, TBody, TRequest>,
+  TBody,
+  HandlerOptions<TPlugins, TBody, TRequest>,
+  TRequest
+>;
 
 export type RpcManifestRouteUnaryHandlerOptionsArgs<
   TManifest extends RpcManifest,
@@ -1095,7 +1121,8 @@ export type RpcManifestRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestRouteStreamHandlerOptionsArgs<
   TManifest extends RpcManifest,
@@ -1103,13 +1130,15 @@ export type RpcManifestRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 type HandlerOptionsForTrailing<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type HandlerOptionsWithTrailingArgs<
   TManifest extends RpcManifest,
@@ -1117,17 +1146,28 @@ export type HandlerOptionsWithTrailingArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+  TRequest extends Request = Request,
 > =
   HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
     ? [
-        options?: HandlerOptionsForTrailing<TManifest, TPlugins, TBody>,
+        options?: HandlerOptionsForTrailing<
+          TManifest,
+          TPlugins,
+          TBody,
+          TRequest
+        >,
         ...trailingArgs: TTrailingArgs,
       ]
     : [
-        options: HandlerOptionsForTrailing<TManifest, TPlugins, TBody>,
+        options: HandlerOptionsForTrailing<
+          TManifest,
+          TPlugins,
+          TBody,
+          TRequest
+        >,
         ...trailingArgs: TTrailingArgs,
       ];
 
@@ -1136,11 +1176,13 @@ export type HandlerOptionsWithPreflightArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+  TRequest extends Request = Request,
 > = HandlerOptionsWithTrailingArgs<
   TManifest,
   [preflight?: boolean],
   TPlugins,
-  TBody
+  TBody,
+  TRequest
 >;
 
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
@@ -1195,14 +1237,15 @@ export interface HandlerHookContext<
 export interface HandlerHooks<
   TServices extends object = object,
   TBody = unknown,
+  TRequest extends Request = Request,
 > {
   beforeRequest?(
-    request: Request,
+    request: TRequest,
     context: HandlerHookContext<TServices, TBody>
   ): MaybePromise<Response | undefined>;
   afterResponse?(
     response: Response,
-    request: Request,
+    request: TRequest,
     context: HandlerHookContext<TServices, TBody>
   ): MaybePromise<Response | undefined>;
 }
@@ -1210,7 +1253,8 @@ export interface HandlerHooks<
 export interface JoorMiddleware<
   TServices extends object = object,
   TBody = unknown,
-> extends HandlerHooks<TServices, TBody> {
+  TRequest extends Request = Request,
+> extends HandlerHooks<TServices, TBody, TRequest> {
   name: string;
 }
 
@@ -1242,7 +1286,8 @@ export type HandlerHooksFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerHooks<PluginServices<TPlugins>, TBody>;
+  TRequest extends Request = Request,
+> = HandlerHooks<PluginServices<TPlugins>, TBody, TRequest>;
 
 export type RpcManifestRouteUnaryHandlerHooksFor<
   TManifest extends RpcManifest,
@@ -1250,7 +1295,8 @@ export type RpcManifestRouteUnaryHandlerHooksFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = HandlerHooksFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerHooksFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestRouteStreamHandlerHooksFor<
   TManifest extends RpcManifest,
@@ -1258,14 +1304,16 @@ export type RpcManifestRouteStreamHandlerHooksFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = HandlerHooksFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerHooksFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type JoorMiddlewareFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = JoorMiddleware<PluginServices<TPlugins>, TBody>;
+  TRequest extends Request = Request,
+> = JoorMiddleware<PluginServices<TPlugins>, TBody, TRequest>;
 
 export type RpcManifestRouteUnaryMiddlewareFor<
   TManifest extends RpcManifest,
@@ -1273,7 +1321,8 @@ export type RpcManifestRouteUnaryMiddlewareFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = JoorMiddlewareFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorMiddlewareFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestRouteStreamMiddlewareFor<
   TManifest extends RpcManifest,
@@ -1281,7 +1330,8 @@ export type RpcManifestRouteStreamMiddlewareFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = JoorMiddlewareFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = JoorMiddlewareFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestUnaryRouteProcedure<
   TManifest extends RpcManifest,
@@ -1513,7 +1563,13 @@ export type RpcManifestUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestStreamRouteHandlerOptionsFor<
   TManifest extends RpcManifest,
@@ -1521,7 +1577,13 @@ export type RpcManifestStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestUnaryRouteHandlerOptionsArgs<
   TManifest extends RpcManifest,
@@ -1529,7 +1591,13 @@ export type RpcManifestUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = RpcManifestRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestStreamRouteHandlerOptionsArgs<
   TManifest extends RpcManifest,
@@ -1537,7 +1605,13 @@ export type RpcManifestStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = RpcManifestRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestUnaryRouteHandlerHookContextFor<
   TManifest extends RpcManifest,
@@ -1561,7 +1635,13 @@ export type RpcManifestUnaryRouteHandlerHooksFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = RpcManifestRouteUnaryHandlerHooksFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryHandlerHooksFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestStreamRouteHandlerHooksFor<
   TManifest extends RpcManifest,
@@ -1569,7 +1649,13 @@ export type RpcManifestStreamRouteHandlerHooksFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = RpcManifestRouteStreamHandlerHooksFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamHandlerHooksFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type RpcManifestUnaryRouteMiddlewareFor<
   TManifest extends RpcManifest,
@@ -1577,7 +1663,8 @@ export type RpcManifestUnaryRouteMiddlewareFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = RpcManifestRouteUnaryMiddlewareFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryMiddlewareFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type RpcManifestStreamRouteMiddlewareFor<
   TManifest extends RpcManifest,
@@ -1585,7 +1672,8 @@ export type RpcManifestStreamRouteMiddlewareFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = RpcManifestRouteStreamMiddlewareFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamMiddlewareFor<TManifest, TPlugins, TBody, TRequest>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
 const procedureSuccessCache = new Map<string, CachedProcedureSuccess>();
@@ -2300,7 +2388,12 @@ export const createRpcHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+    ...args: HandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): RpcRequestHandler<TRequest> =>
     createRpcHandler(
       manifest,
@@ -2343,7 +2436,12 @@ export const createRpcBodyHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+    ...args: HandlerOptionsWithPreflightArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): RpcBodyHandler<TManifest, TRequest> =>
     createRpcBodyHandler(
       manifest,
@@ -2384,7 +2482,12 @@ export const createRpcBodyResultHandlerFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+    ...args: HandlerOptionsWithPreflightArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): RpcBodyResultHandler<TManifest, TRequest> =>
     createRpcBodyResultHandler(
       manifest,
