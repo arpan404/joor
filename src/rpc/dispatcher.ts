@@ -508,6 +508,22 @@ export type RpcManifestStreamRouteProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
 
+export type RpcManifestRouteStreamRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
+> = RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
+
+export type RpcManifestStreamRouteRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> = RpcManifestRouteStreamId<TManifest>,
+> = RpcManifestRouteStreamRequest<TManifest, TId>;
+
+export type RpcManifestRouteStreamRequestUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
+
+export type RpcManifestStreamRouteRequestUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteStreamRequestUnion<TManifest>;
+
 export type RpcManifestBody<TManifest extends RpcManifest> =
   | RpcManifestRouteProtocolRequestUnion<TManifest>
   | RpcManifestRouteBatchRequest<

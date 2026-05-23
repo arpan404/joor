@@ -568,6 +568,22 @@ export type RpcRouteStreamProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
 export type RpcStreamRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteStreamProtocolRequestUnion<TRoutes>;
 
+export type RpcRouteStreamRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+> = RpcRouteStreamProtocolRequest<TRoutes, TId>;
+
+export type RpcStreamRouteRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+> = RpcRouteStreamRequest<TRoutes, TId>;
+
+export type RpcRouteStreamRequestUnion<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamProtocolRequestUnion<TRoutes>;
+
+export type RpcStreamRouteRequestUnion<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamRequestUnion<TRoutes>;
+
 export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
