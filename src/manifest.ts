@@ -149,11 +149,25 @@ export type JoorManifestStreamRouteBodyResultHandler<
   TManifest extends JoorManifest,
 > = RpcManifestStreamRouteBodyResultHandler<TManifest>;
 
+export type JoorManifestRouteUnaryBodyResultHandler<
+  TManifest extends JoorManifest,
+> = JoorManifestUnaryRouteBodyResultHandler<TManifest>;
+
+export type JoorManifestRouteStreamBodyResultHandler<
+  TManifest extends JoorManifest,
+> = JoorManifestStreamRouteBodyResultHandler<TManifest>;
+
 export type JoorManifestUnaryRouteBodyHandler<TManifest extends JoorManifest> =
   RpcManifestUnaryRouteBodyHandler<TManifest>;
 
 export type JoorManifestStreamRouteBodyHandler<TManifest extends JoorManifest> =
   RpcManifestStreamRouteBodyHandler<TManifest>;
+
+export type JoorManifestRouteUnaryBodyHandler<TManifest extends JoorManifest> =
+  JoorManifestUnaryRouteBodyHandler<TManifest>;
+
+export type JoorManifestRouteStreamBodyHandler<TManifest extends JoorManifest> =
+  JoorManifestStreamRouteBodyHandler<TManifest>;
 
 export type JoorManifestUnaryRouteTransportBodyResultHandler<
   TManifest extends JoorManifest,
@@ -162,6 +176,14 @@ export type JoorManifestUnaryRouteTransportBodyResultHandler<
 export type JoorManifestStreamRouteTransportBodyResultHandler<
   TManifest extends JoorManifest,
 > = RpcManifestStreamRouteTransportBodyResultHandler<TManifest>;
+
+export type JoorManifestRouteUnaryTransportBodyResultHandler<
+  TManifest extends JoorManifest,
+> = JoorManifestUnaryRouteTransportBodyResultHandler<TManifest>;
+
+export type JoorManifestRouteStreamTransportBodyResultHandler<
+  TManifest extends JoorManifest,
+> = JoorManifestStreamRouteTransportBodyResultHandler<TManifest>;
 
 export type JoorManifestClientOptions<TManifest extends JoorManifest> =
   RpcManifestClientOptions<TManifest>;

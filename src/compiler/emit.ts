@@ -376,6 +376,8 @@ export type NativeUnaryRouteProtocolRequestUnion = JoorManifestRouteUnaryProtoco
 export type NativeRouteUnaryProtocolRequestUnion = NativeUnaryRouteProtocolRequestUnion;
 export type NativeUnaryRouteRequest =
   NativeUnaryRouteProtocolRequestUnion;
+export type NativeRouteUnaryRequest =
+  NativeUnaryRouteRequest;
 export type NativeUnaryProtocolRequest =
   NativeUnaryRouteRequest;
 export type NativeStreamRouteProtocolRequest<TId extends NativeStreamRouteId> = JoorManifestRouteStreamProtocolRequest<NativeManifest, TId>;
@@ -384,6 +386,8 @@ export type NativeStreamRouteProtocolRequestUnion = JoorManifestRouteStreamProto
 export type NativeRouteStreamProtocolRequestUnion = NativeStreamRouteProtocolRequestUnion;
 export type NativeStreamRouteRequest =
   NativeStreamRouteProtocolRequestUnion;
+export type NativeRouteStreamRequest =
+  NativeStreamRouteRequest;
 export type NativeStreamProtocolRequest =
   NativeStreamRouteRequest;
 export type NativeRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
@@ -2582,10 +2586,14 @@ export type UnaryRouteFunction<TId extends UnaryRouteId> = {
   call(...args: UnaryRouteClientArgs<TId>): Promise<RouteResult<TId>>;
   request(...args: UnaryRouteClientArgs<TId>): RouteRequest<TId>;
 };
+export type RouteUnaryFunction<TId extends RouteUnaryId> =
+  UnaryRouteFunction<TId>;
 export type StreamRouteFunction<TId extends StreamRouteId> = {
   (...args: StreamRouteClientArgs<TId>): AsyncIterable<Stream<TId>>;
   stream(...args: StreamRouteClientArgs<TId>): AsyncIterable<Stream<TId>>;
 };
+export type RouteStreamFunction<TId extends RouteStreamId> =
+  StreamRouteFunction<TId>;
 export type BatchFunction = <const TRequests extends RouteBatchRequest>(
   requests: TRequests
 ) => Promise<RouteBatchResults<TRequests>>;

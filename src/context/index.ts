@@ -21,11 +21,15 @@ export type {
 } from '../auth/policy.js';
 export type {
   DefineConfigFor,
+  DefineRouteStreamConfigFor,
+  DefineRouteUnaryConfigFor,
   DefineStreamRouteConfigFor,
   DefineUnaryRouteConfigFor,
   JoorConfig,
   JoorConfigFor,
   JoorConfigContext,
+  JoorRouteStreamConfigFor,
+  JoorRouteUnaryConfigFor,
   JoorStreamRouteConfigFor,
   JoorUnaryRouteConfigFor,
 } from '../config.js';
