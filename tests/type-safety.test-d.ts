@@ -101,7 +101,11 @@ import {
   type HandlerHooks,
   type HandlerHooksFor,
   type HandlerOptionServices,
+  type HandlerOptionsArgs,
+  type HandlerOptionsArgsFor,
   type HandlerOptionsFor,
+  type HandlerOptionsWithPreflightArgs,
+  type HandlerOptionsWithTrailingArgs,
   type HandlerOptions,
   type JoorMiddleware,
   type JoorMiddlewareFor,
@@ -326,6 +330,10 @@ import {
   type HandlerHookContext as RpcSubpathHandlerHookContext,
   type HandlerHookContextFor as RpcSubpathHandlerHookContextFor,
   type HandlerHooksFor as RpcSubpathHandlerHooksFor,
+  type HandlerOptionsArgs as RpcSubpathHandlerOptionsArgs,
+  type HandlerOptionsArgsFor as RpcSubpathHandlerOptionsArgsFor,
+  type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
+  type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
@@ -2675,6 +2683,60 @@ const exactServiceAwareHandlerOptions: HandlerOptionsFor<
   middleware: [exactManifestAwareMiddleware],
 };
 exactServiceAwareHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+const exactHandlerOptionsArgsFor: HandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = [exactServiceAwareHandlerOptions];
+exactHandlerOptionsArgsFor[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+const rpcSubpathExactHandlerOptionsArgsFor: RpcSubpathHandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactHandlerOptionsArgsFor;
+const exactHandlerOptionsArgs: HandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = rpcSubpathExactHandlerOptionsArgsFor;
+const rpcSubpathExactHandlerOptionsArgs: RpcSubpathHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactHandlerOptionsArgs;
+const exactHandlerOptionsWithTrailingArgs: HandlerOptionsWithTrailingArgs<
+  typeof manifest,
+  [preflight?: boolean],
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = [exactServiceAwareHandlerOptions, true];
+const rpcSubpathExactHandlerOptionsWithTrailingArgs: RpcSubpathHandlerOptionsWithTrailingArgs<
+  typeof manifest,
+  [preflight?: boolean],
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactHandlerOptionsWithTrailingArgs;
+const exactHandlerOptionsWithPreflightArgs: HandlerOptionsWithPreflightArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = rpcSubpathExactHandlerOptionsWithTrailingArgs;
+const rpcSubpathExactHandlerOptionsWithPreflightArgs: RpcSubpathHandlerOptionsWithPreflightArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactHandlerOptionsWithPreflightArgs;
+rpcSubpathExactHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+rpcSubpathExactHandlerOptionsWithPreflightArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );

@@ -439,46 +439,82 @@ export type HandlerOptionsFor<
         };
       });
 
+type HandlerOptionsArgsBody<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[],
+  TOptionsOrBody,
+> =
+  TOptionsOrBody extends HandlerOptions<TPlugins, infer TBody>
+    ? [unknown] extends [TBody]
+      ? RpcManifestBody<TManifest>
+      : TBody & RpcManifestBody<TManifest>
+    : TOptionsOrBody & RpcManifestBody<TManifest>;
+
+type HandlerOptionsArgsOptions<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[],
+  TOptionsOrBody,
+  TBody extends RpcManifestBody<TManifest>,
+> =
+  TOptionsOrBody extends HandlerOptions<TPlugins>
+    ? TOptionsOrBody
+    : HandlerOptions<TPlugins, TBody>;
+
 export type HandlerOptionsArgsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-  TOptions extends HandlerOptions<TPlugins, RpcManifestBody<TManifest>> =
+  TOptionsOrBody extends HandlerOptions<TPlugins> | RpcManifestBody<TManifest> =
     HandlerOptions<TPlugins, RpcManifestBody<TManifest>>,
+  TBody extends RpcManifestBody<TManifest> = HandlerOptionsArgsBody<
+    TManifest,
+    TPlugins,
+    TOptionsOrBody
+  >,
+  TOptions extends HandlerOptions<TPlugins> = HandlerOptionsArgsOptions<
+    TManifest,
+    TPlugins,
+    TOptionsOrBody,
+    TBody
+  >,
 > =
   HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
-    ? [options?: TOptions & HandlerOptionsFor<TManifest, TPlugins>]
-    : [options: TOptions & HandlerOptionsFor<TManifest, TPlugins>];
+    ? [options?: TOptions & HandlerOptionsFor<TManifest, TPlugins, TBody>]
+    : [options: TOptions & HandlerOptionsFor<TManifest, TPlugins, TBody>];
 
 export type HandlerOptionsArgs<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptionsArgsFor<
-  TManifest,
-  TPlugins,
-  HandlerOptionsFor<TManifest, TPlugins>
->;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgsFor<TManifest, TPlugins, TBody>;
+
+type HandlerOptionsForTrailing<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type HandlerOptionsWithTrailingArgs<
   TManifest extends RpcManifest,
   TTrailingArgs extends readonly unknown[],
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > =
   HandlerOptionsHaveRequiredServices<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
     ? [
-        options?: HandlerOptionsFor<TManifest, TPlugins>,
+        options?: HandlerOptionsForTrailing<TManifest, TPlugins, TBody>,
         ...trailingArgs: TTrailingArgs,
       ]
     : [
-        options: HandlerOptionsFor<TManifest, TPlugins>,
+        options: HandlerOptionsForTrailing<TManifest, TPlugins, TBody>,
         ...trailingArgs: TTrailingArgs,
       ];
 
@@ -486,7 +522,13 @@ export type HandlerOptionsWithPreflightArgs<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptionsWithTrailingArgs<TManifest, [preflight?: boolean], TPlugins>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsWithTrailingArgs<
+  TManifest,
+  [preflight?: boolean],
+  TPlugins,
+  TBody
+>;
 
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
