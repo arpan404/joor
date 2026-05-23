@@ -36,6 +36,7 @@ export {
   listen,
 } from './runtime/node.js';
 export {
+  isRpcEnvelopeArray,
   isSerializedJsonEnvelope,
   transportResultToResponse,
 } from './runtime/response.js';

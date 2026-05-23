@@ -58,12 +58,14 @@ const isSafeResponseHeader = (name: string, value: string): boolean => {
   );
 };
 
-export const isSerializedJsonEnvelope = (
-  result: TransportBodyResult
+export const isSerializedJsonEnvelope = <
+  TEnvelope extends RpcEnvelope = RpcEnvelope,
+>(
+  result: TransportBodyResult<TEnvelope>
 ): result is SerializedJsonEnvelope =>
   'body' in result && typeof result.body === 'string';
 
-const isRpcEnvelopeArray = <TEnvelope extends RpcEnvelope>(
+export const isRpcEnvelopeArray = <TEnvelope extends RpcEnvelope>(
   result: TEnvelope | readonly TEnvelope[]
 ): result is readonly TEnvelope[] => Array.isArray(result);
 

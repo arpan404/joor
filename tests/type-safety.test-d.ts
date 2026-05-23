@@ -33,6 +33,7 @@ import {
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
+  isRpcEnvelopeArray,
   isJsonObject,
   isSerializedJsonEnvelope,
   listen,
@@ -991,6 +992,7 @@ import {
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  isRpcEnvelopeArray as isRuntimeSubpathRpcEnvelopeArray,
   isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
@@ -1692,6 +1694,37 @@ type RuntimeBodyResultRouteId<T> = Exclude<
 > extends { id: infer TId }
   ? TId
   : never;
+const getTypedTransportEnvelopeId = <TEnvelope extends RpcEnvelope>(
+  result: TransportBodyResult<TEnvelope>
+): TEnvelope['id'] | undefined => {
+  if (result instanceof Response) return undefined;
+  if (isSerializedJsonEnvelope(result)) return undefined;
+  if (isRpcEnvelopeArray(result)) return undefined;
+  return result.id;
+};
+const typedTransportEnvelopeId = getTypedTransportEnvelopeId(
+  typedTransportBodyResult
+);
+const exactTypedTransportEnvelopeId: 'users.get' | undefined =
+  typedTransportEnvelopeId;
+exactTypedTransportEnvelopeId?.toUpperCase();
+// @ts-expect-error serialized-envelope narrowing preserves generic envelope route ids.
+const _wrongTypedTransportEnvelopeId: 'users.list' | undefined =
+  typedTransportEnvelopeId;
+const typedTransportEnvelopeArray: TransportBodyResult<
+  typeof procedureEnvelope
+> = [procedureEnvelope];
+if (isRuntimeSubpathRpcEnvelopeArray(typedTransportEnvelopeArray)) {
+  const typedTransportEnvelopeArrayItem = typedTransportEnvelopeArray[0];
+  if (typedTransportEnvelopeArrayItem !== undefined) {
+    const typedTransportEnvelopeArrayId: 'users.get' =
+      typedTransportEnvelopeArrayItem.id;
+    typedTransportEnvelopeArrayId.toUpperCase();
+    // @ts-expect-error transport result array narrowing preserves route id literals.
+    const _wrongTypedTransportEnvelopeArrayId: 'users.list' =
+      typedTransportEnvelopeArrayItem.id;
+  }
+}
 const typedBunTransportBodyResultId: RuntimeBodyResultRouteId<
   BunTransportBodyResult<typeof procedureEnvelope>
 > = 'users.get';

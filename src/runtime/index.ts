@@ -23,6 +23,7 @@ export * from './netlify.js';
 export * from './next.js';
 export * from './node.js';
 export {
+  isRpcEnvelopeArray,
   isSerializedJsonEnvelope,
   transportResultToResponse,
 } from './response.js';
