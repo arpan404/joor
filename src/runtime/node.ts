@@ -10,8 +10,6 @@ import type {
   HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
   RpcManifestBody,
-  RpcManifestBodyResult,
-  RpcManifestBodyResultFor,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -32,6 +30,7 @@ import {
   createJsonHeaderRecord,
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
+  type TransportBodyResultFor,
 } from './response.js';
 
 export interface ListenOptions<
@@ -62,9 +61,10 @@ export type NodeRpcRequestHandler = (
 ) => Promise<void>;
 
 export type NodeTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type NodeTransportBodyResultFor<TManifest extends JoorManifest> =
-  | RpcManifestBodyResult<TManifest>
-  | SerializedJsonEnvelope;
+export type NodeTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type NodeTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
@@ -74,9 +74,7 @@ export type NodeTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
   <const TBody extends RpcManifestBody<TManifest>>(
     request: ContextRequestSource,
     body: TBody
-  ) => Promise<
-    RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope
-  >;
+  ) => Promise<NodeTransportBodyResultFor<TManifest, TBody>>;
 
 const neverAbortedSignal = new AbortController().signal;
 

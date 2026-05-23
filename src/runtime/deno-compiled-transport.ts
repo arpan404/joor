@@ -3,6 +3,7 @@ import {
   type ContextRequestSource,
 } from '../context/context.js';
 import type { JoorManifest } from '../manifest.js';
+import type { RpcManifestBody } from '../rpc/dispatcher.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
@@ -29,8 +30,10 @@ export type DenoCompiledTransportRequestHandler = (
 
 export type DenoCompiledTransportBodyResult = DenoTransportBodyResult;
 
-export type DenoCompiledTransportBodyResultFor<TManifest extends JoorManifest> =
-  DenoTransportBodyResultFor<TManifest>;
+export type DenoCompiledTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = DenoTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,

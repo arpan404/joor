@@ -5,8 +5,6 @@ import type {
   HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
-  RpcManifestBodyResult,
-  RpcManifestBodyResultFor,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -31,6 +29,7 @@ import {
   jsonContentHeaders,
   transportResultToResponse,
   type SerializedJsonEnvelope,
+  type TransportBodyResultFor,
 } from './response.js';
 
 export interface DenoServeOptions<
@@ -55,9 +54,10 @@ export type DenoServeOptionsFor<
 > = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type DenoTransportBodyResultFor<TManifest extends JoorManifest> =
-  | RpcManifestBodyResult<TManifest>
-  | SerializedJsonEnvelope;
+export type DenoTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type DenoFetchHandler = JoorFetchHandler;
 export type DenoRpcRequestHandler = JoorFetchHandler;
 export type DenoTransportRequestHandler = JoorFetchHandler;
@@ -71,9 +71,7 @@ export type DenoTransportBodyResultHandlerFor<TManifest extends JoorManifest> =
   <const TBody extends RpcManifestBody<TManifest>>(
     request: ContextRequestSource,
     body: TBody
-  ) => Promise<
-    RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope
-  >;
+  ) => Promise<DenoTransportBodyResultFor<TManifest, TBody>>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

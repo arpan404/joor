@@ -2824,6 +2824,10 @@ const denoTransportResult: DenoTransportBodyResult = {
 };
 const denoTransportResultFor: DenoTransportBodyResultFor<typeof manifest> =
   manifestRouteBodyResult;
+const exactDenoTransportResultFor: DenoTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = manifestRouteBodyResult;
 if (
   !(denoTransportResultFor instanceof Response) &&
   !Array.isArray(denoTransportResultFor) &&
@@ -2831,6 +2835,13 @@ if (
   denoTransportResultFor.ok
 ) {
   denoTransportResultFor.data.name.toUpperCase();
+}
+if (
+  !(exactDenoTransportResultFor instanceof Response) &&
+  'ok' in exactDenoTransportResultFor &&
+  exactDenoTransportResultFor.ok
+) {
+  exactDenoTransportResultFor.data.name.toUpperCase();
 }
 const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
@@ -2895,9 +2906,17 @@ routeTypedDenoTransportHandler(createFetchRequestSourceForTypes(), {
 const _bunTransportResult: BunTransportBodyResult = denoTransportResult;
 const bunTransportResultFor: BunTransportBodyResultFor<typeof manifest> =
   denoTransportResultFor;
+const exactBunTransportResultFor: BunTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactDenoTransportResultFor;
 const rootDenoCompiledTransportResultFor: RootDenoCompiledTransportBodyResultFor<
   typeof manifest
 > = bunTransportResultFor;
+const exactRootDenoCompiledTransportResultFor: RootDenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactBunTransportResultFor;
 const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -2935,9 +2954,17 @@ const standaloneDenoTransportResult: StandaloneDenoTransportBodyResult =
 const standaloneDenoTransportResultFor: StandaloneDenoTransportBodyResultFor<
   typeof manifest
 > = rootDenoCompiledTransportResultFor;
+const exactStandaloneDenoTransportResultFor: StandaloneDenoTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactRootDenoCompiledTransportResultFor;
 const denoCompiledTransportResultFor: DenoCompiledTransportBodyResultFor<
   typeof manifest
 > = standaloneDenoTransportResultFor;
+const exactDenoCompiledTransportResultFor: DenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactStandaloneDenoTransportResultFor;
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
 const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
@@ -3485,6 +3512,10 @@ createNodeTransportRequestHandler(async () => transportResult);
 const _nodeTransportResult: NodeTransportBodyResult = transportResult;
 const nodeTransportResultFor: NodeTransportBodyResultFor<typeof manifest> =
   denoCompiledTransportResultFor;
+const exactNodeTransportResultFor: NodeTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactDenoCompiledTransportResultFor;
 const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -3522,15 +3553,31 @@ runtimeSubpathDenoResult.id.toUpperCase();
 const runtimeSubpathBunTransportResultFor: RuntimeSubpathBunTransportBodyResultFor<
   typeof manifest
 > = nodeTransportResultFor;
+const exactRuntimeSubpathBunTransportResultFor: RuntimeSubpathBunTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactNodeTransportResultFor;
 const runtimeSubpathDenoTransportResultFor: RuntimeSubpathDenoTransportBodyResultFor<
   typeof manifest
 > = runtimeSubpathBunTransportResultFor;
+const exactRuntimeSubpathDenoTransportResultFor: RuntimeSubpathDenoTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactRuntimeSubpathBunTransportResultFor;
 const runtimeSubpathDenoCompiledTransportResultFor: RuntimeSubpathDenoCompiledTransportBodyResultFor<
   typeof manifest
 > = runtimeSubpathDenoTransportResultFor;
+const exactRuntimeSubpathDenoCompiledTransportResultFor: RuntimeSubpathDenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactRuntimeSubpathDenoTransportResultFor;
 const runtimeSubpathNodeTransportResultFor: RuntimeSubpathNodeTransportBodyResultFor<
   typeof manifest
 > = runtimeSubpathDenoCompiledTransportResultFor;
+const exactRuntimeSubpathNodeTransportResultFor: RuntimeSubpathNodeTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactRuntimeSubpathDenoCompiledTransportResultFor;
 if (
   !(runtimeSubpathNodeTransportResultFor instanceof Response) &&
   !Array.isArray(runtimeSubpathNodeTransportResultFor) &&
@@ -3538,6 +3585,13 @@ if (
   runtimeSubpathNodeTransportResultFor.ok
 ) {
   runtimeSubpathNodeTransportResultFor.data.id.toUpperCase();
+}
+if (
+  !(exactRuntimeSubpathNodeTransportResultFor instanceof Response) &&
+  'ok' in exactRuntimeSubpathNodeTransportResultFor &&
+  exactRuntimeSubpathNodeTransportResultFor.ok
+) {
+  exactRuntimeSubpathNodeTransportResultFor.data.name.toUpperCase();
 }
 const runtimeSubpathBunTransportHandler: RuntimeSubpathBunTransportBodyResultHandler<
   typeof manifestRouteRequest,

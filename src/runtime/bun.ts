@@ -11,8 +11,6 @@ import type {
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
-  RpcManifestBodyResult,
-  RpcManifestBodyResultFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -31,6 +29,7 @@ import {
   jsonContentHeaders,
   transportResultToResponse,
   type SerializedJsonEnvelope,
+  type TransportBodyResultFor,
 } from './response.js';
 
 export interface BunServeOptions<
@@ -57,9 +56,10 @@ export type BunServeOptionsFor<
 > = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
-export type BunTransportBodyResultFor<TManifest extends JoorManifest> =
-  | RpcManifestBodyResult<TManifest>
-  | SerializedJsonEnvelope;
+export type BunTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
 export type BunFetchHandler = JoorFetchHandler;
 export type BunRpcRequestHandler = JoorFetchHandler;
 export type BunTransportRequestHandler = JoorFetchHandler;
@@ -74,9 +74,7 @@ export type BunTransportBodyResultHandlerFor<TManifest extends JoorManifest> = <
 >(
   request: ContextRequestSource,
   body: TBody
-) => Promise<
-  RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope
->;
+) => Promise<BunTransportBodyResultFor<TManifest, TBody>>;
 
 const bodyReadFailure = (request: Request, error: object): Response => {
   const payloadTooLarge = isBodySizeLimitError(error);
