@@ -1671,8 +1671,32 @@ const nativeStreamRouteBodyResultFor: NativeStreamRouteBodyResultFor<typeof nati
 const nativeRouteStreamBodyResultFor: NativeRouteStreamBodyResultFor<typeof nativeRouteStreamBody> =
   nativeStreamRouteBodyResultFor;
 const nativeBodyResultFor: NativeBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
+const nativeGenericBodyResult: NativeBodyResult<typeof nativeUnaryBody> = nativeBodyResultFor;
+if (!(nativeGenericBodyResult instanceof Response) && nativeGenericBodyResult.ok) {
+  const nativeGenericBodyResultId: 'users.get' = nativeGenericBodyResult.id;
+  nativeGenericBodyResultId.toUpperCase();
+  // @ts-expect-error generated native body result aliases preserve exact route ids.
+  const wrongNativeGenericBodyResultId: 'posts.list' =
+    nativeGenericBodyResult.id;
+  wrongNativeGenericBodyResultId.toUpperCase();
+}
 const nativeCompiledBodyResult: NativeCompiledBodyResult = nativeBodyResult;
 const nativeCompiledBodyResultFor: NativeCompiledBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
+const nativeGenericCompiledBodyResult: NativeCompiledBodyResult<typeof nativeUnaryBody> =
+  nativeCompiledBodyResultFor;
+if (
+  !(nativeGenericCompiledBodyResult instanceof Response) &&
+  !('body' in nativeGenericCompiledBodyResult) &&
+  nativeGenericCompiledBodyResult.ok
+) {
+  const nativeGenericCompiledBodyResultId: 'users.get' =
+    nativeGenericCompiledBodyResult.id;
+  nativeGenericCompiledBodyResultId.toUpperCase();
+  // @ts-expect-error generated native compiled body aliases preserve exact route ids.
+  const wrongNativeGenericCompiledBodyResultId: 'posts.list' =
+    nativeGenericCompiledBodyResult.id;
+  wrongNativeGenericCompiledBodyResultId.toUpperCase();
+}
 const nativeUnaryRouteCompiledBodyResultFor: NativeUnaryRouteCompiledBodyResultFor<typeof nativeUnaryRouteBody> =
   nativeBodyResult;
 const nativeRouteUnaryCompiledBodyResultFor: NativeRouteUnaryCompiledBodyResultFor<typeof nativeRouteUnaryBody> =
@@ -1708,6 +1732,21 @@ const nativeRouteUnaryResultUnion: NativeRouteUnaryResultUnion =
   nativeUnaryRouteResultUnion;
 const nativeTransportResult: NativeTransportResult = nativeCompiledTransportResult;
 const nativeUnaryTransportResult: NativeTransportResultFor<typeof nativeUnaryBody> = nativeBodyResult;
+const nativeGenericTransportResult: NativeTransportResult<typeof nativeUnaryBody> =
+  nativeUnaryTransportResult;
+if (
+  !(nativeGenericTransportResult instanceof Response) &&
+  !('body' in nativeGenericTransportResult) &&
+  nativeGenericTransportResult.ok
+) {
+  const nativeGenericTransportResultId: 'users.get' =
+    nativeGenericTransportResult.id;
+  nativeGenericTransportResultId.toUpperCase();
+  // @ts-expect-error generated native transport aliases preserve exact route ids.
+  const wrongNativeGenericTransportResultId: 'posts.list' =
+    nativeGenericTransportResult.id;
+  wrongNativeGenericTransportResultId.toUpperCase();
+}
 const nativeRouteUnaryTransportResult: NativeRouteUnaryTransportResultFor<typeof nativeRouteUnaryBody> =
   nativeBodyResult;
 const nativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<typeof nativeRouteStreamBody> =

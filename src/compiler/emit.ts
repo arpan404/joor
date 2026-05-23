@@ -546,13 +546,13 @@ export type NativeRouteStreamMiddleware<TPlugins extends readonly JoorPlugin<obj
 export type NativeStreamRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody> =
   NativeRouteStreamMiddleware<TPlugins, TBody>;
 export type NativeHandlerOptionServices<TOptions> = HandlerOptionServices<TOptions>;
-export type NativeRouteBodyResult =
-  JoorManifestRouteBodyResult<NativeManifest>;
-export type NativeBodyResult = NativeRouteBodyResult;
-export type NativeRouteUnaryBodyResult = JoorManifestRouteUnaryBodyResult<NativeManifest>;
-export type NativeUnaryRouteBodyResult = NativeRouteUnaryBodyResult;
-export type NativeRouteStreamBodyResult = JoorManifestRouteStreamBodyResult<NativeManifest>;
-export type NativeStreamRouteBodyResult = NativeRouteStreamBodyResult;
+export type NativeRouteBodyResult<TBody extends NativeRouteBody = NativeRouteBody> =
+  JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
+export type NativeBodyResult<TBody extends NativeBody = NativeBody> = NativeRouteBodyResult<TBody>;
+export type NativeRouteUnaryBodyResult<TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody> = JoorManifestRouteUnaryBodyResultFor<NativeManifest, TBody>;
+export type NativeUnaryRouteBodyResult<TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody> = NativeRouteUnaryBodyResult<TBody>;
+export type NativeRouteStreamBodyResult<TBody extends NativeRouteStreamBody = NativeRouteStreamBody> = JoorManifestRouteStreamBodyResultFor<NativeManifest, TBody>;
+export type NativeStreamRouteBodyResult<TBody extends NativeRouteStreamBody = NativeRouteStreamBody> = NativeRouteStreamBodyResult<TBody>;
 export type NativeRouteBodyResultFor<TBody extends NativeRouteBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
 export type NativeBodyResultFor<TBody extends NativeBody> =
   NativeRouteBodyResultFor<TBody>;
@@ -564,7 +564,7 @@ export type NativeRouteStreamBodyResultFor<TBody extends NativeRouteStreamBody> 
   JoorManifestRouteStreamBodyResultFor<NativeManifest, TBody>;
 export type NativeStreamRouteBodyResultFor<TBody extends NativeRouteStreamBody> =
   NativeRouteStreamBodyResultFor<TBody>;
-export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
+export type NativeCompiledBodyResult<TBody extends NativeBody = NativeBody> = CompiledBodyResultFor<NativeManifest, TBody>;
 export type NativeCompiledBodyResultFor<TBody extends NativeBody> =
   CompiledBodyResultFor<NativeManifest, TBody>;
 export type NativeRouteUnaryCompiledBodyResultFor<TBody extends NativeRouteUnaryBody> =
@@ -575,9 +575,9 @@ export type NativeRouteStreamCompiledBodyResultFor<TBody extends NativeRouteStre
   CompiledRouteStreamBodyResultFor<NativeManifest, TBody>;
 export type NativeStreamRouteCompiledBodyResultFor<TBody extends NativeRouteStreamBody> =
   NativeRouteStreamCompiledBodyResultFor<TBody>;
-export type NativeCompiledTransportResult =
-  CompiledTransportBodyResultFor<NativeManifest>;
-export type NativeTransportResult = NativeCompiledTransportResult;
+export type NativeCompiledTransportResult<TBody extends NativeBody = NativeBody> =
+  CompiledTransportBodyResultFor<NativeManifest, TBody>;
+export type NativeTransportResult<TBody extends NativeBody = NativeBody> = NativeCompiledTransportResult<TBody>;
 export type NativeTransportResultFor<TBody extends NativeBody> =
   CompiledTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeRouteUnaryTransportResultFor<TBody extends NativeRouteUnaryBody> =
