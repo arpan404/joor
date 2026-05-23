@@ -119,6 +119,14 @@ Generated output:
   manifest.ts
   dispatcher.ts
   client.ts
+  fetch.ts
+  cloudflare.ts
+  next.ts
+  vercel.ts
+  netlify.ts
+  node.ts
+  bun.ts
+  deno.ts
   openapi.json
   ai-docs.json
 ```
@@ -129,6 +137,22 @@ Use the generated Fetch dispatcher:
 import { fetch } from './.joor/dispatcher.js';
 
 export default { fetch };
+```
+
+Or use a generated platform entrypoint directly:
+
+```ts
+// Cloudflare Workers
+export { default } from './.joor/cloudflare.js';
+
+// Next.js App Router
+export { GET, POST, OPTIONS } from './.joor/next.js';
+
+// Vercel Functions
+export { default } from './.joor/vercel.js';
+
+// Netlify Edge Functions
+export { default } from './.joor/netlify.js';
 ```
 
 Use the generated typed client:
@@ -189,6 +213,8 @@ npm run joor -- doctor
 
 Fetch is the base runtime. The package also exposes small adapters for Node, Express, Fastify, Elysia, Hono, Koa, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
 Custom adapters can reuse `joor/runtime/body` for JSON body limits and `joor/runtime/response` for serialized envelope and `Response` conversion helpers.
+
+Platform helpers expose typed deployment shapes when you do not use generated entrypoints: `createCloudflareWorker()` returns a Worker object, `createNextRouteHandlers()` returns App Router method exports, `createVercelFunction()` returns a fetch object, and `createNetlifyEdgeFunction()` returns a Netlify Edge handler.
 
 ## Next.js API Routes
 
