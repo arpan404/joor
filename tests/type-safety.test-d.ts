@@ -6487,98 +6487,98 @@ rootManifestCompiledBodyHandler(new Request('https://example.com/rpc'), [
   // @ts-expect-error manifest-aware compiled body handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
-const manifestCompiledUnaryTransportHandler: CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+const manifestCompiledRouteUnaryTransportHandler: CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
   if ('id' in body) body.input.valueOf();
   return compiledSerializedEnvelope;
 };
-const rootManifestCompiledUnaryTransportHandler: RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+const manifestCompiledUnaryTransportHandler: CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
-> = manifestCompiledUnaryTransportHandler;
-const manifestCompiledRouteUnaryTransportHandler: CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
+> = manifestCompiledRouteUnaryTransportHandler;
+const rootManifestCompiledUnaryTransportHandler: RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledUnaryTransportHandler;
 const rootManifestCompiledRouteUnaryTransportHandler: RootCompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteUnaryTransportHandler;
-const manifestCompiledStreamTransportHandler: CompiledRpcStreamRouteTransportBodyResultHandlerFor<
+const manifestCompiledRouteStreamTransportHandler: CompiledRpcRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
   body.input.userId.toUpperCase();
   return new Response();
 };
-const rootManifestCompiledStreamTransportHandler: RootCompiledRpcStreamRouteTransportBodyResultHandlerFor<
+const manifestCompiledStreamTransportHandler: CompiledRpcStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
-> = manifestCompiledStreamTransportHandler;
-const manifestCompiledRouteStreamTransportHandler: CompiledRpcRouteStreamTransportBodyResultHandlerFor<
+> = manifestCompiledRouteStreamTransportHandler;
+const rootManifestCompiledStreamTransportHandler: RootCompiledRpcStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledStreamTransportHandler;
 const rootManifestCompiledRouteStreamTransportHandler: RootCompiledRpcRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteStreamTransportHandler;
-const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
+const manifestCompiledRouteUnaryBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
   if ('id' in body) body.id.toUpperCase();
   return compiledSerializedEnvelope;
 };
-const rootManifestCompiledUnaryBodyHandler: RootCompiledRpcUnaryRouteBodyResultHandlerFor<
+const manifestCompiledUnaryBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
-> = manifestCompiledUnaryBodyHandler;
-const manifestCompiledRouteUnaryBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
+> = manifestCompiledRouteUnaryBodyHandler;
+const rootManifestCompiledUnaryBodyHandler: RootCompiledRpcUnaryRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledUnaryBodyHandler;
 const rootManifestCompiledRouteUnaryBodyHandler: RootCompiledRpcRouteUnaryBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteUnaryBodyHandler;
-const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
+const manifestCompiledRouteStreamBodyHandler: CompiledRpcRouteStreamBodyResultHandlerFor<
   typeof manifest
 > = async (_request, body) => {
   body.input.userId.toUpperCase();
   return new Response();
 };
-const rootManifestCompiledStreamBodyHandler: RootCompiledRpcStreamRouteBodyResultHandlerFor<
+const manifestCompiledStreamBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
-> = manifestCompiledStreamBodyHandler;
-const manifestCompiledRouteStreamBodyHandler: CompiledRpcRouteStreamBodyResultHandlerFor<
+> = manifestCompiledRouteStreamBodyHandler;
+const rootManifestCompiledStreamBodyHandler: RootCompiledRpcStreamRouteBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledStreamBodyHandler;
 const rootManifestCompiledRouteStreamBodyHandler: RootCompiledRpcRouteStreamBodyResultHandlerFor<
   typeof manifest
 > = manifestCompiledRouteStreamBodyHandler;
-const compiledUnaryRouteTransportResultFor: CompiledUnaryRouteTransportBodyResultFor<
-  typeof manifest,
-  typeof manifestUnaryRouteBody
-> = compiledSerializedEnvelope;
-const compiledStreamRouteTransportResultFor: CompiledStreamRouteTransportBodyResultFor<
-  typeof manifest,
-  typeof manifestStreamRouteBody
-> = new Response();
-const compiledUnaryRouteBodyResultFor: CompiledUnaryRouteBodyResultFor<
-  typeof manifest,
-  typeof manifestUnaryRouteBody
-> = compiledUnaryRouteTransportResultFor;
-const compiledStreamRouteBodyResultFor: CompiledStreamRouteBodyResultFor<
-  typeof manifest,
-  typeof manifestStreamRouteBody
-> = compiledStreamRouteTransportResultFor;
 const compiledRouteUnaryTransportResultFor: CompiledRouteUnaryTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
-> = compiledUnaryRouteTransportResultFor;
+> = compiledSerializedEnvelope;
 const compiledRouteStreamTransportResultFor: CompiledRouteStreamTransportBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
-> = compiledStreamRouteTransportResultFor;
+> = new Response();
 const compiledRouteUnaryBodyResultFor: CompiledRouteUnaryBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
-> = compiledUnaryRouteBodyResultFor;
+> = compiledRouteUnaryTransportResultFor;
 const compiledRouteStreamBodyResultFor: CompiledRouteStreamBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
-> = compiledStreamRouteBodyResultFor;
+> = compiledRouteStreamTransportResultFor;
+const compiledUnaryRouteTransportResultFor: CompiledUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledRouteUnaryTransportResultFor;
+const compiledStreamRouteTransportResultFor: CompiledStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledRouteStreamTransportResultFor;
+const compiledUnaryRouteBodyResultFor: CompiledUnaryRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = compiledRouteUnaryBodyResultFor;
+const compiledStreamRouteBodyResultFor: CompiledStreamRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = compiledRouteStreamBodyResultFor;
 const rootCompiledUnaryRouteTransportResultFor: RootCompiledUnaryRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody

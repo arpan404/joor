@@ -115,46 +115,46 @@ export type CompiledBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
-export type CompiledUnaryRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestUnaryRouteBody<TManifest> =
-    RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledTransportBodyResultFor<TManifest, TBody>;
-export type CompiledStreamRouteTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  _TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = Response | CompiledSerializedEnvelope;
 export type CompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
-export type CompiledRouteStreamTransportBodyResultFor<
-  TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
-    RpcManifestStreamRouteBody<TManifest>,
-> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
-export type CompiledUnaryRouteBodyResultFor<
+> = CompiledTransportBodyResultFor<TManifest, TBody>;
+export type CompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
-export type CompiledStreamRouteBodyResultFor<
+> = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+export type CompiledRouteStreamTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  _TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = Response | CompiledSerializedEnvelope;
+export type CompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
+> = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteUnaryBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledUnaryRouteBodyResultFor<TManifest, TBody>;
+> = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+export type CompiledUnaryRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = CompiledRouteUnaryBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = CompiledStreamRouteBodyResultFor<TManifest, TBody>;
+> = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
+export type CompiledStreamRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler = JoorFetchHandler;
 
 export type CompiledRpcTransportBodyResultHandler<
@@ -169,27 +169,27 @@ export type CompiledRpcTransportBodyResultHandlerFor<
   body: TBody
 ) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+export type CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
+export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = CompiledRpcRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
+export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>>;
+) => Promise<CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
+export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = CompiledRpcUnaryRouteTransportBodyResultHandlerFor<TManifest>;
-
-export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
-  TManifest extends JoorManifest,
-> = CompiledRpcStreamRouteTransportBodyResultHandlerFor<TManifest>;
+> = CompiledRpcRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
@@ -203,27 +203,27 @@ export type CompiledRpcBodyResultHandlerFor<TManifest extends JoorManifest> = <
   body: TBody
 ) => Promise<CompiledTransportBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcUnaryRouteBodyResultHandlerFor<
+export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestUnaryRouteBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<CompiledUnaryRouteBodyResultFor<TManifest, TBody>>;
+) => Promise<CompiledRouteUnaryBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcStreamRouteBodyResultHandlerFor<
+export type CompiledRpcUnaryRouteBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest>;
+
+export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<CompiledStreamRouteBodyResultFor<TManifest, TBody>>;
+) => Promise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
 
-export type CompiledRpcRouteUnaryBodyResultHandlerFor<
+export type CompiledRpcStreamRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = CompiledRpcUnaryRouteBodyResultHandlerFor<TManifest>;
-
-export type CompiledRpcRouteStreamBodyResultHandlerFor<
-  TManifest extends JoorManifest,
-> = CompiledRpcStreamRouteBodyResultHandlerFor<TManifest>;
+> = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
   hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;
