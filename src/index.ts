@@ -18,6 +18,14 @@ export {
   createAwsLambdaRestApiHandler,
 } from './runtime/aws-lambda.js';
 export {
+  BodySizeLimitError,
+  DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError,
+  normalizeMaxBodyBytes,
+  readJsonRequestBody,
+  readJsonRequestBodyWithLimit,
+} from './runtime/body.js';
+export {
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,

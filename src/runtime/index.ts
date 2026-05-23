@@ -1,4 +1,5 @@
 export * from './aws-lambda.js';
+export * from './body.js';
 export * from './bun.js';
 export * from './cloudflare.js';
 export * from './compiled.js';

@@ -9,6 +9,8 @@ import {
   createAwsLambdaHandler,
   createAwsLambdaHttpApiHandler,
   createAwsLambdaRestApiHandler,
+  BodySizeLimitError,
+  DEFAULT_MAX_BODY_BYTES,
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
@@ -45,11 +47,15 @@ import {
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
+  isBodySizeLimitError,
   isRpcEnvelopeArray,
   isJsonObject,
   isSerializedJsonEnvelope,
   listen,
+  normalizeMaxBodyBytes,
   parseJson,
+  readJsonRequestBody,
+  readJsonRequestBodyWithLimit,
   serveBun,
   serveDeno,
   t,
@@ -1166,6 +1172,8 @@ import type {
   CompiledUnaryRouteTransportBodyResultFor,
 } from '../src/runtime/compiled.js';
 import {
+  BodySizeLimitError as RuntimeSubpathBodySizeLimitError,
+  DEFAULT_MAX_BODY_BYTES as RUNTIME_SUBPATH_DEFAULT_MAX_BODY_BYTES,
   createAwsLambdaHandler as createRuntimeSubpathAwsLambdaHandler,
   createAwsLambdaHttpApiHandler as createRuntimeSubpathAwsLambdaHttpApiHandler,
   createAwsLambdaRestApiHandler as createRuntimeSubpathAwsLambdaRestApiHandler,
@@ -1187,8 +1195,12 @@ import {
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createVercelFetch as createRuntimeSubpathVercelFetch,
+  isBodySizeLimitError as isRuntimeSubpathBodySizeLimitError,
   isRpcEnvelopeArray as isRuntimeSubpathRpcEnvelopeArray,
   isSerializedJsonEnvelope as isRuntimeSubpathSerializedJsonEnvelope,
+  normalizeMaxBodyBytes as normalizeRuntimeSubpathMaxBodyBytes,
+  readJsonRequestBody as readRuntimeSubpathJsonRequestBody,
+  readJsonRequestBodyWithLimit as readRuntimeSubpathJsonRequestBodyWithLimit,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
@@ -1427,6 +1439,21 @@ import {
   type VercelUnaryRouteFetchOptionsFor as RuntimeSubpathVercelUnaryRouteFetchOptionsFor,
   type CloudflareWorkerOptionsFor as RuntimeSubpathCloudflareWorkerOptionsFor,
 } from '../src/runtime/index.js';
+import {
+  BodySizeLimitError as RuntimeBodySubpathBodySizeLimitError,
+  DEFAULT_MAX_BODY_BYTES as RUNTIME_BODY_SUBPATH_DEFAULT_MAX_BODY_BYTES,
+  isBodySizeLimitError as isRuntimeBodySubpathBodySizeLimitError,
+  normalizeMaxBodyBytes as normalizeRuntimeBodySubpathMaxBodyBytes,
+  readJsonRequestBody as readRuntimeBodySubpathJsonRequestBody,
+  readJsonRequestBodyWithLimit as readRuntimeBodySubpathJsonRequestBodyWithLimit,
+} from '../src/runtime/body.js';
+import {
+  isSerializedJsonEnvelope as isRuntimeResponseSubpathSerializedJsonEnvelope,
+  transportResultToResponse as runtimeResponseSubpathTransportResultToResponse,
+  type SerializedJsonEnvelope as RuntimeResponseSubpathSerializedJsonEnvelope,
+  type TransportBodyResult as RuntimeResponseSubpathTransportBodyResult,
+  type TransportBodyResultFor as RuntimeResponseSubpathTransportBodyResultFor,
+} from '../src/runtime/response.js';
 
 const usersPlugin = createPlugin({
   name: 'users',
@@ -7598,6 +7625,44 @@ manifestStandaloneDenoTransportHandler(createFetchRequestSourceForTypes(), [
   // @ts-expect-error manifest-aware standalone Deno handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+const maxBodyBytes: number = DEFAULT_MAX_BODY_BYTES;
+const runtimeSubpathMaxBodyBytes: number =
+  RUNTIME_SUBPATH_DEFAULT_MAX_BODY_BYTES;
+const runtimeBodySubpathMaxBodyBytes: number =
+  RUNTIME_BODY_SUBPATH_DEFAULT_MAX_BODY_BYTES;
+const bodyLimitError = new BodySizeLimitError(1024);
+const runtimeSubpathBodyLimitError = new RuntimeSubpathBodySizeLimitError(1024);
+const runtimeBodySubpathBodyLimitError =
+  new RuntimeBodySubpathBodySizeLimitError(1024);
+const normalizedMaxBodyBytes: number = normalizeMaxBodyBytes(maxBodyBytes);
+const normalizedRuntimeSubpathMaxBodyBytes: number =
+  normalizeRuntimeSubpathMaxBodyBytes(runtimeSubpathMaxBodyBytes);
+const normalizedRuntimeBodySubpathMaxBodyBytes: number =
+  normalizeRuntimeBodySubpathMaxBodyBytes(runtimeBodySubpathMaxBodyBytes);
+if (isBodySizeLimitError(bodyLimitError)) {
+  bodyLimitError.limit.toFixed();
+}
+if (isRuntimeSubpathBodySizeLimitError(runtimeSubpathBodyLimitError)) {
+  runtimeSubpathBodyLimitError.limit.toFixed();
+}
+if (isRuntimeBodySubpathBodySizeLimitError(runtimeBodySubpathBodyLimitError)) {
+  runtimeBodySubpathBodyLimitError.limit.toFixed();
+}
+readJsonRequestBody(new Request('https://example.com/rpc'));
+readJsonRequestBodyWithLimit(new Request('https://example.com/rpc'), 1024);
+readRuntimeSubpathJsonRequestBody(new Request('https://example.com/rpc'));
+readRuntimeSubpathJsonRequestBodyWithLimit(
+  new Request('https://example.com/rpc'),
+  1024
+);
+readRuntimeBodySubpathJsonRequestBody(new Request('https://example.com/rpc'));
+readRuntimeBodySubpathJsonRequestBodyWithLimit(
+  new Request('https://example.com/rpc'),
+  1024
+);
+normalizedMaxBodyBytes.toFixed();
+normalizedRuntimeSubpathMaxBodyBytes.toFixed();
+normalizedRuntimeBodySubpathMaxBodyBytes.toFixed();
 const compiledSerializedEnvelope: CompiledSerializedEnvelope = {
   body: '{"ok":true}',
   headers: { 'cache-control': 'private' },
@@ -7608,9 +7673,13 @@ const serializedJsonEnvelope: SerializedJsonEnvelope =
   compiledSerializedEnvelope;
 const runtimeSubpathSerializedJsonEnvelope: RuntimeSubpathSerializedJsonEnvelope =
   serializedJsonEnvelope;
+const runtimeResponseSubpathSerializedJsonEnvelope: RuntimeResponseSubpathSerializedJsonEnvelope =
+  runtimeSubpathSerializedJsonEnvelope;
 const transportBodyResult: TransportBodyResult = serializedJsonEnvelope;
 const runtimeSubpathTransportBodyResult: RuntimeSubpathTransportBodyResult =
   transportBodyResult;
+const runtimeResponseSubpathTransportBodyResult: RuntimeResponseSubpathTransportBodyResult =
+  runtimeSubpathTransportBodyResult;
 const transportBodyResultFor: TransportBodyResultFor<typeof manifest> =
   manifestRouteBodyResult;
 const exactTransportBodyResultFor: TransportBodyResultFor<
@@ -7621,6 +7690,13 @@ const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor
   typeof manifest
 > = transportBodyResultFor;
 const runtimeSubpathExactTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactTransportBodyResultFor;
+const runtimeResponseSubpathTransportBodyResultFor: RuntimeResponseSubpathTransportBodyResultFor<
+  typeof manifest
+> = transportBodyResultFor;
+const runtimeResponseSubpathExactTransportBodyResultFor: RuntimeResponseSubpathTransportBodyResultFor<
   typeof manifest,
   typeof manifestRouteRequest
 > = exactTransportBodyResultFor;
@@ -7645,9 +7721,34 @@ if (
 if (isRuntimeSubpathSerializedJsonEnvelope(runtimeSubpathTransportBodyResult)) {
   runtimeSubpathTransportBodyResult.body.toUpperCase();
 }
+if (
+  isRuntimeResponseSubpathSerializedJsonEnvelope(
+    runtimeResponseSubpathTransportBodyResult
+  )
+) {
+  runtimeResponseSubpathTransportBodyResult.body.toUpperCase();
+}
+if (
+  !(runtimeResponseSubpathTransportBodyResultFor instanceof Response) &&
+  !Array.isArray(runtimeResponseSubpathTransportBodyResultFor) &&
+  'ok' in runtimeResponseSubpathTransportBodyResultFor &&
+  runtimeResponseSubpathTransportBodyResultFor.ok
+) {
+  runtimeResponseSubpathTransportBodyResultFor.data.name.toUpperCase();
+}
+if (
+  !(runtimeResponseSubpathExactTransportBodyResultFor instanceof Response) &&
+  'ok' in runtimeResponseSubpathExactTransportBodyResultFor &&
+  runtimeResponseSubpathExactTransportBodyResultFor.ok
+) {
+  runtimeResponseSubpathExactTransportBodyResultFor.data.name.toUpperCase();
+}
 transportResultToResponse(manifestRouteEnvelope).headers.get('content-type');
 runtimeSubpathTransportResultToResponse(
   runtimeSubpathSerializedJsonEnvelope
+).headers.get('content-type');
+runtimeResponseSubpathTransportResultToResponse(
+  runtimeResponseSubpathSerializedJsonEnvelope
 ).headers.get('content-type');
 const rootCompiledSerializedEnvelope: RootCompiledSerializedEnvelope =
   compiledSerializedEnvelope;

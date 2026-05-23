@@ -64,6 +64,10 @@
       "types": "./dist/runtime/aws-lambda.d.ts",
       "import": "./dist/runtime/aws-lambda.js"
     },
+    "./runtime/body": {
+      "types": "./dist/runtime/body.d.ts",
+      "import": "./dist/runtime/body.js"
+    },
     "./runtime/elysia": {
       "types": "./dist/runtime/elysia.d.ts",
       "import": "./dist/runtime/elysia.js"
@@ -91,6 +95,10 @@
     "./runtime/node": {
       "types": "./dist/runtime/node.d.ts",
       "import": "./dist/runtime/node.js"
+    },
+    "./runtime/response": {
+      "types": "./dist/runtime/response.d.ts",
+      "import": "./dist/runtime/response.js"
     },
     "./runtime/bun": {
       "types": "./dist/runtime/bun.d.ts",

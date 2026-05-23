@@ -188,6 +188,7 @@ npm run joor -- doctor
 - `onError` for runtime diagnostics
 
 Fetch is the base runtime. The package also exposes small adapters for Node, Express, Fastify, Elysia, Hono, Koa, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
+Custom adapters can reuse `joor/runtime/body` for JSON body limits and `joor/runtime/response` for serialized envelope and `Response` conversion helpers.
 
 ## Next.js API Routes
 
