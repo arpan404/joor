@@ -1434,14 +1434,14 @@ const traceId = (request: ContextRequestSource, requested?: string): string => {
   return `trace-${traceCounter}`;
 };
 
-const rpcFailure = (
-  id: string,
+const rpcFailure = <TId extends string>(
+  id: TId,
   trace: string,
-  code: string,
+  code: RpcFrameworkErrorCode,
   message: string,
   status: number,
   details?: JsonValue
-): RpcFailure => ({
+): RpcFailure<TId> => ({
   ok: false,
   id,
   traceId: trace,
@@ -1593,13 +1593,13 @@ const prepareProcedures = (
   return procedures;
 };
 
-const rateLimitFailure = (
+const rateLimitFailure = <TId extends string>(
   prepared: PreparedProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   trace: string,
   runtime: RuntimeOptions
-): RpcFailure | undefined => {
+): RpcFailure<TId> | undefined => {
   if (!runtime.enforceRateLimit) return undefined;
   const limit = prepared.rateLimit;
   if (limit === undefined) return undefined;
@@ -1623,14 +1623,14 @@ const rateLimitFailure = (
   return undefined;
 };
 
-const executeUnary = async (
+const executeUnary = async <TId extends string>(
   prepared: PreparedProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   services: object,
   runtime: RuntimeOptions,
   state: ExecutionState
-): Promise<RpcEnvelope> => {
+): Promise<RpcEnvelope<JsonValue, TId>> => {
   const procedure = prepared.procedure;
   const trace = traceId(request, rpcRequest.traceId);
   const limited = rateLimitFailure(
@@ -1816,14 +1816,14 @@ const executeUnary = async (
   return { ok: true, id: rpcRequest.id, traceId: trace, data };
 };
 
-const executeTrustedUnary = async (
+const executeTrustedUnary = async <TId extends string>(
   prepared: PreparedProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   services: object,
   runtime: RuntimeOptions,
   state: ExecutionState
-): Promise<RpcEnvelope> => {
+): Promise<RpcEnvelope<JsonValue, TId>> => {
   const procedure = prepared.procedure;
   const trace = traceId(request, rpcRequest.traceId);
   const headerValue =
@@ -1918,9 +1918,9 @@ const executeTrustedUnary = async (
     : { ok: true, id: rpcRequest.id, traceId: trace, data, headers };
 };
 
-const executeStream = async (
+const executeStream = async <TId extends string>(
   prepared: PreparedProcedure,
-  rpcRequest: RpcRequest,
+  rpcRequest: RpcRequest<TId>,
   request: ContextRequestSource,
   services: object,
   runtime: RuntimeOptions,
