@@ -139,7 +139,7 @@ export const serializedEnvelopeToResponse = (
   result.responseHeaders !== undefined
     ? new Response(result.body, {
         status: 200,
-        headers: result.responseHeaders,
+        headers: createJsonHeaderRecord(result.responseHeaders),
       })
     : result.headers === undefined
       ? new Response(result.body, jsonOkResponseInit)

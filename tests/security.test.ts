@@ -3,7 +3,9 @@ import {
   createAuthPolicy,
   createJoorHandler,
   defineProcedure,
+  serializedEnvelopeToResponse,
   t,
+  transportResultToResponse,
 } from '../src/index.js';
 
 const postJson = (
@@ -343,6 +345,34 @@ describe('security defaults', () => {
     expect(response.headers.get('connection')).toBeNull();
     expect(response.headers.get('x-bad')).toBeNull();
     expect(response.headers.get('x-safe')).toBe('ok');
+  });
+
+  it('filters unsafe pre-serialized response headers', () => {
+    const serialized = {
+      body: '{"ok":true}',
+      responseHeaders: {
+        'cache-control': 'private',
+        'content-length': '999',
+        'content-type': 'text/plain',
+        connection: 'close',
+        'x-bad': 'bad\r\nx-injected: yes',
+        'x-safe': 'ok',
+      },
+    };
+
+    const direct = serializedEnvelopeToResponse(serialized);
+    const transport = transportResultToResponse(serialized);
+
+    for (const response of [direct, transport]) {
+      expect(response.headers.get('content-type')).toContain(
+        'application/json'
+      );
+      expect(response.headers.get('cache-control')).toBe('private');
+      expect(response.headers.get('content-length')).toBeNull();
+      expect(response.headers.get('connection')).toBeNull();
+      expect(response.headers.get('x-bad')).toBeNull();
+      expect(response.headers.get('x-safe')).toBe('ok');
+    }
   });
 
   it('does not emit wildcard CORS headers when origin is omitted', async () => {

@@ -1776,8 +1776,9 @@ const writeResult = async (
   cors?: Record<string, string>
 ): Promise<void> => {
   if (isSerializedEnvelope(result)) {
-    const headers =
-      result.responseHeaders ?? createJsonHeaderRecord(result.headers);
+    const headers = createJsonHeaderRecord(
+      result.responseHeaders ?? result.headers
+    );
     if (cors !== undefined) appendJsonStringHeaders(headers, cors);
     outgoing.writeHead(
       200,
@@ -2129,10 +2130,11 @@ const transportResultToResponse = (
 ): Response => {
   if (isSerializedEnvelope(result)) {
     if (result.responseHeaders !== undefined) {
-      appendJsonStringHeaders(result.responseHeaders, cors ?? {});
+      const headers = createJsonHeaderRecord(result.responseHeaders);
+      if (cors !== undefined) appendJsonStringHeaders(headers, cors);
       return new Response(result.body, {
         status: 200,
-        headers: result.responseHeaders,
+        headers,
       });
     }
     const headers = createJsonHeaderRecord(cors);

@@ -381,6 +381,10 @@ describe('compiler', () => {
       );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
+      const nodeSource = await readFile(join(outDir, 'node.ts'), 'utf8');
+      expect(nodeSource).toMatch(
+        /createJsonHeaderRecord\(\s*result\.responseHeaders \?\? result\.headers\s*\)/
+      );
       const postsListMatch = dispatcher.match(
         /const posts_list_execute_serialized: CompiledFixedDispatch<NativeServices> = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch<NativeServices> = async \(/
       );
