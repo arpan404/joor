@@ -932,8 +932,10 @@ interface RuntimeOptions {
   validateResponseHeaders: boolean;
 }
 
-export type RateLimitIdentityResolver = (
-  request: Request
+export type RateLimitIdentityResolver<
+  TRequest extends Request = Request,
+> = (
+  request: TRequest
 ) => string | undefined;
 
 export interface RateLimitRuntimeOptions {
@@ -968,7 +970,7 @@ export interface HandlerOptions<
   rateLimit?: {
     trustProxy?: boolean;
     maxEntries?: number;
-    identity?: RateLimitIdentityResolver;
+    identity?: RateLimitIdentityResolver<TRequest>;
   };
   validateInput?: boolean;
   validateHeaders?: boolean;
@@ -1052,7 +1054,11 @@ type HandlerOptionsArgsBody<
   TPlugins extends readonly JoorPlugin<object>[],
   TOptionsOrBody,
 > =
-  TOptionsOrBody extends HandlerOptions<TPlugins, infer TBody>
+  TOptionsOrBody extends HandlerOptions<
+    TPlugins,
+    infer TBody,
+    infer _TRequest
+  >
     ? [unknown] extends [TBody]
       ? RpcManifestBody<TManifest>
       : TBody & RpcManifestBody<TManifest>
@@ -1064,7 +1070,11 @@ type HandlerOptionsArgsOptions<
   TOptionsOrBody,
   TBody extends RpcManifestBody<TManifest>,
 > =
-  TOptionsOrBody extends HandlerOptions<TPlugins>
+  TOptionsOrBody extends HandlerOptions<
+    TPlugins,
+    unknown,
+    infer _TRequest
+  >
     ? TOptionsOrBody
     : HandlerOptions<TPlugins, TBody>;
 
@@ -1072,14 +1082,14 @@ export type HandlerOptionsArgsFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-  TOptionsOrBody extends HandlerOptions<TPlugins> | RpcManifestBody<TManifest> =
+  TOptionsOrBody =
     HandlerOptions<TPlugins, RpcManifestBody<TManifest>>,
   TBody extends RpcManifestBody<TManifest> = HandlerOptionsArgsBody<
     TManifest,
     TPlugins,
     TOptionsOrBody
   >,
-  TOptions extends HandlerOptions<TPlugins> = HandlerOptionsArgsOptions<
+  TOptions = HandlerOptionsArgsOptions<
     TManifest,
     TPlugins,
     TOptionsOrBody,
@@ -2420,11 +2430,11 @@ export const createRpcHandlerFor =
   ): RpcRequestHandler<TRequest> =>
     createRpcHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        TRequest
+        Request
       >
     ) as RpcRequestHandler<TRequest>;
 
@@ -2473,11 +2483,11 @@ export const createRpcBodyHandlerFor =
   ): RpcBodyHandler<TManifest, TRequest> =>
     createRpcBodyHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        TRequest
+        Request
       >,
       args[1] ?? true
     ) as RpcBodyHandler<TManifest, TRequest>;
@@ -2524,11 +2534,11 @@ export const createRpcBodyResultHandlerFor =
   ): RpcBodyResultHandler<TManifest, TRequest> =>
     createRpcBodyResultHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        TRequest
+        Request
       >,
       args[1] ?? true
     ) as RpcBodyResultHandler<TManifest, TRequest>;

@@ -135,10 +135,10 @@ export const createJoorHandlerFor =
   ): JoorFetchHandler<TRequest> =>
     createRpcHandler(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        TRequest
+        Request
       >
     ) as JoorFetchHandler<TRequest>;

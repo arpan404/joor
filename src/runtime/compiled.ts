@@ -29,7 +29,7 @@ import type {
   AuthPolicyResult,
   AuthPolicyResultLike,
 } from '../auth/policy.js';
-import { resolvePluginServices } from '../context/plugin.js';
+import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
 import type { JoorConfig, JoorConfigContext } from '../config.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
@@ -181,6 +181,11 @@ export type CompiledRpcRequestHandler<TRequest extends Request = Request> =
   JoorFetchHandler<TRequest>;
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
+type AnyJoorConfig = JoorConfig<
+  readonly JoorPlugin<object>[],
+  unknown,
+  never
+>;
 
 export type CompiledRpcTransportBodyResultHandler<
   TBody = JsonValue,
@@ -471,7 +476,7 @@ const requestPreflight = (
 };
 
 const compiledCorsHeaders = (
-  config: JoorConfig
+  config: Pick<JoorConfig, 'cors'>
 ): Record<string, string> | undefined =>
   config.cors === undefined ? undefined : (createCorsHeaderRecord(config.cors) ?? {});
 
@@ -999,7 +1004,7 @@ export const compiledNotFound = <TId extends string>(
 export function createCompiledRuntimeState(): CompiledRuntimeState<
   Record<string, never>
 >;
-export function createCompiledRuntimeState<const TConfig extends JoorConfig>(
+export function createCompiledRuntimeState<const TConfig extends AnyJoorConfig>(
   config: TConfig
 ): CompiledRuntimeState<JoorConfigContext<TConfig>>;
 export function createCompiledRuntimeState(
@@ -1052,7 +1057,7 @@ export function createCompiledRuntimeState(
 }
 
 export const createCompiledRpcTransportBodyResultHandler = <
-  const TConfig extends JoorConfig = Record<string, never>,
+  const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
@@ -1067,12 +1072,19 @@ export const createCompiledRpcTransportBodyResultHandler = <
     JoorConfigContext<TConfig>
   >;
   const extraHeaders = compiled.runtime.cors ?? compiledCorsHeaders(handlerConfig);
-  const middleware = handlerConfig.middleware ?? [];
+  const hooks = handlerConfig.hooks as
+    | HandlerHooks<JoorConfigContext<TConfig>, CompiledHookBody<TConfig>, Request>
+    | undefined;
+  const middleware = (handlerConfig.middleware ?? []) as readonly JoorMiddleware<
+    JoorConfigContext<TConfig>,
+    CompiledHookBody<TConfig>,
+    Request
+  >[];
   const hasBeforeHooks =
-    handlerConfig.hooks?.beforeRequest !== undefined ||
+    hooks?.beforeRequest !== undefined ||
     middleware.some((item) => item.beforeRequest !== undefined);
   const hasAfterHooks =
-    handlerConfig.hooks?.afterResponse !== undefined ||
+    hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
   const createHookContext = async (
     body?: CompiledHookBody<TConfig>
@@ -1088,10 +1100,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
     const context = await createHookContext(body);
-    const hookResult = await handlerConfig.hooks?.beforeRequest?.(
-      hookRequest,
-      context
-    );
+    const hookResult = await hooks?.beforeRequest?.(hookRequest, context);
     if (hookResult instanceof Response) return hookResult;
     for (const item of middleware) {
       const result = await item.beforeRequest?.(hookRequest, context);
@@ -1111,7 +1120,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
       const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
     }
-    const hookResult = await handlerConfig.hooks?.afterResponse?.(
+    const hookResult = await hooks?.afterResponse?.(
       next,
       hookRequest,
       context
@@ -1214,7 +1223,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
 };
 
 export const createCompiledRpcBodyResultHandler = <
-  const TConfig extends JoorConfig = Record<string, never>,
+  const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
@@ -1235,7 +1244,7 @@ export const createCompiledRpcBodyResultHandler = <
 };
 
 export const createCompiledRpcHandler = <
-  const TConfig extends JoorConfig = Record<string, never>,
+  const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
@@ -1288,7 +1297,7 @@ export const createCompiledRpcHandler = <
 
 export const createCompiledRpcHandlerFor =
   <TRequest extends Request>() =>
-  <const TConfig extends JoorConfig = Record<string, never>>(
+  <const TConfig extends AnyJoorConfig = Record<string, never>>(
     dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
     config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,
     unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>

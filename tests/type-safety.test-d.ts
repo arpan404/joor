@@ -6630,6 +6630,11 @@ const typedRequestHandlerOptions: HandlerOptionsFor<
   plugins: [usersPlugin] as const,
   hooks: typedRequestHandlerHooks,
   middleware: [typedRequestMiddleware],
+  rateLimit: {
+    identity(request) {
+      return request.requestId;
+    },
+  },
   onError(_error, request) {
     request.requestId.toUpperCase();
   },
@@ -10191,6 +10196,13 @@ compiledCreateProcedureCacheKey(
 );
 const rootRateLimitIdentity: RootRateLimitIdentityResolver = (request) =>
   request.headers.get('x-user') ?? undefined;
+const typedRootRateLimitIdentity: RootRateLimitIdentityResolver<HookAppRequest> =
+  (request) => request.requestId;
+typedRootRateLimitIdentity(hookAppRequest)?.toUpperCase();
+typedRootRateLimitIdentity(
+  // @ts-expect-error typed rate-limit identity resolvers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 const rpcSubpathRateLimitIdentity: RpcSubpathRateLimitIdentityResolver =
   rootRateLimitIdentity;
 const rootRateLimitOptions: RootRateLimitRuntimeOptions = {

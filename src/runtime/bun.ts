@@ -610,19 +610,22 @@ export const createBunRpcRequestHandlerFor =
     >;
     const handler = createRpcBodyResultHandler(
       manifest,
-      options as HandlerOptionsFor<
+      options as unknown as HandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        TRequest
+        Request
       >,
       false
     );
     return createBunTransportRequestHandler(
       (request, body) =>
-        handler(request.toRequest(), body as RpcManifestBody<TManifest>),
+        handler(
+          request.toRequest() as TRequest,
+          body as RpcManifestBody<TManifest>
+        ),
       options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
-      createRpcRequestPreflight(options),
+      createRpcRequestPreflight(options as unknown as HandlerOptions),
       createCorsHeaderRecord(options.cors)
     ) as BunRpcRequestHandler<TRequest>;
   };
