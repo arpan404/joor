@@ -382,6 +382,9 @@ import {
   type ListenOptionsArgs,
   type ListenOptionsFor,
   type ListenOptions,
+  type NodeListenOptions,
+  type NodeListenOptionsArgs,
+  type NodeListenOptionsFor,
   type NetlifyFetchHandler,
   type NetlifyFetchOptionsArgs,
   type NetlifyRouteStreamFetchOptionsArgs,
@@ -418,14 +421,20 @@ import {
   type NodeRpcRequestHandlerOptionsArgs,
   type NodeRpcRequestHandlerOptionsFor,
   type NodeServer,
+  type NodeRouteStreamListenOptionsArgs,
+  type NodeRouteStreamListenOptionsFor,
   type NodeRouteStreamRpcRequestHandlerOptionsFor,
   type NodeRouteStreamRpcRequestHandlerOptionsArgs,
   type NodeRouteStreamTransportBodyResultFor,
   type NodeRouteStreamTransportBodyResultHandlerFor,
+  type NodeRouteUnaryListenOptionsArgs,
+  type NodeRouteUnaryListenOptionsFor,
   type NodeRouteUnaryRpcRequestHandlerOptionsArgs,
   type NodeRouteUnaryTransportBodyResultFor,
   type NodeRouteUnaryTransportBodyResultHandlerFor,
   type NodeRouteUnaryRpcRequestHandlerOptionsFor,
+  type NodeStreamRouteListenOptionsArgs,
+  type NodeStreamRouteListenOptionsFor,
   type NodeStreamRouteRpcRequestHandlerOptionsFor,
   type NodeStreamRouteRpcRequestHandlerOptionsArgs,
   type NodeTransportBodyResult,
@@ -434,6 +443,8 @@ import {
   type NodeTransportBodyResultHandlerFor,
   type NodeStreamRouteTransportBodyResultFor,
   type NodeStreamRouteTransportBodyResultHandlerFor,
+  type NodeUnaryRouteListenOptionsArgs,
+  type NodeUnaryRouteListenOptionsFor,
   type NodeUnaryRouteRpcRequestHandlerOptionsArgs,
   type NodeUnaryRouteTransportBodyResultFor,
   type NodeUnaryRouteTransportBodyResultHandlerFor,
@@ -1218,6 +1229,17 @@ import {
   type NodeStreamRouteTransportBodyResultFor as RuntimeSubpathNodeStreamRouteTransportBodyResultFor,
   type NodeStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathNodeStreamRouteTransportBodyResultHandlerFor,
   type ListenOptionsArgs as RuntimeSubpathListenOptionsArgs,
+  type NodeListenOptions as RuntimeSubpathNodeListenOptions,
+  type NodeListenOptionsArgs as RuntimeSubpathNodeListenOptionsArgs,
+  type NodeListenOptionsFor as RuntimeSubpathNodeListenOptionsFor,
+  type NodeRouteStreamListenOptionsArgs as RuntimeSubpathNodeRouteStreamListenOptionsArgs,
+  type NodeRouteStreamListenOptionsFor as RuntimeSubpathNodeRouteStreamListenOptionsFor,
+  type NodeRouteUnaryListenOptionsArgs as RuntimeSubpathNodeRouteUnaryListenOptionsArgs,
+  type NodeRouteUnaryListenOptionsFor as RuntimeSubpathNodeRouteUnaryListenOptionsFor,
+  type NodeStreamRouteListenOptionsArgs as RuntimeSubpathNodeStreamRouteListenOptionsArgs,
+  type NodeStreamRouteListenOptionsFor as RuntimeSubpathNodeStreamRouteListenOptionsFor,
+  type NodeUnaryRouteListenOptionsArgs as RuntimeSubpathNodeUnaryRouteListenOptionsArgs,
+  type NodeUnaryRouteListenOptionsFor as RuntimeSubpathNodeUnaryRouteListenOptionsFor,
   type RouteStreamListenOptionsArgs as RuntimeSubpathRouteStreamListenOptionsArgs,
   type RouteStreamListenOptionsFor as RuntimeSubpathRouteStreamListenOptionsFor,
   type RouteUnaryListenOptionsArgs as RuntimeSubpathRouteUnaryListenOptionsArgs,
@@ -8953,22 +8975,45 @@ const typedListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const nodeListenOptionsBase: NodeListenOptions<readonly [typeof usersPlugin]> =
+  typedListenOptions;
+nodeListenOptionsBase.plugins?.[0]?.name.toUpperCase();
+const nodeListenOptions: NodeListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = typedListenOptions;
 const routeUnaryListenOptions: RouteUnaryListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestUnaryRouteHandlerOptions;
+const nodeRouteUnaryListenOptions: NodeRouteUnaryListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeUnaryListenOptions;
 const unaryRouteListenOptions: UnaryRouteListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeUnaryListenOptions;
+const nodeUnaryRouteListenOptions: NodeUnaryRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryListenOptions;
 const routeStreamListenOptions: RouteStreamListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const nodeRouteStreamListenOptions: NodeRouteStreamListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeStreamListenOptions;
 const streamRouteListenOptions: StreamRouteListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeStreamListenOptions;
+const nodeStreamRouteListenOptions: NodeStreamRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamListenOptions;
 const nodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9005,6 +9050,29 @@ const runtimeSubpathRouteStreamListenOptions: RuntimeSubpathRouteStreamListenOpt
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeStreamListenOptions;
+const runtimeSubpathNodeListenOptionsBase: RuntimeSubpathNodeListenOptions<
+  readonly [typeof usersPlugin]
+> = nodeListenOptionsBase;
+const runtimeSubpathNodeListenOptions: RuntimeSubpathNodeListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeListenOptions;
+const runtimeSubpathNodeUnaryRouteListenOptions: RuntimeSubpathNodeUnaryRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeUnaryRouteListenOptions;
+const runtimeSubpathNodeStreamRouteListenOptions: RuntimeSubpathNodeStreamRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeStreamRouteListenOptions;
+const runtimeSubpathNodeRouteUnaryListenOptions: RuntimeSubpathNodeRouteUnaryListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryListenOptions;
+const runtimeSubpathNodeRouteStreamListenOptions: RuntimeSubpathNodeRouteStreamListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamListenOptions;
 const runtimeSubpathNodeRpcRequestHandlerOptions: RuntimeSubpathNodeRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9049,22 +9117,42 @@ const listenOptionsArgs: ListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [typedListenOptions];
+const nodeListenOptionsArgs: NodeListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nodeListenOptions];
 const routeUnaryListenOptionsArgs: RouteUnaryListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [routeUnaryListenOptions];
+const nodeRouteUnaryListenOptionsArgs: NodeRouteUnaryListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nodeRouteUnaryListenOptions];
 const unaryRouteListenOptionsArgs: UnaryRouteListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeUnaryListenOptionsArgs;
+const nodeUnaryRouteListenOptionsArgs: NodeUnaryRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryListenOptionsArgs;
 const routeStreamListenOptionsArgs: RouteStreamListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [routeStreamListenOptions];
+const nodeRouteStreamListenOptionsArgs: NodeRouteStreamListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [nodeRouteStreamListenOptions];
 const streamRouteListenOptionsArgs: StreamRouteListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeStreamListenOptionsArgs;
+const nodeStreamRouteListenOptionsArgs: NodeStreamRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamListenOptionsArgs;
 const runtimeSubpathNodeRpcRequestHandlerOptionsArgs: RuntimeSubpathNodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -9105,7 +9193,44 @@ const runtimeSubpathRouteStreamListenOptionsArgs: RuntimeSubpathRouteStreamListe
   typeof manifest,
   readonly [typeof usersPlugin]
 > = routeStreamListenOptionsArgs;
+const runtimeSubpathNodeListenOptionsArgs: RuntimeSubpathNodeListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeListenOptionsArgs;
+const runtimeSubpathNodeUnaryRouteListenOptionsArgs: RuntimeSubpathNodeUnaryRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeUnaryRouteListenOptionsArgs;
+const runtimeSubpathNodeStreamRouteListenOptionsArgs: RuntimeSubpathNodeStreamRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeStreamRouteListenOptionsArgs;
+const runtimeSubpathNodeRouteUnaryListenOptionsArgs: RuntimeSubpathNodeRouteUnaryListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryListenOptionsArgs;
+const runtimeSubpathNodeRouteStreamListenOptionsArgs: RuntimeSubpathNodeRouteStreamListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamListenOptionsArgs;
 runtimeSubpathNodeRpcRequestHandlerOptionsArgs[1]?.toUpperCase();
+runtimeSubpathNodeListenOptionsArgs[0]?.hostname?.toUpperCase();
+runtimeSubpathNodeUnaryRouteListenOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNodeStreamRouteListenOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathNodeRouteUnaryListenOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNodeRouteStreamListenOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -9139,6 +9264,24 @@ runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathNodeRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNodeListenOptionsBase.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNodeListenOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathNodeUnaryRouteListenOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNodeStreamRouteListenOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathNodeRouteUnaryListenOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathNodeRouteStreamListenOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathListenOptionsArgs[0]?.hostname?.toUpperCase();
 runtimeSubpathUnaryRouteListenOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
