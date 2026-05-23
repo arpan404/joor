@@ -47,6 +47,9 @@ import type {
   RpcStreamRouteProcedure,
   RpcStreamRouteClientArgs,
   RpcStreamRouteClientHeaders,
+  RpcStreamRouteBody,
+  RpcStreamRouteBodyResult,
+  RpcStreamRouteBodyResultFor,
   RpcStreamRouteError,
   RpcStreamRouteErrorCode,
   RpcStreamRouteErrorDetails,
@@ -66,6 +69,9 @@ import type {
   RpcUnaryRouteProcedure,
   RpcUnaryRouteClientArgs,
   RpcUnaryRouteClientHeaders,
+  RpcUnaryRouteBody,
+  RpcUnaryRouteBodyResult,
+  RpcUnaryRouteBodyResultFor,
   RpcUnaryRouteEnvelope,
   RpcUnaryRouteEnvelopeUnion,
   RpcUnaryRouteError,
@@ -413,15 +419,34 @@ export type JoorManifestRouteBody<TManifest> = TManifest extends JoorManifest
   ? RpcManifestBody<TManifest>
   : RpcRouteBody<JoorManifestRoutes<TManifest>>;
 
+export type JoorManifestUnaryRouteBody<TManifest> = RpcUnaryRouteBody<
+  JoorManifestRoutes<TManifest>
+>;
+
+export type JoorManifestStreamRouteBody<TManifest> = RpcStreamRouteBody<
+  JoorManifestRoutes<TManifest>
+>;
+
 export type JoorManifestRouteBodyResult<TManifest> =
   TManifest extends JoorManifest
     ? RpcManifestBodyResult<TManifest>
     : RpcRouteBodyResult<JoorManifestRoutes<TManifest>>;
 
+export type JoorManifestUnaryRouteBodyResult<TManifest> =
+  RpcUnaryRouteBodyResult<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestStreamRouteBodyResult = RpcStreamRouteBodyResult;
+
 export type JoorManifestRouteBodyResultFor<TManifest, TBody> =
   TManifest extends JoorManifest
     ? RpcManifestBodyResultFor<TManifest, TBody>
     : RpcRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
+
+export type JoorManifestUnaryRouteBodyResultFor<TManifest, TBody> =
+  RpcUnaryRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
+
+export type JoorManifestStreamRouteBodyResultFor<TManifest, TBody> =
+  RpcStreamRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
 
 export type JoorManifestRouteUnaryProtocolRequest<
   TManifest,

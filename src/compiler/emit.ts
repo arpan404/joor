@@ -370,12 +370,30 @@ export type NativeProtocolBatchRequest<TRequests extends readonly NativeUnaryPro
 export type NativeBatchBody = NativeRouteBatchRequest;
 export type NativeRouteBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBody = NativeRouteBody;
+export type NativeUnaryRouteBody =
+  | NativeUnaryRouteProtocolRequestUnion
+  | NativeUnaryRouteBatchRequest<readonly NativeUnaryRouteProtocolRequestUnion[]>;
+export type NativeRouteUnaryBody = NativeUnaryRouteBody;
+export type NativeStreamRouteBody = NativeStreamRouteProtocolRequestUnion;
+export type NativeRouteStreamBody = NativeStreamRouteBody;
 export type NativeRouteBodyResult =
   JoorManifestRouteBodyResult<NativeManifest>;
 export type NativeBodyResult = NativeRouteBodyResult;
+export type NativeUnaryRouteBodyResult = NativeRouteBodyResult;
+export type NativeRouteUnaryBodyResult = NativeUnaryRouteBodyResult;
+export type NativeStreamRouteBodyResult = Response;
+export type NativeRouteStreamBodyResult = NativeStreamRouteBodyResult;
 export type NativeRouteBodyResultFor<TBody extends NativeRouteBody> = JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
 export type NativeBodyResultFor<TBody extends NativeBody> =
   NativeRouteBodyResultFor<TBody>;
+export type NativeUnaryRouteBodyResultFor<TBody extends NativeUnaryRouteBody> =
+  NativeRouteBodyResultFor<TBody>;
+export type NativeRouteUnaryBodyResultFor<TBody extends NativeUnaryRouteBody> =
+  NativeUnaryRouteBodyResultFor<TBody>;
+export type NativeStreamRouteBodyResultFor<TBody extends NativeStreamRouteBody> =
+  NativeRouteBodyResultFor<TBody>;
+export type NativeRouteStreamBodyResultFor<TBody extends NativeStreamRouteBody> =
+  NativeStreamRouteBodyResultFor<TBody>;
 export type NativeCompiledBodyResult = CompiledBodyResultFor<NativeManifest>;
 export type NativeCompiledBodyResultFor<TBody extends NativeBody> =
   CompiledBodyResultFor<NativeManifest, TBody>;
@@ -2336,8 +2354,22 @@ export type RouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolReq
 export type StreamRouteProtocolRequestUnion = RouteStreamProtocolRequestUnion;
 export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
 export type RouteBody = JoorManifestRouteBody<Manifest>;
+export type UnaryRouteBody =
+  | UnaryRouteProtocolRequestUnion
+  | RouteProtocolBatchRequest<readonly RouteUnaryProtocolRequestUnion[]>;
+export type RouteUnaryBody = UnaryRouteBody;
+export type StreamRouteBody = StreamRouteProtocolRequestUnion;
+export type RouteStreamBody = StreamRouteBody;
 export type RouteBodyResult = JoorManifestRouteBodyResult<Manifest>;
+export type UnaryRouteBodyResult = RouteBodyResult;
+export type RouteUnaryBodyResult = UnaryRouteBodyResult;
+export type StreamRouteBodyResult = Response;
+export type RouteStreamBodyResult = StreamRouteBodyResult;
 export type RouteBodyResultFor<TBody extends RouteBody> = JoorManifestRouteBodyResultFor<Manifest, TBody>;
+export type UnaryRouteBodyResultFor<TBody extends UnaryRouteBody> = RouteBodyResultFor<TBody>;
+export type RouteUnaryBodyResultFor<TBody extends UnaryRouteBody> = UnaryRouteBodyResultFor<TBody>;
+export type StreamRouteBodyResultFor<TBody extends StreamRouteBody> = RouteBodyResultFor<TBody>;
+export type RouteStreamBodyResultFor<TBody extends StreamRouteBody> = StreamRouteBodyResultFor<TBody>;
 export type RouteEnvelopeUnion = JoorManifestRouteEnvelopeUnion<Manifest>;
 export type UnaryRouteEnvelopeUnion = RouteEnvelopeUnion;
 export type RouteUnaryEnvelopeUnion = UnaryRouteEnvelopeUnion;

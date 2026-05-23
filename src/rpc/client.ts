@@ -389,10 +389,25 @@ export type RpcRouteBody<TRoutes extends RpcRouteMap> =
       readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[]
     >;
 
+export type RpcUnaryRouteBody<TRoutes extends RpcRouteMap> =
+  | RpcUnaryRouteProtocolRequestUnion<TRoutes>
+  | RpcUnaryRouteBatchRequest<
+      TRoutes,
+      readonly RpcUnaryRouteProtocolRequestUnion<TRoutes>[]
+    >;
+
+export type RpcStreamRouteBody<TRoutes extends RpcRouteMap> =
+  RpcStreamRouteProtocolRequestUnion<TRoutes>;
+
 export type RpcRouteBodyResult<TRoutes extends RpcRouteMap> =
   | RpcRouteEnvelopeUnion<TRoutes>
   | readonly RpcRouteEnvelopeUnion<TRoutes>[]
   | Response;
+
+export type RpcUnaryRouteBodyResult<TRoutes extends RpcRouteMap> =
+  RpcRouteBodyResult<TRoutes>;
+
+export type RpcStreamRouteBodyResult = Response;
 
 type RpcRouteProtocolBodyResultFor<
   TRoutes extends RpcRouteMap,
@@ -421,6 +436,16 @@ export type RpcRouteBodyResultFor<
     ? RpcRouteBatchResults<TRoutes, TBody> | Response
     : never
   : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
+
+export type RpcUnaryRouteBodyResultFor<
+  TRoutes extends RpcRouteMap,
+  TBody,
+> = RpcRouteBodyResultFor<TRoutes, TBody>;
+
+export type RpcStreamRouteBodyResultFor<
+  TRoutes extends RpcRouteMap,
+  TBody,
+> = RpcRouteBodyResultFor<TRoutes, TBody>;
 
 type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
   ? JsonValue

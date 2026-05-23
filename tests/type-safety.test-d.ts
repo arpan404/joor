@@ -145,6 +145,9 @@ import {
   type JoorManifestRouteProcedure,
   type JoorManifestStreamRouteClientArgs,
   type JoorManifestStreamRouteClientHeaders,
+  type JoorManifestStreamRouteBody,
+  type JoorManifestStreamRouteBodyResult,
+  type JoorManifestStreamRouteBodyResultFor,
   type JoorManifestStreamRouteErrorCode,
   type JoorManifestStreamRouteErrorDetails,
   type JoorManifestStreamRouteEvent,
@@ -175,6 +178,9 @@ import {
   type JoorManifestTransportClient,
   type JoorManifestUnaryRouteClientArgs,
   type JoorManifestUnaryRouteClientHeaders,
+  type JoorManifestUnaryRouteBody,
+  type JoorManifestUnaryRouteBodyResult,
+  type JoorManifestUnaryRouteBodyResultFor,
   type JoorManifestUnaryRouteEnvelope,
   type JoorManifestUnaryRouteEnvelopeUnion,
   type JoorManifestUnaryRouteErrorCode,
@@ -257,6 +263,9 @@ import {
   type RpcManifestRouteProcedure,
   type RpcManifestStreamRouteClientArgs,
   type RpcManifestStreamRouteClientHeaders,
+  type RpcManifestStreamRouteBody,
+  type RpcManifestStreamRouteBodyResult,
+  type RpcManifestStreamRouteBodyResultFor,
   type RpcManifestStreamRouteErrorCode,
   type RpcManifestStreamRouteErrorDetails,
   type RpcManifestStreamRouteEvent,
@@ -286,6 +295,9 @@ import {
   type RpcManifestStreamRouteId,
   type RpcManifestUnaryRouteClientArgs,
   type RpcManifestUnaryRouteClientHeaders,
+  type RpcManifestUnaryRouteBody,
+  type RpcManifestUnaryRouteBodyResult,
+  type RpcManifestUnaryRouteBodyResultFor,
   type RpcManifestUnaryRouteEnvelope,
   type RpcManifestUnaryRouteEnvelopeUnion,
   type RpcManifestUnaryRouteErrorCode,
@@ -347,6 +359,9 @@ import {
   type RpcStreamProcedure,
   type RpcStreamRouteClientArgs,
   type RpcStreamRouteClientHeaders,
+  type RpcStreamRouteBody,
+  type RpcStreamRouteBodyResult,
+  type RpcStreamRouteBodyResultFor,
   type RpcStreamRouteErrorCode,
   type RpcStreamRouteErrorDetails,
   type RpcStreamRouteEvent,
@@ -364,6 +379,9 @@ import {
   type RpcUnaryProcedure,
   type RpcUnaryRouteClientArgs,
   type RpcUnaryRouteClientHeaders,
+  type RpcUnaryRouteBody,
+  type RpcUnaryRouteBodyResult,
+  type RpcUnaryRouteBodyResultFor,
   type RpcUnaryRouteEnvelope,
   type RpcUnaryRouteEnvelopeUnion,
   type RpcUnaryRouteErrorCode,
@@ -2623,6 +2641,9 @@ const manifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequest<
   'users.get'
 > = manifestUnaryProtocolRequest;
 manifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+const manifestUnaryRouteBody: JoorManifestUnaryRouteBody<typeof manifest> =
+  manifestUnaryRouteProtocolRequest;
+manifestUnaryRouteBody.input.id.toUpperCase();
 const manifestUnaryProtocolRequestUnion: JoorManifestRouteUnaryProtocolRequestUnion<
   typeof manifest
 > = manifestUnaryProtocolRequest;
@@ -2641,6 +2662,9 @@ const manifestStreamRouteProtocolRequest: JoorManifestStreamRouteProtocolRequest
   'users.watch'
 > = manifestStreamProtocolRequest;
 manifestStreamRouteProtocolRequest.input.userId.toUpperCase();
+const manifestStreamRouteBody: JoorManifestStreamRouteBody<typeof manifest> =
+  manifestStreamRouteProtocolRequest;
+manifestStreamRouteBody.input.userId.toUpperCase();
 const manifestStreamProtocolRequestUnion: JoorManifestRouteStreamProtocolRequestUnion<
   typeof manifest
 > = manifestStreamProtocolRequest;
@@ -2667,6 +2691,9 @@ const manifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   typeof readonlyManifestBatchRequest
 > = [manifestRouteEnvelope];
+const manifestUnaryRouteBodyResult: JoorManifestUnaryRouteBodyResult<
+  typeof manifest
+> = manifestBatchBodyResultFor;
 if (!(manifestBatchBodyResultFor instanceof Response)) {
   const first = manifestBatchBodyResultFor[0];
   if (first.ok) first.data.name.toUpperCase();
@@ -2675,9 +2702,25 @@ const manifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   typeof manifestProtocolRequest
 > = manifestRouteEnvelope;
+const manifestUnaryRouteBodyResultFor: JoorManifestUnaryRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = manifestRouteEnvelope;
+const manifestStreamRouteBodyResult: JoorManifestStreamRouteBodyResult =
+  new Response();
+const manifestStreamRouteBodyResultFor: JoorManifestStreamRouteBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = manifestStreamRouteBodyResult;
+manifestUnaryRouteBodyResult.valueOf();
+manifestStreamRouteBodyResultFor.headers.get('content-type');
 if (!(manifestRouteBodyResultFor instanceof Response)) {
   if (manifestRouteBodyResultFor.ok)
     manifestRouteBodyResultFor.data.name.toUpperCase();
+}
+if (!(manifestUnaryRouteBodyResultFor instanceof Response)) {
+  if (manifestUnaryRouteBodyResultFor.ok)
+    manifestUnaryRouteBodyResultFor.data.name.toUpperCase();
 }
 const manifestSubpathProtocolRequest: JoorSubpathManifestRouteProtocolRequest<
   typeof manifestFromSubpath,
@@ -3144,6 +3187,32 @@ const publicManifestStreamRouteProtocolRequestUnion: RpcManifestStreamRouteProto
 publicManifestStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
 const publicManifestBody: RpcManifestBody<typeof manifest> =
   publicManifestProtocolRequest;
+const publicManifestUnaryRouteBody: RpcManifestUnaryRouteBody<typeof manifest> =
+  publicManifestUnaryRouteProtocolRequest;
+publicManifestUnaryRouteBody.input.id.toUpperCase();
+const publicManifestStreamRouteBody: RpcManifestStreamRouteBody<
+  typeof manifest
+> = publicManifestStreamRouteProtocolRequest;
+publicManifestStreamRouteBody.input.userId.toUpperCase();
+const publicManifestUnaryRouteBodyResult: RpcManifestUnaryRouteBodyResult<
+  typeof manifest
+> = manifestRouteEnvelope;
+const publicManifestUnaryRouteBodyResultFor: RpcManifestUnaryRouteBodyResultFor<
+  typeof manifest,
+  typeof publicManifestUnaryRouteBody
+> = manifestRouteEnvelope;
+const publicManifestStreamRouteBodyResult: RpcManifestStreamRouteBodyResult =
+  new Response();
+const publicManifestStreamRouteBodyResultFor: RpcManifestStreamRouteBodyResultFor<
+  typeof manifest,
+  typeof publicManifestStreamRouteBody
+> = publicManifestStreamRouteBodyResult;
+publicManifestUnaryRouteBodyResult.valueOf();
+publicManifestStreamRouteBodyResultFor.headers.get('content-type');
+if (!(publicManifestUnaryRouteBodyResultFor instanceof Response)) {
+  if (publicManifestUnaryRouteBodyResultFor.ok)
+    publicManifestUnaryRouteBodyResultFor.data.name.toUpperCase();
+}
 const publicManifestBatchBody: RpcManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
@@ -4997,6 +5066,9 @@ const streamRouteProtocolRequestAlias: RpcStreamRouteProtocolRequest<
   'users.watch'
 > = streamOnlyProtocolRequest;
 streamRouteProtocolRequestAlias.input.userId.toUpperCase();
+const streamRouteBodyAlias: RpcStreamRouteBody<Routes> =
+  streamRouteProtocolRequestAlias;
+streamRouteBodyAlias.input.userId.toUpperCase();
 const streamProtocolRequestUnion: RpcRouteStreamProtocolRequestUnion<Routes> =
   streamOnlyProtocolRequest;
 streamProtocolRequestUnion.input.userId.toUpperCase();
@@ -5011,6 +5083,9 @@ const unaryRouteProtocolRequestAlias: RpcUnaryRouteProtocolRequest<
   'users.get'
 > = unaryProtocolRequest;
 unaryRouteProtocolRequestAlias.input.id.toUpperCase();
+const unaryRouteBodyAlias: RpcUnaryRouteBody<Routes> =
+  unaryRouteProtocolRequestAlias;
+unaryRouteBodyAlias.input.id.toUpperCase();
 const unaryProtocolRequestUnion: RpcRouteUnaryProtocolRequestUnion<Routes> =
   unaryProtocolRequest;
 unaryProtocolRequestUnion.id.toUpperCase();
@@ -5029,6 +5104,9 @@ const unaryRouteBatchRequestAlias: RpcUnaryRouteBatchRequest<
 unaryRouteBatchRequestAlias[0].input.id.toUpperCase();
 const routeBatchBody: RpcRouteBody<Routes> = routeBatchRequest;
 routeBatchBody.length.toFixed();
+const unaryRouteBatchBodyAlias: RpcUnaryRouteBody<Routes> =
+  unaryRouteBatchRequestAlias;
+unaryRouteBatchBodyAlias.length.toFixed();
 const readonlyRouteBatchBody: RpcRouteBody<Routes> = [
   routeProtocolRequest,
 ] as const;
@@ -5322,12 +5400,27 @@ rpcSubpathRouteResult.id.toUpperCase();
 routeUnaryResult.id.toUpperCase();
 rpcSubpathRouteResultUnion.id.toUpperCase();
 const routeBodyResult: RpcRouteBodyResult<Routes> = routeEnvelopeUnion;
+const unaryRouteBodyResult: RpcUnaryRouteBodyResult<Routes> = routeBodyResult;
+const streamRouteBodyResult: RpcStreamRouteBodyResult = new Response();
 const routeBodyResultFor: RpcRouteBodyResultFor<
   Routes,
   typeof routeProtocolRequest
 > = routeEnvelopeUnion;
+const unaryRouteBodyResultFor: RpcUnaryRouteBodyResultFor<
+  Routes,
+  typeof unaryRouteBodyAlias
+> = routeEnvelopeUnion;
+const streamRouteBodyResultFor: RpcStreamRouteBodyResultFor<
+  Routes,
+  typeof streamRouteBodyAlias
+> = streamRouteBodyResult;
+unaryRouteBodyResult.valueOf();
+streamRouteBodyResultFor.headers.get('content-type');
 if (!(routeBodyResultFor instanceof Response)) {
   routeBodyResultFor.data.name.toUpperCase();
+}
+if (!(unaryRouteBodyResultFor instanceof Response)) {
+  unaryRouteBodyResultFor.data.name.toUpperCase();
 }
 type InvalidRouteProtocolBody = {
   id: 'users.get';

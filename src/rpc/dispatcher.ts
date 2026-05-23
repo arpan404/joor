@@ -469,12 +469,27 @@ export type RpcManifestBody<TManifest extends RpcManifest> =
       readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[]
     >;
 
+export type RpcManifestUnaryRouteBody<TManifest extends RpcManifest> =
+  | RpcManifestUnaryRouteProtocolRequestUnion<TManifest>
+  | RpcManifestUnaryRouteBatchRequest<
+      TManifest,
+      readonly RpcManifestUnaryRouteProtocolRequestUnion<TManifest>[]
+    >;
+
+export type RpcManifestStreamRouteBody<TManifest extends RpcManifest> =
+  RpcManifestStreamRouteProtocolRequestUnion<TManifest>;
+
 export type RpcBodyResult = RpcEnvelope | readonly RpcEnvelope[] | Response;
 
 export type RpcManifestBodyResult<TManifest extends RpcManifest> =
   | RpcManifestRouteEnvelopeUnion<TManifest>
   | readonly RpcManifestRouteEnvelopeUnion<TManifest>[]
   | Response;
+
+export type RpcManifestUnaryRouteBodyResult<TManifest extends RpcManifest> =
+  RpcManifestBodyResult<TManifest>;
+
+export type RpcManifestStreamRouteBodyResult = Response;
 
 type RpcManifestOptionalHeaderKeys<THeaders extends object> = keyof {
   [TKey in keyof THeaders as undefined extends THeaders[TKey]
@@ -632,6 +647,16 @@ export type RpcManifestBodyResultFor<
     ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
     : never
   : RpcManifestProtocolBodyResultFor<TManifest, TBody>;
+
+export type RpcManifestUnaryRouteBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody,
+> = RpcManifestBodyResultFor<TManifest, TBody>;
+
+export type RpcManifestStreamRouteBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody,
+> = RpcManifestBodyResultFor<TManifest, TBody>;
 
 export type RpcBodyResultHandler<TManifest extends RpcManifest> = <
   const TBody extends RpcManifestBody<TManifest>,
