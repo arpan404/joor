@@ -10983,6 +10983,12 @@ const exactNextRouteHandlersOptions: NextRouteHandlersOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const requestTypedNextRouteHandlersOptions: NextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 const nextHandlerOptions: NextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -10991,6 +10997,12 @@ const nextRouteUnaryHandlersOptions: NextRouteUnaryHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestUnaryRouteHandlerOptions;
+const requestTypedNextRouteUnaryHandlersOptions: NextRouteUnaryHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteHandlersOptions;
 const nextUnaryRouteHandlersOptions: NextUnaryRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11007,6 +11019,12 @@ const nextRouteUnaryHandlerOptions: NextRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteUnaryHandlersOptions;
+const requestTypedNextRouteUnaryHandlerOptions: NextRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteUnaryHandlersOptions;
 const nextUnaryHandlerOptions: NextUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11033,8 +11051,18 @@ const exactRuntimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandle
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactNextRouteHandlersOptions;
+const requestTypedRuntimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteHandlersOptions;
 exactRuntimeSubpathNextRouteHandlersOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+requestTypedRuntimeSubpathNextRouteHandlersOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   exactManifestHandlerHookContext
 );
 const runtimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
@@ -11069,6 +11097,12 @@ const runtimeSubpathNextRouteUnaryHandlerOptions: RuntimeSubpathNextRouteUnaryHa
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteUnaryHandlerOptions;
+const requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions: RuntimeSubpathNextRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteUnaryHandlerOptions;
 const runtimeSubpathNextRouteStreamHandlerOptions: RuntimeSubpathNextRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11106,6 +11140,10 @@ runtimeSubpathNextRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 runtimeSubpathNextRouteStreamHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
@@ -11118,6 +11156,12 @@ const nextRouteHandlersOptionsArgs: NextRouteHandlersOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteHandlersOptions];
+const requestTypedNextRouteHandlersOptionsArgs: NextRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedNextRouteHandlersOptions];
 const nextHandlerOptionsArgs: NextHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11142,6 +11186,12 @@ const nextRouteUnaryHandlerOptionsArgs: NextRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nextRouteUnaryHandlerOptions];
+const requestTypedNextRouteUnaryHandlerOptionsArgs: NextRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedNextRouteUnaryHandlerOptions];
 const nextUnaryHandlerOptionsArgs: NextUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11158,6 +11208,12 @@ const runtimeSubpathNextRouteHandlersOptionsArgs: RuntimeSubpathNextRouteHandler
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteHandlersOptionsArgs;
+const requestTypedRuntimeSubpathNextRouteHandlersOptionsArgs: RuntimeSubpathNextRouteHandlersOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteHandlersOptionsArgs;
 const runtimeSubpathNextHandlerOptionsArgs: RuntimeSubpathNextHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11190,6 +11246,12 @@ const runtimeSubpathNextRouteUnaryHandlerOptionsArgs: RuntimeSubpathNextRouteUna
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteUnaryHandlerOptionsArgs;
+const requestTypedRuntimeSubpathNextRouteUnaryHandlerOptionsArgs: RuntimeSubpathNextRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteUnaryHandlerOptionsArgs;
 const runtimeSubpathNextRouteStreamHandlerOptionsArgs: RuntimeSubpathNextRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11223,6 +11285,14 @@ runtimeSubpathNextStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 runtimeSubpathNextRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathNextRouteHandlersOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedRuntimeSubpathNextRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 runtimeSubpathNextRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -11644,6 +11714,10 @@ const createRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
 >();
 const nextRequestTypedHandlers: NextRouteHandlers<never, AppFetchRequest> =
   createRequestTypedNextRouteHandlers(manifest, handlerOptions);
+const hookTypedNextRouteHandlers = createNextRouteHandlersFor<
+  never,
+  HookAppRequest
+>()(manifest, typedRequestHandlerOptions);
 const createContextRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -11664,6 +11738,11 @@ const createRequestTypedNextHandler = createNextHandlerFor<
 >();
 const nextRequestTypedHandler: NextHandler<never, AppFetchRequest> =
   createRequestTypedNextHandler(manifest, handlerOptions);
+const hookTypedNextHandler =
+  createNextHandlerFor<never, HookAppRequest>()(
+    manifest,
+    typedRequestHandlerOptions
+  );
 const createContextRequestTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -11747,6 +11826,8 @@ nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
 });
 nextRequestTypedHandlers.GET(appFetchRequest);
 nextRequestTypedHandler.POST(appFetchRequest);
+hookTypedNextRouteHandlers.GET(hookAppRequest);
+hookTypedNextHandler.POST(hookAppRequest);
 nextContextRequestTypedHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -11783,6 +11864,10 @@ runtimeSubpathContextRequestTypedNextHandler.POST(
 );
 // @ts-expect-error typed Next handlers require the configured request subtype.
 nextRequestTypedHandlers.GET(new Request('https://example.com/rpc'));
+// @ts-expect-error hook-typed Next handlers require the configured request subtype.
+hookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+// @ts-expect-error hook-typed Next handler aliases require the configured request subtype.
+hookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 nextContextRequestTypedHandlers.GET(
   // @ts-expect-error context-aware typed Next handlers require the configured request subtype.
   new Request('https://example.com/rpc'),
