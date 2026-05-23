@@ -34,7 +34,8 @@ export type NetlifyFetchOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type NetlifyRouteUnaryFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -73,7 +74,8 @@ export type NetlifyFetchOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type NetlifyRouteUnaryFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -131,7 +133,12 @@ export const createNetlifyFetchFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: NetlifyFetchOptionsArgs<TManifest, TPlugins>
+    ...args: NetlifyFetchOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): NetlifyFetchHandler<TRequest> =>
     createJoorHandlerFor<TRequest>()(
       manifest,
@@ -163,7 +170,12 @@ export const createNetlifyEdgeFunctionFor =
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
     manifest: TManifest,
-    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+    ...args: HandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): NetlifyEdgeFetchHandler<TContext, TRequest> => {
     const fetch = createJoorHandler(
       manifest,
