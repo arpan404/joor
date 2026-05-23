@@ -225,3 +225,19 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
     ),
   };
 }
+
+export const createCloudflareWorkerFor =
+  <TEnv = unknown, TContext = unknown>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ): CloudflareWorker<TEnv, TContext> =>
+    ({
+      fetch: createCloudflareFetch(
+        manifest,
+        (args[0] ?? {}) as HandlerOptionsFor<TManifest>
+      ),
+    }) as CloudflareWorker<TEnv, TContext>;

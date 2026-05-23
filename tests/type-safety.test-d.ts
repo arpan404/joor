@@ -22,6 +22,7 @@ import {
   createBunTransportRequestHandlerWithPath,
   createCloudflareFetch,
   createCloudflareWorker,
+  createCloudflareWorkerFor,
   createDenoFetch,
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
@@ -1374,6 +1375,7 @@ import {
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
+  createCloudflareWorkerFor as createRuntimeSubpathCloudflareWorkerFor,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
   createStandaloneDenoTransportRequestHandler as createRuntimeSubpathStandaloneDenoTransportRequestHandler,
@@ -1497,6 +1499,7 @@ import {
   type CloudflareUnaryRouteWorkerOptionsArgs as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsArgs,
   type CloudflareUnaryRouteWorkerOptionsFor as RuntimeSubpathCloudflareUnaryRouteWorkerOptionsFor,
   type CloudflareWorkerFetchHandler as RuntimeSubpathCloudflareWorkerFetchHandler,
+  type CloudflareWorker as RuntimeSubpathCloudflareWorker,
   type CloudflareWorkerOptionsArgs as RuntimeSubpathCloudflareWorkerOptionsArgs,
   type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
   type DenoCompiledTransportBodyResult as RuntimeSubpathDenoCompiledTransportBodyResult,
@@ -10908,7 +10911,42 @@ const typedCloudflareWorker: CloudflareWorker<
 > = {
   fetch: runtimeSubpathCloudflareWorkerFetch,
 };
+const createTypedCloudflareWorker = createCloudflareWorkerFor<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+>();
+const typedCloudflareWorkerFromFactory: CloudflareWorker<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+> = createTypedCloudflareWorker(manifest, handlerOptions);
+const createRuntimeSubpathTypedCloudflareWorker =
+  createRuntimeSubpathCloudflareWorkerFor<
+    CloudflareEnvForTypes,
+    CloudflareContextForTypes
+  >();
+const runtimeSubpathTypedCloudflareWorker: RuntimeSubpathCloudflareWorker<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes
+> = createRuntimeSubpathTypedCloudflareWorker(manifest, handlerOptions);
 typedCloudflareWorker.fetch(
+  new Request('https://example.com/rpc'),
+  { accountId: 'acct_1' },
+  {
+    waitUntil(promise) {
+      promise.then(Boolean);
+    },
+  }
+);
+typedCloudflareWorkerFromFactory.fetch(
+  new Request('https://example.com/rpc'),
+  { accountId: 'acct_1' },
+  {
+    waitUntil(promise) {
+      promise.then(Boolean);
+    },
+  }
+);
+runtimeSubpathTypedCloudflareWorker.fetch(
   new Request('https://example.com/rpc'),
   { accountId: 'acct_1' },
   {
@@ -11189,6 +11227,8 @@ runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
 createCloudflareFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching Cloudflare adapter plugins.
 createCloudflareWorker(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Cloudflare adapter plugins.
+createTypedCloudflareWorker(manifest);
 const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
 const typedNetlifyFetch: NetlifyFetchHandler = netlifyFetch;
 const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =

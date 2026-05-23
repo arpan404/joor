@@ -67,6 +67,7 @@ export {
 export {
   createCloudflareFetch,
   createCloudflareWorker,
+  createCloudflareWorkerFor,
 } from './runtime/cloudflare.js';
 export {
   createDenoFetch,

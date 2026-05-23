@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import config from './fixtures/basic-app/joor.config.js';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
-import { createCloudflareWorker } from '../src/runtime/cloudflare.js';
+import {
+  createCloudflareWorker,
+  createCloudflareWorkerFor,
+} from '../src/runtime/cloudflare.js';
 import { createNetlifyEdgeFunction } from '../src/runtime/netlify.js';
 import { createVercelFunction } from '../src/runtime/vercel.js';
 
@@ -29,6 +32,29 @@ describe('platform runtime helpers', () => {
   it('dispatches through a Cloudflare Worker export object', async () => {
     const worker = createCloudflareWorker(manifest, config);
     await expectUserResponse(await worker.fetch(createRpcRequest()));
+  });
+
+  it('dispatches through a typed Cloudflare Worker export object', async () => {
+    interface Env {
+      accountId: string;
+    }
+    interface ExecutionContext {
+      waitUntil(promise: Promise<unknown>): void;
+    }
+    const createWorker = createCloudflareWorkerFor<Env, ExecutionContext>();
+    const worker = createWorker(manifest, config);
+
+    await expectUserResponse(
+      await worker.fetch(
+        createRpcRequest(),
+        { accountId: 'acct_1' },
+        {
+          waitUntil(promise) {
+            promise.then(Boolean);
+          },
+        }
+      )
+    );
   });
 
   it('dispatches through a Vercel fetch object', async () => {

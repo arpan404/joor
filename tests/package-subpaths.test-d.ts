@@ -2,6 +2,7 @@ import {
   createPlugin,
   createRuntimeContext as createRootRuntimeContext,
   createCloudflareWorker as createRootCloudflareWorker,
+  createCloudflareWorkerFor as createRootCloudflareWorkerFor,
   createCorsHeaderRecord as createRootCorsHeaderRecord,
   defineManifest,
   defineProcedure,
@@ -38,6 +39,7 @@ import { createBunFetch } from 'joor/runtime/bun';
 import {
   createCloudflareFetch,
   createCloudflareWorker,
+  createCloudflareWorkerFor,
 } from 'joor/runtime/cloudflare';
 import {
   compiledCreateProcedureCacheKey,
@@ -236,7 +238,9 @@ const packageSubpathValues = [
   createBunFetch,
   createCloudflareFetch,
   createCloudflareWorker,
+  createCloudflareWorkerFor,
   createRootCloudflareWorker,
+  createRootCloudflareWorkerFor,
   createOpenApiDocument,
   compiledCreateProcedureCacheKey,
   createCorsHeaderRecord,
