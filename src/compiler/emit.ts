@@ -132,6 +132,7 @@ const emitProfileDispatcher = async (
     ...(usesCache ? ['compiledReadCache', 'compiledWriteCache'] : []),
     ...(hasCompiledProcedures ? ['type CompiledFixedDispatch'] : []),
     'type CompiledFixedUnaryDispatch',
+    'type CompiledRuntimeState',
     'type CompiledSerializedEnvelope',
     ...(hasGenericFallback ? ['executeCompiledProcedure'] : []),
     'type CompiledDispatch',
@@ -198,6 +199,9 @@ ${nativeManifestEntries}
 };
 
 export type NativeServices = ${nativeServicesType};
+export type NativeRuntimeState = CompiledRuntimeState<NativeServices>;
+export type NativeDispatch = CompiledDispatch<NativeServices>;
+export type NativeUnaryDispatch = CompiledFixedUnaryDispatch<NativeServices>;
 export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
 export type NativeUnaryRouteId = JoorManifestUnaryRouteId<NativeManifest>;
 export type NativeStreamRouteId = JoorManifestStreamRouteId<NativeManifest>;
@@ -244,10 +248,9 @@ export type NativeTransportRequest = ContextRequestSource;`;
   const hasBodyMode = modes.includes('body');
   const hasSerializedMode = modes.includes('serialized');
   const hasResponseMode = modes.includes('response');
-  const compiledDispatchType = 'CompiledDispatch<NativeServices>';
+  const compiledDispatchType = 'NativeDispatch';
   const nativeDispatchBodyType = 'NativeProtocolRequest';
-  const compiledFixedUnaryDispatchType =
-    'CompiledFixedUnaryDispatch<NativeServices>';
+  const compiledFixedUnaryDispatchType = 'NativeUnaryDispatch';
   const dispatchCaseForMode = (
     mode: 'body' | 'serialized' | 'response'
   ): string =>
@@ -432,9 +435,9 @@ ${serializedUnaryDispatch}
 ${responseUnaryDispatch}
 
 const dispatch: ${compiledDispatchType} = ${transportDispatchName};
-export const nativeUnaryDispatch = ${nativeUnaryDispatchName};
-export const nativeResponseUnaryDispatch = ${nativeResponseUnaryDispatchName};
-export const nativeRuntime = createCompiledRuntimeState(${configValue});
+export const nativeUnaryDispatch: NativeUnaryDispatch = ${nativeUnaryDispatchName};
+export const nativeResponseUnaryDispatch: NativeUnaryDispatch = ${nativeResponseUnaryDispatchName};
+export const nativeRuntime: NativeRuntimeState = createCompiledRuntimeState(${configValue});
 export const nativeTransport = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},

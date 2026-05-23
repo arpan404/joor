@@ -154,10 +154,19 @@ describe('compiler', () => {
       ).resolves.toContain('export const nativeResponseTransport =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeRuntime =');
+      ).resolves.toContain('export const nativeRuntime: NativeRuntimeState =');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export type NativeServices');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeRuntimeState');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeDispatch');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export type NativeUnaryDispatch');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export type NativeRouteInput');
@@ -169,11 +178,13 @@ describe('compiler', () => {
       ).resolves.toContain('export type NativeRouteErrorDetails');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('export const nativeUnaryDispatch =');
+      ).resolves.toContain(
+        'export const nativeUnaryDispatch: NativeUnaryDispatch ='
+      );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
-        'const serializedUnaryDispatch: CompiledFixedUnaryDispatch<NativeServices>'
+        'const serializedUnaryDispatch: NativeUnaryDispatch'
       );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -209,9 +220,7 @@ describe('compiler', () => {
       expect(postsListMatch?.[0]).not.toContain('compiledRateLimitFailure');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain(
-        'const dispatchSerialized: CompiledDispatch<NativeServices>'
-      );
+      ).resolves.toContain('const dispatchSerialized: NativeDispatch');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('createClient');
@@ -453,7 +462,7 @@ describe('compiler', () => {
       await writeFile(
         usageFile,
         `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientHeaders, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteServices, type RouteStreamProtocolRequest, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
-import { nativeRuntime, nativeTransport, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeRequiredServices, type NativeRouteClientHeaders, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
+import { nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeDispatch, type NativeRequiredServices, type NativeRouteClientHeaders, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteRequest, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteServices, type NativeRouteStreamEvent, type NativeRuntimeState, type NativeServices, type NativeStreamProtocolRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest } from './dispatcher.safe.js';
 import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
 import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeServer } from './node.js';
@@ -505,8 +514,20 @@ const requiredServices: RequiredServices = {
 const routeServices: RouteServices<'users.get'> = requiredServices;
 routeServices.users.findById('1')?.name.toUpperCase();
 const nativeServices: NativeServices = {};
-nativeRuntime.getServices();
+const nativeRuntimeState: NativeRuntimeState = nativeRuntime;
+nativeRuntimeState.getServices();
 nativeServices;
+const nativeUnary: NativeUnaryDispatch = nativeUnaryDispatch;
+const nativeResponseUnary: NativeUnaryDispatch = nativeResponseUnaryDispatch;
+nativeUnary;
+nativeResponseUnary;
+const nativeDispatch: NativeDispatch = async () => ({
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace',
+  error: { code: 'NOT_FOUND', message: 'Missing', status: 404 },
+});
+nativeDispatch;
 const nativeRequiredServices: NativeRequiredServices = requiredServices;
 nativeRequiredServices.users.findById('1')?.name.toUpperCase();
 const nativeRouteServices: NativeRouteServices<'users.get'> = requiredServices;
