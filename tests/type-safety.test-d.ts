@@ -2657,6 +2657,34 @@ exactServiceAwareHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const exactDefinedHandlerOptions = defineHandlerOptions(manifest)<
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+>({
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: exactManifestAwareHandlerHooks,
+});
+exactDefinedHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+const exactManifestAwareConfigShape: JoorConfigFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = {
+  plugins: [usersPlugin] as const,
+  hooks: exactManifestAwareHandlerHooks,
+};
+const exactManifestAwareConfig = defineConfigFor(manifest)<
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+>(exactManifestAwareConfigShape);
+exactManifestAwareConfig.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const handlerOptionsWithExtraServices: HandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin, typeof contextSubpathPlugin]
@@ -2824,6 +2852,15 @@ const typedBunServeOptions: BunServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactBunServeOptions: BunServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
+exactBunServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
 bunServer.stop();
 bunServer.ref?.();
@@ -2841,6 +2878,15 @@ const typedDenoServeOptions: DenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactDenoServeOptions: DenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactBunServeOptions;
+exactDenoServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
 denoServer.shutdown().then(() => undefined);
 denoServer.finished.then(() => undefined);
@@ -2870,6 +2916,15 @@ const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactDenoServeOptions;
+exactStandaloneDenoServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
   manifest,
   typedStandaloneDenoServeOptions
@@ -3466,10 +3521,24 @@ const joorHandlerOptions: JoorHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactJoorHandlerOptions: JoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
 const runtimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorHandlerOptions;
+const exactRuntimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactJoorHandlerOptions;
+exactRuntimeSubpathJoorHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 createJoorHandler(manifest, joorHandlerOptions);
 createRuntimeSubpathJoorHandler(manifest, runtimeSubpathJoorHandlerOptions);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
@@ -3480,18 +3549,46 @@ const nextRouteHandlersOptions: NextRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactNextRouteHandlersOptions: NextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
 const nextHandlerOptions: NextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteHandlersOptions;
+const exactNextHandlerOptions: NextHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactNextRouteHandlersOptions;
 const runtimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteHandlersOptions;
+const exactRuntimeSubpathNextRouteHandlersOptions: RuntimeSubpathNextRouteHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactNextRouteHandlersOptions;
+exactRuntimeSubpathNextRouteHandlersOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const runtimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextHandlerOptions;
+const exactRuntimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactNextHandlerOptions;
+exactRuntimeSubpathNextHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 createNextRouteHandlers(manifest, nextRouteHandlersOptions);
 createRuntimeSubpathNextRouteHandlers(
   manifest,
@@ -3523,10 +3620,24 @@ const cloudflareWorkerOptions: CloudflareWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactCloudflareWorkerOptions: CloudflareWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
 const runtimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = cloudflareWorkerOptions;
+const exactRuntimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactCloudflareWorkerOptions;
+exactRuntimeSubpathCloudflareWorkerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 createCloudflareWorker(manifest, cloudflareWorkerOptions);
 createRuntimeSubpathCloudflareWorker(
   manifest,
@@ -3544,10 +3655,24 @@ const netlifyFetchOptions: NetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactNetlifyFetchOptions: NetlifyFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
 const runtimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = netlifyFetchOptions;
+const exactRuntimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactNetlifyFetchOptions;
+exactRuntimeSubpathNetlifyFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 createNetlifyFetch(manifest, netlifyFetchOptions);
 createRuntimeSubpathNetlifyFetch(manifest, runtimeSubpathNetlifyFetchOptions);
 netlifyFetch(new Request('https://example.com/rpc'));
@@ -3562,10 +3687,24 @@ const vercelFetchOptions: VercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactVercelFetchOptions: VercelFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
 const runtimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = vercelFetchOptions;
+const exactRuntimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactVercelFetchOptions;
+exactRuntimeSubpathVercelFetchOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 createVercelFetch(manifest, vercelFetchOptions);
 createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
 vercelFetch(new Request('https://example.com/rpc'));
@@ -3580,6 +3719,15 @@ const typedListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const exactListenOptions: ListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest
+> = exactServiceAwareHandlerOptions;
+exactListenOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const nodeServer: NodeServer = listen(manifest, typedListenOptions);
 nodeServer.close();
 nodeServer.address();

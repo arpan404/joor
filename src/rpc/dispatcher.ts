@@ -462,9 +462,10 @@ export type HandlerOptionsWithPreflightArgs<
 
 export type DefineHandlerOptions<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
+  const TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
-  options: HandlerOptionsFor<TManifest, TPlugins>
-) => HandlerOptionsFor<TManifest, TPlugins>;
+  options: HandlerOptionsFor<TManifest, TPlugins, TBody>
+) => HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export function defineHandlerOptions<TManifest extends RpcManifest>(
   manifest: TManifest

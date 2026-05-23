@@ -53,7 +53,8 @@ export type BunServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type BunTransportBodyResultFor<

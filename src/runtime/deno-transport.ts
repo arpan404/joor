@@ -50,7 +50,8 @@ export type DenoServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
 export type DenoTransportBodyResultFor<

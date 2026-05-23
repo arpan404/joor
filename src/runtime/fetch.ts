@@ -3,6 +3,7 @@ import {
   type HandlerOptions,
   type HandlerOptionsFor,
   type HandlerOptionsArgs,
+  type RpcManifestBody,
 } from '../rpc/dispatcher.js';
 import type { JoorManifest } from '../manifest.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -13,7 +14,8 @@ export type JoorHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptionsFor<TManifest, TPlugins>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export function createJoorHandler<
   TManifest extends JoorManifest,

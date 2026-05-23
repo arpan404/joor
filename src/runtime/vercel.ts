@@ -3,6 +3,7 @@ import type {
   HandlerOptions,
   HandlerOptionsArgs,
   HandlerOptionsFor,
+  RpcManifestBody,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
@@ -13,7 +14,8 @@ export type VercelFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptionsFor<TManifest, TPlugins>;
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export function createVercelFetch<
   TManifest extends JoorManifest,

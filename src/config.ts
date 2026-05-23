@@ -3,6 +3,7 @@ import type {
   HandlerOptions,
   HandlerOptionsFor,
   RpcManifest,
+  RpcManifestBody,
 } from './rpc/dispatcher.js';
 
 export type JoorConfig<
@@ -18,7 +19,8 @@ export type JoorConfigFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = HandlerOptionsFor<TManifest, TPlugins> & {
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody> & {
   entry?: string;
   outDir?: string;
 };
@@ -40,9 +42,10 @@ export function defineConfig(config: JoorConfig): JoorConfig {
 
 export type DefineConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
+  const TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
-  config: JoorConfigFor<TManifest, TPlugins>
-) => JoorConfigFor<TManifest, TPlugins>;
+  config: JoorConfigFor<TManifest, TPlugins, TBody>
+) => JoorConfigFor<TManifest, TPlugins, TBody>;
 
 export function defineConfigFor<TManifest extends RpcManifest>(
   manifest: TManifest
