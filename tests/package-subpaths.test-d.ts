@@ -254,12 +254,16 @@ export type PackageSubpathSurface = [
   Cloudflare.CloudflareFetchHandler,
   Cloudflare.CloudflareWorker,
   Root.CloudflareWorker,
+  Compiled.CompiledCachedProcedureSuccess,
+  Compiled.CompiledExecutionState,
   Compiled.CompiledRpcRequestHandler,
   Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
+  Root.CompiledCachedProcedureHeaders,
+  Root.CompiledProcedureCacheHeaderValues,
   Root.RateLimitRuntimeOptions,
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,

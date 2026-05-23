@@ -2,18 +2,12 @@ import {
   authenticateOnce,
   authenticateUncached,
   createExecutionState,
-  type AuthResult,
-  type AuthResultLike,
-  type ExecutionState,
   uncachedExecutionState,
 } from './internal/auth-execution.js';
 import {
   createProcedureCacheKey,
   DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
   readCachedProcedureSuccess,
-  type CachedProcedureHeaders,
-  type CachedProcedureSuccess,
-  type ProcedureCacheHeaderValues,
   writeCachedProcedureSuccess,
 } from './internal/procedure-cache.js';
 import {
@@ -29,6 +23,12 @@ import {
   type JoorContext,
   type ContextRequestSource,
 } from '../context/context.js';
+import type {
+  AuthPolicy,
+  AuthPolicyHeaderValues,
+  AuthPolicyResult,
+  AuthPolicyResultLike,
+} from '../auth/policy.js';
 import { resolvePluginServices } from '../context/plugin.js';
 import type { JoorConfig, JoorConfigContext } from '../config.js';
 import type { JoorManifest } from '../manifest.js';
@@ -106,8 +106,26 @@ export interface CompiledRuntimeState<TServices extends object = object> {
 
 export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}
 
-export type CompiledAuthResult = AuthResult;
-export type CompiledAuthResultLike = AuthResultLike;
+export type CompiledAuthResult = AuthPolicyResult<object>;
+export type CompiledAuthResultLike = AuthPolicyResultLike<object>;
+
+export interface CompiledExecutionState {
+  cacheAuth: boolean;
+  authCache?: Map<
+    AuthPolicy<object, AuthPolicyHeaderValues, object>,
+    CompiledAuthResultLike
+  >;
+}
+
+export type CompiledCachedProcedureHeaders = Record<string, string>;
+export type CompiledProcedureCacheHeaderValues = Record<string, string>;
+
+export interface CompiledCachedProcedureSuccess {
+  data: JsonValue;
+  headers?: CompiledCachedProcedureHeaders;
+  expiresAt: number;
+}
+
 export type CompiledSerializationMode = false | true | 'response';
 export type CompiledBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
   | RpcBodyResult<TEnvelope>
@@ -274,7 +292,7 @@ export type CompiledUnaryDispatch<TServices extends object = object> = (
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
-  state: ExecutionState,
+  state: CompiledExecutionState,
   serialize: CompiledSerializationMode
 ) => Promise<CompiledBodyResult | undefined>;
 
@@ -286,7 +304,7 @@ export type CompiledFixedUnaryDispatch<
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
-  state: ExecutionState
+  state: CompiledExecutionState
 ) => Promise<TResult | undefined>;
 
 export type CompiledDispatch<
@@ -303,7 +321,7 @@ export type CompiledDispatch<
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
-  state: ExecutionState,
+  state: CompiledExecutionState,
   serialize: CompiledSerializationMode
 ) => Promise<TResult>;
 
@@ -321,11 +339,12 @@ export type CompiledFixedDispatch<
   request: ContextRequestSource,
   services: TServices,
   runtime: CompiledRuntime,
-  state: ExecutionState
+  state: CompiledExecutionState
 ) => Promise<TResult>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
-const compiledProcedureSuccessCache = new Map<string, CachedProcedureSuccess>();
+const compiledProcedureSuccessCache =
+  new Map<string, CompiledCachedProcedureSuccess>();
 let traceCounter = 0;
 
 const traceId = (request: ContextRequestSource, requested?: string): string => {
@@ -404,8 +423,8 @@ const failure = <TId extends string>(
 const headerObject = (
   request: ContextRequestSource,
   procedure: ProcedureRuntime
-): ProcedureCacheHeaderValues => {
-  const output: ProcedureCacheHeaderValues = {};
+): CompiledProcedureCacheHeaderValues => {
+  const output: CompiledProcedureCacheHeaderValues = {};
   if (procedure.headers?.kind !== 'object') return output;
   for (const key of Object.keys(procedure.headers.shape)) {
     const value = request.getHeader(key);
@@ -423,7 +442,8 @@ export const compiledEmptyObject = emptyContextObject;
 export const compiledCreateJsonHeaderRecord = createJsonHeaderRecord;
 export const compiledHasInvalidHeaderValue = hasInvalidHeaderValue;
 export const compiledJsonOkResponseInit = jsonOkResponseInit;
-export const compiledUncachedExecutionState = uncachedExecutionState;
+export const compiledUncachedExecutionState: CompiledExecutionState =
+  uncachedExecutionState;
 
 const isProcedureFailure = (
   value: object
@@ -451,7 +471,7 @@ const isAsyncIterable = (
 export const compiledAuthenticate = (
   policy: ProcedureRuntime['auth'],
   ctx: JoorContext<object, object, object, object>,
-  state: ExecutionState
+  state: CompiledExecutionState
 ): CompiledAuthResultLike => authenticateOnce(policy, ctx, state);
 
 export const compiledAuthenticateUncached = (
@@ -529,9 +549,9 @@ export const compiledReadCache = (
   id: string,
   procedure: ProcedureRuntime,
   input: JsonValue,
-  headers: ProcedureCacheHeaderValues,
+  headers: CompiledProcedureCacheHeaderValues,
   auth: object
-): CachedProcedureSuccess | undefined => {
+): CompiledCachedProcedureSuccess | undefined => {
   const cacheConfig =
     procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
   if (cacheConfig === undefined) return undefined;
@@ -545,10 +565,10 @@ export const compiledWriteCache = (
   id: string,
   procedure: ProcedureRuntime,
   input: JsonValue,
-  headers: ProcedureCacheHeaderValues,
+  headers: CompiledProcedureCacheHeaderValues,
   auth: object,
   data: JsonValue,
-  responseHeaders?: CachedProcedureHeaders
+  responseHeaders?: CompiledCachedProcedureHeaders
 ): void => {
   const cacheConfig =
     procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
@@ -573,7 +593,7 @@ const streamResponse = async <
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
-  state: ExecutionState
+  state: CompiledExecutionState
 ): Promise<Response> => {
   const trace = traceId(request, rpcRequest.traceId);
   const limited = rateLimitFailure(
@@ -691,7 +711,7 @@ export const executeCompiledProcedure = async <
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
-  state: ExecutionState,
+  state: CompiledExecutionState,
   _serialize: CompiledSerializationMode
 ): Promise<RpcEnvelope<JsonValue, TId> | Response> => {
   if (request.getHeader('accept')?.includes('text/event-stream') === true) {
@@ -769,7 +789,7 @@ export const executeCompiledProcedure = async <
     id,
     procedure,
     inputValue,
-    headerResult.value as ProcedureCacheHeaderValues,
+    headerResult.value as CompiledProcedureCacheHeaderValues,
     authResult
   );
   if (cached !== undefined) {
@@ -811,7 +831,7 @@ export const executeCompiledProcedure = async <
       id,
       procedure,
       inputValue,
-      headerResult.value as ProcedureCacheHeaderValues,
+      headerResult.value as CompiledProcedureCacheHeaderValues,
       authResult,
       result
     );
@@ -845,7 +865,7 @@ export const executeCompiledProcedure = async <
       id,
       procedure,
       inputValue,
-      headerResult.value as ProcedureCacheHeaderValues,
+      headerResult.value as CompiledProcedureCacheHeaderValues,
       authResult,
       result.data,
       result.headers
@@ -862,7 +882,7 @@ export const executeCompiledProcedure = async <
     id,
     procedure,
     inputValue,
-    headerResult.value as ProcedureCacheHeaderValues,
+    headerResult.value as CompiledProcedureCacheHeaderValues,
     authResult,
     result.data
   );

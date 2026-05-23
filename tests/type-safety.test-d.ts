@@ -293,9 +293,13 @@ import {
   type CompiledAuthResultLike as RootCompiledAuthResultLike,
   type CompiledBodyResult as RootCompiledBodyResult,
   type CompiledBodyResultFor as RootCompiledBodyResultFor,
+  type CompiledCachedProcedureHeaders as RootCompiledCachedProcedureHeaders,
+  type CompiledCachedProcedureSuccess as RootCompiledCachedProcedureSuccess,
   type CompiledDispatch as RootCompiledDispatch,
+  type CompiledExecutionState as RootCompiledExecutionState,
   type CompiledFixedDispatch as RootCompiledFixedDispatch,
   type CompiledFixedUnaryDispatch as RootCompiledFixedUnaryDispatch,
+  type CompiledProcedureCacheHeaderValues as RootCompiledProcedureCacheHeaderValues,
   type CompiledRpcBodyResultHandlerFor as RootCompiledRpcBodyResultHandlerFor,
   type CompiledRpcBodyResultHandlerForConfig as RootCompiledRpcBodyResultHandlerForConfig,
   type CompiledRpcRouteStreamBodyResultHandlerFor as RootCompiledRpcRouteStreamBodyResultHandlerFor,
@@ -1295,9 +1299,13 @@ import type {
   CompiledAuthResultLike,
   CompiledBodyResult,
   CompiledBodyResultFor,
+  CompiledCachedProcedureHeaders,
+  CompiledCachedProcedureSuccess,
   CompiledDispatch,
+  CompiledExecutionState,
   CompiledFixedDispatch,
   CompiledFixedUnaryDispatch,
+  CompiledProcedureCacheHeaderValues,
   CompiledRpcBodyResultHandlerFor,
   CompiledRpcBodyResultHandlerForConfig,
   CompiledRpcRouteStreamBodyResultHandlerFor,
@@ -8997,10 +9005,20 @@ const cachedProcedureHeaders: CachedProcedureHeaders = {
   'cache-control': 'private',
 };
 cachedProcedureHeaders['cache-control']?.toUpperCase();
+const compiledCachedProcedureHeaders: CompiledCachedProcedureHeaders =
+  cachedProcedureHeaders;
+const rootCompiledCachedProcedureHeaders: RootCompiledCachedProcedureHeaders =
+  compiledCachedProcedureHeaders;
+rootCompiledCachedProcedureHeaders['cache-control']?.toUpperCase();
 const procedureCacheHeaderValues: ProcedureCacheHeaderValues = {
   authorization: 'Bearer token',
 };
 procedureCacheHeaderValues['authorization']?.toUpperCase();
+const compiledProcedureCacheHeaderValues: CompiledProcedureCacheHeaderValues =
+  procedureCacheHeaderValues;
+const rootCompiledProcedureCacheHeaderValues: RootCompiledProcedureCacheHeaderValues =
+  compiledProcedureCacheHeaderValues;
+rootCompiledProcedureCacheHeaderValues['authorization']?.toUpperCase();
 createProcedureCacheKey(
   'users.get',
   ['headers.authorization'],
@@ -9042,6 +9060,11 @@ const cachedProcedureSuccess: CachedProcedureSuccess = {
   expiresAt: Date.now() + 1_000,
 };
 cachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
+const compiledCachedProcedureSuccess: CompiledCachedProcedureSuccess =
+  cachedProcedureSuccess;
+const rootCompiledCachedProcedureSuccess: RootCompiledCachedProcedureSuccess =
+  compiledCachedProcedureSuccess;
+rootCompiledCachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
 const _wrongCachedProcedureSuccessHeaders: CachedProcedureSuccess = {
   data: { ok: true },
   headers: {
@@ -9051,6 +9074,11 @@ const _wrongCachedProcedureSuccessHeaders: CachedProcedureSuccess = {
   expiresAt: Date.now() + 1_000,
 };
 _wrongCachedProcedureSuccessHeaders.data;
+const compiledExecutionState: CompiledExecutionState =
+  compiledUncachedExecutionState;
+const rootCompiledExecutionState: RootCompiledExecutionState =
+  compiledExecutionState;
+rootCompiledExecutionState.cacheAuth.valueOf();
 const compiledRuntimeState: CompiledRuntimeState = {
   path: '/rpc',
   runtime: {
