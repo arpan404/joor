@@ -12,7 +12,11 @@ export {
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
 } from './rpc/dispatcher.js';
-export { createAwsLambdaHandler } from './runtime/aws-lambda.js';
+export {
+  createAwsLambdaHandler,
+  createAwsLambdaHttpApiHandler,
+  createAwsLambdaRestApiHandler,
+} from './runtime/aws-lambda.js';
 export {
   createBunFetch,
   createBunRpcRequestHandler,
@@ -671,8 +675,24 @@ export type {
   AwsLambdaHandler,
   AwsLambdaHandlerOptionsArgs,
   AwsLambdaHandlerOptionsFor,
+  AwsLambdaHttpApiHandler,
+  AwsLambdaHttpApiHandlerOptionsArgs,
+  AwsLambdaHttpApiHandlerOptionsFor,
   AwsLambdaHttpEventV2,
   AwsLambdaHttpResponseV2,
+  AwsLambdaRestApiEventV1,
+  AwsLambdaRestApiHandler,
+  AwsLambdaRestApiHandlerOptionsArgs,
+  AwsLambdaRestApiHandlerOptionsFor,
+  AwsLambdaRestApiResponseV1,
+  AwsLambdaRestApiRouteStreamHandlerOptionsArgs,
+  AwsLambdaRestApiRouteStreamHandlerOptionsFor,
+  AwsLambdaRestApiRouteUnaryHandlerOptionsArgs,
+  AwsLambdaRestApiRouteUnaryHandlerOptionsFor,
+  AwsLambdaRestApiStreamRouteHandlerOptionsArgs,
+  AwsLambdaRestApiStreamRouteHandlerOptionsFor,
+  AwsLambdaRestApiUnaryRouteHandlerOptionsArgs,
+  AwsLambdaRestApiUnaryRouteHandlerOptionsFor,
   AwsLambdaRouteStreamHandlerOptionsArgs,
   AwsLambdaRouteStreamHandlerOptionsFor,
   AwsLambdaRouteUnaryHandlerOptionsArgs,

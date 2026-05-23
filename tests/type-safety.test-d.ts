@@ -7,6 +7,8 @@ import {
   defineProcedure,
   resolvePluginServices,
   createAwsLambdaHandler,
+  createAwsLambdaHttpApiHandler,
+  createAwsLambdaRestApiHandler,
   createBunFetch,
   createBunRpcRequestHandler,
   createBunTransportRequestHandler,
@@ -53,8 +55,24 @@ import {
   type AwsLambdaHandler,
   type AwsLambdaHandlerOptionsArgs,
   type AwsLambdaHandlerOptionsFor,
+  type AwsLambdaHttpApiHandler,
+  type AwsLambdaHttpApiHandlerOptionsArgs,
+  type AwsLambdaHttpApiHandlerOptionsFor,
   type AwsLambdaHttpEventV2,
   type AwsLambdaHttpResponseV2,
+  type AwsLambdaRestApiEventV1,
+  type AwsLambdaRestApiHandler,
+  type AwsLambdaRestApiHandlerOptionsArgs,
+  type AwsLambdaRestApiHandlerOptionsFor,
+  type AwsLambdaRestApiResponseV1,
+  type AwsLambdaRestApiRouteStreamHandlerOptionsArgs,
+  type AwsLambdaRestApiRouteStreamHandlerOptionsFor,
+  type AwsLambdaRestApiRouteUnaryHandlerOptionsArgs,
+  type AwsLambdaRestApiRouteUnaryHandlerOptionsFor,
+  type AwsLambdaRestApiStreamRouteHandlerOptionsArgs,
+  type AwsLambdaRestApiStreamRouteHandlerOptionsFor,
+  type AwsLambdaRestApiUnaryRouteHandlerOptionsArgs,
+  type AwsLambdaRestApiUnaryRouteHandlerOptionsFor,
   type AwsLambdaRouteStreamHandlerOptionsArgs,
   type AwsLambdaRouteStreamHandlerOptionsFor,
   type AwsLambdaRouteUnaryHandlerOptionsArgs,
@@ -1077,6 +1095,8 @@ import type {
 } from '../src/runtime/compiled.js';
 import {
   createAwsLambdaHandler as createRuntimeSubpathAwsLambdaHandler,
+  createAwsLambdaHttpApiHandler as createRuntimeSubpathAwsLambdaHttpApiHandler,
+  createAwsLambdaRestApiHandler as createRuntimeSubpathAwsLambdaRestApiHandler,
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
@@ -1095,6 +1115,9 @@ import {
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
+  type AwsLambdaHttpApiHandler as RuntimeSubpathAwsLambdaHttpApiHandler,
+  type AwsLambdaRestApiHandler as RuntimeSubpathAwsLambdaRestApiHandler,
+  type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -8677,8 +8700,22 @@ const runtimeSubpathAwsLambdaHandlerOptions: RuntimeSubpathAwsLambdaHandlerOptio
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptions;
+const awsLambdaHttpApiHandlerOptions: AwsLambdaHttpApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptions;
+const awsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathAwsLambdaRestApiHandlerOptions: RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiHandlerOptions;
 exactAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+awsLambdaHttpApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathAwsLambdaRestApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const awsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8697,10 +8734,32 @@ const awsLambdaStreamRouteHandlerOptions: AwsLambdaStreamRouteHandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = awsLambdaRouteStreamHandlerOptions;
 awsLambdaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const awsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiHandlerOptions;
+const awsLambdaRestApiUnaryRouteHandlerOptions: AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiRouteUnaryHandlerOptions;
+const awsLambdaRestApiRouteStreamHandlerOptions: AwsLambdaRestApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiHandlerOptions;
+const awsLambdaRestApiStreamRouteHandlerOptions: AwsLambdaRestApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiRouteStreamHandlerOptions;
+awsLambdaRestApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+awsLambdaRestApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const awsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [awsLambdaHandlerOptions];
+const awsLambdaHttpApiHandlerOptionsArgs: AwsLambdaHttpApiHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaHandlerOptionsArgs;
 const awsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8719,25 +8778,72 @@ const awsLambdaStreamRouteHandlerOptionsArgs: AwsLambdaStreamRouteHandlerOptions
   readonly [typeof usersPlugin]
 > = awsLambdaRouteStreamHandlerOptionsArgs;
 awsLambdaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const awsLambdaRestApiHandlerOptionsArgs: AwsLambdaRestApiHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [awsLambdaRestApiHandlerOptions];
+const awsLambdaRestApiRouteUnaryHandlerOptionsArgs: AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiHandlerOptionsArgs;
+const awsLambdaRestApiUnaryRouteHandlerOptionsArgs: AwsLambdaRestApiUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiRouteUnaryHandlerOptionsArgs;
+const awsLambdaRestApiRouteStreamHandlerOptionsArgs: AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiHandlerOptionsArgs;
+const awsLambdaRestApiStreamRouteHandlerOptionsArgs: AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = awsLambdaRestApiRouteStreamHandlerOptionsArgs;
+awsLambdaHttpApiHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+awsLambdaRestApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+awsLambdaRestApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
   manifest,
   handlerOptions
 );
+const awsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const awsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createAwsLambdaRestApiHandler(manifest, handlerOptions);
 const runtimeSubpathAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
   createRuntimeSubpathAwsLambdaHandler(manifest, handlerOptions);
+const runtimeSubpathAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const runtimeSubpathAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathAwsLambdaRestApiHandler(manifest, handlerOptions);
 const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   rawPath: '/rpc',
   headers: { 'content-type': 'application/json' },
   body: '{}',
   requestContext: { http: { method: 'POST' } },
 };
+const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
+  path: '/rpc',
+  httpMethod: 'POST',
+  multiValueHeaders: { cookie: ['a=1', undefined] },
+  multiValueQueryStringParameters: { tag: ['one', 'two'] },
+  body: '{}',
+};
 awsLambdaHandler(awsLambdaEvent).then((response) => {
   const typedResponse: AwsLambdaHttpResponseV2 = response;
   typedResponse.statusCode.toFixed();
 });
+awsLambdaHttpApiHandler(awsLambdaEvent);
+awsLambdaRestApiHandler(awsLambdaRestApiEvent).then((response) => {
+  const typedResponse: AwsLambdaRestApiResponseV1 = response;
+  typedResponse.statusCode.toFixed();
+});
 runtimeSubpathAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda adapter plugins.
 createAwsLambdaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching AWS Lambda REST API adapter plugins.
+createAwsLambdaRestApiHandler(manifest);
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
   nextRouteHandler;

@@ -1,4 +1,5 @@
 import { Buffer } from 'node:buffer';
+import type { JoorPlugin } from '../context/plugin.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
   HandlerOptions,
@@ -8,7 +9,6 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler } from './fetch.js';
 
 export interface AwsLambdaHttpEventV2 {
@@ -37,9 +37,48 @@ export interface AwsLambdaHttpResponseV2 {
   isBase64Encoded?: boolean;
 }
 
+export interface AwsLambdaRestApiEventV1 {
+  path?: string;
+  httpMethod?: string;
+  headers?: Record<string, string | undefined>;
+  multiValueHeaders?: Record<
+    string,
+    readonly (string | undefined)[] | undefined
+  >;
+  queryStringParameters?: Record<string, string | undefined> | null;
+  multiValueQueryStringParameters?: Record<
+    string,
+    readonly (string | undefined)[] | undefined
+  > | null;
+  body?: string | null;
+  isBase64Encoded?: boolean;
+  requestContext?: {
+    domainName?: string;
+    path?: string;
+    protocol?: string;
+    identity?: {
+      sourceIp?: string;
+    };
+  };
+}
+
+export interface AwsLambdaRestApiResponseV1 {
+  statusCode: number;
+  headers?: Record<string, string>;
+  multiValueHeaders?: Record<string, string[]>;
+  body?: string;
+  isBase64Encoded?: boolean;
+}
+
 export type AwsLambdaHandler = (
   event: AwsLambdaHttpEventV2
 ) => Promise<AwsLambdaHttpResponseV2>;
+
+export type AwsLambdaHttpApiHandler = AwsLambdaHandler;
+
+export type AwsLambdaRestApiHandler = (
+  event: AwsLambdaRestApiEventV1
+) => Promise<AwsLambdaRestApiResponseV1>;
 
 export type AwsLambdaHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -47,6 +86,13 @@ export type AwsLambdaHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaHttpApiHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type AwsLambdaRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -87,6 +133,13 @@ export type AwsLambdaHandlerOptionsArgs<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type AwsLambdaHttpApiHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
 export type AwsLambdaRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -119,8 +172,104 @@ export type AwsLambdaStreamRouteHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
 > = AwsLambdaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
 
+export type AwsLambdaRestApiHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = AwsLambdaRestApiRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiRouteStreamHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = AwsLambdaRestApiRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiUnaryRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+export type AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = AwsLambdaRestApiRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+
+const queryString = (
+  single?: Record<string, string | undefined> | null,
+  multi?: Record<string, readonly (string | undefined)[] | undefined> | null
+): string => {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(single ?? {})) {
+    if (value !== undefined) params.append(key, value);
+  }
+  for (const [key, values] of Object.entries(multi ?? {})) {
+    if (values === undefined) continue;
+    params.delete(key);
+    for (const value of values) {
+      if (value !== undefined) params.append(key, value);
+    }
+  }
+  return params.toString();
+};
+
 const eventHeader = (
-  event: AwsLambdaHttpEventV2,
+  event: Pick<AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1, 'headers'>,
   name: string
 ): string | undefined => {
   const wanted = name.toLowerCase();
@@ -141,7 +290,26 @@ const eventUrl = (event: AwsLambdaHttpEventV2): string => {
   return `${protocol}://${host}${path}${query === undefined || query === '' ? '' : `?${query}`}`;
 };
 
-const eventBody = (event: AwsLambdaHttpEventV2): BodyInit | undefined => {
+const restApiEventUrl = (event: AwsLambdaRestApiEventV1): string => {
+  const protocol = eventHeader(event, 'x-forwarded-proto') ?? 'https';
+  const host =
+    eventHeader(event, 'host') ??
+    event.requestContext?.domainName ??
+    'localhost';
+  const path = event.path ?? event.requestContext?.path ?? '/';
+  const query = queryString(
+    event.queryStringParameters,
+    event.multiValueQueryStringParameters
+  );
+  return `${protocol}://${host}${path}${query === '' ? '' : `?${query}`}`;
+};
+
+const eventBody = (
+  event: Pick<
+    AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1,
+    'body' | 'isBase64Encoded'
+  >
+): BodyInit | undefined => {
   if (event.body === undefined || event.body === null) return undefined;
   return event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
 };
@@ -157,11 +325,41 @@ const eventHeaders = (event: AwsLambdaHttpEventV2): Headers => {
   return headers;
 };
 
+const restApiEventHeaders = (event: AwsLambdaRestApiEventV1): Headers => {
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(event.headers ?? {})) {
+    if (value !== undefined) headers.set(key, value);
+  }
+  for (const [key, values] of Object.entries(event.multiValueHeaders ?? {})) {
+    if (values === undefined) continue;
+    const normalizedValues = values.filter(
+      (value): value is string => value !== undefined
+    );
+    if (normalizedValues.length === 0) continue;
+    headers.set(
+      key,
+      key.toLowerCase() === 'cookie'
+        ? normalizedValues.join('; ')
+        : normalizedValues.join(', ')
+    );
+  }
+  return headers;
+};
+
 const eventToRequest = (event: AwsLambdaHttpEventV2): Request => {
   const body = eventBody(event);
   return new Request(eventUrl(event), {
     method: event.requestContext?.http?.method ?? 'GET',
     headers: eventHeaders(event),
+    ...(body === undefined ? {} : { body }),
+  });
+};
+
+const restApiEventToRequest = (event: AwsLambdaRestApiEventV1): Request => {
+  const body = eventBody(event);
+  return new Request(restApiEventUrl(event), {
+    method: event.httpMethod ?? 'GET',
+    headers: restApiEventHeaders(event),
     ...(body === undefined ? {} : { body }),
   });
 };
@@ -194,6 +392,27 @@ const responseToLambda = async (
   };
 };
 
+const responseToRestApiLambda = async (
+  response: Response
+): Promise<AwsLambdaRestApiResponseV1> => {
+  const cookies = getSetCookies(response.headers);
+  return {
+    statusCode: response.status,
+    headers: responseHeaders(response),
+    ...(cookies.length === 0
+      ? {}
+      : { multiValueHeaders: { 'set-cookie': cookies } }),
+    body: await response.text(),
+    isBase64Encoded: false,
+  };
+};
+
+const createFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+) =>
+  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
+
 export function createAwsLambdaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -205,9 +424,37 @@ export function createAwsLambdaHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): AwsLambdaHandler {
-  const fetch = createJoorHandler(
-    manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
-  );
+  const fetch = createFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export function createAwsLambdaHttpApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): AwsLambdaHttpApiHandler;
+export function createAwsLambdaHttpApiHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): AwsLambdaHttpApiHandler {
+  const fetch = createFetch(manifest, options);
+  return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export function createAwsLambdaRestApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+): AwsLambdaRestApiHandler;
+export function createAwsLambdaRestApiHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): AwsLambdaRestApiHandler {
+  const fetch = createFetch(manifest, options);
+  return async (event) =>
+    responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
 }
