@@ -26,6 +26,7 @@ import {
 import { ok } from 'joor/procedure';
 import {
   createManifestRouteStreamProtocolRequest,
+  createManifestRouteStreamRequest,
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
 import { createJoorHandler } from 'joor/runtime';
@@ -160,6 +161,12 @@ const packageSubpathStreamRequest = createManifestRouteStreamProtocolRequest(
   { userId: '1' }
 );
 packageSubpathStreamRequest.input.userId.toUpperCase();
+const packageSubpathRouteStreamRequest = createManifestRouteStreamRequest(
+  packageSubpathManifest,
+  'users.watch',
+  { userId: '1' }
+);
+packageSubpathRouteStreamRequest.input.userId.toUpperCase();
 async function consumePackageSubpathStream() {
   for await (const event of packageSubpathStream) {
     event.eventId.toUpperCase();
