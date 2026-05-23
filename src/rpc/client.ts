@@ -167,6 +167,51 @@ export type RpcStreamRouteProcedure<
   TId extends RpcStreamRouteId<TRoutes>,
 > = RpcRouteProcedure<TRoutes, TId>;
 
+export type RpcUnaryRouteInput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteInput<TRoutes, TId>;
+
+export type RpcStreamRouteInput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteInput<TRoutes, TId>;
+
+export type RpcUnaryRouteOutput<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteOutput<TRoutes, TId>;
+
+export type RpcUnaryRouteHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteHeaders<TRoutes, TId>;
+
+export type RpcStreamRouteHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteHeaders<TRoutes, TId>;
+
+export type RpcUnaryRouteClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteClientHeaders<TRoutes, TId>;
+
+export type RpcStreamRouteClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteClientHeaders<TRoutes, TId>;
+
+export type RpcUnaryRouteResponseHeaders<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteResponseHeaders<TRoutes, TId>;
+
+export type RpcStreamRouteEvent<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteStreamEvent<TRoutes, TId>;
+
 export type RpcRouteEnvelope<
   TRoutes extends RpcRouteMap,
   TId extends RpcUnaryRouteId<TRoutes>,
@@ -185,6 +230,16 @@ export type RpcRouteResult<
   TRoutes extends RpcRouteMap,
   TId extends RpcUnaryRouteId<TRoutes>,
 > = RpcRouteEnvelope<TRoutes, TId>;
+
+export type RpcUnaryRouteEnvelope<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteEnvelope<TRoutes, TId>;
+
+export type RpcUnaryRouteResult<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteResult<TRoutes, TId>;
 
 export type RpcRouteResultUnion<TRoutes extends RpcRouteMap> =
   RpcRouteEnvelopeUnion<TRoutes>;

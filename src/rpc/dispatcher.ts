@@ -120,6 +120,21 @@ export type RpcManifestStreamRouteProcedure<
   TId extends RpcManifestStreamRouteId<TManifest>,
 > = RpcManifestRoutes<TManifest>[TId];
 
+export type RpcManifestUnaryRouteInput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteInput<TManifest, TId>;
+
+export type RpcManifestStreamRouteInput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteInput<TManifest, TId>;
+
+export type RpcManifestUnaryRouteOutput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteOutput<TManifest, TId>;
+
 export type RpcManifestRouteServices<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
@@ -199,6 +214,11 @@ export type RpcManifestRouteStreamEvent<
   TId extends RpcManifestStreamRouteId<TManifest>,
 > = StreamEvent<RpcManifestRouteProcedure<TManifest, TId>>;
 
+export type RpcManifestStreamRouteEvent<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteStreamEvent<TManifest, TId>;
+
 type RpcManifestServiceContribution<TServices> = [TServices] extends [
   Record<string, never>,
 ]
@@ -247,6 +267,16 @@ export type RpcManifestRouteResult<
   TManifest extends RpcManifest,
   TId extends RpcManifestUnaryRouteId<TManifest>,
 > = RpcManifestRouteEnvelope<TManifest, TId>;
+
+export type RpcManifestUnaryRouteEnvelope<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteEnvelope<TManifest, TId>;
+
+export type RpcManifestUnaryRouteResult<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteResult<TManifest, TId>;
 
 export type RpcManifestRouteResultUnion<TManifest extends RpcManifest> =
   RpcManifestRouteEnvelopeUnion<TManifest>;
@@ -378,6 +408,31 @@ export type RpcManifestRouteClientHeaders<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
 > = RpcManifestRouteRequestHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteClientHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteClientHeaders<TManifest, TId>;
+
+export type RpcManifestStreamRouteClientHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteClientHeaders<TManifest, TId>;
+
+export type RpcManifestUnaryRouteResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteResponseHeaders<TManifest, TId>;
 
 export type RpcManifestRouteRequestOptions<
   TManifest extends RpcManifest,
