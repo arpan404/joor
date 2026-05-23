@@ -109,6 +109,7 @@ export {
 } from './runtime/response.js';
 export { createVercelFetch } from './runtime/vercel.js';
 export {
+  compiledCreateProcedureCacheKey,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
   createCompiledRpcTransportBodyResultHandler,

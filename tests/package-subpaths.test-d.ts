@@ -5,6 +5,7 @@ import {
   defineManifest,
   defineProcedure,
   errorStatus,
+  compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   encodeSse as rootEncodeSse,
   listen as rootListen,
   ok as rootOk,
@@ -191,6 +192,13 @@ compiledCreateProcedureCacheKey(
   {},
   {}
 ).toUpperCase();
+rootCompiledCreateProcedureCacheKey(
+  'users.get',
+  ['input.id'],
+  { id: '1' },
+  {},
+  {}
+).toUpperCase();
 
 const packageSubpathValues = [
   build,
@@ -202,6 +210,7 @@ const packageSubpathValues = [
   createRootCloudflareWorker,
   createOpenApiDocument,
   compiledCreateProcedureCacheKey,
+  rootCompiledCreateProcedureCacheKey,
   createManifestRouteStreamProtocolRequest,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,

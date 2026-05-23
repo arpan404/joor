@@ -68,6 +68,7 @@ import {
   createRpcHandler,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createCompiledRpcHandler as createRootCompiledRpcHandler,
   createCompiledRpcBodyResultHandler as createRootCompiledRpcBodyResultHandler,
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
@@ -9015,6 +9016,13 @@ compiledCreateProcedureCacheKey(
   ['headers.authorization'],
   { id: '1' },
   procedureCacheHeaderValues,
+  {}
+).toUpperCase();
+rootCompiledCreateProcedureCacheKey(
+  'users.get',
+  ['headers.authorization'],
+  { id: '1' },
+  rootCompiledProcedureCacheHeaderValues,
   {}
 ).toUpperCase();
 compiledCreateProcedureCacheKey(
