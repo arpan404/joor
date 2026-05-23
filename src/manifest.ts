@@ -43,9 +43,11 @@ import type {
   RpcRouteResponseHeaders,
   RpcRouteRequiresHeaders,
   RpcRouteRequiresResponseHeaders,
+  RpcStreamRouteProcedure,
   RpcRouteStreamEvent,
   RpcRouteStreamProtocolRequest,
   RpcRouteStreamProtocolRequestUnion,
+  RpcUnaryRouteProcedure,
   RpcRouteUnaryProtocolRequest,
   RpcRouteUnaryProtocolRequestUnion,
   RpcStreamRouteId,
@@ -87,6 +89,16 @@ export type JoorManifestRouteProcedure<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestUnaryRouteProcedure<
+  TManifest,
+  TId extends JoorManifestUnaryRouteId<TManifest>,
+> = RpcUnaryRouteProcedure<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestStreamRouteProcedure<
+  TManifest,
+  TId extends JoorManifestStreamRouteId<TManifest>,
+> = RpcStreamRouteProcedure<JoorManifestRoutes<TManifest>, TId>;
 
 export type JoorManifestRouteServices<
   TManifest,

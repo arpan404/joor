@@ -143,6 +143,7 @@ import {
   type JoorManifestRouteInput,
   type JoorManifestRouteOutput,
   type JoorManifestRouteProcedure,
+  type JoorManifestStreamRouteProcedure,
   type JoorManifestRouteProtocolRequest,
   type JoorManifestRouteProtocolRequestUnion,
   type JoorManifestRouteRequest,
@@ -161,6 +162,7 @@ import {
   type JoorManifestRoutes,
   type JoorManifestStreamRouteId,
   type JoorManifestTransportClient,
+  type JoorManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteId,
   type LegacyRpcTransportClient,
   type ListenOptionsFor,
@@ -220,6 +222,7 @@ import {
   type RpcManifestRouteInput,
   type RpcManifestRouteOutput,
   type RpcManifestRouteProcedure,
+  type RpcManifestStreamRouteProcedure,
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
   type RpcManifestRouteRequest,
@@ -237,6 +240,7 @@ import {
   type RpcManifestRouteUnaryProtocolRequest,
   type RpcManifestRouteUnaryProtocolRequestUnion,
   type RpcManifestStreamRouteId,
+  type RpcManifestUnaryRouteProcedure,
   type RpcManifestUnaryRouteId,
   type RpcProtocolEnvelope,
   type RpcProtocolError,
@@ -275,11 +279,13 @@ import {
   type RpcManifestTransportClient,
   type RpcSuccess,
   type RpcStreamProcedure,
+  type RpcStreamRouteProcedure,
   type RpcRouteClientArgs,
   type RpcRouteClientHeaders,
   type RpcRouteRequestOptions,
   type RpcStreamRouteId,
   type RpcUnaryProcedure,
+  type RpcUnaryRouteProcedure,
   type RpcUnaryRouteId,
   type Schema,
   type SchemaMeta,
@@ -357,6 +363,8 @@ import {
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
   type RpcManifestRouteInput as RpcSubpathManifestRouteInput,
   type RpcManifestRouteOutput as RpcSubpathManifestRouteOutput,
+  type RpcManifestStreamRouteProcedure as RpcSubpathManifestStreamRouteProcedure,
+  type RpcManifestUnaryRouteProcedure as RpcSubpathManifestUnaryRouteProcedure,
   type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
   type RpcManifestRouteClientHeaders as RpcSubpathManifestRouteClientHeaders,
   type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
@@ -375,10 +383,12 @@ import {
   type RpcRouteEnvelope as RpcSubpathRouteEnvelope,
   type RpcRouteResult as RpcSubpathRouteResult,
   type RpcRouteResultUnion as RpcSubpathRouteResultUnion,
+  type RpcStreamRouteProcedure as RpcSubpathStreamRouteProcedure,
   type RpcRouteRequestOptions as RpcSubpathRouteRequestOptions,
   type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
+  type RpcUnaryRouteProcedure as RpcSubpathUnaryRouteProcedure,
 } from '../src/rpc/index.js';
 import {
   defineManifest as defineManifestSubpath,
@@ -393,6 +403,8 @@ import {
   type JoorManifestRouteResultUnion as JoorSubpathManifestRouteResultUnion,
   type JoorManifestRouteId as JoorSubpathManifestRouteId,
   type JoorManifestRouteInput as JoorSubpathManifestRouteInput,
+  type JoorManifestStreamRouteProcedure as JoorSubpathManifestStreamRouteProcedure,
+  type JoorManifestUnaryRouteProcedure as JoorSubpathManifestUnaryRouteProcedure,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
   type JoorManifestRouteRequestOptions as JoorSubpathManifestRouteRequestOptions,
   type JoorManifestRequiredServices as JoorSubpathManifestRequiredServices,
@@ -1460,6 +1472,22 @@ type Routes = {
   'users.authenticated': typeof authenticatedProcedure;
   'users.watch': typeof streamProcedure;
 };
+const routeUnaryProcedure: RpcUnaryRouteProcedure<Routes, 'users.get'> =
+  procedure;
+routeUnaryProcedure.output;
+const rpcSubpathRouteUnaryProcedure: RpcSubpathUnaryRouteProcedure<
+  Routes,
+  'users.get'
+> = routeUnaryProcedure;
+rpcSubpathRouteUnaryProcedure.output;
+const routeStreamProcedure: RpcStreamRouteProcedure<Routes, 'users.watch'> =
+  streamProcedure;
+routeStreamProcedure.stream;
+const rpcSubpathRouteStreamProcedure: RpcSubpathStreamRouteProcedure<
+  Routes,
+  'users.watch'
+> = routeStreamProcedure;
+rpcSubpathRouteStreamProcedure.stream;
 const routeHasHeaders: RpcRouteHasHeaders<Routes, 'users.get'> = true;
 routeHasHeaders.valueOf();
 const routeRequiresHeaders: RpcRouteRequiresHeaders<Routes, 'users.get'> = true;
@@ -1993,6 +2021,26 @@ const manifestRouteProcedure: JoorManifestRouteProcedure<
   'users.get'
 > = procedure;
 manifestRouteProcedure.output;
+const manifestUnaryRouteProcedure: JoorManifestUnaryRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = manifestRouteProcedure;
+manifestUnaryRouteProcedure.output;
+const manifestStreamRouteProcedure: JoorManifestStreamRouteProcedure<
+  typeof manifest,
+  'users.watch'
+> = streamProcedure;
+manifestStreamRouteProcedure.stream;
+const manifestSubpathUnaryRouteProcedure: JoorSubpathManifestUnaryRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = manifestUnaryRouteProcedure;
+manifestSubpathUnaryRouteProcedure.output;
+const manifestSubpathStreamRouteProcedure: JoorSubpathManifestStreamRouteProcedure<
+  typeof manifest,
+  'users.watch'
+> = manifestStreamRouteProcedure;
+manifestSubpathStreamRouteProcedure.stream;
 const manifestRouteOutput: JoorManifestRouteOutput<
   typeof manifest,
   'users.get'
@@ -2367,6 +2415,26 @@ const publicManifestRouteProcedure: RpcManifestRouteProcedure<
   'users.get'
 > = procedure;
 publicManifestRouteProcedure.output;
+const publicManifestUnaryRouteProcedure: RpcManifestUnaryRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteProcedure;
+publicManifestUnaryRouteProcedure.output;
+const publicManifestStreamRouteProcedure: RpcManifestStreamRouteProcedure<
+  typeof manifest,
+  'users.watch'
+> = streamProcedure;
+publicManifestStreamRouteProcedure.stream;
+const rpcSubpathManifestUnaryRouteProcedure: RpcSubpathManifestUnaryRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = publicManifestUnaryRouteProcedure;
+rpcSubpathManifestUnaryRouteProcedure.output;
+const rpcSubpathManifestStreamRouteProcedure: RpcSubpathManifestStreamRouteProcedure<
+  typeof manifest,
+  'users.watch'
+> = publicManifestStreamRouteProcedure;
+rpcSubpathManifestStreamRouteProcedure.stream;
 const publicManifestRouteInput: RpcManifestRouteInput<
   typeof manifest,
   'users.get'

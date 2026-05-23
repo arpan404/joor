@@ -94,6 +94,7 @@ export type {
   JoorManifestRouteInput,
   JoorManifestRouteOutput,
   JoorManifestRouteProcedure,
+  JoorManifestStreamRouteProcedure,
   JoorManifestRouteProtocolRequest,
   JoorManifestRouteProtocolRequestUnion,
   JoorManifestRouteRequest,
@@ -112,6 +113,7 @@ export type {
   JoorManifestRoutes,
   JoorManifestStreamRouteId,
   JoorManifestTransportClient,
+  JoorManifestUnaryRouteProcedure,
   JoorManifestUnaryRouteId,
   JoorRouteMap,
 } from './manifest.js';
@@ -139,6 +141,7 @@ export type {
   RpcRouteMap,
   RpcRouteOutput,
   RpcRouteProcedure,
+  RpcStreamRouteProcedure,
   RpcProcedureError,
   RpcProcedureFrameworkError,
   RpcRouteEnvelope,
@@ -168,6 +171,7 @@ export type {
   RpcStreamRouteId,
   RpcTransportClient,
   RpcUnaryProcedure,
+  RpcUnaryRouteProcedure,
   RpcUnaryRouteId,
 } from './rpc/client.js';
 export type {
@@ -212,6 +216,7 @@ export type {
   RpcManifestRouteInput,
   RpcManifestRouteOutput,
   RpcManifestRouteProcedure,
+  RpcManifestStreamRouteProcedure,
   RpcManifestRouteProtocolRequest,
   RpcManifestRouteProtocolRequestUnion,
   RpcManifestRouteRequest,
@@ -229,6 +234,7 @@ export type {
   RpcManifestRouteUnaryProtocolRequest,
   RpcManifestRouteUnaryProtocolRequestUnion,
   RpcManifestStreamRouteId,
+  RpcManifestUnaryRouteProcedure,
   RpcManifestUnaryRouteId,
   RpcRequestHandler,
   RpcRequestPreflight,

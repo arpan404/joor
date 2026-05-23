@@ -157,6 +157,16 @@ export type RpcStreamRouteId<TRoutes extends RpcRouteMap> = Exclude<
   RpcUnaryRouteId<TRoutes>
 >;
 
+export type RpcUnaryRouteProcedure<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteProcedure<TRoutes, TId>;
+
+export type RpcStreamRouteProcedure<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteProcedure<TRoutes, TId>;
+
 export type RpcRouteEnvelope<
   TRoutes extends RpcRouteMap,
   TId extends RpcUnaryRouteId<TRoutes>,

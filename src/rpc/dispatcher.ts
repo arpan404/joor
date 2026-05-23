@@ -110,6 +110,16 @@ export type RpcManifestStreamRouteId<TManifest extends RpcManifest> = Exclude<
   RpcManifestUnaryRouteId<TManifest>
 >;
 
+export type RpcManifestUnaryRouteProcedure<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRoutes<TManifest>[TId];
+
+export type RpcManifestStreamRouteProcedure<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRoutes<TManifest>[TId];
+
 export type RpcManifestRouteServices<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,

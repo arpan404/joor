@@ -45,6 +45,7 @@ export type {
   RpcRouteMap,
   RpcRouteOutput,
   RpcRouteProcedure,
+  RpcStreamRouteProcedure,
   RpcRouteProtocolRequest,
   RpcRouteProtocolRequestUnion,
   RpcRouteRequest,
@@ -62,6 +63,7 @@ export type {
   RpcStreamRouteId,
   RpcTransportClient,
   RpcUnaryProcedure,
+  RpcUnaryRouteProcedure,
   RpcUnaryRouteId,
 } from './client.js';
 export type {
@@ -106,6 +108,7 @@ export type {
   RpcManifestRouteInput,
   RpcManifestRouteOutput,
   RpcManifestRouteProcedure,
+  RpcManifestStreamRouteProcedure,
   RpcManifestRouteProtocolRequest,
   RpcManifestRouteProtocolRequestUnion,
   RpcManifestRouteRequest,
@@ -123,6 +126,7 @@ export type {
   RpcManifestRouteUnaryProtocolRequestUnion,
   RpcManifestRoutes,
   RpcManifestStreamRouteId,
+  RpcManifestUnaryRouteProcedure,
   RpcManifestUnaryRouteId,
   RpcRequestHandler,
   RpcRequestPreflight,
