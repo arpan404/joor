@@ -26,6 +26,7 @@ import {
   createFastifyHandler,
   createHonoHandler,
   createJoorHandler,
+  createKoaHandler,
   createNetlifyFetch,
   createNextHandler,
   createNextRouteHandlers,
@@ -193,6 +194,20 @@ import {
   type HonoStreamRouteHandlerOptionsFor,
   type HonoUnaryRouteHandlerOptionsArgs,
   type HonoUnaryRouteHandlerOptionsFor,
+  type KoaContext,
+  type KoaHandlerOptions,
+  type KoaHandlerOptionsArgs,
+  type KoaHandlerOptionsFor,
+  type KoaMiddleware,
+  type KoaNext,
+  type KoaRouteStreamHandlerOptionsArgs,
+  type KoaRouteStreamHandlerOptionsFor,
+  type KoaRouteUnaryHandlerOptionsArgs,
+  type KoaRouteUnaryHandlerOptionsFor,
+  type KoaStreamRouteHandlerOptionsArgs,
+  type KoaStreamRouteHandlerOptionsFor,
+  type KoaUnaryRouteHandlerOptionsArgs,
+  type KoaUnaryRouteHandlerOptionsFor,
   type ClientBatchOptions,
   type ClientFetch,
   type ClientHeaderValues,
@@ -1165,6 +1180,7 @@ import {
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
+  createKoaHandler as createRuntimeSubpathKoaHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
@@ -1187,6 +1203,8 @@ import {
   type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
+  type KoaHandlerOptionsFor as RuntimeSubpathKoaHandlerOptionsFor,
+  type KoaMiddleware as RuntimeSubpathKoaMiddleware,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -9695,6 +9713,71 @@ fastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
 createFastifyHandler(manifest);
+const koaHandlerOptionsBase: KoaHandlerOptions = { hostname: 'app' };
+koaHandlerOptionsBase.useOriginalUrl = false;
+const koaHandlerOptions: KoaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = { ...handlerOptions, hostname: 'app' };
+const runtimeSubpathKoaHandlerOptions: RuntimeSubpathKoaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaHandlerOptions;
+const koaRouteUnaryHandlerOptions: KoaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaHandlerOptions;
+const koaUnaryRouteHandlerOptions: KoaUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaRouteUnaryHandlerOptions;
+const koaRouteStreamHandlerOptions: KoaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaHandlerOptions;
+const koaStreamRouteHandlerOptions: KoaStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaRouteStreamHandlerOptions;
+runtimeSubpathKoaHandlerOptions.plugins?.[0]?.name.toUpperCase();
+koaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+koaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const koaHandlerOptionsArgs: KoaHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [koaHandlerOptions];
+const koaRouteUnaryHandlerOptionsArgs: KoaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaHandlerOptionsArgs;
+const koaUnaryRouteHandlerOptionsArgs: KoaUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaRouteUnaryHandlerOptionsArgs;
+const koaRouteStreamHandlerOptionsArgs: KoaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaHandlerOptionsArgs;
+const koaStreamRouteHandlerOptionsArgs: KoaStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = koaRouteStreamHandlerOptionsArgs;
+koaUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+koaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const koaMiddleware: KoaMiddleware = createKoaHandler(
+  manifest,
+  koaHandlerOptions
+);
+const runtimeSubpathKoaMiddleware: RuntimeSubpathKoaMiddleware =
+  createRuntimeSubpathKoaHandler(manifest, runtimeSubpathKoaHandlerOptions);
+const koaContext = {} as KoaContext;
+koaContext.originalUrl = '/rpc';
+koaContext.respond = false;
+const koaNext: KoaNext = async () => undefined;
+koaMiddleware(koaContext, koaNext);
+runtimeSubpathKoaMiddleware(koaContext, koaNext);
+// @ts-expect-error service-dependent manifests require matching Koa adapter plugins.
+createKoaHandler(manifest);
 const honoHandlerOptions: HonoHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]

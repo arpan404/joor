@@ -80,6 +80,10 @@
       "types": "./dist/runtime/hono.d.ts",
       "import": "./dist/runtime/hono.js"
     },
+    "./runtime/koa": {
+      "types": "./dist/runtime/koa.d.ts",
+      "import": "./dist/runtime/koa.js"
+    },
     "./runtime/fetch": {
       "types": "./dist/runtime/fetch.d.ts",
       "import": "./dist/runtime/fetch.js"

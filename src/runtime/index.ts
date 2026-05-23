@@ -27,6 +27,7 @@ export * from './fetch.js';
 export * from './express.js';
 export * from './fastify.js';
 export * from './hono.js';
+export * from './koa.js';
 export * from './netlify.js';
 export * from './next.js';
 export * from './node.js';
