@@ -5,6 +5,9 @@ import {
   defineConfigFor,
   defineManifest,
   defineProcedure,
+  errorStatus as rootErrorStatus,
+  failure as rootProcedureFailure,
+  ok as rootProcedureOk,
   resolvePluginServices,
   createAwsLambdaHandler,
   createAwsLambdaHttpApiHandler,
@@ -2426,6 +2429,24 @@ const subpathProcedureFailure = procedureFailureSubpath(
 );
 if (subpathProcedureFailure.kind === 'error') {
   subpathProcedureFailure.error.details.message.toUpperCase();
+}
+const rootProcedureSuccess = rootProcedureOk(
+  { id: '1', name: 'Ada' },
+  { 'cache-control': 'private' }
+);
+const rootProcedureSuccessDataName: string = rootProcedureSuccess.data.name;
+rootProcedureSuccessDataName.toUpperCase();
+rootProcedureSuccess.headers?.['cache-control']?.toUpperCase();
+const rootProcedureFailureResult = rootProcedureFailure(
+  'NOT_FOUND',
+  subpathProcedureErrorDetails,
+  rootErrorStatus('NOT_FOUND')
+);
+if (rootProcedureFailureResult.kind === 'error') {
+  const rootProcedureFailureCode: 'NOT_FOUND' =
+    rootProcedureFailureResult.error.code;
+  rootProcedureFailureCode.toUpperCase();
+  rootProcedureFailureResult.error.details.message.toUpperCase();
 }
 const _missingSubpathProcedureFailureDetails: SubpathProcedureFailure<
   'NOT_FOUND',

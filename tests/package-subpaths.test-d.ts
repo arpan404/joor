@@ -2,6 +2,8 @@ import {
   createPlugin,
   defineManifest,
   defineProcedure,
+  errorStatus,
+  ok as rootOk,
   t,
 } from 'joor';
 import { createAuthPolicy } from 'joor/auth';
@@ -143,8 +145,10 @@ const packageSubpathValues = [
   createRuntimeContext,
   createVercelFetch,
   DEFAULT_MAX_BODY_BYTES,
+  errorStatus,
   jsonOkResponseInit,
   ok,
+  rootOk,
 ] as const;
 packageSubpathValues.length.toFixed();
 
