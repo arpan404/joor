@@ -356,6 +356,10 @@ export type NativeStreamProtocolRequest =
   NativeStreamRouteRequest;
 export type NativeRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
+export type NativeUnaryRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+  NativeRouteBatchRequest<TRequests>;
+export type NativeRouteUnaryBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+  NativeUnaryRouteBatchRequest<TRequests>;
 export type NativeProtocolBatchRequest<TRequests extends readonly NativeUnaryProtocolRequest[] = readonly NativeUnaryProtocolRequest[]> =
   NativeRouteBatchRequest<TRequests>;
 export type NativeBatchBody = NativeRouteBatchRequest;
@@ -2306,15 +2310,25 @@ export type RouteEnvelope<TId extends UnaryRouteId> = JoorManifestRouteEnvelope<
 export type UnaryRouteEnvelope<TId extends UnaryRouteId> = JoorManifestUnaryRouteEnvelope<Manifest, TId>;
 export type RouteUnaryEnvelope<TId extends UnaryRouteId> = UnaryRouteEnvelope<TId>;
 export type RouteRequest<TId extends UnaryRouteId> = JoorManifestRouteRequest<Manifest, TId>;
+export type UnaryRouteRequest<TId extends UnaryRouteId> = RouteRequest<TId>;
+export type RouteUnaryRequest<TId extends UnaryRouteId> = UnaryRouteRequest<TId>;
 export type RouteRequestUnion = JoorManifestRouteRequestUnion<Manifest>;
+export type UnaryRouteRequestUnion = RouteRequestUnion;
+export type RouteUnaryRequestUnion = UnaryRouteRequestUnion;
 export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[] = readonly RouteRequestUnion[]> = TRequests;
+export type UnaryRouteBatchRequest<TRequests extends readonly UnaryRouteRequestUnion[] = readonly UnaryRouteRequestUnion[]> = RouteBatchRequest<TRequests>;
+export type RouteUnaryBatchRequest<TRequests extends readonly UnaryRouteRequestUnion[] = readonly UnaryRouteRequestUnion[]> = UnaryRouteBatchRequest<TRequests>;
 export type RouteBatchResults<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteProtocolRequest<TId extends RouteId> = JoorManifestRouteProtocolRequest<Manifest, TId>;
 export type RouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<Manifest>;
 export type RouteUnaryProtocolRequest<TId extends UnaryRouteId> = JoorManifestRouteUnaryProtocolRequest<Manifest, TId>;
+export type UnaryRouteProtocolRequest<TId extends UnaryRouteId> = RouteUnaryProtocolRequest<TId>;
 export type RouteUnaryProtocolRequestUnion = JoorManifestRouteUnaryProtocolRequestUnion<Manifest>;
+export type UnaryRouteProtocolRequestUnion = RouteUnaryProtocolRequestUnion;
 export type RouteStreamProtocolRequest<TId extends StreamRouteId> = JoorManifestRouteStreamProtocolRequest<Manifest, TId>;
+export type StreamRouteProtocolRequest<TId extends StreamRouteId> = RouteStreamProtocolRequest<TId>;
 export type RouteStreamProtocolRequestUnion = JoorManifestRouteStreamProtocolRequestUnion<Manifest>;
+export type StreamRouteProtocolRequestUnion = RouteStreamProtocolRequestUnion;
 export type RouteProtocolBatchRequest<TRequests extends readonly RouteUnaryProtocolRequestUnion[]> = JoorManifestRouteBatchRequest<Manifest, TRequests>;
 export type RouteBody = JoorManifestRouteBody<Manifest>;
 export type RouteBodyResult = JoorManifestRouteBodyResult<Manifest>;

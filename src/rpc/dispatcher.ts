@@ -372,6 +372,16 @@ export type RpcManifestRouteStreamProtocolRequest<
   TId extends RpcManifestStreamRouteId<TManifest>,
 > = RpcManifestRouteProtocolRequest<TManifest, TId>;
 
+export type RpcManifestUnaryRouteProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
+
+export type RpcManifestStreamRouteProtocolRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
+
 export type RpcManifestRouteProtocolRequestUnion<
   TManifest extends RpcManifest,
 > = {
@@ -390,11 +400,21 @@ export type RpcManifestRouteUnaryProtocolRequestUnion<
   >;
 }[RpcManifestUnaryRouteId<TManifest>];
 
+export type RpcManifestUnaryRouteProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryProtocolRequestUnion<TManifest>;
+
 export type RpcManifestRouteBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
     readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
 > = TRequests;
+
+export type RpcManifestUnaryRouteBatchRequest<
+  TManifest extends RpcManifest,
+  TRequests extends
+    readonly RpcManifestUnaryRouteProtocolRequestUnion<TManifest>[],
+> = RpcManifestRouteBatchRequest<TManifest, TRequests>;
 
 type RpcManifestRouteBatchResultRequest<TManifest extends RpcManifest> =
   | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>
@@ -431,6 +451,10 @@ export type RpcManifestRouteStreamProtocolRequestUnion<
     TId
   >;
 }[RpcManifestStreamRouteId<TManifest>];
+
+export type RpcManifestStreamRouteProtocolRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
 
 export type RpcManifestBody<TManifest extends RpcManifest> =
   | RpcManifestRouteProtocolRequestUnion<TManifest>
@@ -560,12 +584,20 @@ export type RpcManifestRouteRequest<
   ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
   : { headers: RpcManifestRouteClientHeaders<TManifest, TId> });
 
+export type RpcManifestUnaryRouteRequest<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteRequest<TManifest, TId>;
+
 export type RpcManifestRouteRequestUnion<TManifest extends RpcManifest> = {
   [TId in RpcManifestUnaryRouteId<TManifest>]: RpcManifestRouteRequest<
     TManifest,
     TId
   >;
 }[RpcManifestUnaryRouteId<TManifest>];
+
+export type RpcManifestUnaryRouteRequestUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteRequestUnion<TManifest>;
 
 type RpcManifestProtocolBodyResultFor<
   TManifest extends RpcManifest,

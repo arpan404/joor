@@ -169,6 +169,8 @@ import {
   type JoorManifestRouteUnaryProtocolRequest,
   type JoorManifestRouteUnaryProtocolRequestUnion,
   type JoorManifestRoutes,
+  type JoorManifestStreamRouteProtocolRequest,
+  type JoorManifestStreamRouteProtocolRequestUnion,
   type JoorManifestStreamRouteId,
   type JoorManifestTransportClient,
   type JoorManifestUnaryRouteClientArgs,
@@ -181,8 +183,13 @@ import {
   type JoorManifestUnaryRouteHeaders,
   type JoorManifestUnaryRouteInput,
   type JoorManifestUnaryRouteOutput,
+  type JoorManifestUnaryRouteBatchRequest,
   type JoorManifestUnaryRouteProcedure,
+  type JoorManifestUnaryRouteProtocolRequest,
+  type JoorManifestUnaryRouteProtocolRequestUnion,
   type JoorManifestUnaryRouteResponseHeaders,
+  type JoorManifestUnaryRouteRequest,
+  type JoorManifestUnaryRouteRequestUnion,
   type JoorManifestUnaryRouteResult,
   type JoorManifestUnaryRouteRequiresHeaders,
   type JoorManifestUnaryRouteRequiresResponseHeaders,
@@ -272,6 +279,8 @@ import {
   type RpcManifestRouteStreamProtocolRequestUnion,
   type RpcManifestRouteUnaryProtocolRequest,
   type RpcManifestRouteUnaryProtocolRequestUnion,
+  type RpcManifestStreamRouteProtocolRequest,
+  type RpcManifestStreamRouteProtocolRequestUnion,
   type RpcManifestStreamRouteId,
   type RpcManifestUnaryRouteClientArgs,
   type RpcManifestUnaryRouteClientHeaders,
@@ -283,8 +292,13 @@ import {
   type RpcManifestUnaryRouteHeaders,
   type RpcManifestUnaryRouteInput,
   type RpcManifestUnaryRouteOutput,
+  type RpcManifestUnaryRouteBatchRequest,
   type RpcManifestUnaryRouteProcedure,
+  type RpcManifestUnaryRouteProtocolRequest,
+  type RpcManifestUnaryRouteProtocolRequestUnion,
   type RpcManifestUnaryRouteResponseHeaders,
+  type RpcManifestUnaryRouteRequest,
+  type RpcManifestUnaryRouteRequestUnion,
   type RpcManifestUnaryRouteResult,
   type RpcManifestUnaryRouteRequiresHeaders,
   type RpcManifestUnaryRouteRequiresResponseHeaders,
@@ -335,6 +349,8 @@ import {
   type RpcStreamRouteHasResponseHeaders,
   type RpcStreamRouteHeaders,
   type RpcStreamRouteInput,
+  type RpcStreamRouteProtocolRequest,
+  type RpcStreamRouteProtocolRequestUnion,
   type RpcStreamRouteProcedure,
   type RpcStreamRouteRequestOptions,
   type RpcRouteClientArgs,
@@ -352,8 +368,13 @@ import {
   type RpcUnaryRouteHeaders,
   type RpcUnaryRouteInput,
   type RpcUnaryRouteOutput,
+  type RpcUnaryRouteBatchRequest,
   type RpcUnaryRouteProcedure,
+  type RpcUnaryRouteProtocolRequest,
+  type RpcUnaryRouteProtocolRequestUnion,
   type RpcUnaryRouteResponseHeaders,
+  type RpcUnaryRouteRequest,
+  type RpcUnaryRouteRequestUnion,
   type RpcUnaryRouteResult,
   type RpcUnaryRouteRequiresHeaders,
   type RpcUnaryRouteRequiresResponseHeaders,
@@ -2459,6 +2480,11 @@ const manifestRouteRequest: JoorManifestRouteRequest<
   headers: { 'x-tenant-id': 'tenant-1' },
 };
 manifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+const manifestUnaryRouteRequest: JoorManifestUnaryRouteRequest<
+  typeof manifest,
+  'users.get'
+> = manifestRouteRequest;
+manifestUnaryRouteRequest.input.id.toUpperCase();
 const manifestRouteRequestOptions: JoorManifestRouteRequestOptions<
   typeof manifest,
   'users.get'
@@ -2537,6 +2563,10 @@ const manifestRouteRequestUnion: JoorManifestRouteRequestUnion<
   typeof manifest
 > = manifestRouteRequest;
 manifestRouteRequestUnion.id.toUpperCase();
+const manifestUnaryRouteRequestUnion: JoorManifestUnaryRouteRequestUnion<
+  typeof manifest
+> = manifestUnaryRouteRequest;
+manifestUnaryRouteRequestUnion.id.toUpperCase();
 const manifestRouteBatchResults: JoorManifestRouteBatchResults<
   typeof manifest,
   [typeof manifestRouteRequest]
@@ -2574,24 +2604,47 @@ const manifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
   'users.get'
 > = manifestProtocolRequest;
 manifestUnaryProtocolRequest.input.id.toUpperCase();
+const manifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = manifestUnaryProtocolRequest;
+manifestUnaryRouteProtocolRequest.input.id.toUpperCase();
 const manifestUnaryProtocolRequestUnion: JoorManifestRouteUnaryProtocolRequestUnion<
   typeof manifest
 > = manifestUnaryProtocolRequest;
 manifestUnaryProtocolRequestUnion.id.toUpperCase();
+const manifestUnaryRouteProtocolRequestUnion: JoorManifestUnaryRouteProtocolRequestUnion<
+  typeof manifest
+> = manifestUnaryRouteProtocolRequest;
+manifestUnaryRouteProtocolRequestUnion.id.toUpperCase();
 const manifestStreamProtocolRequest: JoorManifestRouteStreamProtocolRequest<
   typeof manifest,
   'users.watch'
 > = { id: 'users.watch', input: { userId: '1' } };
 manifestStreamProtocolRequest.input.userId.toUpperCase();
+const manifestStreamRouteProtocolRequest: JoorManifestStreamRouteProtocolRequest<
+  typeof manifest,
+  'users.watch'
+> = manifestStreamProtocolRequest;
+manifestStreamRouteProtocolRequest.input.userId.toUpperCase();
 const manifestStreamProtocolRequestUnion: JoorManifestRouteStreamProtocolRequestUnion<
   typeof manifest
 > = manifestStreamProtocolRequest;
 manifestStreamProtocolRequestUnion.input.userId.toUpperCase();
+const manifestStreamRouteProtocolRequestUnion: JoorManifestStreamRouteProtocolRequestUnion<
+  typeof manifest
+> = manifestStreamRouteProtocolRequest;
+manifestStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
 const manifestBatchRequest: JoorManifestRouteBatchRequest<
   typeof manifest,
   [typeof manifestUnaryProtocolRequest]
 > = [manifestUnaryProtocolRequest];
 manifestBatchRequest[0].input.id.toUpperCase();
+const manifestUnaryRouteBatchRequest: JoorManifestUnaryRouteBatchRequest<
+  typeof manifest,
+  [typeof manifestUnaryRouteProtocolRequest]
+> = [manifestUnaryRouteProtocolRequest];
+manifestUnaryRouteBatchRequest[0].input.id.toUpperCase();
 const readonlyManifestBatchRequest = [manifestUnaryProtocolRequest] as const;
 const manifestReadonlyBatchBody: JoorManifestRouteBody<typeof manifest> =
   readonlyManifestBatchRequest;
@@ -3018,10 +3071,19 @@ const publicManifestRouteRequest: RpcManifestRouteRequest<
   'users.get'
 > = manifestRouteRequest;
 publicManifestRouteRequest.headers['x-tenant-id'].toUpperCase();
+const publicManifestUnaryRouteRequest: RpcManifestUnaryRouteRequest<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteRequest;
+publicManifestUnaryRouteRequest.input.id.toUpperCase();
 const publicManifestRouteRequestUnion: RpcManifestRouteRequestUnion<
   typeof manifest
 > = publicManifestRouteRequest;
 publicManifestRouteRequestUnion.id.toUpperCase();
+const publicManifestUnaryRouteRequestUnion: RpcManifestUnaryRouteRequestUnion<
+  typeof manifest
+> = publicManifestUnaryRouteRequest;
+publicManifestUnaryRouteRequestUnion.id.toUpperCase();
 const rpcSubpathManifestRouteRequest: RpcSubpathManifestRouteRequest<
   typeof manifest,
   'users.get'
@@ -3035,19 +3097,37 @@ const publicManifestUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequest<
   'users.get'
 > = publicManifestProtocolRequest;
 publicManifestUnaryProtocolRequest.input.id.toUpperCase();
+const publicManifestUnaryRouteProtocolRequest: RpcManifestUnaryRouteProtocolRequest<
+  typeof manifest,
+  'users.get'
+> = publicManifestUnaryProtocolRequest;
+publicManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
 const publicManifestUnaryProtocolRequestUnion: RpcManifestRouteUnaryProtocolRequestUnion<
   typeof manifest
 > = publicManifestUnaryProtocolRequest;
 publicManifestUnaryProtocolRequestUnion.id.toUpperCase();
+const publicManifestUnaryRouteProtocolRequestUnion: RpcManifestUnaryRouteProtocolRequestUnion<
+  typeof manifest
+> = publicManifestUnaryRouteProtocolRequest;
+publicManifestUnaryRouteProtocolRequestUnion.id.toUpperCase();
 const publicManifestStreamProtocolRequest: RpcManifestRouteStreamProtocolRequest<
   typeof manifest,
   'users.watch'
 > = { id: 'users.watch', input: { userId: '1' } };
 publicManifestStreamProtocolRequest.input.userId.toUpperCase();
+const publicManifestStreamRouteProtocolRequest: RpcManifestStreamRouteProtocolRequest<
+  typeof manifest,
+  'users.watch'
+> = publicManifestStreamProtocolRequest;
+publicManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
 const publicManifestStreamProtocolRequestUnion: RpcManifestRouteStreamProtocolRequestUnion<
   typeof manifest
 > = publicManifestStreamProtocolRequest;
 publicManifestStreamProtocolRequestUnion.input.userId.toUpperCase();
+const publicManifestStreamRouteProtocolRequestUnion: RpcManifestStreamRouteProtocolRequestUnion<
+  typeof manifest
+> = publicManifestStreamRouteProtocolRequest;
+publicManifestStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
 const publicManifestBody: RpcManifestBody<typeof manifest> =
   publicManifestProtocolRequest;
 const publicManifestBatchBody: RpcManifestRouteUnaryProtocolRequest<
@@ -3060,6 +3140,11 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+const publicManifestUnaryRouteBatchRequest: RpcManifestUnaryRouteBatchRequest<
+  typeof manifest,
+  [typeof publicManifestUnaryRouteProtocolRequest]
+> = [publicManifestUnaryRouteProtocolRequest];
+publicManifestUnaryRouteBatchRequest[0].input.id.toUpperCase();
 const publicManifestBatchResults: RpcManifestRouteBatchResults<
   typeof manifest,
   readonly [typeof publicManifestRouteRequest]
@@ -4885,20 +4970,41 @@ const streamOnlyProtocolRequest: RpcRouteStreamProtocolRequest<
   'users.watch'
 > = streamProtocolRequest;
 streamOnlyProtocolRequest.input.userId.toUpperCase();
+const streamRouteProtocolRequestAlias: RpcStreamRouteProtocolRequest<
+  Routes,
+  'users.watch'
+> = streamOnlyProtocolRequest;
+streamRouteProtocolRequestAlias.input.userId.toUpperCase();
 const streamProtocolRequestUnion: RpcRouteStreamProtocolRequestUnion<Routes> =
   streamOnlyProtocolRequest;
 streamProtocolRequestUnion.input.userId.toUpperCase();
+const streamRouteProtocolRequestUnionAlias: RpcStreamRouteProtocolRequestUnion<Routes> =
+  streamRouteProtocolRequestAlias;
+streamRouteProtocolRequestUnionAlias.input.userId.toUpperCase();
 const unaryProtocolRequest: RpcRouteUnaryProtocolRequest<Routes, 'users.get'> =
   routeProtocolRequest;
 unaryProtocolRequest.input.id.toUpperCase();
+const unaryRouteProtocolRequestAlias: RpcUnaryRouteProtocolRequest<
+  Routes,
+  'users.get'
+> = unaryProtocolRequest;
+unaryRouteProtocolRequestAlias.input.id.toUpperCase();
 const unaryProtocolRequestUnion: RpcRouteUnaryProtocolRequestUnion<Routes> =
   unaryProtocolRequest;
 unaryProtocolRequestUnion.id.toUpperCase();
+const unaryRouteProtocolRequestUnionAlias: RpcUnaryRouteProtocolRequestUnion<Routes> =
+  unaryRouteProtocolRequestAlias;
+unaryRouteProtocolRequestUnionAlias.id.toUpperCase();
 const routeBatchRequest: RpcRouteBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = [routeProtocolRequest];
 routeBatchRequest[0].input.id.toUpperCase();
+const unaryRouteBatchRequestAlias: RpcUnaryRouteBatchRequest<
+  Routes,
+  [typeof unaryRouteProtocolRequestAlias]
+> = [unaryRouteProtocolRequestAlias];
+unaryRouteBatchRequestAlias[0].input.id.toUpperCase();
 const routeBatchBody: RpcRouteBody<Routes> = routeBatchRequest;
 routeBatchBody.length.toFixed();
 const readonlyRouteBatchBody: RpcRouteBody<Routes> = [
@@ -5056,11 +5162,17 @@ const routeRequest = routeClient.request(
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
 typedRouteRequest.input.id.toUpperCase();
 typedRouteRequest.headers['x-tenant-id'].toUpperCase();
+const typedUnaryRouteRequest: RpcUnaryRouteRequest<Routes, 'users.get'> =
+  typedRouteRequest;
+typedUnaryRouteRequest.input.id.toUpperCase();
 const routeRequestId: 'users.get' = routeRequest.id;
 routeRequestId.toUpperCase();
 
 const unionRouteRequest: RpcRouteRequestUnion<Routes> = routeRequest;
 unionRouteRequest.id.toUpperCase();
+const unaryRouteRequestUnion: RpcUnaryRouteRequestUnion<Routes> =
+  typedUnaryRouteRequest;
+unaryRouteRequestUnion.id.toUpperCase();
 
 // @ts-expect-error request ids preserve the selected route literal.
 const _wrongRouteRequestId: 'users.authenticated' = routeRequest.id;
