@@ -1336,6 +1336,52 @@ export default fetch;
 `
   );
 
+  await writeFile(
+    `${outDir}/cloudflare.ts`,
+    `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
+import { fetch } from './fetch.js';
+
+export { fetch };
+export const worker: CloudflareWorker = { fetch };
+export default worker;
+`
+  );
+
+  await writeFile(
+    `${outDir}/next.ts`,
+    `import type { NextRouteHandlers } from 'joor/runtime/next';
+import { fetch } from './fetch.js';
+
+export const GET = fetch;
+export const POST = fetch;
+export const OPTIONS = fetch;
+export const handlers: NextRouteHandlers = { GET, POST, OPTIONS };
+export default handlers;
+`
+  );
+
+  await writeFile(
+    `${outDir}/vercel.ts`,
+    `import type { VercelFunction } from 'joor/runtime/vercel';
+import { fetch } from './fetch.js';
+
+export { fetch };
+export const vercel: VercelFunction = { fetch };
+export default vercel;
+`
+  );
+
+  await writeFile(
+    `${outDir}/netlify.ts`,
+    `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
+import { fetch } from './fetch.js';
+
+export { fetch };
+export const edge: NetlifyEdgeFetchHandler = (request) => fetch(request);
+export default edge;
+`
+  );
+
   const nodeFile = `${outDir}/node.ts`;
   await writeFile(
     nodeFile,

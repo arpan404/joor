@@ -83,6 +83,18 @@ describe('compiler', () => {
         readFile(join(outDir, 'fetch.ts'), 'utf8')
       ).resolves.toContain("from './dispatcher.safe.js'");
       await expect(
+        readFile(join(outDir, 'cloudflare.ts'), 'utf8')
+      ).resolves.toContain('CloudflareWorker');
+      await expect(
+        readFile(join(outDir, 'next.ts'), 'utf8')
+      ).resolves.toContain('NextRouteHandlers');
+      await expect(
+        readFile(join(outDir, 'vercel.ts'), 'utf8')
+      ).resolves.toContain('VercelFunction');
+      await expect(
+        readFile(join(outDir, 'netlify.ts'), 'utf8')
+      ).resolves.toContain('NetlifyEdgeFetchHandler');
+      await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.toContain('readIncomingBody');
       await expect(
