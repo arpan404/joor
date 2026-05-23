@@ -10,6 +10,7 @@ import type {
   HandlerOptionsWithTrailingArgs,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResult,
   RpcManifestBodyResultFor,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
@@ -61,6 +62,9 @@ export type NodeRpcRequestHandler = (
 ) => Promise<void>;
 
 export type NodeTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type NodeTransportBodyResultFor<TManifest extends JoorManifest> =
+  | RpcManifestBodyResult<TManifest>
+  | SerializedJsonEnvelope;
 export type NodeTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,

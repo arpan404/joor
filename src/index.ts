@@ -251,6 +251,7 @@ export type {
   BunServeOptionsFor,
   BunServeOptions,
   BunTransportBodyResult,
+  BunTransportBodyResultFor,
   BunTransportBodyResultHandler,
   BunTransportBodyResultHandlerFor,
   BunTransportRequestHandler,
@@ -280,6 +281,7 @@ export type {
 } from './runtime/compiled.js';
 export type {
   DenoCompiledTransportBodyResult,
+  DenoCompiledTransportBodyResultFor,
   DenoCompiledTransportBodyResultHandler,
   DenoCompiledTransportBodyResultHandlerFor,
   DenoCompiledTransportRequestHandler,
@@ -291,6 +293,7 @@ export type {
   DenoServeOptionsFor,
   DenoServeOptions,
   DenoTransportBodyResult,
+  DenoTransportBodyResultFor,
   DenoTransportBodyResultHandler,
   DenoTransportBodyResultHandlerFor,
   DenoTransportRequestHandler,
@@ -316,6 +319,7 @@ export type {
   NodeServer,
   NodeRpcRequestHandler,
   NodeTransportBodyResult,
+  NodeTransportBodyResultFor,
   NodeTransportBodyResultHandler,
   NodeTransportBodyResultHandlerFor,
 } from './runtime/node.js';

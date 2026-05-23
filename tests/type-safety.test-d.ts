@@ -56,6 +56,7 @@ import {
   type AuthPolicyResultLike,
   type AuthPolicyServices,
   type BunTransportBodyResult,
+  type BunTransportBodyResultFor,
   type BunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor,
   type BunTransportRequestHandler,
@@ -76,6 +77,7 @@ import {
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type DenoCompiledTransportBodyResult as RootDenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultFor as RootDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RootDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
@@ -85,6 +87,7 @@ import {
   type DenoServer,
   type DenoServeOptions,
   type DenoTransportBodyResult,
+  type DenoTransportBodyResultFor,
   type DenoTransportBodyResultHandler,
   type DenoTransportBodyResultHandlerFor,
   type DenoTransportRequestHandler,
@@ -160,6 +163,7 @@ import {
   type NextRouteHandlersOptionsFor,
   type NodeServer,
   type NodeTransportBodyResult,
+  type NodeTransportBodyResultFor,
   type NodeTransportBodyResultHandler,
   type NodeTransportBodyResultHandlerFor,
   type PendingRpcRequest,
@@ -383,6 +387,7 @@ import {
   type DenoServeOptionsFor as StandaloneDenoServeOptionsFor,
   type DenoServeOptions as StandaloneDenoServeOptions,
   type DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
+  type DenoTransportBodyResultFor as StandaloneDenoTransportBodyResultFor,
   type DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
   type DenoTransportBodyResultHandlerFor as StandaloneDenoTransportBodyResultHandlerFor,
   type DenoTransportRequestHandler as StandaloneDenoTransportRequestHandler,
@@ -390,6 +395,7 @@ import {
 import {
   createDenoCompiledTransportRequestHandlerWithPath,
   type DenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler,
@@ -432,18 +438,21 @@ import {
   createVercelFetch as createRuntimeSubpathVercelFetch,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
   type BunRpcRequestHandler as RuntimeSubpathBunRpcRequestHandler,
+  type BunTransportBodyResultFor as RuntimeSubpathBunTransportBodyResultFor,
   type BunTransportBodyResultHandler as RuntimeSubpathBunTransportBodyResultHandler,
   type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
   type BunTransportRequestHandler as RuntimeSubpathBunTransportRequestHandler,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
   type CompiledRpcRequestHandler as RuntimeSubpathCompiledRpcRequestHandler,
   type DenoCompiledTransportBodyResult as RuntimeSubpathDenoCompiledTransportBodyResult,
+  type DenoCompiledTransportBodyResultFor as RuntimeSubpathDenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler as RuntimeSubpathDenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
   type DenoFetchHandler as RuntimeSubpathDenoFetchHandler,
   type DenoRpcRequestHandler as RuntimeSubpathDenoRpcRequestHandler,
   type DenoTransportBodyResult as RuntimeSubpathDenoTransportBodyResult,
+  type DenoTransportBodyResultFor as RuntimeSubpathDenoTransportBodyResultFor,
   type DenoTransportBodyResultHandlerFor as RuntimeSubpathDenoTransportBodyResultHandlerFor,
   type DenoTransportRequestHandler as RuntimeSubpathDenoTransportRequestHandler,
   type JoorFetchHandler as RuntimeSubpathJoorFetchHandler,
@@ -456,6 +465,7 @@ import {
   type NextRouteHandlers as RuntimeSubpathNextRouteHandlers,
   type NextRouteHandlersOptionsFor as RuntimeSubpathNextRouteHandlersOptionsFor,
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
+  type NodeTransportBodyResultFor as RuntimeSubpathNodeTransportBodyResultFor,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
@@ -2767,6 +2777,16 @@ const denoTransportResult: DenoTransportBodyResult = {
   traceId: 'trace-1',
   data: {},
 };
+const denoTransportResultFor: DenoTransportBodyResultFor<typeof manifest> =
+  manifestRouteBodyResult;
+if (
+  !(denoTransportResultFor instanceof Response) &&
+  !Array.isArray(denoTransportResultFor) &&
+  'ok' in denoTransportResultFor &&
+  denoTransportResultFor.ok
+) {
+  denoTransportResultFor.data.name.toUpperCase();
+}
 const denoTransportHandler: DenoTransportBodyResultHandler = async () =>
   denoTransportResult;
 const denoTransportRequestHandler: DenoTransportRequestHandler =
@@ -2828,6 +2848,11 @@ routeTypedDenoTransportHandler(createFetchRequestSourceForTypes(), {
   input: { ok: true },
 });
 const _bunTransportResult: BunTransportBodyResult = denoTransportResult;
+const bunTransportResultFor: BunTransportBodyResultFor<typeof manifest> =
+  denoTransportResultFor;
+const rootDenoCompiledTransportResultFor: RootDenoCompiledTransportBodyResultFor<
+  typeof manifest
+> = bunTransportResultFor;
 const routeTypedBunTransportHandler: BunTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -2862,6 +2887,12 @@ routeTypedBunTransportHandler(createFetchRequestSourceForTypes(), {
 });
 const standaloneDenoTransportResult: StandaloneDenoTransportBodyResult =
   denoTransportResult;
+const standaloneDenoTransportResultFor: StandaloneDenoTransportBodyResultFor<
+  typeof manifest
+> = rootDenoCompiledTransportResultFor;
+const denoCompiledTransportResultFor: DenoCompiledTransportBodyResultFor<
+  typeof manifest
+> = standaloneDenoTransportResultFor;
 const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
 const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
@@ -3335,6 +3366,8 @@ const transportResult: RpcBodyResult = {
 };
 createNodeTransportRequestHandler(async () => transportResult);
 const _nodeTransportResult: NodeTransportBodyResult = transportResult;
+const nodeTransportResultFor: NodeTransportBodyResultFor<typeof manifest> =
+  denoCompiledTransportResultFor;
 const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -3369,6 +3402,26 @@ runtimeSubpathFetch(new Request('https://example.com/rpc'));
 const runtimeSubpathDenoResult: RuntimeSubpathDenoTransportBodyResult =
   transportResult;
 runtimeSubpathDenoResult.id.toUpperCase();
+const runtimeSubpathBunTransportResultFor: RuntimeSubpathBunTransportBodyResultFor<
+  typeof manifest
+> = nodeTransportResultFor;
+const runtimeSubpathDenoTransportResultFor: RuntimeSubpathDenoTransportBodyResultFor<
+  typeof manifest
+> = runtimeSubpathBunTransportResultFor;
+const runtimeSubpathDenoCompiledTransportResultFor: RuntimeSubpathDenoCompiledTransportBodyResultFor<
+  typeof manifest
+> = runtimeSubpathDenoTransportResultFor;
+const runtimeSubpathNodeTransportResultFor: RuntimeSubpathNodeTransportBodyResultFor<
+  typeof manifest
+> = runtimeSubpathDenoCompiledTransportResultFor;
+if (
+  !(runtimeSubpathNodeTransportResultFor instanceof Response) &&
+  !Array.isArray(runtimeSubpathNodeTransportResultFor) &&
+  'ok' in runtimeSubpathNodeTransportResultFor &&
+  runtimeSubpathNodeTransportResultFor.ok
+) {
+  runtimeSubpathNodeTransportResultFor.data.id.toUpperCase();
+}
 const runtimeSubpathBunTransportHandler: RuntimeSubpathBunTransportBodyResultHandler<
   typeof manifestRouteRequest,
   JoorManifestRouteBodyResultFor<typeof manifest, typeof manifestRouteRequest>

@@ -11,6 +11,7 @@ import type {
   RpcRequestPreflight,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResult,
   RpcManifestBodyResultFor,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -56,6 +57,9 @@ export type BunServeOptionsFor<
 > = BunServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type BunTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type BunTransportBodyResultFor<TManifest extends JoorManifest> =
+  | RpcManifestBodyResult<TManifest>
+  | SerializedJsonEnvelope;
 export type BunFetchHandler = JoorFetchHandler;
 export type BunRpcRequestHandler = JoorFetchHandler;
 export type BunTransportRequestHandler = JoorFetchHandler;

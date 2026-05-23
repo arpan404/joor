@@ -18,6 +18,7 @@ import {
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
 import type {
   DenoTransportBodyResult,
+  DenoTransportBodyResultFor,
   DenoTransportBodyResultHandler,
   DenoTransportBodyResultHandlerFor,
 } from './deno-transport.js';
@@ -27,6 +28,9 @@ export type DenoCompiledTransportRequestHandler = (
 ) => Promise<Response>;
 
 export type DenoCompiledTransportBodyResult = DenoTransportBodyResult;
+
+export type DenoCompiledTransportBodyResultFor<TManifest extends JoorManifest> =
+  DenoTransportBodyResultFor<TManifest>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,

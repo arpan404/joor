@@ -5,6 +5,7 @@ import type {
   HandlerOptionsFor,
   RpcBodyResult,
   RpcManifestBody,
+  RpcManifestBodyResult,
   RpcManifestBodyResultFor,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
@@ -54,6 +55,9 @@ export type DenoServeOptionsFor<
 > = DenoServeOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins>;
 
 export type DenoTransportBodyResult = RpcBodyResult | SerializedJsonEnvelope;
+export type DenoTransportBodyResultFor<TManifest extends JoorManifest> =
+  | RpcManifestBodyResult<TManifest>
+  | SerializedJsonEnvelope;
 export type DenoFetchHandler = JoorFetchHandler;
 export type DenoRpcRequestHandler = JoorFetchHandler;
 export type DenoTransportRequestHandler = JoorFetchHandler;
