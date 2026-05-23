@@ -386,9 +386,9 @@ export type NativeRouteStreamErrorCode<TId extends NativeRouteStreamId> = JoorMa
 export type NativeStreamRouteErrorCode<TId extends NativeRouteStreamId> = NativeRouteStreamErrorCode<TId>;
 export type NativeRouteErrorDetails<TId extends NativeRouteId, TCode extends NativeRouteErrorCode<TId>> = JoorManifestRouteErrorDetails<NativeManifest, TId, TCode>;
 export type NativeRouteUnaryErrorDetails<TId extends NativeRouteUnaryId, TCode extends NativeRouteUnaryErrorCode<TId>> = JoorManifestRouteUnaryErrorDetails<NativeManifest, TId, TCode>;
-export type NativeUnaryRouteErrorDetails<TId extends NativeRouteUnaryId, TCode extends NativeUnaryRouteErrorCode<TId>> = NativeRouteUnaryErrorDetails<TId, TCode>;
+export type NativeUnaryRouteErrorDetails<TId extends NativeRouteUnaryId, TCode extends NativeRouteUnaryErrorCode<TId>> = NativeRouteUnaryErrorDetails<TId, TCode>;
 export type NativeRouteStreamErrorDetails<TId extends NativeRouteStreamId, TCode extends NativeRouteStreamErrorCode<TId>> = JoorManifestRouteStreamErrorDetails<NativeManifest, TId, TCode>;
-export type NativeStreamRouteErrorDetails<TId extends NativeRouteStreamId, TCode extends NativeStreamRouteErrorCode<TId>> = NativeRouteStreamErrorDetails<TId, TCode>;
+export type NativeStreamRouteErrorDetails<TId extends NativeRouteStreamId, TCode extends NativeRouteStreamErrorCode<TId>> = NativeRouteStreamErrorDetails<TId, TCode>;
 export type NativeRouteEnvelope<TId extends NativeRouteUnaryId> = JoorManifestRouteEnvelope<NativeManifest, TId>;
 export type NativeRouteUnaryEnvelope<TId extends NativeRouteUnaryId> = JoorManifestRouteUnaryEnvelope<NativeManifest, TId>;
 export type NativeUnaryRouteEnvelope<TId extends NativeRouteUnaryId> = NativeRouteUnaryEnvelope<TId>;
@@ -436,15 +436,15 @@ export type NativeRouteBatchRequest<TRequests extends readonly NativeRouteUnaryR
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteUnaryBatchRequest<NativeManifest, TRequests>;
-export type NativeUnaryRouteBatchRequest<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+export type NativeUnaryRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   NativeRouteUnaryBatchRequest<TRequests>;
-export type NativeProtocolBatchRequest<TRequests extends readonly NativeUnaryProtocolRequest[] = readonly NativeUnaryProtocolRequest[]> =
+export type NativeProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   NativeRouteBatchRequest<TRequests>;
-export type NativeRouteBatchResults<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+export type NativeRouteBatchResults<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteBatchResults<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchResults<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteUnaryBatchResults<NativeManifest, TRequests>;
-export type NativeUnaryRouteBatchResults<TRequests extends readonly NativeUnaryRouteRequest[] = readonly NativeUnaryRouteRequest[]> =
+export type NativeUnaryRouteBatchResults<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   NativeRouteUnaryBatchResults<TRequests>;
 export type NativeBatchBody = NativeRouteBatchRequest;
 export type NativeRouteBody = JoorManifestRouteBody<NativeManifest>;
@@ -2532,9 +2532,9 @@ export type RouteStreamErrorCode<TId extends RouteStreamId> = JoorManifestRouteS
 export type StreamRouteErrorCode<TId extends RouteStreamId> = RouteStreamErrorCode<TId>;
 export type RouteErrorDetails<TId extends RouteId, TCode extends RouteErrorCode<TId>> = JoorManifestRouteErrorDetails<Manifest, TId, TCode>;
 export type RouteUnaryErrorDetails<TId extends RouteUnaryId, TCode extends RouteUnaryErrorCode<TId>> = JoorManifestRouteUnaryErrorDetails<Manifest, TId, TCode>;
-export type UnaryRouteErrorDetails<TId extends RouteUnaryId, TCode extends UnaryRouteErrorCode<TId>> = RouteUnaryErrorDetails<TId, TCode>;
+export type UnaryRouteErrorDetails<TId extends RouteUnaryId, TCode extends RouteUnaryErrorCode<TId>> = RouteUnaryErrorDetails<TId, TCode>;
 export type RouteStreamErrorDetails<TId extends RouteStreamId, TCode extends RouteStreamErrorCode<TId>> = JoorManifestRouteStreamErrorDetails<Manifest, TId, TCode>;
-export type StreamRouteErrorDetails<TId extends RouteStreamId, TCode extends StreamRouteErrorCode<TId>> = RouteStreamErrorDetails<TId, TCode>;
+export type StreamRouteErrorDetails<TId extends RouteStreamId, TCode extends RouteStreamErrorCode<TId>> = RouteStreamErrorDetails<TId, TCode>;
 export type RouteEnvelope<TId extends RouteUnaryId> = JoorManifestRouteEnvelope<Manifest, TId>;
 export type RouteUnaryEnvelope<TId extends RouteUnaryId> = JoorManifestRouteUnaryEnvelope<Manifest, TId>;
 export type UnaryRouteEnvelope<TId extends RouteUnaryId> = RouteUnaryEnvelope<TId>;
@@ -2546,10 +2546,10 @@ export type RouteUnaryRequestUnion = JoorManifestRouteUnaryRequestUnion<Manifest
 export type UnaryRouteRequestUnion = RouteUnaryRequestUnion;
 export type RouteBatchRequest<TRequests extends readonly RouteRequestUnion[] = readonly RouteRequestUnion[]> = TRequests;
 export type RouteUnaryBatchRequest<TRequests extends readonly RouteUnaryRequestUnion[] = readonly RouteUnaryRequestUnion[]> = JoorManifestRouteUnaryBatchRequest<Manifest, TRequests>;
-export type UnaryRouteBatchRequest<TRequests extends readonly UnaryRouteRequestUnion[] = readonly UnaryRouteRequestUnion[]> = RouteUnaryBatchRequest<TRequests>;
+export type UnaryRouteBatchRequest<TRequests extends readonly RouteUnaryRequestUnion[] = readonly RouteUnaryRequestUnion[]> = RouteUnaryBatchRequest<TRequests>;
 export type RouteBatchResults<TRequests extends readonly (RouteRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteBatchResults<Manifest, TRequests>;
 export type RouteUnaryBatchResults<TRequests extends readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[]> = JoorManifestRouteUnaryBatchResults<Manifest, TRequests>;
-export type UnaryRouteBatchResults<TRequests extends readonly (UnaryRouteRequestUnion | UnaryRouteProtocolRequestUnion)[]> = RouteUnaryBatchResults<TRequests>;
+export type UnaryRouteBatchResults<TRequests extends readonly (RouteUnaryRequestUnion | RouteUnaryProtocolRequestUnion)[]> = RouteUnaryBatchResults<TRequests>;
 export type RouteProtocolRequest<TId extends RouteId> = JoorManifestRouteProtocolRequest<Manifest, TId>;
 export type RouteProtocolRequestUnion = JoorManifestRouteProtocolRequestUnion<Manifest>;
 export type RouteUnaryProtocolRequest<TId extends RouteUnaryId> = JoorManifestRouteUnaryProtocolRequest<Manifest, TId>;
