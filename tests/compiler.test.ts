@@ -1632,7 +1632,10 @@ nativeUnaryProtocolBody.input.id.toUpperCase();
 if (defaultNativeRouteProtocolRequest.id === 'users.get') {
   defaultNativeRouteProtocolRequest.input.id.toUpperCase();
 }
-const nativeUnaryRequestUnion: NativeUnaryProtocolRequest = nativeUnaryBody;
+const nativeUnaryRequestUnion: NativeUnaryProtocolRequest<'users.get'> =
+  nativeUnaryBody;
+const defaultNativeUnaryProtocolRequest: NativeUnaryProtocolRequest =
+  nativeUnaryRequestUnion;
 const nativeRouteProtocolRequestUnion: NativeRouteProtocolRequestUnion =
   nativeUnaryProtocolBody;
 nativeRouteProtocolRequestUnion.id.toUpperCase();
@@ -1654,16 +1657,25 @@ nativeRouteUnaryProtocolRequestUnion.id.toUpperCase();
 const nativeUnaryRouteProtocolRequestUnion: NativeUnaryRouteProtocolRequestUnion =
   nativeRouteUnaryProtocolRequestUnion;
 nativeUnaryRouteProtocolRequestUnion.id.toUpperCase();
-const nativeRouteUnaryRequest: NativeRouteUnaryRequest =
+const nativeRouteUnaryRequest: NativeRouteUnaryRequest<'users.get'> =
+  nativeRouteUnaryProtocolRequest;
+const defaultNativeRouteUnaryRequest: NativeRouteUnaryRequest =
   nativeRouteUnaryProtocolRequestUnion;
 nativeRouteUnaryRequest.id.toUpperCase();
-const nativeUnaryRouteRequest: NativeUnaryRouteRequest =
+defaultNativeRouteUnaryRequest.id.toUpperCase();
+const nativeUnaryRouteRequest: NativeUnaryRouteRequest<'users.get'> =
   nativeRouteUnaryRequest;
+const defaultNativeUnaryRouteRequestAlias: NativeUnaryRouteRequest =
+  nativeUnaryRouteRequest;
+defaultNativeUnaryRouteRequestAlias.id.toUpperCase();
 const nativeRouteRequestUnion: NativeRouteRequestUnion = nativeUnaryRequestUnion;
-const nativeStreamBody: NativeStreamProtocolRequest = {
+defaultNativeUnaryProtocolRequest.id.toUpperCase();
+const nativeStreamBody: NativeStreamProtocolRequest<'users.watch'> = {
   id: 'users.watch',
   input: { userId: '1' },
 };
+const defaultNativeStreamProtocolRequest: NativeStreamProtocolRequest =
+  nativeStreamBody;
 const nativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequest<'users.watch'> =
   nativeStreamBody;
 const defaultNativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequest =
@@ -1682,11 +1694,18 @@ nativeRouteStreamProtocolRequestUnion.input.userId.toUpperCase();
 const nativeStreamRouteProtocolRequestUnion: NativeStreamRouteProtocolRequestUnion =
   nativeRouteStreamProtocolRequestUnion;
 nativeStreamRouteProtocolRequestUnion.input.userId.toUpperCase();
-const nativeRouteStreamRequest: NativeRouteStreamRequest =
+const nativeRouteStreamRequest: NativeRouteStreamRequest<'users.watch'> =
+  nativeRouteStreamProtocolRequest;
+const defaultNativeRouteStreamRequest: NativeRouteStreamRequest =
   nativeRouteStreamProtocolRequestUnion;
 nativeRouteStreamRequest.input.userId.toUpperCase();
-const nativeStreamRouteRequest: NativeStreamRouteRequest =
+defaultNativeRouteStreamRequest.input.userId.toUpperCase();
+const nativeStreamRouteRequest: NativeStreamRouteRequest<'users.watch'> =
   nativeRouteStreamRequest;
+const defaultNativeStreamRouteRequest: NativeStreamRouteRequest =
+  nativeStreamRouteRequest;
+defaultNativeStreamRouteRequest.input.userId.toUpperCase();
+defaultNativeStreamProtocolRequest.input.userId.toUpperCase();
 const nativeRouteBody: NativeRouteBody = nativeUnaryBody;
 const nativeRouteUnaryBody: NativeRouteUnaryBody = nativeRouteUnaryProtocolRequest;
 const nativeUnaryRouteBody: NativeUnaryRouteBody = nativeRouteUnaryBody;
