@@ -320,4 +320,29 @@ describe('client', () => {
 
     await expect(consume()).rejects.toThrow('SSE event exceeds');
   });
+
+  it('throws json rpc failures returned from stream requests', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const handler = createJoorHandler({ procedures: { unary: procedure } });
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      fetch: handler,
+    });
+
+    const consume = async (): Promise<void> => {
+      for await (const _event of client.stream<StreamTestProcedure>('unary', {
+        ok: true,
+      })) {
+        void _event;
+      }
+    };
+
+    await expect(consume()).rejects.toThrow('NOT_STREAMING');
+  });
 });

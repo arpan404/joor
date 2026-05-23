@@ -1393,6 +1393,21 @@ const parseSse = async function* <TEvent extends JsonValue>(
   }
 };
 
+const assertSseResponse = async (response: Response): Promise<void> => {
+  const contentType = response.headers.get('content-type')?.toLowerCase() ?? '';
+  if (contentType.startsWith('text/event-stream')) return;
+  if (contentType.includes('json')) {
+    const payload = (await response.json()) as JsonValue;
+    throw new Error(JSON.stringify(payload));
+  }
+  const text = await response.text();
+  throw new Error(
+    text.length === 0
+      ? 'Expected text/event-stream response'
+      : `Expected text/event-stream response: ${text}`
+  );
+};
+
 export function createClient<const TManifest extends JoorManifest>(
   options: ClientOptions<TManifest> & { manifest: TManifest }
 ): RpcManifestTransportClient<TManifest>;
@@ -1505,6 +1520,7 @@ export function createClient(
           requestOptions[0]?.request
         )
       );
+      await assertSseResponse(response);
       yield* parseSse<JsonValue>(
         response,
         maxStreamEventBytes
