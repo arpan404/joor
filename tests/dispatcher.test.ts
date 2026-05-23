@@ -10,7 +10,11 @@ import {
   defineProcedure,
   t,
 } from '../src/index.js';
-import { createCompiledRpcBodyResultHandler } from '../src/runtime/compiled.js';
+import {
+  createCompiledRpcBodyResultHandler,
+  createCompiledRuntimeState,
+} from '../src/runtime/compiled.js';
+import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
 
 const manifest = {
   procedures: {
@@ -307,6 +311,54 @@ describe('dispatcher', () => {
       'after',
       'after-body:compiled',
     ]);
+  });
+
+  it('handles default-path compiled Deno transport requests', async () => {
+    const handler = createDenoCompiledTransportRequestHandler(
+      createCompiledRuntimeState(),
+      async () => ({
+        ok: false,
+        id: 'fallback',
+        traceId: 'trace-fallback',
+        error: { code: 'NOT_FOUND', message: 'Not found', status: 404 },
+      }),
+      async (body) => {
+        const id = typeof body['id'] === 'string' ? body['id'] : 'unknown';
+        return {
+          ok: true,
+          id,
+          traceId: 'trace-deno-compiled',
+          data: { ok: true },
+        };
+      }
+    );
+
+    const wrongPath = await handler(
+      new Request('http://localhost/not-rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      })
+    );
+
+    expect(wrongPath.status).toBe(404);
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toMatchObject({
+      ok: true,
+      id: 'users.get',
+      traceId: 'trace-deno-compiled',
+      data: { ok: true },
+    });
   });
 
   it('caches successful query responses when meta.cache is configured', async () => {
