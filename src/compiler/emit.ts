@@ -156,6 +156,7 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteHeaders',
     'JoorManifestRouteClientHeaders',
     'JoorManifestRouteId',
+    'JoorManifestRouteEnvelopeUnion',
     'JoorManifestRouteInput',
     'JoorManifestRouteOutput',
     'JoorManifestRouteProtocolRequest',
@@ -224,6 +225,7 @@ export type NativeRouteError<TId extends NativeRouteId> = JoorManifestRouteError
 export type NativeRouteErrorCode<TId extends NativeRouteId> = JoorManifestRouteErrorCode<NativeManifest, TId>;
 export type NativeRouteErrorDetails<TId extends NativeRouteId, TCode extends NativeRouteErrorCode<TId>> = JoorManifestRouteErrorDetails<NativeManifest, TId, TCode>;
 export type NativeRouteResult<TId extends NativeUnaryRouteId> = JoorManifestRouteEnvelope<NativeManifest, TId>;
+export type NativeRouteResultUnion = JoorManifestRouteEnvelopeUnion<NativeManifest>;
 export type NativeRouteStreamEvent<TId extends NativeStreamRouteId> = JoorManifestRouteStreamEvent<NativeManifest, TId>;
 export type NativeRouteRequest<TId extends NativeRouteId> =
   JoorManifestRouteProtocolRequest<NativeManifest, TId>;
