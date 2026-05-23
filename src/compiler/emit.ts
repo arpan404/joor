@@ -1675,7 +1675,7 @@ const writeIncomingPreflightFailure = (
   if (checkContentType) {
     const contentType = getIncomingHeader(incoming, 'content-type') ?? '';
     if (!isJsonContentType(contentType)) {
-      outgoing.writeHead(200, { ...jsonHeaders, ...cors });
+      outgoing.writeHead(200, createJsonHeaderRecord(cors));
       outgoing.end(
         failureBody(
           '',
@@ -1791,10 +1791,9 @@ const writeResult = async (
     return;
   }
   if (result instanceof Response) {
-    outgoing.writeHead(result.status, {
-      ...Object.fromEntries(result.headers),
-      ...cors,
-    });
+    const headers = Object.fromEntries(result.headers);
+    if (cors !== undefined) appendJsonStringHeaders(headers, cors);
+    outgoing.writeHead(result.status, headers);
     if (result.body === null) {
       outgoing.end();
       return;
@@ -1822,7 +1821,7 @@ const writeBodyReadFailure = (
 ): void => {
   const payloadTooLarge = error instanceof BodySizeLimitError;
   const status = payloadTooLarge ? 413 : 400;
-  outgoing.writeHead(status, { ...jsonHeaders, ...cors });
+  outgoing.writeHead(status, createJsonHeaderRecord(cors));
   outgoing.end(
     failureBody(
       '',
@@ -1842,7 +1841,7 @@ const writeIncomingBodyReadFailure = (
 ): void => {
   const payloadTooLarge = error instanceof BodySizeLimitError;
   const status = payloadTooLarge ? 413 : 400;
-  outgoing.writeHead(status, { ...jsonHeaders, ...cors });
+  outgoing.writeHead(status, createJsonHeaderRecord(cors));
   outgoing.end(
     failureBody(
       '',
@@ -2386,7 +2385,7 @@ const bodyReadFailure = (
       payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
       status
     ),
-    { status, headers: { ...jsonHeaders, ...cors } }
+    { status, headers: createJsonHeaderRecord(cors) }
   );
 };
 

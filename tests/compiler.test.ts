@@ -389,10 +389,24 @@ describe('compiler', () => {
       expect(nodeSource).toContain('hasInvalidHeaderValue(cors.origin)');
       expect(nodeSource).toContain('hasInvalidHeaderValue(methods)');
       expect(nodeSource).toContain('hasInvalidHeaderValue(headers)');
+      expect(nodeSource).toContain(
+        'if (cors !== undefined) appendJsonStringHeaders(headers, cors);'
+      );
+      expect(nodeSource).toContain(
+        'outgoing.writeHead(status, createJsonHeaderRecord(cors));'
+      );
+      expect(nodeSource).not.toContain(
+        '...Object.fromEntries(result.headers)'
+      );
+      expect(nodeSource).not.toContain('{ ...jsonHeaders, ...cors }');
       const bunSource = await readFile(join(outDir, 'bun.ts'), 'utf8');
       expect(bunSource).toContain('hasInvalidHeaderValue(cors.origin)');
       expect(bunSource).toContain('hasInvalidHeaderValue(methods)');
       expect(bunSource).toContain('hasInvalidHeaderValue(headers)');
+      expect(bunSource).toContain(
+        '{ status, headers: createJsonHeaderRecord(cors) }'
+      );
+      expect(bunSource).not.toContain('{ ...jsonHeaders, ...cors }');
       const postsListMatch = dispatcher.match(
         /const posts_list_execute_serialized: CompiledFixedDispatch<NativeServices> = async \([\s\S]*?const users_get_execute_serialized: CompiledFixedDispatch<NativeServices> = async \(/
       );
