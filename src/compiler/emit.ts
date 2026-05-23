@@ -2627,7 +2627,7 @@ ${indent}};`
   const defaultUrl = config?.path ?? '/rpc';
   await writeFile(
     `${outDir}/client.ts`,
-    `import { createManifestClient as createTransportClient, createManifestRouteRequest as createTransportRouteRequest, type ClientBatchOptions } from 'joor/client';
+    `import { createManifestClient as createTransportClient, createManifestRouteProtocolRequest as createTransportRouteProtocolRequest, createManifestRouteRequest as createTransportRouteRequest, createManifestRouteStreamProtocolRequest as createTransportRouteStreamProtocolRequest, createManifestRouteUnaryProtocolRequest as createTransportRouteUnaryProtocolRequest, type ClientBatchOptions, type RpcProtocolRequestOptions } from 'joor/client';
 import type { JoorManifestClientOptions, JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteClientArgs, JoorManifestRouteClientHeaders, JoorManifestRouteEnvelope, JoorManifestRouteEnvelopeUnion, JoorManifestRouteError, JoorManifestRouteErrorCode, JoorManifestRouteErrorDetails, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProcedure, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestOptions, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredServices, JoorManifestRouteResult, JoorManifestRouteResultUnion, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamId, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteStreamRequest, JoorManifestRouteStreamRequestUnion, JoorManifestRouteUnaryId, JoorManifestRouteUnaryProcedure, JoorManifestRouteStreamProcedure, JoorManifestRouteUnaryInput, JoorManifestRouteStreamInput, JoorManifestRouteUnaryOutput, JoorManifestRouteStreamOutput, JoorManifestRouteUnaryHeaders, JoorManifestRouteStreamHeaders, JoorManifestRouteUnaryClientHeaders, JoorManifestRouteStreamClientHeaders, JoorManifestRouteUnaryResponseHeaders, JoorManifestRouteStreamResponseHeaders, JoorManifestRouteUnaryError, JoorManifestRouteStreamError, JoorManifestRouteUnaryErrorCode, JoorManifestRouteStreamErrorCode, JoorManifestRouteUnaryErrorDetails, JoorManifestRouteStreamErrorDetails, JoorManifestRouteUnaryEnvelope, JoorManifestRouteUnaryEnvelopeUnion, JoorManifestRouteUnaryResult, JoorManifestRouteUnaryResultUnion, JoorManifestRouteUnaryHasHeaders, JoorManifestRouteStreamHasHeaders, JoorManifestRouteUnaryRequiresHeaders, JoorManifestRouteStreamRequiresHeaders, JoorManifestRouteUnaryHasResponseHeaders, JoorManifestRouteStreamHasResponseHeaders, JoorManifestRouteUnaryRequiresResponseHeaders, JoorManifestRouteStreamRequiresResponseHeaders, JoorManifestRouteUnaryRequestOptions, JoorManifestRouteStreamRequestOptions, JoorManifestRouteUnaryClientArgs, JoorManifestRouteStreamClientArgs, JoorManifestRouteUnaryBatchRequest, JoorManifestRouteUnaryBatchResults, JoorManifestRouteUnaryBodyResult, JoorManifestRouteStreamBodyResult, JoorManifestRouteUnaryBodyResultFor, JoorManifestRouteStreamBodyResultFor, JoorManifestRouteUnaryRequest, JoorManifestRouteUnaryRequestUnion, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteClientArgs, JoorManifestStreamRouteClientHeaders, JoorManifestStreamRouteError, JoorManifestStreamRouteErrorCode, JoorManifestStreamRouteErrorDetails, JoorManifestStreamRouteEvent, JoorManifestStreamRouteHasHeaders, JoorManifestStreamRouteHasResponseHeaders, JoorManifestStreamRouteHeaders, JoorManifestStreamRouteInput, JoorManifestStreamRouteOutput, JoorManifestStreamRouteProcedure, JoorManifestStreamRouteRequiresHeaders, JoorManifestStreamRouteRequiresResponseHeaders, JoorManifestStreamRouteResponseHeaders, JoorManifestStreamRouteRequestOptions, JoorManifestTransportClient, JoorManifestUnaryRouteClientArgs, JoorManifestUnaryRouteClientHeaders, JoorManifestUnaryRouteEnvelope, JoorManifestUnaryRouteError, JoorManifestUnaryRouteErrorCode, JoorManifestUnaryRouteErrorDetails, JoorManifestUnaryRouteHasHeaders, JoorManifestUnaryRouteHasResponseHeaders, JoorManifestUnaryRouteHeaders, JoorManifestUnaryRouteInput, JoorManifestUnaryRouteOutput, JoorManifestUnaryRouteProcedure, JoorManifestUnaryRouteResponseHeaders, JoorManifestUnaryRouteResult, JoorManifestUnaryRouteRequiresHeaders, JoorManifestUnaryRouteRequiresResponseHeaders, JoorManifestUnaryRouteRequestOptions } from 'joor/manifest';
 import { manifest } from './manifest.js';
 
@@ -2782,6 +2782,7 @@ export type UnaryRouteClientArgs<TId extends RouteUnaryId = RouteUnaryId> = Rout
 export type RouteStreamClientArgs<TId extends RouteStreamId = RouteStreamId> = JoorManifestRouteStreamClientArgs<Manifest, TId>;
 export type StreamRouteClientArgs<TId extends RouteStreamId = RouteStreamId> = RouteStreamClientArgs<TId>;
 export type ClientArgs<TId extends RouteId = RouteId> = RouteClientArgs<TId>;
+export type ProtocolRequestOptions = RpcProtocolRequestOptions;
 type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
@@ -2806,10 +2807,50 @@ export type BatchFunction = <const TRequests extends RouteBatchRequest>(
   requests: TRequests,
   options?: BatchOptions
 ) => Promise<RouteBatchResults<TRequests>>;
+export type RouteProtocolRequestBuilder = <TId extends RouteId>(
+  id: TId,
+  input: RouteInput<TId>,
+  options?: ProtocolRequestOptions
+) => RouteProtocolRequest<TId>;
+export type RouteUnaryProtocolRequestBuilder = <TId extends RouteUnaryId>(
+  id: TId,
+  input: RouteUnaryInput<TId>,
+  options?: ProtocolRequestOptions
+) => RouteUnaryProtocolRequest<TId>;
+export type UnaryRouteProtocolRequestBuilder =
+  RouteUnaryProtocolRequestBuilder;
+export type RouteStreamProtocolRequestBuilder = <TId extends RouteStreamId>(
+  id: TId,
+  input: RouteStreamInput<TId>,
+  options?: ProtocolRequestOptions
+) => RouteStreamProtocolRequest<TId>;
+export type StreamRouteProtocolRequestBuilder =
+  RouteStreamProtocolRequestBuilder;
 export type RouteRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
 ) => RouteRequest<TId>;
+const createManifestRouteProtocolRequest =
+  createTransportRouteProtocolRequest as unknown as (
+    manifest: Manifest,
+    id: RouteId,
+    input: unknown,
+    options?: ProtocolRequestOptions
+  ) => unknown;
+const createManifestRouteUnaryProtocolRequest =
+  createTransportRouteUnaryProtocolRequest as unknown as (
+    manifest: Manifest,
+    id: RouteUnaryId,
+    input: unknown,
+    options?: ProtocolRequestOptions
+  ) => unknown;
+const createManifestRouteStreamProtocolRequest =
+  createTransportRouteStreamProtocolRequest as unknown as (
+    manifest: Manifest,
+    id: RouteStreamId,
+    input: unknown,
+    options?: ProtocolRequestOptions
+  ) => unknown;
 const createManifestRouteRequest = createTransportRouteRequest as unknown as (
   manifest: Manifest,
   id: RouteUnaryId,
@@ -2827,6 +2868,49 @@ export const createRouteUnaryRequest: typeof createRouteRequest =
   createRouteRequest;
 export const createUnaryRouteRequest: typeof createRouteUnaryRequest =
   createRouteUnaryRequest;
+export const createRouteProtocolRequest: RouteProtocolRequestBuilder = <
+  TId extends RouteId,
+>(
+  id: TId,
+  input: RouteInput<TId>,
+  options?: ProtocolRequestOptions
+): RouteProtocolRequest<TId> =>
+  createManifestRouteProtocolRequest(
+    manifest,
+    id,
+    input,
+    options
+  ) as RouteProtocolRequest<TId>;
+export const createRouteUnaryProtocolRequest: RouteUnaryProtocolRequestBuilder = <
+  TId extends RouteUnaryId,
+>(
+  id: TId,
+  input: RouteUnaryInput<TId>,
+  options?: ProtocolRequestOptions
+): RouteUnaryProtocolRequest<TId> =>
+  createManifestRouteUnaryProtocolRequest(
+    manifest,
+    id,
+    input,
+    options
+  ) as RouteUnaryProtocolRequest<TId>;
+export const createUnaryRouteProtocolRequest: typeof createRouteUnaryProtocolRequest =
+  createRouteUnaryProtocolRequest;
+export const createRouteStreamProtocolRequest: RouteStreamProtocolRequestBuilder = <
+  TId extends RouteStreamId,
+>(
+  id: TId,
+  input: RouteStreamInput<TId>,
+  options?: ProtocolRequestOptions
+): RouteStreamProtocolRequest<TId> =>
+  createManifestRouteStreamProtocolRequest(
+    manifest,
+    id,
+    input,
+    options
+  ) as RouteStreamProtocolRequest<TId>;
+export const createStreamRouteProtocolRequest: typeof createRouteStreamProtocolRequest =
+  createRouteStreamProtocolRequest;
 export type GeneratedClientOptions = Omit<JoorManifestClientOptions<Manifest>, 'url'> & {
   url?: string;
 };
