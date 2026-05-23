@@ -21,5 +21,6 @@ export {
 export type {
   SerializedJsonEnvelope,
   TransportBodyResult,
+  TransportBodyResultFor,
 } from './response.js';
 export * from './vercel.js';

@@ -341,6 +341,7 @@ export type {
 export type {
   SerializedJsonEnvelope,
   TransportBodyResult,
+  TransportBodyResultFor,
 } from './runtime/response.js';
 export type {
   ArrayChain,

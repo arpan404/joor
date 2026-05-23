@@ -1,4 +1,5 @@
 import type { RpcEnvelope } from '../rpc/protocol.js';
+import type { RpcManifest, RpcManifestBodyResult } from '../rpc/dispatcher.js';
 import type { JsonObject } from '../schema/json.js';
 
 export interface SerializedJsonEnvelope {
@@ -11,6 +12,10 @@ export type TransportBodyResult =
   | RpcEnvelope
   | readonly RpcEnvelope[]
   | Response
+  | SerializedJsonEnvelope;
+
+export type TransportBodyResultFor<TManifest extends RpcManifest> =
+  | RpcManifestBodyResult<TManifest>
   | SerializedJsonEnvelope;
 
 export const jsonContentHeaders = Object.freeze({

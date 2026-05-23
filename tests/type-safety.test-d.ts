@@ -232,6 +232,7 @@ import {
   type RpcRouteBodyResult,
   type RpcRouteBodyResultFor,
   type TransportBodyResult,
+  type TransportBodyResultFor,
   type RpcRouteHasHeaders,
   type RpcRouteHasResponseHeaders,
   type RpcRouteRequest,
@@ -487,6 +488,7 @@ import {
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
   type SerializedJsonEnvelope as RuntimeSubpathSerializedJsonEnvelope,
   type TransportBodyResult as RuntimeSubpathTransportBodyResult,
+  type TransportBodyResultFor as RuntimeSubpathTransportBodyResultFor,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
   type CloudflareWorkerOptionsFor as RuntimeSubpathCloudflareWorkerOptionsFor,
@@ -2983,8 +2985,21 @@ const runtimeSubpathSerializedJsonEnvelope: RuntimeSubpathSerializedJsonEnvelope
 const transportBodyResult: TransportBodyResult = serializedJsonEnvelope;
 const runtimeSubpathTransportBodyResult: RuntimeSubpathTransportBodyResult =
   transportBodyResult;
+const transportBodyResultFor: TransportBodyResultFor<typeof manifest> =
+  manifestRouteBodyResult;
+const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
+  typeof manifest
+> = transportBodyResultFor;
 if (isSerializedJsonEnvelope(transportBodyResult)) {
   transportBodyResult.body.toUpperCase();
+}
+if (
+  !(runtimeSubpathTransportBodyResultFor instanceof Response) &&
+  !Array.isArray(runtimeSubpathTransportBodyResultFor) &&
+  'ok' in runtimeSubpathTransportBodyResultFor &&
+  runtimeSubpathTransportBodyResultFor.ok
+) {
+  runtimeSubpathTransportBodyResultFor.data.name.toUpperCase();
 }
 if (isRuntimeSubpathSerializedJsonEnvelope(runtimeSubpathTransportBodyResult)) {
   runtimeSubpathTransportBodyResult.body.toUpperCase();
