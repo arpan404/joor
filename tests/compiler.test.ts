@@ -137,6 +137,12 @@ describe('compiler', () => {
       );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('const rpcRequest = body as NativeProtocolRequest');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.not.toContain('Parameters<CompiledDispatch');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
         'CompiledRpcTransportBodyResultHandlerFor<NativeManifest>'
       );

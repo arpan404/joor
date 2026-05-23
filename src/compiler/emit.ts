@@ -243,6 +243,7 @@ export type NativeTransportRequest = ContextRequestSource;`;
   const hasSerializedMode = modes.includes('serialized');
   const hasResponseMode = modes.includes('response');
   const compiledDispatchType = 'CompiledDispatch<NativeServices>';
+  const nativeDispatchBodyType = 'NativeProtocolRequest';
   const compiledFixedUnaryDispatchType =
     'CompiledFixedUnaryDispatch<NativeServices>';
   const dispatchCaseForMode = (
@@ -334,7 +335,7 @@ ${dispatchCaseForMode('response')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as unknown as Parameters<${compiledDispatchType}>[0];
+  const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('body')}
     default:
@@ -357,7 +358,7 @@ ${unaryCases('body')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as unknown as Parameters<${compiledDispatchType}>[0];
+  const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('serialized')}
     default:
@@ -380,7 +381,7 @@ ${unaryCases('serialized')}
   ) {
     return Promise.resolve(undefined);
   }
-  const rpcRequest = body as unknown as Parameters<${compiledDispatchType}>[0];
+  const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('response')}
     default:
