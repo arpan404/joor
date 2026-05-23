@@ -363,6 +363,16 @@ export type RpcRouteRequestOptions<
   TId extends RpcRouteId<TRoutes>,
 > = ClientRequestOptions<RpcRouteProcedure<TRoutes, TId>>;
 
+export type RpcUnaryRouteRequestOptions<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteRequestOptions<TRoutes, TId>;
+
+export type RpcStreamRouteRequestOptions<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteRequestOptions<TRoutes, TId>;
+
 export type RpcRouteClientArgs<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
@@ -376,6 +386,16 @@ export type RpcRouteClientArgs<
         input: RpcRouteInput<TRoutes, TId>,
         options: RpcRouteRequestOptions<TRoutes, TId>,
       ];
+
+export type RpcUnaryRouteClientArgs<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcUnaryRouteId<TRoutes>,
+> = RpcRouteClientArgs<TRoutes, TId>;
+
+export type RpcStreamRouteClientArgs<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcStreamRouteId<TRoutes>,
+> = RpcRouteClientArgs<TRoutes, TId>;
 
 type BatchResultData<TProcedure> = [TProcedure] extends [never]
   ? JsonValue

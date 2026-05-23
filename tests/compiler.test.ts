@@ -367,7 +367,11 @@ describe('compiler', () => {
       expect(clientSource).toContain('export type RouteStreamEvent');
       expect(clientSource).toContain('export type RouteClientHeaders');
       expect(clientSource).toContain('export type RouteRequestOptions');
+      expect(clientSource).toContain('export type UnaryRouteRequestOptions');
+      expect(clientSource).toContain('export type StreamRouteRequestOptions');
       expect(clientSource).toContain('export type RouteClientArgs');
+      expect(clientSource).toContain('export type UnaryRouteClientArgs');
+      expect(clientSource).toContain('export type StreamRouteClientArgs');
       expect(clientSource).toContain('export type RouteTransportClient');
       expect(clientSource).toContain('JoorManifestClientOptions<Manifest>');
       expect(clientSource).not.toContain(
@@ -526,8 +530,8 @@ describe('compiler', () => {
       const usageFile = join(outDir, 'client-usage.ts');
       await writeFile(
         usageFile,
-        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientArgs, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteInput, type RouteOutput, type RouteProcedure, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamEvent, type RouteStreamProcedure, type RouteStreamProtocolRequest, type RouteTransportClient, type RouteUnaryProcedure, type RouteUnaryProtocolRequest, type TransportClient } from './client.js';
-import { fetch as nativeFetch, nativeBody as nativeBodyValue, nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeCompiledBodyResult, type NativeCompiledBodyResultFor, type NativeCompiledTransportResult, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeRequiredServices, type NativeRouteBatchRequest, type NativeRouteBody, type NativeRouteBodyResult, type NativeRouteBodyResultFor, type NativeRouteClientArgs, type NativeRouteClientHeaders, type NativeRouteEnvelope, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteProcedure, type NativeRouteProtocolRequest, type NativeRouteProtocolRequestUnion, type NativeRouteRequest, type NativeRouteRequestOptions, type NativeRouteRequestUnion, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteServices, type NativeRouteStreamEvent, type NativeRouteStreamProcedure, type NativeRouteStreamProtocolRequest, type NativeRouteStreamProtocolRequestUnion, type NativeRouteUnaryProcedure, type NativeRouteUnaryProtocolRequest, type NativeRouteUnaryProtocolRequestUnion, type NativeRuntimeState, type NativeServices, type NativeStreamProtocolRequest, type NativeStreamRouteProcedure, type NativeStreamRouteProtocolRequest, type NativeStreamRouteProtocolRequestUnion, type NativeStreamRouteRequest, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest, type NativeUnaryRouteProcedure, type NativeUnaryRouteProtocolRequest, type NativeUnaryRouteProtocolRequestUnion, type NativeUnaryRouteRequest } from './dispatcher.safe.js';
+        `import { client, createClient, createTransport, type BatchFunction, type Client, type GeneratedClient, type GeneratedClientOptions, type RequiredServices, type RouteBatchRequest, type RouteBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientArgs, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteInput, type RouteOutput, type RouteProcedure, type RouteProtocolBatchRequest, type RouteProtocolRequest, type RouteProtocolRequestUnion, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResult, type RouteResultUnion, type RouteServices, type RouteStreamClientArgs, type RouteStreamEvent, type RouteStreamProcedure, type RouteStreamProtocolRequest, type RouteStreamRequestOptions, type RouteTransportClient, type RouteUnaryClientArgs, type RouteUnaryProcedure, type RouteUnaryProtocolRequest, type RouteUnaryRequestOptions, type StreamRouteClientArgs, type StreamRouteRequestOptions, type TransportClient, type UnaryRouteClientArgs, type UnaryRouteRequestOptions } from './client.js';
+import { fetch as nativeFetch, nativeBody as nativeBodyValue, nativeResponseUnaryDispatch, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeCompiledBodyResult, type NativeCompiledBodyResultFor, type NativeCompiledTransportResult, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeRequiredServices, type NativeRouteBatchRequest, type NativeRouteBody, type NativeRouteBodyResult, type NativeRouteBodyResultFor, type NativeRouteClientArgs, type NativeRouteClientHeaders, type NativeRouteEnvelope, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteProcedure, type NativeRouteProtocolRequest, type NativeRouteProtocolRequestUnion, type NativeRouteRequest, type NativeRouteRequestOptions, type NativeRouteRequestUnion, type NativeRouteRequiresHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteServices, type NativeRouteStreamClientArgs, type NativeRouteStreamEvent, type NativeRouteStreamProcedure, type NativeRouteStreamProtocolRequest, type NativeRouteStreamProtocolRequestUnion, type NativeRouteStreamRequestOptions, type NativeRouteUnaryClientArgs, type NativeRouteUnaryProcedure, type NativeRouteUnaryProtocolRequest, type NativeRouteUnaryProtocolRequestUnion, type NativeRouteUnaryRequestOptions, type NativeRuntimeState, type NativeServices, type NativeStreamProtocolRequest, type NativeStreamRouteClientArgs, type NativeStreamRouteProcedure, type NativeStreamRouteProtocolRequest, type NativeStreamRouteProtocolRequestUnion, type NativeStreamRouteRequest, type NativeStreamRouteRequestOptions, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest, type NativeUnaryRouteClientArgs, type NativeUnaryRouteProcedure, type NativeUnaryRouteProtocolRequest, type NativeUnaryRouteProtocolRequestUnion, type NativeUnaryRouteRequest, type NativeUnaryRouteRequestOptions } from './dispatcher.safe.js';
 import { createFetch as createBunNativeFetch, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeServer } from './bun.js';
 import { createFetch as createDenoNativeFetch, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeServer } from './deno.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeServer } from './node.js';
@@ -696,11 +700,26 @@ const tenantClientHeaders: RouteClientHeaders<'tenants.current'> = { 'x-tenant-i
 tenantClientHeaders['x-tenant-id'].toUpperCase();
 const tenantRequestOptions: RouteRequestOptions<'tenants.current'> = { headers: tenantHeaders };
 tenantRequestOptions.headers['x-tenant-id'].toUpperCase();
+const tenantUnaryRequestOptions: UnaryRouteRequestOptions<'tenants.current'> = tenantRequestOptions;
+const tenantRouteUnaryRequestOptions: RouteUnaryRequestOptions<'tenants.current'> = tenantUnaryRequestOptions;
+tenantRouteUnaryRequestOptions.headers['x-tenant-id'].toUpperCase();
+const watchStreamRequestOptions: StreamRouteRequestOptions<'users.watch'> = {};
+const watchRouteStreamRequestOptions: RouteStreamRequestOptions<'users.watch'> = watchStreamRequestOptions;
+watchRouteStreamRequestOptions.valueOf();
 const tenantRouteClientArgs: RouteClientArgs<'tenants.current'> = [
   { ok: true },
   tenantRequestOptions,
 ];
 tenantRouteClientArgs[0].ok.valueOf();
+const tenantUnaryClientArgs: UnaryRouteClientArgs<'tenants.current'> = tenantRouteClientArgs;
+const tenantRouteUnaryClientArgs: RouteUnaryClientArgs<'tenants.current'> = tenantUnaryClientArgs;
+tenantRouteUnaryClientArgs[0].ok.valueOf();
+const watchStreamClientArgs: StreamRouteClientArgs<'users.watch'> = [
+  { userId: '1' },
+  watchStreamRequestOptions,
+];
+const watchRouteStreamClientArgs: RouteStreamClientArgs<'users.watch'> = watchStreamClientArgs;
+watchRouteStreamClientArgs[0].userId.toUpperCase();
 const nativeRouteHeaders: NativeRouteHeaders<'tenants.current'> = tenantHeaders;
 nativeRouteHeaders['x-tenant-id'].toUpperCase();
 const nativeUserClientHeaders: NativeRouteClientHeaders<'users.get'> = { authorization: undefined };
@@ -709,11 +728,26 @@ const nativeTenantClientHeaders: NativeRouteClientHeaders<'tenants.current'> = {
 nativeTenantClientHeaders['x-tenant-id'].toUpperCase();
 const nativeTenantRequestOptions: NativeRouteRequestOptions<'tenants.current'> = { headers: nativeTenantClientHeaders };
 nativeTenantRequestOptions.headers['x-tenant-id'].toUpperCase();
+const nativeTenantUnaryRequestOptions: NativeUnaryRouteRequestOptions<'tenants.current'> = nativeTenantRequestOptions;
+const nativeTenantRouteUnaryRequestOptions: NativeRouteUnaryRequestOptions<'tenants.current'> = nativeTenantUnaryRequestOptions;
+nativeTenantRouteUnaryRequestOptions.headers['x-tenant-id'].toUpperCase();
+const nativeWatchStreamRequestOptions: NativeStreamRouteRequestOptions<'users.watch'> = {};
+const nativeWatchRouteStreamRequestOptions: NativeRouteStreamRequestOptions<'users.watch'> = nativeWatchStreamRequestOptions;
+nativeWatchRouteStreamRequestOptions.valueOf();
 const nativeTenantClientArgs: NativeRouteClientArgs<'tenants.current'> = [
   { ok: true },
   nativeTenantRequestOptions,
 ];
 nativeTenantClientArgs[0].ok.valueOf();
+const nativeTenantUnaryClientArgs: NativeUnaryRouteClientArgs<'tenants.current'> = nativeTenantClientArgs;
+const nativeTenantRouteUnaryClientArgs: NativeRouteUnaryClientArgs<'tenants.current'> = nativeTenantUnaryClientArgs;
+nativeTenantRouteUnaryClientArgs[0].ok.valueOf();
+const nativeWatchStreamClientArgs: NativeStreamRouteClientArgs<'users.watch'> = [
+  { userId: '1' },
+  nativeWatchStreamRequestOptions,
+];
+const nativeWatchRouteStreamClientArgs: NativeRouteStreamClientArgs<'users.watch'> = nativeWatchStreamClientArgs;
+nativeWatchRouteStreamClientArgs[0].userId.toUpperCase();
 const nativeUserClientArgs: NativeRouteClientArgs<'users.get'> = [
   { id: '550e8400-e29b-41d4-a716-446655440000' },
 ];

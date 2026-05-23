@@ -44,10 +44,14 @@ import type {
   RpcRouteRequiresHeaders,
   RpcRouteRequiresResponseHeaders,
   RpcStreamRouteProcedure,
+  RpcStreamRouteClientArgs,
+  RpcStreamRouteRequestOptions,
   RpcRouteStreamEvent,
   RpcRouteStreamProtocolRequest,
   RpcRouteStreamProtocolRequestUnion,
   RpcUnaryRouteProcedure,
+  RpcUnaryRouteClientArgs,
+  RpcUnaryRouteRequestOptions,
   RpcRouteUnaryProtocolRequest,
   RpcRouteUnaryProtocolRequestUnion,
   RpcStreamRouteId,
@@ -271,10 +275,30 @@ export type JoorManifestRouteRequestOptions<
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteRequestOptions<JoorManifestRoutes<TManifest>, TId>;
 
+export type JoorManifestUnaryRouteRequestOptions<
+  TManifest,
+  TId extends JoorManifestUnaryRouteId<TManifest>,
+> = RpcUnaryRouteRequestOptions<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestStreamRouteRequestOptions<
+  TManifest,
+  TId extends JoorManifestStreamRouteId<TManifest>,
+> = RpcStreamRouteRequestOptions<JoorManifestRoutes<TManifest>, TId>;
+
 export type JoorManifestRouteClientArgs<
   TManifest,
   TId extends JoorManifestRouteId<TManifest>,
 > = RpcRouteClientArgs<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestUnaryRouteClientArgs<
+  TManifest,
+  TId extends JoorManifestUnaryRouteId<TManifest>,
+> = RpcUnaryRouteClientArgs<JoorManifestRoutes<TManifest>, TId>;
+
+export type JoorManifestStreamRouteClientArgs<
+  TManifest,
+  TId extends JoorManifestStreamRouteId<TManifest>,
+> = RpcStreamRouteClientArgs<JoorManifestRoutes<TManifest>, TId>;
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(
   manifest: JoorManifest<TProcedures>

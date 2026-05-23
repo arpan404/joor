@@ -389,6 +389,16 @@ export type RpcManifestRouteRequestOptions<
     ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
     : { headers: RpcManifestRouteClientHeaders<TManifest, TId> };
 
+export type RpcManifestUnaryRouteRequestOptions<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteRequestOptions<TManifest, TId>;
+
+export type RpcManifestStreamRouteRequestOptions<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteRequestOptions<TManifest, TId>;
+
 export type RpcManifestRouteClientArgs<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
@@ -402,6 +412,16 @@ export type RpcManifestRouteClientArgs<
         input: RpcManifestRouteInput<TManifest, TId>,
         options: RpcManifestRouteRequestOptions<TManifest, TId>,
       ];
+
+export type RpcManifestUnaryRouteClientArgs<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = RpcManifestRouteClientArgs<TManifest, TId>;
+
+export type RpcManifestStreamRouteClientArgs<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = RpcManifestRouteClientArgs<TManifest, TId>;
 
 export type RpcManifestRouteRequest<
   TManifest extends RpcManifest,
