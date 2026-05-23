@@ -1,5 +1,8 @@
 import {
   createPlugin,
+  createAwsLambdaHandlerFor as createRootAwsLambdaHandlerFor,
+  createAwsLambdaHttpApiHandlerFor as createRootAwsLambdaHttpApiHandlerFor,
+  createAwsLambdaRestApiHandlerFor as createRootAwsLambdaRestApiHandlerFor,
   createRuntimeContext as createRootRuntimeContext,
   createCloudflareWorker as createRootCloudflareWorker,
   createCloudflareWorkerFor as createRootCloudflareWorkerFor,
@@ -39,7 +42,12 @@ import {
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
 import { createJoorHandler } from 'joor/runtime';
-import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
+import {
+  createAwsLambdaHandler,
+  createAwsLambdaHandlerFor,
+  createAwsLambdaHttpApiHandlerFor,
+  createAwsLambdaRestApiHandlerFor,
+} from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
 import { createBunFetch } from 'joor/runtime/bun';
 import {
@@ -251,6 +259,12 @@ const packageSubpathValues = [
   build,
   createAiDocs,
   createAwsLambdaHandler,
+  createAwsLambdaHandlerFor,
+  createAwsLambdaHttpApiHandlerFor,
+  createAwsLambdaRestApiHandlerFor,
+  createRootAwsLambdaHandlerFor,
+  createRootAwsLambdaHttpApiHandlerFor,
+  createRootAwsLambdaRestApiHandlerFor,
   createBunFetch,
   createCloudflareFetch,
   createCloudflareWorker,

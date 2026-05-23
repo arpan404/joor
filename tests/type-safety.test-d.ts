@@ -12,8 +12,11 @@ import {
   ok as rootProcedureOk,
   resolvePluginServices,
   createAwsLambdaHandler,
+  createAwsLambdaHandlerFor,
   createAwsLambdaHttpApiHandler,
+  createAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler,
+  createAwsLambdaRestApiHandlerFor,
   BodySizeLimitError,
   DEFAULT_MAX_BODY_BYTES,
   createBunFetch,
@@ -1375,8 +1378,11 @@ import {
   BodySizeLimitError as RuntimeSubpathBodySizeLimitError,
   DEFAULT_MAX_BODY_BYTES as RUNTIME_SUBPATH_DEFAULT_MAX_BODY_BYTES,
   createAwsLambdaHandler as createRuntimeSubpathAwsLambdaHandler,
+  createAwsLambdaHandlerFor as createRuntimeSubpathAwsLambdaHandlerFor,
   createAwsLambdaHttpApiHandler as createRuntimeSubpathAwsLambdaHttpApiHandler,
+  createAwsLambdaHttpApiHandlerFor as createRuntimeSubpathAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler as createRuntimeSubpathAwsLambdaRestApiHandler,
+  createAwsLambdaRestApiHandlerFor as createRuntimeSubpathAwsLambdaRestApiHandlerFor,
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
@@ -10769,12 +10775,74 @@ const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
   multiValueQueryStringParameters: { tag: ['one', 'two'] },
   body: '{}',
 };
+interface AwsLambdaHttpApiEventForTypes extends AwsLambdaHttpEventV2 {
+  requestContext?: NonNullable<AwsLambdaHttpEventV2['requestContext']> & {
+    authorizer?: {
+      jwt?: {
+        claims: {
+          sub: string;
+        };
+      };
+    };
+  };
+}
+interface AwsLambdaRestApiEventForTypes extends AwsLambdaRestApiEventV1 {
+  requestContext?: NonNullable<AwsLambdaRestApiEventV1['requestContext']> & {
+    authorizer?: {
+      principalId: string;
+    };
+  };
+}
+const createTypedAwsLambdaHandler =
+  createAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>();
+const typedAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createTypedAwsLambdaHandler(manifest, handlerOptions);
+const createTypedAwsLambdaHttpApiHandler =
+  createAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>();
+const typedAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createTypedAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const createTypedAwsLambdaRestApiHandler =
+  createAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>();
+const typedAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createTypedAwsLambdaRestApiHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedAwsLambdaHandler =
+  createRuntimeSubpathAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>();
+const runtimeSubpathTypedAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathTypedAwsLambdaHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedAwsLambdaHttpApiHandler =
+  createRuntimeSubpathAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>();
+const runtimeSubpathTypedAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathTypedAwsLambdaHttpApiHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedAwsLambdaRestApiHandler =
+  createRuntimeSubpathAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>();
+const runtimeSubpathTypedAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRuntimeSubpathTypedAwsLambdaRestApiHandler(manifest, handlerOptions);
+const typedAwsLambdaEvent: AwsLambdaHttpApiEventForTypes = {
+  ...awsLambdaEvent,
+  requestContext: {
+    ...awsLambdaEvent.requestContext,
+    authorizer: { jwt: { claims: { sub: 'user_1' } } },
+  },
+};
+const typedAwsLambdaRestApiEvent: AwsLambdaRestApiEventForTypes = {
+  ...awsLambdaRestApiEvent,
+  requestContext: {
+    ...awsLambdaRestApiEvent.requestContext,
+    authorizer: { principalId: 'user_1' },
+  },
+};
+typedAwsLambdaEvent.requestContext?.authorizer?.jwt?.claims.sub.toUpperCase();
+typedAwsLambdaRestApiEvent.requestContext?.authorizer?.principalId.toUpperCase();
 Promise.resolve(awsLambdaHandler(awsLambdaEvent)).then((response) => {
   const typedResponse: AwsLambdaHttpResponseV2 = response;
   typedResponse.statusCode.toFixed();
 });
 awsLambdaHttpApiHandler(awsLambdaEvent);
 syncAwsLambdaHttpApiHandler(awsLambdaEvent);
+typedAwsLambdaHandler(typedAwsLambdaEvent);
+typedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedAwsLambdaHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
   (response) => {
     const typedResponse: AwsLambdaRestApiResponseV1 = response;
@@ -10782,6 +10850,8 @@ Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
   }
 );
 syncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+typedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
+runtimeSubpathTypedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 runtimeSubpathAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathSyncAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathAwsLambdaHttpApiHandler(awsLambdaEvent);
@@ -10792,6 +10862,12 @@ runtimeSubpathSyncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 createAwsLambdaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda REST API adapter plugins.
 createAwsLambdaRestApiHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed AWS Lambda adapter plugins.
+createTypedAwsLambdaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed AWS Lambda HTTP API adapter plugins.
+createTypedAwsLambdaHttpApiHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed AWS Lambda REST API adapter plugins.
+createTypedAwsLambdaRestApiHandler(manifest);
 const nextRouteHandler: NextRouteHandler = nextHandlers.POST;
 const runtimeSubpathNextRouteHandler: RuntimeSubpathNextRouteHandler =
   nextRouteHandler;

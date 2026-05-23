@@ -70,14 +70,20 @@ export interface AwsLambdaRestApiResponseV1 {
   isBase64Encoded?: boolean;
 }
 
-export type AwsLambdaHandler = (
-  event: AwsLambdaHttpEventV2
+export type AwsLambdaHandler<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+> = (
+  event: TEvent
 ) => AwsLambdaHttpResponseV2 | Promise<AwsLambdaHttpResponseV2>;
 
-export type AwsLambdaHttpApiHandler = AwsLambdaHandler;
+export type AwsLambdaHttpApiHandler<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+> = AwsLambdaHandler<TEvent>;
 
-export type AwsLambdaRestApiHandler = (
-  event: AwsLambdaRestApiEventV1
+export type AwsLambdaRestApiHandler<
+  TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+> = (
+  event: TEvent
 ) => AwsLambdaRestApiResponseV1 | Promise<AwsLambdaRestApiResponseV1>;
 
 export type AwsLambdaHandlerOptionsFor<
@@ -508,6 +514,19 @@ export function createAwsLambdaHandler<TManifest extends JoorManifest>(
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
+export const createAwsLambdaHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaHandlerOptionsArgs<TManifest, TPlugins>
+  ): AwsLambdaHandler<TEvent> => {
+    const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
+
 export function createAwsLambdaHttpApiHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -522,6 +541,19 @@ export function createAwsLambdaHttpApiHandler<TManifest extends JoorManifest>(
   const fetch = createFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
+
+export const createAwsLambdaHttpApiHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins>
+  ): AwsLambdaHttpApiHandler<TEvent> => {
+    const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
 
 export function createAwsLambdaRestApiHandler<
   TManifest extends JoorManifest,
@@ -538,3 +570,17 @@ export function createAwsLambdaRestApiHandler<TManifest extends JoorManifest>(
   return async (event) =>
     responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
 }
+
+export const createAwsLambdaRestApiHandlerFor =
+  <TEvent extends AwsLambdaRestApiEventV1>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins>
+  ): AwsLambdaRestApiHandler<TEvent> => {
+    const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
+    return async (event) =>
+      responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
+  };

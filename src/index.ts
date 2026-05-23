@@ -46,8 +46,11 @@ export {
 export { createSseResponse, encodeSse } from './rpc/stream.js';
 export {
   createAwsLambdaHandler,
+  createAwsLambdaHandlerFor,
   createAwsLambdaHttpApiHandler,
+  createAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler,
+  createAwsLambdaRestApiHandlerFor,
 } from './runtime/aws-lambda.js';
 export {
   BodySizeLimitError,
