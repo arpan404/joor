@@ -197,6 +197,18 @@ describe('compiler', () => {
       ).resolves.toContain('const rpcRequest = body as NativeProtocolRequest');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('return compiledNotFound(rpcRequest, request);');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('return undefined;');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.not.toContain('return Promise.resolve(compiledNotFound');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.not.toContain('return Promise.resolve(undefined)');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.not.toContain('Parameters<CompiledDispatch');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -1109,15 +1121,24 @@ nativeRuntimeState.getServices();
 nativeServices;
 const nativeUnary: NativeUnaryDispatch = nativeUnaryDispatch;
 const nativeResponseUnary: NativeUnaryDispatch = nativeResponseUnaryDispatch;
+const syncNativeUnary: NativeUnaryDispatch = () => undefined;
 nativeUnary;
 nativeResponseUnary;
+syncNativeUnary;
 const nativeDispatch: NativeDispatch = async () => ({
   ok: false,
   id: 'users.get',
   traceId: 'trace',
   error: { code: 'NOT_FOUND', message: 'Missing', status: 404 },
 });
+const syncNativeDispatch: NativeDispatch = () => ({
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace',
+  error: { code: 'NOT_FOUND', message: 'Missing', status: 404 },
+});
 nativeDispatch;
+syncNativeDispatch;
 const nativeFetchHandler: NativeFetchHandler = nativeFetch;
 nativeFetchHandler(new Request('https://example.com/rpc'));
 const nativeRequiredServices: NativeRequiredServices = requiredServices;

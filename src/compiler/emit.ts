@@ -665,7 +665,7 @@ export type NativeTransportRequest = ContextRequestSource;`;
   switch (rpcRequest.id) {
 ${dispatchCaseForMode('body')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
@@ -681,7 +681,7 @@ ${dispatchCaseForMode('body')}
   switch (rpcRequest.id) {
 ${dispatchCaseForMode('serialized')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
@@ -697,7 +697,7 @@ ${dispatchCaseForMode('serialized')}
   switch (rpcRequest.id) {
 ${dispatchCaseForMode('response')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
@@ -726,13 +726,13 @@ ${dispatchCaseForMode('response')}
     typeof body['id'] !== 'string' ||
     (traceIdValue !== undefined && typeof traceIdValue !== 'string')
   ) {
-    return Promise.resolve(undefined);
+    return undefined;
   }
   const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('body')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
@@ -749,13 +749,13 @@ ${unaryCases('body')}
     typeof body['id'] !== 'string' ||
     (traceIdValue !== undefined && typeof traceIdValue !== 'string')
   ) {
-    return Promise.resolve(undefined);
+    return undefined;
   }
   const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('serialized')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
@@ -772,13 +772,13 @@ ${unaryCases('serialized')}
     typeof body['id'] !== 'string' ||
     (traceIdValue !== undefined && typeof traceIdValue !== 'string')
   ) {
-    return Promise.resolve(undefined);
+    return undefined;
   }
   const rpcRequest = body as ${nativeDispatchBodyType};
   switch (rpcRequest.id) {
 ${unaryCases('response')}
     default:
-      return Promise.resolve(compiledNotFound(rpcRequest, request));
+      return compiledNotFound(rpcRequest, request);
   }
 };`
     : '';
