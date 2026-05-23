@@ -15,9 +15,9 @@ import {
   type CompiledFixedUnaryDispatch,
   type CompiledRpcTransportBodyResultHandler,
   type CompiledRuntimeState,
-  type CompiledStreamRouteTransportBodyResultFor,
+  type CompiledRouteStreamTransportBodyResultFor,
+  type CompiledRouteUnaryTransportBodyResultFor,
   type CompiledTransportBodyResultFor,
-  type CompiledUnaryRouteTransportBodyResultFor,
 } from './compiled.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -41,7 +41,7 @@ export type DenoCompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
     RpcManifestUnaryRouteBody<TManifest>,
-> = CompiledUnaryRouteTransportBodyResultFor<TManifest, TBody>;
+> = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -53,7 +53,7 @@ export type DenoCompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> = CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>;
+> = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
