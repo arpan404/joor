@@ -122,12 +122,9 @@ export type CompiledUnaryRouteTransportBodyResultFor<
 > = CompiledTransportBodyResultFor<TManifest, TBody>;
 export type CompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
-  TBody extends RpcManifestStreamRouteBody<TManifest> =
+  _TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,
-> =
-  TBody extends RpcManifestStreamRouteBody<TManifest>
-    ? Response | CompiledSerializedEnvelope
-    : never;
+> = Response | CompiledSerializedEnvelope;
 export type CompiledUnaryRouteBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestUnaryRouteBody<TManifest> =
@@ -164,7 +161,7 @@ export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<CompiledStreamRouteTransportBodyResultFor<TManifest>>;
+) => Promise<CompiledStreamRouteTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcBodyResultHandler<
   TBody = JsonValue,
@@ -190,7 +187,7 @@ export type CompiledRpcStreamRouteBodyResultHandlerFor<
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: Request,
   body: TBody
-) => Promise<CompiledStreamRouteBodyResultFor<TManifest>>;
+) => Promise<CompiledStreamRouteBodyResultFor<TManifest, TBody>>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
   hooks?: HandlerHooks<infer _TServices extends object, infer TBody>;

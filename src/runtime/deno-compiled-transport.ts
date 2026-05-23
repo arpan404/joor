@@ -73,7 +73,7 @@ export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
 > = <const TBody extends RpcManifestStreamRouteBody<TManifest>>(
   request: ContextRequestSource,
   body: TBody
-) => Promise<DenoCompiledStreamRouteTransportBodyResultFor<TManifest>>;
+) => Promise<DenoCompiledStreamRouteTransportBodyResultFor<TManifest, TBody>>;
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
