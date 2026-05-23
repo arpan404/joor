@@ -7,8 +7,11 @@ import type { RpcManifestBody } from '../rpc/dispatcher.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
   compiledUncachedExecutionState,
+  type CompiledBodyResult,
   type CompiledFixedUnaryDispatch,
+  type CompiledRpcTransportBodyResultHandler,
   type CompiledRuntimeState,
+  type CompiledTransportBodyResultFor,
 } from './compiled.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -17,28 +20,23 @@ import {
   readJsonRequestBodyWithLimit,
 } from './body.js';
 import { jsonContentHeaders, transportResultToResponse } from './response.js';
-import type {
-  DenoTransportBodyResult,
-  DenoTransportBodyResultFor,
-  DenoTransportBodyResultHandler,
-} from './deno-transport.js';
 
 export type DenoCompiledTransportRequestHandler = (
   request: Request
 ) => Promise<Response>;
 
-export type DenoCompiledTransportBodyResult = DenoTransportBodyResult;
+export type DenoCompiledTransportBodyResult = CompiledBodyResult;
 
 export type DenoCompiledTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = DenoTransportBodyResultFor<TManifest, TBody>;
+> = CompiledTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends DenoCompiledTransportBodyResult =
     DenoCompiledTransportBodyResult,
-> = DenoTransportBodyResultHandler<TBody, TResult>;
+> = CompiledRpcTransportBodyResultHandler<TBody, TResult>;
 
 export type DenoCompiledTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,

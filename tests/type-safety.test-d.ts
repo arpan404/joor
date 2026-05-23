@@ -3478,6 +3478,18 @@ const rootCompiledTransportBodyResultFor: RootCompiledTransportBodyResultFor<
   typeof manifest,
   typeof manifestRouteRequest
 > = compiledTransportBodyResultFor;
+const denoCompiledTransportBodyResultFor: DenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = rootCompiledTransportBodyResultFor;
+const rootDenoCompiledTransportBodyResultFor: RootDenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = denoCompiledTransportBodyResultFor;
+const runtimeSubpathDenoCompiledTransportBodyResultFor: RuntimeSubpathDenoCompiledTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = rootDenoCompiledTransportBodyResultFor;
 if (
   !(rootCompiledBodyResultFor instanceof Response) &&
   !Array.isArray(rootCompiledBodyResultFor) &&
@@ -3499,6 +3511,13 @@ if (
   rootCompiledTransportBodyResultFor.ok
 ) {
   rootCompiledTransportBodyResultFor.data.name.toUpperCase();
+}
+if (
+  !(runtimeSubpathDenoCompiledTransportBodyResultFor instanceof Response) &&
+  'ok' in runtimeSubpathDenoCompiledTransportBodyResultFor &&
+  runtimeSubpathDenoCompiledTransportBodyResultFor.ok
+) {
+  runtimeSubpathDenoCompiledTransportBodyResultFor.data.name.toUpperCase();
 }
 const _wrongCompiledSerializedEnvelopeHeaders: CompiledSerializedEnvelope = {
   body: '{"ok":true}',
