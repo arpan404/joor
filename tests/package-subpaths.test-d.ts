@@ -22,7 +22,10 @@ import {
   createOpenApiDocument,
 } from 'joor/compiler';
 import { ok } from 'joor/procedure';
-import { encodeSse as rpcEncodeSse } from 'joor/rpc';
+import {
+  createManifestRouteStreamProtocolRequest,
+  encodeSse as rpcEncodeSse,
+} from 'joor/rpc';
 import { createJoorHandler } from 'joor/runtime';
 import { createAwsLambdaHandler } from 'joor/runtime/aws-lambda';
 import { DEFAULT_MAX_BODY_BYTES } from 'joor/runtime/body';
@@ -83,6 +86,7 @@ import type * as ResponseRuntime from 'joor/runtime/response';
 import type * as Vercel from 'joor/runtime/vercel';
 
 const packageSubpathOutputSchema = t.object({ name: t.string() });
+const packageSubpathStreamSchema = t.object({ eventId: t.string() });
 
 const packageSubpathProcedure = defineProcedure({
   input: t.object({ id: t.string() }),
@@ -92,9 +96,18 @@ const packageSubpathProcedure = defineProcedure({
   },
 });
 
+const packageSubpathStreamProcedure = defineProcedure({
+  input: t.object({ userId: t.string() }),
+  stream: packageSubpathStreamSchema,
+  async *handler(_ctx, input) {
+    yield { eventId: input.userId };
+  },
+});
+
 const packageSubpathManifest = defineManifest({
   procedures: {
     'users.get': packageSubpathProcedure,
+    'users.watch': packageSubpathStreamProcedure,
   },
 });
 
@@ -133,6 +146,21 @@ const packageSubpathRequest = packageSubpathClient.request('users.get', {
   id: '1',
 });
 packageSubpathRequest.input.id.toUpperCase();
+const packageSubpathStream = packageSubpathClient.stream('users.watch', {
+  userId: '1',
+});
+const packageSubpathStreamRequest = createManifestRouteStreamProtocolRequest(
+  packageSubpathManifest,
+  'users.watch',
+  { userId: '1' }
+);
+packageSubpathStreamRequest.input.userId.toUpperCase();
+async function consumePackageSubpathStream() {
+  for await (const event of packageSubpathStream) {
+    event.eventId.toUpperCase();
+  }
+}
+consumePackageSubpathStream();
 
 const packageSubpathAuthPolicy = createAuthPolicy.withContext<PackageSubpathServices>()(
   {
@@ -174,6 +202,7 @@ const packageSubpathValues = [
   createRootCloudflareWorker,
   createOpenApiDocument,
   compiledCreateProcedureCacheKey,
+  createManifestRouteStreamProtocolRequest,
   createCompiledRpcBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
   createDenoRpcRequestHandler,
@@ -208,6 +237,8 @@ type PackageSubpathManifest = typeof packageSubpathManifest;
 type PackageSubpathPlugins = readonly [typeof packageSubpathPlugin];
 type PackageSubpathBody =
   Manifest.JoorManifestRouteUnaryBody<PackageSubpathManifest>;
+type PackageSubpathStreamBody =
+  Manifest.JoorManifestRouteStreamBody<PackageSubpathManifest>;
 
 export type PackageSubpathSurface = [
   Root.JoorConfigFor<
@@ -237,12 +268,21 @@ export type PackageSubpathSurface = [
     PackageSubpathManifest,
     'users.get'
   >,
+  Manifest.JoorManifestRouteStreamRequest<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'>,
   Procedure.ProcedureResult<{ name: string }, string>,
   Rpc.RateLimitIdentityResolver,
   Rpc.RateLimitRuntimeOptions,
   Rpc.RpcRouteUnaryProtocolRequest<
     Manifest.JoorManifestRoutes<PackageSubpathManifest>,
     'users.get'
+  >,
+  Rpc.RpcRouteStreamProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>,
+    'users.watch'
   >,
   Rpc.StreamEvent<Root.JsonObject, 'users.get'>,
   Schema.Infer<typeof packageSubpathOutputSchema>,
@@ -295,5 +335,9 @@ export type PackageSubpathSurface = [
   NodeRuntime.NodeServer,
   Root.NodeServer,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
+  ResponseRuntime.TransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
   Vercel.VercelFetchHandler,
 ];
