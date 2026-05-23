@@ -7835,42 +7835,42 @@ const typedListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-const unaryRouteListenOptions: UnaryRouteListenOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const streamRouteListenOptions: StreamRouteListenOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const routeUnaryListenOptions: RouteUnaryListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = unaryRouteListenOptions;
+> = manifestUnaryRouteHandlerOptions;
+const unaryRouteListenOptions: UnaryRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeUnaryListenOptions;
 const routeStreamListenOptions: RouteStreamListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = streamRouteListenOptions;
+> = manifestStreamRouteHandlerOptions;
+const streamRouteListenOptions: StreamRouteListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeStreamListenOptions;
 const nodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
-const nodeUnaryRouteRpcRequestHandlerOptions: NodeUnaryRouteRpcRequestHandlerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestUnaryRouteHandlerOptions;
-const nodeStreamRouteRpcRequestHandlerOptions: NodeStreamRouteRpcRequestHandlerOptionsFor<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = manifestStreamRouteHandlerOptions;
 const nodeRouteUnaryRpcRequestHandlerOptions: NodeRouteUnaryRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nodeUnaryRouteRpcRequestHandlerOptions;
+> = manifestUnaryRouteHandlerOptions;
+const nodeUnaryRouteRpcRequestHandlerOptions: NodeUnaryRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryRpcRequestHandlerOptions;
 const nodeRouteStreamRpcRequestHandlerOptions: NodeRouteStreamRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
-> = nodeStreamRouteRpcRequestHandlerOptions;
+> = manifestStreamRouteHandlerOptions;
+const nodeStreamRouteRpcRequestHandlerOptions: NodeStreamRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamRpcRequestHandlerOptions;
 const runtimeSubpathUnaryRouteListenOptions: RuntimeSubpathUnaryRouteListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7911,42 +7911,42 @@ const nodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRpcRequestHandlerOptions, '127.0.0.1'];
-const nodeUnaryRouteRpcRequestHandlerOptionsArgs: NodeUnaryRouteRpcRequestHandlerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [nodeUnaryRouteRpcRequestHandlerOptions];
-const nodeStreamRouteRpcRequestHandlerOptionsArgs: NodeStreamRouteRpcRequestHandlerOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [nodeStreamRouteRpcRequestHandlerOptions, 'localhost'];
 const nodeRouteUnaryRpcRequestHandlerOptionsArgs: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRouteUnaryRpcRequestHandlerOptions];
+const nodeUnaryRouteRpcRequestHandlerOptionsArgs: NodeUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteUnaryRpcRequestHandlerOptionsArgs;
 const nodeRouteStreamRpcRequestHandlerOptionsArgs: NodeRouteStreamRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRouteStreamRpcRequestHandlerOptions, 'localhost'];
+const nodeStreamRouteRpcRequestHandlerOptionsArgs: NodeStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = nodeRouteStreamRpcRequestHandlerOptionsArgs;
 const listenOptionsArgs: ListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [typedListenOptions];
-const unaryRouteListenOptionsArgs: UnaryRouteListenOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [unaryRouteListenOptions];
-const streamRouteListenOptionsArgs: StreamRouteListenOptionsArgs<
-  typeof manifest,
-  readonly [typeof usersPlugin]
-> = [streamRouteListenOptions];
 const routeUnaryListenOptionsArgs: RouteUnaryListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [routeUnaryListenOptions];
+const unaryRouteListenOptionsArgs: UnaryRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeUnaryListenOptionsArgs;
 const routeStreamListenOptionsArgs: RouteStreamListenOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [routeStreamListenOptions];
+const streamRouteListenOptionsArgs: StreamRouteListenOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = routeStreamListenOptionsArgs;
 const runtimeSubpathNodeRpcRequestHandlerOptionsArgs: RuntimeSubpathNodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8083,22 +8083,22 @@ const exactNodeTransportResultFor: NodeTransportBodyResultFor<
   typeof manifest,
   typeof manifestRouteRequest
 > = exactDenoCompiledTransportResultFor;
-const nodeUnaryRouteTransportResultFor: NodeUnaryRouteTransportBodyResultFor<
-  typeof manifest,
-  typeof manifestUnaryRouteBody
-> = denoCompiledUnaryRouteTransportResultFor;
-const nodeStreamRouteTransportResultFor: NodeStreamRouteTransportBodyResultFor<
-  typeof manifest,
-  typeof manifestStreamRouteBody
-> = denoCompiledStreamRouteTransportResultFor;
 const nodeRouteUnaryTransportResultFor: NodeRouteUnaryTransportBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
-> = nodeUnaryRouteTransportResultFor;
+> = denoCompiledUnaryRouteTransportResultFor;
+const nodeUnaryRouteTransportResultFor: NodeUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = nodeRouteUnaryTransportResultFor;
 const nodeRouteStreamTransportResultFor: NodeRouteStreamTransportBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
-> = nodeStreamRouteTransportResultFor;
+> = denoCompiledStreamRouteTransportResultFor;
+const nodeStreamRouteTransportResultFor: NodeStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = nodeRouteStreamTransportResultFor;
 const routeTypedNodeTransportHandler: NodeTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -8112,18 +8112,18 @@ createNodeTransportRequestHandler(routeTypedNodeTransportHandler);
 const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+const manifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestNodeTransportHandler;
 const manifestNodeUnaryRouteTransportHandler: NodeUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestNodeRouteUnaryTransportHandler;
+const manifestNodeRouteStreamTransportHandler: NodeRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeTransportHandler;
 const manifestNodeStreamRouteTransportHandler: NodeStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
-> = manifestNodeTransportHandler;
-const manifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
-  typeof manifest
-> = manifestNodeUnaryRouteTransportHandler;
-const manifestNodeRouteStreamTransportHandler: NodeRouteStreamTransportBodyResultHandlerFor<
-  typeof manifest
-> = manifestNodeStreamRouteTransportHandler;
+> = manifestNodeRouteStreamTransportHandler;
 createNodeTransportRequestHandler(manifestNodeTransportHandler);
 manifestNodeUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
