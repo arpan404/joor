@@ -11924,6 +11924,12 @@ const requestTypedCloudflareFetchOptions: CloudflareFetchOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedCloudflareRouteUnaryFetchOptions: CloudflareRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedCloudflareFetchOptions;
 const runtimeSubpathCloudflareFetchOptions: RuntimeSubpathCloudflareFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -11980,6 +11986,12 @@ const requestTypedCloudflareWorkerOptions: CloudflareWorkerOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedCloudflareFetchOptions;
+const requestTypedCloudflareRouteUnaryWorkerOptions: CloudflareRouteUnaryWorkerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedCloudflareWorkerOptions;
 const runtimeSubpathCloudflareWorkerOptions: RuntimeSubpathCloudflareWorkerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12045,6 +12057,10 @@ requestTypedCloudflareFetchOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedCloudflareRouteUnaryFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 runtimeSubpathCloudflareUnaryRouteWorkerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -12069,6 +12085,10 @@ requestTypedCloudflareWorkerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedCloudflareRouteUnaryWorkerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const cloudflareWorkerOptionsArgs: CloudflareWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12081,6 +12101,12 @@ const cloudflareRouteUnaryFetchOptionsArgs: CloudflareRouteUnaryFetchOptionsArgs
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareRouteUnaryFetchOptions];
+const requestTypedCloudflareRouteUnaryFetchOptionsArgs: CloudflareRouteUnaryFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedCloudflareRouteUnaryFetchOptions];
 const cloudflareUnaryRouteFetchOptionsArgs: CloudflareUnaryRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12097,6 +12123,12 @@ const cloudflareRouteUnaryWorkerOptionsArgs: CloudflareRouteUnaryWorkerOptionsAr
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [cloudflareRouteUnaryWorkerOptions];
+const requestTypedCloudflareRouteUnaryWorkerOptionsArgs: CloudflareRouteUnaryWorkerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedCloudflareRouteUnaryWorkerOptions];
 const cloudflareUnaryRouteWorkerOptionsArgs: CloudflareUnaryRouteWorkerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12162,6 +12194,10 @@ runtimeSubpathCloudflareRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
 );
+requestTypedCloudflareRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 runtimeSubpathCloudflareRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
@@ -12178,6 +12214,10 @@ runtimeSubpathCloudflareStreamRouteWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
 runtimeSubpathCloudflareRouteUnaryWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedCloudflareRouteUnaryWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 runtimeSubpathCloudflareRouteStreamWorkerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -12311,6 +12351,12 @@ const requestTypedNetlifyFetchOptions: NetlifyFetchOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedNetlifyRouteUnaryFetchOptions: NetlifyRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNetlifyFetchOptions;
 const runtimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12360,6 +12406,10 @@ requestTypedNetlifyFetchOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedNetlifyRouteUnaryFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const netlifyFetchOptionsArgs: NetlifyFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12372,6 +12422,12 @@ const netlifyRouteUnaryFetchOptionsArgs: NetlifyRouteUnaryFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [netlifyRouteUnaryFetchOptions];
+const requestTypedNetlifyRouteUnaryFetchOptionsArgs: NetlifyRouteUnaryFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedNetlifyRouteUnaryFetchOptions];
 const netlifyUnaryRouteFetchOptionsArgs: NetlifyUnaryRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12416,6 +12472,10 @@ runtimeSubpathNetlifyStreamRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
 runtimeSubpathNetlifyRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedNetlifyRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 runtimeSubpathNetlifyRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -12530,6 +12590,12 @@ const requestTypedVercelFetchOptions: VercelFetchOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedVercelRouteUnaryFetchOptions: VercelRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedVercelFetchOptions;
 const runtimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12579,6 +12645,10 @@ requestTypedVercelFetchOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedVercelRouteUnaryFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const vercelFetchOptionsArgs: VercelFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12587,6 +12657,12 @@ const vercelRouteUnaryFetchOptionsArgs: VercelRouteUnaryFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [vercelRouteUnaryFetchOptions];
+const requestTypedVercelRouteUnaryFetchOptionsArgs: VercelRouteUnaryFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedVercelRouteUnaryFetchOptions];
 const vercelUnaryRouteFetchOptionsArgs: VercelUnaryRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12631,6 +12707,10 @@ runtimeSubpathVercelStreamRouteFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
 runtimeSubpathVercelRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
+);
+requestTypedVercelRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
 );
 runtimeSubpathVercelRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
