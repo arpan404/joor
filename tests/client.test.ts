@@ -321,6 +321,38 @@ describe('client', () => {
     await expect(consume()).rejects.toThrow('SSE event exceeds');
   });
 
+  it('parses standard crlf and multiline sse data frames', async () => {
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      async fetch() {
+        return new Response(
+          [
+            'event: data',
+            'data: {',
+            'data: "ok": true',
+            'data: }',
+            '',
+            'event: done',
+            'data: null',
+            '',
+          ].join('\r\n'),
+          {
+            headers: { 'content-type': 'text/event-stream; charset=utf-8' },
+          }
+        );
+      },
+    });
+    const events: JsonValue[] = [];
+
+    for await (const event of client.stream<StreamTestProcedure>('stream', {
+      ok: true,
+    })) {
+      events.push(event);
+    }
+
+    expect(events).toEqual([{ ok: true }]);
+  });
+
   it('throws json rpc failures returned from stream requests', async () => {
     const procedure = defineProcedure({
       input: t.object({ ok: t.boolean() }),

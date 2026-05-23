@@ -1354,6 +1354,43 @@ const normalizeMaxStreamEventBytes = (value: number | undefined): number =>
     ? defaultMaxStreamEventBytes
     : Math.floor(value);
 
+const readSseFieldValue = (line: string, prefix: string): string | undefined => {
+  if (!line.startsWith(prefix)) return undefined;
+  const value = line.slice(prefix.length);
+  return value.startsWith(' ') ? value.slice(1) : value;
+};
+
+const nextSseChunk = (
+  buffer: string
+): { chunk: string; rest: string } | undefined => {
+  const separator = /\r?\n\r?\n/.exec(buffer);
+  if (separator === null) return undefined;
+  return {
+    chunk: buffer.slice(0, separator.index),
+    rest: buffer.slice(separator.index + separator[0].length),
+  };
+};
+
+const parseSseChunk = (
+  chunk: string
+): { eventName?: string; data?: string } => {
+  const data: string[] = [];
+  let eventName: string | undefined;
+  for (const line of chunk.split(/\r?\n/)) {
+    const eventValue = readSseFieldValue(line, 'event:');
+    if (eventValue !== undefined) {
+      eventName = eventValue;
+      continue;
+    }
+    const dataValue = readSseFieldValue(line, 'data:');
+    if (dataValue !== undefined) data.push(dataValue);
+  }
+  return {
+    ...(eventName === undefined ? {} : { eventName }),
+    ...(data.length === 0 ? {} : { data: data.join('\n') }),
+  };
+};
+
 const parseSse = async function* <TEvent extends JsonValue>(
   response: Response,
   maxEventBytes: number
@@ -1368,22 +1405,18 @@ const parseSse = async function* <TEvent extends JsonValue>(
     if (buffer.length > maxEventBytes) {
       throw new Error('SSE event exceeds maxStreamEventBytes');
     }
-    const chunks = buffer.split('\n\n');
-    buffer = chunks.pop() ?? '';
-    for (const chunk of chunks) {
+    for (;;) {
+      const next = nextSseChunk(buffer);
+      if (next === undefined) break;
+      const { chunk } = next;
+      buffer = next.rest;
       if (chunk.length > maxEventBytes) {
         throw new Error('SSE event exceeds maxStreamEventBytes');
       }
-      const eventLine = chunk
-        .split('\n')
-        .find((line) => line.startsWith('event: '));
-      const eventName = eventLine?.slice(7);
+      const { eventName, data } = parseSseChunk(chunk);
       if (eventName === 'done') return;
-      const dataLine = chunk
-        .split('\n')
-        .find((line) => line.startsWith('data: '));
-      if (dataLine !== undefined) {
-        const parsed = JSON.parse(dataLine.slice(6)) as JsonValue;
+      if (data !== undefined) {
+        const parsed = JSON.parse(data) as JsonValue;
         if (eventName === 'error') {
           throw new Error(JSON.stringify(parsed));
         }
