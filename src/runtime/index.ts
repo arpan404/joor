@@ -2,7 +2,10 @@ export * from './bun.js';
 export * from './cloudflare.js';
 export * from './compiled.js';
 export * from './deno.js';
-export { createDenoCompiledTransportRequestHandlerWithPath } from './deno-compiled-transport.js';
+export {
+  createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerWithPath,
+} from './deno-compiled-transport.js';
 export type {
   DenoCompiledTransportBodyResult,
   DenoCompiledTransportBodyResultFor,

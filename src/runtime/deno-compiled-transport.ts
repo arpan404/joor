@@ -7,7 +7,9 @@ import type {
   RpcManifestBody,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
+  RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
+import { createRpcRequestPreflight } from '../rpc/dispatcher.js';
 import type { RpcEnvelope } from '../rpc/protocol.js';
 import { isJsonObject, type JsonValue } from '../schema/json.js';
 import {
@@ -98,6 +100,50 @@ export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
 export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>;
+
+export const createDenoCompiledTransportRequestHandler = <
+  TServices extends object = object,
+  TBody = JsonValue,
+  TResult extends DenoCompiledTransportBodyResult =
+    DenoCompiledTransportBodyResult,
+>(
+  runtimeState: CompiledRuntimeState<TServices>,
+  handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false
+): DenoCompiledTransportRequestHandler => {
+  const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  const requestPreflight =
+    preflight === false
+      ? undefined
+      : (preflight ?? createRpcRequestPreflight());
+  return async (request: Request): Promise<Response> => {
+    const source: ContextRequestSource = createFetchRequestSource(request);
+    const early = requestPreflight?.(source);
+    if (early !== undefined) return early;
+    let body: JsonValue;
+    try {
+      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
+    } catch (error) {
+      if (!(error instanceof Error)) throw error;
+      return bodyReadFailure(request, error);
+    }
+    const services =
+      runtimeState.services ?? (await runtimeState.resolveServices());
+    if (isJsonObject(body)) {
+      const unary = await unaryDispatch(
+        body,
+        source,
+        services,
+        runtimeState.runtime,
+        compiledUncachedExecutionState
+      );
+      if (unary !== undefined) return transportResultToResponse(unary);
+    }
+    return transportResultToResponse(await handler(source, body as TBody));
+  };
+};
 
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');

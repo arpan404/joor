@@ -11,6 +11,7 @@ import {
   createBunTransportRequestHandler,
   createCloudflareWorker,
   createDenoFetch,
+  createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
   createDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
@@ -980,6 +981,7 @@ import {
   type DenoUnaryRouteTransportBodyResultHandlerFor as StandaloneDenoUnaryRouteTransportBodyResultHandlerFor,
 } from '../src/runtime/deno-transport.js';
 import {
+  createDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath,
   type DenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor,
@@ -1046,6 +1048,7 @@ import type {
 import {
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
+  createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
@@ -7992,17 +7995,32 @@ createRootCompiledRpcTransportBodyResultHandler(
   _rootServiceTypedCompiledDispatch,
   {}
 );
+createDenoCompiledTransportRequestHandler(
+  typedCompiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _serviceTypedCompiledUnaryDispatch
+);
 createDenoCompiledTransportRequestHandlerWithPath(
   typedCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
   _serviceTypedCompiledUnaryDispatch,
   '/rpc'
 );
+createRootDenoCompiledTransportRequestHandler(
+  rootCompiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _rootServiceTypedCompiledUnaryDispatch
+);
 createRootDenoCompiledTransportRequestHandlerWithPath(
   rootCompiledRuntimeState,
   routeTypedStandaloneDenoTransportHandler,
   _rootServiceTypedCompiledUnaryDispatch,
   '/rpc'
+);
+createRuntimeSubpathDenoCompiledTransportRequestHandler(
+  typedCompiledRuntimeState,
+  routeTypedStandaloneDenoTransportHandler,
+  _serviceTypedCompiledUnaryDispatch
 );
 createDenoCompiledTransportRequestHandlerWithPath(
   // @ts-expect-error compiled Deno transports require unary dispatch services to match runtime state services.
@@ -8020,6 +8038,14 @@ const standaloneDenoCompiledHandler =
   );
 const typedStandaloneDenoCompiledHandler: DenoCompiledTransportRequestHandler =
   standaloneDenoCompiledHandler;
+const standaloneDenoCompiledDefaultHandler =
+  createDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    routeTypedStandaloneDenoTransportHandler,
+    compiledUnaryDispatch
+  );
+const typedStandaloneDenoCompiledDefaultHandler: DenoCompiledTransportRequestHandler =
+  standaloneDenoCompiledDefaultHandler;
 const rootTypedStandaloneDenoCompiledHandler: RootDenoCompiledTransportRequestHandler =
   typedStandaloneDenoCompiledHandler;
 const runtimeSubpathTypedStandaloneDenoCompiledHandler: RuntimeSubpathDenoCompiledTransportRequestHandler =
@@ -8133,6 +8159,10 @@ createDenoCompiledTransportRequestHandlerWithPath(
   runtimeSubpathManifestDenoCompiledTransportHandler,
   _serviceTypedCompiledUnaryDispatch,
   '/rpc'
+);
+standaloneDenoCompiledDefaultHandler(new Request('https://example.com/rpc'));
+typedStandaloneDenoCompiledDefaultHandler(
+  new Request('https://example.com/rpc')
 );
 standaloneDenoCompiledHandler(new Request('https://example.com/rpc'));
 rootTypedStandaloneDenoCompiledHandler(new Request('https://example.com/rpc'));

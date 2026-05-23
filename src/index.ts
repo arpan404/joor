@@ -26,7 +26,10 @@ export {
   createDenoTransportRequestHandlerWithPath,
   serveDeno,
 } from './runtime/deno.js';
-export { createDenoCompiledTransportRequestHandlerWithPath } from './runtime/deno-compiled-transport.js';
+export {
+  createDenoCompiledTransportRequestHandler,
+  createDenoCompiledTransportRequestHandlerWithPath,
+} from './runtime/deno-compiled-transport.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
