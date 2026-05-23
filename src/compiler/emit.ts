@@ -2864,19 +2864,23 @@ export type RouteRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
 ) => RouteRequest<TId>;
-const createManifestRouteRequest = createTransportRouteRequest as unknown as (
-  manifest: Manifest,
-  id: RouteUnaryId,
-  input: unknown,
-  options?: unknown
-) => unknown;
+const createManifestRouteRequest = <TId extends RouteUnaryId>(
+  id: TId,
+  ...args: RouteUnaryClientArgs<TId>
+): RouteRequest<TId> =>
+  createTransportRouteRequest<Manifest, TId>(
+    manifest,
+    id,
+    args[0] as RouteUnaryInput<TId>,
+    args[1] as RouteUnaryRequestOptions<TId>
+  ) as RouteRequest<TId>;
 export const createRouteRequest: RouteRequestBuilder = <
   TId extends RouteUnaryId,
 >(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
 ): RouteRequest<TId> =>
-  createManifestRouteRequest(manifest, id, args[0], args[1]) as RouteRequest<TId>;
+  createManifestRouteRequest(id, ...args);
 export const createRouteUnaryRequest: typeof createRouteRequest =
   createRouteRequest;
 export const createUnaryRouteRequest: typeof createRouteUnaryRequest =
