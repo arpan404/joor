@@ -1118,6 +1118,7 @@ export type {
   KoaUnaryRouteHandlerOptionsFor,
 } from './runtime/koa.js';
 export type {
+  NetlifyEdgeFetchHandler,
   NetlifyFetchHandler,
   NetlifyFetchOptionsArgs,
   NetlifyFetchOptionsFor,

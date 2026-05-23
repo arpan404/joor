@@ -10,7 +10,14 @@ import type {
 import type { JoorPlugin } from '../context/plugin.js';
 import { createJoorHandler, type JoorFetchHandler } from './fetch.js';
 
+type MaybePromise<TValue> = TValue | Promise<TValue>;
+
 export type NetlifyFetchHandler = JoorFetchHandler;
+
+export type NetlifyEdgeFetchHandler<TContext = unknown> = (
+  request: Request,
+  context: TContext
+) => MaybePromise<Response>;
 
 export type NetlifyFetchOptionsFor<
   TManifest extends JoorManifest,

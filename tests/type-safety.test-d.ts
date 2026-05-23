@@ -618,6 +618,7 @@ import {
   type NodeListenOptions,
   type NodeListenOptionsArgs,
   type NodeListenOptionsFor,
+  type NetlifyEdgeFetchHandler,
   type NetlifyFetchHandler,
   type NetlifyFetchOptionsArgs,
   type NetlifyRouteStreamFetchOptionsArgs,
@@ -1588,6 +1589,7 @@ import {
   type JoorStreamRouteHandlerOptionsFor as RuntimeSubpathJoorStreamRouteHandlerOptionsFor,
   type JoorUnaryRouteHandlerOptionsArgs as RuntimeSubpathJoorUnaryRouteHandlerOptionsArgs,
   type JoorUnaryRouteHandlerOptionsFor as RuntimeSubpathJoorUnaryRouteHandlerOptionsFor,
+  type NetlifyEdgeFetchHandler as RuntimeSubpathNetlifyEdgeFetchHandler,
   type NetlifyFetchHandler as RuntimeSubpathNetlifyFetchHandler,
   type NetlifyFetchOptionsArgs as RuntimeSubpathNetlifyFetchOptionsArgs,
   type NetlifyFetchOptionsFor as RuntimeSubpathNetlifyFetchOptionsFor,
@@ -11082,6 +11084,36 @@ const netlifyFetch = createNetlifyFetch(manifest, handlerOptions);
 const typedNetlifyFetch: NetlifyFetchHandler = netlifyFetch;
 const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =
   typedNetlifyFetch;
+interface NetlifyContextForTypes {
+  cookies: {
+    get(name: string): string | undefined;
+  };
+  geo: {
+    city?: string;
+  };
+}
+const netlifyEdgeFetch: NetlifyEdgeFetchHandler<NetlifyContextForTypes> = (
+  request,
+  context
+) =>
+  new Response(
+    JSON.stringify({
+      cookie: context.cookies.get('session'),
+      city: context.geo.city,
+      url: request.url,
+    })
+  );
+const runtimeSubpathNetlifyEdgeFetch: RuntimeSubpathNetlifyEdgeFetchHandler<
+  NetlifyContextForTypes
+> = netlifyEdgeFetch;
+runtimeSubpathNetlifyEdgeFetch(new Request('https://example.com/rpc'), {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 const netlifyFetchOptions: NetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
