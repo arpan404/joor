@@ -33,14 +33,21 @@ import {
   createCloudflareWorker,
   createCloudflareWorkerFor,
   createDenoFetch,
+  createDenoFetchFor,
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
   createDenoRpcRequestHandler,
+  createDenoRpcRequestHandlerFor,
   createStandaloneDenoRpcRequestHandler as createRootStandaloneDenoRpcRequestHandler,
+  createStandaloneDenoRpcRequestHandlerFor as createRootStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRootStandaloneDenoTransportRequestHandler,
+  createStandaloneDenoTransportRequestHandlerFor as createRootStandaloneDenoTransportRequestHandlerFor,
   createStandaloneDenoTransportRequestHandlerWithPath as createRootStandaloneDenoTransportRequestHandlerWithPath,
+  createStandaloneDenoTransportRequestHandlerWithPathFor as createRootStandaloneDenoTransportRequestHandlerWithPathFor,
   createDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandlerWithPath,
+  createDenoTransportRequestHandlerWithPathFor,
   createElysiaHandler,
   createElysiaHandlerFor,
   createExpressHandler,
@@ -1277,8 +1284,11 @@ import {
 } from '../src/schema/index.js';
 import {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
+  createDenoRpcRequestHandlerFor as createStandaloneDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerFor as createStandaloneDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
+  createDenoTransportRequestHandlerWithPathFor as createStandaloneDenoTransportRequestHandlerWithPathFor,
   serveDeno as serveStandaloneDeno,
   type DenoRpcRequestHandlerOptionsArgs as StandaloneDenoRpcRequestHandlerOptionsArgs,
   type DenoRpcRequestHandlerOptionsFor as StandaloneDenoRpcRequestHandlerOptionsFor,
@@ -1408,9 +1418,16 @@ import {
   createCloudflareWorkerFor as createRuntimeSubpathCloudflareWorkerFor,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
+  createStandaloneDenoRpcRequestHandlerFor as createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRuntimeSubpathStandaloneDenoTransportRequestHandler,
+  createStandaloneDenoTransportRequestHandlerFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerFor,
   createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
+  createStandaloneDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPathFor,
+  createDenoFetchFor as createRuntimeSubpathDenoFetchFor,
+  createDenoRpcRequestHandlerFor as createRuntimeSubpathDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerFor as createRuntimeSubpathDenoTransportRequestHandlerFor,
+  createDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoTransportRequestHandlerWithPathFor,
   createElysiaHandler as createRuntimeSubpathElysiaHandler,
   createElysiaHandlerFor as createRuntimeSubpathElysiaHandlerFor,
   createExpressHandler as createRuntimeSubpathExpressHandler,
@@ -7652,10 +7669,21 @@ const denoFetch = createDenoFetch(manifest, handlerOptions);
 const typedDenoFetch: DenoFetchHandler = denoFetch;
 const runtimeSubpathTypedDenoFetch: RuntimeSubpathDenoFetchHandler =
   typedDenoFetch;
+const createTypedDenoFetch = createDenoFetchFor<AppFetchRequest>();
+const typedAppDenoFetch: DenoFetchHandler<AppFetchRequest> =
+  createTypedDenoFetch(manifest, handlerOptions);
+const createRuntimeSubpathTypedDenoFetch =
+  createRuntimeSubpathDenoFetchFor<AppFetchRequest>();
+const runtimeSubpathTypedAppDenoFetch: RuntimeSubpathDenoFetchHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoFetch(manifest, handlerOptions);
 denoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoFetch(new Request('https://example.com/rpc'));
+typedAppDenoFetch(appFetchRequest);
+runtimeSubpathTypedAppDenoFetch(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
 createDenoFetch(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Deno fetch plugins.
+createTypedDenoFetch(manifest);
 const typedDenoServeOptions: DenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8033,10 +8061,22 @@ const denoHandler = createDenoRpcRequestHandler(manifest, handlerOptions);
 const typedDenoHandler: DenoRpcRequestHandler = denoHandler;
 const runtimeSubpathTypedDenoHandler: RuntimeSubpathDenoRpcRequestHandler =
   typedDenoHandler;
+const createTypedDenoHandler =
+  createDenoRpcRequestHandlerFor<AppFetchRequest>();
+const typedAppDenoHandler: DenoRpcRequestHandler<AppFetchRequest> =
+  createTypedDenoHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedDenoHandler =
+  createRuntimeSubpathDenoRpcRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedAppDenoHandler: RuntimeSubpathDenoRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoHandler(manifest, handlerOptions);
 denoHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoHandler(new Request('https://example.com/rpc'));
+typedAppDenoHandler(appFetchRequest);
+runtimeSubpathTypedAppDenoHandler(appFetchRequest);
 // @ts-expect-error service-dependent manifests require matching Deno RPC adapter plugins.
 createDenoRpcRequestHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching typed Deno RPC adapter plugins.
+createTypedDenoHandler(manifest);
 const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
   manifest,
   handlerOptions
@@ -8047,10 +8087,27 @@ const rootStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler =
   createRootStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
 const runtimeSubpathStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler =
   createRuntimeSubpathStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
+const createTypedStandaloneDenoHandler =
+  createStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
+const typedAppStandaloneDenoHandler: StandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createTypedStandaloneDenoHandler(manifest, handlerOptions);
+const createRootTypedStandaloneDenoHandler =
+  createRootStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
+const rootTypedAppStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createRootTypedStandaloneDenoHandler(manifest, handlerOptions);
+const createRuntimeSubpathTypedStandaloneDenoHandler =
+  createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedAppStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedStandaloneDenoHandler(manifest, handlerOptions);
 standaloneDenoHandler(new Request('https://example.com/rpc'));
 typedStandaloneDenoHandler(new Request('https://example.com/rpc'));
 rootStandaloneDenoHandler(new Request('https://example.com/rpc'));
 runtimeSubpathStandaloneDenoHandler(new Request('https://example.com/rpc'));
+typedAppStandaloneDenoHandler(appFetchRequest);
+rootTypedAppStandaloneDenoHandler(appFetchRequest);
+runtimeSubpathTypedAppStandaloneDenoHandler(appFetchRequest);
+// @ts-expect-error service-dependent manifests require matching typed standalone Deno RPC plugins.
+createTypedStandaloneDenoHandler(manifest);
 const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -8517,15 +8574,38 @@ const denoTransportRequestHandler: DenoTransportRequestHandler =
   createDenoTransportRequestHandler(denoTransportHandler);
 const denoTransportRequestHandlerWithPath: DenoTransportRequestHandler =
   createDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
+const createTypedDenoTransportRequestHandler =
+  createDenoTransportRequestHandlerFor<AppFetchRequest>();
+const typedDenoTransportRequestHandler: DenoTransportRequestHandler<AppFetchRequest> =
+  createTypedDenoTransportRequestHandler(denoTransportHandler);
+const createTypedDenoTransportRequestHandlerWithPath =
+  createDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedDenoTransportRequestHandlerWithPath: DenoTransportRequestHandler<AppFetchRequest> =
+  createTypedDenoTransportRequestHandlerWithPath(denoTransportHandler, '/rpc');
 createDenoTransportRequestHandler(syncDenoTransportHandler);
 createDenoTransportRequestHandlerWithPath(syncDenoTransportHandler, '/rpc');
 const runtimeSubpathDenoTransportRequestHandler: RuntimeSubpathDenoTransportRequestHandler =
   denoTransportRequestHandler;
+const createRuntimeSubpathTypedDenoTransportRequestHandler =
+  createRuntimeSubpathDenoTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedDenoTransportRequestHandler: RuntimeSubpathDenoTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoTransportRequestHandler(denoTransportHandler);
+const createRuntimeSubpathTypedDenoTransportRequestHandlerWithPath =
+  createRuntimeSubpathDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedDenoTransportRequestHandlerWithPath: RuntimeSubpathDenoTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedDenoTransportRequestHandlerWithPath(
+    denoTransportHandler,
+    '/rpc'
+  );
 denoTransportRequestHandler(new Request('https://example.com/rpc'));
 denoTransportRequestHandlerWithPath(new Request('https://example.com/rpc'));
 runtimeSubpathDenoTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
+typedDenoTransportRequestHandler(appFetchRequest);
+typedDenoTransportRequestHandlerWithPath(appFetchRequest);
+runtimeSubpathTypedDenoTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedDenoTransportRequestHandlerWithPath(appFetchRequest);
 const routeTypedDenoTransportHandler: DenoTransportBodyResultHandler<
   JoorManifestRouteBody<typeof manifest>,
   JoorManifestRouteBodyResult<typeof manifest>
@@ -8926,12 +9006,57 @@ const runtimeSubpathStandaloneDenoTransportRequestHandler: RuntimeSubpathStandal
   createRuntimeSubpathStandaloneDenoTransportRequestHandler(
     runtimeSubpathStandaloneDenoTransportHandler
   );
+const createTypedStandaloneDenoTransportRequestHandler =
+  createStandaloneDenoTransportRequestHandlerFor<AppFetchRequest>();
+const typedStandaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createTypedStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
+const createTypedStandaloneDenoTransportRequestHandlerWithPath =
+  createStandaloneDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedStandaloneDenoTransportRequestHandlerWithPath: StandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createTypedStandaloneDenoTransportRequestHandlerWithPath(
+    standaloneDenoTransportHandler,
+    '/rpc'
+  );
+const createRootTypedStandaloneDenoTransportRequestHandler =
+  createRootStandaloneDenoTransportRequestHandlerFor<AppFetchRequest>();
+const rootTypedStandaloneDenoTransportRequestHandler: RootStandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createRootTypedStandaloneDenoTransportRequestHandler(
+    rootStandaloneDenoTransportHandler
+  );
+const createRootTypedStandaloneDenoTransportRequestHandlerWithPath =
+  createRootStandaloneDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const rootTypedStandaloneDenoTransportRequestHandlerWithPath: RootStandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createRootTypedStandaloneDenoTransportRequestHandlerWithPath(
+    rootStandaloneDenoTransportHandler,
+    '/rpc'
+  );
+const createRuntimeSubpathTypedStandaloneDenoTransportRequestHandler =
+  createRuntimeSubpathStandaloneDenoTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedStandaloneDenoTransportRequestHandler: RuntimeSubpathStandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedStandaloneDenoTransportRequestHandler(
+    runtimeSubpathStandaloneDenoTransportHandler
+  );
+const createRuntimeSubpathTypedStandaloneDenoTransportRequestHandlerWithPath =
+  createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedStandaloneDenoTransportRequestHandlerWithPath: RuntimeSubpathStandaloneDenoTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedStandaloneDenoTransportRequestHandlerWithPath(
+    runtimeSubpathStandaloneDenoTransportHandler,
+    '/rpc'
+  );
 standaloneDenoTransportRequestHandler(new Request('https://example.com/rpc'));
 rootStandaloneDenoTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
 runtimeSubpathStandaloneDenoTransportRequestHandler(
   new Request('https://example.com/rpc')
+);
+typedStandaloneDenoTransportRequestHandler(appFetchRequest);
+typedStandaloneDenoTransportRequestHandlerWithPath(appFetchRequest);
+rootTypedStandaloneDenoTransportRequestHandler(appFetchRequest);
+rootTypedStandaloneDenoTransportRequestHandlerWithPath(appFetchRequest);
+runtimeSubpathTypedStandaloneDenoTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedStandaloneDenoTransportRequestHandlerWithPath(
+  appFetchRequest
 );
 createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 createStandaloneDenoTransportRequestHandlerWithPath(

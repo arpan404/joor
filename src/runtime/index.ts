@@ -6,8 +6,11 @@ export * from './compiled.js';
 export * from './deno.js';
 export {
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
+  createDenoRpcRequestHandlerFor as createStandaloneDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerFor as createStandaloneDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
+  createDenoTransportRequestHandlerWithPathFor as createStandaloneDenoTransportRequestHandlerWithPathFor,
   serveDeno as serveStandaloneDeno,
 } from './deno-transport.js';
 export type {

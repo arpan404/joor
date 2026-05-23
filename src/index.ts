@@ -79,9 +79,13 @@ export {
 } from './runtime/cloudflare.js';
 export {
   createDenoFetch,
+  createDenoFetchFor,
   createDenoRpcRequestHandler,
+  createDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandlerWithPath,
+  createDenoTransportRequestHandlerWithPathFor,
   serveDeno,
 } from './runtime/deno.js';
 export {
@@ -89,8 +93,11 @@ export {
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
 export {
+  createDenoRpcRequestHandlerFor as createStandaloneDenoRpcRequestHandlerFor,
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
+  createDenoTransportRequestHandlerFor as createStandaloneDenoTransportRequestHandlerFor,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerWithPathFor as createStandaloneDenoTransportRequestHandlerWithPathFor,
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
   serveDeno as serveStandaloneDeno,
 } from './runtime/deno-transport.js';

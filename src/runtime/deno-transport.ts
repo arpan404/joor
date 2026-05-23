@@ -246,8 +246,10 @@ export type DenoStreamRouteTransportBodyResultFor<
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = DenoRouteStreamTransportBodyResultFor<TManifest, TBody>;
-export type DenoRpcRequestHandler = JoorFetchHandler;
-export type DenoTransportRequestHandler = JoorFetchHandler;
+export type DenoRpcRequestHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
+export type DenoTransportRequestHandler<TRequest extends Request = Request> =
+  JoorFetchHandler<TRequest>;
 
 export type DenoTransportBodyResultHandler<
   TBody = JsonValue,
@@ -385,6 +387,24 @@ export const createDenoTransportRequestHandler = <
   };
 };
 
+export const createDenoTransportRequestHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TBody = JsonValue,
+    TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+  >(
+    handler: DenoTransportBodyResultHandler<TBody, TResult>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>
+  ): DenoTransportRequestHandler<TRequest> =>
+    createDenoTransportRequestHandler(
+      handler,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders
+    ) as DenoTransportRequestHandler<TRequest>;
+
 export const createDenoTransportRequestHandlerWithPath = <
   TBody = JsonValue,
   TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
@@ -408,6 +428,22 @@ export const createDenoTransportRequestHandlerWithPath = <
     return transportResultToResponse(await handler(source, body as TBody));
   };
 };
+
+export const createDenoTransportRequestHandlerWithPathFor =
+  <TRequest extends Request>() =>
+  <
+    TBody = JsonValue,
+    TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
+  >(
+    handler: DenoTransportBodyResultHandler<TBody, TResult>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): DenoTransportRequestHandler<TRequest> =>
+    createDenoTransportRequestHandlerWithPath(
+      handler,
+      path,
+      maxBodyBytes
+    ) as DenoTransportRequestHandler<TRequest>;
 
 export function createDenoRpcRequestHandler<
   TManifest extends JoorManifest,
@@ -433,6 +469,30 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
     createCorsHeaderRecord(options?.cors)
   );
 }
+
+export const createDenoRpcRequestHandlerFor =
+  <TRequest extends Request>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
+  ): DenoRpcRequestHandler<TRequest> => {
+    const options = (args[0] ?? {}) as HandlerOptions;
+    const handler = createRpcBodyResultHandler(
+      manifest,
+      options as HandlerOptionsFor<TManifest>,
+      false
+    );
+    return createDenoTransportRequestHandler(
+      (request, body) =>
+        handler(request.toRequest(), body as RpcManifestBody<TManifest>),
+      options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+      createRpcRequestPreflight(options),
+      createCorsHeaderRecord(options.cors)
+    ) as DenoRpcRequestHandler<TRequest>;
+  };
 
 export function serveDeno<
   TManifest extends JoorManifest,
