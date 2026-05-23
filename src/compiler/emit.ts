@@ -1365,11 +1365,22 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { fetch } from './fetch.js';
+import { createFetchFor, fetch } from './fetch.js';
 
 export const GET = fetch;
 export const POST = fetch;
 export const OPTIONS = fetch;
+export const createHandlersFor = <
+  TContext = never,
+  TRequest extends Request = Request,
+>(): NextRouteHandlers<TContext, TRequest> => {
+  const handler = createFetchFor<TRequest>();
+  return {
+    GET: handler,
+    POST: handler,
+    OPTIONS: handler,
+  } as NextRouteHandlers<TContext, TRequest>;
+};
 export const handlers: NextRouteHandlers = { GET, POST, OPTIONS };
 export default handlers;
 `

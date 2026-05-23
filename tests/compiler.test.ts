@@ -89,6 +89,9 @@ describe('compiler', () => {
         readFile(join(outDir, 'next.ts'), 'utf8')
       ).resolves.toContain('NextRouteHandlers');
       await expect(
+        readFile(join(outDir, 'next.ts'), 'utf8')
+      ).resolves.toContain('createHandlersFor');
+      await expect(
         readFile(join(outDir, 'vercel.ts'), 'utf8')
       ).resolves.toContain('VercelFunction');
       await expect(
@@ -933,7 +936,7 @@ import { createFetch as createBunNativeFetch, createFetchFor as createBunNativeF
 import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
 import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
 import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
-import nextHandlers, { GET, OPTIONS, POST, handlers as namedNextHandlers } from './next.js';
+import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, handlers as namedNextHandlers } from './next.js';
 import { createHandler as createNodeNativeHandler, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
 import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
@@ -961,6 +964,13 @@ const generatedTypedCloudflareWorker: CloudflareWorker<
 const generatedNamedCloudflareWorker: CloudflareWorker = namedCloudflareWorker;
 const generatedNextHandlers: NextRouteHandlers = nextHandlers;
 const generatedNamedNextHandlers: NextRouteHandlers = namedNextHandlers;
+const generatedTypedNextHandlers: NextRouteHandlers<never, GeneratedRequest> =
+  createGeneratedNextHandlersFor<never, GeneratedRequest>();
+type GeneratedNextContext = { params: Promise<{ team: string }> };
+const generatedTypedNextContextHandlers: NextRouteHandlers<
+  GeneratedNextContext,
+  GeneratedRequest
+> = createGeneratedNextHandlersFor<GeneratedNextContext, GeneratedRequest>();
 const generatedVercelFunction: VercelFunction = vercelFunction;
 const generatedVercelFetch: NativeFetchHandler = vercelFetch;
 const generatedTypedVercelFunction: VercelFunction<GeneratedRequest> =
@@ -986,6 +996,12 @@ generatedTypedCloudflareWorker.fetch(generatedRequest);
 generatedTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedNextHandlers.GET(new Request('https://example.com/rpc'));
 generatedNamedNextHandlers.POST(new Request('https://example.com/rpc'));
+generatedTypedNextHandlers.GET(generatedRequest);
+// @ts-expect-error generated typed Next handlers preserve custom request types.
+generatedTypedNextHandlers.GET(new Request('https://example.com/rpc'));
+generatedTypedNextContextHandlers.POST(generatedRequest, {
+  params: Promise.resolve({ team: 'core' }),
+});
 GET(new Request('https://example.com/rpc'));
 POST(new Request('https://example.com/rpc'));
 OPTIONS(new Request('https://example.com/rpc'));
