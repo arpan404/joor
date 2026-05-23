@@ -3396,6 +3396,18 @@ legacyClient
       first.headers?.['cache-control']?.toUpperCase();
     }
   });
+legacyClient
+  .batch([
+    { id: 'users.untyped', input: { id: '1' }, traceId: 'trace-1' },
+  ] as const)
+  .then((results) => {
+    const first = results[0];
+    const firstId: 'users.untyped' = first.id;
+    firstId.toUpperCase();
+    if (first.ok && first.data !== null) {
+      first.data.valueOf();
+    }
+  });
 legacyClient.batch(
   [{ id: 'users.untyped', input: { id: '1' } }] as const,
   clientBatchOptions

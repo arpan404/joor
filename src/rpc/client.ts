@@ -1174,8 +1174,13 @@ type BatchResultFor<TRequest> =
       ? RpcEnvelope<JsonValue, TId, RpcResponseHeaderValues, RpcError>
       : never;
 
+type LegacyProtocolBatchRequest = RpcRequest & { headers?: never };
+
+type LegacyBatchRequest = PendingRpcRequest | LegacyProtocolBatchRequest;
+
 export type BatchResults<
-  TRequests extends readonly PendingRpcRequest[] = readonly PendingRpcRequest[],
+  TRequests extends readonly LegacyBatchRequest[] =
+    readonly LegacyBatchRequest[],
 > = {
   [TIndex in keyof TRequests]: BatchResultFor<TRequests[TIndex]>;
 };
@@ -1199,7 +1204,7 @@ export interface LegacyRpcTransportClient {
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
   ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId> &
     PendingRpcRequestHeaders<RpcUnaryProcedure<TProcedure>>;
-  batch<const TRequests extends readonly PendingRpcRequest[]>(
+  batch<const TRequests extends readonly LegacyBatchRequest[]>(
     requests: TRequests,
     options?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>>;
@@ -1417,20 +1422,28 @@ export function createClient(
   ): PendingRpcRequest<TProcedure, TId> &
     PendingRpcRequestHeaders<TProcedure> =>
     createPendingRpcRequest(id, input, ...requestOptions);
-  const batch = async <const TRequests extends readonly PendingRpcRequest[]>(
+  const batch = async <const TRequests extends readonly LegacyBatchRequest[]>(
     requests: TRequests,
     batchOptions?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>> => {
     const body: RpcRequest[] = requests.map((pending) => ({
       id: pending.id,
       input: pending.input as JsonValue,
+      ...('traceId' in pending && pending.traceId === undefined
+        ? {}
+        : 'traceId' in pending
+          ? { traceId: pending.traceId }
+          : {}),
     }));
     const requestHeaders = createHeaders(
       options.headers,
       batchOptions?.headers
     );
     for (const pending of requests) {
-      appendStringHeaders(requestHeaders, pending.headers);
+      appendStringHeaders(
+        requestHeaders,
+        'headers' in pending ? pending.headers : undefined
+      );
     }
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(

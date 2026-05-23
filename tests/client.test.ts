@@ -126,11 +126,16 @@ describe('client', () => {
     const request = createRouteUnaryProtocolRequest<
       { protected: typeof getUser },
       'protected'
-    >('protected', { id: '550e8400-e29b-41d4-a716-446655440000' });
+    >(
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { traceId: 'trace-1' }
+    );
 
     const [result] = await client.batch([request] as const);
 
     expect(result?.ok).toBe(true);
+    expect(result?.traceId).toBe('trace-1');
   });
 
   it('calls a local fetch handler', async () => {
