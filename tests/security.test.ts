@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createAuthPolicy,
+  createCorsHeaderRecord,
   createJoorHandler,
   defineProcedure,
   serializedEnvelopeToResponse,
@@ -386,5 +387,25 @@ describe('security defaults', () => {
 
     expect(response.status).toBe(204);
     expect(response.headers.get('access-control-allow-origin')).toBeNull();
+  });
+
+  it('filters invalid configured CORS header values', async () => {
+    expect(
+      createCorsHeaderRecord({
+        origin: 'https://app.example\r\nx-injected: yes',
+      })
+    ).toBeUndefined();
+
+    const partial = createCorsHeaderRecord({
+      origin: 'https://app.example',
+      headers: ['content-type', 'x-bad\r\nx-injected: yes'],
+      methods: ['POST', 'OPTIONS'],
+    });
+
+    expect(partial?.['access-control-allow-origin']).toBe(
+      'https://app.example'
+    );
+    expect(partial?.['access-control-allow-methods']).toBe('POST, OPTIONS');
+    expect(partial?.['access-control-allow-headers']).toBeUndefined();
   });
 });
