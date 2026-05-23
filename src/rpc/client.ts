@@ -429,7 +429,7 @@ export type RpcStreamRouteErrorDetails<
 
 export type RpcStreamRouteEvent<
   TRoutes extends RpcRouteMap,
-  TId extends RpcStreamRouteId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamEvent<TRoutes, TId>;
 
 export type RpcRouteEnvelope<
@@ -507,12 +507,12 @@ export type RpcRouteStreamProtocolRequest<
 
 export type RpcUnaryRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcUnaryRouteId<TRoutes>,
+  TId extends RpcRouteUnaryId<TRoutes>,
 > = RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 
 export type RpcStreamRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcStreamRouteId<TRoutes>,
+  TId extends RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamProtocolRequest<TRoutes, TId>;
 
 export type RpcRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> = {
