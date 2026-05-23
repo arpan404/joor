@@ -15,10 +15,14 @@ import type {
   MaybePromise,
   ProcedureError,
   ProcedureErrorCode,
+  ProcedureErrorDetails,
+  ProcedureHasHeaders,
+  ProcedureHasResponseHeaders,
   ProcedureHeaders,
   ProcedureInput,
   ProcedureOutput,
   ProcedureRequiresHeaders,
+  ProcedureRequiresResponseHeaders,
   ProcedureRuntime,
   ProcedureResponseHeaders,
   ProcedureRuntimeValue,
@@ -110,6 +114,75 @@ export type RpcManifestRouteServices<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
 > = ProcedureServices<RpcManifestRoutes<TManifest>[TId]>;
+
+export type RpcManifestRouteProcedure<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = RpcManifestRoutes<TManifest>[TId];
+
+export type RpcManifestRouteInput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureInput<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteOutput<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = ProcedureOutput<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteHasHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureHasHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteRequiresHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureRequiresHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestUnaryRouteId<TManifest>,
+> = ProcedureResponseHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteHasResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureHasResponseHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteRequiresResponseHeaders<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = ProcedureRequiresResponseHeaders<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteError<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = RpcManifestProcedureError<RpcManifestRouteProcedure<TManifest, TId>>;
+
+export type RpcManifestRouteErrorCode<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+> = RpcManifestRouteError<TManifest, TId>['code'];
+
+export type RpcManifestRouteErrorDetails<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteId<TManifest>,
+  TCode extends RpcManifestRouteErrorCode<TManifest, TId>,
+> =
+  TCode extends ProcedureErrorCode<RpcManifestRouteProcedure<TManifest, TId>>
+    ? ProcedureErrorDetails<RpcManifestRouteProcedure<TManifest, TId>, TCode>
+    : JsonValue | undefined;
+
+export type RpcManifestRouteStreamEvent<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestStreamRouteId<TManifest>,
+> = StreamEvent<RpcManifestRouteProcedure<TManifest, TId>>;
 
 type RpcManifestServiceContribution<TServices> = [TServices] extends [
   Record<string, never>,

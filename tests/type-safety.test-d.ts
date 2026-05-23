@@ -208,14 +208,27 @@ import {
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteResultUnion,
   type RpcManifestRouteBatchRequest,
+  type RpcManifestRouteError,
+  type RpcManifestRouteErrorCode,
+  type RpcManifestRouteErrorDetails,
+  type RpcManifestRouteHasHeaders,
+  type RpcManifestRouteHasResponseHeaders,
+  type RpcManifestRouteHeaders,
   type RpcManifestRouteId,
+  type RpcManifestRouteInput,
+  type RpcManifestRouteOutput,
+  type RpcManifestRouteProcedure,
   type RpcManifestRouteProtocolRequest,
   type RpcManifestRouteProtocolRequestUnion,
   type RpcManifestRouteRequest,
   type RpcManifestRouteRequestUnion,
+  type RpcManifestRouteResponseHeaders,
+  type RpcManifestRouteRequiresHeaders,
+  type RpcManifestRouteRequiresResponseHeaders,
   type RpcManifestRequiredServices,
   type RpcManifestRouteServices,
   type RpcManifestRoutes,
+  type RpcManifestRouteStreamEvent,
   type RpcManifestRouteStreamProtocolRequest,
   type RpcManifestRouteStreamProtocolRequestUnion,
   type RpcManifestRouteUnaryProtocolRequest,
@@ -339,8 +352,11 @@ import {
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcManifestRouteInput as RpcSubpathManifestRouteInput,
+  type RpcManifestRouteOutput as RpcSubpathManifestRouteOutput,
   type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
   type RpcManifestRouteRequestUnion as RpcSubpathManifestRouteRequestUnion,
+  type RpcManifestRouteStreamEvent as RpcSubpathManifestRouteStreamEvent,
   type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
   type RpcBodyHandler as RpcSubpathBodyHandler,
   type RpcRequestHandler as RpcSubpathRequestHandler,
@@ -2303,12 +2319,98 @@ typedPublicManifest.procedures['users.get'].output;
 type PublicManifestRoutes = RpcManifestRoutes<typeof manifest>;
 const publicManifestRouteId: RpcManifestRouteId<typeof manifest> = 'users.get';
 publicManifestRouteId.toUpperCase();
+const publicManifestRouteProcedure: RpcManifestRouteProcedure<
+  typeof manifest,
+  'users.get'
+> = procedure;
+publicManifestRouteProcedure.output;
+const publicManifestRouteInput: RpcManifestRouteInput<
+  typeof manifest,
+  'users.get'
+> = { id: '1' };
+publicManifestRouteInput.id.toUpperCase();
+const rpcSubpathManifestRouteInput: RpcSubpathManifestRouteInput<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteInput;
+rpcSubpathManifestRouteInput.id.toUpperCase();
+const publicManifestRouteOutput: RpcManifestRouteOutput<
+  typeof manifest,
+  'users.get'
+> = { id: '1', name: 'Ada' };
+publicManifestRouteOutput.name.toUpperCase();
+const rpcSubpathManifestRouteOutput: RpcSubpathManifestRouteOutput<
+  typeof manifest,
+  'users.get'
+> = publicManifestRouteOutput;
+rpcSubpathManifestRouteOutput.name.toUpperCase();
+const publicManifestRouteHeaders: RpcManifestRouteHeaders<
+  typeof manifest,
+  'users.get'
+> = { 'x-tenant-id': 'tenant-1' };
+publicManifestRouteHeaders['x-tenant-id'].toUpperCase();
+const publicManifestRouteHasHeaders: RpcManifestRouteHasHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestRouteHasHeaders.valueOf();
+const publicManifestRouteRequiresHeaders: RpcManifestRouteRequiresHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestRouteRequiresHeaders.valueOf();
+const publicManifestRouteResponseHeaders: RpcManifestRouteResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = { 'cache-control': 'private' };
+publicManifestRouteResponseHeaders['cache-control'].toUpperCase();
+const publicManifestRouteHasResponseHeaders: RpcManifestRouteHasResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestRouteHasResponseHeaders.valueOf();
+const publicManifestRouteRequiresResponseHeaders: RpcManifestRouteRequiresResponseHeaders<
+  typeof manifest,
+  'users.get'
+> = true;
+publicManifestRouteRequiresResponseHeaders.valueOf();
+const publicManifestRouteError: RpcManifestRouteError<
+  typeof manifest,
+  'users.get'
+> = {
+  code: 'NOT_FOUND',
+  message: 'Missing',
+  status: 404,
+  details: { message: 'Missing' },
+};
+publicManifestRouteError.code.toUpperCase();
+const publicManifestRouteErrorCode: RpcManifestRouteErrorCode<
+  typeof manifest,
+  'users.get'
+> = 'NOT_FOUND';
+publicManifestRouteErrorCode.toUpperCase();
+const publicManifestRouteErrorDetails: RpcManifestRouteErrorDetails<
+  typeof manifest,
+  'users.get',
+  'NOT_FOUND'
+> = { message: 'Missing' };
+publicManifestRouteErrorDetails.message.toUpperCase();
 const publicManifestUnaryRouteId: RpcManifestUnaryRouteId<typeof manifest> =
   'users.authenticated';
 publicManifestUnaryRouteId.toUpperCase();
 const publicManifestStreamRouteId: RpcManifestStreamRouteId<typeof manifest> =
   'users.watch';
 publicManifestStreamRouteId.toUpperCase();
+const publicManifestRouteStreamEvent: RpcManifestRouteStreamEvent<
+  typeof manifest,
+  'users.watch'
+> = { type: 'user.updated', userId: '1' };
+publicManifestRouteStreamEvent.userId.toUpperCase();
+const rpcSubpathManifestRouteStreamEvent: RpcSubpathManifestRouteStreamEvent<
+  typeof manifest,
+  'users.watch'
+> = publicManifestRouteStreamEvent;
+rpcSubpathManifestRouteStreamEvent.userId.toUpperCase();
 const publicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
