@@ -811,6 +811,7 @@ import {
   type RpcUnaryRouteProcedure as RpcSubpathUnaryRouteProcedure,
   type RpcUnaryRouteRequestOptions as RpcSubpathUnaryRouteRequestOptions,
 } from '../src/rpc/index.js';
+import type { StreamEvent as RpcSseEvent } from '../src/rpc/stream.js';
 import {
   defineManifest as defineManifestSubpath,
   type JoorManifestClientOptions as JoorSubpathManifestClientOptions,
@@ -1644,6 +1645,19 @@ const procedureEnvelope: RpcEnvelope<
 };
 const procedureEnvelopeId: 'users.get' = procedureEnvelope.id;
 procedureEnvelopeId.toUpperCase();
+const rpcSseErrorEvent: RpcSseEvent<{ userId: string }, 'users.get'> = {
+  event: 'error',
+  data: {
+    ok: false,
+    id: 'users.get',
+    traceId: 'trace-1',
+    error: { code: 'NOT_FOUND', message: 'Missing', status: 404 },
+  },
+};
+const rpcSseErrorId: 'users.get' = rpcSseErrorEvent.data.id;
+rpcSseErrorId.toUpperCase();
+// @ts-expect-error SSE error events preserve the route id literal.
+const _wrongRpcSseErrorId: 'users.list' = rpcSseErrorEvent.data.id;
 const procedureEnvelopeWithHeaders: RpcEnvelope<
   { id: string; name: string },
   'users.get',

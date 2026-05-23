@@ -1,16 +1,19 @@
 import type { JsonValue } from '../schema/json.js';
 import type { RpcFailure } from './protocol.js';
 
-export type StreamEvent<TData extends JsonValue = JsonValue> =
+export type StreamEvent<
+  TData extends JsonValue = JsonValue,
+  TId extends string = string,
+> =
   | { event: 'data'; data: TData }
-  | { event: 'error'; data: RpcFailure }
+  | { event: 'error'; data: RpcFailure<TId> }
   | { event: 'done'; data: Record<string, never> };
 
 const encoder = new TextEncoder();
 
-export const encodeSse = (
+export const encodeSse = <TId extends string = string>(
   event: string,
-  data: JsonValue | RpcFailure
+  data: JsonValue | RpcFailure<TId>
 ): Uint8Array =>
   encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 
