@@ -558,32 +558,32 @@ export type RpcRouteBody<TRoutes extends RpcRouteMap> =
       readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[]
     >;
 
-export type RpcUnaryRouteBody<TRoutes extends RpcRouteMap> =
-  | RpcUnaryRouteProtocolRequestUnion<TRoutes>
-  | RpcUnaryRouteBatchRequest<
+export type RpcRouteUnaryBody<TRoutes extends RpcRouteMap> =
+  | RpcRouteUnaryProtocolRequestUnion<TRoutes>
+  | RpcRouteUnaryBatchRequest<
       TRoutes,
-      readonly RpcUnaryRouteProtocolRequestUnion<TRoutes>[]
+      readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[]
     >;
 
-export type RpcRouteUnaryBody<TRoutes extends RpcRouteMap> =
-  RpcUnaryRouteBody<TRoutes>;
-
-export type RpcStreamRouteBody<TRoutes extends RpcRouteMap> =
-  RpcStreamRouteProtocolRequestUnion<TRoutes>;
+export type RpcUnaryRouteBody<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryBody<TRoutes>;
 
 export type RpcRouteStreamBody<TRoutes extends RpcRouteMap> =
-  RpcStreamRouteBody<TRoutes>;
+  RpcRouteStreamProtocolRequestUnion<TRoutes>;
+
+export type RpcStreamRouteBody<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamBody<TRoutes>;
 
 export type RpcRouteBodyResult<TRoutes extends RpcRouteMap> =
   | RpcRouteEnvelopeUnion<TRoutes>
   | readonly RpcRouteEnvelopeUnion<TRoutes>[]
   | Response;
 
-export type RpcUnaryRouteBodyResult<TRoutes extends RpcRouteMap> =
+export type RpcRouteUnaryBodyResult<TRoutes extends RpcRouteMap> =
   RpcRouteBodyResult<TRoutes>;
 
-export type RpcRouteUnaryBodyResult<TRoutes extends RpcRouteMap> =
-  RpcUnaryRouteBodyResult<TRoutes>;
+export type RpcUnaryRouteBodyResult<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryBodyResult<TRoutes>;
 
 export type RpcRouteStreamBodyResult<
   _TRoutes extends RpcRouteMap = RpcRouteMap,

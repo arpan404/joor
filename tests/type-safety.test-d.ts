@@ -314,10 +314,16 @@ import {
   type JoorManifestStreamRouteRequiresResponseHeaders,
   type JoorManifestRequiredServices,
   type JoorManifestRouteServices,
+  type JoorManifestRouteStreamBody,
+  type JoorManifestRouteStreamBodyResult,
+  type JoorManifestRouteStreamBodyResultFor,
   type JoorManifestRouteStreamEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
   type JoorManifestRouteStreamTransportClient,
+  type JoorManifestRouteUnaryBody,
+  type JoorManifestRouteUnaryBodyResult,
+  type JoorManifestRouteUnaryBodyResultFor,
   type JoorManifestRouteUnaryProtocolRequest,
   type JoorManifestRouteUnaryProtocolRequestUnion,
   type JoorManifestRouteUnaryTransportClient,
@@ -3372,8 +3378,11 @@ const manifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequest<
   'users.get'
 > = manifestUnaryProtocolRequest;
 manifestUnaryRouteProtocolRequest.input.id.toUpperCase();
-const manifestUnaryRouteBody: JoorManifestUnaryRouteBody<typeof manifest> =
-  manifestUnaryRouteProtocolRequest;
+const manifestRouteUnaryBody = manifestUnaryProtocolRequest satisfies
+  JoorManifestRouteUnaryBody<typeof manifest>;
+const manifestUnaryRouteBody = manifestUnaryRouteProtocolRequest satisfies
+  JoorManifestUnaryRouteBody<typeof manifest>;
+manifestRouteUnaryBody.input.id.toUpperCase();
 manifestUnaryRouteBody.input.id.toUpperCase();
 const manifestUnaryProtocolRequestUnion: JoorManifestRouteUnaryProtocolRequestUnion<
   typeof manifest
@@ -3393,8 +3402,11 @@ const manifestStreamRouteProtocolRequest: JoorManifestStreamRouteProtocolRequest
   'users.watch'
 > = manifestStreamProtocolRequest;
 manifestStreamRouteProtocolRequest.input.userId.toUpperCase();
-const manifestStreamRouteBody: JoorManifestStreamRouteBody<typeof manifest> =
-  manifestStreamRouteProtocolRequest;
+const manifestRouteStreamBody = manifestStreamProtocolRequest satisfies
+  JoorManifestRouteStreamBody<typeof manifest>;
+const manifestStreamRouteBody = manifestStreamRouteProtocolRequest satisfies
+  JoorManifestStreamRouteBody<typeof manifest>;
+manifestRouteStreamBody.input.userId.toUpperCase();
 manifestStreamRouteBody.input.userId.toUpperCase();
 const manifestStreamProtocolRequestUnion: JoorManifestRouteStreamProtocolRequestUnion<
   typeof manifest
@@ -3422,9 +3434,12 @@ const manifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   typeof readonlyManifestBatchRequest
 > = [manifestRouteEnvelope];
-const manifestUnaryRouteBodyResult: JoorManifestUnaryRouteBodyResult<
+const manifestRouteUnaryBodyResult: JoorManifestRouteUnaryBodyResult<
   typeof manifest
 > = manifestBatchBodyResultFor;
+const manifestUnaryRouteBodyResult: JoorManifestUnaryRouteBodyResult<
+  typeof manifest
+> = manifestRouteUnaryBodyResult;
 if (!(manifestBatchBodyResultFor instanceof Response)) {
   const first = manifestBatchBodyResultFor[0];
   if (first.ok) first.data.name.toUpperCase();
@@ -3433,18 +3448,31 @@ const manifestRouteBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   typeof manifestProtocolRequest
 > = manifestRouteEnvelope;
+const manifestRouteUnaryBodyResultFor: JoorManifestRouteUnaryBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteUnaryBody
+> = manifestRouteEnvelope;
 const manifestUnaryRouteBodyResultFor: JoorManifestUnaryRouteBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
-> = manifestRouteEnvelope;
-const manifestStreamRouteBodyResult: JoorManifestStreamRouteBodyResult<
+> = manifestRouteUnaryBodyResultFor;
+const manifestRouteStreamBodyResult: JoorManifestRouteStreamBodyResult<
   typeof manifest
 > = new Response();
+const manifestStreamRouteBodyResult: JoorManifestStreamRouteBodyResult<
+  typeof manifest
+> = manifestRouteStreamBodyResult;
+const manifestRouteStreamBodyResultFor: JoorManifestRouteStreamBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteStreamBody
+> = manifestRouteStreamBodyResult;
 const manifestStreamRouteBodyResultFor: JoorManifestStreamRouteBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteBody
 > = manifestStreamRouteBodyResult;
+manifestRouteUnaryBodyResult.valueOf();
 manifestUnaryRouteBodyResult.valueOf();
+manifestRouteStreamBodyResultFor.headers.get('content-type');
 manifestStreamRouteBodyResultFor.headers.get('content-type');
 if (!(manifestRouteBodyResultFor instanceof Response)) {
   if (manifestRouteBodyResultFor.ok)
@@ -3453,6 +3481,10 @@ if (!(manifestRouteBodyResultFor instanceof Response)) {
 if (!(manifestUnaryRouteBodyResultFor instanceof Response)) {
   if (manifestUnaryRouteBodyResultFor.ok)
     manifestUnaryRouteBodyResultFor.data.name.toUpperCase();
+}
+if (!(manifestRouteUnaryBodyResultFor instanceof Response)) {
+  if (manifestRouteUnaryBodyResultFor.ok)
+    manifestRouteUnaryBodyResultFor.data.name.toUpperCase();
 }
 const manifestSubpathProtocolRequest: JoorSubpathManifestRouteProtocolRequest<
   typeof manifestFromSubpath,
