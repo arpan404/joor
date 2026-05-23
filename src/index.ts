@@ -1119,6 +1119,7 @@ export type {
   NodeRpcRequestHandlerOptionsFor,
   NodeServer,
   NodeRpcRequestHandler,
+  NodeTransportRequestHandler,
   NodeRouteStreamListenOptionsArgs,
   NodeRouteStreamListenOptionsFor,
   RouteStreamListenOptionsArgs,

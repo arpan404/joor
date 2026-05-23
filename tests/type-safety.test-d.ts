@@ -618,6 +618,7 @@ import {
   type NodeRpcRequestHandlerOptionsArgs,
   type NodeRpcRequestHandlerOptionsFor,
   type NodeServer,
+  type NodeTransportRequestHandler,
   type NodeRouteStreamListenOptionsArgs,
   type NodeRouteStreamListenOptionsFor,
   type NodeRouteStreamRpcRequestHandlerOptionsFor,
@@ -1550,6 +1551,7 @@ import {
   type NodeTransportBodyResultHandler as RuntimeSubpathNodeTransportBodyResultHandler,
   type NodeTransportBodyResultFor as RuntimeSubpathNodeTransportBodyResultFor,
   type NodeTransportBodyResultHandlerFor as RuntimeSubpathNodeTransportBodyResultHandlerFor,
+  type NodeTransportRequestHandler as RuntimeSubpathNodeTransportRequestHandler,
   type NodeRpcRequestHandlerOptionsArgs as RuntimeSubpathNodeRpcRequestHandlerOptionsArgs,
   type NodeRpcRequestHandlerOptionsFor as RuntimeSubpathNodeRpcRequestHandlerOptionsFor,
   type NodeRouteStreamRpcRequestHandlerOptionsArgs as RuntimeSubpathNodeRouteStreamRpcRequestHandlerOptionsArgs,
@@ -11068,7 +11070,11 @@ const transportResult: RpcBodyResult = {
   traceId: 'trace-1',
   data: {},
 };
-createNodeTransportRequestHandler(async () => transportResult);
+const nodeTransportRequestHandler: NodeTransportRequestHandler =
+  createNodeTransportRequestHandler(async () => transportResult);
+const runtimeSubpathNodeTransportRequestHandler: RuntimeSubpathNodeTransportRequestHandler =
+  nodeTransportRequestHandler;
+runtimeSubpathNodeTransportRequestHandler.length.toFixed();
 const _nodeTransportResult: NodeTransportBodyResult = transportResult;
 const nodeTransportResultFor: NodeTransportBodyResultFor<typeof manifest> =
   denoCompiledTransportResultFor;

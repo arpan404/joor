@@ -300,6 +300,8 @@ export type NodeRpcRequestHandler = (
   outgoing: ServerResponse<IncomingMessage>
 ) => Promise<void>;
 
+export type NodeTransportRequestHandler = NodeRpcRequestHandler;
+
 export type NodeTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
 > = RpcBodyResult<TEnvelope> | SerializedJsonEnvelope;

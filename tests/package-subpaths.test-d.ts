@@ -197,7 +197,7 @@ export type PackageSubpathSurface = [
   Koa.KoaMiddleware,
   Netlify.NetlifyFetchHandler,
   Next.NextHandler,
-  NodeRuntime.NodeRpcRequestHandler,
+  NodeRuntime.NodeTransportRequestHandler,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
   Vercel.VercelFetchHandler,
 ];
