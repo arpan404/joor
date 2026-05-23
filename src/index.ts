@@ -40,6 +40,7 @@ export {
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
 export { createExpressHandler } from './runtime/express.js';
+export { createHonoHandler } from './runtime/hono.js';
 export { createJoorHandler } from './runtime/fetch.js';
 export { createNetlifyFetch } from './runtime/netlify.js';
 export { createNextHandler, createNextRouteHandlers } from './runtime/next.js';
@@ -893,6 +894,20 @@ export type {
   ExpressUnaryRouteHandlerOptionsArgs,
   ExpressUnaryRouteHandlerOptionsFor,
 } from './runtime/express.js';
+export type {
+  HonoContext,
+  HonoHandler,
+  HonoHandlerOptionsArgs,
+  HonoHandlerOptionsFor,
+  HonoRouteStreamHandlerOptionsArgs,
+  HonoRouteStreamHandlerOptionsFor,
+  HonoRouteUnaryHandlerOptionsArgs,
+  HonoRouteUnaryHandlerOptionsFor,
+  HonoStreamRouteHandlerOptionsArgs,
+  HonoStreamRouteHandlerOptionsFor,
+  HonoUnaryRouteHandlerOptionsArgs,
+  HonoUnaryRouteHandlerOptionsFor,
+} from './runtime/hono.js';
 export type {
   JoorFetchHandler,
   JoorHandlerOptionsArgs,

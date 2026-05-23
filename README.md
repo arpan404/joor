@@ -187,7 +187,7 @@ npm run joor -- doctor
 - `maxBodyBytes` for request body limits
 - `onError` for runtime diagnostics
 
-Fetch is the base runtime. The package also exposes small adapters for Node, Express, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
+Fetch is the base runtime. The package also exposes small adapters for Node, Express, Hono, Bun, Deno, AWS Lambda HTTP API, Cloudflare Workers, Next.js, Vercel, and Netlify.
 
 ## Next.js API Routes
 

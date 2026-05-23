@@ -22,6 +22,7 @@ import {
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
   createExpressHandler,
+  createHonoHandler,
   createJoorHandler,
   createNetlifyFetch,
   createNextHandler,
@@ -152,6 +153,18 @@ import {
   type ExpressStreamRouteHandlerOptionsFor,
   type ExpressUnaryRouteHandlerOptionsArgs,
   type ExpressUnaryRouteHandlerOptionsFor,
+  type HonoContext,
+  type HonoHandler,
+  type HonoHandlerOptionsArgs,
+  type HonoHandlerOptionsFor,
+  type HonoRouteStreamHandlerOptionsArgs,
+  type HonoRouteStreamHandlerOptionsFor,
+  type HonoRouteUnaryHandlerOptionsArgs,
+  type HonoRouteUnaryHandlerOptionsFor,
+  type HonoStreamRouteHandlerOptionsArgs,
+  type HonoStreamRouteHandlerOptionsFor,
+  type HonoUnaryRouteHandlerOptionsArgs,
+  type HonoUnaryRouteHandlerOptionsFor,
   type ClientBatchOptions,
   type ClientFetch,
   type ClientHeaderValues,
@@ -1120,6 +1133,7 @@ import {
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createExpressHandler as createRuntimeSubpathExpressHandler,
+  createHonoHandler as createRuntimeSubpathHonoHandler,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNextHandler as createRuntimeSubpathNextHandler,
@@ -1137,6 +1151,8 @@ import {
   type AwsLambdaRestApiHandlerOptionsFor as RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
+  type HonoHandler as RuntimeSubpathHonoHandler,
+  type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
   type BunFetchOptionsArgs as RuntimeSubpathBunFetchOptionsArgs,
   type BunFetchOptionsFor as RuntimeSubpathBunFetchOptionsFor,
   type BunFetchHandler as RuntimeSubpathBunFetchHandler,
@@ -9511,6 +9527,68 @@ expressRequest.originalUrl = '/rpc';
 expressResponse.statusCode.toFixed();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
+const honoHandlerOptions: HonoHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = handlerOptions;
+const runtimeSubpathHonoHandlerOptions: RuntimeSubpathHonoHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoHandlerOptions;
+const honoRouteUnaryHandlerOptions: HonoRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoHandlerOptions;
+const honoUnaryRouteHandlerOptions: HonoUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteUnaryHandlerOptions;
+const honoRouteStreamHandlerOptions: HonoRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoHandlerOptions;
+const honoStreamRouteHandlerOptions: HonoStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteStreamHandlerOptions;
+runtimeSubpathHonoHandlerOptions.plugins?.[0]?.name.toUpperCase();
+honoUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+honoStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const honoHandlerOptionsArgs: HonoHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = [honoHandlerOptions];
+const honoRouteUnaryHandlerOptionsArgs: HonoRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoHandlerOptionsArgs;
+const honoUnaryRouteHandlerOptionsArgs: HonoUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteUnaryHandlerOptionsArgs;
+const honoRouteStreamHandlerOptionsArgs: HonoRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoHandlerOptionsArgs;
+const honoStreamRouteHandlerOptionsArgs: HonoStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteStreamHandlerOptionsArgs;
+honoUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+honoStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const honoHandler: HonoHandler = createHonoHandler(
+  manifest,
+  honoHandlerOptions
+);
+const runtimeSubpathHonoHandler: RuntimeSubpathHonoHandler =
+  createRuntimeSubpathHonoHandler(manifest, runtimeSubpathHonoHandlerOptions);
+const honoContext: HonoContext = {
+  req: { raw: new Request('https://example.com/rpc') },
+};
+honoHandler(honoContext);
+runtimeSubpathHonoHandler(honoContext);
+// @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
+createHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);
 _nodeHandler;
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.

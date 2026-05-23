@@ -68,6 +68,10 @@
       "types": "./dist/runtime/express.d.ts",
       "import": "./dist/runtime/express.js"
     },
+    "./runtime/hono": {
+      "types": "./dist/runtime/hono.d.ts",
+      "import": "./dist/runtime/hono.js"
+    },
     "./runtime/fetch": {
       "types": "./dist/runtime/fetch.d.ts",
       "import": "./dist/runtime/fetch.js"
