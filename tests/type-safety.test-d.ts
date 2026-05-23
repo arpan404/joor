@@ -21,6 +21,9 @@ import {
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
   createDenoRpcRequestHandler,
+  createStandaloneDenoRpcRequestHandler as createRootStandaloneDenoRpcRequestHandler,
+  createStandaloneDenoTransportRequestHandler as createRootStandaloneDenoTransportRequestHandler,
+  createStandaloneDenoTransportRequestHandlerWithPath as createRootStandaloneDenoTransportRequestHandlerWithPath,
   createDenoTransportRequestHandler,
   createDenoTransportRequestHandlerWithPath,
   createElysiaHandler,
@@ -79,6 +82,7 @@ import {
   readJsonRequestBodyWithLimit,
   serveBun,
   serveDeno,
+  serveStandaloneDeno as serveRootStandaloneDeno,
   t,
   toJsonSchema,
   rpcEnvelopeToResponse,
@@ -357,6 +361,42 @@ import {
   type DenoUnaryRouteServeOptionsFor,
   type DenoUnaryRouteTransportBodyResultFor,
   type DenoUnaryRouteTransportBodyResultHandlerFor,
+  type StandaloneDenoRpcRequestHandlerOptionsArgs as RootStandaloneDenoRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRpcRequestHandlerOptionsFor as RootStandaloneDenoRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRpcRequestHandler as RootStandaloneDenoRpcRequestHandler,
+  type StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs as RootStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRouteStreamRpcRequestHandlerOptionsFor as RootStandaloneDenoRouteStreamRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRouteStreamServeOptionsArgs as RootStandaloneDenoRouteStreamServeOptionsArgs,
+  type StandaloneDenoRouteStreamServeOptionsFor as RootStandaloneDenoRouteStreamServeOptionsFor,
+  type StandaloneDenoRouteStreamTransportBodyResultFor as RootStandaloneDenoRouteStreamTransportBodyResultFor,
+  type StandaloneDenoRouteStreamTransportBodyResultHandlerFor as RootStandaloneDenoRouteStreamTransportBodyResultHandlerFor,
+  type StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs as RootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor as RootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRouteUnaryServeOptionsArgs as RootStandaloneDenoRouteUnaryServeOptionsArgs,
+  type StandaloneDenoRouteUnaryServeOptionsFor as RootStandaloneDenoRouteUnaryServeOptionsFor,
+  type StandaloneDenoRouteUnaryTransportBodyResultFor as RootStandaloneDenoRouteUnaryTransportBodyResultFor,
+  type StandaloneDenoRouteUnaryTransportBodyResultHandlerFor as RootStandaloneDenoRouteUnaryTransportBodyResultHandlerFor,
+  type StandaloneDenoServeOptionsArgs as RootStandaloneDenoServeOptionsArgs,
+  type StandaloneDenoServeOptionsFor as RootStandaloneDenoServeOptionsFor,
+  type StandaloneDenoServeOptions as RootStandaloneDenoServeOptions,
+  type StandaloneDenoServer as RootStandaloneDenoServer,
+  type StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs as RootStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoStreamRouteRpcRequestHandlerOptionsFor as RootStandaloneDenoStreamRouteRpcRequestHandlerOptionsFor,
+  type StandaloneDenoStreamRouteServeOptionsArgs as RootStandaloneDenoStreamRouteServeOptionsArgs,
+  type StandaloneDenoStreamRouteServeOptionsFor as RootStandaloneDenoStreamRouteServeOptionsFor,
+  type StandaloneDenoStreamRouteTransportBodyResultFor as RootStandaloneDenoStreamRouteTransportBodyResultFor,
+  type StandaloneDenoStreamRouteTransportBodyResultHandlerFor as RootStandaloneDenoStreamRouteTransportBodyResultHandlerFor,
+  type StandaloneDenoTransportBodyResult as RootStandaloneDenoTransportBodyResult,
+  type StandaloneDenoTransportBodyResultFor as RootStandaloneDenoTransportBodyResultFor,
+  type StandaloneDenoTransportBodyResultHandler as RootStandaloneDenoTransportBodyResultHandler,
+  type StandaloneDenoTransportBodyResultHandlerFor as RootStandaloneDenoTransportBodyResultHandlerFor,
+  type StandaloneDenoTransportRequestHandler as RootStandaloneDenoTransportRequestHandler,
+  type StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs as RootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor as RootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor,
+  type StandaloneDenoUnaryRouteServeOptionsArgs as RootStandaloneDenoUnaryRouteServeOptionsArgs,
+  type StandaloneDenoUnaryRouteServeOptionsFor as RootStandaloneDenoUnaryRouteServeOptionsFor,
+  type StandaloneDenoUnaryRouteTransportBodyResultFor as RootStandaloneDenoUnaryRouteTransportBodyResultFor,
+  type StandaloneDenoUnaryRouteTransportBodyResultHandlerFor as RootStandaloneDenoUnaryRouteTransportBodyResultHandlerFor,
   type DefineConfigFor,
   type DefineRouteStreamConfigFor,
   type DefineRouteUnaryConfigFor,
@@ -1250,6 +1290,9 @@ import {
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
+  createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
+  createStandaloneDenoTransportRequestHandler as createRuntimeSubpathStandaloneDenoTransportRequestHandler,
+  createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createElysiaHandler as createRuntimeSubpathElysiaHandler,
   createExpressHandler as createRuntimeSubpathExpressHandler,
@@ -1276,6 +1319,7 @@ import {
   readJsonRequestBody as readRuntimeSubpathJsonRequestBody,
   readJsonRequestBodyWithLimit as readRuntimeSubpathJsonRequestBodyWithLimit,
   serializedEnvelopeToResponse as runtimeSubpathSerializedEnvelopeToResponse,
+  serveStandaloneDeno as serveRuntimeSubpathStandaloneDeno,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
@@ -1412,6 +1456,42 @@ import {
   type DenoUnaryRouteServeOptionsFor as RuntimeSubpathDenoUnaryRouteServeOptionsFor,
   type DenoUnaryRouteTransportBodyResultFor as RuntimeSubpathDenoUnaryRouteTransportBodyResultFor,
   type DenoUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathDenoUnaryRouteTransportBodyResultHandlerFor,
+  type StandaloneDenoRpcRequestHandlerOptionsArgs as RuntimeSubpathStandaloneDenoRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRpcRequestHandlerOptionsFor as RuntimeSubpathStandaloneDenoRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRpcRequestHandler as RuntimeSubpathStandaloneDenoRpcRequestHandler,
+  type StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs as RuntimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRouteStreamRpcRequestHandlerOptionsFor as RuntimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRouteStreamServeOptionsArgs as RuntimeSubpathStandaloneDenoRouteStreamServeOptionsArgs,
+  type StandaloneDenoRouteStreamServeOptionsFor as RuntimeSubpathStandaloneDenoRouteStreamServeOptionsFor,
+  type StandaloneDenoRouteStreamTransportBodyResultFor as RuntimeSubpathStandaloneDenoRouteStreamTransportBodyResultFor,
+  type StandaloneDenoRouteStreamTransportBodyResultHandlerFor as RuntimeSubpathStandaloneDenoRouteStreamTransportBodyResultHandlerFor,
+  type StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs as RuntimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor as RuntimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor,
+  type StandaloneDenoRouteUnaryServeOptionsArgs as RuntimeSubpathStandaloneDenoRouteUnaryServeOptionsArgs,
+  type StandaloneDenoRouteUnaryServeOptionsFor as RuntimeSubpathStandaloneDenoRouteUnaryServeOptionsFor,
+  type StandaloneDenoRouteUnaryTransportBodyResultFor as RuntimeSubpathStandaloneDenoRouteUnaryTransportBodyResultFor,
+  type StandaloneDenoRouteUnaryTransportBodyResultHandlerFor as RuntimeSubpathStandaloneDenoRouteUnaryTransportBodyResultHandlerFor,
+  type StandaloneDenoServeOptionsArgs as RuntimeSubpathStandaloneDenoServeOptionsArgs,
+  type StandaloneDenoServeOptionsFor as RuntimeSubpathStandaloneDenoServeOptionsFor,
+  type StandaloneDenoServeOptions as RuntimeSubpathStandaloneDenoServeOptions,
+  type StandaloneDenoServer as RuntimeSubpathStandaloneDenoServer,
+  type StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs as RuntimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoStreamRouteRpcRequestHandlerOptionsFor as RuntimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsFor,
+  type StandaloneDenoStreamRouteServeOptionsArgs as RuntimeSubpathStandaloneDenoStreamRouteServeOptionsArgs,
+  type StandaloneDenoStreamRouteServeOptionsFor as RuntimeSubpathStandaloneDenoStreamRouteServeOptionsFor,
+  type StandaloneDenoStreamRouteTransportBodyResultFor as RuntimeSubpathStandaloneDenoStreamRouteTransportBodyResultFor,
+  type StandaloneDenoStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathStandaloneDenoStreamRouteTransportBodyResultHandlerFor,
+  type StandaloneDenoTransportBodyResult as RuntimeSubpathStandaloneDenoTransportBodyResult,
+  type StandaloneDenoTransportBodyResultFor as RuntimeSubpathStandaloneDenoTransportBodyResultFor,
+  type StandaloneDenoTransportBodyResultHandler as RuntimeSubpathStandaloneDenoTransportBodyResultHandler,
+  type StandaloneDenoTransportBodyResultHandlerFor as RuntimeSubpathStandaloneDenoTransportBodyResultHandlerFor,
+  type StandaloneDenoTransportRequestHandler as RuntimeSubpathStandaloneDenoTransportRequestHandler,
+  type StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs as RuntimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs,
+  type StandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor as RuntimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor,
+  type StandaloneDenoUnaryRouteServeOptionsArgs as RuntimeSubpathStandaloneDenoUnaryRouteServeOptionsArgs,
+  type StandaloneDenoUnaryRouteServeOptionsFor as RuntimeSubpathStandaloneDenoUnaryRouteServeOptionsFor,
+  type StandaloneDenoUnaryRouteTransportBodyResultFor as RuntimeSubpathStandaloneDenoUnaryRouteTransportBodyResultFor,
+  type StandaloneDenoUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathStandaloneDenoUnaryRouteTransportBodyResultHandlerFor,
   type JoorFetchHandler as RuntimeSubpathJoorFetchHandler,
   type JoorHandlerOptionsArgs as RuntimeSubpathJoorHandlerOptionsArgs,
   type JoorHandlerOptionsFor as RuntimeSubpathJoorHandlerOptionsFor,
@@ -7267,8 +7347,14 @@ const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
 );
 const typedStandaloneDenoHandler: StandaloneDenoRpcRequestHandler =
   standaloneDenoHandler;
+const rootStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler =
+  createRootStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
+const runtimeSubpathStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler =
+  createRuntimeSubpathStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
 standaloneDenoHandler(new Request('https://example.com/rpc'));
 typedStandaloneDenoHandler(new Request('https://example.com/rpc'));
+rootStandaloneDenoHandler(new Request('https://example.com/rpc'));
+runtimeSubpathStandaloneDenoHandler(new Request('https://example.com/rpc'));
 const typedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7313,6 +7399,86 @@ const standaloneDenoStreamRouteRpcRequestHandlerOptionsArgs: StandaloneDenoStrea
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [standaloneDenoRouteStreamRpcRequestHandlerOptions];
+const rootStandaloneDenoRpcRequestHandlerOptions: RootStandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRpcRequestHandlerOptions;
+const rootStandaloneDenoRouteUnaryRpcRequestHandlerOptions: RootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteUnaryRpcRequestHandlerOptions;
+const rootStandaloneDenoRouteStreamRpcRequestHandlerOptions: RootStandaloneDenoRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteStreamRpcRequestHandlerOptions;
+const rootStandaloneDenoUnaryRouteRpcRequestHandlerOptions: RootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoUnaryRouteRpcRequestHandlerOptions;
+const rootStandaloneDenoStreamRouteRpcRequestHandlerOptions: RootStandaloneDenoStreamRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoStreamRouteRpcRequestHandlerOptions;
+const rootStandaloneDenoRpcRequestHandlerOptionsArgs: RootStandaloneDenoRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRpcRequestHandlerOptionsArgs;
+const rootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs: RootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs;
+const rootStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs: RootStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteStreamRpcRequestHandlerOptionsArgs;
+const rootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs: RootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs;
+const rootStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs: RootStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoStreamRouteRpcRequestHandlerOptionsArgs;
+const runtimeSubpathStandaloneDenoRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRpcRequestHandlerOptions;
+const runtimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteUnaryRpcRequestHandlerOptions;
+const runtimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteStreamRpcRequestHandlerOptions;
+const runtimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoUnaryRouteRpcRequestHandlerOptions;
+const runtimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoStreamRouteRpcRequestHandlerOptions;
+const runtimeSubpathStandaloneDenoRpcRequestHandlerOptionsArgs: RuntimeSubpathStandaloneDenoRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRpcRequestHandlerOptionsArgs;
+const runtimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs: RuntimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs;
+const runtimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs: RuntimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs;
+const runtimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs: RuntimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs;
+const runtimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs: RuntimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs;
 const standaloneDenoRouteUnaryServeOptions: StandaloneDenoRouteUnaryServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -7349,6 +7515,86 @@ const standaloneDenoStreamRouteServeOptionsArgs: StandaloneDenoStreamRouteServeO
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [standaloneDenoRouteStreamServeOptions];
+const rootStandaloneDenoServeOptions: RootStandaloneDenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = typedStandaloneDenoServeOptions;
+const rootStandaloneDenoRouteUnaryServeOptions: RootStandaloneDenoRouteUnaryServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteUnaryServeOptions;
+const rootStandaloneDenoRouteStreamServeOptions: RootStandaloneDenoRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteStreamServeOptions;
+const rootStandaloneDenoUnaryRouteServeOptions: RootStandaloneDenoUnaryRouteServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoUnaryRouteServeOptions;
+const rootStandaloneDenoStreamRouteServeOptions: RootStandaloneDenoStreamRouteServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoStreamRouteServeOptions;
+const rootStandaloneDenoServeOptionsArgs: RootStandaloneDenoServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoServeOptionsArgs;
+const rootStandaloneDenoRouteUnaryServeOptionsArgs: RootStandaloneDenoRouteUnaryServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteUnaryServeOptionsArgs;
+const rootStandaloneDenoRouteStreamServeOptionsArgs: RootStandaloneDenoRouteStreamServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoRouteStreamServeOptionsArgs;
+const rootStandaloneDenoUnaryRouteServeOptionsArgs: RootStandaloneDenoUnaryRouteServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoUnaryRouteServeOptionsArgs;
+const rootStandaloneDenoStreamRouteServeOptionsArgs: RootStandaloneDenoStreamRouteServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = standaloneDenoStreamRouteServeOptionsArgs;
+const runtimeSubpathStandaloneDenoServeOptions: RuntimeSubpathStandaloneDenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoServeOptions;
+const runtimeSubpathStandaloneDenoRouteUnaryServeOptions: RuntimeSubpathStandaloneDenoRouteUnaryServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteUnaryServeOptions;
+const runtimeSubpathStandaloneDenoRouteStreamServeOptions: RuntimeSubpathStandaloneDenoRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteStreamServeOptions;
+const runtimeSubpathStandaloneDenoUnaryRouteServeOptions: RuntimeSubpathStandaloneDenoUnaryRouteServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoUnaryRouteServeOptions;
+const runtimeSubpathStandaloneDenoStreamRouteServeOptions: RuntimeSubpathStandaloneDenoStreamRouteServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoStreamRouteServeOptions;
+const runtimeSubpathStandaloneDenoServeOptionsArgs: RuntimeSubpathStandaloneDenoServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoServeOptionsArgs;
+const runtimeSubpathStandaloneDenoRouteUnaryServeOptionsArgs: RuntimeSubpathStandaloneDenoRouteUnaryServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteUnaryServeOptionsArgs;
+const runtimeSubpathStandaloneDenoRouteStreamServeOptionsArgs: RuntimeSubpathStandaloneDenoRouteStreamServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoRouteStreamServeOptionsArgs;
+const runtimeSubpathStandaloneDenoUnaryRouteServeOptionsArgs: RuntimeSubpathStandaloneDenoUnaryRouteServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoUnaryRouteServeOptionsArgs;
+const runtimeSubpathStandaloneDenoStreamRouteServeOptionsArgs: RuntimeSubpathStandaloneDenoStreamRouteServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = rootStandaloneDenoStreamRouteServeOptionsArgs;
 standaloneDenoRpcRequestHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 standaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -7399,6 +7645,39 @@ standaloneDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+runtimeSubpathStandaloneDenoServeOptionsArgs[0]?.port?.toFixed();
+runtimeSubpathStandaloneDenoRouteUnaryServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoUnaryRouteServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoStreamRouteServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRouteUnaryServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRouteStreamServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoUnaryRouteServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoStreamRouteServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 standaloneDenoUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -7412,6 +7691,40 @@ standaloneDenoRouteUnaryRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   manifestUnaryRouteHandlerHookContext
 );
 standaloneDenoRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRpcRequestHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathStandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathStandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
@@ -7437,7 +7750,16 @@ const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
   manifest,
   typedStandaloneDenoServeOptions
 );
+const rootStandaloneDenoServer: RootStandaloneDenoServer =
+  serveRootStandaloneDeno(manifest, rootStandaloneDenoServeOptions);
+const runtimeSubpathStandaloneDenoServer: RuntimeSubpathStandaloneDenoServer =
+  serveRuntimeSubpathStandaloneDeno(
+    manifest,
+    runtimeSubpathStandaloneDenoServeOptions
+  );
 standaloneDenoServer.shutdown().then(() => undefined);
+rootStandaloneDenoServer.finished.then(() => undefined);
+runtimeSubpathStandaloneDenoServer.finished.then(() => undefined);
 // @ts-expect-error service-dependent manifests require matching standalone Deno serve plugins.
 serveStandaloneDeno(manifest);
 
@@ -7710,6 +8032,63 @@ const standaloneDenoStreamRouteTransportResultFor: StandaloneDenoStreamRouteTran
   typeof manifest,
   typeof manifestStreamRouteBody
 > = bunRouteStreamTransportResultFor;
+const rootStandaloneDenoTransportResult: RootStandaloneDenoTransportBodyResult =
+  standaloneDenoTransportResult;
+const runtimeSubpathStandaloneDenoTransportResult: RuntimeSubpathStandaloneDenoTransportBodyResult =
+  rootStandaloneDenoTransportResult;
+const rootStandaloneDenoTransportResultFor: RootStandaloneDenoTransportBodyResultFor<
+  typeof manifest
+> = standaloneDenoTransportResultFor;
+const exactRootStandaloneDenoTransportResultFor: RootStandaloneDenoTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactStandaloneDenoTransportResultFor;
+const rootStandaloneDenoRouteUnaryTransportResultFor: RootStandaloneDenoRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = standaloneDenoRouteUnaryTransportResultFor;
+const rootStandaloneDenoRouteStreamTransportResultFor: RootStandaloneDenoRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = standaloneDenoRouteStreamTransportResultFor;
+const rootStandaloneDenoUnaryRouteTransportResultFor: RootStandaloneDenoUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = standaloneDenoUnaryRouteTransportResultFor;
+const rootStandaloneDenoStreamRouteTransportResultFor: RootStandaloneDenoStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = standaloneDenoStreamRouteTransportResultFor;
+const runtimeSubpathStandaloneDenoTransportResultFor: RuntimeSubpathStandaloneDenoTransportBodyResultFor<
+  typeof manifest
+> = rootStandaloneDenoTransportResultFor;
+const exactRuntimeSubpathStandaloneDenoTransportResultFor: RuntimeSubpathStandaloneDenoTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestRouteRequest
+> = exactRootStandaloneDenoTransportResultFor;
+const runtimeSubpathStandaloneDenoRouteUnaryTransportResultFor: RuntimeSubpathStandaloneDenoRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = rootStandaloneDenoRouteUnaryTransportResultFor;
+const runtimeSubpathStandaloneDenoRouteStreamTransportResultFor: RuntimeSubpathStandaloneDenoRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = rootStandaloneDenoRouteStreamTransportResultFor;
+const runtimeSubpathStandaloneDenoUnaryRouteTransportResultFor: RuntimeSubpathStandaloneDenoUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryRouteBody
+> = rootStandaloneDenoUnaryRouteTransportResultFor;
+const runtimeSubpathStandaloneDenoStreamRouteTransportResultFor: RuntimeSubpathStandaloneDenoStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteBody
+> = rootStandaloneDenoStreamRouteTransportResultFor;
+runtimeSubpathStandaloneDenoTransportResult.id.toUpperCase();
+runtimeSubpathStandaloneDenoTransportResultFor.valueOf();
+exactRuntimeSubpathStandaloneDenoTransportResultFor.valueOf();
+runtimeSubpathStandaloneDenoRouteUnaryTransportResultFor.valueOf();
+runtimeSubpathStandaloneDenoRouteStreamTransportResultFor.valueOf();
+runtimeSubpathStandaloneDenoUnaryRouteTransportResultFor.valueOf();
+runtimeSubpathStandaloneDenoStreamRouteTransportResultFor.valueOf();
 const denoCompiledTransportResultFor: DenoCompiledTransportBodyResultFor<
   typeof manifest
 > = standaloneDenoTransportResultFor;
@@ -7757,10 +8136,36 @@ const standaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler =
   async () => standaloneDenoTransportResult;
 const standaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler =
   createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
+const rootStandaloneDenoTransportHandler: RootStandaloneDenoTransportBodyResultHandler =
+  standaloneDenoTransportHandler;
+const rootStandaloneDenoTransportRequestHandler: RootStandaloneDenoTransportRequestHandler =
+  createRootStandaloneDenoTransportRequestHandler(
+    rootStandaloneDenoTransportHandler
+  );
+const runtimeSubpathStandaloneDenoTransportHandler: RuntimeSubpathStandaloneDenoTransportBodyResultHandler =
+  rootStandaloneDenoTransportHandler;
+const runtimeSubpathStandaloneDenoTransportRequestHandler: RuntimeSubpathStandaloneDenoTransportRequestHandler =
+  createRuntimeSubpathStandaloneDenoTransportRequestHandler(
+    runtimeSubpathStandaloneDenoTransportHandler
+  );
 standaloneDenoTransportRequestHandler(new Request('https://example.com/rpc'));
+rootStandaloneDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStandaloneDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 createStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
 createStandaloneDenoTransportRequestHandlerWithPath(
   standaloneDenoTransportHandler,
+  '/rpc'
+);
+createRootStandaloneDenoTransportRequestHandlerWithPath(
+  rootStandaloneDenoTransportHandler,
+  '/rpc'
+);
+createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath(
+  runtimeSubpathStandaloneDenoTransportHandler,
   '/rpc'
 );
 const routeTypedStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandler<
@@ -7794,8 +8199,52 @@ const manifestStandaloneDenoUnaryRouteTransportHandler: StandaloneDenoUnaryRoute
 const manifestStandaloneDenoStreamRouteTransportHandler: StandaloneDenoStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoRouteStreamTransportHandler;
+const rootManifestStandaloneDenoTransportHandler: RootStandaloneDenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = manifestStandaloneDenoTransportHandler;
+const rootManifestStandaloneDenoRouteUnaryTransportHandler: RootStandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestStandaloneDenoTransportHandler;
+const rootManifestStandaloneDenoRouteStreamTransportHandler: RootStandaloneDenoRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestStandaloneDenoTransportHandler;
+const rootManifestStandaloneDenoUnaryRouteTransportHandler: RootStandaloneDenoUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestStandaloneDenoRouteUnaryTransportHandler;
+const rootManifestStandaloneDenoStreamRouteTransportHandler: RootStandaloneDenoStreamRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestStandaloneDenoRouteStreamTransportHandler;
+const runtimeSubpathManifestStandaloneDenoTransportHandler: RuntimeSubpathStandaloneDenoTransportBodyResultHandlerFor<
+  typeof manifest
+> = rootManifestStandaloneDenoTransportHandler;
+const runtimeSubpathManifestStandaloneDenoRouteUnaryTransportHandler: RuntimeSubpathStandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestStandaloneDenoTransportHandler;
+const runtimeSubpathManifestStandaloneDenoRouteStreamTransportHandler: RuntimeSubpathStandaloneDenoRouteStreamTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestStandaloneDenoTransportHandler;
+const runtimeSubpathManifestStandaloneDenoUnaryRouteTransportHandler: RuntimeSubpathStandaloneDenoUnaryRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestStandaloneDenoRouteUnaryTransportHandler;
+const runtimeSubpathManifestStandaloneDenoStreamRouteTransportHandler: RuntimeSubpathStandaloneDenoStreamRouteTransportBodyResultHandlerFor<
+  typeof manifest
+> = runtimeSubpathManifestStandaloneDenoRouteStreamTransportHandler;
 createStandaloneDenoTransportRequestHandler(
   manifestStandaloneDenoTransportHandler
+);
+createRootStandaloneDenoTransportRequestHandler(
+  rootManifestStandaloneDenoTransportHandler
+);
+createRuntimeSubpathStandaloneDenoTransportRequestHandler(
+  runtimeSubpathManifestStandaloneDenoTransportHandler
+);
+rootManifestStandaloneDenoUnaryRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rootManifestStandaloneDenoStreamRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
 );
 manifestStandaloneDenoUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
@@ -7817,6 +8266,22 @@ manifestStandaloneDenoTransportHandler(createFetchRequestSourceForTypes(), [
   // @ts-expect-error manifest-aware standalone Deno handlers reject stream requests in batches.
   { id: 'users.watch', input: { userId: '1' } },
 ]);
+runtimeSubpathManifestStandaloneDenoUnaryRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+runtimeSubpathManifestStandaloneDenoStreamRouteTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+runtimeSubpathManifestStandaloneDenoRouteUnaryTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+runtimeSubpathManifestStandaloneDenoRouteStreamTransportHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
 const maxBodyBytes: number = DEFAULT_MAX_BODY_BYTES;
 const runtimeSubpathMaxBodyBytes: number =
   RUNTIME_SUBPATH_DEFAULT_MAX_BODY_BYTES;
@@ -10898,6 +11363,11 @@ const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
 denoOptions.hostname?.toUpperCase();
 const standaloneDenoOptions: StandaloneDenoServeOptions = { port: 3001 };
 standaloneDenoOptions.port?.toFixed();
+const rootStandaloneDenoOptions: RootStandaloneDenoServeOptions =
+  standaloneDenoOptions;
+const runtimeSubpathStandaloneDenoOptions: RuntimeSubpathStandaloneDenoServeOptions =
+  rootStandaloneDenoOptions;
+runtimeSubpathStandaloneDenoOptions.port?.toFixed();
 const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
 listenOptions.hostname?.toUpperCase();
 

@@ -66,6 +66,12 @@ export {
   createDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerWithPath,
 } from './runtime/deno-compiled-transport.js';
+export {
+  createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
+  createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
+  createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
+  serveDeno as serveStandaloneDeno,
+} from './runtime/deno-transport.js';
 export { createElysiaHandler } from './runtime/elysia.js';
 export { createExpressHandler } from './runtime/express.js';
 export { createFastifyHandler } from './runtime/fastify.js';
@@ -936,6 +942,44 @@ export type {
   DenoUnaryRouteTransportBodyResultFor,
   DenoUnaryRouteTransportBodyResultHandlerFor,
 } from './runtime/deno.js';
+export type {
+  DenoRpcRequestHandler as StandaloneDenoRpcRequestHandler,
+  DenoRpcRequestHandlerOptionsArgs as StandaloneDenoRpcRequestHandlerOptionsArgs,
+  DenoRpcRequestHandlerOptionsFor as StandaloneDenoRpcRequestHandlerOptionsFor,
+  DenoRouteStreamRpcRequestHandlerOptionsArgs as StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs,
+  DenoRouteStreamRpcRequestHandlerOptionsFor as StandaloneDenoRouteStreamRpcRequestHandlerOptionsFor,
+  DenoRouteStreamServeOptionsArgs as StandaloneDenoRouteStreamServeOptionsArgs,
+  DenoRouteStreamServeOptionsFor as StandaloneDenoRouteStreamServeOptionsFor,
+  DenoRouteStreamTransportBodyResultFor as StandaloneDenoRouteStreamTransportBodyResultFor,
+  DenoRouteStreamTransportBodyResultHandlerFor as StandaloneDenoRouteStreamTransportBodyResultHandlerFor,
+  DenoRouteUnaryRpcRequestHandlerOptionsArgs as StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs,
+  DenoRouteUnaryRpcRequestHandlerOptionsFor as StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor,
+  DenoRouteUnaryServeOptionsArgs as StandaloneDenoRouteUnaryServeOptionsArgs,
+  DenoRouteUnaryServeOptionsFor as StandaloneDenoRouteUnaryServeOptionsFor,
+  DenoRouteUnaryTransportBodyResultFor as StandaloneDenoRouteUnaryTransportBodyResultFor,
+  DenoRouteUnaryTransportBodyResultHandlerFor as StandaloneDenoRouteUnaryTransportBodyResultHandlerFor,
+  DenoServeOptions as StandaloneDenoServeOptions,
+  DenoServeOptionsArgs as StandaloneDenoServeOptionsArgs,
+  DenoServeOptionsFor as StandaloneDenoServeOptionsFor,
+  DenoServer as StandaloneDenoServer,
+  DenoStreamRouteRpcRequestHandlerOptionsArgs as StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs,
+  DenoStreamRouteRpcRequestHandlerOptionsFor as StandaloneDenoStreamRouteRpcRequestHandlerOptionsFor,
+  DenoStreamRouteServeOptionsArgs as StandaloneDenoStreamRouteServeOptionsArgs,
+  DenoStreamRouteServeOptionsFor as StandaloneDenoStreamRouteServeOptionsFor,
+  DenoStreamRouteTransportBodyResultFor as StandaloneDenoStreamRouteTransportBodyResultFor,
+  DenoStreamRouteTransportBodyResultHandlerFor as StandaloneDenoStreamRouteTransportBodyResultHandlerFor,
+  DenoTransportBodyResult as StandaloneDenoTransportBodyResult,
+  DenoTransportBodyResultFor as StandaloneDenoTransportBodyResultFor,
+  DenoTransportBodyResultHandler as StandaloneDenoTransportBodyResultHandler,
+  DenoTransportBodyResultHandlerFor as StandaloneDenoTransportBodyResultHandlerFor,
+  DenoTransportRequestHandler as StandaloneDenoTransportRequestHandler,
+  DenoUnaryRouteRpcRequestHandlerOptionsArgs as StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs,
+  DenoUnaryRouteRpcRequestHandlerOptionsFor as StandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor,
+  DenoUnaryRouteServeOptionsArgs as StandaloneDenoUnaryRouteServeOptionsArgs,
+  DenoUnaryRouteServeOptionsFor as StandaloneDenoUnaryRouteServeOptionsFor,
+  DenoUnaryRouteTransportBodyResultFor as StandaloneDenoUnaryRouteTransportBodyResultFor,
+  DenoUnaryRouteTransportBodyResultHandlerFor as StandaloneDenoUnaryRouteTransportBodyResultHandlerFor,
+} from './runtime/deno-transport.js';
 export type {
   ElysiaContext,
   ElysiaHandler,
