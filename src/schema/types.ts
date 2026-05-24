@@ -1,14 +1,14 @@
 import type { JsonValue } from './json.js';
 
 export interface SchemaMeta {
-  description?: string;
-  example?: JsonValue;
-  default?: JsonValue;
+  readonly description?: string;
+  readonly example?: JsonValue;
+  readonly default?: JsonValue;
 }
 
 export interface ValidationIssue {
-  path: string;
-  message: string;
+  readonly path: string;
+  readonly message: string;
 }
 
 export interface BaseSchema<TValue> {
@@ -113,7 +113,7 @@ export type Schema =
   | RecordSchema
   | JsonSchema;
 
-export type SchemaShape = Record<string, Schema>;
+export type SchemaShape = Readonly<Record<string, Schema>>;
 
 export type HeaderValueSchema =
   | StringSchema
@@ -121,7 +121,7 @@ export type HeaderValueSchema =
   | LiteralSchema<string>
   | OptionalSchema<HeaderValueSchema>;
 
-export type HeaderSchemaShape = Record<string, HeaderValueSchema>;
+export type HeaderSchemaShape = Readonly<Record<string, HeaderValueSchema>>;
 
 export type HeaderObjectSchema = ObjectSchema<HeaderSchemaShape>;
 

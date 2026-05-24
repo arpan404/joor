@@ -1022,10 +1022,13 @@ import {
   type RpcUnaryRouteRequestOptions,
   type RpcUnaryRouteTransportClient,
   type RpcUnaryRouteId,
+  type HeaderSchemaShape,
   type Schema,
   type SchemaMeta,
+  type SchemaShape,
   type StringSchema,
   type NumberSchema,
+  type ValidationIssue,
   type ValidationResult,
   type OpenApiSchema,
   type JsonValue,
@@ -4178,12 +4181,31 @@ const rootStringSchema: StringSchema = t.string().min(1);
 rootStringSchema.kind.toUpperCase();
 const rootSchemaMeta: SchemaMeta = { description: 'User payload' };
 rootSchemaMeta.description?.toUpperCase();
+// @ts-expect-error schema metadata is readonly.
+rootSchemaMeta.description = 'Other payload';
+const rootValidationIssue: ValidationIssue = {
+  path: 'input.id',
+  message: 'Expected string',
+};
+rootValidationIssue.message.toUpperCase();
+// @ts-expect-error validation issues are readonly.
+rootValidationIssue.message = 'Expected uuid';
 const rootHeaderValueSchema: HeaderValueSchema = t.string().optional();
 rootHeaderValueSchema.kind.toUpperCase();
 const rootProcedureHeaderSchema = t.object({
   authorization: t.string().optional(),
   'x-route-mode': t.enum(['read', 'write']),
 });
+const rootSchemaShape: SchemaShape = { id: t.string() };
+rootSchemaShape['id']?.kind.toUpperCase();
+// @ts-expect-error schema shapes expose readonly fields.
+rootSchemaShape.id = t.number();
+const rootHeaderSchemaShape: HeaderSchemaShape = {
+  'x-mode': t.enum(['read', 'write']),
+};
+rootHeaderSchemaShape['x-mode']?.kind.toUpperCase();
+// @ts-expect-error header schema shapes expose readonly fields.
+rootHeaderSchemaShape['x-mode'] = t.string();
 const rootHeaderSchema: HeaderObjectSchema = rootProcedureHeaderSchema;
 const authorizationHeaderSchema = rootHeaderSchema.shape['authorization'];
 authorizationHeaderSchema?.kind.toUpperCase();
