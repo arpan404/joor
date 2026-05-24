@@ -6330,6 +6330,8 @@ const manifestRouteClientArgs: JoorManifestRouteClientArgs<
 const defaultManifestRouteClientArgs: JoorManifestRouteClientArgs<
   typeof manifest
 > = manifestRouteClientArgs;
+// @ts-expect-error manifest route client args are readonly tuples.
+manifestRouteClientArgs[0] = { id: '2' };
 const manifestUnaryRouteClientArgs: JoorManifestUnaryRouteClientArgs<
   typeof manifest,
   'users.get'
@@ -17523,6 +17525,8 @@ const routeClientArgs: RpcRouteClientArgs<Routes, 'users.get'> = [
   routeRequestOptions,
 ];
 const defaultRouteClientArgs: RpcRouteClientArgs<Routes> = routeClientArgs;
+// @ts-expect-error route client args are readonly tuples.
+routeClientArgs[0] = { id: '2' };
 const unaryRouteClientArgs: RpcUnaryRouteClientArgs<Routes, 'users.get'> =
   routeClientArgs;
 const defaultUnaryRouteClientArgs: RpcUnaryRouteClientArgs<Routes> =
@@ -17545,6 +17549,8 @@ const streamRouteClientArgs: RpcStreamRouteClientArgs<Routes, 'users.watch'> = [
 ];
 const defaultStreamRouteClientArgs: RpcStreamRouteClientArgs<Routes> =
   streamRouteClientArgs;
+// @ts-expect-error stream route client args are readonly tuples.
+streamRouteClientArgs[0] = { userId: '2' };
 const rpcSubpathStreamRouteClientArgs: RpcSubpathStreamRouteClientArgs<
   Routes,
   'users.watch'

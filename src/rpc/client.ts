@@ -1138,11 +1138,11 @@ type RpcRouteClientArgsFor<
   TId extends RpcRouteId<TRoutes>,
 > =
   RpcRouteRequiresHeaders<TRoutes, TId> extends false
-    ? [
+    ? readonly [
         input: RpcRouteInput<TRoutes, TId>,
         options?: RpcRouteRequestOptions<TRoutes, TId>,
       ]
-    : [
+    : readonly [
         input: RpcRouteInput<TRoutes, TId>,
         options: RpcRouteRequestOptions<TRoutes, TId>,
       ];

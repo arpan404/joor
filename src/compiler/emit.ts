@@ -3145,7 +3145,7 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
   const transport =
     options === undefined ? createTransport() : createTransport(options);
   const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
-    const routeTransport = transport as RouteUnaryTransport<TId>;
+    const routeTransport = transport as unknown as RouteUnaryTransport<TId>;
     const call = (...args: ClientArgs<TId>) =>
       routeTransport.call(id, ...args);
     const request = (...args: ClientArgs<TId>) =>
@@ -3157,7 +3157,7 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
     return Object.assign(call, { call, request, protocolRequest });
   };
   const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
-    const routeTransport = transport as RouteStreamTransport<TId>;
+    const routeTransport = transport as unknown as RouteStreamTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
     const protocolRequest = (
