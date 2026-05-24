@@ -4,6 +4,7 @@ import type {
   HandlerOptionsArgs,
   HandlerOptionsFor,
   RpcManifestBody,
+  RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
@@ -50,7 +51,7 @@ export type CloudflareFetchOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareRouteUnaryFetchOptionsFor<
@@ -59,7 +60,7 @@ export type CloudflareRouteUnaryFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareUnaryRouteFetchOptionsFor<
@@ -68,7 +69,7 @@ export type CloudflareUnaryRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteUnaryFetchOptionsFor<
   TManifest,
   TPlugins,
@@ -82,7 +83,7 @@ export type CloudflareRouteStreamFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareStreamRouteFetchOptionsFor<
@@ -91,7 +92,7 @@ export type CloudflareStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteStreamFetchOptionsFor<
   TManifest,
   TPlugins,
@@ -104,7 +105,7 @@ export type CloudflareWorkerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareRouteUnaryWorkerOptionsFor<
@@ -113,7 +114,7 @@ export type CloudflareRouteUnaryWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareUnaryRouteWorkerOptionsFor<
@@ -122,7 +123,7 @@ export type CloudflareUnaryRouteWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteUnaryWorkerOptionsFor<
   TManifest,
   TPlugins,
@@ -136,7 +137,7 @@ export type CloudflareRouteStreamWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareWorkerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareStreamRouteWorkerOptionsFor<
@@ -145,7 +146,7 @@ export type CloudflareStreamRouteWorkerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteStreamWorkerOptionsFor<
   TManifest,
   TPlugins,
@@ -158,7 +159,7 @@ export type CloudflareFetchOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareRouteUnaryFetchOptionsArgs<
@@ -167,7 +168,7 @@ export type CloudflareRouteUnaryFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareUnaryRouteFetchOptionsArgs<
@@ -176,7 +177,7 @@ export type CloudflareUnaryRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteUnaryFetchOptionsArgs<
   TManifest,
   TPlugins,
@@ -190,7 +191,7 @@ export type CloudflareRouteStreamFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareStreamRouteFetchOptionsArgs<
@@ -199,7 +200,7 @@ export type CloudflareStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteStreamFetchOptionsArgs<
   TManifest,
   TPlugins,
@@ -212,7 +213,7 @@ export type CloudflareWorkerOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareRouteUnaryWorkerOptionsArgs<
@@ -221,7 +222,7 @@ export type CloudflareRouteUnaryWorkerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareUnaryRouteWorkerOptionsArgs<
@@ -230,7 +231,7 @@ export type CloudflareUnaryRouteWorkerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteUnaryWorkerOptionsArgs<
   TManifest,
   TPlugins,
@@ -244,7 +245,7 @@ export type CloudflareRouteStreamWorkerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareWorkerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type CloudflareStreamRouteWorkerOptionsArgs<
@@ -253,7 +254,7 @@ export type CloudflareStreamRouteWorkerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CloudflareRouteStreamWorkerOptionsArgs<
   TManifest,
   TPlugins,
@@ -264,7 +265,7 @@ export type CloudflareStreamRouteWorkerOptionsArgs<
 export function createCloudflareFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: CloudflareFetchOptionsArgs<
@@ -311,7 +312,7 @@ export const createCloudflareFetchFor =
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: CloudflareWorkerOptionsArgs<

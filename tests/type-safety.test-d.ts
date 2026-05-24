@@ -2196,6 +2196,228 @@ const _wrongRequestTypedManifestJoorHandlerOptions: JoorHandlerOptionsFor<
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestCloudflareFetchOptions: CloudflareFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestCloudflareFetchOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestCloudflareFetchOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestCloudflareFetchOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestCloudflareWorkerOptions: CloudflareWorkerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestCloudflareWorkerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestCloudflareWorkerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestCloudflareWorkerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathCloudflareFetchOptions: RuntimeSubpathCloudflareFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestCloudflareFetchOptions;
+requestTypedManifestRuntimeSubpathCloudflareFetchOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestVercelFetchOptions: VercelFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestVercelFetchOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestVercelFetchOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestVercelFetchOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestVercelFetchOptions;
+requestTypedManifestRuntimeSubpathVercelFetchOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestNetlifyFetchOptions: NetlifyFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestNetlifyFetchOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestNetlifyFetchOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestNetlifyFetchOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestNetlifyFetchOptions;
+requestTypedManifestRuntimeSubpathNetlifyFetchOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestNextHandlerOptions: NextHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestNextHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestNextHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestNextHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestNextHandlerOptions;
+requestTypedManifestRuntimeSubpathNextHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestHonoHandlerOptions: HonoHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestHonoHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestHonoHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestHonoHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathHonoHandlerOptions: RuntimeSubpathHonoHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestHonoHandlerOptions;
+requestTypedManifestRuntimeSubpathHonoHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestElysiaHandlerOptions: ElysiaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestElysiaHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestElysiaHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestElysiaHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathElysiaHandlerOptions: RuntimeSubpathElysiaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestElysiaHandlerOptions;
+requestTypedManifestRuntimeSubpathElysiaHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestCloudflareFetch = createCloudflareFetch(
+  requestTypedManifest,
+  requestTypedManifestCloudflareFetchOptions
+);
+requestTypedManifestCloudflareFetch(requestTypedProcedureRequest);
+requestTypedManifestCloudflareFetch(
+  // @ts-expect-error Cloudflare fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestCloudflareWorker = createCloudflareWorker(
+  requestTypedManifest,
+  requestTypedManifestCloudflareWorkerOptions
+);
+requestTypedManifestCloudflareWorker.fetch(requestTypedProcedureRequest);
+requestTypedManifestCloudflareWorker.fetch(
+  // @ts-expect-error Cloudflare workers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestVercelFetch = createVercelFetch(
+  requestTypedManifest,
+  requestTypedManifestVercelFetchOptions
+);
+requestTypedManifestVercelFetch(requestTypedProcedureRequest);
+requestTypedManifestVercelFetch(
+  // @ts-expect-error Vercel fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestVercelFunction = createVercelFunction(
+  requestTypedManifest,
+  requestTypedManifestVercelFetchOptions
+);
+requestTypedManifestVercelFunction.fetch(requestTypedProcedureRequest);
+requestTypedManifestVercelFunction.fetch(
+  // @ts-expect-error Vercel functions default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestNetlifyFetch = createNetlifyFetch(
+  requestTypedManifest,
+  requestTypedManifestNetlifyFetchOptions
+);
+requestTypedManifestNetlifyFetch(requestTypedProcedureRequest);
+requestTypedManifestNetlifyFetch(
+  // @ts-expect-error Netlify fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestNetlifyEdgeFunction = createNetlifyEdgeFunction(
+  requestTypedManifest,
+  requestTypedManifestNetlifyFetchOptions
+);
+requestTypedManifestNetlifyEdgeFunction(
+  requestTypedProcedureRequest,
+  undefined
+);
+requestTypedManifestNetlifyEdgeFunction(
+  // @ts-expect-error Netlify edge functions default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  undefined
+);
+const requestTypedManifestNextRouteHandlers = createNextRouteHandlers(
+  requestTypedManifest,
+  requestTypedManifestNextHandlerOptions
+);
+requestTypedManifestNextRouteHandlers.GET(requestTypedProcedureRequest);
+requestTypedManifestNextRouteHandlers.GET(
+  // @ts-expect-error Next route handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestNextHandler = createNextHandler(
+  requestTypedManifest,
+  requestTypedManifestNextHandlerOptions
+);
+requestTypedManifestNextHandler.POST(requestTypedProcedureRequest);
+requestTypedManifestNextHandler.POST(
+  // @ts-expect-error Next handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestHonoHandler = createHonoHandler(
+  requestTypedManifest,
+  requestTypedManifestHonoHandlerOptions
+);
+requestTypedManifestHonoHandler({
+  req: { raw: requestTypedProcedureRequest },
+});
+requestTypedManifestHonoHandler({
+  req: {
+    // @ts-expect-error Hono handlers default to the manifest required request subtype.
+    raw: new Request('https://example.com/rpc'),
+  },
+});
+const requestTypedManifestElysiaHandler = createElysiaHandler(
+  requestTypedManifest,
+  requestTypedManifestElysiaHandlerOptions
+);
+requestTypedManifestElysiaHandler({
+  request: requestTypedProcedureRequest,
+});
+requestTypedManifestElysiaHandler({
+  // @ts-expect-error Elysia handlers default to the manifest required request subtype.
+  request: new Request('https://example.com/rpc'),
+});
+// @ts-expect-error Cloudflare option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestCloudflareFetchOptions: CloudflareFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+// @ts-expect-error Hono option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestHonoHandlerOptions: HonoHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
