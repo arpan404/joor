@@ -1073,12 +1073,16 @@ export const createCompiledRpcTransportBodyResultHandler = <
   >;
   const extraHeaders = compiled.runtime.cors ?? compiledCorsHeaders(handlerConfig);
   const hooks = handlerConfig.hooks as
-    | HandlerHooks<JoorConfigContext<TConfig>, CompiledHookBody<TConfig>, Request>
+    | HandlerHooks<
+        JoorConfigContext<TConfig>,
+        CompiledHookBody<TConfig>,
+        CompiledHookRequest<TConfig>
+      >
     | undefined;
   const middleware = (handlerConfig.middleware ?? []) as readonly JoorMiddleware<
     JoorConfigContext<TConfig>,
     CompiledHookBody<TConfig>,
-    Request
+    CompiledHookRequest<TConfig>
   >[];
   const hasBeforeHooks =
     hooks?.beforeRequest !== undefined ||
@@ -1098,7 +1102,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
     request: ContextRequestSource,
     body: CompiledHookBody<TConfig>
   ): Promise<Response | undefined> => {
-    const hookRequest = request.toRequest();
+    const hookRequest = request.toRequest() as CompiledHookRequest<TConfig>;
     const context = await createHookContext(body);
     const hookResult = await hooks?.beforeRequest?.(hookRequest, context);
     if (hookResult instanceof Response) return hookResult;
@@ -1114,7 +1118,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
     body: CompiledHookBody<TConfig>
   ): Promise<Response> => {
     let next = response;
-    const hookRequest = request.toRequest();
+    const hookRequest = request.toRequest() as CompiledHookRequest<TConfig>;
     const context = await createHookContext(body);
     for (const item of middleware) {
       const result = await item.afterResponse?.(next, hookRequest, context);
@@ -1235,7 +1239,7 @@ export const createCompiledRpcBodyResultHandler = <
     unaryDispatch
   ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
   return ((
-    request: Request,
+    request: CompiledHookRequest<TConfig>,
     body: JsonValue
   ): Promise<CompiledBodyResult> =>
     Promise.resolve(
@@ -1262,7 +1266,9 @@ export const createCompiledRpcHandler = <
     false,
     'response'
   ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
-  return (async (request: Request): Promise<Response> => {
+  return (async (
+    request: CompiledHookRequest<TConfig>
+  ): Promise<Response> => {
     const source = createFetchRequestSource(request);
     const early = requestPreflight(
       source,
