@@ -294,7 +294,7 @@ const createDefineProcedure = <
       ...(auth === undefined
         ? {}
         : {
-            auth: auth as AuthPolicy<
+            auth: auth as unknown as AuthPolicy<
               object,
               AuthPolicyHeaderValues,
               object,

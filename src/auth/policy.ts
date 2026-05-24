@@ -20,6 +20,7 @@ export interface AuthPolicy<
   TRequest extends Request = Request,
 > {
   name: string;
+  readonly __requestType?: (request: TRequest) => TRequest;
   authenticate(
     ctx: JoorContext<
       TServices,
@@ -35,8 +36,8 @@ export interface AuthPolicy<
 export type AuthPolicyServices<TPolicy> =
   TPolicy extends AuthPolicy<
     infer TServices,
-    AuthPolicyHeaderValues,
-    object,
+    infer _THeaders,
+    infer _TAuth,
     infer _TRequest extends Request
   >
     ? TServices
@@ -44,9 +45,9 @@ export type AuthPolicyServices<TPolicy> =
 
 export type AuthPolicyHeaders<TPolicy> =
   TPolicy extends AuthPolicy<
-    object,
+    infer _TServices,
     infer THeaders,
-    object,
+    infer _TAuth,
     infer _TRequest extends Request
   >
     ? THeaders
@@ -54,8 +55,8 @@ export type AuthPolicyHeaders<TPolicy> =
 
 export type AuthPolicyAuth<TPolicy> =
   TPolicy extends AuthPolicy<
-    object,
-    AuthPolicyHeaderValues,
+    infer _TServices,
+    infer _THeaders,
     infer TAuth,
     infer _TRequest extends Request
   >
@@ -63,7 +64,12 @@ export type AuthPolicyAuth<TPolicy> =
     : never;
 
 export type AuthPolicyRequest<TPolicy> =
-  TPolicy extends AuthPolicy<object, AuthPolicyHeaderValues, object, infer TRequest>
+  TPolicy extends AuthPolicy<
+    infer _TServices,
+    infer _THeaders,
+    infer _TAuth,
+    infer TRequest
+  >
     ? TRequest
     : never;
 

@@ -3270,6 +3270,13 @@ const requestTypedAuthPolicyRequest: AuthPolicyRequest<
   typeof requestTypedAuthPolicy
 > = requestTypedProcedureRequest;
 requestTypedAuthPolicyRequest.requestId.toUpperCase();
+// @ts-expect-error request-typed auth policies are not assignable to plain request policies.
+const _wrongRequestTypedAuthPolicy: AuthPolicy<
+  Services,
+  Record<string, never>,
+  { userId: string },
+  Request
+> = requestTypedAuthPolicy;
 type RequestTypedAuthPolicyServices = AuthPolicyServices<
   typeof requestTypedAuthPolicy
 >;
@@ -3394,6 +3401,15 @@ const authSubpathRequestAuth: AuthSubpathPolicyAuth<
 > = { userId: '1' };
 authSubpathRequestAuth.userId.toUpperCase();
 
+defineProcedure.withContext<Services>()({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
+  // @ts-expect-error procedures must declare a request type compatible with request-typed auth policies.
+  auth: requestTypedAuthPolicy,
+  handler(_ctx: unknown, input: { id: string }) {
+    return { id: input.id };
+  },
+});
 const requestTypedRichProcedure = defineProcedure.withContext<
   Services,
   ProcedureAppRequest
