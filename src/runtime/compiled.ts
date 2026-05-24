@@ -51,6 +51,7 @@ import type {
   RpcBodyResult,
   RpcManifestBody,
   RpcManifestBodyResultFor,
+  RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
@@ -233,7 +234,7 @@ export type CompiledRpcBodyResultHandler<
 
 export type CompiledRpcBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = <
   const TBody extends RpcManifestBody<TManifest>,
 >(
@@ -243,7 +244,7 @@ export type CompiledRpcBodyResultHandlerFor<
 
 export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: TRequest,
   body: TBody
@@ -256,7 +257,7 @@ export type CompiledRpcUnaryRouteBodyResultHandlerFor<
 
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: TRequest,
   body: TBody

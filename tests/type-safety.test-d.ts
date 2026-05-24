@@ -2855,6 +2855,54 @@ const _wrongRequestTypedManifestStandaloneDenoRpcRequestHandlerOptions: Standalo
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
+  typeof requestTypedManifest
+> = (request, body) => {
+  request.requestId.toUpperCase();
+  return new Response() as unknown as CompiledTransportBodyResultFor<
+    typeof requestTypedManifest,
+    typeof body
+  >;
+};
+requestTypedManifestCompiledBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestCompiledBodyHandler(
+  // @ts-expect-error compiled body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestCompiledRouteUnaryBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
+  typeof requestTypedManifest
+> = (request, body) => {
+  request.requestId.toUpperCase();
+  return new Response() as unknown as CompiledRouteUnaryBodyResultFor<
+    typeof requestTypedManifest,
+    typeof body
+  >;
+};
+requestTypedManifestCompiledRouteUnaryBodyHandler(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+requestTypedManifestCompiledRouteUnaryBodyHandler(
+  // @ts-expect-error compiled unary body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const rootRequestTypedManifestCompiledBodyHandler: RootCompiledRpcBodyResultHandlerFor<
+  typeof requestTypedManifest
+> = requestTypedManifestCompiledBodyHandler;
+rootRequestTypedManifestCompiledBodyHandler(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+// @ts-expect-error compiled body handler aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
+  typeof requestTypedManifest,
+  Request
+> = requestTypedManifestCompiledBodyHandler;
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
