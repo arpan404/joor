@@ -252,7 +252,7 @@ export type CompiledRpcRouteUnaryBodyResultHandlerFor<
 
 export type CompiledRpcUnaryRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest, TRequest>;
 
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
@@ -265,7 +265,7 @@ export type CompiledRpcRouteStreamBodyResultHandlerFor<
 
 export type CompiledRpcStreamRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest, TRequest>;
 
 type CompiledHookBody<TConfig> = TConfig extends {

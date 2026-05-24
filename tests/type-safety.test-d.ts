@@ -2891,6 +2891,18 @@ requestTypedManifestCompiledRouteUnaryBodyHandler(
   new Request('https://example.com/rpc'),
   { id: 'request.get', input: { id: '1' } }
 );
+const requestTypedManifestCompiledUnaryRouteBodyHandler: CompiledRpcUnaryRouteBodyResultHandlerFor<
+  typeof requestTypedManifest
+> = requestTypedManifestCompiledRouteUnaryBodyHandler;
+requestTypedManifestCompiledUnaryRouteBodyHandler(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+requestTypedManifestCompiledUnaryRouteBodyHandler(
+  // @ts-expect-error compiled unary-route body aliases default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
 const rootRequestTypedManifestCompiledBodyHandler: RootCompiledRpcBodyResultHandlerFor<
   typeof requestTypedManifest
 > = requestTypedManifestCompiledBodyHandler;
