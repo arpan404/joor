@@ -86,7 +86,7 @@ export interface RpcManifest<
     ProcedureRuntime
   >,
 > {
-  procedures: TProcedures;
+  readonly procedures: TProcedures;
 }
 
 export type RpcManifestRoutes<TManifest extends RpcManifest> =
@@ -414,9 +414,9 @@ type RpcManifestRouteProtocolRequestFor<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest>,
 > = {
-  id: TId;
-  input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]> & JsonValue;
-  traceId?: string;
+  readonly id: TId;
+  readonly input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]> & JsonValue;
+  readonly traceId?: string;
 };
 
 export type RpcManifestRouteProtocolRequest<
@@ -507,7 +507,7 @@ export type RpcManifestRouteBatchRequest<
   TRequests extends
     readonly RpcManifestRouteBatchRequestUnion<TManifest>[] =
       readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
-> = TRequests;
+> = Readonly<TRequests>;
 
 export type RpcManifestRouteUnaryBatchRequest<
   TManifest extends RpcManifest,
@@ -521,7 +521,7 @@ export type RpcManifestRouteProtocolBatchRequest<
   TRequests extends
     readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
       readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
-> = 'headers' extends keyof TRequests[number] ? never : TRequests;
+> = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
 
 export type RpcManifestRouteUnaryProtocolBatchRequest<
   TManifest extends RpcManifest,
@@ -562,7 +562,7 @@ export type RpcManifestRouteBatchResults<
   TRequests extends readonly RpcManifestRouteBatchRequestUnion<TManifest>[] =
     readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
 > = {
-  [TIndex in keyof TRequests]: RpcManifestRouteBatchResultFor<
+  readonly [TIndex in keyof TRequests]: RpcManifestRouteBatchResultFor<
     TManifest,
     TRequests[TIndex]
   >;
@@ -656,13 +656,13 @@ type RpcManifestOptionalHeaderKeys<THeaders extends object> = keyof {
 };
 
 type RpcManifestRequiredHeaderFields<THeaders extends object> = {
-  [TKey in keyof THeaders as TKey extends RpcManifestOptionalHeaderKeys<THeaders>
+  readonly [TKey in keyof THeaders as TKey extends RpcManifestOptionalHeaderKeys<THeaders>
     ? never
     : TKey]: THeaders[TKey];
 };
 
 type RpcManifestOptionalHeaderFields<THeaders extends object> = {
-  [TKey in RpcManifestOptionalHeaderKeys<THeaders>]?:
+  readonly [TKey in RpcManifestOptionalHeaderKeys<THeaders>]?:
     | THeaders[TKey]
     | undefined;
 };
@@ -721,8 +721,8 @@ export type RpcManifestRouteRequestOptions<
   ProcedureRequiresHeaders<
     RpcManifestRouteProcedure<TManifest, TId>
   > extends false
-    ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
-    : { headers: RpcManifestRouteClientHeaders<TManifest, TId> };
+    ? { readonly headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
+    : { readonly headers: RpcManifestRouteClientHeaders<TManifest, TId> };
 
 export type RpcManifestRouteUnaryRequestOptions<
   TManifest extends RpcManifest,
@@ -739,11 +739,11 @@ type RpcManifestRouteClientArgsFor<
   TId extends RpcManifestRouteId<TManifest>,
 > =
   RpcManifestRouteRequiresHeaders<TManifest, TId> extends false
-    ? [
+    ? readonly [
         input: RpcManifestRouteInput<TManifest, TId>,
         options?: RpcManifestRouteRequestOptions<TManifest, TId>,
       ]
-    : [
+    : readonly [
         input: RpcManifestRouteInput<TManifest, TId>,
         options: RpcManifestRouteRequestOptions<TManifest, TId>,
       ];
@@ -769,11 +769,11 @@ type RpcManifestRouteRequestFor<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest>,
 > = {
-  id: TId;
-  input: RpcManifestRouteInput<TManifest, TId>;
+  readonly id: TId;
+  readonly input: RpcManifestRouteInput<TManifest, TId>;
 } & (RpcManifestRouteRequiresHeaders<TManifest, TId> extends false
-  ? { headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
-  : { headers: RpcManifestRouteClientHeaders<TManifest, TId> });
+  ? { readonly headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
+  : { readonly headers: RpcManifestRouteClientHeaders<TManifest, TId> });
 
 export type RpcManifestRouteRequest<
   TManifest extends RpcManifest,

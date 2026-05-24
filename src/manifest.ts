@@ -119,11 +119,11 @@ export type JoorRouteMap = Record<string, ProcedureRuntime>;
 
 export type JoorManifest<TProcedures extends JoorRouteMap = JoorRouteMap> =
   Omit<RpcManifest, 'procedures'> & {
-    procedures: TProcedures;
+    readonly procedures: TProcedures;
   };
 
 export type JoorManifestRoutes<TManifest> = TManifest extends {
-  procedures: infer TProcedures extends JoorRouteMap;
+  readonly procedures: infer TProcedures extends JoorRouteMap;
 }
   ? TProcedures
   : never;

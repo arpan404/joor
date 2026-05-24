@@ -6889,6 +6889,8 @@ defineManifest({ procedures: { broken: { input: t.string() } } });
 
 const publicManifest: RpcManifest = manifest;
 publicManifest.procedures['users.get'];
+// @ts-expect-error public manifests expose readonly procedure maps.
+publicManifest.procedures = {};
 const typedPublicManifest: RpcManifest<ManifestRoutes> = manifest;
 typedPublicManifest.procedures['users.get'].output;
 type PublicManifestRoutes = RpcManifestRoutes<typeof manifest>;
@@ -7163,6 +7165,8 @@ const publicManifestRouteClientHeaders: RpcManifestRouteClientHeaders<
   typeof manifest,
   'users.get'
 > = { 'x-tenant-id': 'tenant-1', authorization: undefined };
+// @ts-expect-error public manifest client headers are readonly.
+publicManifestRouteClientHeaders['x-tenant-id'] = 'tenant-2';
 const defaultPublicManifestRouteClientHeaders: RpcManifestRouteClientHeaders<
   typeof manifest
 > = publicManifestRouteClientHeaders;
@@ -7187,6 +7191,8 @@ const publicManifestRouteRequestOptions: RpcManifestRouteRequestOptions<
   typeof manifest,
   'users.get'
 > = { headers: publicManifestRouteClientHeaders };
+// @ts-expect-error public manifest route request options are readonly.
+publicManifestRouteRequestOptions.headers = publicManifestRouteClientHeaders;
 const defaultPublicManifestRouteRequestOptions: RpcManifestRouteRequestOptions<
   typeof manifest
 > = publicManifestRouteRequestOptions;
@@ -7232,6 +7238,8 @@ const publicManifestRouteClientArgs: RpcManifestRouteClientArgs<
   typeof manifest,
   'users.get'
 > = [{ id: '1' }, publicManifestRouteRequestOptions];
+// @ts-expect-error public manifest route client args are readonly tuples.
+publicManifestRouteClientArgs[0] = { id: '2' };
 const defaultPublicManifestRouteClientArgs: RpcManifestRouteClientArgs<
   typeof manifest
 > = publicManifestRouteClientArgs;
@@ -7381,6 +7389,8 @@ const publicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
 > = { id: 'users.get', input: { id: '1' } };
+// @ts-expect-error public manifest protocol request ids are readonly.
+publicManifestProtocolRequest.id = 'users.authenticated';
 const defaultPublicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
   typeof manifest
 > = publicManifestProtocolRequest;
@@ -7410,6 +7420,10 @@ const publicManifestRouteRequest: RpcManifestRouteRequest<
   typeof manifest,
   'users.get'
 > = manifestRouteRequest;
+// @ts-expect-error public manifest route request ids are readonly.
+publicManifestRouteRequest.id = 'users.authenticated';
+// @ts-expect-error public manifest route request headers are readonly.
+publicManifestRouteRequest.headers = publicManifestRouteClientHeaders;
 const defaultPublicManifestRouteRequest: RpcManifestRouteRequest<
   typeof manifest
 > = publicManifestRouteRequest;
@@ -7624,6 +7638,8 @@ const publicManifestBatchRequest: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+// @ts-expect-error public manifest route batches are readonly tuples.
+publicManifestBatchRequest[0] = publicManifestUnaryProtocolRequest;
 const publicManifestBatchRequestWithPending: RpcManifestRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestRouteRequest]
@@ -7638,6 +7654,9 @@ const publicManifestRouteProtocolBatchRequest: RpcManifestRouteProtocolBatchRequ
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
+// @ts-expect-error public manifest protocol batches are readonly tuples.
+publicManifestRouteProtocolBatchRequest[0] =
+  publicManifestUnaryProtocolRequest;
 const publicManifestProtocolBatchRequest: RpcManifestProtocolBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
@@ -7686,6 +7705,8 @@ const publicManifestBatchResults: RpcManifestRouteBatchResults<
   typeof manifest,
   readonly [typeof publicManifestRouteRequest]
 > = [manifestRouteEnvelope];
+// @ts-expect-error public manifest route batch results are readonly tuples.
+publicManifestBatchResults[0] = manifestRouteEnvelope;
 const publicManifestUnaryRouteBatchResults: RpcManifestUnaryRouteBatchResults<
   typeof manifest,
   readonly [typeof publicManifestUnaryRouteRequest]
