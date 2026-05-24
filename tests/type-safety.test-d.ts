@@ -14198,6 +14198,8 @@ runtimeSubpathTypedCloudflareWorker.fetch(
     },
   }
 );
+// @ts-expect-error typed Cloudflare workers are not assignable to plain fetch-only workers.
+const _wrongCloudflareWorker: CloudflareWorker = typedCloudflareWorker;
 const cloudflareFetchOptions: CloudflareFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -15081,6 +15083,8 @@ typedVercelFunction.fetch(appFetchRequest);
 runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 hookTypedVercelFunction.fetch(hookAppRequest);
 directHookTypedVercelFunction.fetch(hookAppRequest);
+// @ts-expect-error request-typed Vercel functions are not assignable to plain functions.
+const _wrongVercelFunction: VercelFunction = hookTypedVercelFunction;
 // @ts-expect-error direct typed Vercel fetch factories infer custom hook request types.
 directHookTypedVercelFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error direct typed Vercel functions infer custom hook request types.
