@@ -99,6 +99,50 @@ export type JoorConfigRequest<TConfig> =
     ? Request
     : HandlerOptionsRequest<TConfig>;
 
+type FreezableConfig = {
+  readonly plugins?: readonly JoorPlugin<object>[];
+  readonly middleware?: readonly unknown[];
+  readonly cors?: {
+    readonly origin?: string;
+    readonly headers?: readonly string[];
+    readonly methods?: readonly string[];
+  };
+  readonly cache?: object;
+  readonly rateLimit?: object;
+};
+
+const freezeConfig = <TConfig extends FreezableConfig>(
+  config: TConfig
+): TConfig =>
+  Object.freeze({
+    ...config,
+    ...(config.plugins === undefined
+      ? {}
+      : { plugins: Object.freeze([...config.plugins]) }),
+    ...(config.middleware === undefined
+      ? {}
+      : { middleware: Object.freeze([...config.middleware]) }),
+    ...(config.cors === undefined
+      ? {}
+      : {
+          cors: Object.freeze({
+            ...config.cors,
+            ...(config.cors.headers === undefined
+              ? {}
+              : { headers: Object.freeze([...config.cors.headers]) }),
+            ...(config.cors.methods === undefined
+              ? {}
+              : { methods: Object.freeze([...config.cors.methods]) }),
+          }),
+        }),
+    ...(config.cache === undefined
+      ? {}
+      : { cache: Object.freeze({ ...config.cache }) }),
+    ...(config.rateLimit === undefined
+      ? {}
+      : { rateLimit: Object.freeze({ ...config.rateLimit }) }),
+  }) as TConfig;
+
 export function defineConfig<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   TBody = unknown,
@@ -107,7 +151,7 @@ export function defineConfig<
   config: JoorConfig<TPlugins, TBody, TRequest>
 ): JoorConfig<TPlugins, TBody, TRequest>;
 export function defineConfig(config: JoorConfig): JoorConfig {
-  return config;
+  return freezeConfig(config);
 }
 
 export type DefineConfigFor<TManifest extends RpcManifest> = <
@@ -151,5 +195,5 @@ export function defineConfigFor<
 export function defineConfigFor<TManifest extends RpcManifest>(
   _manifest?: TManifest
 ): DefineConfigFor<TManifest> {
-  return ((config) => config) as DefineConfigFor<TManifest>;
+  return ((config) => freezeConfig(config)) as DefineConfigFor<TManifest>;
 }

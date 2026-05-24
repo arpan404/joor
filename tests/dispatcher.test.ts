@@ -8,6 +8,7 @@ import {
   createJoorHandler,
   createPlugin,
   defineConfig,
+  defineConfigFor,
   defineManifest,
   defineProcedure,
   t,
@@ -62,6 +63,55 @@ describe('dispatcher', () => {
     expect(Object.isFrozen(source.procedures)).toBe(false);
     expect(defined.procedures['users.get']).toBe(getUser);
     expect(defined.procedures['posts.list']).toBe(listPosts);
+  });
+
+  it('freezes defined configs and option collections', () => {
+    const auditPlugin = createPlugin({
+      name: 'audit',
+      setup() {
+        return {};
+      },
+    });
+    const middleware = [{ name: 'audit' }] as const;
+    const source = {
+      entry: './rpc',
+      outDir: './.joor',
+      plugins: [auditPlugin] as const,
+      middleware,
+      cors: {
+        origin: 'https://example.com',
+        headers: ['x-trace-id'] as const,
+        methods: ['POST'] as const,
+      },
+      cache: { maxEntries: 10 },
+      rateLimit: { trustProxy: true, maxEntries: 50 },
+    };
+    const defined = defineConfig(source);
+    const manifestAware = defineConfigFor({ procedures: {} })({
+      plugins: [auditPlugin] as const,
+    });
+
+    expect(defined).not.toBe(source);
+    expect(defined.plugins).not.toBe(source.plugins);
+    expect(defined.middleware).not.toBe(source.middleware);
+    expect(defined.cors).not.toBe(source.cors);
+    expect(defined.cors?.headers).not.toBe(source.cors.headers);
+    expect(defined.cors?.methods).not.toBe(source.cors.methods);
+    expect(defined.cache).not.toBe(source.cache);
+    expect(defined.rateLimit).not.toBe(source.rateLimit);
+    expect(Object.isFrozen(defined)).toBe(true);
+    expect(Object.isFrozen(defined.plugins)).toBe(true);
+    expect(Object.isFrozen(defined.middleware)).toBe(true);
+    expect(Object.isFrozen(defined.cors)).toBe(true);
+    expect(Object.isFrozen(defined.cors?.headers)).toBe(true);
+    expect(Object.isFrozen(defined.cors?.methods)).toBe(true);
+    expect(Object.isFrozen(defined.cache)).toBe(true);
+    expect(Object.isFrozen(defined.rateLimit)).toBe(true);
+    expect(Object.isFrozen(source)).toBe(false);
+    expect(Object.isFrozen(source.plugins)).toBe(false);
+    expect(Object.isFrozen(source.middleware)).toBe(false);
+    expect(Object.isFrozen(manifestAware)).toBe(true);
+    expect(Object.isFrozen(manifestAware.plugins)).toBe(true);
   });
 
   it('handles unary success', async () => {
