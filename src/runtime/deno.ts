@@ -45,7 +45,8 @@ export interface DenoServeOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TRequest extends Request = Request,
-> extends HandlerOptions<TPlugins, unknown, TRequest> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody, TRequest> {
   port?: number;
   hostname?: string;
 }
@@ -63,7 +64,7 @@ export type DenoServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
   TRequest extends Request = Request,
-> = DenoServeOptions<TPlugins, TRequest> &
+> = DenoServeOptions<TPlugins, TRequest, TBody> &
   HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DenoRouteUnaryServeOptionsFor<
@@ -307,9 +308,9 @@ export type DenoServeOptionsArgs<
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  DenoServeOptions<TPlugins, TRequest>,
+  DenoServeOptions<TPlugins, TRequest, TBody>,
   TBody,
-  DenoServeOptions<TPlugins, TRequest> &
+  DenoServeOptions<TPlugins, TRequest, TBody> &
     HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
   TRequest
 >;

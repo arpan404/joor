@@ -44,7 +44,8 @@ export interface BunServeOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TRequest extends Request = Request,
-> extends HandlerOptions<TPlugins, unknown, TRequest> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody, TRequest> {
   port?: number;
   hostname?: string;
 }
@@ -64,7 +65,7 @@ export type BunServeOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
   TRequest extends Request = Request,
-> = BunServeOptions<TPlugins, TRequest> &
+> = BunServeOptions<TPlugins, TRequest, TBody> &
   HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunRouteUnaryServeOptionsFor<
@@ -308,9 +309,9 @@ export type BunServeOptionsArgs<
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  BunServeOptions<TPlugins, TRequest>,
+  BunServeOptions<TPlugins, TRequest, TBody>,
   TBody,
-  BunServeOptions<TPlugins, TRequest> &
+  BunServeOptions<TPlugins, TRequest, TBody> &
     HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
   TRequest
 >;

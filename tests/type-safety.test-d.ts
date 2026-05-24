@@ -8386,6 +8386,10 @@ const exactBunServeOptions: BunServeOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const exactBunServeOptionsBody: HandlerOptionsBody<
+  typeof exactBunServeOptions
+> = manifestRouteRequest;
+exactBunServeOptionsBody.input.id.toUpperCase();
 const exactBunFetchOptions: BunFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -8417,6 +8421,11 @@ const requestTypedBunServeOptions: BunServeOptionsFor<
 exactBunServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
+);
+exactBunServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error exact Bun serve options preserve route-specific hook bodies.
+  manifestStreamRouteHandlerHookContext
 );
 exactBunFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -8820,6 +8829,10 @@ const exactDenoServeOptions: DenoServeOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactBunServeOptions;
+const exactDenoServeOptionsBody: HandlerOptionsBody<
+  typeof exactDenoServeOptions
+> = manifestRouteRequest;
+exactDenoServeOptionsBody.input.id.toUpperCase();
 const exactDenoFetchOptions: DenoFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -8845,6 +8858,11 @@ const requestTypedDenoRpcRequestHandlerOptions: DenoRpcRequestHandlerOptionsFor<
 exactDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
+);
+exactDenoServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error exact Deno serve options preserve route-specific hook bodies.
+  manifestStreamRouteHandlerHookContext
 );
 exactDenoFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -9321,6 +9339,10 @@ const exactStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactDenoServeOptions;
+const exactStandaloneDenoServeOptionsBody: HandlerOptionsBody<
+  typeof exactStandaloneDenoServeOptions
+> = manifestRouteRequest;
+exactStandaloneDenoServeOptionsBody.input.id.toUpperCase();
 const requestTypedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -9341,6 +9363,11 @@ const requestTypedStandaloneDenoRpcRequestHandlerOptions: StandaloneDenoRpcReque
 exactStandaloneDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
+);
+exactStandaloneDenoServeOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error exact standalone Deno serve options preserve route-specific hook bodies.
+  manifestStreamRouteHandlerHookContext
 );
 exactStandaloneDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
