@@ -5479,8 +5479,14 @@ const clientRequestFactoryArgs: ClientRequestFactoryArgs = {
   body: { id: 'users.get', input: { id: '1' } },
   headers: new Headers(),
 };
+// @ts-expect-error client request factory URLs are readonly.
+clientRequestFactoryArgs.url = '/v2/rpc';
+// @ts-expect-error client request factory bodies are readonly.
+clientRequestFactoryArgs.body = { id: 'users.list' };
 const rpcSubpathClientRequestFactoryArgs: RpcSubpathClientRequestFactoryArgs =
   clientRequestFactoryArgs;
+// @ts-expect-error client request factory headers are readonly across subpath exports.
+rpcSubpathClientRequestFactoryArgs.headers = new Headers();
 const typedClientRequestFactory: ClientRequestFactory<ClientAppRequest> = ({
   url,
   body,
@@ -17965,6 +17971,10 @@ const protocolRequestOptions: RpcProtocolRequestOptions = {
 const rpcSubpathProtocolRequestOptions: RpcSubpathProtocolRequestOptions =
   protocolRequestOptions;
 rpcSubpathProtocolRequestOptions.traceId?.toUpperCase();
+// @ts-expect-error protocol request trace ids are readonly.
+protocolRequestOptions.traceId = 'trace-2';
+// @ts-expect-error protocol request trace ids are readonly across subpath exports.
+rpcSubpathProtocolRequestOptions.traceId = 'trace-3';
 const standaloneRouteProtocolRequest = createRouteProtocolRequest<
   Routes,
   'users.get'

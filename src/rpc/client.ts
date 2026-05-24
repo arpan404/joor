@@ -54,11 +54,11 @@ export type ClientFetch<TRequest extends Request = Request> = (
 ) => Response | Promise<Response>;
 
 export interface ClientRequestFactoryArgs {
-  url: string;
-  body: JsonValue;
-  headers: Headers;
-  baseRequest?: ClientRequestInit | undefined;
-  request?: ClientRequestInit | undefined;
+  readonly url: string;
+  readonly body: JsonValue;
+  readonly headers: Headers;
+  readonly baseRequest?: ClientRequestInit | undefined;
+  readonly request?: ClientRequestInit | undefined;
 }
 
 export type ClientRequestFactory<TRequest extends Request = Request> = (
@@ -607,7 +607,7 @@ export type RpcStreamRouteProtocolRequest<
 > = RpcRouteStreamProtocolRequest<TRoutes, TId>;
 
 export interface RpcProtocolRequestOptions {
-  traceId?: string;
+  readonly traceId?: string;
 }
 
 const createProtocolRequestObject = <TId extends string>(
