@@ -488,25 +488,25 @@ export type NativeRouteUnaryBody =
 export type NativeUnaryRouteBody = NativeRouteUnaryBody;
 export type NativeRouteStreamBody = NativeRouteStreamProtocolRequestUnion;
 export type NativeStreamRouteBody = NativeRouteStreamBody;
-export type NativeConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   JoorConfigFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeConfig<TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   JoorRouteUnaryConfigFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryConfig<TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryConfig<TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryConfigFor<TPlugins, TBody, TRequest>;
-export type NativeRouteStreamConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   JoorRouteStreamConfigFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteStreamConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamConfig<TPlugins, TBody, TRequest>;
-export type NativeStreamRouteConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteConfig<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamConfig<TPlugins, TBody, TRequest>;
-export type NativeStreamRouteConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamConfigFor<TPlugins, TBody, TRequest>;
 export type NativeConfigBody<TConfig> = JoorConfigBody<TConfig>;
 export type NativeConfigManifest<TConfig> = JoorConfigManifest<TConfig>;
@@ -517,37 +517,37 @@ export type NativeDefineRouteUnaryConfig = DefineRouteUnaryConfigFor<NativeManif
 export type NativeDefineUnaryRouteConfig = NativeDefineRouteUnaryConfig;
 export type NativeDefineRouteStreamConfig = DefineRouteStreamConfigFor<NativeManifest>;
 export type NativeDefineStreamRouteConfig = NativeDefineRouteStreamConfig;
-export type NativeHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   HandlerOptionsFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeHandlerOptions<TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteUnaryHandlerOptionsFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryHandlerOptions<TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryHandlerOptions<TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryHandlerOptionsFor<TPlugins, TBody, TRequest>;
-export type NativeRouteStreamHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteStreamHandlerOptionsFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteStreamHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerOptions<TPlugins, TBody, TRequest>;
-export type NativeStreamRouteHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteHandlerOptions<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerOptions<TPlugins, TBody, TRequest>;
-export type NativeStreamRouteHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteHandlerOptionsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerOptionsFor<TPlugins, TBody, TRequest>;
-export type NativeHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   HandlerOptionsArgs<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeHandlerOptionsArgsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TOptionsOrBody extends NativeHandlerOptions<TPlugins> | NativeBody = NativeHandlerOptions<TPlugins, NativeBody>, TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeHandlerOptionsArgsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TOptionsOrBody extends NativeHandlerOptions<TPlugins> | NativeBody = NativeHandlerOptions<TPlugins, NativeBody>, TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   HandlerOptionsArgsFor<NativeManifest, TPlugins, TOptionsOrBody, TBody, NativeHandlerOptions<TPlugins, TBody, TRequest>, TRequest>;
-export type NativeRouteUnaryHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteUnaryHandlerOptionsArgs<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryHandlerOptionsArgs<TPlugins, TBody, TRequest>;
-export type NativeRouteStreamHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteStreamHandlerOptionsArgs<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeStreamRouteHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteHandlerOptionsArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerOptionsArgs<TPlugins, TBody, TRequest>;
 export type NativeDefineHandlerOptions = DefineHandlerOptions<NativeManifest>;
 export type NativeDefineRouteUnaryHandlerOptions = DefineRouteUnaryHandlerOptions<NativeManifest>;
@@ -564,25 +564,25 @@ export type NativeRouteStreamHandlerHookContext<TPlugins extends readonly JoorPl
   RpcManifestRouteStreamHandlerHookContextFor<NativeManifest, TPlugins, TBody>;
 export type NativeStreamRouteHandlerHookContext<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody> =
   NativeRouteStreamHandlerHookContext<TPlugins, TBody>;
-export type NativeHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   HandlerHooksFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteUnaryHandlerHooksFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryHandlerHooks<TPlugins, TBody, TRequest>;
-export type NativeRouteStreamHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteStreamHandlerHooksFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeStreamRouteHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteHandlerHooks<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerHooks<TPlugins, TBody, TRequest>;
-export type NativeMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends Request = Request> =
+export type NativeMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   JoorMiddlewareFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeRouteUnaryMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeRouteUnaryMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteUnaryMiddlewareFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeUnaryRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends Request = Request> =
+export type NativeUnaryRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteUnaryMiddleware<TPlugins, TBody, TRequest>;
-export type NativeRouteStreamMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeRouteStreamMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   RpcManifestRouteStreamMiddlewareFor<NativeManifest, TPlugins, TBody, TRequest>;
-export type NativeStreamRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
+export type NativeStreamRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamMiddleware<TPlugins, TBody, TRequest>;
 export type NativeHandlerOptionServices<TOptions> = HandlerOptionServices<TOptions>;
 export type NativeHandlerOptionsServices<TOptions> = HandlerOptionsServices<TOptions>;

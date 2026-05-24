@@ -1005,7 +1005,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       );
       await writeFile(
         usageFile,
-        `import { createFetchFor, fetch, nativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
+        `import { createFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
 import { createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
 import { createWorkerFor, worker } from './cloudflare.js';
 import { createHandlersFor, handlers, GET } from './next.js';
@@ -1024,6 +1024,42 @@ const requiredRequest: NativeRequiredRuntimeRequest = appRequest;
 requiredRequest.requestId.toUpperCase();
 const runtimeRequiredRequest: RuntimeRequiredRuntimeRequest = appRequest;
 runtimeRequiredRequest.requestId.toUpperCase();
+const nativeHandlerOptions: NativeHandlerOptions = {};
+const nativeHandlerOptionsRequest: NativeHandlerOptionsRequest<
+  typeof nativeHandlerOptions
+> = appRequest;
+nativeHandlerOptionsRequest.requestId.toUpperCase();
+const _broadNativeHandlerOptions = {} as NativeHandlerOptions<
+  readonly [],
+  NativeBody,
+  // @ts-expect-error generated native handler option type parameters must satisfy the manifest request subtype.
+  Request
+>;
+const nativeHandlerHooks: NativeHandlerHooks = {
+  beforeRequest(request) {
+    request.requestId.toUpperCase();
+    return undefined;
+  },
+};
+nativeHandlerHooks.beforeRequest?.(appRequest, { services: {} });
+nativeHandlerHooks.beforeRequest?.(
+  // @ts-expect-error generated native handler hooks default to the manifest request subtype.
+  plainRequest,
+  { services: {} }
+);
+const nativeMiddleware: NativeMiddleware = {
+  name: 'request-audit',
+  beforeRequest(request) {
+    request.requestId.toUpperCase();
+    return undefined;
+  },
+};
+nativeMiddleware.beforeRequest?.(appRequest, { services: {} });
+nativeMiddleware.beforeRequest?.(
+  // @ts-expect-error generated native middleware defaults to the manifest request subtype.
+  plainRequest,
+  { services: {} }
+);
 
 const nativeHandler: NativeFetchHandler = fetch;
 nativeHandler(appRequest);
