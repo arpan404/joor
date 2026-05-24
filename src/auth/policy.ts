@@ -92,10 +92,10 @@ export interface DefineAuthPolicy {
   >(
     policy: AuthPolicy<TServices, THeaders, TAuth, TRequest>
   ): AuthPolicy<TServices, THeaders, TAuth, TRequest>;
-  withContext<
+  readonly withContext: <
     TNextServices extends object,
     TNextRequest extends Request = Request,
-  >(): DefineContextAuthPolicy<TNextServices, TNextRequest>;
+  >() => DefineContextAuthPolicy<TNextServices, TNextRequest>;
 }
 
 const createDefineAuthPolicy = (): DefineAuthPolicy => {

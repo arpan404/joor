@@ -3358,6 +3358,11 @@ const authPolicy = createAuthPolicy<
 });
 // @ts-expect-error auth policy names are readonly.
 authPolicy.name = 'other-session';
+// @ts-expect-error auth policy context builders are readonly.
+createAuthPolicy.withContext = <
+  TNextServices extends object,
+  TNextRequest extends Request = Request,
+>() => createAuthPolicy.withContext<TNextServices, TNextRequest>();
 const requestTypedAuthPolicy = createAuthPolicy<
   Services,
   Record<string, never>,
