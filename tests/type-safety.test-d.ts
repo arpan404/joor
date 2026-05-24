@@ -2666,6 +2666,58 @@ const _wrongRequestTypedManifestDenoFetchOptions: DenoFetchOptionsFor<
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestNodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestNodeRpcRequestHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestNodeRpcRequestHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestNodeRpcRequestHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathNodeRpcRequestHandlerOptions: RuntimeSubpathNodeRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestNodeRpcRequestHandlerOptions;
+requestTypedManifestRuntimeSubpathNodeRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestNodeListenOptions: NodeListenOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  port: 3000,
+};
+const requestTypedManifestNodeListenOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestNodeListenOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestNodeListenOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathNodeListenOptions: RuntimeSubpathNodeListenOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestNodeListenOptions;
+requestTypedManifestRuntimeSubpathNodeListenOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestNodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestNodeRpcRequestHandlerOptions, '127.0.0.1'];
+requestTypedManifestNodeRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+// @ts-expect-error Node option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestNodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
