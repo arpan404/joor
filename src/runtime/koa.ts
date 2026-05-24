@@ -16,16 +16,27 @@ export interface KoaContext<
   TRequest extends IncomingMessage = IncomingMessage,
   TResponse extends ServerResponse<TRequest> = ServerResponse<TRequest>,
 > {
+  readonly __types?: (
+    request: TRequest,
+    response: TResponse
+  ) => readonly [TRequest, TResponse];
   req: TRequest;
   res: TResponse;
   originalUrl?: string;
   respond?: boolean;
 }
 
+type KoaContextLike = {
+  req: IncomingMessage;
+  res: ServerResponse;
+  originalUrl?: string;
+  respond?: boolean;
+};
+
 export type KoaNext = () => unknown | Promise<unknown>;
 
 export type KoaMiddleware<
-  TContext extends KoaContext = KoaContext,
+  TContext extends KoaContextLike = KoaContext,
   TNext extends KoaNext = KoaNext,
 > = (
   context: TContext,
@@ -185,7 +196,7 @@ export function createKoaHandler<TManifest extends JoorManifest>(
 
 export const createKoaHandlerFor =
   <
-    TContext extends KoaContext = KoaContext,
+    TContext extends KoaContextLike = KoaContext,
     TNext extends KoaNext = KoaNext,
   >() =>
   <

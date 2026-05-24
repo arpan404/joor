@@ -15811,11 +15811,11 @@ const typedKoaMiddleware: KoaMiddleware<KoaAppContext, KoaAppNext> =
   createTypedKoaHandler(manifest, koaHandlerOptions);
 const createRuntimeSubpathTypedKoaHandler =
   createRuntimeSubpathKoaHandlerFor<
-    RuntimeSubpathKoaContext & KoaAppContext,
+    RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
     RuntimeSubpathKoaNext & KoaAppNext
   >();
 const runtimeSubpathTypedKoaMiddleware: RuntimeSubpathKoaMiddleware<
-  RuntimeSubpathKoaContext & KoaAppContext,
+  RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
   RuntimeSubpathKoaNext & KoaAppNext
 > = createRuntimeSubpathTypedKoaHandler(
   manifest,
@@ -15826,6 +15826,8 @@ const koaAppNext: KoaAppNext = async () => 'ok';
 koaAppContext.state.userId.toUpperCase();
 koaAppContext.req.userId.toUpperCase();
 koaAppContext.res.locals.requestId.toUpperCase();
+// @ts-expect-error request-typed Koa contexts are not assignable to plain request contexts.
+const _wrongKoaAppContext: KoaContext = koaAppContext;
 koaMiddleware(koaContext, koaNext);
 syncKoaMiddleware(koaContext, syncKoaNext);
 runtimeSubpathKoaMiddleware(koaContext, koaNext);
