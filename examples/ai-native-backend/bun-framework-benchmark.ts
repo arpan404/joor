@@ -1,4 +1,5 @@
 import { performance } from 'node:perf_hooks';
+import { Elysia } from 'elysia';
 import { Hono } from 'hono';
 import type { Context } from 'hono';
 import { build } from '../../src/compiler/build.js';
@@ -62,6 +63,7 @@ const user: UserDto = {
 
 const payload = JSON.stringify({
   id: 'users.get',
+  traceId: 'benchmark',
   input: {
     id: user.id,
   },
@@ -70,11 +72,15 @@ const payload = JSON.stringify({
 const authHeader = 'Bearer benchmark-token';
 const outDir = new URL('./.joor', import.meta.url).pathname;
 const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
+const bareOutDir = new URL('./.joor-bare', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
 const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
   .pathname;
+const bareConfigPath = new URL('./joor.bare.config.ts', import.meta.url)
+  .pathname;
 const compiledBunUrl = new URL('./.joor/bun.ts', import.meta.url).href;
 const trustedBunUrl = new URL('./.joor-trusted/bun.ts', import.meta.url).href;
+const bareBunUrl = new URL('./.joor-bare/bun.ts', import.meta.url).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -169,6 +175,17 @@ const startHono = (): RunningServer => {
   };
   app.post('/rpc', route);
   return serve((request) => app.fetch(request));
+};
+
+const startElysia = (): RunningServer => {
+  const app = new Elysia().post('/rpc', async ({ request }) => {
+    const body = parseJson(await request.text());
+    if (!isRpcBody(body)) {
+      return jsonResponse({ ok: false, id: '', traceId: 'benchmark' });
+    }
+    return jsonResponse(createRpcResponse(body));
+  });
+  return serve((request) => app.handle(request));
 };
 
 const createRequest = (body: string): Request =>
@@ -289,7 +306,14 @@ try {
       start: async () =>
         await startJoor(trustedConfigPath, trustedOutDir, trustedBunUrl),
     },
+    {
+      name: 'joor bun bare',
+      body: payload,
+      start: async () =>
+        await startJoor(bareConfigPath, bareOutDir, bareBunUrl),
+    },
     { name: 'hono bun', body: payload, start: startHono },
+    { name: 'elysia bun', body: payload, start: startElysia },
   ];
 
   for (const entry of entries) {

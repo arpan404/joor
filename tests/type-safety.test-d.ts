@@ -14433,6 +14433,10 @@ runtimeSubpathTypedCloudflareWorker.fetch(
     },
   }
 );
+// @ts-expect-error Cloudflare worker fetch handlers are readonly.
+typedCloudflareWorker.fetch = runtimeSubpathCloudflareWorkerFetch;
+// @ts-expect-error Cloudflare worker fetch handlers are readonly across subpath exports.
+runtimeSubpathTypedCloudflareWorker.fetch = runtimeSubpathCloudflareWorkerFetch;
 // @ts-expect-error typed Cloudflare workers are not assignable to plain fetch-only workers.
 const _wrongCloudflareWorker: CloudflareWorker = typedCloudflareWorker;
 const cloudflareFetchOptions: CloudflareFetchOptionsFor<
@@ -15380,6 +15384,10 @@ const expressStreamRouteHandlerOptions: ExpressStreamRouteHandlerOptionsFor<
   readonly [typeof usersPlugin]
 > = expressRouteStreamHandlerOptions;
 expressHandlerOptionsBase.plugins?.[0]?.name.toUpperCase();
+// @ts-expect-error Express adapter hostnames are readonly.
+expressHandlerOptionsBase.hostname = 'localhost';
+// @ts-expect-error Express adapter URL mode is readonly.
+expressHandlerOptionsBase.useOriginalUrl = false;
 runtimeSubpathExpressHandlerOptions.plugins?.[0]?.name.toUpperCase();
 exactExpressHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -15694,7 +15702,10 @@ createElysiaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Elysia adapter plugins.
 createTypedElysiaHandler(manifest);
 const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
+// @ts-expect-error Fastify adapter URL mode is readonly.
 fastifyHandlerOptionsBase.useOriginalUrl = false;
+// @ts-expect-error Fastify adapter hostnames are readonly.
+fastifyHandlerOptionsBase.hostname = 'localhost';
 const fastifyHandlerOptions: FastifyHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -15904,7 +15915,10 @@ createFastifyHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Fastify adapter plugins.
 createTypedFastifyHandler(manifest);
 const koaHandlerOptionsBase: KoaHandlerOptions = { hostname: 'app' };
+// @ts-expect-error Koa adapter URL mode is readonly.
 koaHandlerOptionsBase.useOriginalUrl = false;
+// @ts-expect-error Koa adapter hostnames are readonly.
+koaHandlerOptionsBase.hostname = 'localhost';
 const koaHandlerOptions: KoaHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]

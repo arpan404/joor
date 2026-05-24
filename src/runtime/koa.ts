@@ -49,8 +49,8 @@ export interface KoaHandlerOptions<
   TBody = unknown,
   TRequest extends Request = Request,
 > extends HandlerOptions<TPlugins, TBody, TRequest> {
-  hostname?: string;
-  useOriginalUrl?: boolean;
+  readonly hostname?: string;
+  readonly useOriginalUrl?: boolean;
 }
 
 export type KoaHandlerOptionsFor<

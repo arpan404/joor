@@ -11,6 +11,8 @@
       "!**/.joor",
       "!.joor-trusted",
       "!**/.joor-trusted",
+      "!.joor-bare",
+      "!**/.joor-bare",
       "!.cache",
       "!.turbo",
       "!.vercel",

@@ -70,11 +70,15 @@ const trpcPayload = JSON.stringify({
 const authHeader = 'Bearer benchmark-token';
 const outDir = new URL('./.joor', import.meta.url).pathname;
 const trustedOutDir = new URL('./.joor-trusted', import.meta.url).pathname;
+const bareOutDir = new URL('./.joor-bare', import.meta.url).pathname;
 const configPath = new URL('./joor.config.ts', import.meta.url).pathname;
 const trustedConfigPath = new URL('./joor.trusted.config.ts', import.meta.url)
   .pathname;
+const bareConfigPath = new URL('./joor.bare.config.ts', import.meta.url)
+  .pathname;
 const compiledNodeUrl = new URL('./.joor/node.ts', import.meta.url).href;
 const trustedNodeUrl = new URL('./.joor-trusted/node.ts', import.meta.url).href;
+const bareNodeUrl = new URL('./.joor-bare/node.ts', import.meta.url).href;
 
 const hasRpcInput = (value: JsonObject): value is RpcBody => {
   const input = value['input'];
@@ -418,6 +422,11 @@ try {
       body: payload,
       start: async () =>
         await startJoor(trustedConfigPath, trustedOutDir, trustedNodeUrl),
+    },
+    {
+      name: 'joor bare',
+      body: payload,
+      start: async () => await startJoor(bareConfigPath, bareOutDir, bareNodeUrl),
     },
     { name: 'express', body: payload, start: startExpress },
     { name: 'fastify', body: payload, start: startFastify },

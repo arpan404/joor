@@ -73,6 +73,7 @@ const authHeader = 'Bearer benchmark-token';
 const compiledFetchUrl = new URL('./.joor/dispatcher.ts', import.meta.url).href;
 const compiledDenoUrl = new URL('./.joor/deno.ts', import.meta.url).href;
 const trustedDenoUrl = new URL('./.joor-trusted/deno.ts', import.meta.url).href;
+const bareDenoUrl = new URL('./.joor-bare/deno.ts', import.meta.url).href;
 
 const isJsonObject = (value: JsonValue): value is JsonObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -269,6 +270,11 @@ try {
       name: 'joor deno native trusted',
       body: payload,
       start: async () => await startJoorDeno(trustedDenoUrl),
+    },
+    {
+      name: 'joor deno native bare',
+      body: payload,
+      start: async () => await startJoorDeno(bareDenoUrl),
     },
     { name: 'hono deno', body: payload, start: startHono },
   ];

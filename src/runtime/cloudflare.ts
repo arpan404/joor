@@ -43,7 +43,7 @@ export interface CloudflareWorker<
   TContext = never,
   TRequest extends Request = Request,
 > {
-  fetch: CloudflareWorkerFetch<TEnv, TContext, TRequest>;
+  readonly fetch: CloudflareWorkerFetch<TEnv, TContext, TRequest>;
 }
 
 export type CloudflareFetchOptionsFor<
