@@ -13875,6 +13875,9 @@ const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
       : {}),
   }),
 };
+// @ts-expect-error typed Next route contexts are not assignable to plain route contexts.
+const _wrongNextDynamicRouteContext: NextRouteContext =
+  runtimeSubpathNextDynamicRouteContext;
 const createTypedNextRouteHandlers = createNextRouteHandlersFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 >();

@@ -21,6 +21,7 @@ export type NextRouteParamValue = string | string[] | undefined;
 export type NextRouteParams = Record<string, NextRouteParamValue>;
 
 export interface NextRouteContext<TParams extends object = NextRouteParams> {
+  readonly __paramsType?: (params: TParams) => TParams;
   params: Promise<TParams>;
 }
 
