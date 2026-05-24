@@ -126,9 +126,32 @@ export function createJoorHandler<TManifest extends JoorManifest>(
   );
 }
 
-export const createJoorHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createJoorHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => JoorFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createJoorHandlerFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => JoorFetchHandler<TRequest>;
+export function createJoorHandlerFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -149,3 +172,4 @@ export const createJoorHandlerFor =
         TRequest
       >
     ) as JoorFetchHandler<TRequest>;
+}

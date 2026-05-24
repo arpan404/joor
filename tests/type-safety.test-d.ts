@@ -2187,6 +2187,27 @@ requestTypedManifestJoorHandler(
   // @ts-expect-error fetch handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
+const requestTypedManifestDefaultJoorHandlerFor = createJoorHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestJoorHandlerOptions
+);
+requestTypedManifestDefaultJoorHandlerFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultJoorHandlerFor(
+  // @ts-expect-error curried fetch handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultRuntimeSubpathJoorHandlerFor =
+  createRuntimeSubpathJoorHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestJoorHandlerOptions
+  );
+requestTypedManifestDefaultRuntimeSubpathJoorHandlerFor(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultRuntimeSubpathJoorHandlerFor(
+  // @ts-expect-error runtime subpath curried fetch handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error runtime fetch option aliases reject explicit request types that are too broad.
 const _wrongRequestTypedManifestJoorHandlerOptions: JoorHandlerOptionsFor<
   typeof requestTypedManifest,
@@ -2205,6 +2226,25 @@ requestTypedManifestRpcHandler(
   // @ts-expect-error RPC handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
+const requestTypedManifestDefaultRpcHandlerFor = createRpcHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestDefaultHandlerOptions
+);
+requestTypedManifestDefaultRpcHandlerFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultRpcHandlerFor(
+  // @ts-expect-error curried RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultRpcSubpathHandlerFor =
+  createRpcSubpathHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDefaultHandlerOptions
+  );
+requestTypedManifestDefaultRpcSubpathHandlerFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultRpcSubpathHandlerFor(
+  // @ts-expect-error RPC subpath curried handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
 const requestTypedManifestRpcBodyHandler = createRpcBodyHandler(
   requestTypedManifest,
   requestTypedManifestDefaultHandlerOptions
@@ -2218,6 +2258,34 @@ requestTypedManifestRpcBodyHandler(
   new Request('https://example.com/rpc'),
   { id: 'request.get', input: { id: '1' } }
 );
+const requestTypedManifestDefaultRpcBodyHandlerFor =
+  createRpcBodyHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDefaultHandlerOptions
+  );
+requestTypedManifestDefaultRpcBodyHandlerFor(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestDefaultRpcBodyHandlerFor(
+  // @ts-expect-error curried RPC body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestDefaultRpcSubpathBodyHandlerFor =
+  createRpcSubpathBodyHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDefaultHandlerOptions
+  );
+requestTypedManifestDefaultRpcSubpathBodyHandlerFor(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+requestTypedManifestDefaultRpcSubpathBodyHandlerFor(
+  // @ts-expect-error RPC subpath curried body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
 const requestTypedManifestRpcBodyResultHandler = createRpcBodyResultHandler(
   requestTypedManifest,
   requestTypedManifestDefaultHandlerOptions
@@ -2228,6 +2296,34 @@ requestTypedManifestRpcBodyResultHandler(requestTypedProcedureRequest, {
 });
 requestTypedManifestRpcBodyResultHandler(
   // @ts-expect-error RPC body result handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestDefaultRpcBodyResultHandlerFor =
+  createRpcBodyResultHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDefaultHandlerOptions
+  );
+requestTypedManifestDefaultRpcBodyResultHandlerFor(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+requestTypedManifestDefaultRpcBodyResultHandlerFor(
+  // @ts-expect-error curried RPC body result handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestDefaultRpcSubpathBodyResultHandlerFor =
+  createRpcSubpathBodyResultHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDefaultHandlerOptions
+  );
+requestTypedManifestDefaultRpcSubpathBodyResultHandlerFor(
+  requestTypedProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+requestTypedManifestDefaultRpcSubpathBodyResultHandlerFor(
+  // @ts-expect-error RPC subpath curried body result handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc'),
   { id: 'request.get', input: { id: '1' } }
 );

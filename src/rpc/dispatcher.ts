@@ -2478,9 +2478,33 @@ export function createRpcHandler<TManifest extends RpcManifest>(
     return handleParsed(request, body as RpcManifestBody<TManifest>);
   };
 }
-export const createRpcHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+
+export function createRpcHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => RpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRpcHandlerFor<TRequest extends Request>(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => RpcRequestHandler<TRequest>;
+export function createRpcHandlerFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -2501,6 +2525,7 @@ export const createRpcHandlerFor =
         TRequest
       >
     ) as RpcRequestHandler<TRequest>;
+}
 
 export function createRpcBodyHandler<
   TManifest extends RpcManifest,
@@ -2542,9 +2567,32 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
   };
 }
 
-export const createRpcBodyHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createRpcBodyHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => RpcBodyHandler<TManifest, RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRpcBodyHandlerFor<TRequest extends Request>(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => RpcBodyHandler<TManifest, TRequest>;
+export function createRpcBodyHandlerFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -2566,6 +2614,7 @@ export const createRpcBodyHandlerFor =
       >,
       args[1] ?? true
     ) as RpcBodyHandler<TManifest, TRequest>;
+}
 
 export function createRpcBodyResultHandler<
   TManifest extends RpcManifest,
@@ -2604,9 +2653,37 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
     )) as RpcBodyResultHandler<TManifest, Request>;
 }
 
-export const createRpcBodyResultHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createRpcBodyResultHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => RpcBodyResultHandler<
+  TManifest,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createRpcBodyResultHandlerFor<TRequest extends Request>(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => RpcBodyResultHandler<TManifest, TRequest>;
+export function createRpcBodyResultHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -2628,6 +2705,7 @@ export const createRpcBodyResultHandlerFor =
       >,
       args[1] ?? true
     ) as RpcBodyResultHandler<TManifest, TRequest>;
+}
 
 export function createRpcTransportBodyResultHandler<
   TManifest extends RpcManifest,
