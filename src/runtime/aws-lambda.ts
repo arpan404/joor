@@ -13,62 +13,64 @@ import type {
 import { createJoorHandler } from './fetch.js';
 
 export interface AwsLambdaHttpEventV2 {
-  version?: string;
-  rawPath?: string;
-  rawQueryString?: string;
-  headers?: Record<string, string | undefined>;
-  cookies?: string[];
-  body?: string | null;
-  isBase64Encoded?: boolean;
-  requestContext?: {
-    domainName?: string;
-    http?: {
-      method?: string;
-      protocol?: string;
-      sourceIp?: string;
+  readonly version?: string;
+  readonly rawPath?: string;
+  readonly rawQueryString?: string;
+  readonly headers?: Readonly<Record<string, string | undefined>>;
+  readonly cookies?: readonly string[];
+  readonly body?: string | null;
+  readonly isBase64Encoded?: boolean;
+  readonly requestContext?: {
+    readonly domainName?: string;
+    readonly http?: {
+      readonly method?: string;
+      readonly protocol?: string;
+      readonly sourceIp?: string;
     };
   };
 }
 
 export interface AwsLambdaHttpResponseV2 {
-  statusCode: number;
-  headers?: Record<string, string>;
-  cookies?: string[];
-  body?: string;
-  isBase64Encoded?: boolean;
+  readonly statusCode: number;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly cookies?: readonly string[];
+  readonly body?: string;
+  readonly isBase64Encoded?: boolean;
 }
 
 export interface AwsLambdaRestApiEventV1 {
-  path?: string;
-  httpMethod?: string;
-  headers?: Record<string, string | undefined>;
-  multiValueHeaders?: Record<
+  readonly path?: string;
+  readonly httpMethod?: string;
+  readonly headers?: Readonly<Record<string, string | undefined>>;
+  readonly multiValueHeaders?: Readonly<Record<
     string,
     readonly (string | undefined)[] | undefined
-  >;
-  queryStringParameters?: Record<string, string | undefined> | null;
-  multiValueQueryStringParameters?: Record<
-    string,
-    readonly (string | undefined)[] | undefined
+  >>;
+  readonly queryStringParameters?: Readonly<
+    Record<string, string | undefined>
   > | null;
-  body?: string | null;
-  isBase64Encoded?: boolean;
-  requestContext?: {
-    domainName?: string;
-    path?: string;
-    protocol?: string;
-    identity?: {
-      sourceIp?: string;
+  readonly multiValueQueryStringParameters?: Readonly<Record<
+    string,
+    readonly (string | undefined)[] | undefined
+  >> | null;
+  readonly body?: string | null;
+  readonly isBase64Encoded?: boolean;
+  readonly requestContext?: {
+    readonly domainName?: string;
+    readonly path?: string;
+    readonly protocol?: string;
+    readonly identity?: {
+      readonly sourceIp?: string;
     };
   };
 }
 
 export interface AwsLambdaRestApiResponseV1 {
-  statusCode: number;
-  headers?: Record<string, string>;
-  multiValueHeaders?: Record<string, string[]>;
-  body?: string;
-  isBase64Encoded?: boolean;
+  readonly statusCode: number;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly multiValueHeaders?: Readonly<Record<string, readonly string[]>>;
+  readonly body?: string;
+  readonly isBase64Encoded?: boolean;
 }
 
 export type AwsLambdaHandler<

@@ -13851,6 +13851,14 @@ const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   body: '{}',
   requestContext: { http: { method: 'POST' } },
 };
+// @ts-expect-error AWS Lambda HTTP API events expose readonly paths.
+awsLambdaEvent.rawPath = '/other';
+if (awsLambdaEvent.headers !== undefined) {
+  // @ts-expect-error AWS Lambda HTTP API event headers are readonly.
+  awsLambdaEvent.headers['content-type'] = 'text/plain';
+}
+// @ts-expect-error AWS Lambda HTTP API event cookies are readonly.
+awsLambdaEvent.cookies?.push('b=2');
 const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
   path: '/rpc',
   httpMethod: 'POST',
@@ -13858,6 +13866,14 @@ const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
   multiValueQueryStringParameters: { tag: ['one', 'two'] },
   body: '{}',
 };
+// @ts-expect-error AWS Lambda REST events expose readonly paths.
+awsLambdaRestApiEvent.path = '/other';
+if (awsLambdaRestApiEvent.multiValueHeaders !== undefined) {
+  // @ts-expect-error AWS Lambda REST multi-value headers are readonly.
+  awsLambdaRestApiEvent.multiValueHeaders.cookie = ['b=2'];
+  // @ts-expect-error AWS Lambda REST multi-value header lists are readonly.
+  awsLambdaRestApiEvent.multiValueHeaders.cookie?.push('b=2');
+}
 interface AwsLambdaHttpApiEventForTypes extends AwsLambdaHttpEventV2 {
   requestContext?: NonNullable<AwsLambdaHttpEventV2['requestContext']> & {
     authorizer?: {
@@ -13919,6 +13935,12 @@ typedAwsLambdaRestApiEvent.requestContext?.authorizer?.principalId.toUpperCase()
 Promise.resolve(awsLambdaHandler(awsLambdaEvent)).then((response) => {
   const typedResponse: AwsLambdaHttpResponseV2 = response;
   typedResponse.statusCode.toFixed();
+  // @ts-expect-error AWS Lambda HTTP responses expose readonly status codes.
+  typedResponse.statusCode = 201;
+  if (typedResponse.headers !== undefined) {
+    // @ts-expect-error AWS Lambda HTTP response headers are readonly.
+    typedResponse.headers['content-type'] = 'text/plain';
+  }
 });
 awsLambdaHttpApiHandler(awsLambdaEvent);
 syncAwsLambdaHttpApiHandler(awsLambdaEvent);
@@ -13930,6 +13952,12 @@ Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
   (response) => {
     const typedResponse: AwsLambdaRestApiResponseV1 = response;
     typedResponse.statusCode.toFixed();
+    // @ts-expect-error AWS Lambda REST responses expose readonly status codes.
+    typedResponse.statusCode = 201;
+    if (typedResponse.multiValueHeaders !== undefined) {
+      // @ts-expect-error AWS Lambda REST multi-value response headers are readonly.
+      typedResponse.multiValueHeaders['set-cookie'] = ['b=2'];
+    }
   }
 );
 syncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
