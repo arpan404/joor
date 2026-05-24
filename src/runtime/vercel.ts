@@ -133,9 +133,32 @@ export function createVercelFetch<TManifest extends JoorManifest>(
   );
 }
 
-export const createVercelFetchFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createVercelFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => VercelFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createVercelFetchFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => VercelFetchHandler<TRequest>;
+export function createVercelFetchFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -156,6 +179,7 @@ export const createVercelFetchFor =
         TRequest
       >
     );
+}
 
 export function createVercelFunction<
   TManifest extends JoorManifest,
@@ -182,9 +206,32 @@ export function createVercelFunction<TManifest extends JoorManifest>(
   };
 }
 
-export const createVercelFunctionFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createVercelFunctionFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => VercelFunction<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createVercelFunctionFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => VercelFunction<TRequest>;
+export function createVercelFunctionFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -206,3 +253,4 @@ export const createVercelFunctionFor =
       >
     ),
   });
+}

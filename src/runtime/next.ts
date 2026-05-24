@@ -274,9 +274,41 @@ export function createNextRouteHandlers<TManifest extends JoorManifest>(
 export const createNextHandler: typeof createNextRouteHandlers =
   createNextRouteHandlers;
 
-export const createNextRouteHandlersFor =
-  <TContext = never, TRequest extends Request = Request>() =>
-  <
+export function createNextRouteHandlersFor<TContext = never>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => NextRouteHandlers<
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => NextRouteHandlers<TContext, TRequest>;
+export function createNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -303,6 +335,7 @@ export const createNextRouteHandlersFor =
         TRequest
       >
     );
+}
 
 export const createNextHandlerFor: typeof createNextRouteHandlersFor =
   createNextRouteHandlersFor;

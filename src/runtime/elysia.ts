@@ -134,9 +134,34 @@ export function createElysiaHandler<TManifest extends JoorManifest>(
   return (context) => fetch(context.request);
 }
 
-export const createElysiaHandlerFor =
-  <TContext extends ElysiaContext>() =>
-  <
+export function createElysiaHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: ElysiaHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => ElysiaHandler<
+  ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>
+>;
+export function createElysiaHandlerFor<TContext extends ElysiaContext>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: ElysiaHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    ElysiaContextRequest<TContext>
+  >
+) => ElysiaHandler<TContext>;
+export function createElysiaHandlerFor<TContext extends ElysiaContext>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -159,3 +184,4 @@ export const createElysiaHandlerFor =
     );
     return (context) => fetch(context.request as ElysiaContextRequest<TContext>);
   };
+}

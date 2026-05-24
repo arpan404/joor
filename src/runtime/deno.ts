@@ -518,9 +518,32 @@ export function createDenoFetch<TManifest extends JoorManifest>(
   );
 }
 
-export const createDenoFetchFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createDenoFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => DenoFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createDenoFetchFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => DenoFetchHandler<TRequest>;
+export function createDenoFetchFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -541,6 +564,7 @@ export const createDenoFetchFor =
         TRequest
       >
     );
+}
 
 export const createDenoTransportRequestHandler = <
   TBody = JsonValue,

@@ -2531,6 +2531,117 @@ requestTypedManifestElysiaHandler({
   // @ts-expect-error Elysia handlers default to the manifest required request subtype.
   request: new Request('https://example.com/rpc'),
 });
+const requestTypedManifestDefaultCloudflareFetchFor =
+  createCloudflareFetchFor()(
+    requestTypedManifest,
+    requestTypedManifestCloudflareFetchOptions
+  );
+requestTypedManifestDefaultCloudflareFetchFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultCloudflareFetchFor(
+  // @ts-expect-error curried Cloudflare fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultCloudflareWorkerFor =
+  createCloudflareWorkerFor()(
+    requestTypedManifest,
+    requestTypedManifestCloudflareWorkerOptions
+  );
+requestTypedManifestDefaultCloudflareWorkerFor.fetch(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultCloudflareWorkerFor.fetch(
+  // @ts-expect-error curried Cloudflare workers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultVercelFetchFor = createVercelFetchFor()(
+  requestTypedManifest,
+  requestTypedManifestVercelFetchOptions
+);
+requestTypedManifestDefaultVercelFetchFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultVercelFetchFor(
+  // @ts-expect-error curried Vercel fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultVercelFunctionFor =
+  createVercelFunctionFor()(
+    requestTypedManifest,
+    requestTypedManifestVercelFetchOptions
+  );
+requestTypedManifestDefaultVercelFunctionFor.fetch(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultVercelFunctionFor.fetch(
+  // @ts-expect-error curried Vercel functions default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultNetlifyFetchFor = createNetlifyFetchFor()(
+  requestTypedManifest,
+  requestTypedManifestNetlifyFetchOptions
+);
+requestTypedManifestDefaultNetlifyFetchFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultNetlifyFetchFor(
+  // @ts-expect-error curried Netlify fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultNetlifyEdgeFunctionFor =
+  createNetlifyEdgeFunctionFor()(
+    requestTypedManifest,
+    requestTypedManifestNetlifyFetchOptions
+  );
+requestTypedManifestDefaultNetlifyEdgeFunctionFor(
+  requestTypedProcedureRequest,
+  undefined
+);
+requestTypedManifestDefaultNetlifyEdgeFunctionFor(
+  // @ts-expect-error curried Netlify edge functions default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  undefined
+);
+const requestTypedManifestDefaultNextRouteHandlersFor =
+  createNextRouteHandlersFor()(
+    requestTypedManifest,
+    requestTypedManifestNextHandlerOptions
+  );
+requestTypedManifestDefaultNextRouteHandlersFor.GET(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultNextRouteHandlersFor.GET(
+  // @ts-expect-error curried Next route handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultNextHandlerFor = createNextHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestNextHandlerOptions
+);
+requestTypedManifestDefaultNextHandlerFor.POST(requestTypedProcedureRequest);
+requestTypedManifestDefaultNextHandlerFor.POST(
+  // @ts-expect-error curried Next handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultHonoHandlerFor = createHonoHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestHonoHandlerOptions
+);
+requestTypedManifestDefaultHonoHandlerFor({
+  req: { raw: requestTypedProcedureRequest },
+});
+requestTypedManifestDefaultHonoHandlerFor({
+  req: {
+    // @ts-expect-error curried Hono handlers default to the manifest required request subtype.
+    raw: new Request('https://example.com/rpc'),
+  },
+});
+const requestTypedManifestDefaultElysiaHandlerFor = createElysiaHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestElysiaHandlerOptions
+);
+requestTypedManifestDefaultElysiaHandlerFor({
+  request: requestTypedProcedureRequest,
+});
+requestTypedManifestDefaultElysiaHandlerFor({
+  // @ts-expect-error curried Elysia handlers default to the manifest required request subtype.
+  request: new Request('https://example.com/rpc'),
+});
 // @ts-expect-error Cloudflare option aliases reject explicit request types that are too broad.
 const _wrongRequestTypedManifestCloudflareFetchOptions: CloudflareFetchOptionsFor<
   typeof requestTypedManifest,
@@ -2709,6 +2820,15 @@ requestTypedManifestBunFetch(
   // @ts-expect-error Bun fetch defaults to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
+const requestTypedManifestDefaultBunFetchFor = createBunFetchFor()(
+  requestTypedManifest,
+  requestTypedManifestBunFetchOptions
+);
+requestTypedManifestDefaultBunFetchFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultBunFetchFor(
+  // @ts-expect-error curried Bun fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
 const requestTypedManifestBunRpcRequestHandler = createBunRpcRequestHandler(
   requestTypedManifest,
   requestTypedManifestBunRpcRequestHandlerOptions
@@ -2768,6 +2888,15 @@ const requestTypedManifestDenoFetch = createDenoFetch(
 requestTypedManifestDenoFetch(requestTypedProcedureRequest);
 requestTypedManifestDenoFetch(
   // @ts-expect-error Deno fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultDenoFetchFor = createDenoFetchFor()(
+  requestTypedManifest,
+  requestTypedManifestDenoFetchOptions
+);
+requestTypedManifestDefaultDenoFetchFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultDenoFetchFor(
+  // @ts-expect-error curried Deno fetch defaults to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
 const requestTypedManifestDenoRpcRequestHandler = createDenoRpcRequestHandler(

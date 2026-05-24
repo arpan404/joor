@@ -285,9 +285,34 @@ export function createCloudflareFetch<TManifest extends JoorManifest>(
   );
 }
 
-export const createCloudflareFetchFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createCloudflareFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createCloudflareFetchFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => CloudflareFetchHandler<TRequest>;
+export function createCloudflareFetchFor<
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -308,6 +333,7 @@ export const createCloudflareFetchFor =
         TRequest
       >
     );
+}
 
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
@@ -334,13 +360,47 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
   };
 }
 
-export const createCloudflareWorkerFor =
-  <
-    TEnv = never,
-    TContext = never,
-    TRequest extends Request = Request,
-  >() =>
-  <
+export function createCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareWorker<
+  TEnv,
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => CloudflareWorker<TEnv, TContext, TRequest>;
+export function createCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -363,3 +423,4 @@ export const createCloudflareWorkerFor =
         >
       ),
     }) as CloudflareWorker<TEnv, TContext, TRequest>;
+}

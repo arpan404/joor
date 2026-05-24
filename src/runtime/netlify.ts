@@ -141,9 +141,32 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
   );
 }
 
-export const createNetlifyFetchFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createNetlifyFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => NetlifyFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createNetlifyFetchFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => NetlifyFetchHandler<TRequest>;
+export function createNetlifyFetchFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -164,6 +187,7 @@ export const createNetlifyFetchFor =
         TRequest
       >
     );
+}
 
 export function createNetlifyEdgeFunction<
   TManifest extends JoorManifest,
@@ -189,9 +213,41 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
   return (request) => fetch(request);
 }
 
-export const createNetlifyEdgeFunctionFor =
-  <TContext = unknown, TRequest extends Request = Request>() =>
-  <
+export function createNetlifyEdgeFunctionFor<TContext = unknown>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => NetlifyEdgeFetchHandler<
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createNetlifyEdgeFunctionFor<
+  TContext = unknown,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => NetlifyEdgeFetchHandler<TContext, TRequest>;
+export function createNetlifyEdgeFunctionFor<
+  TContext = unknown,
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -214,3 +270,4 @@ export const createNetlifyEdgeFunctionFor =
     );
     return (request) => fetch(request);
   };
+}

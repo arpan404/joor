@@ -136,9 +136,32 @@ export function createHonoHandler<TManifest extends JoorManifest>(
   return (context) => fetch(context.req.raw);
 }
 
-export const createHonoHandlerFor =
-  <TContext extends HonoContext>() =>
-  <
+export function createHonoHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HonoHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => HonoHandler<HonoContext<RpcManifestRequiredRuntimeRequest<TManifest>>>;
+export function createHonoHandlerFor<TContext extends HonoContext>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HonoHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    HonoContextRequest<TContext>
+  >
+) => HonoHandler<TContext>;
+export function createHonoHandlerFor<TContext extends HonoContext>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -161,3 +184,4 @@ export const createHonoHandlerFor =
     );
     return (context) => fetch(context.req.raw as HonoContextRequest<TContext>);
   };
+}

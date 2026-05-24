@@ -468,9 +468,32 @@ export function createBunFetch<TManifest extends JoorManifest>(
   );
 }
 
-export const createBunFetchFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createBunFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: BunFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => BunFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createBunFetchFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: BunFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => BunFetchHandler<TRequest>;
+export function createBunFetchFor<TRequest extends Request = Request>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -491,6 +514,7 @@ export const createBunFetchFor =
         TRequest
       >
     );
+}
 
 export const createBunTransportRequestHandler = <
   TBody = JsonValue,
