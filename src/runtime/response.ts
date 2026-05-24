@@ -7,15 +7,15 @@ import type {
 import type { JsonObject } from '../schema/json.js';
 
 export interface SerializedJsonEnvelope {
-  body: string;
-  headers?: Record<string, string>;
-  responseHeaders?: Record<string, string>;
+  readonly body: string;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }
 
 export interface CorsHeaderOptions {
-  origin?: string;
-  headers?: readonly string[];
-  methods?: readonly string[];
+  readonly origin?: string;
+  readonly headers?: readonly string[];
+  readonly methods?: readonly string[];
 }
 
 export type TransportBodyResult<TEnvelope extends RpcEnvelope = RpcEnvelope> =
@@ -77,7 +77,7 @@ export const isRpcEnvelopeArray = <TEnvelope extends RpcEnvelope>(
 
 export const appendJsonStringHeaders = (
   target: Record<string, string>,
-  source: Record<string, string>
+  source: Readonly<Record<string, string>>
 ): void => {
   const cacheControl = source['cache-control'];
   if (
@@ -99,7 +99,7 @@ export const appendJsonStringHeaders = (
 
 const appendHeaders = (
   target: Headers,
-  source: Record<string, string>
+  source: Readonly<Record<string, string>>
 ): void => {
   for (const key in source) {
     if (!Object.hasOwn(source, key)) continue;
@@ -130,7 +130,7 @@ const appendJsonHeaders = (target: Headers, source: JsonObject): void => {
 };
 
 export const createJsonHeaderRecord = (
-  source?: Record<string, string>
+  source?: Readonly<Record<string, string>>
 ): Record<string, string> => {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
@@ -178,7 +178,7 @@ export const serializedEnvelopeToResponse = (
 
 export const rpcEnvelopeToResponse = <TEnvelope extends RpcEnvelope>(
   result: TEnvelope | readonly TEnvelope[],
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Readonly<Record<string, string>>
 ): Response => {
   if (
     extraHeaders === undefined &&
@@ -200,7 +200,7 @@ export const rpcEnvelopeToResponse = <TEnvelope extends RpcEnvelope>(
 
 export const transportResultToResponse = <TEnvelope extends RpcEnvelope>(
   result: TransportBodyResult<TEnvelope>,
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Readonly<Record<string, string>>
 ): Response => {
   if (isSerializedJsonEnvelope(result))
     return result.responseHeaders === undefined && result.headers === undefined

@@ -777,6 +777,7 @@ import {
   type ProcedureTypes,
   type StreamProcedureConfig,
   type UnaryProcedureConfig,
+  type CorsHeaderOptions,
   type SerializedJsonEnvelope,
   type RpcEnvelope,
   type RpcBatchRequest,
@@ -1809,6 +1810,7 @@ import {
   type NodeUnaryRouteRpcRequestHandlerOptionsFor as RuntimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsFor,
   type NodeUnaryRouteTransportBodyResultFor as RuntimeSubpathNodeUnaryRouteTransportBodyResultFor,
   type NodeUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathNodeUnaryRouteTransportBodyResultHandlerFor,
+  type CorsHeaderOptions as RuntimeSubpathCorsHeaderOptions,
   type SerializedJsonEnvelope as RuntimeSubpathSerializedJsonEnvelope,
   type TransportBodyResult as RuntimeSubpathTransportBodyResult,
   type TransportBodyResultFor as RuntimeSubpathTransportBodyResultFor,
@@ -1844,6 +1846,7 @@ import {
   rpcEnvelopeToResponse as runtimeResponseSubpathRpcEnvelopeToResponse,
   serializedEnvelopeToResponse as runtimeResponseSubpathSerializedEnvelopeToResponse,
   transportResultToResponse as runtimeResponseSubpathTransportResultToResponse,
+  type CorsHeaderOptions as RuntimeResponseSubpathCorsHeaderOptions,
   type SerializedJsonEnvelope as RuntimeResponseSubpathSerializedJsonEnvelope,
   type TransportBodyResult as RuntimeResponseSubpathTransportBodyResult,
   type TransportBodyResultFor as RuntimeResponseSubpathTransportBodyResultFor,
@@ -11646,12 +11649,44 @@ const compiledSerializedEnvelope: CompiledSerializedEnvelope = {
   responseHeaders: { 'cache-control': 'private' },
 };
 compiledSerializedEnvelope.headers?.['cache-control']?.toUpperCase();
+// @ts-expect-error serialized envelope bodies are readonly.
+compiledSerializedEnvelope.body = '{"ok":false}';
+// @ts-expect-error serialized envelope header maps are readonly.
+compiledSerializedEnvelope.headers = { 'cache-control': 'public' };
+if (compiledSerializedEnvelope.headers !== undefined) {
+  // @ts-expect-error serialized envelope header values are readonly.
+  compiledSerializedEnvelope.headers['cache-control'] = 'public';
+}
+if (compiledSerializedEnvelope.responseHeaders !== undefined) {
+  // @ts-expect-error serialized envelope response header values are readonly.
+  compiledSerializedEnvelope.responseHeaders['cache-control'] = 'public';
+}
 const serializedJsonEnvelope: SerializedJsonEnvelope =
   compiledSerializedEnvelope;
 const runtimeSubpathSerializedJsonEnvelope: RuntimeSubpathSerializedJsonEnvelope =
   serializedJsonEnvelope;
 const runtimeResponseSubpathSerializedJsonEnvelope: RuntimeResponseSubpathSerializedJsonEnvelope =
   runtimeSubpathSerializedJsonEnvelope;
+const corsHeaderOptions: CorsHeaderOptions = {
+  origin: 'https://example.com',
+  headers: ['content-type'],
+  methods: ['POST'],
+};
+const runtimeSubpathCorsHeaderOptions: RuntimeSubpathCorsHeaderOptions =
+  corsHeaderOptions;
+const runtimeResponseSubpathCorsHeaderOptions: RuntimeResponseSubpathCorsHeaderOptions =
+  runtimeSubpathCorsHeaderOptions;
+runtimeResponseSubpathCorsHeaderOptions.origin?.toUpperCase();
+// @ts-expect-error CORS origins are readonly.
+corsHeaderOptions.origin = 'https://example.org';
+if (corsHeaderOptions.headers !== undefined) {
+  // @ts-expect-error CORS header lists are readonly.
+  corsHeaderOptions.headers.push('authorization');
+}
+if (runtimeResponseSubpathCorsHeaderOptions.methods !== undefined) {
+  // @ts-expect-error CORS method lists are readonly across subpath exports.
+  runtimeResponseSubpathCorsHeaderOptions.methods[0] = 'OPTIONS';
+}
 const transportBodyResult: TransportBodyResult = serializedJsonEnvelope;
 const runtimeSubpathTransportBodyResult: RuntimeSubpathTransportBodyResult =
   transportBodyResult;
@@ -11723,6 +11758,10 @@ if (
 const jsonHeaderRecord = createJsonHeaderRecord({
   'cache-control': 'private',
 });
+const readonlyJsonHeaderSource: Readonly<Record<string, string>> = {
+  'cache-control': 'private',
+};
+createJsonHeaderRecord(readonlyJsonHeaderSource);
 const runtimeSubpathJsonHeaderRecord = runtimeSubpathCreateJsonHeaderRecord({
   etag: '"v1"',
 });
@@ -11731,6 +11770,7 @@ const runtimeResponseSubpathJsonHeaderRecord =
     'x-ignored': 'value',
   });
 appendJsonStringHeaders(jsonHeaderRecord, { etag: '"v2"' });
+appendJsonStringHeaders(jsonHeaderRecord, readonlyJsonHeaderSource);
 runtimeSubpathAppendJsonStringHeaders(runtimeSubpathJsonHeaderRecord, {
   'cache-control': 'private',
 });
@@ -11751,6 +11791,9 @@ jsonOkResponseInit.headers?.valueOf();
 runtimeSubpathJsonOkResponseInit.headers?.valueOf();
 runtimeResponseSubpathJsonOkResponseInit.headers?.valueOf();
 rpcEnvelopeToResponse(manifestRouteEnvelope).headers.get('content-type');
+rpcEnvelopeToResponse(manifestRouteEnvelope, readonlyJsonHeaderSource).headers.get(
+  'content-type'
+);
 runtimeSubpathRpcEnvelopeToResponse(manifestRouteEnvelope).headers.get(
   'content-type'
 );
@@ -11767,6 +11810,10 @@ runtimeResponseSubpathSerializedEnvelopeToResponse(
   runtimeResponseSubpathSerializedJsonEnvelope
 ).headers.get('content-type');
 transportResultToResponse(manifestRouteEnvelope).headers.get('content-type');
+transportResultToResponse(
+  manifestRouteEnvelope,
+  readonlyJsonHeaderSource
+).headers.get('content-type');
 runtimeSubpathTransportResultToResponse(
   runtimeSubpathSerializedJsonEnvelope
 ).headers.get('content-type');

@@ -1463,9 +1463,9 @@ interface JsonObject {
 }
 
 interface SerializedJsonEnvelope {
-  body: string;
-  headers?: Record<string, string>;
-  responseHeaders?: Record<string, string>;
+  readonly body: string;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }
 
 interface RequestSource {
@@ -1536,7 +1536,7 @@ const isSafeResponseHeader = (name: string, value: string): boolean => {
 
 const appendJsonStringHeaders = (
   target: Record<string, string>,
-  source: JsonObject
+  source: Readonly<Record<string, string>>
 ): void => {
   const cacheControl = source['cache-control'];
   if (
@@ -1557,7 +1557,7 @@ const appendJsonStringHeaders = (
 };
 
 const createJsonHeaderRecord = (
-  source?: Record<string, string>
+  source?: Readonly<Record<string, string>>
 ): Record<string, string> => {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
@@ -2088,9 +2088,9 @@ interface JsonObject {
 }
 
 interface SerializedJsonEnvelope {
-  body: string;
-  headers?: Record<string, string>;
-  responseHeaders?: Record<string, string>;
+  readonly body: string;
+  readonly headers?: Readonly<Record<string, string>>;
+  readonly responseHeaders?: Readonly<Record<string, string>>;
 }
 
 const configuredPath = ${configuredPath};
@@ -2178,7 +2178,7 @@ const isSafeResponseHeader = (name: string, value: string): boolean => {
 
 const appendJsonStringHeaders = (
   target: Record<string, string>,
-  source: JsonObject
+  source: Readonly<Record<string, string>>
 ): void => {
   const cacheControl = source['cache-control'];
   if (
@@ -2199,7 +2199,7 @@ const appendJsonStringHeaders = (
 };
 
 const createJsonHeaderRecord = (
-  source?: Record<string, string>
+  source?: Readonly<Record<string, string>>
 ): Record<string, string> => {
   const headers: Record<string, string> = { 'content-type': 'application/json' };
   if (source !== undefined) appendJsonStringHeaders(headers, source);
