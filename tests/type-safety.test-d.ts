@@ -1046,6 +1046,7 @@ import {
   createAuthPolicy as createAuthPolicySubpath,
   type AuthPolicyAuth as AuthSubpathPolicyAuth,
   type AuthPolicyHeaders as AuthSubpathPolicyHeaders,
+  type AuthPolicyRequest as AuthSubpathPolicyRequest,
   type AuthPolicyResult as AuthSubpathPolicyResult,
   type AuthPolicyResultLike as AuthSubpathPolicyResultLike,
   type AuthPolicyServices as AuthSubpathPolicyServices,
@@ -1058,9 +1059,12 @@ import {
   defineConfigFor as defineContextSubpathConfigFor,
   resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
+  type AuthPolicyAuth as ContextSubpathAuthPolicyAuth,
+  type AuthPolicyHeaders as ContextSubpathAuthPolicyHeaders,
   type AuthPolicyRequest as ContextSubpathAuthPolicyRequest,
   type AuthPolicyResult as ContextSubpathAuthPolicyResult,
   type AuthPolicyResultLike as ContextSubpathAuthPolicyResultLike,
+  type AuthPolicyServices as ContextSubpathAuthPolicyServices,
   type DefineConfigFor as ContextSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as ContextSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as ContextSubpathDefineUnaryRouteConfigFor,
@@ -2105,6 +2109,25 @@ const requestTypedAuthPolicyRequest: AuthPolicyRequest<
   typeof requestTypedAuthPolicy
 > = requestTypedProcedureRequest;
 requestTypedAuthPolicyRequest.requestId.toUpperCase();
+type RequestTypedAuthPolicyServices = AuthPolicyServices<
+  typeof requestTypedAuthPolicy
+>;
+const requestTypedAuthPolicyServices: RequestTypedAuthPolicyServices = {
+  users: {
+    findById(id) {
+      return { id, name: 'Ada' };
+    },
+  },
+};
+requestTypedAuthPolicyServices.users.findById('1').name.toUpperCase();
+const requestTypedAuthPolicyHeaders: AuthPolicyHeaders<
+  typeof requestTypedAuthPolicy
+> = {};
+requestTypedAuthPolicyHeaders.valueOf();
+const requestTypedAuthPolicyAuth: AuthPolicyAuth<
+  typeof requestTypedAuthPolicy
+> = { userId: '1' };
+requestTypedAuthPolicyAuth.userId.toUpperCase();
 type AuthPolicyServicesFromRoot = AuthPolicyServices<typeof authPolicy>;
 const authPolicyServicesFromRoot: AuthPolicyServicesFromRoot = {
   users: {
@@ -2181,6 +2204,34 @@ const authSubpathResultLike: AuthSubpathPolicyResultLike<
   AuthSubpathPolicyAuth<typeof authSubpathPolicy>
 > = Promise.resolve(authSubpathResult);
 Promise.resolve(authSubpathResultLike).then((result) => result.valueOf());
+const requestTypedAuthSubpathPolicy =
+  createAuthPolicySubpath.withContext<Services, ProcedureAppRequest>()<
+    { authorization: string },
+    { userId: string }
+  >({
+    name: 'subpath-request-session',
+    authenticate(ctx) {
+      ctx.request.requestId.toUpperCase();
+      ctx.headers.authorization.toUpperCase();
+      return { userId: ctx.request.requestId };
+    },
+  });
+const authSubpathRequest: AuthSubpathPolicyRequest<
+  typeof requestTypedAuthSubpathPolicy
+> = requestTypedProcedureRequest;
+authSubpathRequest.requestId.toUpperCase();
+const authSubpathRequestServices: AuthSubpathPolicyServices<
+  typeof requestTypedAuthSubpathPolicy
+> = authPolicyServicesFromRoot;
+authSubpathRequestServices.users.findById('1').name.toUpperCase();
+const authSubpathRequestHeaders: AuthSubpathPolicyHeaders<
+  typeof requestTypedAuthSubpathPolicy
+> = { authorization: 'Bearer token' };
+authSubpathRequestHeaders.authorization.toUpperCase();
+const authSubpathRequestAuth: AuthSubpathPolicyAuth<
+  typeof requestTypedAuthSubpathPolicy
+> = { userId: '1' };
+authSubpathRequestAuth.userId.toUpperCase();
 
 const authenticatedProcedure = defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
@@ -3167,6 +3218,18 @@ const contextSubpathRequestTypedPolicyRequest: ContextSubpathAuthPolicyRequest<
   typeof contextSubpathRequestTypedPolicy
 > = requestTypedProcedureRequest;
 contextSubpathRequestTypedPolicyRequest.requestId.toUpperCase();
+const contextSubpathRequestTypedPolicyServices: ContextSubpathAuthPolicyServices<
+  typeof contextSubpathRequestTypedPolicy
+> = contextSubpathServices;
+contextSubpathRequestTypedPolicyServices.audit.record('auth');
+const contextSubpathRequestTypedPolicyHeaders: ContextSubpathAuthPolicyHeaders<
+  typeof contextSubpathRequestTypedPolicy
+> = { authorization: 'Bearer token' };
+contextSubpathRequestTypedPolicyHeaders.authorization.toUpperCase();
+const contextSubpathRequestTypedPolicyAuth: ContextSubpathAuthPolicyAuth<
+  typeof contextSubpathRequestTypedPolicy
+> = { userId: '1' };
+contextSubpathRequestTypedPolicyAuth.userId.toUpperCase();
 const contextSubpathAuthResult: ContextSubpathAuthPolicyResult<{
   userId: string;
 }> = { userId: '1' };

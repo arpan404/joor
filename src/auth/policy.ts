@@ -33,15 +33,32 @@ export interface AuthPolicy<
 }
 
 export type AuthPolicyServices<TPolicy> =
-  TPolicy extends AuthPolicy<infer TServices, AuthPolicyHeaderValues, object>
+  TPolicy extends AuthPolicy<
+    infer TServices,
+    AuthPolicyHeaderValues,
+    object,
+    infer _TRequest extends Request
+  >
     ? TServices
     : never;
 
 export type AuthPolicyHeaders<TPolicy> =
-  TPolicy extends AuthPolicy<object, infer THeaders, object> ? THeaders : never;
+  TPolicy extends AuthPolicy<
+    object,
+    infer THeaders,
+    object,
+    infer _TRequest extends Request
+  >
+    ? THeaders
+    : never;
 
 export type AuthPolicyAuth<TPolicy> =
-  TPolicy extends AuthPolicy<object, AuthPolicyHeaderValues, infer TAuth>
+  TPolicy extends AuthPolicy<
+    object,
+    AuthPolicyHeaderValues,
+    infer TAuth,
+    infer _TRequest extends Request
+  >
     ? TAuth
     : never;
 
