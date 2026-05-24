@@ -81,10 +81,9 @@ import {
 } from '../runtime/response.js';
 
 export interface RpcManifest<
-  TProcedures extends Record<string, ProcedureRuntime> = Record<
-    string,
-    ProcedureRuntime
-  >,
+  TProcedures extends Readonly<Record<string, ProcedureRuntime>> = Readonly<
+    Record<string, ProcedureRuntime>
+  >
 > {
   readonly procedures: TProcedures;
 }

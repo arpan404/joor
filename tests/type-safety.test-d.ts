@@ -525,6 +525,7 @@ import {
   type JoorConfigRequest,
   type JoorRouteStreamConfigFor,
   type JoorRouteUnaryConfigFor,
+  type JoorRouteMap,
   type JoorStreamRouteConfigFor,
   type JoorUnaryRouteConfigFor,
   type JoorContext,
@@ -913,6 +914,7 @@ import {
   type RpcRequest,
   type RpcResponse,
   type RpcResponseHeaderValues,
+  type RpcRouteMap,
   type RpcRouteError,
   type RpcRouteErrorCode,
   type RpcRouteErrorDetails,
@@ -4741,6 +4743,18 @@ type Routes = {
   'users.authenticated': typeof authenticatedProcedure;
   'users.watch': typeof streamProcedure;
 };
+const routeMap: RpcRouteMap = {
+  'users.get': procedure,
+  'users.authenticated': authenticatedProcedure,
+  'users.watch': streamProcedure,
+};
+routeMap['users.get']?.input.kind.toUpperCase();
+// @ts-expect-error RPC route maps expose readonly route entries.
+routeMap['users.get'] = procedure;
+const joorRouteMap: JoorRouteMap = routeMap;
+joorRouteMap['users.watch']?.stream?.kind.toUpperCase();
+// @ts-expect-error Joor route maps expose readonly route entries.
+joorRouteMap['users.watch'] = streamProcedure;
 const routeUnaryProcedure: RpcUnaryRouteProcedure<Routes, 'users.get'> =
   procedure;
 const defaultRouteUnaryProcedure: RpcUnaryRouteProcedure<Routes> =
@@ -6997,6 +7011,8 @@ const publicManifest: RpcManifest = manifest;
 publicManifest.procedures['users.get'];
 // @ts-expect-error public manifests expose readonly procedure maps.
 publicManifest.procedures = {};
+// @ts-expect-error public manifest procedure maps expose readonly entries.
+publicManifest.procedures['users.get'] = procedure;
 const typedPublicManifest: RpcManifest<ManifestRoutes> = manifest;
 typedPublicManifest.procedures['users.get'].output;
 type PublicManifestRoutes = RpcManifestRoutes<typeof manifest>;

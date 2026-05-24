@@ -72,7 +72,7 @@ export type ClientRequestInit = Omit<
   'body' | 'headers' | 'method'
 >;
 
-export type RpcRouteMap = Record<string, ProcedureRuntime>;
+export type RpcRouteMap = Readonly<Record<string, ProcedureRuntime>>;
 
 export type RpcRouteId<TRoutes extends RpcRouteMap> = Extract<
   keyof TRoutes,

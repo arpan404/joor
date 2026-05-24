@@ -115,7 +115,7 @@ import type {
 } from './rpc/dispatcher.js';
 import type { JsonValue } from './schema/json.js';
 
-export type JoorRouteMap = Record<string, ProcedureRuntime>;
+export type JoorRouteMap = Readonly<Record<string, ProcedureRuntime>>;
 
 export type JoorManifest<TProcedures extends JoorRouteMap = JoorRouteMap> =
   Omit<RpcManifest, 'procedures'> & {
