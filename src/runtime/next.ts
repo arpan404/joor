@@ -16,13 +16,13 @@ import {
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
 
-export type NextRouteParamValue = string | string[] | undefined;
+export type NextRouteParamValue = string | readonly string[] | undefined;
 
-export type NextRouteParams = Record<string, NextRouteParamValue>;
+export type NextRouteParams = Readonly<Record<string, NextRouteParamValue>>;
 
 export interface NextRouteContext<TParams extends object = NextRouteParams> {
   readonly __paramsType?: (params: TParams) => TParams;
-  params: Promise<TParams>;
+  readonly params: Promise<TParams>;
 }
 
 export type NextRouteHandler<
@@ -36,9 +36,9 @@ export interface NextRouteHandlers<
   TContext = never,
   TRequest extends Request = Request,
 > {
-  GET: NextRouteHandler<TContext, TRequest>;
-  POST: NextRouteHandler<TContext, TRequest>;
-  OPTIONS: NextRouteHandler<TContext, TRequest>;
+  readonly GET: NextRouteHandler<TContext, TRequest>;
+  readonly POST: NextRouteHandler<TContext, TRequest>;
+  readonly OPTIONS: NextRouteHandler<TContext, TRequest>;
 }
 
 export type NextHandler<

@@ -14142,13 +14142,25 @@ type NextDynamicRouteParamsForTypes = {
 const nextRouteParamValue: NextRouteParamValue = 'team';
 const runtimeSubpathNextRouteParamValue: RuntimeSubpathNextRouteParamValue =
   nextRouteParamValue;
+const nextRouteParamSegments: NextRouteParamValue = ['rpc'] as const;
+if (
+  nextRouteParamSegments !== undefined &&
+  typeof nextRouteParamSegments !== 'string'
+) {
+  // @ts-expect-error Next route param segment arrays are readonly.
+  nextRouteParamSegments.push('v2');
+}
 const nextRouteParams: NextRouteParams = {
   team: nextRouteParamValue,
   slug: ['rpc'],
 };
+// @ts-expect-error Next route params expose readonly entries.
+nextRouteParams['team'] = 'other';
 const runtimeSubpathNextRouteParams: RuntimeSubpathNextRouteParams =
   nextRouteParams;
 const runtimeSubpathNextRouteSlug = runtimeSubpathNextRouteParams['slug'];
+// @ts-expect-error runtime subpath Next route params expose readonly entries.
+runtimeSubpathNextRouteParams['slug'] = ['v2'];
 const nextDynamicRouteHandler: NextRouteHandler<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = async (request, context) => {
@@ -14165,6 +14177,8 @@ const nextDynamicHandlers: NextRouteHandlers<
   POST: nextDynamicRouteHandler,
   OPTIONS: nextDynamicRouteHandler,
 };
+// @ts-expect-error Next route handler tables expose readonly methods.
+nextDynamicHandlers.GET = nextDynamicRouteHandler;
 const nextRequestRouteHandler: NextRouteHandler<never, AppFetchRequest> = (
   request
 ) => new Response(request.requestId);
@@ -14190,9 +14204,11 @@ const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
     team: `${runtimeSubpathNextRouteParamValue}`,
     ...(Array.isArray(runtimeSubpathNextRouteSlug)
       ? { slug: runtimeSubpathNextRouteSlug }
-      : {}),
+    : {}),
   }),
 };
+// @ts-expect-error Next route context params are readonly.
+runtimeSubpathNextDynamicRouteContext.params = Promise.resolve({ team: 'red' });
 // @ts-expect-error typed Next route contexts are not assignable to plain route contexts.
 const _wrongNextDynamicRouteContext: NextRouteContext =
   runtimeSubpathNextDynamicRouteContext;
