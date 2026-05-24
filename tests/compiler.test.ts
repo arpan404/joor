@@ -237,7 +237,9 @@ describe('compiler', () => {
       );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
-      ).resolves.toContain('CompiledRpcBodyResultHandlerFor<NativeManifest>');
+      ).resolves.toContain(
+        'CompiledRpcBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>'
+      );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
@@ -447,6 +449,12 @@ describe('compiler', () => {
       );
       expect(dispatcher).toContain(
         'CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
+      );
+      expect(dispatcher).toContain(
+        'CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>'
+      );
+      expect(dispatcher).toContain(
+        'CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>'
       );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
@@ -997,7 +1005,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       );
       await writeFile(
         usageFile,
-        `import { createFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest } from './dispatcher.safe.js';
+        `import { createFetchFor, fetch, nativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
 import { createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
 import { createWorkerFor, worker } from './cloudflare.js';
 import { createHandlersFor, handlers, GET } from './next.js';
@@ -1021,6 +1029,15 @@ const nativeHandler: NativeFetchHandler = fetch;
 nativeHandler(appRequest);
 // @ts-expect-error generated native fetch defaults reject requests missing required request fields.
 nativeHandler(plainRequest);
+const nativeBodyValue = { id: 'request.get', input: { id: '1' } } as const;
+const nativeBodyHandler: NativeBodyHandler = nativeBody;
+nativeBodyHandler(appRequest, nativeBodyValue);
+// @ts-expect-error generated body handlers default to the manifest request subtype.
+nativeBodyHandler(plainRequest, nativeBodyValue);
+const nativeRouteUnaryBodyHandler: NativeRouteUnaryBodyHandler = nativeBody;
+nativeRouteUnaryBodyHandler(appRequest, nativeBodyValue);
+// @ts-expect-error generated route body handlers default to the manifest request subtype.
+nativeRouteUnaryBodyHandler(plainRequest, nativeBodyValue);
 createFetchFor()(appRequest);
 // @ts-expect-error generated native fetch factories default to the manifest request subtype.
 createFetchFor()(plainRequest);

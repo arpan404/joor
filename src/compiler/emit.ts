@@ -638,12 +638,13 @@ export type NativeUnaryRouteTransportHandler = NativeRouteUnaryTransportHandler;
 export type NativeRouteStreamTransportHandler =
   CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeStreamRouteTransportHandler = NativeRouteStreamTransportHandler;
-export type NativeBodyHandler = CompiledRpcBodyResultHandlerFor<NativeManifest>;
+export type NativeBodyHandler =
+  CompiledRpcBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>;
 export type NativeRouteUnaryBodyHandler =
-  CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest>;
+  CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>;
 export type NativeUnaryRouteBodyHandler = NativeRouteUnaryBodyHandler;
 export type NativeRouteStreamBodyHandler =
-  CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest>;
+  CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>;
 export type NativeStreamRouteBodyHandler = NativeRouteStreamBodyHandler;
 export type NativeTransportRequest = ContextRequestSource;`;
   const executors = manifest.procedures

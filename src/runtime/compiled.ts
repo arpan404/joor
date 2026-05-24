@@ -243,25 +243,29 @@ export type CompiledRpcBodyResultHandlerFor<
 
 export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
+  TRequest extends Request = Request,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<CompiledRouteUnaryBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcUnaryRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest>;
+  TRequest extends Request = Request,
+> = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest, TRequest>;
 
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
+  TRequest extends Request = Request,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
-  request: Request,
+  request: TRequest,
   body: TBody
 ) => MaybePromise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcStreamRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-> = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest>;
+  TRequest extends Request = Request,
+> = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest, TRequest>;
 
 type CompiledHookBody<TConfig> = TConfig extends {
   hooks?: HandlerHooks<
