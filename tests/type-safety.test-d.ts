@@ -3948,8 +3948,21 @@ const rpcSseErrorEvent: RpcSseEvent<{ userId: string }, 'users.get'> = {
 };
 const rpcSseErrorId: 'users.get' = rpcSseErrorEvent.data.id;
 rpcSseErrorId.toUpperCase();
+// @ts-expect-error SSE event discriminants are readonly.
+rpcSseErrorEvent.event = 'data';
+// @ts-expect-error SSE event payload slots are readonly.
+rpcSseErrorEvent.data = {
+  ok: false,
+  id: 'users.get',
+  traceId: 'trace-2',
+  error: { code: 'NOT_FOUND', message: 'Missing', status: 404 },
+};
 // @ts-expect-error SSE error events preserve the route id literal.
 const _wrongRpcSseErrorId: 'users.list' = rpcSseErrorEvent.data.id;
+const rpcSseDoneEvent: RpcSseEvent = { event: 'done', data: {} };
+rpcSseDoneEvent.data.valueOf();
+// @ts-expect-error SSE done payloads are readonly.
+rpcSseDoneEvent.data.extra = 'nope';
 const rootEncodedSse = encodeSse('error', rpcSseErrorEvent.data);
 rootEncodedSse.byteLength.toFixed();
 const rootSseResponse = createSseResponse(

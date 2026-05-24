@@ -5,9 +5,9 @@ export type StreamEvent<
   TData extends JsonValue = JsonValue,
   TId extends string = string,
 > =
-  | { event: 'data'; data: TData }
-  | { event: 'error'; data: RpcFailure<TId> }
-  | { event: 'done'; data: Record<string, never> };
+  | { readonly event: 'data'; readonly data: TData }
+  | { readonly event: 'error'; readonly data: RpcFailure<TId> }
+  | { readonly event: 'done'; readonly data: Readonly<Record<string, never>> };
 
 const encoder = new TextEncoder();
 
