@@ -1289,11 +1289,11 @@ export type BatchResults<
 };
 
 export interface LegacyRpcTransportClient {
-  call<TProcedure, TId extends string = string>(
+  readonly call: <TProcedure, TId extends string = string>(
     id: TId,
     input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
-  ): Promise<
+  ) => Promise<
     RpcEnvelope<
       ProcedureOutput<RpcUnaryProcedure<TProcedure>> & JsonValue,
       TId,
@@ -1301,48 +1301,48 @@ export interface LegacyRpcTransportClient {
       RpcProcedureError<RpcUnaryProcedure<TProcedure>>
     >
   >;
-  request<TProcedure, TId extends string = string>(
+  readonly request: <TProcedure, TId extends string = string>(
     id: TId,
     input: ProcedureInput<RpcUnaryProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcUnaryProcedure<TProcedure>>
-  ): PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId> &
+  ) => PendingRpcRequest<RpcUnaryProcedure<TProcedure>, TId> &
     PendingRpcRequestHeaders<RpcUnaryProcedure<TProcedure>>;
-  batch<const TRequests extends readonly LegacyBatchRequest[]>(
+  readonly batch: <const TRequests extends readonly LegacyBatchRequest[]>(
     requests: TRequests,
     options?: ClientBatchOptions
-  ): Promise<BatchResults<TRequests>>;
-  stream<TProcedure>(
+  ) => Promise<BatchResults<TRequests>>;
+  readonly stream: <TProcedure>(
     id: string,
     input: ProcedureInput<RpcStreamProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcStreamProcedure<TProcedure>>
-  ): AsyncIterable<StreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue>;
+  ) => AsyncIterable<StreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue>;
 }
 
 export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
-  call<TId extends RpcRouteUnaryId<TRoutes>>(
+  readonly call: <TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
-  ): Promise<RpcRouteEnvelope<TRoutes, TId>>;
-  request<TId extends RpcRouteUnaryId<TRoutes>>(
+  ) => Promise<RpcRouteEnvelope<TRoutes, TId>>;
+  readonly request: <TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
-  ): RpcRouteRequest<TRoutes, TId>;
-  batch<
+  ) => RpcRouteRequest<TRoutes, TId>;
+  readonly batch: <
     const TRequests extends readonly [...RpcRouteBatchRequestUnion<TRoutes>[]],
   >(
     requests: TRequests,
     options?: ClientBatchOptions
-  ): Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
+  ) => Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
 }
 
 export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
-  stream<TId extends RpcRouteStreamId<TRoutes>>(
+  readonly stream: <TId extends RpcRouteStreamId<TRoutes>>(
     id: TId,
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
-  ): AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
+  ) => AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
 }
 
 export type RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> =

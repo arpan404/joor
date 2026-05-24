@@ -4721,6 +4721,8 @@ const subpathResponseHeaders: SubpathProcedureResponseHeaders<
 subpathResponseHeaders['cache-control'].toUpperCase();
 
 const client = createClient({ url: '/rpc' });
+// @ts-expect-error legacy client call commands are readonly.
+client.call = async () => procedureEnvelope;
 const clientRequestInit: ClientRequestInit = {
   cache: 'no-store',
   credentials: 'include',
@@ -17839,11 +17841,15 @@ unaryRouteClientShape.batch([
     { headers: { 'x-tenant-id': 'tenant-1' } }
   ),
 ] as const);
+// @ts-expect-error route unary client commands are readonly.
+unaryRouteClientShape.call = routeClient.call;
 const routeStreamClientShape: RpcRouteStreamTransportClient<Routes> =
   routeClient;
 const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
   routeStreamClientShape;
 streamRouteClientShape.stream('users.watch', { userId: '1' });
+// @ts-expect-error route stream client commands are readonly.
+streamRouteClientShape.stream = routeClient.stream;
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
 };
