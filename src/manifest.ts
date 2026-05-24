@@ -205,7 +205,7 @@ export type JoorManifestStreamRouteTransportBodyResultHandler<
 
 export type JoorManifestClientOptions<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = JoorManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestClientOptions<TManifest, TRequest>;
 
 export type JoorManifestRouteId<TManifest> = RpcRouteId<

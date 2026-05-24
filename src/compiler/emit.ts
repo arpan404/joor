@@ -3080,7 +3080,7 @@ export const createRouteStreamRequest: RouteStreamRequestBuilder = <
   ) as RouteStreamRequest<TId>;
 export const createStreamRouteRequest: typeof createRouteStreamRequest =
   createRouteStreamRequest;
-export type GeneratedClientOptions<TRequest extends Request = Request> = Omit<
+export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest> = Omit<
   JoorManifestClientOptions<Manifest, TRequest>,
   'url'
 > & {
@@ -3119,7 +3119,7 @@ export function createTransport(): TransportClient;
 export function createTransport<TRequest extends Request>(
   options: GeneratedClientOptions<TRequest>
 ): TransportClient;
-export function createTransport<TRequest extends Request = Request>(
+export function createTransport<TRequest extends Request = RequiredRuntimeRequest>(
   options?: GeneratedClientOptions<TRequest>
 ): TransportClient {
   const resolved = options ?? ({} as GeneratedClientOptions<Request>);
@@ -3139,7 +3139,7 @@ export function createClient(): GeneratedClient;
 export function createClient<TRequest extends Request>(
   options: GeneratedClientOptions<TRequest>
 ): GeneratedClient;
-export function createClient<TRequest extends Request = Request>(
+export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
   options?: GeneratedClientOptions<TRequest>
 ): GeneratedClient {
   const transport =

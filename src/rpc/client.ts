@@ -22,6 +22,7 @@ import type {
   RpcRequest,
   RpcResponseHeaderValues,
 } from './protocol.js';
+import type { RpcManifestRequiredRuntimeRequest } from './dispatcher.js';
 
 type IsExactRequest<TRequest extends Request> = [Request] extends [TRequest]
   ? [TRequest] extends [Request]
@@ -36,7 +37,9 @@ type ClientRequestFactoryOption<TRequest extends Request> =
 
 export type ClientOptions<
   TManifest extends JoorManifest | undefined = undefined,
-  TRequest extends Request = Request,
+  TRequest extends Request = TManifest extends JoorManifest
+    ? RpcManifestRequiredRuntimeRequest<TManifest>
+    : Request,
 > = {
   url: string;
   fetch?: ClientFetch<TRequest>;
@@ -1373,7 +1376,7 @@ export type RpcManifestRouteStreamTransportClient<
 
 export type RpcManifestClientOptions<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = Omit<
   ClientOptions<TManifest, TRequest>,
   'manifest'
@@ -1522,7 +1525,7 @@ const assertSseResponse = async (response: Response): Promise<void> => {
 
 export function createClient<
   const TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
 ): RpcManifestTransportClient<TManifest>;
@@ -1657,7 +1660,7 @@ export function createClient<TRequest extends Request = Request>(
 
 export const createManifestClient = <
   const TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   options: RpcManifestClientOptions<TManifest, TRequest>

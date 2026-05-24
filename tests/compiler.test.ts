@@ -728,6 +728,15 @@ describe('compiler', () => {
         'JoorManifestClientOptions<Manifest, TRequest>'
       );
       expect(clientSource).toContain(
+        'export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest>'
+      );
+      expect(clientSource).toContain(
+        'export function createTransport<TRequest extends Request = RequiredRuntimeRequest>'
+      );
+      expect(clientSource).toContain(
+        'export function createClient<TRequest extends Request = RequiredRuntimeRequest>'
+      );
+      expect(clientSource).toContain(
         'createManifestRouteProtocolRequest as createTransportRouteProtocolRequest'
       );
       expect(clientSource).toContain(

@@ -5118,6 +5118,47 @@ createRootManifestClient(
   manifestFromSubpath,
   typedJoorSubpathManifestClientOptions
 );
+const requestTypedManifestClientOptions: RpcManifestClientOptions<
+  typeof requestTypedManifest
+> = {
+  url: '/rpc',
+  fetch: typedClientFetch,
+  createRequest: typedClientRequestFactory,
+};
+const requestTypedJoorManifestClientOptions: JoorManifestClientOptions<
+  typeof requestTypedManifest
+> = requestTypedManifestClientOptions;
+const requestTypedRpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
+  typeof requestTypedManifest
+> = requestTypedManifestClientOptions;
+createRootManifestClient(requestTypedManifest, requestTypedManifestClientOptions);
+createRootManifestClient(
+  requestTypedManifest,
+  requestTypedJoorManifestClientOptions
+);
+createRootManifestClient(
+  requestTypedManifest,
+  requestTypedRpcSubpathManifestClientOptions
+);
+createClient({
+  url: '/rpc',
+  manifest: requestTypedManifest,
+  fetch: typedClientFetch,
+  createRequest: typedClientRequestFactory,
+});
+// @ts-expect-error request-typed manifest client options require a matching request factory by default.
+const _missingRequestTypedManifestClientOptions: RpcManifestClientOptions<
+  typeof requestTypedManifest
+> = {
+  url: '/rpc',
+  fetch: typedClientFetch,
+};
+// @ts-expect-error request-typed manifest clients require a matching request factory by default.
+createClient({
+  url: '/rpc',
+  manifest: requestTypedManifest,
+  fetch: typedClientFetch,
+});
 // @ts-expect-error typed client request options require a matching request factory.
 const _missingTypedClientRequestFactory: ClientOptions<
   undefined,
