@@ -1822,7 +1822,7 @@ const headersToJsonObject = (
   request: ContextRequestSource,
   prepared: PreparedProcedure
 ): ProcedureCacheHeaderValues => {
-  const output: ProcedureCacheHeaderValues = {};
+  const output: Record<string, string> = {};
   if (prepared.headerKeys !== undefined) {
     for (const key of prepared.headerKeys) {
       const value = request.getHeader(key);

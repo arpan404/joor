@@ -122,7 +122,9 @@ export interface CompiledExecutionState {
 }
 
 export type CompiledCachedProcedureHeaders = Readonly<Record<string, string>>;
-export type CompiledProcedureCacheHeaderValues = Record<string, string>;
+export type CompiledProcedureCacheHeaderValues = Readonly<
+  Record<string, string>
+>;
 
 export interface CompiledCachedProcedureSuccess {
   readonly data: JsonValue;
@@ -494,7 +496,7 @@ const headerObject = (
   request: ContextRequestSource,
   procedure: ProcedureRuntime
 ): CompiledProcedureCacheHeaderValues => {
-  const output: CompiledProcedureCacheHeaderValues = {};
+  const output: Record<string, string> = {};
   if (procedure.headers?.kind !== 'object') return output;
   for (const key of Object.keys(procedure.headers.shape)) {
     const value = request.getHeader(key);

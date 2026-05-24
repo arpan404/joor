@@ -12235,6 +12235,8 @@ const cachedProcedureHeaders: CompiledCachedProcedureHeaders = {
   'cache-control': 'private',
 };
 cachedProcedureHeaders['cache-control']?.toUpperCase();
+// @ts-expect-error compiled cached procedure header maps are readonly.
+cachedProcedureHeaders['cache-control'] = 'public';
 const rootCompiledCachedProcedureHeaders: RootCompiledCachedProcedureHeaders =
   cachedProcedureHeaders;
 rootCompiledCachedProcedureHeaders['cache-control']?.toUpperCase();
@@ -12242,6 +12244,8 @@ const procedureCacheHeaderValues: CompiledProcedureCacheHeaderValues = {
   authorization: 'Bearer token',
 };
 procedureCacheHeaderValues['authorization']?.toUpperCase();
+// @ts-expect-error compiled procedure cache header values are readonly.
+procedureCacheHeaderValues.authorization = 'Bearer other';
 const rootCompiledProcedureCacheHeaderValues: RootCompiledProcedureCacheHeaderValues =
   procedureCacheHeaderValues;
 rootCompiledProcedureCacheHeaderValues['authorization']?.toUpperCase();
