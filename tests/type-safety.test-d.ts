@@ -4031,6 +4031,10 @@ const requiredProcedureSuccess: ProcedureSuccess<
   headers: { 'cache-control': 'private' },
 };
 requiredProcedureSuccess.headers['cache-control'].toUpperCase();
+// @ts-expect-error procedure success discriminants are readonly.
+requiredProcedureSuccess.kind = 'error';
+// @ts-expect-error procedure success data is readonly.
+requiredProcedureSuccess.data = { id: '2', name: 'Ada' };
 // @ts-expect-error procedure success headers are readonly.
 requiredProcedureSuccess.headers = { 'cache-control': 'public' };
 // @ts-expect-error procedure successes require declared response headers.
@@ -4097,6 +4101,10 @@ const subpathProcedureEnvelope: SubpathProcedureRpcEnvelope<
 };
 const subpathProcedureEnvelopeId: 'users.get' = subpathProcedureEnvelope.id;
 subpathProcedureEnvelopeId.toUpperCase();
+// @ts-expect-error procedure RPC envelope ids are readonly.
+subpathProcedureEnvelope.id = 'users.authenticated';
+// @ts-expect-error procedure RPC envelope data is readonly.
+subpathProcedureEnvelope.data = { id: '2', name: 'Ada' };
 const subpathProcedureEnvelopeWithHeaders: SubpathProcedureRpcEnvelope<
   { id: string; name: string },
   'users.get',
@@ -4135,6 +4143,13 @@ if (rootProcedureFailureResult.kind === 'error') {
     rootProcedureFailureResult.error.code;
   rootProcedureFailureCode.toUpperCase();
   rootProcedureFailureResult.error.details.message.toUpperCase();
+  // @ts-expect-error procedure failure errors are readonly.
+  rootProcedureFailureResult.error = {
+    code: 'NOT_FOUND',
+    message: 'Missing',
+    status: 404,
+    details: { message: 'Missing' },
+  };
 }
 const _missingSubpathProcedureFailureDetails: SubpathProcedureFailure<
   'NOT_FOUND',

@@ -416,16 +416,16 @@ export type RpcEnvelope<
   TError extends RpcError = RpcError,
 > =
   | ({
-      ok: true;
-      id: TId;
-      data: TData;
-      traceId: string;
+      readonly ok: true;
+      readonly id: TId;
+      readonly data: TData;
+      readonly traceId: string;
     } & RpcEnvelopeSuccessHeaders<THeaders>)
   | {
-      ok: false;
-      id: TId;
-      error: TError;
-      traceId: string;
+      readonly ok: false;
+      readonly id: TId;
+      readonly error: TError;
+      readonly traceId: string;
     };
 
 export type { JoorContext } from '../context/context.js';

@@ -46,22 +46,22 @@ export type ProcedureSuccess<
   TData extends JsonValue,
   THeaders extends object = ProcedureResponseHeaderValues,
 > = {
-  kind: 'success';
-  data: TData;
+  readonly kind: 'success';
+  readonly data: TData;
 } & ProcedureSuccessHeaders<THeaders>;
 
 export interface ProcedureFailure<
   TCode extends string,
   TDetails extends JsonValue = JsonValue,
 > {
-  kind: 'error';
-  error: {
-    code: TCode;
-    message: string;
-    status: number;
+  readonly kind: 'error';
+  readonly error: {
+    readonly code: TCode;
+    readonly message: string;
+    readonly status: number;
   } & (JsonValue extends TDetails
-    ? { details?: TDetails }
-    : { details: TDetails });
+    ? { readonly details?: TDetails }
+    : { readonly details: TDetails });
 }
 
 export type ProcedureResult<
