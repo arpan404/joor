@@ -2420,7 +2420,7 @@ const executeStream = async <TId extends string>(
 export function createRpcHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: HandlerOptionsArgs<
@@ -2505,7 +2505,7 @@ export const createRpcHandlerFor =
 export function createRpcBodyHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: HandlerOptionsWithPreflightArgs<
@@ -2570,7 +2570,7 @@ export const createRpcBodyHandlerFor =
 export function createRpcBodyResultHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: HandlerOptionsWithPreflightArgs<

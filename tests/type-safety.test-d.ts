@@ -2196,6 +2196,41 @@ const _wrongRequestTypedManifestJoorHandlerOptions: JoorHandlerOptionsFor<
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestRpcHandler = createRpcHandler(
+  requestTypedManifest,
+  requestTypedManifestDefaultHandlerOptions
+);
+requestTypedManifestRpcHandler(requestTypedProcedureRequest);
+requestTypedManifestRpcHandler(
+  // @ts-expect-error RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestRpcBodyHandler = createRpcBodyHandler(
+  requestTypedManifest,
+  requestTypedManifestDefaultHandlerOptions
+);
+requestTypedManifestRpcBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestRpcBodyHandler(
+  // @ts-expect-error RPC body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestRpcBodyResultHandler = createRpcBodyResultHandler(
+  requestTypedManifest,
+  requestTypedManifestDefaultHandlerOptions
+);
+requestTypedManifestRpcBodyResultHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestRpcBodyResultHandler(
+  // @ts-expect-error RPC body result handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
 const requestTypedManifestCloudflareFetchOptions: CloudflareFetchOptionsFor<
   typeof requestTypedManifest,
   readonly [typeof usersPlugin]
