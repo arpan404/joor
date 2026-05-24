@@ -3,8 +3,10 @@ import type { Schema } from './types.js';
 
 export type OpenApiSchema = Readonly<JsonObject>;
 
+type MutableJsonObject = Record<string, JsonValue>;
+
 const withMeta = (schema: JsonObject, source: Schema): JsonObject => {
-  const next: JsonObject = { ...schema };
+  const next: MutableJsonObject = { ...schema };
   if (source.meta.description !== undefined)
     next['description'] = source.meta.description;
   if (source.meta.example !== undefined) next['example'] = source.meta.example;
@@ -15,7 +17,7 @@ const withMeta = (schema: JsonObject, source: Schema): JsonObject => {
 export const toJsonSchema = (schema: Schema): OpenApiSchema => {
   switch (schema.kind) {
     case 'string': {
-      const output: JsonObject = { type: 'string' };
+      const output: MutableJsonObject = { type: 'string' };
       if (schema.minLength !== undefined)
         output['minLength'] = schema.minLength;
       if (schema.maxLength !== undefined)
@@ -24,7 +26,7 @@ export const toJsonSchema = (schema: Schema): OpenApiSchema => {
       return withMeta(output, schema);
     }
     case 'number': {
-      const output: JsonObject = {
+      const output: MutableJsonObject = {
         type: schema.integer === true ? 'integer' : 'number',
       };
       if (schema.minimum !== undefined) output['minimum'] = schema.minimum;
@@ -41,7 +43,7 @@ export const toJsonSchema = (schema: Schema): OpenApiSchema => {
         schema
       );
     case 'array': {
-      const output: JsonObject = {
+      const output: MutableJsonObject = {
         type: 'array',
         items: toJsonSchema(schema.item),
       };
@@ -50,14 +52,14 @@ export const toJsonSchema = (schema: Schema): OpenApiSchema => {
       return withMeta(output, schema);
     }
     case 'object': {
-      const properties: JsonObject = {};
+      const properties: MutableJsonObject = {};
       const required: JsonValue[] = [];
       for (const [key, child] of Object.entries(schema.shape)) {
         const propertySchema = child.kind === 'optional' ? child.inner : child;
         properties[key] = toJsonSchema(propertySchema);
         if (child.kind !== 'optional') required.push(key);
       }
-      const output: JsonObject = {
+      const output: MutableJsonObject = {
         type: 'object',
         properties,
         additionalProperties: !schema.strictObject,

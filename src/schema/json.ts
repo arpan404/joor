@@ -1,7 +1,7 @@
 export type JsonPrimitive = null | string | number | boolean;
 
 export interface JsonObject {
-  [key: string]: JsonValue;
+  readonly [key: string]: JsonValue;
 }
 
 export type JsonValue = JsonPrimitive | readonly JsonValue[] | JsonObject;

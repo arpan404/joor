@@ -4468,6 +4468,8 @@ rootJsonPrimitive.toUpperCase();
 if (isJsonObject(rootParsedJson)) {
   const rootJsonObject: JsonObject = rootParsedJson;
   rootJsonObject['email'];
+  // @ts-expect-error JSON object entries are readonly.
+  rootJsonObject['email'] = 'other@example.com';
 }
 const rootValidation: ValidationResult<Infer<typeof rootUserSchema>> = validate(
   rootUserSchema,
@@ -4523,6 +4525,8 @@ const schemaSubpathJson: SchemaSubpathJsonValue = schemaSubpathUser;
 if (isSchemaSubpathJsonObject(schemaSubpathJson)) {
   const schemaSubpathObject: SchemaSubpathJsonObject = schemaSubpathJson;
   schemaSubpathObject['id'];
+  // @ts-expect-error JSON object entries are readonly across subpath exports.
+  schemaSubpathObject['id'] = '2';
 }
 const schemaSubpathValidation: SchemaSubpathValidationResult<
   SchemaSubpathInfer<typeof schemaSubpathUserSchema>
