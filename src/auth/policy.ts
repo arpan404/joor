@@ -3,7 +3,7 @@ import type { ProcedureFailure } from '../procedure/result.js';
 import type { MaybePromise } from '../procedure/types.js';
 import type { JsonValue } from '../schema/json.js';
 
-export type AuthPolicyHeaderValues = Record<string, string | undefined>;
+export type AuthPolicyHeaderValues = Readonly<Record<string, string | undefined>>;
 
 export type AuthPolicyResult<TAuth extends object> =
   | TAuth
@@ -19,7 +19,7 @@ export interface AuthPolicy<
   TAuth extends object,
   TRequest extends Request = Request,
 > {
-  name: string;
+  readonly name: string;
   readonly __requestType?: (request: TRequest) => TRequest;
   authenticate(
     ctx: JoorContext<

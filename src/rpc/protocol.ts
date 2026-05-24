@@ -41,7 +41,7 @@ export type RpcBatchRequest<
   TRequests extends readonly RpcRequest[] = readonly RpcRequest[],
 > = Readonly<TRequests>;
 
-export type RpcResponseHeaderValues = Record<string, string>;
+export type RpcResponseHeaderValues = Readonly<Record<string, string>>;
 
 type KnownHeaderKeys<THeaders extends object> = {
   [TKey in keyof THeaders]: string extends TKey
@@ -63,7 +63,7 @@ type RequiredKnownHeaderKeys<THeaders extends object> = keyof {
 };
 
 type StringResponseHeaders<THeaders extends object> = {
-  [TKey in KnownHeaderKeys<THeaders>]: Exclude<
+  readonly [TKey in KnownHeaderKeys<THeaders>]: Exclude<
     THeaders[TKey],
     undefined
   > extends string
@@ -71,8 +71,8 @@ type StringResponseHeaders<THeaders extends object> = {
     : never;
 } & (string extends keyof THeaders
   ? Exclude<THeaders[string], undefined> extends string
-    ? Record<string, Exclude<THeaders[string], undefined>>
-    : Record<string, never>
+    ? Readonly<Record<string, Exclude<THeaders[string], undefined>>>
+    : Readonly<Record<string, never>>
   : object);
 
 type RpcSuccessHeaders<THeaders extends object> = [THeaders] extends [

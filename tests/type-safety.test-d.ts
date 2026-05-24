@@ -1897,6 +1897,10 @@ const usersPlugin = createPlugin({
     };
   },
 });
+// @ts-expect-error plugin names are readonly.
+usersPlugin.name = 'accounts';
+// @ts-expect-error plugin setup functions are readonly.
+usersPlugin.setup = () => ({});
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
 // @ts-expect-error configs expose readonly plugin lists.
@@ -3316,6 +3320,8 @@ const authPolicy = createAuthPolicy<
     return { userId: '1' };
   },
 });
+// @ts-expect-error auth policy names are readonly.
+authPolicy.name = 'other-session';
 const requestTypedAuthPolicy = createAuthPolicy<
   Services,
   Record<string, never>,
@@ -3375,6 +3381,8 @@ const authPolicyHeaderValues: AuthPolicyHeaderValues = {
   'x-optional': undefined,
 };
 authPolicyHeaderValues['authorization']?.toUpperCase();
+// @ts-expect-error auth policy header values are readonly.
+authPolicyHeaderValues.authorization = 'Bearer other';
 type _WrongAuthPolicyHeaderValues = AuthPolicy<
   Services,
   // @ts-expect-error auth policy headers must be HTTP string values.
@@ -17306,6 +17314,8 @@ protocolSuccess.id = 'users.authenticated';
 protocolSuccess.data = { id: '2' };
 // @ts-expect-error protocol success headers are readonly.
 protocolSuccess.headers = { 'cache-control': 'public' };
+// @ts-expect-error protocol success header values are readonly.
+protocolSuccess.headers['cache-control'] = 'public';
 const _extraProtocolSuccess: RpcSuccess<
   { id: string },
   'users.get',
@@ -17324,6 +17334,8 @@ const rpcResponseHeaderValues: RpcResponseHeaderValues = {
   'cache-control': 'private',
 };
 rpcResponseHeaderValues['cache-control']?.toUpperCase();
+// @ts-expect-error protocol response header values are readonly.
+rpcResponseHeaderValues['cache-control'] = 'public';
 const _wrongProtocolSuccessHeaders: RpcSuccess<
   { id: string },
   'users.get',

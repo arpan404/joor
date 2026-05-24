@@ -1,6 +1,6 @@
 export interface JoorPlugin<TServices extends object = Record<string, never>> {
-  name: string;
-  setup(): TServices | Promise<TServices>;
+  readonly name: string;
+  readonly setup: () => TServices | Promise<TServices>;
 }
 
 export const createPlugin = <TServices extends object>(
