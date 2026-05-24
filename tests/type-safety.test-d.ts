@@ -13668,6 +13668,35 @@ exactExpressHandlerOptions.hooks?.beforeRequest?.(
   // @ts-expect-error exact Express options preserve route-specific hook bodies.
   manifestStreamRouteHandlerHookContext
 );
+const requestTypedExpressHandlerOptions: ExpressHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = { ...typedRequestHandlerOptions, hostname: '127.0.0.1' };
+const requestTypedExpressHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedExpressHandlerOptions
+> = hookAppRequest;
+requestTypedExpressHandlerOptionsRequest.requestId.toUpperCase();
+const runtimeSubpathRequestTypedExpressHandlerOptions: RuntimeSubpathExpressHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedExpressHandlerOptions;
+requestTypedExpressHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedExpressHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Express options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedExpressHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 expressUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 expressStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const expressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
@@ -13679,10 +13708,22 @@ const exactExpressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = [exactExpressHandlerOptions];
+const requestTypedExpressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedExpressHandlerOptions];
 const expressRouteUnaryHandlerOptionsArgs: ExpressRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = expressHandlerOptionsArgs;
+const requestTypedExpressRouteUnaryHandlerOptionsArgs: ExpressRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedExpressHandlerOptionsArgs;
 const expressUnaryRouteHandlerOptionsArgs: ExpressUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13700,11 +13741,16 @@ exactExpressHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedExpressRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 expressStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const expressHandler: ExpressRequestHandler = createExpressHandler(
   manifest,
   expressHandlerOptions
 );
+createExpressHandler(manifest, requestTypedExpressHandlerOptions);
 const runtimeSubpathExpressHandler: RuntimeSubpathExpressRequestHandler =
   createRuntimeSubpathExpressHandler(
     manifest,
@@ -13962,6 +14008,35 @@ exactFastifyHandlerOptions.hooks?.beforeRequest?.(
   // @ts-expect-error exact Fastify options preserve route-specific hook bodies.
   manifestStreamRouteHandlerHookContext
 );
+const requestTypedFastifyHandlerOptions: FastifyHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = { ...typedRequestHandlerOptions, hostname: 'app' };
+const requestTypedFastifyHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedFastifyHandlerOptions
+> = hookAppRequest;
+requestTypedFastifyHandlerOptionsRequest.requestId.toUpperCase();
+const runtimeSubpathRequestTypedFastifyHandlerOptions: RuntimeSubpathFastifyHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedFastifyHandlerOptions;
+requestTypedFastifyHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedFastifyHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Fastify options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedFastifyHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 fastifyUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 fastifyStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const fastifyHandlerOptionsArgs: FastifyHandlerOptionsArgs<
@@ -13973,10 +14048,22 @@ const exactFastifyHandlerOptionsArgs: FastifyHandlerOptionsArgs<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = [exactFastifyHandlerOptions];
+const requestTypedFastifyHandlerOptionsArgs: FastifyHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedFastifyHandlerOptions];
 const fastifyRouteUnaryHandlerOptionsArgs: FastifyRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = fastifyHandlerOptionsArgs;
+const requestTypedFastifyRouteUnaryHandlerOptionsArgs: FastifyRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedFastifyHandlerOptionsArgs;
 const fastifyUnaryRouteHandlerOptionsArgs: FastifyUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13994,11 +14081,16 @@ exactFastifyHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedFastifyRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 fastifyStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const fastifyHandler: FastifyHandler = createFastifyHandler(
   manifest,
   fastifyHandlerOptions
 );
+createFastifyHandler(manifest, requestTypedFastifyHandlerOptions);
 const syncFastifyHandler: FastifyHandler = () => undefined;
 const runtimeSubpathFastifyHandler: RuntimeSubpathFastifyHandler =
   createRuntimeSubpathFastifyHandler(
@@ -14120,6 +14212,35 @@ exactKoaHandlerOptions.hooks?.beforeRequest?.(
   // @ts-expect-error exact Koa options preserve route-specific hook bodies.
   manifestStreamRouteHandlerHookContext
 );
+const requestTypedKoaHandlerOptions: KoaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = { ...typedRequestHandlerOptions, hostname: 'app' };
+const requestTypedKoaHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedKoaHandlerOptions
+> = hookAppRequest;
+requestTypedKoaHandlerOptionsRequest.requestId.toUpperCase();
+const runtimeSubpathRequestTypedKoaHandlerOptions: RuntimeSubpathKoaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedKoaHandlerOptions;
+requestTypedKoaHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedKoaHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Koa options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedKoaHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 koaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 koaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const koaHandlerOptionsArgs: KoaHandlerOptionsArgs<
@@ -14131,10 +14252,22 @@ const exactKoaHandlerOptionsArgs: KoaHandlerOptionsArgs<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = [exactKoaHandlerOptions];
+const requestTypedKoaHandlerOptionsArgs: KoaHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedKoaHandlerOptions];
 const koaRouteUnaryHandlerOptionsArgs: KoaRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = koaHandlerOptionsArgs;
+const requestTypedKoaRouteUnaryHandlerOptionsArgs: KoaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedKoaHandlerOptionsArgs;
 const koaUnaryRouteHandlerOptionsArgs: KoaUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14152,11 +14285,16 @@ exactKoaHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedKoaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 koaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const koaMiddleware: KoaMiddleware = createKoaHandler(
   manifest,
   koaHandlerOptions
 );
+createKoaHandler(manifest, requestTypedKoaHandlerOptions);
 const syncKoaMiddleware: KoaMiddleware = () => undefined;
 const runtimeSubpathKoaMiddleware: RuntimeSubpathKoaMiddleware =
   createRuntimeSubpathKoaHandler(manifest, runtimeSubpathKoaHandlerOptions);
@@ -14470,10 +14608,26 @@ const nodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const requestTypedNodeRpcRequestHandlerOptions: NodeRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const requestTypedNodeRpcRequestHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedNodeRpcRequestHandlerOptions
+> = hookAppRequest;
+requestTypedNodeRpcRequestHandlerOptionsRequest.requestId.toUpperCase();
 const nodeRouteUnaryRpcRequestHandlerOptions: NodeRouteUnaryRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestUnaryRouteHandlerOptions;
+const requestTypedNodeRouteUnaryRpcRequestHandlerOptions: NodeRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNodeRpcRequestHandlerOptions;
 const nodeUnaryRouteRpcRequestHandlerOptions: NodeUnaryRouteRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14529,6 +14683,12 @@ const runtimeSubpathNodeRpcRequestHandlerOptions: RuntimeSubpathNodeRpcRequestHa
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nodeRpcRequestHandlerOptions;
+const runtimeSubpathRequestTypedNodeRpcRequestHandlerOptions: RuntimeSubpathNodeRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNodeRpcRequestHandlerOptions;
 const runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions: RuntimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14549,10 +14709,22 @@ const nodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRpcRequestHandlerOptions, '127.0.0.1'];
+const requestTypedNodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedNodeRpcRequestHandlerOptions, '127.0.0.1'];
 const nodeRouteUnaryRpcRequestHandlerOptionsArgs: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRouteUnaryRpcRequestHandlerOptions];
+const requestTypedNodeRouteUnaryRpcRequestHandlerOptionsArgs: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedNodeRouteUnaryRpcRequestHandlerOptions];
 const nodeUnaryRouteRpcRequestHandlerOptionsArgs: NodeUnaryRouteRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14609,6 +14781,12 @@ const runtimeSubpathNodeRpcRequestHandlerOptionsArgs: RuntimeSubpathNodeRpcReque
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nodeRpcRequestHandlerOptionsArgs;
+const runtimeSubpathRequestTypedNodeRpcRequestHandlerOptionsArgs: RuntimeSubpathNodeRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedNodeRpcRequestHandlerOptionsArgs;
 const runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsArgs: RuntimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14699,6 +14877,19 @@ runtimeSubpathNodeRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeReque
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+runtimeSubpathRequestTypedNodeRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedNodeRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Node handler option args reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+requestTypedNodeRouteUnaryRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -14714,6 +14905,15 @@ runtimeSubpathNodeRouteUnaryRpcRequestHandlerOptions.hooks?.beforeRequest?.(
 runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathRequestTypedNodeRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedNodeRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Node handler options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
 );
 runtimeSubpathNodeRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathNodeListenOptionsBase.plugins?.[0]?.name.toUpperCase();
@@ -14775,6 +14975,22 @@ const exactListenOptions: ListenOptionsFor<
 const exactListenOptionsBody: HandlerOptionsBody<typeof exactListenOptions> =
   manifestRouteRequest;
 exactListenOptionsBody.input.id.toUpperCase();
+const requestTypedListenOptions: ListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = { ...typedRequestHandlerOptions, port: 3030 };
+const requestTypedNodeListenOptions: NodeListenOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedListenOptions;
+const requestTypedListenOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedListenOptions
+> = hookAppRequest;
+requestTypedListenOptionsRequest.requestId.toUpperCase();
 exactListenOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -14784,7 +15000,17 @@ exactListenOptions.hooks?.beforeRequest?.(
   // @ts-expect-error exact Node listen options preserve route-specific hook bodies.
   manifestStreamRouteHandlerHookContext
 );
+requestTypedNodeListenOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedNodeListenOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Node listen options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const nodeServer: NodeServer = listen(manifest, typedListenOptions);
+listen(manifest, requestTypedListenOptions);
 nodeServer.close();
 nodeServer.address();
 nodeServer.ref().unref();
