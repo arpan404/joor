@@ -282,9 +282,12 @@ const emitProfileDispatcher = async (
     'DefineConfigFor',
     'DefineRouteStreamConfigFor',
     'DefineRouteUnaryConfigFor',
+    'JoorConfigBody',
     'JoorConfigContext',
     'JoorConfigFor',
+    'JoorConfigManifest',
     'JoorConfigRequest',
+    'JoorConfigServices',
     'JoorRouteStreamConfigFor',
     'JoorRouteUnaryConfigFor',
   ];
@@ -505,7 +508,10 @@ export type NativeStreamRouteConfig<TPlugins extends readonly JoorPlugin<object>
   NativeRouteStreamConfig<TPlugins, TBody, TRequest>;
 export type NativeStreamRouteConfigFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
   NativeRouteStreamConfigFor<TPlugins, TBody, TRequest>;
+export type NativeConfigBody<TConfig> = JoorConfigBody<TConfig>;
+export type NativeConfigManifest<TConfig> = JoorConfigManifest<TConfig>;
 export type NativeConfigRequest<TConfig> = JoorConfigRequest<TConfig>;
+export type NativeConfigServices<TConfig> = JoorConfigServices<TConfig>;
 export type NativeDefineConfig = DefineConfigFor<NativeManifest>;
 export type NativeDefineRouteUnaryConfig = DefineRouteUnaryConfigFor<NativeManifest>;
 export type NativeDefineUnaryRouteConfig = NativeDefineRouteUnaryConfig;

@@ -83,6 +83,12 @@ export type JoorConfigContext<TConfig> = TConfig extends {
     : Record<string, never>
   : Record<string, never>;
 
+export type JoorConfigServices<TConfig> = JoorConfigContext<TConfig>;
+
+export type JoorConfigBody<TConfig> = HandlerOptionsBody<TConfig>;
+
+export type JoorConfigManifest<TConfig> = HandlerOptionsManifest<TConfig>;
+
 export type JoorConfigRequest<TConfig> =
   [HandlerOptionsRequest<TConfig>] extends [never]
     ? Request
