@@ -45,10 +45,10 @@ export interface UnaryProcedureConfig<
   TAuth extends object,
   TRequest extends Request = Request,
 > {
-  input: TInput;
-  headers?: THeaders;
-  responseHeaders?: TResponseHeaders;
-  auth?: AuthPolicy<
+  readonly input: TInput;
+  readonly headers?: THeaders;
+  readonly responseHeaders?: TResponseHeaders;
+  readonly auth?: AuthPolicy<
     TServices,
     THeaders extends Schema
       ? InferSchema<THeaders> & object
@@ -56,9 +56,9 @@ export interface UnaryProcedureConfig<
     TAuth,
     TRequest
   >;
-  output: TOutput;
-  errors?: TErrors;
-  meta?: ProcedureMeta;
+  readonly output: TOutput;
+  readonly errors?: TErrors;
+  readonly meta?: ProcedureMeta;
   handler(
     ctx: JoorContext<
       TServices,
@@ -90,11 +90,11 @@ export interface ContextlessUnaryProcedureConfig<
   TOutput extends Schema,
   TErrors extends ErrorSchemas,
 > {
-  context: false;
-  input: TInput;
-  output: TOutput;
-  errors?: TErrors;
-  meta?: ProcedureMeta;
+  readonly context: false;
+  readonly input: TInput;
+  readonly output: TOutput;
+  readonly errors?: TErrors;
+  readonly meta?: ProcedureMeta;
   handler(
     input: InferSchema<TInput>
   ): MaybePromise<
@@ -116,9 +116,9 @@ export interface StreamProcedureConfig<
   TAuth extends object,
   TRequest extends Request = Request,
 > {
-  input: TInput;
-  headers?: THeaders;
-  auth?: AuthPolicy<
+  readonly input: TInput;
+  readonly headers?: THeaders;
+  readonly auth?: AuthPolicy<
     TServices,
     THeaders extends Schema
       ? InferSchema<THeaders> & object
@@ -126,9 +126,9 @@ export interface StreamProcedureConfig<
     TAuth,
     TRequest
   >;
-  stream: TStream;
-  errors?: TErrors;
-  meta?: ProcedureMeta;
+  readonly stream: TStream;
+  readonly errors?: TErrors;
+  readonly meta?: ProcedureMeta;
   handler(
     ctx: JoorContext<
       TServices,

@@ -22,7 +22,8 @@ export type ErrorCode<TErrors extends ErrorSchemas> = [TErrors] extends [
   : Extract<keyof TErrors, string>;
 
 export type ErrorDetails<TErrors extends ErrorSchemas> = {
-  [TCode in ErrorCode<TErrors>]: InferSchema<TErrors[TCode]> & JsonValue;
+  readonly [TCode in ErrorCode<TErrors>]: InferSchema<TErrors[TCode]> &
+    JsonValue;
 };
 
 export interface ProcedureTypes<
@@ -37,16 +38,16 @@ export interface ProcedureTypes<
   TErrorDetails = unknown,
   TRequest extends Request = Request,
 > {
-  input: TInput;
-  output: TOutput;
-  stream: TStream;
-  errors: TErrors;
-  errorDetails?: TErrorDetails;
-  headers: THeaders;
-  responseHeaders: TResponseHeaders;
-  auth: TAuth;
-  services: TServices;
-  request?: TRequest;
+  readonly input: TInput;
+  readonly output: TOutput;
+  readonly stream: TStream;
+  readonly errors: TErrors;
+  readonly errorDetails?: TErrorDetails;
+  readonly headers: THeaders;
+  readonly responseHeaders: TResponseHeaders;
+  readonly auth: TAuth;
+  readonly services: TServices;
+  readonly request?: TRequest;
   readonly __requestType?: (request: TRequest) => TRequest;
 }
 
@@ -60,17 +61,17 @@ export type ContextlessProcedureHandler = (
 ) => MaybePromise<ProcedureResult<JsonValue, string> | JsonValue>;
 
 export interface ProcedureRuntime {
-  id?: string;
-  input: Schema;
-  headers?: HeaderObjectSchema;
-  responseHeaders?: HeaderObjectSchema;
-  auth?: AuthPolicy<object, AuthPolicyHeaderValues, object>;
-  output?: Schema;
-  stream?: Schema;
-  errors: ErrorSchemas;
-  meta: ProcedureMeta;
-  context?: 'none';
-  contextlessHandler?: ContextlessProcedureHandler;
+  readonly id?: string;
+  readonly input: Schema;
+  readonly headers?: HeaderObjectSchema;
+  readonly responseHeaders?: HeaderObjectSchema;
+  readonly auth?: AuthPolicy<object, AuthPolicyHeaderValues, object>;
+  readonly output?: Schema;
+  readonly stream?: Schema;
+  readonly errors: ErrorSchemas;
+  readonly meta: ProcedureMeta;
+  readonly context?: 'none';
+  readonly contextlessHandler?: ContextlessProcedureHandler;
   handler(
     ctx: JoorContext<object, object, object, object>,
     input: JsonValue
@@ -92,7 +93,7 @@ export interface Procedure<
   TServices extends object = Record<string, never>,
   TRequest extends Request = Request,
 > extends ProcedureRuntime {
-  types?: ProcedureTypes<
+  readonly types?: ProcedureTypes<
     InferSchema<TInput>,
     InferSchema<TOutput>,
     TStream extends Schema ? InferSchema<TStream> : never,
@@ -343,18 +344,18 @@ export type ProcedureError<TProcedure> = {
 }[ProcedureErrorCode<TProcedure>];
 
 export interface ProcedureMeta {
-  kind?: 'query' | 'mutation' | 'subscription';
-  summary?: string;
-  description?: string;
-  tags?: string[];
-  auth?: string[];
-  cache?: {
-    ttl: string;
-    key?: readonly string[];
+  readonly kind?: 'query' | 'mutation' | 'subscription';
+  readonly summary?: string;
+  readonly description?: string;
+  readonly tags?: readonly string[];
+  readonly auth?: readonly string[];
+  readonly cache?: {
+    readonly ttl: string;
+    readonly key?: readonly string[];
   };
-  rateLimit?: {
-    limit: number;
-    window: string;
+  readonly rateLimit?: {
+    readonly limit: number;
+    readonly window: string;
   };
 }
 
@@ -362,12 +363,12 @@ export type RpcError<
   TCode extends string = string,
   TDetails extends JsonValue = JsonValue,
 > = {
-  code: TCode;
-  message: string;
-  status: number;
+  readonly code: TCode;
+  readonly message: string;
+  readonly status: number;
 } & (JsonValue extends TDetails
-  ? { details?: TDetails }
-  : { details: TDetails });
+  ? { readonly details?: TDetails }
+  : { readonly details: TDetails });
 
 type KnownResponseHeaderKeys<THeaders extends object> = {
   [TKey in keyof THeaders]: string extends TKey

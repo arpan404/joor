@@ -4197,6 +4197,10 @@ const rootProcedureMeta: ProcedureMeta = {
   cache: { ttl: '1m', key: ['id'] },
 };
 rootProcedureMeta.kind?.toUpperCase();
+// @ts-expect-error procedure meta kind is readonly.
+rootProcedureMeta.kind = 'mutation';
+// @ts-expect-error procedure cache metadata is readonly.
+rootProcedureMeta.cache.ttl = '2m';
 const rootProcedureErrors = {
   NOT_FOUND: t.object({ message: t.string() }),
 } satisfies ErrorSchemas;
@@ -4207,6 +4211,8 @@ const rootProcedureErrorDetails: ErrorDetails<typeof rootProcedureErrors> = {
   NOT_FOUND: { message: 'Missing' },
 };
 rootProcedureErrorDetails.NOT_FOUND.message.toUpperCase();
+// @ts-expect-error procedure error detail maps are readonly.
+rootProcedureErrorDetails.NOT_FOUND = { message: 'Other' };
 const rootContextlessHandler: ContextlessProcedureHandler = () => ({
   ok: true,
 });
@@ -4230,6 +4236,8 @@ const rootContextlessProcedureConfig: ContextlessUnaryProcedureConfig<
   },
 };
 rootContextlessProcedureConfig.input.kind.toUpperCase();
+// @ts-expect-error contextless procedure configs expose readonly schemas.
+rootContextlessProcedureConfig.input = rootConfigInputSchema;
 const rootUnaryProcedureConfig: UnaryProcedureConfig<
   typeof rootConfigInputSchema,
   typeof rootConfigOutputSchema,
@@ -4251,6 +4259,8 @@ const rootUnaryProcedureConfig: UnaryProcedureConfig<
   },
 };
 rootUnaryProcedureConfig.output.kind.toUpperCase();
+// @ts-expect-error unary procedure configs expose readonly output schemas.
+rootUnaryProcedureConfig.output = rootConfigOutputSchema;
 const rootStreamProcedureConfig: StreamProcedureConfig<
   typeof rootConfigInputSchema,
   typeof rootConfigStreamSchema,
@@ -4274,6 +4284,8 @@ const rootStreamProcedureConfig: StreamProcedureConfig<
   },
 };
 rootStreamProcedureConfig.stream.kind.toUpperCase();
+// @ts-expect-error stream procedure configs expose readonly stream schemas.
+rootStreamProcedureConfig.stream = rootConfigStreamSchema;
 const rootProcedureTypes: ProcedureTypes<
   { id: string },
   { ok: boolean },
@@ -4296,6 +4308,8 @@ const rootProcedureTypes: ProcedureTypes<
   errorDetails: { NOT_FOUND: { message: 'Missing' } },
 };
 rootProcedureTypes.services.users.findById(rootProcedureTypes.input.id);
+// @ts-expect-error procedure type carriers are readonly.
+rootProcedureTypes.input = { id: '2' };
 // @ts-expect-error header schemas must be object schemas.
 const _wrongHeaderSchema: HeaderObjectSchema = t.string();
 // @ts-expect-error header schema values must be string-like HTTP values.
@@ -4330,6 +4344,8 @@ const rootProcedureRuntimeWithHeaders: ProcedureRuntime = {
   },
 };
 rootProcedureRuntimeWithHeaders.headers?.kind.toUpperCase();
+// @ts-expect-error procedure runtime schemas are readonly.
+rootProcedureRuntimeWithHeaders.input = rootUserSchema;
 const _wrongRuntimeHeaderSchema: ProcedureRuntime = {
   input: rootUserSchema,
   // @ts-expect-error runtime procedure headers must use header object schemas.
