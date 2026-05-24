@@ -772,7 +772,7 @@ const createNodeRpcRequestHandlerWithOptions = <
 ): NodeRpcRequestHandler => {
   const handler = createRpcTransportBodyResultHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>,
+    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     false
   );
   return createNodeTransportRequestHandler(

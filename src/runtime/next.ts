@@ -266,7 +266,7 @@ export function createNextRouteHandlers<TManifest extends JoorManifest>(
 ): NextRouteHandlers {
   return createRouteHandlers<never, Request, TManifest>(
     manifest,
-    options as HandlerOptionsFor<TManifest> | undefined
+    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request> | undefined
   );
 }
 

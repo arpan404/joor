@@ -121,7 +121,7 @@ export function createJoorHandler<TManifest extends JoorManifest>(
 ): JoorFetchHandler {
   return createRpcHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
 }
 

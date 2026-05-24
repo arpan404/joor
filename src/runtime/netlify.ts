@@ -136,7 +136,7 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
 ): NetlifyFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
 }
 
@@ -183,7 +183,7 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
 ): NetlifyEdgeFetchHandler {
   const fetch = createNetlifyFetch(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
   return (request) => fetch(request);
 }

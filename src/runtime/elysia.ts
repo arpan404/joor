@@ -128,7 +128,7 @@ export function createElysiaHandler<TManifest extends JoorManifest>(
 ): ElysiaHandler {
   const fetch = createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
   return (context) => fetch(context.request);
 }

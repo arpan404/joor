@@ -2042,14 +2042,124 @@ const requestTypedManifestHandlerOptions: HandlerOptionsFor<
   plugins: [usersPlugin] as const,
 };
 requestTypedManifestHandlerOptions.plugins?.[0]?.name.toUpperCase();
-const _wrongRequestTypedManifestHandlerOptions: HandlerOptionsFor<
+const requestTypedManifestDefaultHandlerOptions: HandlerOptionsFor<
   typeof requestTypedManifest,
   readonly [typeof usersPlugin]
 > = {
   plugins: [usersPlugin] as const,
-  // @ts-expect-error manifests reject handlers whose request type is too broad.
-  __joorRequestTypeMismatch: undefined,
 };
+const requestTypedManifestDefaultHandlerRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestDefaultHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestDefaultHandlerRequest.requestId.toUpperCase();
+// @ts-expect-error manifests still reject explicit handler request types that are too broad.
+const _wrongRequestTypedManifestHandlerOptions: HandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+const requestTypedManifestDefaultHooks: HandlerHooksFor<
+  typeof requestTypedManifest
+> = {
+  beforeRequest(request) {
+    request.requestId.toUpperCase();
+    return undefined;
+  },
+};
+requestTypedManifestDefaultHooks.beforeRequest?.(requestTypedProcedureRequest, {
+  services: {},
+});
+requestTypedManifestDefaultHooks.beforeRequest?.(
+  // @ts-expect-error manifest-aware hooks default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { services: {} }
+);
+const requestTypedManifestDefaultMiddleware: JoorMiddlewareFor<
+  typeof requestTypedManifest
+> = {
+  name: 'request-typed',
+  beforeRequest(request) {
+    request.requestId.toUpperCase();
+    return undefined;
+  },
+};
+requestTypedManifestDefaultMiddleware.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: {} }
+);
+requestTypedManifestDefaultMiddleware.beforeRequest?.(
+  // @ts-expect-error manifest-aware middleware defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { services: {} }
+);
+const requestTypedManifestDefaultBodyHandler: RpcBodyHandler<
+  typeof requestTypedManifest
+> = (request, _body) => new Response(request.requestId);
+requestTypedManifestDefaultBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestDefaultBodyHandler(
+  // @ts-expect-error manifest body handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestDefaultBodyResultHandler: RpcBodyResultHandler<
+  typeof requestTypedManifest
+> = (request, body) =>
+  new Response(request.requestId) as RpcManifestBodyResultFor<
+    typeof requestTypedManifest,
+    typeof body
+  >;
+requestTypedManifestDefaultBodyResultHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+requestTypedManifestDefaultBodyResultHandler(
+  // @ts-expect-error manifest body result handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc'),
+  { id: 'request.get', input: { id: '1' } }
+);
+const requestTypedManifestDefaultConfig: JoorConfigFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+};
+const requestTypedManifestDefaultConfigRequest: JoorConfigRequest<
+  typeof requestTypedManifestDefaultConfig
+> = requestTypedProcedureRequest;
+requestTypedManifestDefaultConfigRequest.requestId.toUpperCase();
+const requestTypedManifestDefinedConfig = defineConfigFor(
+  requestTypedManifest
+)<readonly [typeof usersPlugin]>({
+  plugins: [usersPlugin] as const,
+});
+const requestTypedManifestDefinedConfigRequest: JoorConfigRequest<
+  typeof requestTypedManifestDefinedConfig
+> = requestTypedProcedureRequest;
+requestTypedManifestDefinedConfigRequest.requestId.toUpperCase();
+// @ts-expect-error manifests still reject explicit config request types that are too broad.
+const _wrongRequestTypedManifestConfig: JoorConfigFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+const requestTypedManifestDefinedHandlerOptions = defineHandlerOptions(
+  requestTypedManifest
+)<readonly [typeof usersPlugin]>({
+  plugins: [usersPlugin] as const,
+});
+const requestTypedManifestDefinedHandlerRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestDefinedHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestDefinedHandlerRequest.requestId.toUpperCase();
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,

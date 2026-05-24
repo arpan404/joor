@@ -463,7 +463,7 @@ export function createBunFetch<TManifest extends JoorManifest>(
 ): BunFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
 }
 
@@ -590,7 +590,7 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
 ): BunRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>,
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     false
   );
   return createBunTransportRequestHandler(

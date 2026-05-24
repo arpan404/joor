@@ -149,42 +149,42 @@ export type JoorManifestStreamRouteTransportClient<
 
 export type JoorManifestRouteUnaryBodyResultHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestRouteUnaryBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteStreamBodyResultHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestRouteStreamBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestUnaryRouteBodyResultHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = JoorManifestRouteUnaryBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestStreamRouteBodyResultHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = JoorManifestRouteStreamBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteUnaryBodyHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestRouteUnaryBodyHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteStreamBodyHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestRouteStreamBodyHandler<TManifest, TRequest>;
 
 export type JoorManifestUnaryRouteBodyHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = JoorManifestRouteUnaryBodyHandler<TManifest, TRequest>;
 
 export type JoorManifestStreamRouteBodyHandler<
   TManifest extends JoorManifest,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = JoorManifestRouteStreamBodyHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteUnaryTransportBodyResultHandler<

@@ -376,7 +376,7 @@ const createFastifyHandlerWithOptions = <TManifest extends JoorManifest>(
 ): FastifyHandler => {
   const handler = createRpcTransportBodyResultHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>,
+    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     false
   );
   const preflight = createRpcRequestPreflight(options);

@@ -571,7 +571,7 @@ const createFetch = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ) =>
-  createJoorHandler(manifest, (options ?? {}) as HandlerOptionsFor<TManifest>);
+  createJoorHandler(manifest, (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>);
 
 export function createAwsLambdaHandler<
   TManifest extends JoorManifest,

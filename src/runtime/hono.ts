@@ -130,7 +130,7 @@ export function createHonoHandler<TManifest extends JoorManifest>(
 ): HonoHandler {
   const fetch = createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
   return (context) => fetch(context.req.raw);
 }

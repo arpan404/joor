@@ -128,7 +128,7 @@ export function createVercelFetch<TManifest extends JoorManifest>(
 ): VercelFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
 }
 
@@ -176,7 +176,7 @@ export function createVercelFunction<TManifest extends JoorManifest>(
   return {
     fetch: createVercelFetch(
       manifest,
-      (options ?? {}) as HandlerOptionsFor<TManifest>
+      (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
     ),
   };
 }

@@ -144,7 +144,7 @@ const createKoaHandlerWithOptions = <TManifest extends JoorManifest>(
 ): KoaMiddleware => {
   const handler = createNodeRpcRequestHandler(
     manifest,
-    options as HandlerOptionsFor<TManifest>,
+    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     options.hostname ?? '0.0.0.0'
   );
   const useOriginalUrl = options.useOriginalUrl ?? true;

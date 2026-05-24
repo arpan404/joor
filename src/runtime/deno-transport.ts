@@ -510,7 +510,7 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
 ): DenoRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>,
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     false
   );
   return createDenoTransportRequestHandler(

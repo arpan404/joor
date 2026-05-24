@@ -280,7 +280,7 @@ export function createCloudflareFetch<TManifest extends JoorManifest>(
 ): CloudflareFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as HandlerOptionsFor<TManifest>
+    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
   );
 }
 
@@ -328,7 +328,7 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
   return {
     fetch: createCloudflareFetch(
       manifest,
-      (options ?? {}) as HandlerOptionsFor<TManifest>
+      (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
     ),
   };
 }
