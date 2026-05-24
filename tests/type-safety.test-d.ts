@@ -2800,6 +2800,61 @@ const _wrongRequestTypedManifestAwsLambdaRestApiHandlerOptions: AwsLambdaRestApi
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestStandaloneDenoRpcRequestHandlerOptions: StandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestStandaloneDenoRpcRequestHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestStandaloneDenoRpcRequestHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestStandaloneDenoRpcRequestHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathStandaloneDenoRpcRequestHandlerOptions: RuntimeSubpathStandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestStandaloneDenoRpcRequestHandlerOptions;
+requestTypedManifestRuntimeSubpathStandaloneDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  port: 3000,
+};
+const requestTypedManifestStandaloneDenoServeOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestStandaloneDenoServeOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestStandaloneDenoServeOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathStandaloneDenoServeOptions: RuntimeSubpathStandaloneDenoServeOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestStandaloneDenoServeOptions;
+requestTypedManifestRuntimeSubpathStandaloneDenoServeOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestStandaloneDenoRpcRequestHandler = createRootStandaloneDenoRpcRequestHandler(
+  requestTypedManifest,
+  requestTypedManifestStandaloneDenoRpcRequestHandlerOptions
+);
+requestTypedManifestStandaloneDenoRpcRequestHandler(
+  requestTypedProcedureRequest
+);
+requestTypedManifestStandaloneDenoRpcRequestHandler(
+  // @ts-expect-error Standalone Deno RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+// @ts-expect-error Standalone Deno option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestStandaloneDenoRpcRequestHandlerOptions: StandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
