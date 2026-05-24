@@ -2526,6 +2526,146 @@ const _wrongRequestTypedManifestKoaHandlerOptions: KoaHandlerOptionsFor<
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestBunFetchOptions: BunFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestBunFetchOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestBunFetchOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestBunFetchOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathBunFetchOptions: RuntimeSubpathBunFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestBunFetchOptions;
+requestTypedManifestRuntimeSubpathBunFetchOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestBunRpcRequestHandlerOptions: BunRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestBunRpcRequestHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestBunRpcRequestHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestBunRpcRequestHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathBunRpcRequestHandlerOptions: RuntimeSubpathBunRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestBunRpcRequestHandlerOptions;
+requestTypedManifestRuntimeSubpathBunRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestBunServeOptions: BunServeOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  port: 3000,
+};
+const requestTypedManifestBunServeOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestBunServeOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestBunServeOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestBunFetch = createBunFetch(
+  requestTypedManifest,
+  requestTypedManifestBunFetchOptions
+);
+requestTypedManifestBunFetch(requestTypedProcedureRequest);
+requestTypedManifestBunFetch(
+  // @ts-expect-error Bun fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestBunRpcRequestHandler = createBunRpcRequestHandler(
+  requestTypedManifest,
+  requestTypedManifestBunRpcRequestHandlerOptions
+);
+requestTypedManifestBunRpcRequestHandler(requestTypedProcedureRequest);
+requestTypedManifestBunRpcRequestHandler(
+  // @ts-expect-error Bun RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDenoFetchOptions: DenoFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestDenoFetchOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestDenoFetchOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestDenoFetchOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathDenoFetchOptions: RuntimeSubpathDenoFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestDenoFetchOptions;
+requestTypedManifestRuntimeSubpathDenoFetchOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestDenoRpcRequestHandlerOptions: DenoRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestDenoRpcRequestHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestDenoRpcRequestHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestDenoRpcRequestHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathDenoRpcRequestHandlerOptions: RuntimeSubpathDenoRpcRequestHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestDenoRpcRequestHandlerOptions;
+requestTypedManifestRuntimeSubpathDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestDenoServeOptions: DenoServeOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  port: 3000,
+};
+const requestTypedManifestDenoServeOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestDenoServeOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestDenoServeOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestDenoFetch = createDenoFetch(
+  requestTypedManifest,
+  requestTypedManifestDenoFetchOptions
+);
+requestTypedManifestDenoFetch(requestTypedProcedureRequest);
+requestTypedManifestDenoFetch(
+  // @ts-expect-error Deno fetch defaults to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDenoRpcRequestHandler = createDenoRpcRequestHandler(
+  requestTypedManifest,
+  requestTypedManifestDenoRpcRequestHandlerOptions
+);
+requestTypedManifestDenoRpcRequestHandler(requestTypedProcedureRequest);
+requestTypedManifestDenoRpcRequestHandler(
+  // @ts-expect-error Deno RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+// @ts-expect-error Bun option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestBunFetchOptions: BunFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+// @ts-expect-error Deno option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestDenoFetchOptions: DenoFetchOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
