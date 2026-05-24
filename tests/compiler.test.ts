@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 import { describe, expect, it } from 'vitest';
@@ -21,6 +21,11 @@ const contextlessFixtureConfig = new URL(
   './fixtures/contextless-app/joor.config.ts',
   import.meta.url
 ).pathname;
+
+const toRelativeModuleSpecifier = (fromDir: string, toFile: string): string => {
+  const specifier = relative(fromDir, toFile).replaceAll('\\', '/');
+  return specifier.startsWith('.') ? specifier : `./${specifier}`;
+};
 
 const expectRouteFirstAliasesPrimary = (source: string) => {
   const routeFirstAliases = source.matchAll(
@@ -951,6 +956,210 @@ describe('compiler', () => {
       await rm(outDir, { recursive: true, force: true });
     }
   });
+
+  it('defaults generated fetch runtimes to the manifest required request type', async () => {
+    const appDir = await mkdtemp(join(tmpdir(), 'joor-request-app-'));
+    try {
+      const rpcDir = join(appDir, 'rpc');
+      const routeDir = join(rpcDir, 'request');
+      const outDir = join(appDir, '.joor');
+      await mkdir(routeDir, { recursive: true });
+      const procedureFile = join(routeDir, 'get.rpc.ts');
+      const srcImport = toRelativeModuleSpecifier(
+        routeDir,
+        join(repoRoot, 'src/index.ts')
+      );
+      await writeFile(
+        procedureFile,
+        `import { defineProcedure, t } from '${srcImport}';
+
+export interface AppRequest extends Request {
+  readonly requestId: string;
+}
+
+export default defineProcedure.withContext<Record<string, never>, AppRequest>()({
+  input: t.object({ id: t.string() }),
+  output: t.object({ id: t.string() }),
+  handler(ctx, input) {
+    ctx.request.requestId.toUpperCase();
+    return { id: input.id };
+  },
+});
+`
+      );
+
+      await build({ cwd: appDir, entry: rpcDir, outDir });
+
+      const usageFile = join(outDir, 'request-runtime-usage.ts');
+      const procedureImport = toRelativeModuleSpecifier(
+        outDir,
+        procedureFile
+      );
+      await writeFile(
+        usageFile,
+        `import { createFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest } from './dispatcher.safe.js';
+import { createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
+import { createWorkerFor, worker } from './cloudflare.js';
+import { createHandlersFor, handlers, GET } from './next.js';
+import { createVercelFor, vercel } from './vercel.js';
+import { createEdgeFor, edge } from './netlify.js';
+import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
+import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
+import type { AppRequest } from '${procedureImport}';
+
+const appRequest = Object.assign(new Request('https://example.com/rpc'), {
+  requestId: 'req_1',
+}) as AppRequest;
+const plainRequest = new Request('https://example.com/rpc');
+
+const requiredRequest: NativeRequiredRuntimeRequest = appRequest;
+requiredRequest.requestId.toUpperCase();
+const runtimeRequiredRequest: RuntimeRequiredRuntimeRequest = appRequest;
+runtimeRequiredRequest.requestId.toUpperCase();
+
+const nativeHandler: NativeFetchHandler = fetch;
+nativeHandler(appRequest);
+// @ts-expect-error generated native fetch defaults reject requests missing required request fields.
+nativeHandler(plainRequest);
+createFetchFor()(appRequest);
+// @ts-expect-error generated native fetch factories default to the manifest request subtype.
+createFetchFor()(plainRequest);
+// @ts-expect-error generated native fetch handler type parameters must satisfy the manifest request subtype.
+const broadNativeHandler: NativeFetchHandler<Request> = fetch;
+broadNativeHandler;
+
+runtimeFetch(appRequest);
+// @ts-expect-error generated fetch target defaults reject broad Request values.
+runtimeFetch(plainRequest);
+createRuntimeFetchFor()(appRequest);
+// @ts-expect-error generated fetch target factories default to the manifest request subtype.
+createRuntimeFetchFor()(plainRequest);
+
+const cloudflareWorker = createWorkerFor();
+cloudflareWorker.fetch(appRequest);
+worker.fetch(appRequest);
+// @ts-expect-error generated Cloudflare workers default to the manifest request subtype.
+cloudflareWorker.fetch(plainRequest);
+// @ts-expect-error generated named Cloudflare workers preserve the manifest request subtype.
+worker.fetch(plainRequest);
+
+const nextHandlers = createHandlersFor();
+nextHandlers.GET(appRequest);
+handlers.POST(appRequest);
+GET(appRequest);
+// @ts-expect-error generated Next handlers default to the manifest request subtype.
+nextHandlers.GET(plainRequest);
+// @ts-expect-error generated named Next handlers preserve the manifest request subtype.
+handlers.POST(plainRequest);
+
+const vercelFunction = createVercelFor();
+vercelFunction.fetch(appRequest);
+vercel.fetch(appRequest);
+// @ts-expect-error generated Vercel functions default to the manifest request subtype.
+vercelFunction.fetch(plainRequest);
+// @ts-expect-error generated named Vercel functions preserve the manifest request subtype.
+vercel.fetch(plainRequest);
+
+const netlifyEdge = createEdgeFor();
+netlifyEdge(appRequest, {});
+edge(appRequest, {});
+// @ts-expect-error generated Netlify edge functions default to the manifest request subtype.
+netlifyEdge(plainRequest, {});
+// @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.
+edge(plainRequest, {});
+
+const bunHandler: BunNativeFetchHandler = bunFetch;
+bunHandler(appRequest);
+createBunFetch()(appRequest);
+createBunFetchFor()(undefined)(appRequest);
+// @ts-expect-error generated Bun fetch defaults reject broad Request values.
+bunHandler(plainRequest);
+// @ts-expect-error generated Bun fetch factories default to the manifest request subtype.
+createBunFetch()(plainRequest);
+
+const denoHandler: DenoNativeFetchHandler = denoFetch;
+denoHandler(appRequest);
+createDenoFetch()(appRequest);
+createDenoFetchFor()(undefined)(appRequest);
+// @ts-expect-error generated Deno fetch defaults reject broad Request values.
+denoHandler(plainRequest);
+// @ts-expect-error generated Deno fetch factories default to the manifest request subtype.
+createDenoFetch()(plainRequest);
+`
+      );
+      const tsconfigFile = join(outDir, 'tsconfig.request-runtime.json');
+      await writeFile(
+        tsconfigFile,
+        JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2022',
+              module: 'ESNext',
+              lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+              moduleResolution: 'bundler',
+              allowImportingTsExtensions: true,
+              strict: true,
+              noImplicitAny: true,
+              strictNullChecks: true,
+              exactOptionalPropertyTypes: true,
+              noUncheckedIndexedAccess: true,
+              noPropertyAccessFromIndexSignature: true,
+              skipLibCheck: true,
+              verbatimModuleSyntax: true,
+              isolatedModules: true,
+              noEmit: true,
+              types: ['node'],
+              typeRoots: [join(repoRoot, 'node_modules/@types')],
+              baseUrl: repoRoot,
+              paths: {
+                joor: ['./src/index.ts'],
+                'joor/config': ['./src/config.ts'],
+                'joor/context': ['./src/context/index.ts'],
+                'joor/manifest': ['./src/manifest.ts'],
+                'joor/procedure': ['./src/procedure/index.ts'],
+                'joor/rpc': ['./src/rpc/index.ts'],
+                'joor/runtime/*': ['./src/runtime/*.ts'],
+                'joor/schema': ['./src/schema/index.ts'],
+              },
+            },
+            include: [
+              usageFile,
+              procedureFile,
+              join(outDir, 'dispatcher.safe.ts'),
+              join(outDir, 'fetch.ts'),
+              join(outDir, 'cloudflare.ts'),
+              join(outDir, 'next.ts'),
+              join(outDir, 'vercel.ts'),
+              join(outDir, 'netlify.ts'),
+              join(outDir, 'bun.ts'),
+              join(outDir, 'deno.ts'),
+              join(outDir, 'deno-dispatcher.safe.ts'),
+            ],
+          },
+          null,
+          2
+        )
+      );
+
+      try {
+        await execFileAsync(
+          join(repoRoot, 'node_modules/.bin/tsc'),
+          ['--project', tsconfigFile],
+          {
+            cwd: repoRoot,
+            maxBuffer: 1024 * 1024 * 4,
+          }
+        );
+      } catch (error) {
+        const output = error as { stdout?: string; stderr?: string };
+        throw new Error(
+          [output.stdout, output.stderr].filter(Boolean).join('\n')
+        );
+      }
+    } finally {
+      await rm(appDir, { recursive: true, force: true });
+    }
+  }, 10_000);
 
   it('typechecks generated callable client route leaves', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));

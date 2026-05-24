@@ -313,7 +313,6 @@ export type NativeServices = ${nativeServicesType};
 export type NativeRuntimeState = CompiledRuntimeState<NativeServices>;
 export type NativeDispatch = CompiledDispatch<NativeServices>;
 export type NativeUnaryDispatch = CompiledFixedUnaryDispatch<NativeServices>;
-export type NativeFetchHandler<TRequest extends Request = Request> = CompiledRpcRequestHandler<TRequest>;
 export type NativeRouteId = JoorManifestRouteId<NativeManifest>;
 export type NativeRouteUnaryId = JoorManifestRouteUnaryId<NativeManifest>;
 export type NativeUnaryRouteId = NativeRouteUnaryId;
@@ -325,6 +324,7 @@ export type NativeUnaryRouteProcedure<TId extends NativeRouteUnaryId = NativeRou
 export type NativeRouteStreamProcedure<TId extends NativeRouteStreamId = NativeRouteStreamId> = JoorManifestRouteStreamProcedure<NativeManifest, TId>;
 export type NativeStreamRouteProcedure<TId extends NativeRouteStreamId = NativeRouteStreamId> = NativeRouteStreamProcedure<TId>;
 export type NativeRequiredRuntimeRequest = JoorManifestRequiredRuntimeRequest<NativeManifest>;
+export type NativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = CompiledRpcRequestHandler<TRequest>;
 export type NativeRequiredServices = JoorManifestRequiredServices<NativeManifest>;
 export type NativeRouteRuntimeRequest<TId extends NativeRouteId = NativeRouteId> = JoorManifestRouteRuntimeRequest<NativeManifest, TId>;
 export type NativeRouteServices<TId extends NativeRouteId = NativeRouteId> = JoorManifestRouteServices<NativeManifest, TId>;
@@ -872,7 +872,7 @@ export const transport: NativeTransportHandler = createCompiledRpcTransportBodyR
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const createFetchFor = <TRequest extends Request = Request>(): NativeFetchHandler<TRequest> =>
+export const createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
   createCompiledRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
@@ -1329,8 +1329,8 @@ ${nodeFastCases}
     ? "import { createDenoCompiledTransportRequestHandlerFor } from 'joor/runtime/deno-compiled-transport';"
     : "import { createDenoTransportRequestHandlerFor } from 'joor/runtime/deno-transport';";
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
-    ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch } from './deno-dispatcher.ts';"
-    : "import { nativeTransport } from './deno-dispatcher.ts';";
+    ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';"
+    : "import { nativeTransport, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
     ? `return createDenoCompiledTransportRequestHandlerFor<TRequest>()(
     nativeRuntime,
@@ -1348,10 +1348,10 @@ ${nodeFastCases}
   const fetchFile = `${outDir}/fetch.ts`;
   await writeFile(
     fetchFile,
-    `import { createFetchFor, fetch, type NativeFetchHandler } from '${dispatcherImport}';
+    `import { createFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest } from '${dispatcherImport}';
 
 export { createFetchFor, fetch };
-export type { NativeFetchHandler };
+export type { NativeFetchHandler, NativeRequiredRuntimeRequest };
 export default fetch;
 `
   );
@@ -1359,13 +1359,13 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { createFetchFor, fetch } from './fetch.js';
+import { createFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
 export { fetch };
 export const createWorkerFor = <
   TEnv = never,
   TContext = never,
-  TRequest extends Request = Request,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
 >(): CloudflareWorker<TEnv, TContext, TRequest> => ({
   fetch: createFetchFor<TRequest>() as CloudflareWorker<
     TEnv,
@@ -1373,7 +1373,11 @@ export const createWorkerFor = <
     TRequest
   >['fetch'],
 });
-export const worker: CloudflareWorker = { fetch };
+export const worker: CloudflareWorker<
+  never,
+  never,
+  NativeRequiredRuntimeRequest
+> = { fetch };
 export default worker;
 `
   );
@@ -1381,14 +1385,14 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { createFetchFor, fetch } from './fetch.js';
+import { createFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
 export const GET = fetch;
 export const POST = fetch;
 export const OPTIONS = fetch;
 export const createHandlersFor = <
   TContext = never,
-  TRequest extends Request = Request,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
 >(): NextRouteHandlers<TContext, TRequest> => {
   const handler = createFetchFor<TRequest>();
   return {
@@ -1397,7 +1401,10 @@ export const createHandlersFor = <
     OPTIONS: handler,
   } as NextRouteHandlers<TContext, TRequest>;
 };
-export const handlers: NextRouteHandlers = { GET, POST, OPTIONS };
+export const handlers: NextRouteHandlers<
+  never,
+  NativeRequiredRuntimeRequest
+> = { GET, POST, OPTIONS };
 export default handlers;
 `
   );
@@ -1405,15 +1412,15 @@ export default handlers;
   await writeFile(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
-import { createFetchFor, fetch } from './fetch.js';
+import { createFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
 export { fetch };
 export const createVercelFor = <
-  TRequest extends Request = Request,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
 >(): VercelFunction<TRequest> => ({
   fetch: createFetchFor<TRequest>(),
 });
-export const vercel: VercelFunction = { fetch };
+export const vercel: VercelFunction<NativeRequiredRuntimeRequest> = { fetch };
 export default vercel;
 `
   );
@@ -1421,17 +1428,20 @@ export default vercel;
   await writeFile(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
-import { createFetchFor, fetch } from './fetch.js';
+import { createFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
 export { fetch };
 export const createEdgeFor =
   <
     TContext = unknown,
-    TRequest extends Request = Request,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
   >(): NetlifyEdgeFetchHandler<TContext, TRequest> =>
   (request) =>
     createFetchFor<TRequest>()(request);
-export const edge: NetlifyEdgeFetchHandler = (request) => fetch(request);
+export const edge: NetlifyEdgeFetchHandler<
+  unknown,
+  NativeRequiredRuntimeRequest
+> = (request) => fetch(request);
 export default edge;
 `
   );
@@ -1444,7 +1454,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
 ${nodeFastImports}
 
 interface JsonObject {
@@ -2069,7 +2079,7 @@ export const listen = (options: NodeListenOptions = {}): NodeNativeServer => {
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
 ${bunFastImports}
 
 interface JsonObject {
@@ -2512,7 +2522,7 @@ export interface NativeCorsOptions {
   headers?: string[];
 }
 
-export type BunNativeFetchHandler<TRequest extends Request = Request> = (
+export type BunNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
   request: TRequest
 ) => Response | Promise<Response>;
 
@@ -2526,7 +2536,7 @@ export interface BunNativeServer {
 }
 
 export const createFetchFor =
-  <TRequest extends Request = Request>() =>
+  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
   (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsHeaders(options.cors);
@@ -2574,7 +2584,7 @@ export const createFetchFor =
   };
 };
 
-export const createFetch = <TRequest extends Request = Request>(
+export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
   options: BunNativeOptions = {}
 ): BunNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 
@@ -2636,7 +2646,7 @@ export interface DenoNativeOptions {
   port?: number;
 }
 
-export type DenoNativeFetchHandler<TRequest extends Request = Request> = (
+export type DenoNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
   request: TRequest
 ) => Response | Promise<Response>;
 
@@ -2648,7 +2658,7 @@ export interface DenoNativeServer {
 }
 
 export const createFetchFor =
-  <TRequest extends Request = Request>() =>
+  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
   (options: DenoNativeOptions = {}): DenoNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsOptions(options.cors);
@@ -2657,7 +2667,7 @@ export const createFetchFor =
   ${denoCreateFetchReturn}
 };
 
-export const createFetch = <TRequest extends Request = Request>(
+export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
   options: DenoNativeOptions = {}
 ): DenoNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 
