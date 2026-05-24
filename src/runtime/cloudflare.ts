@@ -335,8 +335,8 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
 
 export const createCloudflareWorkerFor =
   <
-    TEnv = unknown,
-    TContext = unknown,
+    TEnv = never,
+    TContext = never,
     TRequest extends Request = Request,
   >() =>
   <

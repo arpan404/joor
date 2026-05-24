@@ -12190,6 +12190,9 @@ const typedCloudflareWorkerFromFactory: CloudflareWorker<
   CloudflareContextForTypes,
   AppFetchRequest
 > = createTypedCloudflareWorker(manifest, handlerOptions);
+const createDefaultTypedCloudflareWorker = createCloudflareWorkerFor();
+const defaultTypedCloudflareWorker: CloudflareWorker =
+  createDefaultTypedCloudflareWorker(manifest, handlerOptions);
 const hookTypedCloudflareWorker = createCloudflareWorkerFor<
   CloudflareEnvForTypes,
   CloudflareContextForTypes,
@@ -12220,6 +12223,7 @@ typedCloudflareWorker.fetch(
     },
   }
 );
+defaultTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 hookTypedCloudflareFetch(hookAppRequest);
 directHookTypedCloudflareFetch(hookAppRequest);
 hookTypedCloudflareWorker.fetch(
