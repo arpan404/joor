@@ -4331,6 +4331,8 @@ const rootRuntimeValueIsPromise = rootRuntimeValue instanceof Promise;
 rootRuntimeValueIsPromise.valueOf();
 const rootDefineProcedure: DefineProcedure = defineProcedure;
 rootDefineProcedure.withContext<Services>();
+// @ts-expect-error defineProcedure context commands are readonly.
+rootDefineProcedure.withContext = () => defineProcedure;
 const rootContextlessProcedureConfig: ContextlessUnaryProcedureConfig<
   typeof rootConfigInputSchema,
   typeof rootConfigOutputSchema,
@@ -4348,6 +4350,8 @@ const rootContextlessProcedureConfig: ContextlessUnaryProcedureConfig<
 rootContextlessProcedureConfig.input.kind.toUpperCase();
 // @ts-expect-error contextless procedure configs expose readonly schemas.
 rootContextlessProcedureConfig.input = rootConfigInputSchema;
+// @ts-expect-error contextless procedure configs expose readonly handlers.
+rootContextlessProcedureConfig.handler = () => ({ ok: true });
 const rootUnaryProcedureConfig: UnaryProcedureConfig<
   typeof rootConfigInputSchema,
   typeof rootConfigOutputSchema,
@@ -4371,6 +4375,9 @@ const rootUnaryProcedureConfig: UnaryProcedureConfig<
 rootUnaryProcedureConfig.output.kind.toUpperCase();
 // @ts-expect-error unary procedure configs expose readonly output schemas.
 rootUnaryProcedureConfig.output = rootConfigOutputSchema;
+// @ts-expect-error unary procedure configs expose readonly handlers.
+rootUnaryProcedureConfig.handler = (ctx) =>
+  ctx.ok({ ok: true }, { 'x-route-mode': 'read' });
 const rootStreamProcedureConfig: StreamProcedureConfig<
   typeof rootConfigInputSchema,
   typeof rootConfigStreamSchema,
@@ -4396,6 +4403,10 @@ const rootStreamProcedureConfig: StreamProcedureConfig<
 rootStreamProcedureConfig.stream.kind.toUpperCase();
 // @ts-expect-error stream procedure configs expose readonly stream schemas.
 rootStreamProcedureConfig.stream = rootConfigStreamSchema;
+// @ts-expect-error stream procedure configs expose readonly handlers.
+rootStreamProcedureConfig.handler = async function* () {
+  yield { ok: true };
+};
 const rootProcedureTypes: ProcedureTypes<
   { id: string },
   { ok: boolean },

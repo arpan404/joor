@@ -59,7 +59,7 @@ export interface UnaryProcedureConfig<
   readonly output: TOutput;
   readonly errors?: TErrors;
   readonly meta?: ProcedureMeta;
-  handler(
+  readonly handler: (
     ctx: JoorContext<
       TServices,
       THeaders extends Schema
@@ -73,7 +73,7 @@ export interface UnaryProcedureConfig<
       TRequest
     >,
     input: InferSchema<TInput>
-  ): MaybePromise<
+  ) => MaybePromise<
     | ProcedureConfigResult<
         InferSchema<TOutput> & JsonValue,
         TErrors,
@@ -95,9 +95,9 @@ export interface ContextlessUnaryProcedureConfig<
   readonly output: TOutput;
   readonly errors?: TErrors;
   readonly meta?: ProcedureMeta;
-  handler(
+  readonly handler: (
     input: InferSchema<TInput>
-  ): MaybePromise<
+  ) => MaybePromise<
     | ProcedureConfigResult<
         InferSchema<TOutput> & JsonValue,
         TErrors,
@@ -129,7 +129,7 @@ export interface StreamProcedureConfig<
   readonly stream: TStream;
   readonly errors?: TErrors;
   readonly meta?: ProcedureMeta;
-  handler(
+  readonly handler: (
     ctx: JoorContext<
       TServices,
       THeaders extends Schema
@@ -141,7 +141,7 @@ export interface StreamProcedureConfig<
       TRequest
     >,
     input: InferSchema<TInput>
-  ): MaybePromise<AsyncIterable<InferSchema<TStream> & JsonValue>>;
+  ) => MaybePromise<AsyncIterable<InferSchema<TStream> & JsonValue>>;
 }
 
 export interface DefineProcedure<
@@ -223,10 +223,10 @@ export interface DefineProcedure<
     TRequest
   >;
 
-  withContext<
+  readonly withContext: <
     TNextServices extends object,
     TNextRequest extends Request = Request,
-  >(): DefineProcedure<TNextServices, TNextRequest>;
+  >() => DefineProcedure<TNextServices, TNextRequest>;
 }
 
 const createDefineProcedure = <
