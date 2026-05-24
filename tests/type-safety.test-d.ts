@@ -7649,6 +7649,78 @@ const syncPublicJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteB
 const syncPublicJoorManifestStreamRouteBodyResultHandler: JoorManifestStreamRouteBodyResultHandler<
   typeof manifest
 > = syncPublicManifestRouteStreamBodyResultHandler;
+const requestTypedJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
+  typeof manifest,
+  HookAppRequest
+> = <const TBody extends JoorManifestRouteUnaryBody<typeof manifest>>(
+  request: HookAppRequest,
+  _body: TBody
+) => new Response(request.requestId);
+requestTypedJoorManifestUnaryRouteBodyHandler(
+  hookAppRequest,
+  manifestRouteRequest
+);
+requestTypedJoorManifestUnaryRouteBodyHandler(
+  // @ts-expect-error manifest body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteRequest
+);
+const requestTypedJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandler<
+  typeof manifest,
+  HookAppRequest
+> = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
+  request: HookAppRequest,
+  _body: TBody
+) => new Response(request.requestId);
+requestTypedJoorManifestStreamRouteBodyHandler(
+  hookAppRequest,
+  manifestRouteStreamBody
+);
+requestTypedJoorManifestStreamRouteBodyHandler(
+  // @ts-expect-error manifest stream body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
+);
+const requestTypedJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteBodyResultHandler<
+  typeof manifest,
+  HookAppRequest
+> = <const TBody extends JoorManifestRouteUnaryBody<typeof manifest>>(
+  request: HookAppRequest,
+  _body: TBody
+) =>
+  new Response(request.requestId) as RpcManifestRouteUnaryBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
+requestTypedJoorManifestUnaryRouteBodyResultHandler(
+  hookAppRequest,
+  manifestRouteRequest
+);
+requestTypedJoorManifestUnaryRouteBodyResultHandler(
+  // @ts-expect-error manifest body result handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteRequest
+);
+const requestTypedJoorManifestStreamRouteBodyResultHandler: JoorManifestStreamRouteBodyResultHandler<
+  typeof manifest,
+  HookAppRequest
+> = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
+  request: HookAppRequest,
+  _body: TBody
+) =>
+  new Response(request.requestId) as RpcManifestRouteStreamBodyResultFor<
+    typeof manifest,
+    TBody
+  >;
+requestTypedJoorManifestStreamRouteBodyResultHandler(
+  hookAppRequest,
+  manifestRouteStreamBody
+);
+requestTypedJoorManifestStreamRouteBodyResultHandler(
+  // @ts-expect-error manifest stream body result handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
+);
 const syncPublicJoorManifestUnaryRouteTransportBodyResultHandler: JoorManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = syncPublicManifestUnaryRouteTransportBodyResultHandler;

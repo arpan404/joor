@@ -149,31 +149,43 @@ export type JoorManifestStreamRouteTransportClient<
 
 export type JoorManifestRouteUnaryBodyResultHandler<
   TManifest extends JoorManifest,
-> = RpcManifestRouteUnaryBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteStreamBodyResultHandler<
   TManifest extends JoorManifest,
-> = RpcManifestRouteStreamBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestUnaryRouteBodyResultHandler<
   TManifest extends JoorManifest,
-> = JoorManifestRouteUnaryBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = JoorManifestRouteUnaryBodyResultHandler<TManifest, TRequest>;
 
 export type JoorManifestStreamRouteBodyResultHandler<
   TManifest extends JoorManifest,
-> = JoorManifestRouteStreamBodyResultHandler<TManifest>;
+  TRequest extends Request = Request,
+> = JoorManifestRouteStreamBodyResultHandler<TManifest, TRequest>;
 
-export type JoorManifestRouteUnaryBodyHandler<TManifest extends JoorManifest> =
-  RpcManifestRouteUnaryBodyHandler<TManifest>;
+export type JoorManifestRouteUnaryBodyHandler<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = RpcManifestRouteUnaryBodyHandler<TManifest, TRequest>;
 
-export type JoorManifestRouteStreamBodyHandler<TManifest extends JoorManifest> =
-  RpcManifestRouteStreamBodyHandler<TManifest>;
+export type JoorManifestRouteStreamBodyHandler<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = RpcManifestRouteStreamBodyHandler<TManifest, TRequest>;
 
-export type JoorManifestUnaryRouteBodyHandler<TManifest extends JoorManifest> =
-  JoorManifestRouteUnaryBodyHandler<TManifest>;
+export type JoorManifestUnaryRouteBodyHandler<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = JoorManifestRouteUnaryBodyHandler<TManifest, TRequest>;
 
-export type JoorManifestStreamRouteBodyHandler<TManifest extends JoorManifest> =
-  JoorManifestRouteStreamBodyHandler<TManifest>;
+export type JoorManifestStreamRouteBodyHandler<
+  TManifest extends JoorManifest,
+  TRequest extends Request = Request,
+> = JoorManifestRouteStreamBodyHandler<TManifest, TRequest>;
 
 export type JoorManifestRouteUnaryTransportBodyResultHandler<
   TManifest extends JoorManifest,
