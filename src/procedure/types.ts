@@ -404,10 +404,10 @@ type StringResponseHeaders<THeaders extends object> = {
 type RpcEnvelopeSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,
 ]
-  ? { headers?: StringResponseHeaders<THeaders> }
+  ? { readonly headers?: StringResponseHeaders<THeaders> }
   : [RequiredResponseHeaderKeys<THeaders>] extends [never]
-    ? { headers?: StringResponseHeaders<THeaders> }
-    : { headers: StringResponseHeaders<THeaders> };
+    ? { readonly headers?: StringResponseHeaders<THeaders> }
+    : { readonly headers: StringResponseHeaders<THeaders> };
 
 export type RpcEnvelope<
   TData extends JsonValue = JsonValue,

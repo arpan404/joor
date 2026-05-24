@@ -4031,6 +4031,8 @@ const requiredProcedureSuccess: ProcedureSuccess<
   headers: { 'cache-control': 'private' },
 };
 requiredProcedureSuccess.headers['cache-control'].toUpperCase();
+// @ts-expect-error procedure success headers are readonly.
+requiredProcedureSuccess.headers = { 'cache-control': 'public' };
 // @ts-expect-error procedure successes require declared response headers.
 const _missingProcedureSuccessHeaders: ProcedureSuccess<
   { id: string; name: string },
@@ -4107,6 +4109,8 @@ const subpathProcedureEnvelopeWithHeaders: SubpathProcedureRpcEnvelope<
   traceId: 'trace-1',
 };
 subpathProcedureEnvelopeWithHeaders.headers['cache-control'].toUpperCase();
+// @ts-expect-error procedure RPC envelope headers are readonly.
+subpathProcedureEnvelopeWithHeaders.headers = { 'cache-control': 'public' };
 const subpathProcedureFailure = procedureFailureSubpath(
   'NOT_FOUND',
   subpathProcedureErrorDetails
@@ -6154,6 +6158,8 @@ manifestRouteEnvelope.id.toUpperCase();
 manifestRouteEnvelope.id = 'users.authenticated';
 // @ts-expect-error route envelope data is readonly.
 manifestRouteEnvelope.data = { id: '2', name: 'Ada' };
+// @ts-expect-error route envelope headers are readonly.
+manifestRouteEnvelope.headers = { 'cache-control': 'public' };
 if (
   defaultManifestRouteEnvelope.id === 'users.get' &&
   defaultManifestRouteEnvelope.ok
@@ -17035,6 +17041,8 @@ const protocolSuccess: RpcSuccess<
 protocolSuccess.id = 'users.authenticated';
 // @ts-expect-error protocol success data is readonly.
 protocolSuccess.data = { id: '2' };
+// @ts-expect-error protocol success headers are readonly.
+protocolSuccess.headers = { 'cache-control': 'public' };
 const _extraProtocolSuccess: RpcSuccess<
   { id: string },
   'users.get',

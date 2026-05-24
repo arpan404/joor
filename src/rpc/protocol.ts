@@ -78,10 +78,10 @@ type StringResponseHeaders<THeaders extends object> = {
 type RpcSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,
 ]
-  ? { headers?: StringResponseHeaders<THeaders> }
+  ? { readonly headers?: StringResponseHeaders<THeaders> }
   : [RequiredKnownHeaderKeys<THeaders>] extends [never]
-    ? { headers?: StringResponseHeaders<THeaders> }
-    : { headers: StringResponseHeaders<THeaders> };
+    ? { readonly headers?: StringResponseHeaders<THeaders> }
+    : { readonly headers: StringResponseHeaders<THeaders> };
 
 export type RpcSuccess<
   TData extends JsonValue = JsonValue,

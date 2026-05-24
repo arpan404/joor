@@ -37,10 +37,10 @@ type RequiredResponseHeaderKeys<THeaders extends object> = keyof {
 type ProcedureSuccessHeaders<THeaders extends object> = [THeaders] extends [
   Record<string, never>,
 ]
-  ? { headers?: StringResponseHeaders<THeaders> }
+  ? { readonly headers?: StringResponseHeaders<THeaders> }
   : [RequiredResponseHeaderKeys<THeaders>] extends [never]
-    ? { headers?: StringResponseHeaders<THeaders> }
-    : { headers: StringResponseHeaders<THeaders> };
+    ? { readonly headers?: StringResponseHeaders<THeaders> }
+    : { readonly headers: StringResponseHeaders<THeaders> };
 
 export type ProcedureSuccess<
   TData extends JsonValue,
