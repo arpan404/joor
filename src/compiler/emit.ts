@@ -290,7 +290,7 @@ const emitProfileDispatcher = async (
   ];
   const configTypeImport = `import type { ${configTypeImports.join(', ')} } from 'joor/config';\n`;
   const handlerTypeImport =
-    "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsFor, HandlerOptionsRequest, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
+    "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsBody, HandlerOptionsFor, HandlerOptionsRequest, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
   const nativeServicesType =
     configPath === undefined
       ? 'Record<string, never>'
@@ -579,6 +579,7 @@ export type NativeRouteStreamMiddleware<TPlugins extends readonly JoorPlugin<obj
 export type NativeStreamRouteMiddleware<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends Request = Request> =
   NativeRouteStreamMiddleware<TPlugins, TBody, TRequest>;
 export type NativeHandlerOptionServices<TOptions> = HandlerOptionServices<TOptions>;
+export type NativeHandlerOptionsBody<TOptions> = HandlerOptionsBody<TOptions>;
 export type NativeHandlerOptionsRequest<TOptions> = HandlerOptionsRequest<TOptions>;
 export type NativeRouteBodyResult<TBody extends NativeRouteBody = NativeRouteBody> =
   JoorManifestRouteBodyResultFor<NativeManifest, TBody>;
