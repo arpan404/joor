@@ -492,6 +492,7 @@ import {
   type HandlerOptionsArgsFor,
   type HandlerOptionsFor,
   type HandlerOptionsManifest,
+  type HandlerOptionsRequest,
   type HandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs,
   type HandlerOptions,
@@ -1063,6 +1064,7 @@ import {
   type DefineUnaryRouteConfigFor as ContextSubpathDefineUnaryRouteConfigFor,
   type HandlerOptionsBody as ContextSubpathHandlerOptionsBody,
   type HandlerOptionsManifest as ContextSubpathHandlerOptionsManifest,
+  type HandlerOptionsRequest as ContextSubpathHandlerOptionsRequest,
   type JoorConfig as ContextSubpathConfig,
   type JoorConfigFor as ContextSubpathConfigFor,
   type JoorConfigContext as ContextSubpathConfigContext,
@@ -1076,6 +1078,7 @@ import {
   type DefineConfigFor as ConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as ConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as ConfigSubpathDefineUnaryRouteConfigFor,
+  type HandlerOptionsRequest as ConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as ConfigSubpathConfigFor,
   type JoorConfigContext as ConfigSubpathConfigContext,
   type JoorStreamRouteConfigFor as ConfigSubpathStreamRouteConfigFor,
@@ -1086,6 +1089,7 @@ import {
   type DefineConfigFor as PackageConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as PackageConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as PackageConfigSubpathDefineUnaryRouteConfigFor,
+  type HandlerOptionsRequest as PackageConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as PackageConfigSubpathConfigFor,
   type JoorConfigContext as PackageConfigSubpathConfigContext,
   type JoorStreamRouteConfigFor as PackageConfigSubpathStreamRouteConfigFor,
@@ -1151,6 +1155,7 @@ import {
   type HandlerOptionsArgs as RpcSubpathHandlerOptionsArgs,
   type HandlerOptionsArgsFor as RpcSubpathHandlerOptionsArgsFor,
   type HandlerOptionsManifest as RpcSubpathHandlerOptionsManifest,
+  type HandlerOptionsRequest as RpcSubpathHandlerOptionsRequest,
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
@@ -3601,6 +3606,22 @@ const rpcSubpathManifestAwareConfigBody: RpcSubpathHandlerOptionsBody<
 const contextSubpathManifestAwareConfigBody: ContextSubpathHandlerOptionsBody<
   typeof manifestAwareConfig
 > = rpcSubpathManifestAwareConfigBody;
+const manifestAwareConfigRequest: HandlerOptionsRequest<
+  typeof manifestAwareConfig
+> = new Request('https://example.com/rpc');
+const rpcSubpathManifestAwareConfigRequest: RpcSubpathHandlerOptionsRequest<
+  typeof manifestAwareConfig
+> = manifestAwareConfigRequest;
+const contextSubpathManifestAwareConfigRequest: ContextSubpathHandlerOptionsRequest<
+  typeof manifestAwareConfig
+> = rpcSubpathManifestAwareConfigRequest;
+const configSubpathManifestAwareConfigRequest: ConfigSubpathHandlerOptionsRequest<
+  typeof manifestAwareConfig
+> = contextSubpathManifestAwareConfigRequest;
+const packageConfigSubpathManifestAwareConfigRequest: PackageConfigSubpathHandlerOptionsRequest<
+  typeof manifestAwareConfig
+> = configSubpathManifestAwareConfigRequest;
+packageConfigSubpathManifestAwareConfigRequest.url.toUpperCase();
 if (
   !Array.isArray(contextSubpathManifestAwareConfigBody) &&
   contextSubpathManifestAwareConfigBody.id === 'users.get'
@@ -6503,6 +6524,27 @@ requestTypedConfig.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+const requestTypedConfigRequest: HandlerOptionsRequest<
+  typeof requestTypedConfig
+> = hookAppRequest;
+requestTypedConfigRequest.requestId.toUpperCase();
+const rpcSubpathRequestTypedConfigRequest: RpcSubpathHandlerOptionsRequest<
+  typeof requestTypedConfig
+> = requestTypedConfigRequest;
+const contextSubpathRequestTypedConfigRequest: ContextSubpathHandlerOptionsRequest<
+  typeof requestTypedConfig
+> = rpcSubpathRequestTypedConfigRequest;
+const configSubpathRequestTypedConfigRequest: ConfigSubpathHandlerOptionsRequest<
+  typeof requestTypedConfig
+> = contextSubpathRequestTypedConfigRequest;
+const packageConfigSubpathRequestTypedConfigRequest: PackageConfigSubpathHandlerOptionsRequest<
+  typeof requestTypedConfig
+> = configSubpathRequestTypedConfigRequest;
+packageConfigSubpathRequestTypedConfigRequest.requestId.toUpperCase();
+// @ts-expect-error request-typed configs preserve custom request extraction.
+const _wrongRequestTypedConfigRequest: HandlerOptionsRequest<
+  typeof requestTypedConfig
+> = new Request('https://example.com/rpc');
 const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
   name: 'audit',
   beforeRequest(_request, context) {

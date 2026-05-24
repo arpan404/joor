@@ -238,6 +238,10 @@ const packageSubpathPlugin = createPlugin({
 const packageSubpathConfig = defineConfigFor(packageSubpathManifest)({
   plugins: [packageSubpathPlugin] as const,
 });
+const packageSubpathConfigRequest: Root.HandlerOptionsRequest<
+  typeof packageSubpathConfig
+> = new Request('https://example.com/rpc');
+packageSubpathConfigRequest.url.toUpperCase();
 type PackageSubpathServices = Config.JoorConfigContext<
   typeof packageSubpathConfig
 >;
@@ -537,8 +541,12 @@ export type PackageSubpathSurface = [
   Root.CompiledProcedureCacheHeaderValues,
   Root.RateLimitRuntimeOptions,
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
+  Config.HandlerOptionsRequest<typeof packageSubpathConfig>,
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,
   Context.HandlerOptionsManifest<typeof packageSubpathConfig>,
+  Context.HandlerOptionsRequest<typeof packageSubpathConfig>,
+  Rpc.HandlerOptionsRequest<typeof packageSubpathConfig>,
+  Root.HandlerOptionsRequest<typeof packageSubpathConfig>,
   Context.AuthPolicyRequest<typeof packageSubpathAuthPolicy>,
   Root.ContextRequestSource,
   Root.CorsHeaderOptions,

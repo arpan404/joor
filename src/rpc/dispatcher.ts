@@ -1023,6 +1023,15 @@ export type HandlerOptionsBody<TOptions> =
     ? TBody
     : never;
 
+export type HandlerOptionsRequest<TOptions> =
+  TOptions extends HandlerOptions<
+    readonly JoorPlugin<object>[],
+    infer _TBody,
+    infer TRequest
+  >
+    ? TRequest
+    : never;
+
 type HandlerOptionsHaveRequiredServices<TRequiredServices, TAvailableServices> =
   [TRequiredServices] extends [Record<string, never>]
     ? true

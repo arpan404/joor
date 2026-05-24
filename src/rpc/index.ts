@@ -234,6 +234,7 @@ export type {
   HandlerOptionsArgs,
   HandlerOptionsFor,
   HandlerOptionsManifest,
+  HandlerOptionsRequest,
   HandlerOptionsWithPreflightArgs,
   HandlerOptionsWithTrailingArgs,
   HandlerOptions,

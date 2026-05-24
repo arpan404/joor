@@ -4,13 +4,18 @@ import type {
   HandlerOptions,
   HandlerOptionsFor,
   HandlerOptionsManifest,
+  HandlerOptionsRequest,
   RpcManifest,
   RpcManifestBody,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from './rpc/dispatcher.js';
 
-export type { HandlerOptionsBody, HandlerOptionsManifest };
+export type {
+  HandlerOptionsBody,
+  HandlerOptionsManifest,
+  HandlerOptionsRequest,
+};
 
 export type JoorConfig<
   TPlugins extends readonly JoorPlugin<object>[] =
