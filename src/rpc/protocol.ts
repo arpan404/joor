@@ -120,6 +120,8 @@ export type RpcResponse<
   | RpcEnvelope<TData, TId, THeaders, TError>
   | readonly RpcEnvelope<TData, TId, THeaders, TError>[];
 
-export const validationDetails = (issues: ValidationIssue[]): JsonObject => ({
+export const validationDetails = (
+  issues: readonly ValidationIssue[]
+): JsonObject => ({
   issues: issues.map((item) => ({ path: item.path, message: item.message })),
 });

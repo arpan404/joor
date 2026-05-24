@@ -4222,6 +4222,26 @@ const rootValidationIssue: ValidationIssue = {
 rootValidationIssue.message.toUpperCase();
 // @ts-expect-error validation issues are readonly.
 rootValidationIssue.message = 'Expected uuid';
+const rootValidationResult: ValidationResult<string> = validate(
+  rootStringSchema,
+  undefined
+);
+if (rootValidationResult.ok) {
+  rootValidationResult.value.toUpperCase();
+  // @ts-expect-error validation success values are readonly.
+  rootValidationResult.value = 'other';
+} else {
+  rootValidationResult.issues[0]?.message.toUpperCase();
+  // @ts-expect-error validation result issue lists are readonly.
+  rootValidationResult.issues.push(rootValidationIssue);
+}
+const schemaSubpathValidationResult: SchemaSubpathValidationResult<string> =
+  validateSchemaSubpath(rootStringSchema, undefined);
+if (!schemaSubpathValidationResult.ok) {
+  schemaSubpathValidationResult.issues[0]?.path.toUpperCase();
+  // @ts-expect-error validation result issue lists are readonly across subpath exports.
+  schemaSubpathValidationResult.issues[0] = rootValidationIssue;
+}
 const rootHeaderValueSchema: HeaderValueSchema = t.string().optional();
 rootHeaderValueSchema.kind.toUpperCase();
 const rootProcedureHeaderSchema = t.object({

@@ -5,8 +5,8 @@ import type { InferSchema, Schema, ValidationIssue } from './types.js';
 export type { ValidationIssue } from './types.js';
 
 export type ValidationResult<TValue> =
-  | { ok: true; value: TValue }
-  | { ok: false; issues: ValidationIssue[] };
+  | { readonly ok: true; readonly value: TValue }
+  | { readonly ok: false; readonly issues: readonly ValidationIssue[] };
 
 const issue = (path: string, message: string): ValidationIssue => ({
   path,
