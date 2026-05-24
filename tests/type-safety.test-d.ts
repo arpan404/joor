@@ -12015,40 +12015,113 @@ const exactAwsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = exactServiceAwareHandlerOptions;
+const requestTypedAwsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const requestTypedAwsLambdaHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedAwsLambdaHandlerOptions
+> = hookAppRequest;
+requestTypedAwsLambdaHandlerOptionsRequest.requestId.toUpperCase();
 const runtimeSubpathAwsLambdaHandlerOptions: RuntimeSubpathAwsLambdaHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptions;
+const runtimeSubpathRequestTypedAwsLambdaHandlerOptions: RuntimeSubpathAwsLambdaHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptions;
 const awsLambdaHttpApiHandlerOptions: AwsLambdaHttpApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptions;
+const requestTypedAwsLambdaHttpApiHandlerOptions: AwsLambdaHttpApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptions;
 const runtimeSubpathAwsLambdaHttpApiHandlerOptions: RuntimeSubpathAwsLambdaHttpApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiHandlerOptions;
+const runtimeSubpathRequestTypedAwsLambdaHttpApiHandlerOptions: RuntimeSubpathAwsLambdaHttpApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiHandlerOptions;
 const awsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = handlerOptions;
+const requestTypedAwsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptions;
 const runtimeSubpathAwsLambdaRestApiHandlerOptions: RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiHandlerOptions;
+const runtimeSubpathRequestTypedAwsLambdaRestApiHandlerOptions: RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRestApiHandlerOptions;
 exactAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 awsLambdaHttpApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHttpApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaRestApiHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathRequestTypedAwsLambdaHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedAwsLambdaHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Lambda options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedAwsLambdaHttpApiHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+runtimeSubpathRequestTypedAwsLambdaRestApiHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const awsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptions;
+const requestTypedAwsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptions;
 const awsLambdaUnaryRouteHandlerOptions: AwsLambdaUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRouteUnaryHandlerOptions;
+const requestTypedAwsLambdaUnaryRouteHandlerOptions: AwsLambdaUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRouteUnaryHandlerOptions;
 awsLambdaUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 const awsLambdaRouteStreamHandlerOptions: AwsLambdaRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12116,14 +12189,32 @@ const awsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [awsLambdaHandlerOptions];
+const requestTypedAwsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedAwsLambdaHandlerOptions];
 const awsLambdaHttpApiHandlerOptionsArgs: AwsLambdaHttpApiHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptionsArgs;
+const requestTypedAwsLambdaHttpApiHandlerOptionsArgs: AwsLambdaHttpApiHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptionsArgs;
 const awsLambdaHttpApiRouteUnaryHandlerOptionsArgs: AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiHandlerOptionsArgs;
+const requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs: AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiHandlerOptionsArgs;
 const awsLambdaHttpApiUnaryRouteHandlerOptionsArgs: AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12158,6 +12249,12 @@ const awsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsAr
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptionsArgs;
+const requestTypedAwsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHandlerOptionsArgs;
 const awsLambdaUnaryRouteHandlerOptionsArgs: AwsLambdaUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12176,10 +12273,22 @@ const awsLambdaRestApiHandlerOptionsArgs: AwsLambdaRestApiHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [awsLambdaRestApiHandlerOptions];
+const requestTypedAwsLambdaRestApiHandlerOptionsArgs: AwsLambdaRestApiHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = [requestTypedAwsLambdaRestApiHandlerOptions];
 const awsLambdaRestApiRouteUnaryHandlerOptionsArgs: AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiHandlerOptionsArgs;
+const requestTypedAwsLambdaRestApiRouteUnaryHandlerOptionsArgs: AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRestApiHandlerOptionsArgs;
 const awsLambdaRestApiUnaryRouteHandlerOptionsArgs: AwsLambdaRestApiUnaryRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12193,14 +12302,32 @@ const awsLambdaRestApiStreamRouteHandlerOptionsArgs: AwsLambdaRestApiStreamRoute
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiRouteStreamHandlerOptionsArgs;
 awsLambdaHttpApiHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Lambda HTTP API args reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 awsLambdaRestApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaRestApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
 awsLambdaRestApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
   manifest,
   handlerOptions
 );
+createAwsLambdaHandler(manifest, requestTypedAwsLambdaHandlerOptions);
 const syncAwsLambdaHandler: AwsLambdaHandler = () => ({
   statusCode: 200,
   headers: {},
@@ -12209,10 +12336,12 @@ const syncAwsLambdaHandler: AwsLambdaHandler = () => ({
 });
 const awsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createAwsLambdaHttpApiHandler(manifest, handlerOptions);
+createAwsLambdaHttpApiHandler(manifest, requestTypedAwsLambdaHttpApiHandlerOptions);
 const syncAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   syncAwsLambdaHandler;
 const awsLambdaRestApiHandler: AwsLambdaRestApiHandler =
   createAwsLambdaRestApiHandler(manifest, handlerOptions);
+createAwsLambdaRestApiHandler(manifest, requestTypedAwsLambdaRestApiHandlerOptions);
 const syncAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = () => ({
   statusCode: 200,
   headers: {},

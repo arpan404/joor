@@ -91,14 +91,16 @@ export type AwsLambdaHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -106,7 +108,8 @@ export type AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaHttpApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHttpApiHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -114,10 +117,12 @@ export type AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request = Request,
 > = AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
   TManifest,
   TPlugins,
-  TBody
+  TBody,
+  TRequest
 >;
 
 export type AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
@@ -126,7 +131,8 @@ export type AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaHttpApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHttpApiHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -134,10 +140,12 @@ export type AwsLambdaHttpApiStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request = Request,
 > = AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
   TManifest,
   TPlugins,
-  TBody
+  TBody,
+  TRequest
 >;
 
 export type AwsLambdaRouteUnaryHandlerOptionsFor<
@@ -146,7 +154,8 @@ export type AwsLambdaRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -154,7 +163,13 @@ export type AwsLambdaUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -162,7 +177,8 @@ export type AwsLambdaRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -170,21 +186,29 @@ export type AwsLambdaStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -192,7 +216,8 @@ export type AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -200,10 +225,12 @@ export type AwsLambdaHttpApiUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request = Request,
 > = AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
   TManifest,
   TPlugins,
-  TBody
+  TBody,
+  TRequest
 >;
 
 export type AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
@@ -212,7 +239,8 @@ export type AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -220,10 +248,12 @@ export type AwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request = Request,
 > = AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
   TManifest,
   TPlugins,
-  TBody
+  TBody,
+  TRequest
 >;
 
 export type AwsLambdaRouteUnaryHandlerOptionsArgs<
@@ -232,7 +262,8 @@ export type AwsLambdaRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -240,7 +271,13 @@ export type AwsLambdaUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -248,7 +285,8 @@ export type AwsLambdaRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -256,14 +294,21 @@ export type AwsLambdaStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRestApiHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -271,7 +316,8 @@ export type AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -279,7 +325,13 @@ export type AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRestApiRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRestApiRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -287,7 +339,8 @@ export type AwsLambdaRestApiRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -295,14 +348,21 @@ export type AwsLambdaRestApiStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRestApiRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRestApiHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = HandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -310,7 +370,8 @@ export type AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -318,7 +379,13 @@ export type AwsLambdaRestApiUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -326,7 +393,8 @@ export type AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -334,7 +402,13 @@ export type AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = AwsLambdaRestApiRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody>;
+  TRequest extends Request = Request,
+> = AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 const queryString = (
   single?: Record<string, string | undefined> | null,
@@ -502,9 +576,15 @@ const createFetch = <TManifest extends JoorManifest>(
 export function createAwsLambdaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
 ): AwsLambdaHandler;
 export function createAwsLambdaHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -519,9 +599,15 @@ export const createAwsLambdaHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = Request,
   >(
     manifest: TManifest,
-    ...args: AwsLambdaHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: AwsLambdaHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): AwsLambdaHandler<TEvent> => {
     const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
     return async (event) => responseToLambda(await fetch(eventToRequest(event)));
@@ -530,9 +616,15 @@ export const createAwsLambdaHandlerFor =
 export function createAwsLambdaHttpApiHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
 ): AwsLambdaHttpApiHandler;
 export function createAwsLambdaHttpApiHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -547,9 +639,15 @@ export const createAwsLambdaHttpApiHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = Request,
   >(
     manifest: TManifest,
-    ...args: AwsLambdaHttpApiHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: AwsLambdaHttpApiHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): AwsLambdaHttpApiHandler<TEvent> => {
     const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
     return async (event) => responseToLambda(await fetch(eventToRequest(event)));
@@ -558,9 +656,15 @@ export const createAwsLambdaHttpApiHandlerFor =
 export function createAwsLambdaRestApiHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
 ): AwsLambdaRestApiHandler;
 export function createAwsLambdaRestApiHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
@@ -576,9 +680,15 @@ export const createAwsLambdaRestApiHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = Request,
   >(
     manifest: TManifest,
-    ...args: AwsLambdaRestApiHandlerOptionsArgs<TManifest, TPlugins>
+    ...args: AwsLambdaRestApiHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestBody<TManifest>,
+      TRequest
+    >
   ): AwsLambdaRestApiHandler<TEvent> => {
     const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
     return async (event) =>
