@@ -8,6 +8,7 @@ import {
   createJoorHandler,
   createPlugin,
   defineConfig,
+  defineManifest,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -44,6 +45,25 @@ const call = (body: object): Promise<Response> => {
 };
 
 describe('dispatcher', () => {
+  it('freezes defined manifests and procedure maps', () => {
+    const source = {
+      procedures: {
+        'users.get': getUser,
+        'posts.list': listPosts,
+      },
+    };
+    const defined = defineManifest(source);
+
+    expect(defined).not.toBe(source);
+    expect(defined.procedures).not.toBe(source.procedures);
+    expect(Object.isFrozen(defined)).toBe(true);
+    expect(Object.isFrozen(defined.procedures)).toBe(true);
+    expect(Object.isFrozen(source)).toBe(false);
+    expect(Object.isFrozen(source.procedures)).toBe(false);
+    expect(defined.procedures['users.get']).toBe(getUser);
+    expect(defined.procedures['posts.list']).toBe(listPosts);
+  });
+
   it('handles unary success', async () => {
     const response = await call({
       id: 'users.get',

@@ -994,4 +994,8 @@ export type JoorManifestStreamRouteClientArgs<
 
 export const defineManifest = <const TProcedures extends JoorRouteMap>(
   manifest: JoorManifest<TProcedures>
-): JoorManifest<TProcedures> => manifest;
+): JoorManifest<TProcedures> =>
+  Object.freeze({
+    ...manifest,
+    procedures: Object.freeze({ ...manifest.procedures }) as TProcedures,
+  });
