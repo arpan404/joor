@@ -1003,7 +1003,11 @@ export interface HandlerOptions<
 }
 
 export type HandlerOptionServices<TOptions> =
-  TOptions extends HandlerOptions<infer TPlugins>
+  TOptions extends HandlerOptions<
+    infer TPlugins,
+    infer _TBody,
+    infer _TRequest
+  >
     ? PluginServices<TPlugins>
     : Record<string, never>;
 
@@ -1018,7 +1022,8 @@ export type HandlerOptionsManifest<TOptions> = TOptions extends {
 export type HandlerOptionsBody<TOptions> =
   TOptions extends HandlerOptions<
     readonly JoorPlugin<object>[],
-    infer TBody
+    infer TBody,
+    infer _TRequest
   >
     ? TBody
     : never;

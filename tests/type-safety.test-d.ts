@@ -6716,6 +6716,17 @@ const requestTypedConfigWithoutHooksRequest: JoorConfigRequest<
   typeof requestTypedConfigWithoutHooks
 > = hookAppRequest;
 requestTypedConfigWithoutHooksRequest.requestId.toUpperCase();
+const requestTypedConfigBody: HandlerOptionsBody<typeof requestTypedConfig> =
+  manifestRouteRequest;
+requestTypedConfigBody.id.toUpperCase();
+const requestTypedConfigBodyFromRpcSubpath: RpcSubpathHandlerOptionsBody<
+  typeof requestTypedConfig
+> = requestTypedConfigBody;
+requestTypedConfigBodyFromRpcSubpath.id.toUpperCase();
+const requestTypedConfigServices: HandlerOptionServices<
+  typeof requestTypedConfig
+> = rootPluginServices;
+requestTypedConfigServices.users.findById('1').name.toUpperCase();
 const contextSubpathRequestTypedJoorConfigRequest: ContextSubpathConfigRequest<
   typeof requestTypedConfig
 > = requestTypedJoorConfigRequest;
