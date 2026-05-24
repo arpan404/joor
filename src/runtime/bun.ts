@@ -55,9 +55,9 @@ export interface BunServer {
   readonly hostname?: string;
   readonly port?: number;
   readonly url?: URL;
-  stop(force?: boolean): void;
-  ref?(): void;
-  unref?(): void;
+  readonly stop: (force?: boolean) => void;
+  readonly ref?: () => void;
+  readonly unref?: () => void;
 }
 
 export type BunServeOptionsFor<

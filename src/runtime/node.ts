@@ -56,10 +56,10 @@ export type NodeListenOptions<
 
 export interface NodeServer {
   readonly listening: boolean;
-  address(): AddressInfo | string | null;
-  close(callback?: (error?: Error) => void): this;
-  ref(): this;
-  unref(): this;
+  readonly address: () => AddressInfo | string | null;
+  readonly close: (callback?: (error?: Error) => void) => this;
+  readonly ref: () => this;
+  readonly unref: () => this;
 }
 
 export type ListenOptionsFor<

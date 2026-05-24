@@ -52,9 +52,9 @@ export interface DenoServeOptions<
 
 export interface DenoServer {
   readonly finished: Promise<void>;
-  shutdown(): Promise<void>;
-  ref?(): void;
-  unref?(): void;
+  readonly shutdown: () => Promise<void>;
+  readonly ref?: () => void;
+  readonly unref?: () => void;
 }
 
 export type DenoServeOptionsFor<

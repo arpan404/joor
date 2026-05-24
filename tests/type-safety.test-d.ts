@@ -10046,6 +10046,8 @@ const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
 serveBun(manifest, requestTypedBunServeOptions);
 bunServer.stop();
 bunServer.ref?.();
+// @ts-expect-error Bun server control methods are readonly.
+bunServer.stop = () => undefined;
 // @ts-expect-error service-dependent manifests require matching Bun serve plugins.
 serveBun(manifest);
 const denoFetch = createDenoFetch(manifest, handlerOptions);
@@ -10495,6 +10497,8 @@ const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
 serveDeno(manifest, requestTypedDenoServeOptions);
 denoServer.shutdown().then(() => undefined);
 denoServer.finished.then(() => undefined);
+// @ts-expect-error Deno server shutdown methods are readonly.
+denoServer.shutdown = async () => undefined;
 // @ts-expect-error service-dependent manifests require matching Deno serve plugins.
 serveDeno(manifest);
 
@@ -11018,6 +11022,12 @@ serveRuntimeSubpathStandaloneDeno(
 standaloneDenoServer.shutdown().then(() => undefined);
 rootStandaloneDenoServer.finished.then(() => undefined);
 runtimeSubpathStandaloneDenoServer.finished.then(() => undefined);
+// @ts-expect-error standalone Deno server shutdown methods are readonly.
+standaloneDenoServer.shutdown = async () => undefined;
+// @ts-expect-error standalone Deno server shutdown methods are readonly across root exports.
+rootStandaloneDenoServer.shutdown = async () => undefined;
+// @ts-expect-error standalone Deno server shutdown methods are readonly across runtime subpath exports.
+runtimeSubpathStandaloneDenoServer.shutdown = async () => undefined;
 // @ts-expect-error service-dependent manifests require matching standalone Deno serve plugins.
 serveStandaloneDeno(manifest);
 
@@ -16907,6 +16917,8 @@ listen(manifest, requestTypedListenOptions);
 nodeServer.close();
 nodeServer.address();
 nodeServer.ref().unref();
+// @ts-expect-error Node server close methods are readonly.
+nodeServer.close = () => nodeServer;
 // @ts-expect-error service-dependent manifests require matching Node listen plugins.
 listen(manifest);
 const transportResult: RpcBodyResult = {
