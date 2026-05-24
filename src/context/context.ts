@@ -7,8 +7,8 @@ import { errorStatus } from '../procedure/errors.js';
 
 type ProcedureSuccessArgs<TData extends JsonValue, TResponseHeaders> =
   Record<string, never> extends TResponseHeaders
-    ? [data: TData, headers?: TResponseHeaders]
-    : [data: TData, headers: TResponseHeaders];
+    ? readonly [data: TData, headers?: TResponseHeaders]
+    : readonly [data: TData, headers: TResponseHeaders];
 
 export interface JoorContext<
   TServices extends object = Record<string, never>,
@@ -19,12 +19,12 @@ export interface JoorContext<
   TRequest extends Request = Request,
 > {
   readonly __requestType?: (request: TRequest) => TRequest;
-  request: TRequest;
-  traceId: string;
-  signal: AbortSignal;
-  headers: THeaders;
-  rawHeaders: Headers;
-  services: TServices;
+  readonly request: TRequest;
+  readonly traceId: string;
+  readonly signal: AbortSignal;
+  readonly headers: THeaders;
+  readonly rawHeaders: Headers;
+  readonly services: TServices;
   auth: TAuth;
   ok<TData extends JsonValue>(
     ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
@@ -36,10 +36,10 @@ export interface JoorContext<
 }
 
 export interface ContextRequestSource {
-  url: string;
-  method: string;
-  signal: AbortSignal;
-  remoteAddress: string | undefined;
+  readonly url: string;
+  readonly method: string;
+  readonly signal: AbortSignal;
+  readonly remoteAddress: string | undefined;
   getHeader(name: string): string | null;
   toHeaders(): Headers;
   toRequest(): Request;

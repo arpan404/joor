@@ -28,9 +28,9 @@ export type JoorConfig<
   TBody = unknown,
   TRequest extends Request = Request,
 > = Omit<HandlerOptions<TPlugins, TBody, TRequest>, 'plugins'> & {
-  entry?: string;
-  outDir?: string;
-  plugins?: TPlugins;
+  readonly entry?: string;
+  readonly outDir?: string;
+  readonly plugins?: TPlugins;
 };
 
 export type JoorConfigFor<
@@ -40,8 +40,8 @@ export type JoorConfigFor<
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest> & {
-  entry?: string;
-  outDir?: string;
+  readonly entry?: string;
+  readonly outDir?: string;
 };
 
 export type JoorRouteUnaryConfigFor<

@@ -961,9 +961,9 @@ export type RateLimitIdentityResolver<
 ) => string | undefined;
 
 export interface RateLimitRuntimeOptions {
-  trustProxy: boolean;
-  maxEntries: number;
-  identity?: RateLimitIdentityResolver;
+  readonly trustProxy: boolean;
+  readonly maxEntries: number;
+  readonly identity?: RateLimitIdentityResolver;
 }
 
 export interface HandlerOptions<
@@ -972,33 +972,33 @@ export interface HandlerOptions<
   TBody = unknown,
   TRequest extends Request = Request,
 > {
-  plugins?: TPlugins;
-  middleware?: readonly JoorMiddleware<
+  readonly plugins?: TPlugins;
+  readonly middleware?: readonly JoorMiddleware<
     PluginServices<TPlugins>,
     TBody,
     TRequest
   >[];
-  hooks?: HandlerHooks<PluginServices<TPlugins>, TBody, TRequest>;
-  path?: string;
-  cors?: {
-    origin?: string;
-    headers?: string[];
-    methods?: string[];
+  readonly hooks?: HandlerHooks<PluginServices<TPlugins>, TBody, TRequest>;
+  readonly path?: string;
+  readonly cors?: {
+    readonly origin?: string;
+    readonly headers?: readonly string[];
+    readonly methods?: readonly string[];
   };
-  maxBodyBytes?: number;
-  cache?: {
-    maxEntries?: number;
+  readonly maxBodyBytes?: number;
+  readonly cache?: {
+    readonly maxEntries?: number;
   };
-  rateLimit?: {
-    trustProxy?: boolean;
-    maxEntries?: number;
-    identity?: RateLimitIdentityResolver<TRequest>;
+  readonly rateLimit?: {
+    readonly trustProxy?: boolean;
+    readonly maxEntries?: number;
+    readonly identity?: RateLimitIdentityResolver<TRequest>;
   };
-  validateInput?: boolean;
-  validateHeaders?: boolean;
-  validateOutput?: boolean;
-  validateResponseHeaders?: boolean;
-  enforceRateLimit?: boolean;
+  readonly validateInput?: boolean;
+  readonly validateHeaders?: boolean;
+  readonly validateOutput?: boolean;
+  readonly validateResponseHeaders?: boolean;
+  readonly enforceRateLimit?: boolean;
   onError?(error: Error, request: TRequest): void;
 }
 
@@ -1069,7 +1069,7 @@ export type HandlerOptionsFor<
   > extends true
     ? unknown
     : {
-        plugins: TPlugins & {
+        readonly plugins: TPlugins & {
           readonly __joorMissingServices: RpcManifestRequiredServices<TManifest>;
         };
       })
@@ -1316,8 +1316,8 @@ export interface HandlerHookContext<
   TServices extends object = object,
   TBody = unknown,
 > {
-  services: TServices;
-  body?: TBody;
+  readonly services: TServices;
+  readonly body?: TBody;
 }
 
 export interface HandlerHooks<
@@ -1341,7 +1341,7 @@ export interface JoorMiddleware<
   TBody = unknown,
   TRequest extends Request = Request,
 > extends HandlerHooks<TServices, TBody, TRequest> {
-  name: string;
+  readonly name: string;
 }
 
 export type HandlerHookContextFor<

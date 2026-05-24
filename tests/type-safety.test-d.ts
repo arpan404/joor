@@ -1893,6 +1893,8 @@ const usersPlugin = createPlugin({
 });
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
+// @ts-expect-error configs expose readonly plugin lists.
+config.plugins = [] as const;
 type Services = JoorConfigContext<typeof config>;
 type ConfigRequest = JoorConfigRequest<typeof config>;
 const configRequest: ConfigRequest = new Request('https://example.com/rpc');
@@ -7840,6 +7842,8 @@ const rootFetchRequestSource: ContextRequestSource = createFetchRequestSource(
   })
 );
 rootFetchRequestSource.getHeader('x-tenant-id')?.toUpperCase();
+// @ts-expect-error request sources expose readonly URLs.
+rootFetchRequestSource.url = 'https://example.com/other';
 const rootRuntimeContext = createRuntimeContext<
   RootPluginServices,
   { 'x-tenant-id': string },
@@ -7855,6 +7859,8 @@ const rootRuntimeContext = createRuntimeContext<
 rootRuntimeContext.services.users.findById('1').name.toUpperCase();
 rootRuntimeContext.headers['x-tenant-id'].toUpperCase();
 rootRuntimeContext.auth.userId.toUpperCase();
+// @ts-expect-error runtime contexts expose readonly services.
+rootRuntimeContext.services = rootPluginServices;
 rootRuntimeContext
   .ok({ id: '1' }, { 'cache-control': 'private' })
   .headers['cache-control'].toUpperCase();
@@ -7863,6 +7869,19 @@ const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
   path: '/rpc',
   plugins: [usersPlugin] as const,
 };
+// @ts-expect-error handler options expose readonly path settings.
+handlerOptions.path = '/other';
+const corsHandlerOptions: HandlerOptions = {
+  cors: {
+    origin: 'https://example.com',
+    headers: ['content-type'],
+    methods: ['POST'],
+  },
+};
+// @ts-expect-error handler option CORS settings are readonly.
+corsHandlerOptions.cors = false;
+// @ts-expect-error handler option CORS header lists are readonly.
+corsHandlerOptions.cors?.headers?.push('authorization');
 const handlerOptionServices: HandlerOptionServices<typeof handlerOptions> =
   procedureServices;
 handlerOptionServices.users.findById('1').name.toUpperCase();
@@ -7871,6 +7890,8 @@ const handlerHookContext: HandlerHookContext<RootPluginServices> = {
   body: manifestRouteRequest,
 };
 handlerHookContext.services.users.findById('1').name.toUpperCase();
+// @ts-expect-error handler hook contexts expose readonly services.
+handlerHookContext.services = rootPluginServices;
 const rpcSubpathHandlerHookContext: RpcSubpathHandlerHookContext<RootPluginServices> =
   handlerHookContext;
 rpcSubpathHandlerHookContext.services.users.findById('1').name.toUpperCase();
@@ -8108,6 +8129,8 @@ const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {
     return undefined;
   },
 };
+// @ts-expect-error middleware names are readonly.
+serviceAwareMiddleware.name = 'mutated';
 const manifestAwareHandlerHooks: HandlerHooksFor<
   typeof manifest,
   readonly [typeof usersPlugin]
