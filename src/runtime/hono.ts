@@ -12,16 +12,23 @@ import type {
 import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface HonoContext<TRequest extends Request = Request> {
+  readonly __requestType?: (request: TRequest) => TRequest;
   req: {
     raw: TRequest;
   };
 }
 
-export type HonoHandler<TContext extends HonoContext = HonoContext> = (
+type HonoContextLike = {
+  req: {
+    raw: Request;
+  };
+};
+
+export type HonoHandler<TContext extends HonoContextLike = HonoContext> = (
   context: TContext
 ) => Response | Promise<Response>;
 
-type HonoContextRequest<TContext extends HonoContext> =
+type HonoContextRequest<TContext extends HonoContextLike> =
   TContext extends HonoContext<infer TRequest> ? TRequest : Request;
 
 export type HonoHandlerOptionsFor<
@@ -148,7 +155,7 @@ export function createHonoHandlerFor(): <
     RpcManifestRequiredRuntimeRequest<TManifest>
   >
 ) => HonoHandler<HonoContext<RpcManifestRequiredRuntimeRequest<TManifest>>>;
-export function createHonoHandlerFor<TContext extends HonoContext>(): <
+export function createHonoHandlerFor<TContext extends HonoContextLike>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -160,7 +167,7 @@ export function createHonoHandlerFor<TContext extends HonoContext>(): <
     HonoContextRequest<TContext>
   >
 ) => HonoHandler<TContext>;
-export function createHonoHandlerFor<TContext extends HonoContext>() {
+export function createHonoHandlerFor<TContext extends HonoContextLike>() {
   return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

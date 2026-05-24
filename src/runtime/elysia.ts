@@ -12,14 +12,19 @@ import type {
 import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface ElysiaContext<TRequest extends Request = Request> {
+  readonly __requestType?: (request: TRequest) => TRequest;
   request: TRequest;
 }
 
-export type ElysiaHandler<TContext extends ElysiaContext = ElysiaContext> = (
-  context: TContext
-) => Response | Promise<Response>;
+type ElysiaContextLike = {
+  request: Request;
+};
 
-type ElysiaContextRequest<TContext extends ElysiaContext> =
+export type ElysiaHandler<
+  TContext extends ElysiaContextLike = ElysiaContext,
+> = (context: TContext) => Response | Promise<Response>;
+
+type ElysiaContextRequest<TContext extends ElysiaContextLike> =
   TContext extends ElysiaContext<infer TRequest> ? TRequest : Request;
 
 export type ElysiaHandlerOptionsFor<
@@ -148,7 +153,7 @@ export function createElysiaHandlerFor(): <
 ) => ElysiaHandler<
   ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>
 >;
-export function createElysiaHandlerFor<TContext extends ElysiaContext>(): <
+export function createElysiaHandlerFor<TContext extends ElysiaContextLike>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -160,7 +165,7 @@ export function createElysiaHandlerFor<TContext extends ElysiaContext>(): <
     ElysiaContextRequest<TContext>
   >
 ) => ElysiaHandler<TContext>;
-export function createElysiaHandlerFor<TContext extends ElysiaContext>() {
+export function createElysiaHandlerFor<TContext extends ElysiaContextLike>() {
   return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

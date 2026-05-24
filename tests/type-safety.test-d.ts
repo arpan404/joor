@@ -15418,9 +15418,12 @@ const elysiaAppContext: ElysiaAppContext = {
   store: { requestId: 'req_1' },
 };
 const elysiaHookContext: ElysiaHookContext = {
+  __requestType: (request: HookAppRequest) => request,
   request: hookAppRequest,
   store: { requestId: 'req_1' },
 };
+// @ts-expect-error request-typed Elysia contexts are not assignable to plain request contexts.
+const _wrongElysiaHookContext: ElysiaContext<Request> = elysiaHookContext;
 elysiaHandler(elysiaContext);
 runtimeSubpathElysiaHandler(elysiaContext);
 runtimeSubpathSyncElysiaHandler(elysiaContext);
@@ -15954,10 +15957,13 @@ const honoAppContext: HonoAppContext = {
   get: (name) => name,
 };
 const honoHookContext: HonoHookContext = {
+  __requestType: (request: HookAppRequest) => request,
   req: { raw: hookAppRequest },
   env: { requestId: 'req_1' },
   get: (name) => name,
 };
+// @ts-expect-error request-typed Hono contexts are not assignable to plain request contexts.
+const _wrongHonoHookContext: HonoContext<Request> = honoHookContext;
 honoHandler(honoContext);
 runtimeSubpathHonoHandler(honoContext);
 runtimeSubpathSyncHonoHandler(honoContext);
