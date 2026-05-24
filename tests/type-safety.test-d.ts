@@ -7994,6 +7994,12 @@ const rootFetchRequestSource: ContextRequestSource = createFetchRequestSource(
 rootFetchRequestSource.getHeader('x-tenant-id')?.toUpperCase();
 // @ts-expect-error request sources expose readonly URLs.
 rootFetchRequestSource.url = 'https://example.com/other';
+// @ts-expect-error request source header readers are readonly.
+rootFetchRequestSource.getHeader = () => null;
+// @ts-expect-error request source header factories are readonly.
+rootFetchRequestSource.toHeaders = () => new Headers();
+// @ts-expect-error request source request factories are readonly.
+rootFetchRequestSource.toRequest = () => new Request('https://example.com/rpc');
 const rootRuntimeContext = createRuntimeContext<
   RootPluginServices,
   { 'x-tenant-id': string },
@@ -8011,6 +8017,13 @@ rootRuntimeContext.headers['x-tenant-id'].toUpperCase();
 rootRuntimeContext.auth.userId.toUpperCase();
 // @ts-expect-error runtime contexts expose readonly services.
 rootRuntimeContext.services = rootPluginServices;
+// @ts-expect-error runtime context success helpers are readonly.
+rootRuntimeContext.ok = (data) => ({ kind: 'success', data });
+// @ts-expect-error runtime context error helpers are readonly.
+rootRuntimeContext.error = (code, details) => ({
+  kind: 'error',
+  error: { code, details, status: 400, message: code },
+});
 rootRuntimeContext
   .ok({ id: '1' }, { 'cache-control': 'private' })
   .headers['cache-control'].toUpperCase();

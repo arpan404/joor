@@ -26,13 +26,13 @@ export interface JoorContext<
   readonly rawHeaders: Headers;
   readonly services: TServices;
   auth: TAuth;
-  ok<TData extends JsonValue>(
+  readonly ok: <TData extends JsonValue>(
     ...args: ProcedureSuccessArgs<TData, TResponseHeaders>
-  ): ProcedureSuccess<TData, TResponseHeaders>;
-  error<TCode extends Extract<keyof TErrors, string>>(
+  ) => ProcedureSuccess<TData, TResponseHeaders>;
+  readonly error: <TCode extends Extract<keyof TErrors, string>>(
     code: TCode,
     details: TErrors[TCode]
-  ): ProcedureFailure<TCode, TErrors[TCode]>;
+  ) => ProcedureFailure<TCode, TErrors[TCode]>;
 }
 
 export interface ContextRequestSource {
@@ -40,9 +40,9 @@ export interface ContextRequestSource {
   readonly method: string;
   readonly signal: AbortSignal;
   readonly remoteAddress: string | undefined;
-  getHeader(name: string): string | null;
-  toHeaders(): Headers;
-  toRequest(): Request;
+  readonly getHeader: (name: string) => string | null;
+  readonly toHeaders: () => Headers;
+  readonly toRequest: () => Request;
 }
 
 export const emptyJsonObject: JsonObject = Object.freeze({});
