@@ -32,8 +32,8 @@ type IsExactRequest<TRequest extends Request> = [Request] extends [TRequest]
 
 type ClientRequestFactoryOption<TRequest extends Request> =
   IsExactRequest<TRequest> extends true
-    ? { createRequest?: ClientRequestFactory<TRequest> }
-    : { createRequest: ClientRequestFactory<TRequest> };
+    ? { readonly createRequest?: ClientRequestFactory<TRequest> }
+    : { readonly createRequest: ClientRequestFactory<TRequest> };
 
 export type ClientOptions<
   TManifest extends JoorManifest | undefined = undefined,
@@ -41,12 +41,12 @@ export type ClientOptions<
     ? RpcManifestRequiredRuntimeRequest<TManifest>
     : Request,
 > = {
-  url: string;
-  fetch?: ClientFetch<TRequest>;
-  headers?: ClientHeaderValues;
-  request?: ClientRequestInit;
-  manifest?: TManifest;
-  maxStreamEventBytes?: number;
+  readonly url: string;
+  readonly fetch?: ClientFetch<TRequest>;
+  readonly headers?: ClientHeaderValues;
+  readonly request?: ClientRequestInit;
+  readonly manifest?: TManifest;
+  readonly maxStreamEventBytes?: number;
 } & ClientRequestFactoryOption<TRequest>;
 
 export type ClientFetch<TRequest extends Request = Request> = (
@@ -65,7 +65,7 @@ export type ClientRequestFactory<TRequest extends Request = Request> = (
   args: ClientRequestFactoryArgs
 ) => TRequest;
 
-export type ClientHeaderValues = Record<string, string | undefined>;
+export type ClientHeaderValues = Readonly<Record<string, string | undefined>>;
 
 export type ClientRequestInit = Omit<
   RequestInit,
@@ -974,13 +974,17 @@ type OptionalClientHeaderKeys<THeaders extends object> = keyof {
 };
 
 type RequiredClientHeaderFields<THeaders extends object> = {
-  [TKey in keyof THeaders as TKey extends OptionalClientHeaderKeys<THeaders>
+  readonly [TKey in keyof THeaders as TKey extends OptionalClientHeaderKeys<
+    THeaders
+  >
     ? never
     : TKey]: THeaders[TKey];
 };
 
 type OptionalClientHeaderFields<THeaders extends object> = {
-  [TKey in OptionalClientHeaderKeys<THeaders>]?: THeaders[TKey] | undefined;
+  readonly [TKey in OptionalClientHeaderKeys<THeaders>]?:
+    | THeaders[TKey]
+    | undefined;
 };
 
 export type ClientProcedureHeaders<TProcedure> =
@@ -1085,20 +1089,23 @@ export type RpcUnaryRouteBatchResults<
 > = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
 
 export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
-  ? { headers?: ClientHeaderValues; request?: ClientRequestInit }
+  ? {
+      readonly headers?: ClientHeaderValues;
+      readonly request?: ClientRequestInit;
+    }
   : ProcedureRequiresHeaders<TProcedure> extends false
     ? {
-        headers?: ClientProcedureHeaders<TProcedure>;
-        request?: ClientRequestInit;
+        readonly headers?: ClientProcedureHeaders<TProcedure>;
+        readonly request?: ClientRequestInit;
       }
     : {
-        headers: ClientProcedureHeaders<TProcedure>;
-        request?: ClientRequestInit;
+        readonly headers: ClientProcedureHeaders<TProcedure>;
+        readonly request?: ClientRequestInit;
       };
 
 export interface ClientBatchOptions {
-  headers?: ClientHeaderValues;
-  request?: ClientRequestInit;
+  readonly headers?: ClientHeaderValues;
+  readonly request?: ClientRequestInit;
 }
 
 export type RpcRouteRequestOptions<

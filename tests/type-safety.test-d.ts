@@ -4627,11 +4627,17 @@ const clientBatchOptions: ClientBatchOptions = {
   headers: { 'x-batch': '1' },
   request: clientRequestInit,
 };
+// @ts-expect-error client batch headers are readonly.
+clientBatchOptions.headers = { 'x-batch': '2' };
 const clientRequestOptions: ClientRequestOptions<typeof procedure> = {
   headers: { 'x-tenant-id': 'tenant-1' },
   request: clientRequestInit,
 };
 clientRequestOptions.headers['x-tenant-id'].toUpperCase();
+// @ts-expect-error client request option headers are readonly.
+clientRequestOptions.headers = { 'x-tenant-id': 'tenant-2' };
+// @ts-expect-error typed client request header fields are readonly.
+clientRequestOptions.headers['x-tenant-id'] = 'tenant-2';
 client.call<typeof procedure>('users.get', { id: '1' }, clientRequestOptions);
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
@@ -5434,6 +5440,10 @@ const typedClientOptions: ClientOptions<undefined, ClientAppRequest> = {
   fetch: typedClientFetch,
   createRequest: typedClientRequestFactory,
 };
+// @ts-expect-error client option URLs are readonly.
+typedClientOptions.url = '/v2/rpc';
+// @ts-expect-error typed client request factories are readonly.
+typedClientOptions.createRequest = typedClientRequestFactory;
 const rpcSubpathTypedClientOptions: RpcSubpathClientOptions<
   undefined,
   ClientAppRequest
@@ -5522,6 +5532,8 @@ const procedureClientHeaders: ClientProcedureHeaders<typeof procedure> = {
   authorization: undefined,
   'x-tenant-id': 'tenant-1',
 };
+// @ts-expect-error typed procedure client headers are readonly.
+procedureClientHeaders['x-tenant-id'] = 'tenant-2';
 const rpcSubpathProcedureClientHeaders: RpcSubpathClientProcedureHeaders<
   typeof procedure
 > = procedureClientHeaders;
@@ -5550,6 +5562,10 @@ const manifestClientOptions: RpcManifestClientOptions<typeof manifest> = {
   fetch: clientFetch,
   headers: { authorization: 'Bearer token', 'x-optional': undefined },
 };
+// @ts-expect-error manifest client headers are readonly.
+manifestClientOptions.headers = { authorization: 'Bearer token' };
+// @ts-expect-error manifest client header maps are readonly.
+manifestClientOptions.headers.authorization = 'Bearer other';
 createRootManifestClient(manifest, manifestClientOptions);
 const rpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
   typeof manifest
@@ -17452,6 +17468,13 @@ streamRouteClientShape.stream('users.watch', { userId: '1' });
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
 };
+// @ts-expect-error route request option headers are readonly.
+routeRequestOptions.headers = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-2',
+};
+// @ts-expect-error route request header fields are readonly.
+routeRequestOptions.headers['x-tenant-id'] = 'tenant-2';
 const defaultRouteRequestOptions: RpcRouteRequestOptions<Routes> =
   routeRequestOptions;
 const routeClientHeaders: RpcRouteClientHeaders<Routes, 'users.get'> = {
