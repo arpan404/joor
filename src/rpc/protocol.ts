@@ -39,7 +39,7 @@ export interface RpcRequest<
 
 export type RpcBatchRequest<
   TRequests extends readonly RpcRequest[] = readonly RpcRequest[],
-> = TRequests;
+> = Readonly<TRequests>;
 
 export type RpcResponseHeaderValues = Record<string, string>;
 

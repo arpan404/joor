@@ -6419,6 +6419,8 @@ const manifestRouteBatchResults: JoorManifestRouteBatchResults<
   typeof manifest,
   [typeof manifestRouteRequest]
 > = [manifestRouteEnvelope];
+// @ts-expect-error manifest route batch results are readonly tuples.
+manifestRouteBatchResults[0] = manifestRouteEnvelope;
 const manifestUnaryRouteBatchResults: JoorManifestUnaryRouteBatchResults<
   typeof manifest,
   [typeof manifestUnaryRouteRequest]
@@ -17035,6 +17037,8 @@ const protocolBatch: RpcBatchRequest<[typeof protocolRequest]> = [
   protocolRequest,
 ];
 protocolBatch[0].id.toUpperCase();
+// @ts-expect-error protocol batches are readonly tuples.
+protocolBatch[0] = protocolRequest;
 const readonlyProtocolBatch = [protocolRequest] as const;
 const protocolReadonlyBatch: RpcBatchRequest<typeof readonlyProtocolBatch> =
   readonlyProtocolBatch;
@@ -17348,6 +17352,8 @@ const routeBatchRequest: RpcRouteBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = [routeProtocolRequest];
+// @ts-expect-error route batches are readonly tuples.
+routeBatchRequest[0] = routeProtocolRequest;
 const routeBatchRequestWithPending: RpcRouteBatchRequest<
   Routes,
   [typeof routePendingBatchRequest]
@@ -17360,6 +17366,8 @@ const routeProtocolBatchRequest: RpcRouteProtocolBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = [routeProtocolRequest];
+// @ts-expect-error protocol route batches are readonly tuples.
+routeProtocolBatchRequest[0] = routeProtocolRequest;
 const protocolBatchRequestAlias: RpcProtocolBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
@@ -18155,6 +18163,8 @@ const unaryRouteBatchResults: RpcUnaryRouteBatchResults<
   Routes,
   [typeof typedUnaryRouteRequest]
 > = [routeEnvelope];
+// @ts-expect-error route batch results are readonly tuples.
+unaryRouteBatchResults[0] = routeEnvelope;
 const defaultRouteBatchResults: RpcUnaryRouteBatchResults<Routes> =
   unaryRouteBatchResults;
 unaryRouteBatchResults[0].id.toUpperCase();

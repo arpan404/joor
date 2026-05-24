@@ -841,7 +841,7 @@ export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly RpcRouteBatchRequestUnion<TRoutes>[] =
     readonly RpcRouteBatchRequestUnion<TRoutes>[],
-> = TRequests;
+> = Readonly<TRequests>;
 
 export type RpcRouteUnaryBatchRequest<
   TRoutes extends RpcRouteMap,
@@ -859,7 +859,7 @@ export type RpcRouteProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
     readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
-> = 'headers' extends keyof TRequests[number] ? never : TRequests;
+> = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
 
 export type RpcRouteUnaryProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
@@ -1064,7 +1064,7 @@ type RpcRouteBatchResultsFor<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly unknown[],
 > = {
-  [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
+  readonly [TIndex in keyof TRequests]: RpcRouteBatchResultFor<
     TRoutes,
     TRequests[TIndex]
   >;
