@@ -1079,6 +1079,8 @@ import {
   type DefineConfigFor as ConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as ConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as ConfigSubpathDefineUnaryRouteConfigFor,
+  type HandlerOptionsBody as ConfigSubpathHandlerOptionsBody,
+  type HandlerOptionsManifest as ConfigSubpathHandlerOptionsManifest,
   type HandlerOptionsRequest as ConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as ConfigSubpathConfigFor,
   type JoorConfigContext as ConfigSubpathConfigContext,
@@ -1090,6 +1092,8 @@ import {
   type DefineConfigFor as PackageConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as PackageConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as PackageConfigSubpathDefineUnaryRouteConfigFor,
+  type HandlerOptionsBody as PackageConfigSubpathHandlerOptionsBody,
+  type HandlerOptionsManifest as PackageConfigSubpathHandlerOptionsManifest,
   type HandlerOptionsRequest as PackageConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as PackageConfigSubpathConfigFor,
   type JoorConfigContext as PackageConfigSubpathConfigContext,
@@ -3597,7 +3601,15 @@ const rpcSubpathManifestAwareConfigManifest: RpcSubpathHandlerOptionsManifest<
 const contextSubpathManifestAwareConfigManifest: ContextSubpathHandlerOptionsManifest<
   typeof manifestAwareConfig
 > = rpcSubpathManifestAwareConfigManifest;
-contextSubpathManifestAwareConfigManifest.procedures['users.get'].valueOf();
+const configSubpathManifestAwareConfigManifest: ConfigSubpathHandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = contextSubpathManifestAwareConfigManifest;
+const packageConfigSubpathManifestAwareConfigManifest: PackageConfigSubpathHandlerOptionsManifest<
+  typeof manifestAwareConfig
+> = configSubpathManifestAwareConfigManifest;
+packageConfigSubpathManifestAwareConfigManifest.procedures[
+  'users.get'
+].valueOf();
 const manifestAwareConfigBody: HandlerOptionsBody<typeof manifestAwareConfig> =
   { id: 'users.get', input: { id: '1' } };
 const rootManifestAwareConfigBody: HandlerOptionsBody<
@@ -3609,6 +3621,12 @@ const rpcSubpathManifestAwareConfigBody: RpcSubpathHandlerOptionsBody<
 const contextSubpathManifestAwareConfigBody: ContextSubpathHandlerOptionsBody<
   typeof manifestAwareConfig
 > = rpcSubpathManifestAwareConfigBody;
+const configSubpathManifestAwareConfigBody: ConfigSubpathHandlerOptionsBody<
+  typeof manifestAwareConfig
+> = contextSubpathManifestAwareConfigBody;
+const packageConfigSubpathManifestAwareConfigBody: PackageConfigSubpathHandlerOptionsBody<
+  typeof manifestAwareConfig
+> = configSubpathManifestAwareConfigBody;
 const manifestAwareConfigRequest: HandlerOptionsRequest<
   typeof manifestAwareConfig
 > = new Request('https://example.com/rpc');
@@ -3626,12 +3644,12 @@ const packageConfigSubpathManifestAwareConfigRequest: PackageConfigSubpathHandle
 > = configSubpathManifestAwareConfigRequest;
 packageConfigSubpathManifestAwareConfigRequest.url.toUpperCase();
 if (
-  !Array.isArray(contextSubpathManifestAwareConfigBody) &&
-  contextSubpathManifestAwareConfigBody.id === 'users.get'
+  !Array.isArray(packageConfigSubpathManifestAwareConfigBody) &&
+  packageConfigSubpathManifestAwareConfigBody.id === 'users.get'
 ) {
-  contextSubpathManifestAwareConfigBody.input.id.toUpperCase();
+  packageConfigSubpathManifestAwareConfigBody.input.id.toUpperCase();
   // @ts-expect-error manifest-aware config body metadata keeps route input exact.
-  contextSubpathManifestAwareConfigBody.input.ok;
+  packageConfigSubpathManifestAwareConfigBody.input.ok;
 }
 const manifestRouteUnaryConfigShape: JoorRouteUnaryConfigFor<
   typeof manifest,
