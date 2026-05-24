@@ -2160,6 +2160,42 @@ const requestTypedManifestDefinedHandlerRequest: HandlerOptionsRequest<
   typeof requestTypedManifestDefinedHandlerOptions
 > = requestTypedProcedureRequest;
 requestTypedManifestDefinedHandlerRequest.requestId.toUpperCase();
+const requestTypedManifestJoorHandlerOptions: JoorHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+};
+const requestTypedManifestJoorHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestJoorHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestJoorHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+requestTypedManifestRuntimeSubpathJoorHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestJoorHandler = createJoorHandler(
+  requestTypedManifest,
+  requestTypedManifestJoorHandlerOptions
+);
+requestTypedManifestJoorHandler(requestTypedProcedureRequest);
+requestTypedManifestJoorHandler(
+  // @ts-expect-error fetch handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+// @ts-expect-error runtime fetch option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestJoorHandlerOptions: JoorHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
