@@ -998,7 +998,7 @@ export interface HandlerOptions<
   readonly validateOutput?: boolean;
   readonly validateResponseHeaders?: boolean;
   readonly enforceRateLimit?: boolean;
-  onError?(error: Error, request: TRequest): void;
+  readonly onError?: (error: Error, request: TRequest) => void;
 }
 
 export type HandlerOptionServices<TOptions> =

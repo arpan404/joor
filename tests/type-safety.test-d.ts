@@ -8522,6 +8522,8 @@ typedRequestHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+// @ts-expect-error handler option error hooks are readonly.
+typedRequestHandlerOptions.onError = () => undefined;
 const typedHookJoorHandler =
   createJoorHandlerFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 typedHookJoorHandler(hookAppRequest);
