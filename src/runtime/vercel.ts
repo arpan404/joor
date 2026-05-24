@@ -19,7 +19,7 @@ export type VercelFetchHandler<TRequest extends Request = Request> =
   JoorFetchHandler<TRequest>;
 
 export interface VercelFunction<TRequest extends Request = Request> {
-  fetch: VercelFetchHandler<TRequest>;
+  readonly fetch: VercelFetchHandler<TRequest>;
 }
 
 export type VercelFetchOptionsFor<

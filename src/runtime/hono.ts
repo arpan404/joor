@@ -13,14 +13,14 @@ import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface HonoContext<TRequest extends Request = Request> {
   readonly __requestType?: (request: TRequest) => TRequest;
-  req: {
-    raw: TRequest;
+  readonly req: {
+    readonly raw: TRequest;
   };
 }
 
 type HonoContextLike = {
-  req: {
-    raw: Request;
+  readonly req: {
+    readonly raw: Request;
   };
 };
 

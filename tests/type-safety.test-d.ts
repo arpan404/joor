@@ -15295,6 +15295,10 @@ typedVercelFunction.fetch(appFetchRequest);
 runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 hookTypedVercelFunction.fetch(hookAppRequest);
 directHookTypedVercelFunction.fetch(hookAppRequest);
+// @ts-expect-error Vercel function fetch handlers are readonly.
+vercelFunction.fetch = vercelFetch;
+// @ts-expect-error Vercel function fetch handlers are readonly across subpath exports.
+runtimeSubpathVercelFunction.fetch = runtimeSubpathVercelFetch;
 // @ts-expect-error request-typed Vercel functions are not assignable to plain functions.
 const _wrongVercelFunction: VercelFunction = hookTypedVercelFunction;
 // @ts-expect-error direct typed Vercel fetch factories infer custom hook request types.
@@ -15645,6 +15649,10 @@ const elysiaHookContext: ElysiaHookContext = {
   request: hookAppRequest,
   store: { requestId: 'req_1' },
 };
+// @ts-expect-error Elysia context requests are readonly.
+elysiaContext.request = new Request('https://example.com/other');
+// @ts-expect-error request-typed Elysia context markers are readonly.
+elysiaHookContext.__requestType = (request: HookAppRequest) => request;
 // @ts-expect-error request-typed Elysia contexts are not assignable to plain request contexts.
 const _wrongElysiaHookContext: ElysiaContext<Request> = elysiaHookContext;
 elysiaHandler(elysiaContext);
@@ -16193,6 +16201,12 @@ const honoHookContext: HonoHookContext = {
   env: { requestId: 'req_1' },
   get: (name) => name,
 };
+// @ts-expect-error Hono request containers are readonly.
+honoContext.req = { raw: new Request('https://example.com/other') };
+// @ts-expect-error Hono raw requests are readonly.
+honoHookContext.req.raw = hookAppRequest;
+// @ts-expect-error request-typed Hono context markers are readonly.
+honoHookContext.__requestType = (request: HookAppRequest) => request;
 // @ts-expect-error request-typed Hono contexts are not assignable to plain request contexts.
 const _wrongHonoHookContext: HonoContext<Request> = honoHookContext;
 honoHandler(honoContext);

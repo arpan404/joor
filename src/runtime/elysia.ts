@@ -13,11 +13,11 @@ import { createJoorHandler, createJoorHandlerFor } from './fetch.js';
 
 export interface ElysiaContext<TRequest extends Request = Request> {
   readonly __requestType?: (request: TRequest) => TRequest;
-  request: TRequest;
+  readonly request: TRequest;
 }
 
 type ElysiaContextLike = {
-  request: Request;
+  readonly request: Request;
 };
 
 export type ElysiaHandler<
