@@ -2418,6 +2418,114 @@ const _wrongRequestTypedManifestHonoHandlerOptions: HonoHandlerOptionsFor<
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestExpressHandlerOptions: ExpressHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  hostname: '127.0.0.1',
+};
+const requestTypedManifestExpressHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestExpressHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestExpressHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathExpressHandlerOptions: RuntimeSubpathExpressHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestExpressHandlerOptions;
+requestTypedManifestRuntimeSubpathExpressHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestExpressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestExpressHandlerOptions];
+requestTypedManifestExpressHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestFastifyHandlerOptions: FastifyHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  hostname: 'app',
+};
+const requestTypedManifestFastifyHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestFastifyHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestFastifyHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathFastifyHandlerOptions: RuntimeSubpathFastifyHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestFastifyHandlerOptions;
+requestTypedManifestRuntimeSubpathFastifyHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestFastifyHandlerOptionsArgs: FastifyHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestFastifyHandlerOptions];
+requestTypedManifestFastifyHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestKoaHandlerOptions: KoaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+  hostname: 'app',
+};
+const requestTypedManifestKoaHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestKoaHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestKoaHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathKoaHandlerOptions: RuntimeSubpathKoaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestKoaHandlerOptions;
+requestTypedManifestRuntimeSubpathKoaHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestKoaHandlerOptionsArgs: KoaHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestKoaHandlerOptions];
+requestTypedManifestKoaHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+// @ts-expect-error Express option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestExpressHandlerOptions: ExpressHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+// @ts-expect-error Fastify option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestFastifyHandlerOptions: FastifyHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+// @ts-expect-error Koa option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestKoaHandlerOptions: KoaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,

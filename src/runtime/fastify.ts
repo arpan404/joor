@@ -13,6 +13,7 @@ import type {
   HandlerOptionsArgsFor,
   HandlerOptionsFor,
   RpcManifestBody,
+  RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
@@ -85,7 +86,7 @@ export type FastifyHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyHandlerOptions<TPlugins, TBody, TRequest> &
   HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
@@ -95,7 +96,7 @@ export type FastifyRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyUnaryRouteHandlerOptionsFor<
@@ -104,7 +105,7 @@ export type FastifyUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyRouteStreamHandlerOptionsFor<
@@ -113,7 +114,7 @@ export type FastifyRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyStreamRouteHandlerOptionsFor<
@@ -122,7 +123,7 @@ export type FastifyStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyHandlerOptionsArgs<
@@ -130,7 +131,7 @@ export type FastifyHandlerOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
@@ -147,7 +148,7 @@ export type FastifyRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyUnaryRouteHandlerOptionsArgs<
@@ -156,7 +157,7 @@ export type FastifyUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyRouteStreamHandlerOptionsArgs<
@@ -165,7 +166,7 @@ export type FastifyRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyStreamRouteHandlerOptionsArgs<
@@ -174,7 +175,7 @@ export type FastifyStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 const neverAbortedSignal = new AbortController().signal;
@@ -423,7 +424,7 @@ const createFastifyHandlerWithOptions = <TManifest extends JoorManifest>(
 export function createFastifyHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = Request,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: FastifyHandlerOptionsArgs<
@@ -449,7 +450,7 @@ export const createFastifyHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    THookRequest extends Request = Request,
+    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: FastifyHandlerOptionsArgs<
