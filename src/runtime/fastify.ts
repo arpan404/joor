@@ -39,6 +39,10 @@ export interface FastifyRequest<
   TBody = unknown,
   TIncoming extends IncomingMessage = IncomingMessage,
 > {
+  readonly __types?: (
+    body: TBody,
+    incoming: TIncoming
+  ) => readonly [TBody, TIncoming];
   body?: TBody;
   headers: IncomingHttpHeaders;
   hostname?: string;
@@ -53,18 +57,37 @@ export interface FastifyRequest<
 export interface FastifyReply<
   TIncoming extends IncomingMessage = IncomingMessage,
 > {
+  readonly __incomingType?: (incoming: TIncoming) => TIncoming;
   raw: ServerResponse<TIncoming>;
   hijack?(): void;
 }
 
-type FastifyRequestIncoming<TRequest extends FastifyRequest> =
-  TRequest extends FastifyRequest<unknown, infer TIncoming>
+type FastifyRequestLike = {
+  body?: unknown;
+  headers: IncomingHttpHeaders;
+  hostname?: string;
+  ip?: string;
+  method: string;
+  originalUrl?: string;
+  protocol?: string;
+  raw?: IncomingMessage;
+  url: string;
+};
+
+type FastifyRequestIncoming<TRequest extends FastifyRequestLike> =
+  TRequest extends FastifyRequest<infer _TBody, infer TIncoming>
     ? TIncoming
     : IncomingMessage;
 
+type FastifyReplyLike<TIncoming extends IncomingMessage = IncomingMessage> = {
+  readonly __incomingType?: (incoming: TIncoming) => TIncoming;
+  raw: ServerResponse<TIncoming>;
+  hijack?(): void;
+};
+
 export type FastifyHandler<
-  TRequest extends FastifyRequest = FastifyRequest,
-  TReply extends FastifyReply<FastifyRequestIncoming<TRequest>> =
+  TRequest extends FastifyRequestLike = FastifyRequest,
+  TReply extends FastifyReplyLike<FastifyRequestIncoming<TRequest>> =
     FastifyReply<FastifyRequestIncoming<TRequest>>,
 > = (
   request: TRequest,
@@ -443,8 +466,8 @@ export function createFastifyHandler<TManifest extends JoorManifest>(
 
 export const createFastifyHandlerFor =
   <
-    TRequest extends FastifyRequest = FastifyRequest,
-    TReply extends FastifyReply<FastifyRequestIncoming<TRequest>> =
+    TRequest extends FastifyRequestLike = FastifyRequest,
+    TReply extends FastifyReplyLike<FastifyRequestIncoming<TRequest>> =
       FastifyReply<FastifyRequestIncoming<TRequest>>,
   >() =>
   <
@@ -463,4 +486,4 @@ export const createFastifyHandlerFor =
     createFastifyHandlerWithOptions(
       manifest,
       (args[0] ?? {}) as FastifyHandlerOptions
-    ) as FastifyHandler<TRequest, TReply>;
+    ) as unknown as FastifyHandler<TRequest, TReply>;

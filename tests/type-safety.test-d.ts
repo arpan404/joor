@@ -15617,12 +15617,14 @@ const typedFastifyHandler: FastifyHandler<
 > = createTypedFastifyHandler(manifest, fastifyHandlerOptions);
 const createRuntimeSubpathTypedFastifyHandler =
   createRuntimeSubpathFastifyHandlerFor<
-    RuntimeSubpathFastifyRequest<FastifyAppBody> & FastifyAppRequest,
-    RuntimeSubpathFastifyReply & FastifyAppReply
+    RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+      FastifyAppRequest,
+    RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
   >();
 const runtimeSubpathTypedFastifyHandler: RuntimeSubpathFastifyHandler<
-  RuntimeSubpathFastifyRequest<FastifyAppBody> & FastifyAppRequest,
-  RuntimeSubpathFastifyReply & FastifyAppReply
+  RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+    FastifyAppRequest,
+  RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
 > = createRuntimeSubpathTypedFastifyHandler(
   manifest,
   runtimeSubpathFastifyHandlerOptions
@@ -15633,6 +15635,10 @@ fastifyAppRequest.body?.id.toUpperCase();
 fastifyAppRequest.raw?.requestId.toUpperCase();
 fastifyAppRequest.params.id.toUpperCase();
 fastifyAppReply.locals.requestId.toUpperCase();
+// @ts-expect-error typed Fastify requests are not assignable to plain requests.
+const _wrongFastifyAppRequest: FastifyRequest = fastifyAppRequest;
+// @ts-expect-error typed Fastify replies are not assignable to plain replies.
+const _wrongFastifyAppReply: FastifyReply = fastifyAppReply;
 fastifyHandler(fastifyRequest, fastifyReply);
 syncFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
