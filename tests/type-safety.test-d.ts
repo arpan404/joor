@@ -12145,6 +12145,8 @@ const hookTypedCloudflareFetch =
     manifest,
     typedRequestHandlerOptions
   );
+const directHookTypedCloudflareFetch: CloudflareFetchHandler<HookAppRequest> =
+  createCloudflareFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedCloudflareFetch =
   createRuntimeSubpathCloudflareFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedCloudflareFetch: RuntimeSubpathCloudflareFetchHandler<AppFetchRequest> =
@@ -12193,6 +12195,11 @@ const hookTypedCloudflareWorker = createCloudflareWorkerFor<
   CloudflareContextForTypes,
   HookAppRequest
 >()(manifest, typedRequestHandlerOptions);
+const directHookTypedCloudflareWorker: CloudflareWorker<
+  never,
+  never,
+  HookAppRequest
+> = createCloudflareWorker(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedCloudflareWorker =
   createRuntimeSubpathCloudflareWorkerFor<
     CloudflareEnvForTypes,
@@ -12214,6 +12221,7 @@ typedCloudflareWorker.fetch(
   }
 );
 hookTypedCloudflareFetch(hookAppRequest);
+directHookTypedCloudflareFetch(hookAppRequest);
 hookTypedCloudflareWorker.fetch(
   hookAppRequest,
   { accountId: 'acct_1' },
@@ -12223,6 +12231,7 @@ hookTypedCloudflareWorker.fetch(
     },
   }
 );
+directHookTypedCloudflareWorker.fetch(hookAppRequest);
 typedCloudflareWorkerFromFactory.fetch(
   appFetchRequest,
   { accountId: 'acct_1' },
@@ -12572,6 +12581,10 @@ runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
 typedCloudflareFetch(appFetchRequest);
 runtimeSubpathTypedCloudflareFetch(appFetchRequest);
 hookTypedCloudflareFetch(hookAppRequest);
+// @ts-expect-error direct typed Cloudflare fetch factories infer custom hook request types.
+directHookTypedCloudflareFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error direct typed Cloudflare workers infer custom hook request types.
+directHookTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Cloudflare fetch plugins.
 createCloudflareFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Cloudflare fetch plugins.
@@ -12589,6 +12602,8 @@ const typedAppNetlifyFetch: NetlifyFetchHandler<AppFetchRequest> =
   createTypedNetlifyFetch(manifest, handlerOptions);
 const hookTypedNetlifyFetch =
   createNetlifyFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const directHookTypedNetlifyFetch: NetlifyFetchHandler<HookAppRequest> =
+  createNetlifyFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedNetlifyFetch =
   createRuntimeSubpathNetlifyFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppNetlifyFetch: RuntimeSubpathNetlifyFetchHandler<AppFetchRequest> =
@@ -12629,6 +12644,10 @@ const hookTypedNetlifyEdgeFunction = createNetlifyEdgeFunctionFor<
   NetlifyContextForTypes,
   HookAppRequest
 >()(manifest, typedRequestHandlerOptions);
+const directHookTypedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<
+  NetlifyContextForTypes,
+  HookAppRequest
+> = createNetlifyEdgeFunction(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedNetlifyEdgeFunction =
   createRuntimeSubpathNetlifyEdgeFunctionFor<
     NetlifyContextForTypes,
@@ -12825,6 +12844,7 @@ runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
 typedAppNetlifyFetch(appFetchRequest);
 runtimeSubpathTypedAppNetlifyFetch(appFetchRequest);
 hookTypedNetlifyFetch(hookAppRequest);
+directHookTypedNetlifyFetch(hookAppRequest);
 netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 typedNetlifyEdgeFunction(appFetchRequest, {
@@ -12843,6 +12863,14 @@ hookTypedNetlifyEdgeFunction(hookAppRequest, {
     city: 'San Francisco',
   },
 });
+directHookTypedNetlifyEdgeFunction(hookAppRequest, {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 runtimeSubpathTypedNetlifyEdgeFunction(appFetchRequest, {
   cookies: {
     get: (name) => name,
@@ -12852,6 +12880,17 @@ runtimeSubpathTypedNetlifyEdgeFunction(appFetchRequest, {
   },
 });
 new Response(`${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`);
+// @ts-expect-error direct typed Netlify fetch factories infer custom hook request types.
+directHookTypedNetlifyFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error direct typed Netlify edge factories infer custom hook request types.
+directHookTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Netlify fetch plugins.
@@ -12869,6 +12908,8 @@ const typedAppVercelFetch: VercelFetchHandler<AppFetchRequest> =
   createTypedVercelFetch(manifest, handlerOptions);
 const hookTypedVercelFetch =
   createVercelFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const directHookTypedVercelFetch: VercelFetchHandler<HookAppRequest> =
+  createVercelFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedVercelFetch =
   createRuntimeSubpathVercelFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppVercelFetch: RuntimeSubpathVercelFetchHandler<AppFetchRequest> =
@@ -12887,6 +12928,8 @@ const hookTypedVercelFunction =
     manifest,
     typedRequestHandlerOptions
   );
+const directHookTypedVercelFunction: VercelFunction<HookAppRequest> =
+  createVercelFunction(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedVercelFunction =
   createRuntimeSubpathVercelFunctionFor<AppFetchRequest>();
 const runtimeSubpathTypedVercelFunction: RuntimeSubpathVercelFunction<AppFetchRequest> =
@@ -13060,11 +13103,17 @@ runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 typedAppVercelFetch(appFetchRequest);
 runtimeSubpathTypedAppVercelFetch(appFetchRequest);
 hookTypedVercelFetch(hookAppRequest);
+directHookTypedVercelFetch(hookAppRequest);
 vercelFunction.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFunction.fetch(new Request('https://example.com/rpc'));
 typedVercelFunction.fetch(appFetchRequest);
 runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 hookTypedVercelFunction.fetch(hookAppRequest);
+directHookTypedVercelFunction.fetch(hookAppRequest);
+// @ts-expect-error direct typed Vercel fetch factories infer custom hook request types.
+directHookTypedVercelFetch(new Request('https://example.com/rpc'));
+// @ts-expect-error direct typed Vercel functions infer custom hook request types.
+directHookTypedVercelFunction.fetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Vercel fetch plugins.
