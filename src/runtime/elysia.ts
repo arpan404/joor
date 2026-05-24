@@ -112,10 +112,16 @@ export type ElysiaStreamRouteHandlerOptionsArgs<
 export function createElysiaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: ElysiaHandlerOptionsArgs<TManifest, TPlugins>
-): ElysiaHandler;
+  ...args: ElysiaHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): ElysiaHandler<ElysiaContext<TRequest>>;
 export function createElysiaHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

@@ -114,10 +114,16 @@ export type HonoStreamRouteHandlerOptionsArgs<
 export function createHonoHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HonoHandlerOptionsArgs<TManifest, TPlugins>
-): HonoHandler;
+  ...args: HonoHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): HonoHandler<HonoContext<TRequest>>;
 export function createHonoHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

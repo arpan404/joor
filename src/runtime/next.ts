@@ -250,10 +250,16 @@ const createRouteHandlers = <
 export function createNextRouteHandlers<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: NextRouteHandlersOptionsArgs<TManifest, TPlugins>
-): NextRouteHandlers;
+  ...args: NextRouteHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): NextRouteHandlers<never, TRequest>;
 export function createNextRouteHandlers<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

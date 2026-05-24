@@ -11953,6 +11953,10 @@ const hookTypedNextRouteHandlers = createNextRouteHandlersFor<
   never,
   HookAppRequest
 >()(manifest, typedRequestHandlerOptions);
+const directHookTypedNextRouteHandlers: NextRouteHandlers<
+  never,
+  HookAppRequest
+> = createNextRouteHandlers(manifest, typedRequestHandlerOptions);
 const createContextRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -11978,6 +11982,8 @@ const hookTypedNextHandler =
     manifest,
     typedRequestHandlerOptions
   );
+const directHookTypedNextHandler: NextHandler<never, HookAppRequest> =
+  createNextHandler(manifest, typedRequestHandlerOptions);
 const createContextRequestTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -12063,6 +12069,8 @@ nextRequestTypedHandlers.GET(appFetchRequest);
 nextRequestTypedHandler.POST(appFetchRequest);
 hookTypedNextRouteHandlers.GET(hookAppRequest);
 hookTypedNextHandler.POST(hookAppRequest);
+directHookTypedNextRouteHandlers.GET(hookAppRequest);
+directHookTypedNextHandler.POST(hookAppRequest);
 nextContextRequestTypedHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -12103,6 +12111,10 @@ nextRequestTypedHandlers.GET(new Request('https://example.com/rpc'));
 hookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
 // @ts-expect-error hook-typed Next handler aliases require the configured request subtype.
 hookTypedNextHandler.POST(new Request('https://example.com/rpc'));
+// @ts-expect-error direct typed Next route handlers infer custom hook request types.
+directHookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+// @ts-expect-error direct typed Next handler aliases infer custom hook request types.
+directHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 nextContextRequestTypedHandlers.GET(
   // @ts-expect-error context-aware typed Next handlers require the configured request subtype.
   new Request('https://example.com/rpc'),
@@ -13295,6 +13307,9 @@ const hookTypedElysiaHandler =
     manifest,
     typedRequestHandlerOptions
   );
+const directHookTypedElysiaHandler: ElysiaHandler<
+  ElysiaContext<HookAppRequest>
+> = createElysiaHandler(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedElysiaHandler =
   createRuntimeSubpathElysiaHandlerFor<
     RuntimeSubpathElysiaContext & ElysiaAppContext
@@ -13319,6 +13334,9 @@ runtimeSubpathSyncElysiaHandler(elysiaContext);
 typedElysiaHandler(elysiaAppContext);
 runtimeSubpathTypedElysiaHandler(elysiaAppContext);
 hookTypedElysiaHandler(elysiaHookContext);
+directHookTypedElysiaHandler(elysiaHookContext);
+// @ts-expect-error direct typed Elysia handlers infer custom hook request context types.
+directHookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error typed Elysia handlers preserve hook request context types.
 hookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
@@ -13673,6 +13691,8 @@ const typedHonoHandler: HonoHandler<HonoAppContext> = createTypedHonoHandler(
 );
 const hookTypedHonoHandler =
   createHonoHandlerFor<HonoHookContext>()(manifest, typedRequestHandlerOptions);
+const directHookTypedHonoHandler: HonoHandler<HonoContext<HookAppRequest>> =
+  createHonoHandler(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedHonoHandler =
   createRuntimeSubpathHonoHandlerFor<
     RuntimeSubpathHonoContext & HonoAppContext
@@ -13699,6 +13719,9 @@ runtimeSubpathSyncHonoHandler(honoContext);
 typedHonoHandler(honoAppContext);
 runtimeSubpathTypedHonoHandler(honoAppContext);
 hookTypedHonoHandler(honoHookContext);
+directHookTypedHonoHandler(honoHookContext);
+// @ts-expect-error direct typed Hono handlers infer custom hook request context types.
+directHookTypedHonoHandler(honoContext);
 // @ts-expect-error typed Hono handlers preserve hook request context types.
 hookTypedHonoHandler(honoContext);
 // @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
