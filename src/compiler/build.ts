@@ -5,10 +5,10 @@ import { emitArtifacts } from './emit.js';
 import { loadProcedures } from './load.js';
 
 export interface BuildOptions {
-  cwd?: string;
-  config?: string;
-  entry?: string;
-  outDir?: string;
+  readonly cwd?: string;
+  readonly config?: string;
+  readonly entry?: string;
+  readonly outDir?: string;
 }
 
 const disabledSafetyOptions = (config: JoorConfig): string[] => {

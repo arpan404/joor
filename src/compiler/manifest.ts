@@ -1,12 +1,12 @@
 import type { ProcedureRuntime } from '../procedure/types.js';
 
 export interface LoadedProcedure {
-  id: string;
-  importPath: string;
-  exportName: string;
-  procedure: ProcedureRuntime;
+  readonly id: string;
+  readonly importPath: string;
+  readonly exportName: string;
+  readonly procedure: ProcedureRuntime;
 }
 
 export interface CompilerManifest {
-  procedures: LoadedProcedure[];
+  readonly procedures: readonly LoadedProcedure[];
 }

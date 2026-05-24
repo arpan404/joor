@@ -1122,6 +1122,8 @@ import {
   type CompilerManifest as CompilerSubpathManifest,
   type CompiledProcedureGenerationOptions as CompilerSubpathCompiledProcedureGenerationOptions,
   type CompiledProcedureMode as CompilerSubpathCompiledProcedureMode,
+  type EmitOptions as CompilerSubpathEmitOptions,
+  type LoadedProcedure as CompilerSubpathLoadedProcedure,
   type ProcedureFile as CompilerSubpathProcedureFile,
 } from '../src/compiler/index.js';
 import {
@@ -5315,11 +5317,23 @@ const compilerSubpathBuildOptions: CompilerSubpathBuildOptions = {
   outDir: './.joor',
 };
 compilerSubpathBuildOptions.outDir?.toUpperCase();
+// @ts-expect-error compiler build options are readonly.
+compilerSubpathBuildOptions.outDir = './dist';
+const compilerSubpathEmitOptions: CompilerSubpathEmitOptions = {
+  outDir: '/tmp/joor-app/.joor',
+  config,
+  configPath: '/tmp/joor-app/joor.config.ts',
+};
+compilerSubpathEmitOptions.configPath?.toUpperCase();
+// @ts-expect-error compiler emit options are readonly.
+compilerSubpathEmitOptions.outDir = '/tmp/other/.joor';
 const compilerSubpathProcedureFile: CompilerSubpathProcedureFile = {
   path: '/tmp/joor-app/rpc/users/get.rpc.ts',
   id: 'users.get',
 };
 compilerSubpathProcedureFile.id.toUpperCase();
+// @ts-expect-error compiler procedure file paths are readonly.
+compilerSubpathProcedureFile.path = '/tmp/other.rpc.ts';
 const compilerSubpathGenerationOptions: CompilerSubpathCompiledProcedureGenerationOptions =
   {
     enforceRateLimit: true,
@@ -5332,16 +5346,22 @@ const compilerSubpathGenerationOptions: CompilerSubpathCompiledProcedureGenerati
 const compilerSubpathMode: CompilerSubpathCompiledProcedureMode =
   compilerSubpathGenerationOptions.modes?.[0] ?? 'body';
 compilerSubpathMode.toUpperCase();
-const compilerSubpathManifest: CompilerSubpathManifest = {
-  procedures: [
-    {
-      id: 'users.get',
-      importPath: '/tmp/joor-app/rpc/users/get.rpc.ts',
-      exportName: 'users_get',
-      procedure,
-    },
-  ],
+const compilerSubpathLoadedProcedure: CompilerSubpathLoadedProcedure = {
+  id: 'users.get',
+  importPath: '/tmp/joor-app/rpc/users/get.rpc.ts',
+  exportName: 'users_get',
+  procedure,
 };
+compilerSubpathLoadedProcedure.exportName.toUpperCase();
+// @ts-expect-error compiler loaded procedure ids are readonly.
+compilerSubpathLoadedProcedure.id = 'users.list';
+const compilerSubpathManifest: CompilerSubpathManifest = {
+  procedures: [compilerSubpathLoadedProcedure],
+};
+// @ts-expect-error compiler manifests expose readonly procedure lists.
+compilerSubpathManifest.procedures = [];
+// @ts-expect-error compiler manifest procedure lists are readonly arrays.
+compilerSubpathManifest.procedures[0] = compilerSubpathLoadedProcedure;
 const compilerSubpathOpenApi = createCompilerSubpathOpenApiDocument(
   compilerSubpathManifest
 );

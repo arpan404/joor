@@ -2,8 +2,8 @@ import { readdir } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 
 export interface ProcedureFile {
-  path: string;
-  id: string;
+  readonly path: string;
+  readonly id: string;
 }
 
 const toProcedureId = (entryRoot: string, file: string): string => {

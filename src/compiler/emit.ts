@@ -11,9 +11,9 @@ import type { CompilerManifest } from './manifest.js';
 import { createOpenApiDocument } from './openapi.js';
 
 export interface EmitOptions {
-  outDir: string;
-  config?: JoorConfig;
-  configPath?: string;
+  readonly outDir: string;
+  readonly config?: JoorConfig;
+  readonly configPath?: string;
 }
 
 const toImportPath = (fromFile: string, targetFile: string): string => {
