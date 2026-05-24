@@ -13,6 +13,7 @@ export type {
   AuthPolicyAuth,
   AuthPolicyHeaders,
   AuthPolicyHeaderValues,
+  AuthPolicyRequest,
   AuthPolicyResult,
   AuthPolicyResultLike,
   AuthPolicyServices,

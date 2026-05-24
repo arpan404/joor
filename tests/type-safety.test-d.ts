@@ -1055,6 +1055,7 @@ import {
   defineConfigFor as defineContextSubpathConfigFor,
   resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
+  type AuthPolicyRequest as ContextSubpathAuthPolicyRequest,
   type AuthPolicyResult as ContextSubpathAuthPolicyResult,
   type AuthPolicyResultLike as ContextSubpathAuthPolicyResultLike,
   type DefineConfigFor as ContextSubpathDefineConfigFor,
@@ -3126,7 +3127,27 @@ const contextSubpathTypedPolicy: ContextSubpathAuthPolicy<
   { authorization: string },
   { userId: string }
 > = contextSubpathAuthPolicy;
+const contextSubpathRequestTypedPolicy =
+  createContextSubpathAuthPolicy.withContext<
+    ContextSubpathConfigServices,
+    ProcedureAppRequest
+  >()<{ authorization: string }, { userId: string }>({
+    name: 'request-session',
+    authenticate(ctx) {
+      ctx.request.requestId.toUpperCase();
+      ctx.services.audit.record(ctx.headers.authorization);
+      return { userId: ctx.request.requestId };
+    },
+  });
 contextSubpathTypedPolicy.name.toUpperCase();
+const contextSubpathAuthPolicyRequest: ContextSubpathAuthPolicyRequest<
+  typeof contextSubpathTypedPolicy
+> = new Request('https://example.com/rpc');
+contextSubpathAuthPolicyRequest.url.toUpperCase();
+const contextSubpathRequestTypedPolicyRequest: ContextSubpathAuthPolicyRequest<
+  typeof contextSubpathRequestTypedPolicy
+> = requestTypedProcedureRequest;
+contextSubpathRequestTypedPolicyRequest.requestId.toUpperCase();
 const contextSubpathAuthResult: ContextSubpathAuthPolicyResult<{
   userId: string;
 }> = { userId: '1' };
