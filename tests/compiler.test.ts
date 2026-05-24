@@ -2429,14 +2429,36 @@ const nativeHandlerHooks: NativeHandlerHooks<
     return undefined;
   },
 };
+const nativeRequestTypedHandlerHooks: NativeHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = {
+  beforeRequest(request, context) {
+    request.runtimeTag.toUpperCase();
+    context.body?.input.id.toUpperCase();
+    context.services.users.findById('1')?.name.toUpperCase();
+    return undefined;
+  },
+};
 const nativeUnaryRouteHandlerHooks: NativeUnaryRouteHandlerHooks<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
 > = nativeHandlerHooks;
+const nativeRequestTypedUnaryRouteHandlerHooks: NativeUnaryRouteHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = nativeRequestTypedHandlerHooks;
 const nativeRouteUnaryHandlerHooks: NativeRouteUnaryHandlerHooks<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteUnaryBody
 > = nativeUnaryRouteHandlerHooks;
+const nativeRequestTypedRouteUnaryHandlerHooks: NativeRouteUnaryHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody,
+  GeneratedRequest
+> = nativeRequestTypedUnaryRouteHandlerHooks;
 const nativeStreamRouteHandlerHooks: NativeStreamRouteHandlerHooks<
   readonly [typeof nativeUsersPlugin],
   typeof nativeStreamRouteBody
@@ -2447,10 +2469,27 @@ const nativeStreamRouteHandlerHooks: NativeStreamRouteHandlerHooks<
     return undefined;
   },
 };
+const nativeRequestTypedStreamRouteHandlerHooks: NativeStreamRouteHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody,
+  GeneratedRequest
+> = {
+  beforeRequest(request, context) {
+    request.runtimeTag.toUpperCase();
+    context.body?.input.userId.toUpperCase();
+    context.services.users.findById('1')?.id.toUpperCase();
+    return undefined;
+  },
+};
 const nativeRouteStreamHandlerHooks: NativeRouteStreamHandlerHooks<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteStreamBody
 > = nativeStreamRouteHandlerHooks;
+const nativeRequestTypedRouteStreamHandlerHooks: NativeRouteStreamHandlerHooks<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody,
+  GeneratedRequest
+> = nativeRequestTypedStreamRouteHandlerHooks;
 const nativeHandlerOptions: NativeHandlerOptions<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -2580,22 +2619,50 @@ const nativeMiddleware: NativeMiddleware<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
 > = { name: 'native', ...nativeHandlerHooks };
+const nativeRequestTypedMiddleware: NativeMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = { name: 'native-request', ...nativeRequestTypedHandlerHooks };
 const nativeUnaryRouteMiddleware: NativeUnaryRouteMiddleware<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
 > = nativeMiddleware;
+const nativeRequestTypedUnaryRouteMiddleware: NativeUnaryRouteMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeUnaryRouteBody,
+  GeneratedRequest
+> = nativeRequestTypedMiddleware;
 const nativeRouteUnaryMiddleware: NativeRouteUnaryMiddleware<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteUnaryBody
 > = nativeUnaryRouteMiddleware;
+const nativeRequestTypedRouteUnaryMiddleware: NativeRouteUnaryMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteUnaryBody,
+  GeneratedRequest
+> = nativeRequestTypedUnaryRouteMiddleware;
 const nativeStreamRouteMiddleware: NativeStreamRouteMiddleware<
   readonly [typeof nativeUsersPlugin],
   typeof nativeStreamRouteBody
 > = { name: 'native-stream', ...nativeStreamRouteHandlerHooks };
+const nativeRequestTypedStreamRouteMiddleware: NativeStreamRouteMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody,
+  GeneratedRequest
+> = {
+  name: 'native-stream-request',
+  ...nativeRequestTypedStreamRouteHandlerHooks,
+};
 const nativeRouteStreamMiddleware: NativeRouteStreamMiddleware<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteStreamBody
 > = nativeStreamRouteMiddleware;
+const nativeRequestTypedRouteStreamMiddleware: NativeRouteStreamMiddleware<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody,
+  GeneratedRequest
+> = nativeRequestTypedStreamRouteMiddleware;
 const nativeHandlerOptionServices: NativeHandlerOptionServices<
   typeof nativeHandlerOptions
 > = requiredServices;
