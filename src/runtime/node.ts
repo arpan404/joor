@@ -39,7 +39,8 @@ import {
 export interface ListenOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> extends HandlerOptions<TPlugins> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody> {
   port?: number;
   hostname?: string;
 }
@@ -47,7 +48,8 @@ export interface ListenOptions<
 export type NodeListenOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> = ListenOptions<TPlugins>;
+  TBody = unknown,
+> = ListenOptions<TPlugins, TBody>;
 
 export interface NodeServer {
   readonly listening: boolean;
@@ -62,7 +64,8 @@ export type ListenOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = ListenOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
+> = ListenOptions<TPlugins, TBody> &
+  HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type NodeListenOptionsFor<
   TManifest extends JoorManifest,
@@ -140,7 +143,14 @@ export type ListenOptionsArgs<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = HandlerOptionsArgsFor<TManifest, TPlugins, ListenOptions<TPlugins>, TBody>;
+> = HandlerOptionsArgsFor<
+  TManifest,
+  TPlugins,
+  ListenOptions<TPlugins, TBody>,
+  TBody,
+  ListenOptions<TPlugins, TBody> &
+    HandlerOptionsFor<TManifest, TPlugins, TBody>
+>;
 
 export type NodeListenOptionsArgs<
   TManifest extends JoorManifest,
@@ -675,7 +685,7 @@ export function listen<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgsFor<TManifest, TPlugins, ListenOptions<TPlugins>>
+  ...args: ListenOptionsArgs<TManifest, TPlugins>
 ): NodeServer;
 export function listen<TManifest extends JoorManifest>(
   manifest: TManifest,

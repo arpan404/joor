@@ -73,7 +73,8 @@ export type FastifyHandler<
 export interface FastifyHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> extends HandlerOptions<TPlugins> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody> {
   hostname?: string;
   useOriginalUrl?: boolean;
 }
@@ -83,7 +84,7 @@ export type FastifyHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = FastifyHandlerOptions<TPlugins> &
+> = FastifyHandlerOptions<TPlugins, TBody> &
   HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type FastifyRouteUnaryHandlerOptionsFor<
@@ -126,8 +127,10 @@ export type FastifyHandlerOptionsArgs<
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  FastifyHandlerOptions<TPlugins>,
-  TBody
+  FastifyHandlerOptions<TPlugins, TBody>,
+  TBody,
+  FastifyHandlerOptions<TPlugins, TBody> &
+    HandlerOptionsFor<TManifest, TPlugins, TBody>
 >;
 
 export type FastifyRouteUnaryHandlerOptionsArgs<

@@ -34,7 +34,8 @@ export type KoaMiddleware<
 export interface KoaHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> extends HandlerOptions<TPlugins> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody> {
   hostname?: string;
   useOriginalUrl?: boolean;
 }
@@ -44,7 +45,8 @@ export type KoaHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = KoaHandlerOptions<TPlugins> & HandlerOptionsFor<TManifest, TPlugins, TBody>;
+> = KoaHandlerOptions<TPlugins, TBody> &
+  HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type KoaRouteUnaryHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -86,8 +88,10 @@ export type KoaHandlerOptionsArgs<
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  KoaHandlerOptions<TPlugins>,
-  TBody
+  KoaHandlerOptions<TPlugins, TBody>,
+  TBody,
+  KoaHandlerOptions<TPlugins, TBody> &
+    HandlerOptionsFor<TManifest, TPlugins, TBody>
 >;
 
 export type KoaRouteUnaryHandlerOptionsArgs<

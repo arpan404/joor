@@ -34,7 +34,8 @@ export type ExpressRequestHandler<
 export interface ExpressHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
-> extends HandlerOptions<TPlugins> {
+  TBody = unknown,
+> extends HandlerOptions<TPlugins, TBody> {
   hostname?: string;
   useOriginalUrl?: boolean;
 }
@@ -44,7 +45,7 @@ export type ExpressHandlerOptionsFor<
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
-> = ExpressHandlerOptions<TPlugins> &
+> = ExpressHandlerOptions<TPlugins, TBody> &
   HandlerOptionsFor<TManifest, TPlugins, TBody>;
 
 export type ExpressRouteUnaryHandlerOptionsFor<
@@ -87,8 +88,10 @@ export type ExpressHandlerOptionsArgs<
 > = HandlerOptionsArgsFor<
   TManifest,
   TPlugins,
-  ExpressHandlerOptions<TPlugins>,
-  TBody
+  ExpressHandlerOptions<TPlugins, TBody>,
+  TBody,
+  ExpressHandlerOptions<TPlugins, TBody> &
+    HandlerOptionsFor<TManifest, TPlugins, TBody>
 >;
 
 export type ExpressRouteUnaryHandlerOptionsArgs<
