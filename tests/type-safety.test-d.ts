@@ -6543,6 +6543,13 @@ const requestTypedConfig = defineConfig<
   plugins: [usersPlugin] as const,
   hooks: typedRequestHandlerHooks,
 });
+const requestTypedConfigWithoutHooks = defineConfig<
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+>({
+  plugins: [usersPlugin] as const,
+});
 requestTypedConfig.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
@@ -6559,6 +6566,10 @@ requestTypedConfigRequest.requestId.toUpperCase();
 const requestTypedJoorConfigRequest: JoorConfigRequest<
   typeof requestTypedConfig
 > = hookAppRequest;
+const requestTypedConfigWithoutHooksRequest: JoorConfigRequest<
+  typeof requestTypedConfigWithoutHooks
+> = hookAppRequest;
+requestTypedConfigWithoutHooksRequest.requestId.toUpperCase();
 const contextSubpathRequestTypedJoorConfigRequest: ContextSubpathConfigRequest<
   typeof requestTypedConfig
 > = requestTypedJoorConfigRequest;
@@ -10800,6 +10811,17 @@ createCompiledRpcHandler(
   manifestAwareConfig,
   _serviceTypedCompiledUnaryDispatch
 );
+const requestTypedConfigWithoutHooksCompiledRpcHandler: CompiledRpcRequestHandler<HookAppRequest> =
+  createCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    requestTypedConfigWithoutHooks,
+    _serviceTypedCompiledUnaryDispatch
+  );
+requestTypedConfigWithoutHooksCompiledRpcHandler(hookAppRequest);
+requestTypedConfigWithoutHooksCompiledRpcHandler(
+  // @ts-expect-error config-aware compiled handlers preserve explicit request types without hooks.
+  new Request('https://example.com/rpc')
+);
 const requestTypedConfigCompiledRpcHandler: CompiledRpcRequestHandler<HookAppRequest> =
   createCompiledRpcHandler(
     _serviceTypedCompiledDispatch,
@@ -10834,6 +10856,12 @@ createCompiledRpcHandlerFor<Request>()(
   _serviceTypedCompiledDispatch,
   // @ts-expect-error typed compiled handler factories reject requests too broad for config hooks.
   exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+createCompiledRpcHandlerFor<Request>()(
+  _serviceTypedCompiledDispatch,
+  // @ts-expect-error typed compiled handler factories reject requests too broad for explicit config request types.
+  requestTypedConfigWithoutHooks,
   _serviceTypedCompiledUnaryDispatch
 );
 const configTypedCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
@@ -10875,6 +10903,22 @@ requestTypedConfigCompiledBodyHandler(
   // @ts-expect-error config-aware compiled body handlers preserve custom request types.
   new Request('https://example.com/rpc'),
   manifestRouteRequest
+);
+const requestTypedConfigWithoutHooksCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
+  typeof requestTypedConfigWithoutHooks
+> = createCompiledRpcBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  requestTypedConfigWithoutHooks,
+  _serviceTypedCompiledUnaryDispatch
+);
+requestTypedConfigWithoutHooksCompiledBodyHandler(
+  hookAppRequest,
+  { id: 'users.get', input: { id: '1' } }
+);
+requestTypedConfigWithoutHooksCompiledBodyHandler(
+  // @ts-expect-error config-aware compiled body handlers preserve explicit request types without hooks.
+  new Request('https://example.com/rpc'),
+  { id: 'users.get', input: { id: '1' } }
 );
 createRootCompiledRpcTransportBodyResultHandler(
   _rootServiceTypedCompiledDispatch,

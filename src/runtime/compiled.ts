@@ -30,7 +30,11 @@ import type {
   AuthPolicyResultLike,
 } from '../auth/policy.js';
 import { resolvePluginServices, type JoorPlugin } from '../context/plugin.js';
-import type { JoorConfig, JoorConfigContext } from '../config.js';
+import type {
+  JoorConfig,
+  JoorConfigContext,
+  JoorConfigRequest,
+} from '../config.js';
 import type { JoorManifest } from '../manifest.js';
 import type {
   ProcedureRuntime,
@@ -277,23 +281,7 @@ type CompiledHookBody<TConfig> = TConfig extends {
     ? TBody
     : JsonValue;
 
-type CompiledHookRequest<TConfig> = TConfig extends {
-  hooks?: HandlerHooks<
-    infer _TServices extends object,
-    infer _TBody,
-    infer TRequest extends Request
-  >;
-}
-  ? TRequest
-  : TConfig extends {
-        middleware?: readonly JoorMiddleware<
-          infer _TServices extends object,
-          infer _TBody,
-          infer TRequest extends Request
-        >[];
-      }
-    ? TRequest
-    : Request;
+type CompiledHookRequest<TConfig> = JoorConfigRequest<TConfig>;
 
 type CompiledConfigManifest<TConfig> =
   HandlerOptionsManifest<TConfig> extends infer TManifest
