@@ -104,8 +104,8 @@ export interface CompiledRuntimeState<TServices extends object = object> {
   readonly path: string;
   readonly runtime: CompiledRuntime;
   readonly services: TServices | undefined;
-  getServices(): TServices | undefined;
-  resolveServices(): Promise<TServices>;
+  readonly getServices: () => TServices | undefined;
+  readonly resolveServices: () => Promise<TServices>;
 }
 
 export interface CompiledSerializedEnvelope extends SerializedJsonEnvelope {}

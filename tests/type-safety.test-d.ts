@@ -12490,6 +12490,10 @@ compiledRuntimeState.path = '/other';
 compiledRuntimeState.runtime = { ...compiledRuntimeState.runtime };
 // @ts-expect-error compiled service caches are readonly public views.
 compiledRuntimeState.services = undefined;
+// @ts-expect-error compiled service readers are readonly.
+compiledRuntimeState.getServices = () => undefined;
+// @ts-expect-error compiled service resolvers are readonly.
+compiledRuntimeState.resolveServices = async () => ({});
 // @ts-expect-error compiled runtime validation flags are readonly.
 compiledRuntimeState.runtime.validateInput = false;
 if (compiledRuntimeState.runtime.cors !== undefined) {
