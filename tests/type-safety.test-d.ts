@@ -2007,6 +2007,18 @@ const requestTypedProcedureRequest: ProcedureRequest<typeof requestTypedProcedur
     requestId: 'req_1',
   }) as ProcedureAppRequest;
 requestTypedProcedureRequest.requestId.toUpperCase();
+// @ts-expect-error request-typed procedures are not assignable to plain request procedures.
+const _wrongRequestTypedProcedure: Procedure<
+  typeof requestTypedProcedure.input,
+  NonNullable<typeof requestTypedProcedure.output>,
+  typeof requestTypedProcedure.errors,
+  undefined,
+  undefined,
+  undefined,
+  Record<string, never>,
+  Services,
+  Request
+> = requestTypedProcedure;
 const defaultProcedureRequest: ProcedureRequest<typeof procedure> = new Request(
   'https://example.com/rpc'
 );

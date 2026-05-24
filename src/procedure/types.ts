@@ -47,6 +47,7 @@ export interface ProcedureTypes<
   auth: TAuth;
   services: TServices;
   request?: TRequest;
+  readonly __requestType?: (request: TRequest) => TRequest;
 }
 
 export type ProcedureRuntimeValue =
