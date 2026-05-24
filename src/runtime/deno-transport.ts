@@ -523,9 +523,34 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   );
 }
 
-export const createDenoRpcRequestHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createDenoRpcRequestHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => DenoRpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createDenoRpcRequestHandlerFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => DenoRpcRequestHandler<TRequest>;
+export function createDenoRpcRequestHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -563,6 +588,7 @@ export const createDenoRpcRequestHandlerFor =
       createCorsHeaderRecord(options.cors)
     ) as DenoRpcRequestHandler<TRequest>;
   };
+}
 
 export function serveDeno<
   TManifest extends JoorManifest,

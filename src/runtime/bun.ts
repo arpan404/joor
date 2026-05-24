@@ -627,9 +627,34 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   );
 }
 
-export const createBunRpcRequestHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <
+export function createBunRpcRequestHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: BunRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => BunRpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createBunRpcRequestHandlerFor<TRequest extends Request>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: BunRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+) => BunRpcRequestHandler<TRequest>;
+export function createBunRpcRequestHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   >(
@@ -667,6 +692,7 @@ export const createBunRpcRequestHandlerFor =
       createCorsHeaderRecord(options.cors)
     ) as BunRpcRequestHandler<TRequest>;
   };
+}
 
 export function serveBun<
   TManifest extends JoorManifest,

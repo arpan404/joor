@@ -2838,6 +2838,16 @@ requestTypedManifestBunRpcRequestHandler(
   // @ts-expect-error Bun RPC handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
+const requestTypedManifestDefaultBunRpcRequestHandlerFor =
+  createBunRpcRequestHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestBunRpcRequestHandlerOptions
+  );
+requestTypedManifestDefaultBunRpcRequestHandlerFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultBunRpcRequestHandlerFor(
+  // @ts-expect-error curried Bun RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
 const requestTypedManifestDenoFetchOptions: DenoFetchOptionsFor<
   typeof requestTypedManifest,
   readonly [typeof usersPlugin]
@@ -2906,6 +2916,18 @@ const requestTypedManifestDenoRpcRequestHandler = createDenoRpcRequestHandler(
 requestTypedManifestDenoRpcRequestHandler(requestTypedProcedureRequest);
 requestTypedManifestDenoRpcRequestHandler(
   // @ts-expect-error Deno RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultDenoRpcRequestHandlerFor =
+  createDenoRpcRequestHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestDenoRpcRequestHandlerOptions
+  );
+requestTypedManifestDefaultDenoRpcRequestHandlerFor(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultDenoRpcRequestHandlerFor(
+  // @ts-expect-error curried Deno RPC handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
 // @ts-expect-error Bun option aliases reject explicit request types that are too broad.
@@ -3104,6 +3126,18 @@ requestTypedManifestStandaloneDenoRpcRequestHandler(
 );
 requestTypedManifestStandaloneDenoRpcRequestHandler(
   // @ts-expect-error Standalone Deno RPC handlers default to the manifest required request subtype.
+  new Request('https://example.com/rpc')
+);
+const requestTypedManifestDefaultStandaloneDenoRpcRequestHandlerFor =
+  createRootStandaloneDenoRpcRequestHandlerFor()(
+    requestTypedManifest,
+    requestTypedManifestStandaloneDenoRpcRequestHandlerOptions
+  );
+requestTypedManifestDefaultStandaloneDenoRpcRequestHandlerFor(
+  requestTypedProcedureRequest
+);
+requestTypedManifestDefaultStandaloneDenoRpcRequestHandlerFor(
+  // @ts-expect-error curried standalone Deno RPC handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
 // @ts-expect-error Standalone Deno option aliases reject explicit request types that are too broad.
