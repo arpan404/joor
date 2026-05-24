@@ -1154,11 +1154,11 @@ export type HandlerOptionsArgsFor<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
-    ? [
+    ? readonly [
         options?: TOptions &
           HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
       ]
-    : [
+    : readonly [
         options: TOptions &
           HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
       ];
@@ -1215,7 +1215,7 @@ export type HandlerOptionsWithTrailingArgs<
     RpcManifestRequiredServices<TManifest>,
     PluginServices<TPlugins>
   > extends true
-    ? [
+    ? readonly [
         options?: HandlerOptionsForTrailing<
           TManifest,
           TPlugins,
@@ -1224,7 +1224,7 @@ export type HandlerOptionsWithTrailingArgs<
         >,
         ...trailingArgs: TTrailingArgs,
       ]
-    : [
+    : readonly [
         options: HandlerOptionsForTrailing<
           TManifest,
           TPlugins,

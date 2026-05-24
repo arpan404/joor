@@ -8407,6 +8407,8 @@ const exactHandlerOptionsArgsFor: HandlerOptionsArgsFor<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = [exactServiceAwareHandlerOptions];
+// @ts-expect-error handler option args are readonly tuples.
+exactHandlerOptionsArgsFor[0] = exactServiceAwareHandlerOptions;
 exactHandlerOptionsArgsFor[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -8456,6 +8458,8 @@ const exactHandlerOptionsWithTrailingArgs: HandlerOptionsWithTrailingArgs<
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest
 > = [exactServiceAwareHandlerOptions, true];
+// @ts-expect-error handler option trailing args are readonly tuples.
+exactHandlerOptionsWithTrailingArgs[1] = false;
 const rpcSubpathExactHandlerOptionsWithTrailingArgs: RpcSubpathHandlerOptionsWithTrailingArgs<
   typeof manifest,
   [preflight?: boolean],
@@ -15258,6 +15262,8 @@ const expressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [expressHandlerOptions];
+// @ts-expect-error adapter handler option args are readonly tuples.
+expressHandlerOptionsArgs[0] = expressHandlerOptions;
 const exactExpressHandlerOptionsArgs: ExpressHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -16280,6 +16286,8 @@ const nodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRpcRequestHandlerOptions, '127.0.0.1'];
+// @ts-expect-error node handler option trailing args are readonly tuples.
+nodeRpcRequestHandlerOptionsArgs[1] = 'localhost';
 const requestTypedNodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin],
