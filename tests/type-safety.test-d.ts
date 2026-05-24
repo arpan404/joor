@@ -4037,6 +4037,8 @@ const procedureResponseHeaderValues: ProcedureResponseHeaderValues = {
   etag: 'v1',
 };
 procedureResponseHeaderValues['cache-control']?.toUpperCase();
+// @ts-expect-error procedure response header values are readonly.
+procedureResponseHeaderValues['cache-control'] = 'public';
 procedureOkSubpath({ id: '1', name: 'Ada' }, procedureResponseHeaderValues);
 const requiredProcedureSuccess: ProcedureSuccess<
   { id: string; name: string },
@@ -4053,6 +4055,8 @@ requiredProcedureSuccess.kind = 'error';
 requiredProcedureSuccess.data = { id: '2', name: 'Ada' };
 // @ts-expect-error procedure success headers are readonly.
 requiredProcedureSuccess.headers = { 'cache-control': 'public' };
+// @ts-expect-error procedure success header values are readonly.
+requiredProcedureSuccess.headers['cache-control'] = 'public';
 // @ts-expect-error procedure successes require declared response headers.
 const _missingProcedureSuccessHeaders: ProcedureSuccess<
   { id: string; name: string },

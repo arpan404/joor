@@ -1,9 +1,9 @@
 import type { JsonValue } from '../schema/json.js';
 
-export type ProcedureResponseHeaderValues = Record<string, string>;
+export type ProcedureResponseHeaderValues = Readonly<Record<string, string>>;
 
 type StringResponseHeaders<THeaders extends object> = {
-  [TKey in KnownResponseHeaderKeys<THeaders>]: Exclude<
+  readonly [TKey in KnownResponseHeaderKeys<THeaders>]: Exclude<
     THeaders[TKey],
     undefined
   > extends string
@@ -11,8 +11,8 @@ type StringResponseHeaders<THeaders extends object> = {
     : never;
 } & (string extends keyof THeaders
   ? Exclude<THeaders[string], undefined> extends string
-    ? Record<string, Exclude<THeaders[string], undefined>>
-    : Record<string, never>
+    ? Readonly<Record<string, Exclude<THeaders[string], undefined>>>
+    : Readonly<Record<string, never>>
   : object);
 
 type KnownResponseHeaderKeys<THeaders extends object> = {
