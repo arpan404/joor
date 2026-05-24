@@ -1426,7 +1426,13 @@ const defaultStreamRouteTransport: StreamRouteTransport =
 defaultUnaryRouteTransport.valueOf();
 defaultStreamRouteTransport.valueOf();
 const bunNativeCors: BunNativeCorsOptions = { origin: 'https://example.com' };
+// @ts-expect-error generated Bun CORS options are readonly.
+bunNativeCors.origin = 'https://other.example.com';
+// @ts-expect-error generated Bun CORS header lists are readonly.
+bunNativeCors.headers?.push('authorization');
 const bunNativeOptions: BunNativeOptions = { path: '/custom-rpc', cors: bunNativeCors, maxBodyBytes: 1024 };
+// @ts-expect-error generated Bun native options are readonly.
+bunNativeOptions.path = '/other-rpc';
 const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch(bunNativeOptions);
 const createTypedBunNativeFetch = createBunNativeFetchFor<GeneratedRequest>();
 const typedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
@@ -1451,7 +1457,13 @@ const bunServer: BunNativeServer = serveBunNative({ ...bunNativeOptions, port: 3
 bunServer.stop?.();
 bunServer.ref?.();
 const denoNativeCors: DenoNativeCorsOptions = { origin: 'https://example.com' };
+// @ts-expect-error generated Deno CORS options are readonly.
+denoNativeCors.origin = 'https://other.example.com';
+// @ts-expect-error generated Deno CORS method lists are readonly.
+denoNativeCors.methods?.push('GET');
 const denoNativeOptions: DenoNativeOptions = { path: '/custom-rpc', cors: denoNativeCors, maxBodyBytes: 1024 };
+// @ts-expect-error generated Deno native options are readonly.
+denoNativeOptions.path = '/other-rpc';
 const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch(denoNativeOptions);
 const createTypedDenoNativeFetch = createDenoNativeFetchFor<GeneratedRequest>();
 const typedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
@@ -1476,7 +1488,13 @@ const denoServer: DenoNativeServer = serveDenoNative({ ...denoNativeOptions, por
 denoServer.shutdown();
 denoServer.finished.then(() => undefined);
 const nodeNativeCors: NodeNativeCorsOptions = { origin: 'https://example.com' };
+// @ts-expect-error generated Node CORS options are readonly.
+nodeNativeCors.origin = 'https://other.example.com';
+// @ts-expect-error generated Node CORS header lists are readonly.
+nodeNativeCors.headers?.push('authorization');
 const nodeNativeOptions: NodeNativeOptions = { path: '/custom-rpc', cors: nodeNativeCors, maxBodyBytes: 1024 };
+// @ts-expect-error generated Node native options are readonly.
+nodeNativeOptions.path = '/other-rpc';
 const nodeHandler: NodeNativeHandler = createNodeNativeHandler(nodeNativeOptions);
 interface GeneratedIncomingMessage extends IncomingMessage {
   readonly requestId: string;
@@ -2673,6 +2691,8 @@ const nativeStreamRouteBody: NativeStreamRouteBody = nativeRouteStreamBody;
 const nativeConfig: NativeConfig<readonly [typeof nativeUsersPlugin]> = {
   plugins: [nativeUsersPlugin] as const,
 };
+// @ts-expect-error generated native configs inherit readonly options.
+nativeConfig.plugins = [] as const;
 const nativeConfigFor: NativeConfigFor<readonly [typeof nativeUsersPlugin]> =
   nativeConfig;
 const nativeRequestTypedConfigFor: NativeConfigFor<

@@ -304,7 +304,7 @@ const emitProfileDispatcher = async (
     )
     .join('\n');
   const nativeManifestTypes = `export type NativeManifest = {
-  procedures: {
+  readonly procedures: {
 ${nativeManifestEntries}
   };
 };
@@ -1968,20 +1968,20 @@ ${nodeFastHandlerConstants}
 ${nodeFastContextlessUnary}
 
 export interface NodeNativeOptions {
-  hostname?: string;
-  path?: string;
-  cors?: NativeCorsOptions | false;
-  maxBodyBytes?: number;
+  readonly hostname?: string;
+  readonly path?: string;
+  readonly cors?: NativeCorsOptions | false;
+  readonly maxBodyBytes?: number;
 }
 
 export interface NativeCorsOptions {
-  origin?: string;
-  methods?: string[];
-  headers?: string[];
+  readonly origin?: string;
+  readonly methods?: readonly string[];
+  readonly headers?: readonly string[];
 }
 
 export interface NodeListenOptions extends NodeNativeOptions {
-  port?: number;
+  readonly port?: number;
 }
 
 export type NodeNativeHandler<
@@ -2510,17 +2510,17 @@ ${bunFastHandlerConstants}
 ${bunFastContextlessUnary}
 
 export interface BunNativeOptions {
-  hostname?: string;
-  path?: string;
-  cors?: NativeCorsOptions | false;
-  maxBodyBytes?: number;
-  port?: number;
+  readonly hostname?: string;
+  readonly path?: string;
+  readonly cors?: NativeCorsOptions | false;
+  readonly maxBodyBytes?: number;
+  readonly port?: number;
 }
 
 export interface NativeCorsOptions {
-  origin?: string;
-  methods?: string[];
-  headers?: string[];
+  readonly origin?: string;
+  readonly methods?: readonly string[];
+  readonly headers?: readonly string[];
 }
 
 export type BunNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
@@ -2625,9 +2625,9 @@ const configuredCors = ${configuredCors};
 const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
 
 export interface NativeCorsOptions {
-  origin?: string;
-  methods?: string[];
-  headers?: string[];
+  readonly origin?: string;
+  readonly methods?: readonly string[];
+  readonly headers?: readonly string[];
 }
 
 const resolveCorsOptions = (
@@ -2640,11 +2640,11 @@ const resolveCorsOptions = (
 };
 
 export interface DenoNativeOptions {
-  hostname?: string;
-  path?: string;
-  cors?: NativeCorsOptions | false;
-  maxBodyBytes?: number;
-  port?: number;
+  readonly hostname?: string;
+  readonly path?: string;
+  readonly cors?: NativeCorsOptions | false;
+  readonly maxBodyBytes?: number;
+  readonly port?: number;
 }
 
 export type DenoNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
