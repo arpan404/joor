@@ -674,7 +674,7 @@ export const createDenoRpcRequestHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >,
       false
     );

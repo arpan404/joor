@@ -7039,6 +7039,27 @@ const syncRpcSubpathHandler: RpcSubpathRequestHandler = syncRpcHandler;
 const createTypedRpcHandler = createRpcHandlerFor<AppFetchRequest>();
 const typedAppRpcHandler: RpcRequestHandler<AppFetchRequest> =
   createTypedRpcHandler(manifest, handlerOptions);
+const lowLevelRequestTypedHandlerOptions: HandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof manifest>,
+  HookAppRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      if (context.body !== undefined && !('length' in context.body)) {
+        context.body.id.toUpperCase();
+      }
+      return undefined;
+    },
+  },
+};
+const createHookTypedRpcHandler = createRpcHandlerFor<HookAppRequest>();
+const hookTypedRpcHandler: RpcRequestHandler<HookAppRequest> =
+  createHookTypedRpcHandler(manifest, lowLevelRequestTypedHandlerOptions);
 const createTypedRpcSubpathHandler =
   createRpcSubpathHandlerFor<AppFetchRequest>();
 const typedAppRpcSubpathHandler: RpcSubpathRequestHandler<AppFetchRequest> =
@@ -7048,6 +7069,9 @@ typedRpcHandler(new Request('https://example.com/rpc'));
 syncRpcHandler(new Request('https://example.com/rpc'));
 typedRpcSubpathHandler(new Request('https://example.com/rpc'));
 syncRpcSubpathHandler(new Request('https://example.com/rpc'));
+hookTypedRpcHandler(hookAppRequest);
+// @ts-expect-error low-level typed RPC handlers preserve custom hook request types.
+hookTypedRpcHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching handler plugins.
 createRpcHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed handler plugins.
@@ -7070,6 +7094,13 @@ const typedAppRpcBodyHandler: RpcBodyHandler<
   typeof manifest,
   AppFetchRequest
 > = createTypedRpcBodyHandler(manifest, handlerOptions);
+const createHookTypedRpcBodyHandler =
+  createRpcBodyHandlerFor<HookAppRequest>();
+const hookTypedRpcBodyHandler: RpcBodyHandler<typeof manifest, HookAppRequest> =
+  createHookTypedRpcBodyHandler(
+    manifest,
+    lowLevelRequestTypedHandlerOptions
+  );
 const createTypedRpcSubpathBodyHandler =
   createRpcSubpathBodyHandlerFor<AppFetchRequest>();
 const typedAppRpcSubpathBodyHandler: RpcSubpathBodyHandler<
@@ -7094,6 +7125,12 @@ syncRpcSubpathBodyHandler(
   new Request('https://example.com/rpc'),
   manifestRouteBody
 );
+hookTypedRpcBodyHandler(hookAppRequest, manifestRouteBody);
+hookTypedRpcBodyHandler(
+  // @ts-expect-error low-level typed body handlers preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteBody
+);
 rpcBodyHandler(new Request('https://example.com/rpc'), {
   // @ts-expect-error low-level typed body handlers reject unknown route ids.
   id: 'users.missing',
@@ -7109,6 +7146,15 @@ const typedAppRpcBodyResultHandler: RpcBodyResultHandler<
   typeof manifest,
   AppFetchRequest
 > = createTypedRpcBodyResultHandler(manifest, handlerOptions);
+const createHookTypedRpcBodyResultHandler =
+  createRpcBodyResultHandlerFor<HookAppRequest>();
+const hookTypedRpcBodyResultHandler: RpcBodyResultHandler<
+  typeof manifest,
+  HookAppRequest
+> = createHookTypedRpcBodyResultHandler(
+  manifest,
+  lowLevelRequestTypedHandlerOptions
+);
 const createTypedRpcSubpathBodyResultHandler =
   createRpcSubpathBodyResultHandlerFor<AppFetchRequest>();
 const typedAppRpcSubpathBodyResultHandler: RpcSubpathBodyResultHandler<
@@ -7133,6 +7179,12 @@ Promise.resolve(
     }
   }
 });
+Promise.resolve(hookTypedRpcBodyResultHandler(hookAppRequest, manifestRouteBody));
+hookTypedRpcBodyResultHandler(
+  // @ts-expect-error low-level typed body result handlers preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteBody
+);
 Promise.resolve(
   rpcBodyResultHandler(
     new Request('https://example.com/rpc'),

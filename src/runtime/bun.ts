@@ -614,7 +614,7 @@ export const createBunRpcRequestHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >,
       false
     );

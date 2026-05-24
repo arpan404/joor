@@ -2403,10 +2403,16 @@ const executeStream = async <TId extends string>(
 export function createRpcHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<TManifest, TPlugins>
-): RpcRequestHandler;
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): RpcRequestHandler<TRequest>;
 export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {}
@@ -2470,17 +2476,23 @@ export const createRpcHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >
     ) as RpcRequestHandler<TRequest>;
 
 export function createRpcBodyHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
-): RpcBodyHandler<TManifest>;
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): RpcBodyHandler<TManifest, TRequest>;
 export function createRpcBodyHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
@@ -2523,7 +2535,7 @@ export const createRpcBodyHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >,
       args[1] ?? true
     ) as RpcBodyHandler<TManifest, TRequest>;
@@ -2531,10 +2543,16 @@ export const createRpcBodyHandlerFor =
 export function createRpcBodyResultHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
-): RpcBodyResultHandler<TManifest>;
+  ...args: HandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): RpcBodyResultHandler<TManifest, TRequest>;
 export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
@@ -2574,7 +2592,7 @@ export const createRpcBodyResultHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >,
       args[1] ?? true
     ) as RpcBodyResultHandler<TManifest, TRequest>;

@@ -139,6 +139,6 @@ export const createJoorHandlerFor =
         TManifest,
         TPlugins,
         RpcManifestBody<TManifest>,
-        Request
+        TRequest
       >
     ) as JoorFetchHandler<TRequest>;
