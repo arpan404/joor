@@ -47,8 +47,8 @@ export interface BunServeOptions<
   TRequest extends Request = Request,
   TBody = unknown,
 > extends HandlerOptions<TPlugins, TBody, TRequest> {
-  port?: number;
-  hostname?: string;
+  readonly port?: number;
+  readonly hostname?: string;
 }
 
 export interface BunServer {

@@ -17169,17 +17169,27 @@ const runtimeSubpathCloudflareWorker = createRuntimeSubpathCloudflareWorker(
 runtimeSubpathCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 const bunOptions: BunServeOptions = { port: 3000 };
 bunOptions.port?.toFixed();
+// @ts-expect-error Bun serve ports are readonly.
+bunOptions.port = 3001;
 const denoOptions: DenoServeOptions = { hostname: '127.0.0.1' };
 denoOptions.hostname?.toUpperCase();
+// @ts-expect-error Deno serve hostnames are readonly.
+denoOptions.hostname = 'localhost';
 const standaloneDenoOptions: StandaloneDenoServeOptions = { port: 3001 };
 standaloneDenoOptions.port?.toFixed();
+// @ts-expect-error standalone Deno serve ports are readonly.
+standaloneDenoOptions.port = 3002;
 const rootStandaloneDenoOptions: RootStandaloneDenoServeOptions =
   standaloneDenoOptions;
 const runtimeSubpathStandaloneDenoOptions: RuntimeSubpathStandaloneDenoServeOptions =
   rootStandaloneDenoOptions;
 runtimeSubpathStandaloneDenoOptions.port?.toFixed();
+// @ts-expect-error standalone Deno serve ports are readonly across subpath exports.
+runtimeSubpathStandaloneDenoOptions.port = 3003;
 const listenOptions: ListenOptions = { hostname: '127.0.0.1' };
 listenOptions.hostname?.toUpperCase();
+// @ts-expect-error Node listen hostnames are readonly.
+listenOptions.hostname = 'localhost';
 
 const protocolRequest: RpcRequest<'users.get', { id: string }> = {
   id: 'users.get',

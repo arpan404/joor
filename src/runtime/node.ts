@@ -43,8 +43,8 @@ export interface ListenOptions<
   TBody = unknown,
   TRequest extends Request = Request,
 > extends HandlerOptions<TPlugins, TBody, TRequest> {
-  port?: number;
-  hostname?: string;
+  readonly port?: number;
+  readonly hostname?: string;
 }
 
 export type NodeListenOptions<
