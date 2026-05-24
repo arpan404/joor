@@ -282,7 +282,7 @@ const createDefineProcedure = <
         : undefined;
     const handler: ProcedureRuntime['handler'] =
       contextlessHandler === undefined
-        ? (config.handler as ProcedureRuntime['handler'])
+        ? (config.handler as unknown as ProcedureRuntime['handler'])
         : (
             _ctx: JoorContext<object, object, object, object>,
             input: JsonValue

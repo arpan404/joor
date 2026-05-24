@@ -13,10 +13,10 @@ import type {
 
 export type MaybePromise<TValue> = TValue | Promise<TValue>;
 
-export type ErrorSchemas = Record<string, Schema>;
+export type ErrorSchemas = Readonly<Record<string, Schema>>;
 
 export type ErrorCode<TErrors extends ErrorSchemas> = [TErrors] extends [
-  Record<string, never>,
+  Readonly<Record<string, never>>,
 ]
   ? never
   : Extract<keyof TErrors, string>;
@@ -72,10 +72,10 @@ export interface ProcedureRuntime {
   readonly meta: ProcedureMeta;
   readonly context?: 'none';
   readonly contextlessHandler?: ContextlessProcedureHandler;
-  handler(
+  readonly handler: (
     ctx: JoorContext<object, object, object, object>,
     input: JsonValue
-  ): ProcedureRuntimeValue;
+  ) => ProcedureRuntimeValue;
 }
 
 export interface Procedure<

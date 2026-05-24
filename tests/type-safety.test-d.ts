@@ -4256,6 +4256,10 @@ rootProcedureMeta.cache.ttl = '2m';
 const rootProcedureErrors = {
   NOT_FOUND: t.object({ message: t.string() }),
 } satisfies ErrorSchemas;
+const rootProcedureErrorSchemas: ErrorSchemas = rootProcedureErrors;
+rootProcedureErrorSchemas['NOT_FOUND']?.kind.toUpperCase();
+// @ts-expect-error procedure error schema maps expose readonly entries.
+rootProcedureErrorSchemas.NOT_FOUND = rootUserSchema;
 const rootProcedureErrorCode: ErrorCode<typeof rootProcedureErrors> =
   'NOT_FOUND';
 rootProcedureErrorCode.toUpperCase();
@@ -4398,6 +4402,10 @@ const rootProcedureRuntimeWithHeaders: ProcedureRuntime = {
 rootProcedureRuntimeWithHeaders.headers?.kind.toUpperCase();
 // @ts-expect-error procedure runtime schemas are readonly.
 rootProcedureRuntimeWithHeaders.input = rootUserSchema;
+// @ts-expect-error procedure runtime error schemas are readonly.
+rootProcedureRuntimeWithHeaders.errors.NOT_FOUND = rootUserSchema;
+// @ts-expect-error procedure runtime handlers are readonly.
+rootProcedureRuntimeWithHeaders.handler = () => ({});
 const _wrongRuntimeHeaderSchema: ProcedureRuntime = {
   input: rootUserSchema,
   // @ts-expect-error runtime procedure headers must use header object schemas.
