@@ -21,20 +21,20 @@ export type RpcError<
   TCode extends string = string,
   TDetails extends JsonValue = JsonValue,
 > = {
-  code: TCode;
-  message: string;
-  status: number;
+  readonly code: TCode;
+  readonly message: string;
+  readonly status: number;
 } & (JsonValue extends TDetails
-  ? { details?: TDetails }
-  : { details: TDetails });
+  ? { readonly details?: TDetails }
+  : { readonly details: TDetails });
 
 export interface RpcRequest<
   TId extends string = string,
   TInput extends JsonValue = JsonValue,
 > {
-  id: TId;
-  input: TInput;
-  traceId?: string;
+  readonly id: TId;
+  readonly input: TInput;
+  readonly traceId?: string;
 }
 
 export type RpcBatchRequest<
@@ -88,20 +88,20 @@ export type RpcSuccess<
   TId extends string = string,
   THeaders extends object = RpcResponseHeaderValues,
 > = {
-  ok: true;
-  id: TId;
-  data: TData;
-  traceId: string;
+  readonly ok: true;
+  readonly id: TId;
+  readonly data: TData;
+  readonly traceId: string;
 } & RpcSuccessHeaders<THeaders>;
 
 export interface RpcFailure<
   TId extends string = string,
   TError extends RpcError = RpcError,
 > {
-  ok: false;
-  id: TId;
-  error: TError;
-  traceId: string;
+  readonly ok: false;
+  readonly id: TId;
+  readonly error: TError;
+  readonly traceId: string;
 }
 
 export type RpcEnvelope<

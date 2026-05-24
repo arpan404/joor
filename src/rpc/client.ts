@@ -558,9 +558,9 @@ type RpcRouteProtocolRequestFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
 > = {
-  id: TId;
-  input: RpcRouteInput<TRoutes, TId> & JsonValue;
-  traceId?: string;
+  readonly id: TId;
+  readonly input: RpcRouteInput<TRoutes, TId> & JsonValue;
+  readonly traceId?: string;
 } & RpcRouteProtocolRequestKind<RpcRouteProcedure<TRoutes, TId>>;
 
 export type RpcRouteProtocolRequest<
@@ -992,10 +992,10 @@ export type ClientProcedureHeaders<TProcedure> =
     : never;
 
 type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
-  ? { headers?: ClientHeaderValues }
+  ? { readonly headers?: ClientHeaderValues }
   : ProcedureRequiresHeaders<TProcedure> extends false
-    ? { headers?: ClientProcedureHeaders<TProcedure> }
-    : { headers: ClientProcedureHeaders<TProcedure> };
+    ? { readonly headers?: ClientProcedureHeaders<TProcedure> }
+    : { readonly headers: ClientProcedureHeaders<TProcedure> };
 
 type ClientRequestOptionsTuple<TProcedure> =
   ProcedureRequiresHeaders<TProcedure> extends false
@@ -1006,8 +1006,8 @@ export type PendingRpcRequest<
   TProcedure = never,
   TId extends string = string,
 > = {
-  id: TId;
-  input: PendingRpcRequestInput<TProcedure>;
+  readonly id: TId;
+  readonly input: PendingRpcRequestInput<TProcedure>;
 } & PendingRpcRequestHeaders<TProcedure>;
 
 type RpcRouteRequestFor<

@@ -6150,6 +6150,10 @@ const manifestRouteEnvelope: JoorManifestRouteEnvelope<
 const defaultManifestRouteEnvelope: JoorManifestRouteEnvelope<typeof manifest> =
   manifestRouteEnvelope;
 manifestRouteEnvelope.id.toUpperCase();
+// @ts-expect-error route envelope ids are readonly.
+manifestRouteEnvelope.id = 'users.authenticated';
+// @ts-expect-error route envelope data is readonly.
+manifestRouteEnvelope.data = { id: '2', name: 'Ada' };
 if (
   defaultManifestRouteEnvelope.id === 'users.get' &&
   defaultManifestRouteEnvelope.ok
@@ -6410,6 +6414,10 @@ const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
 > = { id: 'users.get', input: { id: '1' } };
+// @ts-expect-error protocol request route ids are readonly.
+manifestProtocolRequest.id = 'users.authenticated';
+// @ts-expect-error protocol request inputs are readonly.
+manifestProtocolRequest.input = { id: '2' };
 const defaultManifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest
 > = manifestProtocolRequest;
@@ -6453,6 +6461,8 @@ manifestProtocolRequestUnionAlias.id.toUpperCase();
 const manifestRouteBody: JoorManifestRouteBody<typeof manifest> =
   manifestProtocolRequest;
 manifestRouteBody.id.toUpperCase();
+// @ts-expect-error route request body ids are readonly.
+manifestRouteBody.id = 'users.authenticated';
 const manifestUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequest<
   typeof manifest,
   'users.get'
@@ -17021,6 +17031,10 @@ const protocolSuccess: RpcSuccess<
   data: { id: '1' },
   headers: { 'cache-control': 'private' },
 };
+// @ts-expect-error protocol success ids are readonly.
+protocolSuccess.id = 'users.authenticated';
+// @ts-expect-error protocol success data is readonly.
+protocolSuccess.data = { id: '2' };
 const _extraProtocolSuccess: RpcSuccess<
   { id: string },
   'users.get',
@@ -17060,6 +17074,10 @@ const protocolFailure: RpcFailure<'users.get', typeof protocolError> = {
   traceId: 'trace-1',
   error: protocolError,
 };
+// @ts-expect-error protocol failure ids are readonly.
+protocolFailure.id = 'users.authenticated';
+// @ts-expect-error protocol failure errors are readonly.
+protocolFailure.error = protocolError;
 const protocolEnvelope: RpcProtocolEnvelope<
   { id: string },
   'users.get',
@@ -17281,6 +17299,10 @@ const routePendingBatchRequest: RpcRouteRequest<Routes, 'users.get'> = {
   input: { id: '1' },
   headers: { 'x-tenant-id': 'tenant-1' },
 };
+// @ts-expect-error pending route request ids are readonly.
+routePendingBatchRequest.id = 'users.authenticated';
+// @ts-expect-error pending route request headers are readonly.
+routePendingBatchRequest.headers = { 'x-tenant-id': 'tenant-2' };
 const routeBatchRequest: RpcRouteBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
