@@ -4478,6 +4478,8 @@ if (rootValidation.ok) {
 }
 const rootOpenApiSchema: OpenApiSchema = toJsonSchema(rootUserSchema);
 rootOpenApiSchema['type'];
+// @ts-expect-error generated OpenAPI schemas expose readonly top-level entries.
+rootOpenApiSchema['type'] = 'object';
 
 const schemaSubpathUserSchema = schemaSubpathT.object({
   id: schemaSubpathT.string(),
@@ -4531,6 +4533,8 @@ if (schemaSubpathValidation.ok) {
 const schemaSubpathJsonSchema: SchemaSubpathOpenApiSchema =
   toSchemaSubpathJsonSchema(schemaSubpathUserSchema);
 schemaSubpathJsonSchema['type'];
+// @ts-expect-error generated OpenAPI schemas expose readonly entries across subpath exports.
+schemaSubpathJsonSchema['type'] = 'object';
 const schemaSubpathProcedure = defineProcedureSubpath({
   input: schemaSubpathT.object({ id: schemaSubpathT.string() }),
   output: schemaSubpathT.object({ user: schemaSubpathUserSchema }),

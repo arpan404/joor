@@ -1,7 +1,7 @@
 import type { JsonObject, JsonValue } from './json.js';
 import type { Schema } from './types.js';
 
-export type OpenApiSchema = JsonObject;
+export type OpenApiSchema = Readonly<JsonObject>;
 
 const withMeta = (schema: JsonObject, source: Schema): JsonObject => {
   const next: JsonObject = { ...schema };
