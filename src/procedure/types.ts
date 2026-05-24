@@ -118,7 +118,7 @@ export type ProcedureInput<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TInput
@@ -135,7 +135,7 @@ export type ProcedureOutput<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? [TStream] extends [never]
@@ -154,7 +154,7 @@ export type StreamEvent<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TStream
@@ -171,7 +171,7 @@ export type ProcedureHeaders<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? THeaders extends object
@@ -212,7 +212,7 @@ export type ProcedureResponseHeaders<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TResponseHeaders extends object
@@ -247,7 +247,7 @@ export type ProcedureAuth<TProcedure> = TProcedure extends {
     infer TAuth,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TAuth extends object
@@ -266,7 +266,7 @@ export type ProcedureErrorCode<TProcedure> = TProcedure extends {
     unknown,
     unknown,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TErrors extends string
@@ -288,7 +288,7 @@ export type ProcedureErrorDetails<
     unknown,
     unknown,
     infer TErrorDetails,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TCode extends keyof TErrorDetails
@@ -307,7 +307,7 @@ export type ProcedureServices<TProcedure> = TProcedure extends {
     unknown,
     infer TServices,
     unknown,
-    Request
+    infer _TRequest extends Request
   >;
 }
   ? TServices extends object

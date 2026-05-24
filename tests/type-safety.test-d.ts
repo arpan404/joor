@@ -756,9 +756,11 @@ import {
   type Procedure,
   type ProcedureError,
   type ProcedureErrorCode,
+  type ProcedureErrorDetails,
   type ProcedureFailure,
   type ProcedureHasHeaders,
   type ProcedureHasResponseHeaders,
+  type ProcedureHeaders,
   type ProcedureInput,
   type ProcedureAuth,
   type ProcedureOutput,
@@ -2232,6 +2234,87 @@ const authSubpathRequestAuth: AuthSubpathPolicyAuth<
   typeof requestTypedAuthSubpathPolicy
 > = { userId: '1' };
 authSubpathRequestAuth.userId.toUpperCase();
+
+const requestTypedRichProcedure = defineProcedure.withContext<
+  Services,
+  ProcedureAppRequest
+>()({
+  input: t.object({ id: t.string() }),
+  headers: t.object({
+    authorization: t.string(),
+  }),
+  output: t.object({ id: t.string(), userId: t.string() }),
+  responseHeaders: t.object({
+    'cache-control': t.string(),
+  }),
+  errors: {
+    NOT_FOUND: t.object({ message: t.string() }),
+  },
+  auth: requestTypedAuthSubpathPolicy,
+  handler(ctx, input) {
+    ctx.request.requestId.toUpperCase();
+    ctx.auth.userId.toUpperCase();
+    ctx.headers.authorization.toUpperCase();
+    ctx.services.users.findById(input.id).name.toUpperCase();
+    return ctx.ok(
+      { id: input.id, userId: ctx.auth.userId },
+      { 'cache-control': 'private' }
+    );
+  },
+});
+const requestTypedRichProcedureInput: ProcedureInput<
+  typeof requestTypedRichProcedure
+> = { id: '1' };
+requestTypedRichProcedureInput.id.toUpperCase();
+const requestTypedRichProcedureOutput: ProcedureOutput<
+  typeof requestTypedRichProcedure
+> = { id: '1', userId: 'req_1' };
+requestTypedRichProcedureOutput.userId.toUpperCase();
+const requestTypedRichProcedureHeaders: ProcedureHeaders<
+  typeof requestTypedRichProcedure
+> = { authorization: 'Bearer token' };
+requestTypedRichProcedureHeaders.authorization.toUpperCase();
+const requestTypedRichProcedureResponseHeaders: ProcedureResponseHeaders<
+  typeof requestTypedRichProcedure
+> = { 'cache-control': 'private' };
+requestTypedRichProcedureResponseHeaders['cache-control'].toUpperCase();
+const requestTypedRichProcedureAuth: ProcedureAuth<
+  typeof requestTypedRichProcedure
+> = { userId: 'req_1' };
+requestTypedRichProcedureAuth.userId.toUpperCase();
+const requestTypedRichProcedureErrorDetails: ProcedureErrorDetails<
+  typeof requestTypedRichProcedure,
+  'NOT_FOUND'
+> = { message: 'Missing user' };
+requestTypedRichProcedureErrorDetails.message.toUpperCase();
+const requestTypedRichProcedureErrorCode: ProcedureErrorCode<
+  typeof requestTypedRichProcedure
+> = 'NOT_FOUND';
+requestTypedRichProcedureErrorCode.toUpperCase();
+const requestTypedRichProcedureServices: ProcedureServices<
+  typeof requestTypedRichProcedure
+> = authPolicyServicesFromRoot;
+requestTypedRichProcedureServices.users.findById('1').name.toUpperCase();
+const requestTypedRichProcedureRequest: ProcedureRequest<
+  typeof requestTypedRichProcedure
+> = requestTypedProcedureRequest;
+requestTypedRichProcedureRequest.requestId.toUpperCase();
+const requestTypedRichProcedureHasHeaders: ProcedureHasHeaders<
+  typeof requestTypedRichProcedure
+> = true;
+requestTypedRichProcedureHasHeaders.valueOf();
+const requestTypedRichProcedureRequiresHeaders: ProcedureRequiresHeaders<
+  typeof requestTypedRichProcedure
+> = true;
+requestTypedRichProcedureRequiresHeaders.valueOf();
+const requestTypedRichProcedureHasResponseHeaders: ProcedureHasResponseHeaders<
+  typeof requestTypedRichProcedure
+> = true;
+requestTypedRichProcedureHasResponseHeaders.valueOf();
+const requestTypedRichProcedureRequiresResponseHeaders: ProcedureRequiresResponseHeaders<
+  typeof requestTypedRichProcedure
+> = true;
+requestTypedRichProcedureRequiresResponseHeaders.valueOf();
 
 const authenticatedProcedure = defineProcedure.withContext<Services>()({
   input: t.object({ ok: t.boolean() }),
