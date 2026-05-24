@@ -89,21 +89,21 @@ import { createSseResponse, encodeSse } from '../rpc/stream.js';
 import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledRuntime {
-  validateInput: boolean;
-  validateHeaders: boolean;
-  validateOutput: boolean;
-  validateResponseHeaders: boolean;
-  enforceRateLimit: boolean;
-  cors?: Record<string, string>;
-  cacheMaxEntries: number;
-  maxBodyBytes: number;
-  rateLimit: RateLimitRuntimeOptions;
+  readonly validateInput: boolean;
+  readonly validateHeaders: boolean;
+  readonly validateOutput: boolean;
+  readonly validateResponseHeaders: boolean;
+  readonly enforceRateLimit: boolean;
+  readonly cors?: Readonly<Record<string, string>>;
+  readonly cacheMaxEntries: number;
+  readonly maxBodyBytes: number;
+  readonly rateLimit: RateLimitRuntimeOptions;
 }
 
 export interface CompiledRuntimeState<TServices extends object = object> {
-  path: string;
-  runtime: CompiledRuntime;
-  services: TServices | undefined;
+  readonly path: string;
+  readonly runtime: CompiledRuntime;
+  readonly services: TServices | undefined;
   getServices(): TServices | undefined;
   resolveServices(): Promise<TServices>;
 }
@@ -121,13 +121,13 @@ export interface CompiledExecutionState {
   >;
 }
 
-export type CompiledCachedProcedureHeaders = Record<string, string>;
+export type CompiledCachedProcedureHeaders = Readonly<Record<string, string>>;
 export type CompiledProcedureCacheHeaderValues = Record<string, string>;
 
 export interface CompiledCachedProcedureSuccess {
-  data: JsonValue;
-  headers?: CompiledCachedProcedureHeaders;
-  expiresAt: number;
+  readonly data: JsonValue;
+  readonly headers?: CompiledCachedProcedureHeaders;
+  readonly expiresAt: number;
 }
 
 export type CompiledSerializationMode = false | true | 'response';
@@ -1029,20 +1029,23 @@ export function createCompiledRuntimeState(
         : { identity: config.rateLimit.identity }),
     },
   };
+  let resolvedServices = services;
   const state: CompiledRuntimeState = {
     path,
     runtime,
-    services,
+    get services(): object | undefined {
+      return resolvedServices;
+    },
     getServices(): object | undefined {
-      return state.services;
+      return resolvedServices;
     },
     async resolveServices(): Promise<object> {
-      return state.services ?? (await servicesPromise);
+      return resolvedServices ?? (await servicesPromise);
     },
   };
   if (services === undefined) {
     servicesPromise.then((resolved) => {
-      state.services = resolved;
+      resolvedServices = resolved;
       return resolved;
     });
   }

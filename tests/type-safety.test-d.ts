@@ -12292,6 +12292,16 @@ const cachedProcedureSuccess: CompiledCachedProcedureSuccess = {
   expiresAt: Date.now() + 1_000,
 };
 cachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
+// @ts-expect-error compiled cached procedure data is readonly.
+cachedProcedureSuccess.data = { ok: false };
+// @ts-expect-error compiled cached procedure headers are readonly.
+cachedProcedureSuccess.headers = { 'cache-control': 'public' };
+if (cachedProcedureSuccess.headers !== undefined) {
+  // @ts-expect-error compiled cached procedure header values are readonly.
+  cachedProcedureSuccess.headers['cache-control'] = 'public';
+}
+// @ts-expect-error compiled cached procedure expirations are readonly.
+cachedProcedureSuccess.expiresAt = Date.now();
 const rootCompiledCachedProcedureSuccess: RootCompiledCachedProcedureSuccess =
   cachedProcedureSuccess;
 rootCompiledCachedProcedureSuccess.headers?.['cache-control']?.toUpperCase();
@@ -12317,6 +12327,7 @@ const compiledRuntimeState: CompiledRuntimeState = {
     validateOutput: true,
     validateResponseHeaders: true,
     enforceRateLimit: true,
+    cors: readonlyJsonHeaderSource,
     cacheMaxEntries: 100,
     maxBodyBytes: 1_000,
     rateLimit: { trustProxy: false, maxEntries: 100 },
@@ -12329,6 +12340,18 @@ const compiledRuntimeState: CompiledRuntimeState = {
     return {};
   },
 };
+// @ts-expect-error compiled runtime paths are readonly.
+compiledRuntimeState.path = '/other';
+// @ts-expect-error compiled runtime references are readonly.
+compiledRuntimeState.runtime = { ...compiledRuntimeState.runtime };
+// @ts-expect-error compiled service caches are readonly public views.
+compiledRuntimeState.services = undefined;
+// @ts-expect-error compiled runtime validation flags are readonly.
+compiledRuntimeState.runtime.validateInput = false;
+if (compiledRuntimeState.runtime.cors !== undefined) {
+  // @ts-expect-error compiled runtime CORS headers are readonly.
+  compiledRuntimeState.runtime.cors['cache-control'] = 'public';
+}
 const typedCompiledRuntimeState = createCompiledRuntimeState(config);
 typedCompiledRuntimeState.getServices()?.users.findById('1').name.toUpperCase();
 typedCompiledRuntimeState.resolveServices().then((services) => {

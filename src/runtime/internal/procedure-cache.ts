@@ -2,13 +2,13 @@ import type { JsonValue } from '../../schema/json.js';
 
 export const DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES = 10_000;
 
-export type CachedProcedureHeaders = Record<string, string>;
+export type CachedProcedureHeaders = Readonly<Record<string, string>>;
 export type ProcedureCacheHeaderValues = Record<string, string>;
 
 export interface CachedProcedureSuccess {
-  data: JsonValue;
-  headers?: CachedProcedureHeaders;
-  expiresAt: number;
+  readonly data: JsonValue;
+  readonly headers?: CachedProcedureHeaders;
+  readonly expiresAt: number;
 }
 
 interface CacheKeySource {
