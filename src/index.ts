@@ -572,6 +572,7 @@ export type {
   DefineStreamRouteHandlerOptions,
   DefineUnaryRouteHandlerOptions,
   HandlerOptionServices,
+  HandlerOptionsServices,
   HandlerOptionsBody,
   HandlerOptionsArgsFor,
   HandlerOptionsArgs,

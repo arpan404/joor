@@ -1011,6 +1011,9 @@ export type HandlerOptionServices<TOptions> =
     ? PluginServices<TPlugins>
     : Record<string, never>;
 
+export type HandlerOptionsServices<TOptions> =
+  HandlerOptionServices<TOptions>;
+
 declare const handlerOptionsManifest: unique symbol;
 
 export type HandlerOptionsManifest<TOptions> = TOptions extends {

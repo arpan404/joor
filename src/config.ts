@@ -5,6 +5,8 @@ import type {
   HandlerOptionsFor,
   HandlerOptionsManifest,
   HandlerOptionsRequest,
+  HandlerOptionsServices,
+  HandlerOptionServices,
   RpcManifest,
   RpcManifestBody,
   RpcManifestRouteStreamBody,
@@ -13,8 +15,10 @@ import type {
 
 export type {
   HandlerOptionsBody,
+  HandlerOptionServices,
   HandlerOptionsManifest,
   HandlerOptionsRequest,
+  HandlerOptionsServices,
 };
 
 export type JoorConfig<
