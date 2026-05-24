@@ -1302,7 +1302,7 @@ export const createCompiledRpcHandler = <
 };
 
 export const createCompiledRpcHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <const TConfig extends AnyJoorConfig = Record<string, never>>(
     dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
     config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,

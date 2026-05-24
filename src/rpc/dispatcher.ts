@@ -2457,7 +2457,7 @@ export function createRpcHandler<TManifest extends RpcManifest>(
   };
 }
 export const createRpcHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -2516,7 +2516,7 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
 }
 
 export const createRpcBodyHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -2573,7 +2573,7 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
 }
 
 export const createRpcBodyResultHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends RpcManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

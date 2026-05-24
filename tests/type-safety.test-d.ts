@@ -7060,6 +7060,11 @@ const lowLevelRequestTypedHandlerOptions: HandlerOptionsFor<
 const createHookTypedRpcHandler = createRpcHandlerFor<HookAppRequest>();
 const hookTypedRpcHandler: RpcRequestHandler<HookAppRequest> =
   createHookTypedRpcHandler(manifest, lowLevelRequestTypedHandlerOptions);
+const createDefaultRpcHandler = createRpcHandlerFor();
+const defaultRpcHandler: RpcRequestHandler = createDefaultRpcHandler(
+  manifest,
+  handlerOptions
+);
 const createTypedRpcSubpathHandler =
   createRpcSubpathHandlerFor<AppFetchRequest>();
 const typedAppRpcSubpathHandler: RpcSubpathRequestHandler<AppFetchRequest> =
@@ -7069,6 +7074,7 @@ typedRpcHandler(new Request('https://example.com/rpc'));
 syncRpcHandler(new Request('https://example.com/rpc'));
 typedRpcSubpathHandler(new Request('https://example.com/rpc'));
 syncRpcSubpathHandler(new Request('https://example.com/rpc'));
+defaultRpcHandler(new Request('https://example.com/rpc'));
 hookTypedRpcHandler(hookAppRequest);
 // @ts-expect-error low-level typed RPC handlers preserve custom hook request types.
 hookTypedRpcHandler(new Request('https://example.com/rpc'));
@@ -7094,6 +7100,9 @@ const typedAppRpcBodyHandler: RpcBodyHandler<
   typeof manifest,
   AppFetchRequest
 > = createTypedRpcBodyHandler(manifest, handlerOptions);
+const createDefaultRpcBodyHandler = createRpcBodyHandlerFor();
+const defaultRpcBodyHandler: RpcBodyHandler<typeof manifest> =
+  createDefaultRpcBodyHandler(manifest, handlerOptions);
 const createHookTypedRpcBodyHandler =
   createRpcBodyHandlerFor<HookAppRequest>();
 const hookTypedRpcBodyHandler: RpcBodyHandler<typeof manifest, HookAppRequest> =
@@ -7116,6 +7125,10 @@ rpcBodyHandler(new Request('https://example.com/rpc'), {
   input: { id: '1' },
 });
 typedRpcBodyHandler(new Request('https://example.com/rpc'), manifestRouteBody);
+defaultRpcBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestRouteBody
+);
 syncRpcBodyHandler(new Request('https://example.com/rpc'), manifestRouteBody);
 typedRpcSubpathBodyHandler(
   new Request('https://example.com/rpc'),
@@ -7146,6 +7159,9 @@ const typedAppRpcBodyResultHandler: RpcBodyResultHandler<
   typeof manifest,
   AppFetchRequest
 > = createTypedRpcBodyResultHandler(manifest, handlerOptions);
+const createDefaultRpcBodyResultHandler = createRpcBodyResultHandlerFor();
+const defaultRpcBodyResultHandler: RpcBodyResultHandler<typeof manifest> =
+  createDefaultRpcBodyResultHandler(manifest, handlerOptions);
 const createHookTypedRpcBodyResultHandler =
   createRpcBodyResultHandlerFor<HookAppRequest>();
 const hookTypedRpcBodyResultHandler: RpcBodyResultHandler<
@@ -7180,6 +7196,12 @@ Promise.resolve(
   }
 });
 Promise.resolve(hookTypedRpcBodyResultHandler(hookAppRequest, manifestRouteBody));
+Promise.resolve(
+  defaultRpcBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestRouteBody
+  )
+);
 hookTypedRpcBodyResultHandler(
   // @ts-expect-error low-level typed body result handlers preserve custom hook request types.
   new Request('https://example.com/rpc'),
@@ -7637,6 +7659,11 @@ interface AppFetchRequest extends Request {
 const createTypedJoorHandler = createJoorHandlerFor<AppFetchRequest>();
 const typedJoorHandler: JoorFetchHandler<AppFetchRequest> =
   createTypedJoorHandler(manifest, handlerOptions);
+const createDefaultJoorHandler = createJoorHandlerFor();
+const defaultJoorHandler: JoorFetchHandler = createDefaultJoorHandler(
+  manifest,
+  handlerOptions
+);
 const directHookTypedJoorHandler: JoorFetchHandler<HookAppRequest> =
   createJoorHandler(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedJoorHandler =
@@ -7656,6 +7683,7 @@ typedAppRpcSubpathBodyResultHandler(appFetchRequest, manifestRouteBody);
 fetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedFetchHandler(new Request('https://example.com/rpc'));
+defaultJoorHandler(new Request('https://example.com/rpc'));
 typedJoorHandler(appFetchRequest);
 runtimeSubpathTypedJoorHandler(appFetchRequest);
 directHookTypedJoorHandler(hookAppRequest);
@@ -7679,6 +7707,11 @@ const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
 const createTypedBunFetch = createBunFetchFor<AppFetchRequest>();
 const typedAppBunFetch: BunFetchHandler<AppFetchRequest> =
   createTypedBunFetch(manifest, handlerOptions);
+const createDefaultBunFetch = createBunFetchFor();
+const defaultBunFetch: BunFetchHandler = createDefaultBunFetch(
+  manifest,
+  handlerOptions
+);
 const directHookTypedBunFetch: BunFetchHandler<HookAppRequest> =
   createBunFetch(manifest, typedRequestHandlerOptions);
 const hookTypedBunFetch =
@@ -7690,6 +7723,7 @@ const runtimeSubpathTypedAppBunFetch: RuntimeSubpathBunFetchHandler<AppFetchRequ
 bunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedBunFetch(new Request('https://example.com/rpc'));
+defaultBunFetch(new Request('https://example.com/rpc'));
 typedAppBunFetch(appFetchRequest);
 runtimeSubpathTypedAppBunFetch(appFetchRequest);
 directHookTypedBunFetch(hookAppRequest);
@@ -8140,6 +8174,11 @@ const runtimeSubpathTypedDenoFetch: RuntimeSubpathDenoFetchHandler =
 const createTypedDenoFetch = createDenoFetchFor<AppFetchRequest>();
 const typedAppDenoFetch: DenoFetchHandler<AppFetchRequest> =
   createTypedDenoFetch(manifest, handlerOptions);
+const createDefaultDenoFetch = createDenoFetchFor();
+const defaultDenoFetch: DenoFetchHandler = createDefaultDenoFetch(
+  manifest,
+  handlerOptions
+);
 const directHookTypedDenoFetch: DenoFetchHandler<HookAppRequest> =
   createDenoFetch(manifest, typedRequestHandlerOptions);
 const hookTypedDenoFetch =
@@ -8150,6 +8189,7 @@ const runtimeSubpathTypedAppDenoFetch: RuntimeSubpathDenoFetchHandler<AppFetchRe
   createRuntimeSubpathTypedDenoFetch(manifest, handlerOptions);
 denoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoFetch(new Request('https://example.com/rpc'));
+defaultDenoFetch(new Request('https://example.com/rpc'));
 typedAppDenoFetch(appFetchRequest);
 runtimeSubpathTypedAppDenoFetch(appFetchRequest);
 directHookTypedDenoFetch(hookAppRequest);
@@ -12140,6 +12180,9 @@ const createTypedCloudflareFetch =
   createCloudflareFetchFor<AppFetchRequest>();
 const typedCloudflareFetch: CloudflareFetchHandler<AppFetchRequest> =
   createTypedCloudflareFetch(manifest, handlerOptions);
+const createDefaultCloudflareFetch = createCloudflareFetchFor();
+const defaultCloudflareFetch: CloudflareFetchHandler =
+  createDefaultCloudflareFetch(manifest, handlerOptions);
 const hookTypedCloudflareFetch =
   createCloudflareFetchFor<HookAppRequest>()(
     manifest,
@@ -12582,6 +12625,7 @@ cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 directCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathDirectCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
+defaultCloudflareFetch(new Request('https://example.com/rpc'));
 typedCloudflareFetch(appFetchRequest);
 runtimeSubpathTypedCloudflareFetch(appFetchRequest);
 hookTypedCloudflareFetch(hookAppRequest);
@@ -12604,6 +12648,11 @@ const runtimeSubpathNetlifyFetch: RuntimeSubpathNetlifyFetchHandler =
 const createTypedNetlifyFetch = createNetlifyFetchFor<AppFetchRequest>();
 const typedAppNetlifyFetch: NetlifyFetchHandler<AppFetchRequest> =
   createTypedNetlifyFetch(manifest, handlerOptions);
+const createDefaultNetlifyFetch = createNetlifyFetchFor();
+const defaultNetlifyFetch: NetlifyFetchHandler = createDefaultNetlifyFetch(
+  manifest,
+  handlerOptions
+);
 const hookTypedNetlifyFetch =
   createNetlifyFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const directHookTypedNetlifyFetch: NetlifyFetchHandler<HookAppRequest> =
@@ -12644,6 +12693,9 @@ const typedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<
   NetlifyContextForTypes,
   AppFetchRequest
 > = createTypedNetlifyEdgeFunction(manifest, handlerOptions);
+const createDefaultNetlifyEdgeFunction = createNetlifyEdgeFunctionFor();
+const defaultNetlifyEdgeFunction: NetlifyEdgeFetchHandler =
+  createDefaultNetlifyEdgeFunction(manifest, handlerOptions);
 const hookTypedNetlifyEdgeFunction = createNetlifyEdgeFunctionFor<
   NetlifyContextForTypes,
   HookAppRequest
@@ -12845,12 +12897,14 @@ createRuntimeSubpathNetlifyEdgeFunction(
 );
 netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
+defaultNetlifyFetch(new Request('https://example.com/rpc'));
 typedAppNetlifyFetch(appFetchRequest);
 runtimeSubpathTypedAppNetlifyFetch(appFetchRequest);
 hookTypedNetlifyFetch(hookAppRequest);
 directHookTypedNetlifyFetch(hookAppRequest);
 netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+defaultNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 typedNetlifyEdgeFunction(appFetchRequest, {
   cookies: {
     get: (name) => name,
@@ -12910,6 +12964,11 @@ const runtimeSubpathVercelFetch: RuntimeSubpathVercelFetchHandler =
 const createTypedVercelFetch = createVercelFetchFor<AppFetchRequest>();
 const typedAppVercelFetch: VercelFetchHandler<AppFetchRequest> =
   createTypedVercelFetch(manifest, handlerOptions);
+const createDefaultVercelFetch = createVercelFetchFor();
+const defaultVercelFetch: VercelFetchHandler = createDefaultVercelFetch(
+  manifest,
+  handlerOptions
+);
 const hookTypedVercelFetch =
   createVercelFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const directHookTypedVercelFetch: VercelFetchHandler<HookAppRequest> =
@@ -12927,6 +12986,11 @@ const runtimeSubpathVercelFunction: RuntimeSubpathVercelFunction =
 const createTypedVercelFunction = createVercelFunctionFor<AppFetchRequest>();
 const typedVercelFunction: VercelFunction<AppFetchRequest> =
   createTypedVercelFunction(manifest, handlerOptions);
+const createDefaultVercelFunction = createVercelFunctionFor();
+const defaultVercelFunction: VercelFunction = createDefaultVercelFunction(
+  manifest,
+  handlerOptions
+);
 const hookTypedVercelFunction =
   createVercelFunctionFor<HookAppRequest>()(
     manifest,
@@ -13104,12 +13168,14 @@ createRuntimeSubpathVercelFunction(
 );
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
+defaultVercelFetch(new Request('https://example.com/rpc'));
 typedAppVercelFetch(appFetchRequest);
 runtimeSubpathTypedAppVercelFetch(appFetchRequest);
 hookTypedVercelFetch(hookAppRequest);
 directHookTypedVercelFetch(hookAppRequest);
 vercelFunction.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFunction.fetch(new Request('https://example.com/rpc'));
+defaultVercelFunction.fetch(new Request('https://example.com/rpc'));
 typedVercelFunction.fetch(appFetchRequest);
 runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 hookTypedVercelFunction.fetch(hookAppRequest);

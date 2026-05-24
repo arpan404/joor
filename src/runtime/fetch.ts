@@ -126,7 +126,7 @@ export function createJoorHandler<TManifest extends JoorManifest>(
 }
 
 export const createJoorHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

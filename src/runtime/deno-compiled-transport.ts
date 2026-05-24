@@ -154,7 +154,7 @@ export const createDenoCompiledTransportRequestHandler = <
 };
 
 export const createDenoCompiledTransportRequestHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TServices extends object = object,
     TBody = JsonValue,
@@ -284,7 +284,7 @@ export const createDenoCompiledTransportRequestHandlerWithPath = <
 };
 
 export const createDenoCompiledTransportRequestHandlerWithPathFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TServices extends object = object,
     TBody = JsonValue,

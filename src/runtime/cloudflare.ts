@@ -285,7 +285,7 @@ export function createCloudflareFetch<TManifest extends JoorManifest>(
 }
 
 export const createCloudflareFetchFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

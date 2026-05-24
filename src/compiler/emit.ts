@@ -860,7 +860,7 @@ export const transport: NativeTransportHandler = createCompiledRpcTransportBodyR
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const createFetchFor = <TRequest extends Request>(): NativeFetchHandler<TRequest> =>
+export const createFetchFor = <TRequest extends Request = Request>(): NativeFetchHandler<TRequest> =>
   createCompiledRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 `
@@ -2514,7 +2514,7 @@ export interface BunNativeServer {
 }
 
 export const createFetchFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsHeaders(options.cors);
@@ -2636,7 +2636,7 @@ export interface DenoNativeServer {
 }
 
 export const createFetchFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   (options: DenoNativeOptions = {}): DenoNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsOptions(options.cors);

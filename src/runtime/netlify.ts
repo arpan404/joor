@@ -141,7 +141,7 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
 }
 
 export const createNetlifyFetchFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -189,7 +189,7 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
 }
 
 export const createNetlifyEdgeFunctionFor =
-  <TContext, TRequest extends Request = Request>() =>
+  <TContext = unknown, TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

@@ -433,7 +433,7 @@ export const createDenoTransportRequestHandler = <
 };
 
 export const createDenoTransportRequestHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TBody = JsonValue,
     TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
@@ -475,7 +475,7 @@ export const createDenoTransportRequestHandlerWithPath = <
 };
 
 export const createDenoTransportRequestHandlerWithPathFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TBody = JsonValue,
     TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
@@ -522,7 +522,7 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
 }
 
 export const createDenoRpcRequestHandlerFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

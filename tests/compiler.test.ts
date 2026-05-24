@@ -963,6 +963,7 @@ class GeneratedRequest extends Request {
 const generatedRequest = new GeneratedRequest('https://example.com/rpc');
 const generatedCloudflareWorker: CloudflareWorker = cloudflareWorker;
 const generatedCloudflareFetch: NativeFetchHandler = cloudflareFetch;
+const generatedDefaultNativeFetch: NativeFetchHandler = createNativeFetchFor();
 const generatedTypedNativeFetch: NativeFetchHandler<GeneratedRequest> =
   createNativeFetchFor<GeneratedRequest>();
 const generatedTypedCloudflareWorker: CloudflareWorker<
@@ -996,6 +997,7 @@ const generatedNetlifyEdgeResult: NetlifyEdgeResult | Promise<NetlifyEdgeResult>
   generatedNamedNetlifyEdge(new Request('https://example.com/rpc'), {});
 generatedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedCloudflareFetch(new Request('https://example.com/rpc'));
+generatedDefaultNativeFetch(new Request('https://example.com/rpc'));
 generatedTypedNativeFetch(generatedRequest);
 // @ts-expect-error generated typed native fetch handlers preserve custom request types.
 generatedTypedNativeFetch(new Request('https://example.com/rpc'));
@@ -1134,12 +1136,16 @@ const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch(bunNativeOpt
 const createTypedBunNativeFetch = createBunNativeFetchFor<GeneratedRequest>();
 const typedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
   createTypedBunNativeFetch(bunNativeOptions);
+const createDefaultBunNativeFetch = createBunNativeFetchFor();
+const defaultTypedBunFetchHandler: BunNativeFetchHandler =
+  createDefaultBunNativeFetch(bunNativeOptions);
 const directTypedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
   createBunNativeFetch<GeneratedRequest>(bunNativeOptions);
 createBunNativeFetch({ ...bunNativeOptions, cors: false });
 const bunDefaultFetchHandler: BunNativeFetchHandler = bunNativeFetch;
 const syncBunFetchHandler: BunNativeFetchHandler = () => new Response();
 bunFetchHandler(new Request('https://example.com/rpc'));
+defaultTypedBunFetchHandler(new Request('https://example.com/rpc'));
 typedBunFetchHandler(generatedRequest);
 directTypedBunFetchHandler(generatedRequest);
 // @ts-expect-error generated direct typed Bun fetch handlers preserve request types.
@@ -1155,12 +1161,16 @@ const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch(denoNativ
 const createTypedDenoNativeFetch = createDenoNativeFetchFor<GeneratedRequest>();
 const typedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
   createTypedDenoNativeFetch(denoNativeOptions);
+const createDefaultDenoNativeFetch = createDenoNativeFetchFor();
+const defaultTypedDenoFetchHandler: DenoNativeFetchHandler =
+  createDefaultDenoNativeFetch(denoNativeOptions);
 const directTypedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
   createDenoNativeFetch<GeneratedRequest>(denoNativeOptions);
 createDenoNativeFetch({ ...denoNativeOptions, cors: false });
 const denoDefaultFetchHandler: DenoNativeFetchHandler = denoNativeFetch;
 const syncDenoFetchHandler: DenoNativeFetchHandler = () => new Response();
 denoFetchHandler(new Request('https://example.com/rpc'));
+defaultTypedDenoFetchHandler(new Request('https://example.com/rpc'));
 typedDenoFetchHandler(generatedRequest);
 directTypedDenoFetchHandler(generatedRequest);
 // @ts-expect-error generated direct typed Deno fetch handlers preserve request types.

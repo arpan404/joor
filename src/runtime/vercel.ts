@@ -133,7 +133,7 @@ export function createVercelFetch<TManifest extends JoorManifest>(
 }
 
 export const createVercelFetchFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -182,7 +182,7 @@ export function createVercelFunction<TManifest extends JoorManifest>(
 }
 
 export const createVercelFunctionFor =
-  <TRequest extends Request>() =>
+  <TRequest extends Request = Request>() =>
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
