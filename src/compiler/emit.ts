@@ -2099,7 +2099,10 @@ const configuredMaxBodyBytes = ${configuredMaxBodyBytes};
 const checkContentType = ${bunFastEntries.length === 0 ? 'true' : 'false'};
 const defaultMaxBodyBytes = 1024 * 1024;
 const jsonHeaders = Object.freeze({ 'content-type': 'application/json' });
-const jsonOkResponseInit: ResponseInit = { status: 200, headers: jsonHeaders };
+const jsonOkResponseInit: Readonly<ResponseInit> = {
+  status: 200,
+  headers: jsonHeaders,
+};
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 const headerNamePattern = /^[A-Za-z0-9!#$%&'*+.^_|~-]+$/;

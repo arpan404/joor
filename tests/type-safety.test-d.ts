@@ -11911,6 +11911,12 @@ runtimeResponseSubpathJsonContentHeaders['content-type'].toUpperCase();
 jsonOkResponseInit.headers?.valueOf();
 runtimeSubpathJsonOkResponseInit.headers?.valueOf();
 runtimeResponseSubpathJsonOkResponseInit.headers?.valueOf();
+// @ts-expect-error JSON response init status is readonly.
+jsonOkResponseInit.status = 201;
+// @ts-expect-error runtime JSON response init headers are readonly.
+runtimeSubpathJsonOkResponseInit.headers = {};
+// @ts-expect-error runtime/response JSON response init status is readonly.
+runtimeResponseSubpathJsonOkResponseInit.status = 201;
 rpcEnvelopeToResponse(manifestRouteEnvelope).headers.get('content-type');
 rpcEnvelopeToResponse(manifestRouteEnvelope, readonlyJsonHeaderSource).headers.get(
   'content-type'

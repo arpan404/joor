@@ -33,7 +33,7 @@ export const jsonContentHeaders = Object.freeze({
   'content-type': 'application/json',
 });
 
-export const jsonOkResponseInit: ResponseInit = {
+export const jsonOkResponseInit: Readonly<ResponseInit> = {
   status: 200,
   headers: jsonContentHeaders,
 };
