@@ -18,7 +18,9 @@ export interface ExpressRequest extends IncomingMessage {
 
 export type ExpressResponse<
   TRequest extends IncomingMessage = IncomingMessage,
-> = ServerResponse<TRequest>;
+> = ServerResponse<TRequest> & {
+  readonly __requestType?: (request: TRequest) => TRequest;
+};
 
 export type ExpressNextFunction = (error?: unknown) => void;
 
@@ -224,4 +226,4 @@ export const createExpressHandlerFor =
     createExpressHandlerWithOptions(
       manifest,
       (args[0] ?? {}) as ExpressHandlerOptions
-    ) as ExpressRequestHandler<TRequest, TResponse, TNext>;
+    ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;

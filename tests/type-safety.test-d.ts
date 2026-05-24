@@ -15271,12 +15271,12 @@ const typedExpressHandler: ExpressRequestHandler<
 const createRuntimeSubpathTypedExpressHandler =
   createRuntimeSubpathExpressHandlerFor<
     RuntimeSubpathExpressRequest & ExpressAppRequest,
-    RuntimeSubpathExpressResponse & ExpressAppResponse,
+    RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
     ExpressAppNext
   >();
 const runtimeSubpathTypedExpressHandler: RuntimeSubpathExpressRequestHandler<
   RuntimeSubpathExpressRequest & ExpressAppRequest,
-  RuntimeSubpathExpressResponse & ExpressAppResponse,
+  RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
   ExpressAppNext
 > = createRuntimeSubpathTypedExpressHandler(
   manifest,
@@ -15286,6 +15286,8 @@ const expressAppRequest = {} as ExpressAppRequest;
 const expressAppResponse = {} as ExpressAppResponse;
 expressAppRequest.user.id.toUpperCase();
 expressAppResponse.locals.requestId.toUpperCase();
+// @ts-expect-error request-typed Express responses are not assignable to plain responses.
+const _wrongExpressAppResponse: ExpressResponse = expressAppResponse;
 typedExpressHandler(expressAppRequest, expressAppResponse, expressNext);
 runtimeSubpathTypedExpressHandler(
   expressAppRequest,
