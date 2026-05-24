@@ -1128,11 +1128,16 @@ const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch(bunNativeOpt
 const createTypedBunNativeFetch = createBunNativeFetchFor<GeneratedRequest>();
 const typedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
   createTypedBunNativeFetch(bunNativeOptions);
+const directTypedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
+  createBunNativeFetch<GeneratedRequest>(bunNativeOptions);
 createBunNativeFetch({ ...bunNativeOptions, cors: false });
 const bunDefaultFetchHandler: BunNativeFetchHandler = bunNativeFetch;
 const syncBunFetchHandler: BunNativeFetchHandler = () => new Response();
 bunFetchHandler(new Request('https://example.com/rpc'));
 typedBunFetchHandler(generatedRequest);
+directTypedBunFetchHandler(generatedRequest);
+// @ts-expect-error generated direct typed Bun fetch handlers preserve request types.
+directTypedBunFetchHandler(new Request('https://example.com/rpc'));
 bunDefaultFetchHandler(new Request('https://example.com/rpc'));
 syncBunFetchHandler(new Request('https://example.com/rpc'));
 const bunServer: BunNativeServer = serveBunNative({ ...bunNativeOptions, port: 3000 });
@@ -1144,11 +1149,16 @@ const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch(denoNativ
 const createTypedDenoNativeFetch = createDenoNativeFetchFor<GeneratedRequest>();
 const typedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
   createTypedDenoNativeFetch(denoNativeOptions);
+const directTypedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
+  createDenoNativeFetch<GeneratedRequest>(denoNativeOptions);
 createDenoNativeFetch({ ...denoNativeOptions, cors: false });
 const denoDefaultFetchHandler: DenoNativeFetchHandler = denoNativeFetch;
 const syncDenoFetchHandler: DenoNativeFetchHandler = () => new Response();
 denoFetchHandler(new Request('https://example.com/rpc'));
 typedDenoFetchHandler(generatedRequest);
+directTypedDenoFetchHandler(generatedRequest);
+// @ts-expect-error generated direct typed Deno fetch handlers preserve request types.
+directTypedDenoFetchHandler(new Request('https://example.com/rpc'));
 denoDefaultFetchHandler(new Request('https://example.com/rpc'));
 syncDenoFetchHandler(new Request('https://example.com/rpc'));
 const denoServer: DenoNativeServer = serveDenoNative({ ...denoNativeOptions, port: 3000 });

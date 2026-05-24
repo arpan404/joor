@@ -2562,9 +2562,9 @@ export const createFetchFor =
   };
 };
 
-export const createFetch = (
+export const createFetch = <TRequest extends Request = Request>(
   options: BunNativeOptions = {}
-): BunNativeFetchHandler => createFetchFor<Request>()(options);
+): BunNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 
 export const fetch: BunNativeFetchHandler = createFetch();
 
@@ -2645,9 +2645,9 @@ export const createFetchFor =
   ${denoCreateFetchReturn}
 };
 
-export const createFetch = (
+export const createFetch = <TRequest extends Request = Request>(
   options: DenoNativeOptions = {}
-): DenoNativeFetchHandler => createFetchFor<Request>()(options);
+): DenoNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 
 export const fetch: DenoNativeFetchHandler = createFetch();
 
