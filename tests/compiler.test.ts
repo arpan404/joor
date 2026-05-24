@@ -1017,10 +1017,16 @@ OPTIONS(new Request('https://example.com/rpc'));
 generatedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedVercelFetch(new Request('https://example.com/rpc'));
 generatedTypedVercelFunction.fetch(generatedRequest);
+// @ts-expect-error generated typed Vercel functions preserve custom request types.
+generatedTypedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedNamedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedNetlifyEdge(new Request('https://example.com/rpc'), {});
 generatedNetlifyFetch(new Request('https://example.com/rpc'));
 generatedTypedNetlifyEdge(generatedRequest, { site: 'docs' });
+// @ts-expect-error generated typed Netlify edge functions preserve custom request types.
+generatedTypedNetlifyEdge(new Request('https://example.com/rpc'), {
+  site: 'docs',
+});
 generatedNetlifyEdgeResult;
 const generatedRouteUnaryFunction: RouteUnaryFunction<'users.get'> =
   generatedClient.users.get;
