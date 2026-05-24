@@ -3,15 +3,15 @@ import type { Schema } from '../schema/types.js';
 import { parseDurationMs } from '../internal/duration.js';
 
 export interface CompiledProcedureGenerationOptions {
-  dispatchServicesType?: string;
-  enforceRateLimit: boolean;
-  includeDispatchWrapper?: boolean;
-  modes?: readonly CompiledProcedureMode[];
-  skipAuth?: boolean;
-  validateHeaders: boolean;
-  validateInput: boolean;
-  validateOutput: boolean;
-  validateResponseHeaders: boolean;
+  readonly dispatchServicesType?: string;
+  readonly enforceRateLimit: boolean;
+  readonly includeDispatchWrapper?: boolean;
+  readonly modes?: readonly CompiledProcedureMode[];
+  readonly skipAuth?: boolean;
+  readonly validateHeaders: boolean;
+  readonly validateInput: boolean;
+  readonly validateOutput: boolean;
+  readonly validateResponseHeaders: boolean;
 }
 
 export type CompiledProcedureMode = 'body' | 'serialized' | 'response';

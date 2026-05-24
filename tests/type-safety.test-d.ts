@@ -5346,6 +5346,10 @@ const compilerSubpathGenerationOptions: CompilerSubpathCompiledProcedureGenerati
 const compilerSubpathMode: CompilerSubpathCompiledProcedureMode =
   compilerSubpathGenerationOptions.modes?.[0] ?? 'body';
 compilerSubpathMode.toUpperCase();
+// @ts-expect-error compiler generation validation flags are readonly.
+compilerSubpathGenerationOptions.validateInput = false;
+// @ts-expect-error compiler generation mode lists are readonly.
+compilerSubpathGenerationOptions.modes?.push('body');
 const compilerSubpathLoadedProcedure: CompilerSubpathLoadedProcedure = {
   id: 'users.get',
   importPath: '/tmp/joor-app/rpc/users/get.rpc.ts',
