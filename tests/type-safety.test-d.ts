@@ -1888,6 +1888,38 @@ t.union([t.string(), t.number()] as const).default(false);
 t.record(t.number()).example({ a: 1 }).default({ b: 2 });
 // @ts-expect-error record metadata examples must match the value schema.
 t.record(t.number()).example({ a: '1' });
+const readonlyStringChain = t.string();
+// @ts-expect-error string builder refinements are readonly.
+readonlyStringChain.min = () => readonlyStringChain;
+// @ts-expect-error string builder metadata commands are readonly.
+readonlyStringChain.describe = () => readonlyStringChain;
+const readonlyNumberChain = t.number();
+// @ts-expect-error number builder refinements are readonly.
+readonlyNumberChain.int = () => readonlyNumberChain;
+const readonlyBooleanChain = t.boolean();
+// @ts-expect-error boolean builder optional wrappers are readonly.
+readonlyBooleanChain.optional = () => t.optional(readonlyBooleanChain);
+const readonlyLiteralChain = t.literal('ready');
+// @ts-expect-error literal builder nullable wrappers are readonly.
+readonlyLiteralChain.nullable = () => t.nullable(readonlyLiteralChain);
+const readonlyEnumChain = t.enum(['draft', 'published'] as const);
+// @ts-expect-error enum builder metadata commands are readonly.
+readonlyEnumChain.default = () => readonlyEnumChain;
+const readonlyArrayChain = t.array(t.string());
+// @ts-expect-error array builder refinements are readonly.
+readonlyArrayChain.max = () => readonlyArrayChain;
+const readonlyObjectChain = t.object({ id: t.string() });
+// @ts-expect-error object builder strict refinements are readonly.
+readonlyObjectChain.strict = () => readonlyObjectChain;
+const readonlyUnionChain = t.union([t.string(), t.number()] as const);
+// @ts-expect-error union builder optional wrappers are readonly.
+readonlyUnionChain.optional = () => t.optional(readonlyUnionChain);
+const readonlyRecordChain = t.record(t.number());
+// @ts-expect-error record builder nullable wrappers are readonly.
+readonlyRecordChain.nullable = () => t.nullable(readonlyRecordChain);
+const readonlyJsonChain = t.json();
+// @ts-expect-error JSON builder metadata commands are readonly.
+readonlyJsonChain.example = () => readonlyJsonChain;
 
 const usersPlugin = createPlugin({
   name: 'users',

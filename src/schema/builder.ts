@@ -19,62 +19,62 @@ import type {
 } from './types.js';
 
 interface MetaChain<TSelf, TValue extends JsonValue> {
-  describe(description: string): TSelf;
-  example(example: TValue): TSelf;
-  default(defaultValue: TValue): TSelf;
+  readonly describe: (description: string) => TSelf;
+  readonly example: (example: TValue) => TSelf;
+  readonly default: (defaultValue: TValue) => TSelf;
 }
 
 export interface StringChain extends StringSchema, MetaChain<StringChain, string> {
-  min(length: number): StringChain;
-  max(length: number): StringChain;
-  email(): StringChain;
-  uuid(): StringChain;
-  optional(): OptionalSchema<StringChain>;
-  nullable(): NullableSchema<StringChain>;
+  readonly min: (length: number) => StringChain;
+  readonly max: (length: number) => StringChain;
+  readonly email: () => StringChain;
+  readonly uuid: () => StringChain;
+  readonly optional: () => OptionalSchema<StringChain>;
+  readonly nullable: () => NullableSchema<StringChain>;
 }
 
 export interface NumberChain extends NumberSchema, MetaChain<NumberChain, number> {
-  int(): NumberChain;
-  gte(value: number): NumberChain;
-  lte(value: number): NumberChain;
-  optional(): OptionalSchema<NumberChain>;
-  nullable(): NullableSchema<NumberChain>;
+  readonly int: () => NumberChain;
+  readonly gte: (value: number) => NumberChain;
+  readonly lte: (value: number) => NumberChain;
+  readonly optional: () => OptionalSchema<NumberChain>;
+  readonly nullable: () => NullableSchema<NumberChain>;
 }
 
 export interface BooleanChain
   extends BooleanSchema,
     MetaChain<BooleanChain, boolean> {
-  optional(): OptionalSchema<BooleanChain>;
-  nullable(): NullableSchema<BooleanChain>;
+  readonly optional: () => OptionalSchema<BooleanChain>;
+  readonly nullable: () => NullableSchema<BooleanChain>;
 }
 
 export interface LiteralChain<TValue extends JsonValue>
   extends LiteralSchema<TValue>, MetaChain<LiteralChain<TValue>, TValue> {
-  optional(): OptionalSchema<LiteralChain<TValue>>;
-  nullable(): NullableSchema<LiteralChain<TValue>>;
+  readonly optional: () => OptionalSchema<LiteralChain<TValue>>;
+  readonly nullable: () => NullableSchema<LiteralChain<TValue>>;
 }
 
 export interface EnumChain<TValue extends readonly string[]>
   extends EnumSchema<TValue>, MetaChain<EnumChain<TValue>, TValue[number]> {
-  optional(): OptionalSchema<EnumChain<TValue>>;
-  nullable(): NullableSchema<EnumChain<TValue>>;
+  readonly optional: () => OptionalSchema<EnumChain<TValue>>;
+  readonly nullable: () => NullableSchema<EnumChain<TValue>>;
 }
 
 export interface ArrayChain<TItem extends Schema>
   extends ArraySchema<TItem>,
     MetaChain<ArrayChain<TItem>, Extract<InferSchema<TItem>, JsonValue>[]> {
-  min(length: number): ArrayChain<TItem>;
-  max(length: number): ArrayChain<TItem>;
-  optional(): OptionalSchema<ArrayChain<TItem>>;
-  nullable(): NullableSchema<ArrayChain<TItem>>;
+  readonly min: (length: number) => ArrayChain<TItem>;
+  readonly max: (length: number) => ArrayChain<TItem>;
+  readonly optional: () => OptionalSchema<ArrayChain<TItem>>;
+  readonly nullable: () => NullableSchema<ArrayChain<TItem>>;
 }
 
 export interface ObjectChain<TShape extends SchemaShape>
   extends ObjectSchema<TShape>,
     MetaChain<ObjectChain<TShape>, InferSchema<ObjectSchema<TShape>>> {
-  strict(): ObjectChain<TShape>;
-  optional(): OptionalSchema<ObjectChain<TShape>>;
-  nullable(): NullableSchema<ObjectChain<TShape>>;
+  readonly strict: () => ObjectChain<TShape>;
+  readonly optional: () => OptionalSchema<ObjectChain<TShape>>;
+  readonly nullable: () => NullableSchema<ObjectChain<TShape>>;
 }
 
 export interface UnionChain<TVariants extends readonly Schema[]>
@@ -83,8 +83,8 @@ export interface UnionChain<TVariants extends readonly Schema[]>
       UnionChain<TVariants>,
       Extract<InferSchema<TVariants[number]>, JsonValue>
     > {
-  optional(): OptionalSchema<UnionChain<TVariants>>;
-  nullable(): NullableSchema<UnionChain<TVariants>>;
+  readonly optional: () => OptionalSchema<UnionChain<TVariants>>;
+  readonly nullable: () => NullableSchema<UnionChain<TVariants>>;
 }
 
 export interface RecordChain<TValue extends Schema>
@@ -93,13 +93,13 @@ export interface RecordChain<TValue extends Schema>
       RecordChain<TValue>,
       Record<string, Extract<InferSchema<TValue>, JsonValue>>
     > {
-  optional(): OptionalSchema<RecordChain<TValue>>;
-  nullable(): NullableSchema<RecordChain<TValue>>;
+  readonly optional: () => OptionalSchema<RecordChain<TValue>>;
+  readonly nullable: () => NullableSchema<RecordChain<TValue>>;
 }
 
 export interface JsonChain extends JsonSchema, MetaChain<JsonChain, JsonValue> {
-  optional(): OptionalSchema<JsonChain>;
-  nullable(): NullableSchema<JsonChain>;
+  readonly optional: () => OptionalSchema<JsonChain>;
+  readonly nullable: () => NullableSchema<JsonChain>;
 }
 
 const withMeta = <TSchema extends { readonly meta: SchemaMeta }>(
