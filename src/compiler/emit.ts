@@ -2757,7 +2757,7 @@ ${indent}},`
     const indent = '  '.repeat(depth);
     const childBlocks = [...node.children.entries()]
       .map(
-        ([name, child]) => `${indent}${JSON.stringify(name)}: {
+        ([name, child]) => `${indent}readonly ${JSON.stringify(name)}: {
 ${renderTypeNode(child, depth + 1)}
 ${indent}};`
       )
@@ -2772,7 +2772,7 @@ ${indent}};`
           entry.procedure.stream === undefined
             ? 'RouteUnaryFunction'
             : 'RouteStreamFunction';
-        return `${indent}${JSON.stringify(name)}: ${typeName}<${JSON.stringify(id)}>;`;
+        return `${indent}readonly ${JSON.stringify(name)}: ${typeName}<${JSON.stringify(id)}>;`;
       })
       .join('\n');
     return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
@@ -2945,12 +2945,12 @@ export type ClientArgs<TId extends RouteId = RouteId> = RouteClientArgs<TId>;
 export type ProtocolRequestOptions = RpcProtocolRequestOptions;
 type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
-  call(...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
-  request(...args: RouteUnaryClientArgs<TId>): RouteRequest<TId>;
-  protocolRequest(
+  readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;
+  readonly request: (...args: RouteUnaryClientArgs<TId>) => RouteRequest<TId>;
+  readonly protocolRequest: (
     input: RouteUnaryInput<TId>,
     options?: ProtocolRequestOptions
-  ): RouteUnaryProtocolRequest<TId>;
+  ) => RouteUnaryProtocolRequest<TId>;
 };
 export type RouteUnaryFunction<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryFunctionFor<TRouteId>;
@@ -2959,11 +2959,11 @@ export type UnaryRouteFunction<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryFunction<TId>;
 type RouteStreamFunctionFor<TId extends RouteStreamId> = {
   (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
-  stream(...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
-  protocolRequest(
+  readonly stream: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<Stream<TId>>;
+  readonly protocolRequest: (
     input: RouteStreamInput<TId>,
     options?: ProtocolRequestOptions
-  ): RouteStreamProtocolRequest<TId>;
+  ) => RouteStreamProtocolRequest<TId>;
 };
 export type RouteStreamFunction<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamFunctionFor<TRouteId>;
@@ -3091,8 +3091,8 @@ export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeReq
 };
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
 type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
-  call(...args: [id: TId, ...ClientArgs<TId>]): Promise<RouteResult<TId>>;
-  request(...args: [id: TId, ...ClientArgs<TId>]): RouteRequest<TId>;
+  readonly call: (...args: [id: TId, ...ClientArgs<TId>]) => Promise<RouteResult<TId>>;
+  readonly request: (...args: [id: TId, ...ClientArgs<TId>]) => RouteRequest<TId>;
 };
 export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryTransportFor<TRouteId>;
@@ -3100,7 +3100,7 @@ export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {
 export type UnaryRouteTransport<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryTransport<TId>;
 type RouteStreamTransportFor<TId extends RouteStreamId> = {
-  stream(...args: [id: TId, ...ClientArgs<TId>]): AsyncIterable<Stream<TId>>;
+  readonly stream: (...args: [id: TId, ...ClientArgs<TId>]) => AsyncIterable<Stream<TId>>;
 };
 export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamTransportFor<TRouteId>;
@@ -3134,7 +3134,7 @@ export function createTransport<TRequest extends Request = RequiredRuntimeReques
 
 export type GeneratedClient = {
 ${clientTypeBody}
-  batch: BatchFunction;
+  readonly batch: BatchFunction;
 };
 export type Client = GeneratedClient;
 

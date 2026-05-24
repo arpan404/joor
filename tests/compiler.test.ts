@@ -616,6 +616,16 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export type BatchFunction = <const TRequests extends RouteBatchRequest>'
       );
+      expect(clientSource).toContain(
+        'readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;'
+      );
+      expect(clientSource).toContain(
+        'readonly request: (...args: RouteUnaryClientArgs<TId>) => RouteRequest<TId>;'
+      );
+      expect(clientSource).toContain(
+        'readonly stream: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<Stream<TId>>;'
+      );
+      expect(clientSource).toContain('  readonly batch: BatchFunction;');
       expect(clientSource).toContain('export type BatchOptions');
       expect(clientSource).toContain('export type UnaryRouteTransport');
       expect(clientSource).toContain('export type StreamRouteTransport');
@@ -649,9 +659,11 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export function createTransport<TRequest extends Request>'
       );
-      expect(clientSource).toContain('"get": RouteUnaryFunction<"users.get">');
       expect(clientSource).toContain(
-        '"watch": RouteStreamFunction<"users.watch">'
+        'readonly "get": RouteUnaryFunction<"users.get">'
+      );
+      expect(clientSource).toContain(
+        'readonly "watch": RouteStreamFunction<"users.watch">'
       );
       expect(clientSource).toContain('export type Client');
       expect(clientSource).not.toContain(
@@ -669,7 +681,7 @@ describe('compiler', () => {
         '"current": routeUnary("tenants.current")'
       );
       expect(clientSource).toContain(
-        'call(...args: [id: TId, ...ClientArgs<TId>])'
+        'readonly call: (...args: [id: TId, ...ClientArgs<TId>]) => Promise<RouteResult<TId>>;'
       );
       expect(clientSource).toContain(
         'Object.assign(call, { call, request, protocolRequest })'
@@ -781,7 +793,7 @@ describe('compiler', () => {
       expect(clientSource).toContain(
         'export const createStreamRouteRequest: typeof createRouteStreamRequest'
       );
-      expect(clientSource).toContain('protocolRequest(');
+      expect(clientSource).toContain('readonly protocolRequest: (');
       expect(clientSource).toContain('input: RouteUnaryInput<TId>');
       expect(clientSource).toContain('input: RouteStreamInput<TId>');
       expect(clientSource).toContain('export type RouteRequestBuilder');
@@ -1257,6 +1269,16 @@ import { manifest } from './manifest.js';
 const defaultClient = createClient();
 const generatedClient: GeneratedClient = defaultClient;
 const generatedClientAlias: Client = generatedClient;
+// @ts-expect-error generated client route groups are readonly.
+generatedClient.users = generatedClient.users;
+// @ts-expect-error generated client route leaves are readonly.
+generatedClient.users.get = generatedClient.users.get;
+// @ts-expect-error generated unary route command slots are readonly.
+generatedClient.users.get.call = generatedClient.users.get.call;
+// @ts-expect-error generated stream route command slots are readonly.
+generatedClient.users.watch.stream = generatedClient.users.watch.stream;
+// @ts-expect-error generated client batch commands are readonly.
+generatedClient.batch = generatedClient.batch;
 class GeneratedRequest extends Request {
   readonly runtimeTag = 'generated';
 }
