@@ -3238,6 +3238,49 @@ const _readRootContextOkResult = (
   result.headers.missing;
 };
 _readRootContextOkResult;
+const requestTypedContext = {
+  __requestType: (request: ProcedureAppRequest) => request,
+  request: requestTypedProcedureRequest,
+  traceId: 'trace_1',
+  signal: requestTypedProcedureRequest.signal,
+  headers: {},
+  rawHeaders: requestTypedProcedureRequest.headers,
+  services: {},
+  auth: {},
+  ok<TData extends JsonValue>(data: TData) {
+    return { kind: 'success' as const, data };
+  },
+  error<TCode extends string>(code: TCode, details: JsonValue) {
+    return {
+      kind: 'error' as const,
+      error: { code, details, status: 400, message: code },
+    };
+  },
+} satisfies JoorContext<
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, JsonValue>,
+  ProcedureAppRequest
+>;
+const annotatedRequestTypedContext: JoorContext<
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, JsonValue>,
+  ProcedureAppRequest
+> = requestTypedContext;
+// @ts-expect-error request-typed contexts are not assignable to plain request contexts.
+const _wrongRequestTypedContext: JoorContext<
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, JsonValue>,
+  Request
+> = annotatedRequestTypedContext;
 
 defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),

@@ -18,6 +18,7 @@ export interface JoorContext<
   TErrors extends Record<string, JsonValue> = Record<string, JsonValue>,
   TRequest extends Request = Request,
 > {
+  readonly __requestType?: (request: TRequest) => TRequest;
   request: TRequest;
   traceId: string;
   signal: AbortSignal;
