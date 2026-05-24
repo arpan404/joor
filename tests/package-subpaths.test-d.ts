@@ -300,6 +300,14 @@ const packageSubpathAuthPolicyRequest: Context.AuthPolicyRequest<
   typeof packageSubpathAuthPolicy
 > = new Request('https://example.com/rpc');
 packageSubpathAuthPolicyRequest.url.toUpperCase();
+const packageSubpathProcedureRequest: Procedure.ProcedureRequest<
+  typeof packageSubpathProcedure
+> = packageSubpathAuthPolicyRequest;
+packageSubpathProcedureRequest.url.toUpperCase();
+const rootPackageSubpathProcedureRequest: Root.ProcedureRequest<
+  typeof packageSubpathProcedure
+> = packageSubpathProcedureRequest;
+rootPackageSubpathProcedureRequest.url.toUpperCase();
 
 const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
   procedures: [
@@ -501,7 +509,13 @@ export type PackageSubpathSurface = [
     'users.watch'
   >,
   Manifest.JoorManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'>,
+  Procedure.ProcedureInput<typeof packageSubpathProcedure>,
+  Procedure.ProcedureOutput<typeof packageSubpathProcedure>,
+  Procedure.ProcedureRequest<typeof packageSubpathProcedure>,
   Procedure.ProcedureResult<{ name: string }, string>,
+  Root.ProcedureInput<typeof packageSubpathProcedure>,
+  Root.ProcedureOutput<typeof packageSubpathProcedure>,
+  Root.ProcedureRequest<typeof packageSubpathProcedure>,
   Rpc.RateLimitIdentityResolver,
   Rpc.RateLimitRuntimeOptions,
   Rpc.RpcRouteUnaryProtocolRequest<
