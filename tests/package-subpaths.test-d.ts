@@ -532,8 +532,10 @@ export type PackageSubpathSurface = [
   Compiled.CompiledCachedProcedureSuccess,
   Compiled.CompiledExecutionState,
   Compiled.CompiledRpcRequestHandler,
+  Compiled.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
+  Root.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,

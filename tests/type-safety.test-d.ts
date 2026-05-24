@@ -359,6 +359,7 @@ import {
   type CompiledRpcStreamRouteBodyResultHandlerFor as RootCompiledRpcStreamRouteBodyResultHandlerFor,
   type CompiledRpcStreamRouteTransportBodyResultHandlerFor as RootCompiledRpcStreamRouteTransportBodyResultHandlerFor,
   type CompiledRpcRequestHandler as RootCompiledRpcRequestHandler,
+  type CompiledRpcRequestHandlerForConfig as RootCompiledRpcRequestHandlerForConfig,
   type CompiledRpcTransportBodyResultHandler as RootCompiledRpcTransportBodyResultHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRpcTransportBodyResultHandlerForConfig as RootCompiledRpcTransportBodyResultHandlerForConfig,
@@ -1409,6 +1410,7 @@ import type {
   CompiledRpcStreamRouteBodyResultHandlerFor,
   CompiledRpcStreamRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
+  CompiledRpcRequestHandlerForConfig,
   CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRpcTransportBodyResultHandlerForConfig,
@@ -1457,6 +1459,7 @@ import {
   createStandaloneDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRuntimeSubpathDenoFetchFor,
   createCompiledRpcHandlerFor as createRuntimeSubpathCompiledRpcHandlerFor,
+  type CompiledRpcRequestHandlerForConfig as RuntimeSubpathCompiledRpcRequestHandlerForConfig,
   createDenoRpcRequestHandlerFor as createRuntimeSubpathDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createRuntimeSubpathDenoTransportRequestHandler,
   createDenoTransportRequestHandlerFor as createRuntimeSubpathDenoTransportRequestHandlerFor,
@@ -10761,9 +10764,23 @@ const requestTypedConfigCompiledRpcHandler: CompiledRpcRequestHandler<HookAppReq
     exactManifestAwareConfig,
     _serviceTypedCompiledUnaryDispatch
   );
+const requestTypedConfigCompiledRpcHandlerForConfig: CompiledRpcRequestHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = requestTypedConfigCompiledRpcHandler;
+const rootRequestTypedConfigCompiledRpcHandlerForConfig: RootCompiledRpcRequestHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = requestTypedConfigCompiledRpcHandlerForConfig;
+const runtimeSubpathRequestTypedConfigCompiledRpcHandlerForConfig: RuntimeSubpathCompiledRpcRequestHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = rootRequestTypedConfigCompiledRpcHandlerForConfig;
 requestTypedConfigCompiledRpcHandler(hookAppRequest);
+runtimeSubpathRequestTypedConfigCompiledRpcHandlerForConfig(hookAppRequest);
 requestTypedConfigCompiledRpcHandler(
   // @ts-expect-error config-aware compiled handlers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRequestTypedConfigCompiledRpcHandlerForConfig(
+  // @ts-expect-error runtime subpath config-aware compiled handlers preserve custom request types.
   new Request('https://example.com/rpc')
 );
 createCompiledRpcHandlerFor<HookAppRequest>()(

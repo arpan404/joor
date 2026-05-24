@@ -965,6 +965,7 @@ export type {
   CompiledRpcUnaryRouteBodyResultHandlerFor,
   CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRpcRequestHandler,
+  CompiledRpcRequestHandlerForConfig,
   CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerForConfig,
   CompiledRpcTransportBodyResultHandlerFor,
