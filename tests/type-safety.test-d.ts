@@ -2718,6 +2718,88 @@ const _wrongRequestTypedManifestNodeRpcRequestHandlerOptions: NodeRpcRequestHand
 > = {
   plugins: [usersPlugin] as const,
 };
+const requestTypedManifestAwsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestJoorHandlerOptions;
+const requestTypedManifestAwsLambdaHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestAwsLambdaHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestAwsLambdaHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathAwsLambdaHandlerOptions: RuntimeSubpathAwsLambdaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestAwsLambdaHandlerOptions;
+requestTypedManifestRuntimeSubpathAwsLambdaHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestAwsLambdaHttpApiHandlerOptions: AwsLambdaHttpApiHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestAwsLambdaHandlerOptions;
+const requestTypedManifestAwsLambdaHttpApiHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestAwsLambdaHttpApiHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestAwsLambdaHttpApiHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathAwsLambdaHttpApiHandlerOptions: RuntimeSubpathAwsLambdaHttpApiHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestAwsLambdaHttpApiHandlerOptions;
+requestTypedManifestRuntimeSubpathAwsLambdaHttpApiHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestAwsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestAwsLambdaHandlerOptions;
+const requestTypedManifestAwsLambdaRestApiHandlerOptionsRequest: HandlerOptionsRequest<
+  typeof requestTypedManifestAwsLambdaRestApiHandlerOptions
+> = requestTypedProcedureRequest;
+requestTypedManifestAwsLambdaRestApiHandlerOptionsRequest.requestId.toUpperCase();
+const requestTypedManifestRuntimeSubpathAwsLambdaRestApiHandlerOptions: RuntimeSubpathAwsLambdaRestApiHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = requestTypedManifestAwsLambdaRestApiHandlerOptions;
+requestTypedManifestRuntimeSubpathAwsLambdaRestApiHandlerOptions.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestAwsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestAwsLambdaHandlerOptions];
+requestTypedManifestAwsLambdaHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+const requestTypedManifestAwsLambdaRestApiHandlerOptionsArgs: AwsLambdaRestApiHandlerOptionsArgs<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin]
+> = [requestTypedManifestAwsLambdaRestApiHandlerOptions];
+requestTypedManifestAwsLambdaRestApiHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  requestTypedProcedureRequest,
+  { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
+);
+// @ts-expect-error AWS Lambda option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestAwsLambdaHandlerOptions: AwsLambdaHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
+// @ts-expect-error AWS REST API option aliases reject explicit request types that are too broad.
+const _wrongRequestTypedManifestAwsLambdaRestApiHandlerOptions: AwsLambdaRestApiHandlerOptionsFor<
+  typeof requestTypedManifest,
+  readonly [typeof usersPlugin],
+  RpcManifestBody<typeof requestTypedManifest>,
+  Request
+> = {
+  plugins: [usersPlugin] as const,
+};
 const _readRootContextOkResult = (
   ctx: JoorContext<
     Services,
