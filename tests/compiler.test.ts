@@ -57,6 +57,11 @@ describe('compiler', () => {
       'users.get',
       'users.watch',
     ]);
+    expect(Object.isFrozen(manifest)).toBe(true);
+    expect(Object.isFrozen(manifest.procedures)).toBe(true);
+    expect(manifest.procedures.every((entry) => Object.isFrozen(entry))).toBe(
+      true
+    );
   });
 
   it('emits artifacts', async () => {

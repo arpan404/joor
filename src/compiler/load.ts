@@ -32,12 +32,12 @@ export const loadProcedures = async (
     const module = (await import(
       pathToFileURL(file.path).href
     )) as ProcedureModule;
-    procedures.push({
+    procedures.push(Object.freeze({
       id: file.id,
       importPath: file.path,
       exportName: file.id.replace(/[^a-zA-Z0-9_$]/g, '_'),
       procedure: assertProcedure(module.default, file.path),
-    });
+    }));
   }
-  return { procedures };
+  return Object.freeze({ procedures: Object.freeze(procedures) });
 };
