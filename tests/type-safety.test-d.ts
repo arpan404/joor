@@ -12336,6 +12336,49 @@ runtimeSubpathRequestTypedConfigCompiledRpcHandlerForConfig(
   // @ts-expect-error runtime subpath config-aware compiled handlers preserve custom request types.
   new Request('https://example.com/rpc')
 );
+const defaultConfigTypedCompiledRpcHandler = createCompiledRpcHandlerFor()(
+  _serviceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+defaultConfigTypedCompiledRpcHandler(hookAppRequest);
+defaultConfigTypedCompiledRpcHandler(
+  // @ts-expect-error default compiled handler factories infer request types from config hooks.
+  new Request('https://example.com/rpc')
+);
+const rootDefaultConfigTypedCompiledRpcHandler =
+  createRootCompiledRpcHandlerFor()(
+    _rootServiceTypedCompiledDispatch,
+    exactManifestAwareConfig,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+rootDefaultConfigTypedCompiledRpcHandler(hookAppRequest);
+rootDefaultConfigTypedCompiledRpcHandler(
+  // @ts-expect-error root default compiled handler factories infer request types from config hooks.
+  new Request('https://example.com/rpc')
+);
+const runtimeSubpathDefaultConfigTypedCompiledRpcHandler =
+  createRuntimeSubpathCompiledRpcHandlerFor()(
+    _serviceTypedCompiledDispatch,
+    exactManifestAwareConfig,
+    _serviceTypedCompiledUnaryDispatch
+  );
+runtimeSubpathDefaultConfigTypedCompiledRpcHandler(hookAppRequest);
+runtimeSubpathDefaultConfigTypedCompiledRpcHandler(
+  // @ts-expect-error runtime subpath default compiled handler factories infer request types from config hooks.
+  new Request('https://example.com/rpc')
+);
+const defaultConfigTypedCompiledRpcHandlerWithoutHooks =
+  createCompiledRpcHandlerFor()(
+    _serviceTypedCompiledDispatch,
+    requestTypedConfigWithoutHooks,
+    _serviceTypedCompiledUnaryDispatch
+  );
+defaultConfigTypedCompiledRpcHandlerWithoutHooks(hookAppRequest);
+defaultConfigTypedCompiledRpcHandlerWithoutHooks(
+  // @ts-expect-error default compiled handler factories infer explicit config request types without hooks.
+  new Request('https://example.com/rpc')
+);
 createCompiledRpcHandlerFor<HookAppRequest>()(
   _serviceTypedCompiledDispatch,
   exactManifestAwareConfig,

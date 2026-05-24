@@ -1294,9 +1294,24 @@ export const createCompiledRpcHandler = <
   }) as CompiledRpcRequestHandlerForConfig<TConfig>;
 };
 
-export const createCompiledRpcHandlerFor =
-  <TRequest extends Request = Request>() =>
-  <const TConfig extends AnyJoorConfig = Record<string, never>>(
+export function createCompiledRpcHandlerFor(): <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+) => CompiledRpcRequestHandlerForConfig<TConfig>;
+export function createCompiledRpcHandlerFor<
+  TRequest extends Request,
+>(): <const TConfig extends AnyJoorConfig = Record<string, never>>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+) => CompiledRpcRequestHandler<TRequest>;
+export function createCompiledRpcHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <const TConfig extends AnyJoorConfig = Record<string, never>>(
     dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
     config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,
     unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
@@ -1306,3 +1321,4 @@ export const createCompiledRpcHandlerFor =
       config,
       unaryDispatch
     ) as unknown as CompiledRpcRequestHandler<TRequest>;
+}
