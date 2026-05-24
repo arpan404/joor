@@ -242,6 +242,10 @@ const packageSubpathConfigRequest: Root.HandlerOptionsRequest<
   typeof packageSubpathConfig
 > = new Request('https://example.com/rpc');
 packageSubpathConfigRequest.url.toUpperCase();
+const packageSubpathJoorConfigRequest: Config.JoorConfigRequest<
+  typeof packageSubpathConfig
+> = packageSubpathConfigRequest;
+packageSubpathJoorConfigRequest.url.toUpperCase();
 type PackageSubpathServices = Config.JoorConfigContext<
   typeof packageSubpathConfig
 >;
@@ -542,6 +546,9 @@ export type PackageSubpathSurface = [
   Root.CompiledCachedProcedureHeaders,
   Root.CompiledProcedureCacheHeaderValues,
   Root.RateLimitRuntimeOptions,
+  Config.JoorConfigRequest<typeof packageSubpathConfig>,
+  Context.JoorConfigRequest<typeof packageSubpathConfig>,
+  Root.JoorConfigRequest<typeof packageSubpathConfig>,
   Config.HandlerOptionsBody<typeof packageSubpathConfig>,
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Config.HandlerOptionsRequest<typeof packageSubpathConfig>,

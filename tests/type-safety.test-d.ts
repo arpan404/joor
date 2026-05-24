@@ -522,6 +522,7 @@ import {
   type JoorConfig,
   type JoorConfigFor,
   type JoorConfigContext,
+  type JoorConfigRequest,
   type JoorRouteStreamConfigFor,
   type JoorRouteUnaryConfigFor,
   type JoorStreamRouteConfigFor,
@@ -1069,6 +1070,7 @@ import {
   type JoorConfig as ContextSubpathConfig,
   type JoorConfigFor as ContextSubpathConfigFor,
   type JoorConfigContext as ContextSubpathConfigContext,
+  type JoorConfigRequest as ContextSubpathConfigRequest,
   type JoorStreamRouteConfigFor as ContextSubpathStreamRouteConfigFor,
   type JoorUnaryRouteConfigFor as ContextSubpathUnaryRouteConfigFor,
   type JoorContext as ContextSubpathJoorContext,
@@ -1084,6 +1086,7 @@ import {
   type HandlerOptionsRequest as ConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as ConfigSubpathConfigFor,
   type JoorConfigContext as ConfigSubpathConfigContext,
+  type JoorConfigRequest as ConfigSubpathConfigRequest,
   type JoorStreamRouteConfigFor as ConfigSubpathStreamRouteConfigFor,
   type JoorUnaryRouteConfigFor as ConfigSubpathUnaryRouteConfigFor,
 } from '../src/config.js';
@@ -1097,6 +1100,7 @@ import {
   type HandlerOptionsRequest as PackageConfigSubpathHandlerOptionsRequest,
   type JoorConfigFor as PackageConfigSubpathConfigFor,
   type JoorConfigContext as PackageConfigSubpathConfigContext,
+  type JoorConfigRequest as PackageConfigSubpathConfigRequest,
   type JoorStreamRouteConfigFor as PackageConfigSubpathStreamRouteConfigFor,
   type JoorUnaryRouteConfigFor as PackageConfigSubpathUnaryRouteConfigFor,
 } from 'joor/config';
@@ -1884,6 +1888,9 @@ const usersPlugin = createPlugin({
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
 type Services = JoorConfigContext<typeof config>;
+type ConfigRequest = JoorConfigRequest<typeof config>;
+const configRequest: ConfigRequest = new Request('https://example.com/rpc');
+configRequest.url.toUpperCase();
 type RootPluginServices = PluginServices<readonly [typeof usersPlugin]>;
 const rootPluginServices: RootPluginServices = {
   users: {
@@ -6549,6 +6556,19 @@ const requestTypedConfigRequest: HandlerOptionsRequest<
   typeof requestTypedConfig
 > = hookAppRequest;
 requestTypedConfigRequest.requestId.toUpperCase();
+const requestTypedJoorConfigRequest: JoorConfigRequest<
+  typeof requestTypedConfig
+> = hookAppRequest;
+const contextSubpathRequestTypedJoorConfigRequest: ContextSubpathConfigRequest<
+  typeof requestTypedConfig
+> = requestTypedJoorConfigRequest;
+const configSubpathRequestTypedJoorConfigRequest: ConfigSubpathConfigRequest<
+  typeof requestTypedConfig
+> = contextSubpathRequestTypedJoorConfigRequest;
+const packageConfigSubpathRequestTypedJoorConfigRequest: PackageConfigSubpathConfigRequest<
+  typeof requestTypedConfig
+> = configSubpathRequestTypedJoorConfigRequest;
+packageConfigSubpathRequestTypedJoorConfigRequest.requestId.toUpperCase();
 const rpcSubpathRequestTypedConfigRequest: RpcSubpathHandlerOptionsRequest<
   typeof requestTypedConfig
 > = requestTypedConfigRequest;
@@ -6564,6 +6584,10 @@ const packageConfigSubpathRequestTypedConfigRequest: PackageConfigSubpathHandler
 packageConfigSubpathRequestTypedConfigRequest.requestId.toUpperCase();
 // @ts-expect-error request-typed configs preserve custom request extraction.
 const _wrongRequestTypedConfigRequest: HandlerOptionsRequest<
+  typeof requestTypedConfig
+> = new Request('https://example.com/rpc');
+// @ts-expect-error request-typed config aliases preserve custom request extraction.
+const _wrongRequestTypedJoorConfigRequest: JoorConfigRequest<
   typeof requestTypedConfig
 > = new Request('https://example.com/rpc');
 const serviceAwareMiddleware: JoorMiddleware<RootPluginServices> = {

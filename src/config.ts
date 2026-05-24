@@ -83,6 +83,11 @@ export type JoorConfigContext<TConfig> = TConfig extends {
     : Record<string, never>
   : Record<string, never>;
 
+export type JoorConfigRequest<TConfig> =
+  [HandlerOptionsRequest<TConfig>] extends [never]
+    ? Request
+    : HandlerOptionsRequest<TConfig>;
+
 export function defineConfig<
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
   TBody = unknown,

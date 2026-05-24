@@ -197,6 +197,7 @@ export type {
   JoorConfig,
   JoorConfigFor,
   JoorConfigContext,
+  JoorConfigRequest,
   JoorRouteStreamConfigFor,
   JoorRouteUnaryConfigFor,
   JoorStreamRouteConfigFor,
