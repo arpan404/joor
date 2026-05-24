@@ -288,6 +288,10 @@ const packageSubpathAuthPolicy = createAuthPolicy.withContext<PackageSubpathServ
   }
 );
 packageSubpathAuthPolicy.name.toUpperCase();
+const packageSubpathAuthPolicyRequest: Context.AuthPolicyRequest<
+  typeof packageSubpathAuthPolicy
+> = new Request('https://example.com/rpc');
+packageSubpathAuthPolicyRequest.url.toUpperCase();
 
 const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
   procedures: [
@@ -535,6 +539,7 @@ export type PackageSubpathSurface = [
   Config.HandlerOptionsManifest<typeof packageSubpathConfig>,
   Context.HandlerOptionsBody<typeof packageSubpathConfig>,
   Context.HandlerOptionsManifest<typeof packageSubpathConfig>,
+  Context.AuthPolicyRequest<typeof packageSubpathAuthPolicy>,
   Root.ContextRequestSource,
   Root.CorsHeaderOptions,
   Deno.DenoRpcRequestHandler,
