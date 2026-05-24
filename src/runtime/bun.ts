@@ -646,9 +646,15 @@ export const createBunRpcRequestHandlerFor =
 export function serveBun<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: BunServeOptionsArgs<TManifest, TPlugins>
+  ...args: BunServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
 ): BunServer;
 export function serveBun<TManifest extends JoorManifest>(
   manifest: TManifest,

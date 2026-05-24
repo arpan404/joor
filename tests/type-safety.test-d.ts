@@ -8519,7 +8519,13 @@ requestTypedBunServeOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedBunServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Bun serve options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
+serveBun(manifest, requestTypedBunServeOptions);
 bunServer.stop();
 bunServer.ref?.();
 // @ts-expect-error service-dependent manifests require matching Bun serve plugins.
@@ -8927,6 +8933,12 @@ const requestTypedDenoRpcRequestHandlerOptions: DenoRpcRequestHandlerOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedBunRpcRequestHandlerOptions;
+const requestTypedDenoServeOptions: DenoServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedBunServeOptions;
 exactDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -8952,7 +8964,17 @@ requestTypedDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedDenoServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  exactManifestHandlerHookContext
+);
+requestTypedDenoServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Deno serve options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
+serveDeno(manifest, requestTypedDenoServeOptions);
 denoServer.shutdown().then(() => undefined);
 denoServer.finished.then(() => undefined);
 // @ts-expect-error service-dependent manifests require matching Deno serve plugins.
@@ -9449,6 +9471,11 @@ requestTypedStandaloneDenoServeOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedStandaloneDenoServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed standalone Deno serve options reject broader requests.
+  new Request('https://example.com/rpc'),
+  exactManifestHandlerHookContext
+);
 requestTypedStandaloneDenoRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
@@ -9457,13 +9484,19 @@ const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
   manifest,
   typedStandaloneDenoServeOptions
 );
+serveStandaloneDeno(manifest, requestTypedStandaloneDenoServeOptions);
 const rootStandaloneDenoServer: RootStandaloneDenoServer =
   serveRootStandaloneDeno(manifest, rootStandaloneDenoServeOptions);
+serveRootStandaloneDeno(manifest, requestTypedStandaloneDenoServeOptions);
 const runtimeSubpathStandaloneDenoServer: RuntimeSubpathStandaloneDenoServer =
   serveRuntimeSubpathStandaloneDeno(
     manifest,
     runtimeSubpathStandaloneDenoServeOptions
   );
+serveRuntimeSubpathStandaloneDeno(
+  manifest,
+  requestTypedStandaloneDenoServeOptions
+);
 standaloneDenoServer.shutdown().then(() => undefined);
 rootStandaloneDenoServer.finished.then(() => undefined);
 runtimeSubpathStandaloneDenoServer.finished.then(() => undefined);

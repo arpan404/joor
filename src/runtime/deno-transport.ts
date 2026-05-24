@@ -566,9 +566,15 @@ export const createDenoRpcRequestHandlerFor =
 export function serveDeno<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: DenoServeOptionsArgs<TManifest, TPlugins>
+  ...args: DenoServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
 ): DenoServer;
 export function serveDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
