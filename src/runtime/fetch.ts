@@ -105,10 +105,16 @@ export type JoorStreamRouteHandlerOptionsArgs<
 export function createJoorHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: JoorHandlerOptionsArgs<TManifest, TPlugins>
-): JoorFetchHandler;
+  ...args: JoorHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): JoorFetchHandler<TRequest>;
 export function createJoorHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

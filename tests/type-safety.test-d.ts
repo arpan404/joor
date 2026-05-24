@@ -7637,6 +7637,8 @@ interface AppFetchRequest extends Request {
 const createTypedJoorHandler = createJoorHandlerFor<AppFetchRequest>();
 const typedJoorHandler: JoorFetchHandler<AppFetchRequest> =
   createTypedJoorHandler(manifest, handlerOptions);
+const directHookTypedJoorHandler: JoorFetchHandler<HookAppRequest> =
+  createJoorHandler(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedJoorHandler =
   createRuntimeSubpathJoorHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedJoorHandler: RuntimeSubpathJoorFetchHandler<AppFetchRequest> =
@@ -7656,6 +7658,9 @@ runtimeSubpathTypedFetchHandler(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedFetchHandler(new Request('https://example.com/rpc'));
 typedJoorHandler(appFetchRequest);
 runtimeSubpathTypedJoorHandler(appFetchRequest);
+directHookTypedJoorHandler(hookAppRequest);
+// @ts-expect-error direct typed fetch factories infer custom hook request types.
+directHookTypedJoorHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching fetch handler plugins.
 createJoorHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed fetch handler plugins.
@@ -7674,6 +7679,8 @@ const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
 const createTypedBunFetch = createBunFetchFor<AppFetchRequest>();
 const typedAppBunFetch: BunFetchHandler<AppFetchRequest> =
   createTypedBunFetch(manifest, handlerOptions);
+const directHookTypedBunFetch: BunFetchHandler<HookAppRequest> =
+  createBunFetch(manifest, typedRequestHandlerOptions);
 const hookTypedBunFetch =
   createBunFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedBunFetch =
@@ -7685,7 +7692,10 @@ runtimeSubpathTypedBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathSyncTypedBunFetch(new Request('https://example.com/rpc'));
 typedAppBunFetch(appFetchRequest);
 runtimeSubpathTypedAppBunFetch(appFetchRequest);
+directHookTypedBunFetch(hookAppRequest);
 hookTypedBunFetch(hookAppRequest);
+// @ts-expect-error direct typed Bun fetch factories infer custom hook request types.
+directHookTypedBunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error typed Bun fetch factories preserve hook request types.
 hookTypedBunFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Bun adapter plugins.
@@ -7702,6 +7712,8 @@ const createTypedBunRpcHandler =
   createBunRpcRequestHandlerFor<AppFetchRequest>();
 const typedBunRpcHandler: BunRpcRequestHandler<AppFetchRequest> =
   createTypedBunRpcHandler(manifest, handlerOptions);
+const directHookTypedBunRpcHandler: BunRpcRequestHandler<HookAppRequest> =
+  createBunRpcRequestHandler(manifest, typedRequestHandlerOptions);
 const hookTypedBunRpcHandler =
   createBunRpcRequestHandlerFor<HookAppRequest>()(
     manifest,
@@ -7714,7 +7726,10 @@ const runtimeSubpathTypedBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<AppFe
 runtimeSubpathBunRpcHandler(new Request('https://example.com/rpc'));
 typedBunRpcHandler(appFetchRequest);
 runtimeSubpathTypedBunRpcHandler(appFetchRequest);
+directHookTypedBunRpcHandler(hookAppRequest);
 hookTypedBunRpcHandler(hookAppRequest);
+// @ts-expect-error direct typed Bun RPC factories infer custom hook request types.
+directHookTypedBunRpcHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error typed Bun RPC factories preserve hook request types.
 hookTypedBunRpcHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching typed Bun RPC plugins.
@@ -8125,6 +8140,8 @@ const runtimeSubpathTypedDenoFetch: RuntimeSubpathDenoFetchHandler =
 const createTypedDenoFetch = createDenoFetchFor<AppFetchRequest>();
 const typedAppDenoFetch: DenoFetchHandler<AppFetchRequest> =
   createTypedDenoFetch(manifest, handlerOptions);
+const directHookTypedDenoFetch: DenoFetchHandler<HookAppRequest> =
+  createDenoFetch(manifest, typedRequestHandlerOptions);
 const hookTypedDenoFetch =
   createDenoFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedDenoFetch =
@@ -8135,7 +8152,10 @@ denoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoFetch(new Request('https://example.com/rpc'));
 typedAppDenoFetch(appFetchRequest);
 runtimeSubpathTypedAppDenoFetch(appFetchRequest);
+directHookTypedDenoFetch(hookAppRequest);
 hookTypedDenoFetch(hookAppRequest);
+// @ts-expect-error direct typed Deno fetch factories infer custom hook request types.
+directHookTypedDenoFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error typed Deno fetch factories preserve hook request types.
 hookTypedDenoFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno adapter plugins.
@@ -8543,6 +8563,8 @@ const createTypedDenoHandler =
   createDenoRpcRequestHandlerFor<AppFetchRequest>();
 const typedAppDenoHandler: DenoRpcRequestHandler<AppFetchRequest> =
   createTypedDenoHandler(manifest, handlerOptions);
+const directHookTypedDenoHandler: DenoRpcRequestHandler<HookAppRequest> =
+  createDenoRpcRequestHandler(manifest, typedRequestHandlerOptions);
 const hookTypedDenoHandler =
   createDenoRpcRequestHandlerFor<HookAppRequest>()(
     manifest,
@@ -8556,7 +8578,10 @@ denoHandler(new Request('https://example.com/rpc'));
 runtimeSubpathTypedDenoHandler(new Request('https://example.com/rpc'));
 typedAppDenoHandler(appFetchRequest);
 runtimeSubpathTypedAppDenoHandler(appFetchRequest);
+directHookTypedDenoHandler(hookAppRequest);
 hookTypedDenoHandler(hookAppRequest);
+// @ts-expect-error direct typed Deno RPC factories infer custom hook request types.
+directHookTypedDenoHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error typed Deno RPC factories preserve hook request types.
 hookTypedDenoHandler(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Deno RPC adapter plugins.

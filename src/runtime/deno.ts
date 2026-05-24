@@ -496,10 +496,16 @@ const requestPathPreflight = (
 export function createDenoFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: DenoFetchOptionsArgs<TManifest, TPlugins>
-): DenoFetchHandler;
+  ...args: DenoFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): DenoFetchHandler<TRequest>;
 export function createDenoFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
@@ -627,10 +633,16 @@ export const createDenoTransportRequestHandlerWithPathFor =
 export function createDenoRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: DenoRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
-): DenoRpcRequestHandler;
+  ...args: DenoRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): DenoRpcRequestHandler<TRequest>;
 export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

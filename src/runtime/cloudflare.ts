@@ -264,10 +264,16 @@ export type CloudflareStreamRouteWorkerOptionsArgs<
 export function createCloudflareFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: CloudflareFetchOptionsArgs<TManifest, TPlugins>
-): CloudflareFetchHandler;
+  ...args: CloudflareFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): CloudflareFetchHandler<TRequest>;
 export function createCloudflareFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
@@ -305,10 +311,16 @@ export const createCloudflareFetchFor =
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: CloudflareWorkerOptionsArgs<TManifest, TPlugins>
-): CloudflareWorker;
+  ...args: CloudflareWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): CloudflareWorker<never, never, TRequest>;
 export function createCloudflareWorker<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

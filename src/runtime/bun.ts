@@ -446,10 +446,16 @@ const bodyReadFailure = (
 export function createBunFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: BunFetchOptionsArgs<TManifest, TPlugins>
-): BunFetchHandler;
+  ...args: BunFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): BunFetchHandler<TRequest>;
 export function createBunFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
@@ -567,10 +573,16 @@ export const createBunTransportRequestHandlerWithPathFor =
 export function createBunRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: BunRpcRequestHandlerOptionsArgs<TManifest, TPlugins>
-): BunRpcRequestHandler;
+  ...args: BunRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): BunRpcRequestHandler<TRequest>;
 export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

@@ -112,10 +112,16 @@ export type VercelStreamRouteFetchOptionsArgs<
 export function createVercelFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: VercelFetchOptionsArgs<TManifest, TPlugins>
-): VercelFetchHandler;
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): VercelFetchHandler<TRequest>;
 export function createVercelFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
@@ -153,10 +159,16 @@ export const createVercelFetchFor =
 export function createVercelFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: VercelFetchOptionsArgs<TManifest, TPlugins>
-): VercelFunction;
+  ...args: VercelFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): VercelFunction<TRequest>;
 export function createVercelFunction<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions

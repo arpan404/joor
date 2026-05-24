@@ -120,10 +120,16 @@ export type NetlifyStreamRouteFetchOptionsArgs<
 export function createNetlifyFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: NetlifyFetchOptionsArgs<TManifest, TPlugins>
-): NetlifyFetchHandler;
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): NetlifyFetchHandler<TRequest>;
 export function createNetlifyFetch<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
@@ -161,10 +167,16 @@ export const createNetlifyFetchFor =
 export function createNetlifyEdgeFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = Request,
 >(
   manifest: TManifest,
-  ...args: NetlifyFetchOptionsArgs<TManifest, TPlugins>
-): NetlifyEdgeFetchHandler;
+  ...args: NetlifyFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestBody<TManifest>,
+    TRequest
+  >
+): NetlifyEdgeFetchHandler<unknown, TRequest>;
 export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
