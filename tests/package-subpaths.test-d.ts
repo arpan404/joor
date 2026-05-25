@@ -492,6 +492,30 @@ type PackageSubpathManifestBody =
   Manifest.JoorManifestRouteBody<PackageSubpathManifest>;
 type PackageSubpathRootManifestBody =
   Root.JoorManifestRouteBody<PackageSubpathManifest>;
+type PackageSubpathRpcRouteUnaryHandlerOptionsArgsFor =
+  Rpc.RpcManifestRouteUnaryHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
+type PackageSubpathRpcRouteStreamHandlerOptionsArgsFor =
+  Rpc.RpcManifestRouteStreamHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
+type PackageSubpathRootRouteUnaryHandlerOptionsArgsFor =
+  Root.RpcManifestRouteUnaryHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
+type PackageSubpathRootRouteStreamHandlerOptionsArgsFor =
+  Root.RpcManifestRouteStreamHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
 type PackageSubpathClientProtocolRequest =
   Client.RpcManifestRouteUnaryProtocolRequest<
     PackageSubpathManifest,
@@ -805,6 +829,10 @@ export type PackageSubpathSurface = [
   PackageSubpathRootManifestBody,
   PackageSubpathRootManifestBodyResultFor,
   PackageSubpathRootManifestBodyResult,
+  PackageSubpathRpcRouteUnaryHandlerOptionsArgsFor,
+  PackageSubpathRpcRouteStreamHandlerOptionsArgsFor,
+  PackageSubpathRootRouteUnaryHandlerOptionsArgsFor,
+  PackageSubpathRootRouteStreamHandlerOptionsArgsFor,
   PackageSubpathClientRequest,
   PackageSubpathClientRequestUnion,
   PackageSubpathClientStreamRequest,
