@@ -465,6 +465,11 @@ const bodyReadFailure = (
   });
 };
 
+const snapshotExtraResponseHeaders = (
+  headers: Record<string, string> | undefined
+): Record<string, string> | undefined =>
+  headers === undefined ? undefined : Object.freeze({ ...headers });
+
 const requestPathPreflight = (
   request: Request,
   path: string
@@ -576,6 +581,7 @@ export const createDenoTransportRequestHandler = <
   extraResponseHeaders?: Record<string, string>
 ): DenoTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  const responseHeaders = snapshotExtraResponseHeaders(extraResponseHeaders);
   const requestPreflight =
     preflight === false
       ? undefined
@@ -589,11 +595,11 @@ export const createDenoTransportRequestHandler = <
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
-      return bodyReadFailure(request, error, extraResponseHeaders);
+      return bodyReadFailure(request, error, responseHeaders);
     }
     return transportResultToResponse(
       await handler(source, body as TBody),
-      extraResponseHeaders
+      responseHeaders
     );
   };
 };

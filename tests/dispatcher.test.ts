@@ -23,10 +23,14 @@ import {
 } from '../src/runtime/compiled.js';
 import {
   createBunRpcRequestHandler,
+  createBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath,
 } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
-import { createDenoRpcRequestHandler } from '../src/runtime/deno.js';
+import {
+  createDenoRpcRequestHandler,
+  createDenoTransportRequestHandler,
+} from '../src/runtime/deno.js';
 import {
   createNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath,
@@ -819,6 +823,48 @@ describe('dispatcher', () => {
         });
       });
     }
+  });
+
+  it('snapshots Bun and Deno transport extra response headers', async () => {
+    const bunHeaders = { 'x-snapshot': 'bun-original' };
+    const denoHeaders = { 'x-snapshot': 'deno-original' };
+    const bodyResult = {
+      ok: true,
+      id: 'snapshot',
+      traceId: 'trace-fetch-snapshot',
+      data: { ok: true },
+    } as const;
+    const bun = createBunTransportRequestHandler(
+      async () => bodyResult,
+      undefined,
+      false,
+      bunHeaders
+    );
+    const deno = createDenoTransportRequestHandler(
+      async () => bodyResult,
+      undefined,
+      false,
+      denoHeaders
+    );
+
+    bunHeaders['x-snapshot'] = 'bun-changed';
+    denoHeaders['x-snapshot'] = 'deno-changed';
+
+    const request = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'snapshot', input: {} }),
+      });
+    const [bunResponse, denoResponse] = await Promise.all([
+      bun(request()),
+      deno(request()),
+    ]);
+
+    expect(bunResponse.headers.get('x-snapshot')).toBe('bun-original');
+    expect(denoResponse.headers.get('x-snapshot')).toBe('deno-original');
+    expect((await bunResponse.json()).ok).toBe(true);
+    expect((await denoResponse.json()).ok).toBe(true);
   });
 
   it('caches successful query responses when meta.cache is configured', async () => {
