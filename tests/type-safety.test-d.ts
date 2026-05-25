@@ -110,6 +110,14 @@ import {
   createFastifyHandlerFor,
   createHonoHandler,
   createHonoHandlerFor,
+  createRouteStreamHonoHandler,
+  createRouteStreamHonoHandlerFor,
+  createRouteUnaryHonoHandler,
+  createRouteUnaryHonoHandlerFor,
+  createStreamRouteHonoHandler,
+  createStreamRouteHonoHandlerFor,
+  createUnaryRouteHonoHandler,
+  createUnaryRouteHonoHandlerFor,
   createJoorHandler,
   createJoorHandlerFor,
   createRouteStreamJoorHandler,
@@ -1875,6 +1883,14 @@ import {
   createFastifyHandlerFor as createRuntimeSubpathFastifyHandlerFor,
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
+  createRouteStreamHonoHandler as createRuntimeSubpathRouteStreamHonoHandler,
+  createRouteStreamHonoHandlerFor as createRuntimeSubpathRouteStreamHonoHandlerFor,
+  createRouteUnaryHonoHandler as createRuntimeSubpathRouteUnaryHonoHandler,
+  createRouteUnaryHonoHandlerFor as createRuntimeSubpathRouteUnaryHonoHandlerFor,
+  createStreamRouteHonoHandler as createRuntimeSubpathStreamRouteHonoHandler,
+  createStreamRouteHonoHandlerFor as createRuntimeSubpathStreamRouteHonoHandlerFor,
+  createUnaryRouteHonoHandler as createRuntimeSubpathUnaryRouteHonoHandler,
+  createUnaryRouteHonoHandlerFor as createRuntimeSubpathUnaryRouteHonoHandlerFor,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createJoorHandlerFor as createRuntimeSubpathJoorHandlerFor,
   createRouteStreamJoorHandler as createRuntimeSubpathRouteStreamJoorHandler,
@@ -1980,6 +1996,14 @@ import {
   type HonoContext as RuntimeSubpathHonoContext,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
+  type HonoRouteStreamHandlerOptionsArgs as RuntimeSubpathHonoRouteStreamHandlerOptionsArgs,
+  type HonoRouteStreamHandlerOptionsFor as RuntimeSubpathHonoRouteStreamHandlerOptionsFor,
+  type HonoRouteUnaryHandlerOptionsArgs as RuntimeSubpathHonoRouteUnaryHandlerOptionsArgs,
+  type HonoRouteUnaryHandlerOptionsFor as RuntimeSubpathHonoRouteUnaryHandlerOptionsFor,
+  type HonoStreamRouteHandlerOptionsArgs as RuntimeSubpathHonoStreamRouteHandlerOptionsArgs,
+  type HonoStreamRouteHandlerOptionsFor as RuntimeSubpathHonoStreamRouteHandlerOptionsFor,
+  type HonoUnaryRouteHandlerOptionsArgs as RuntimeSubpathHonoUnaryRouteHandlerOptionsArgs,
+  type HonoUnaryRouteHandlerOptionsFor as RuntimeSubpathHonoUnaryRouteHandlerOptionsFor,
   type KoaContext as RuntimeSubpathKoaContext,
   type KoaHandlerOptionsFor as RuntimeSubpathKoaHandlerOptionsFor,
   type KoaMiddleware as RuntimeSubpathKoaMiddleware,
@@ -19204,6 +19228,28 @@ const honoStreamRouteHandlerOptions: HonoStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = honoRouteStreamHandlerOptions;
+const requestTypedHonoRouteUnaryHandlerOptions: HonoRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const runtimeSubpathHonoRouteUnaryHandlerOptions: RuntimeSubpathHonoRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoUnaryRouteHandlerOptions;
+const runtimeSubpathHonoRouteStreamHandlerOptions: RuntimeSubpathHonoRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoStreamRouteHandlerOptions;
+const runtimeSubpathHonoUnaryRouteHandlerOptions: RuntimeSubpathHonoUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteUnaryHandlerOptions;
+const runtimeSubpathHonoStreamRouteHandlerOptions: RuntimeSubpathHonoStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteStreamHandlerOptions;
 runtimeSubpathHonoHandlerOptions.plugins?.[0]?.name.toUpperCase();
 requestTypedHonoHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
@@ -19237,13 +19283,89 @@ const honoStreamRouteHandlerOptionsArgs: HonoStreamRouteHandlerOptionsArgs<
 > = honoRouteStreamHandlerOptionsArgs;
 honoUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 honoStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const runtimeSubpathHonoRouteUnaryHandlerOptionsArgs: RuntimeSubpathHonoRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoUnaryRouteHandlerOptionsArgs;
+const runtimeSubpathHonoRouteStreamHandlerOptionsArgs: RuntimeSubpathHonoRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoStreamRouteHandlerOptionsArgs;
+const runtimeSubpathHonoUnaryRouteHandlerOptionsArgs: RuntimeSubpathHonoUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathHonoStreamRouteHandlerOptionsArgs: RuntimeSubpathHonoStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = honoRouteStreamHandlerOptionsArgs;
+runtimeSubpathHonoRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathHonoRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathHonoRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathHonoRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathHonoUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathHonoStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const honoHandler: HonoHandler = createHonoHandler(
   manifest,
   honoHandlerOptions
 );
+const routeUnaryHonoHandler: HonoHandler = createRouteUnaryHonoHandler(
+  manifest,
+  honoRouteUnaryHandlerOptions
+);
+const unaryRouteHonoHandler: HonoHandler = createUnaryRouteHonoHandler(
+  manifest,
+  honoUnaryRouteHandlerOptions
+);
+const routeStreamHonoHandler: HonoHandler = createRouteStreamHonoHandler(
+  manifest,
+  honoRouteStreamHandlerOptions
+);
+const streamRouteHonoHandler: HonoHandler = createStreamRouteHonoHandler(
+  manifest,
+  honoStreamRouteHandlerOptions
+);
 const syncHonoHandler: HonoHandler = () => new Response();
 const runtimeSubpathHonoHandler: RuntimeSubpathHonoHandler =
   createRuntimeSubpathHonoHandler(manifest, runtimeSubpathHonoHandlerOptions);
+const runtimeSubpathRouteUnaryHonoHandler: RuntimeSubpathHonoHandler =
+  createRuntimeSubpathRouteUnaryHonoHandler(
+    manifest,
+    runtimeSubpathHonoRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteHonoHandler: RuntimeSubpathHonoHandler =
+  createRuntimeSubpathUnaryRouteHonoHandler(
+    manifest,
+    runtimeSubpathHonoUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamHonoHandler: RuntimeSubpathHonoHandler =
+  createRuntimeSubpathRouteStreamHonoHandler(
+    manifest,
+    runtimeSubpathHonoRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteHonoHandler: RuntimeSubpathHonoHandler =
+  createRuntimeSubpathStreamRouteHonoHandler(
+    manifest,
+    runtimeSubpathHonoStreamRouteHandlerOptions
+  );
 const runtimeSubpathSyncHonoHandler: RuntimeSubpathHonoHandler =
   syncHonoHandler;
 const honoContext: HonoContext = {
@@ -19270,8 +19392,22 @@ const hookTypedHonoHandler = createHonoHandlerFor<HonoHookContext>()(
   manifest,
   typedRequestHandlerOptions
 );
+const routeUnaryHookTypedHonoHandler =
+  createRouteUnaryHonoHandlerFor<HonoHookContext>()(
+    manifest,
+    requestTypedHonoRouteUnaryHandlerOptions
+  );
+createUnaryRouteHonoHandlerFor()(manifest, honoUnaryRouteHandlerOptions);
+createRouteStreamHonoHandlerFor()(manifest, honoRouteStreamHandlerOptions);
+createStreamRouteHonoHandlerFor()(manifest, honoStreamRouteHandlerOptions);
 const directHookTypedHonoHandler: HonoHandler<HonoContext<HookAppRequest>> =
   createHonoHandler(manifest, typedRequestHandlerOptions);
+const directHookTypedRouteUnaryHonoHandler: HonoHandler<
+  HonoContext<HookAppRequest>
+> = createRouteUnaryHonoHandler(
+  manifest,
+  requestTypedHonoRouteUnaryHandlerOptions
+);
 const createRuntimeSubpathTypedHonoHandler = createRuntimeSubpathHonoHandlerFor<
   RuntimeSubpathHonoContext & HonoAppContext
 >();
@@ -19280,6 +19416,28 @@ const runtimeSubpathTypedHonoHandler: RuntimeSubpathHonoHandler<
 > = createRuntimeSubpathTypedHonoHandler(
   manifest,
   runtimeSubpathHonoHandlerOptions
+);
+const createRuntimeSubpathRouteUnaryTypedHonoHandler =
+  createRuntimeSubpathRouteUnaryHonoHandlerFor<
+    RuntimeSubpathHonoContext<HookAppRequest> & HonoHookContext
+  >();
+const runtimeSubpathRouteUnaryTypedHonoHandler: RuntimeSubpathHonoHandler<
+  RuntimeSubpathHonoContext<HookAppRequest> & HonoHookContext
+> = createRuntimeSubpathRouteUnaryTypedHonoHandler(
+  manifest,
+  requestTypedHonoRouteUnaryHandlerOptions
+);
+createRuntimeSubpathUnaryRouteHonoHandlerFor()(
+  manifest,
+  runtimeSubpathHonoUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamHonoHandlerFor()(
+  manifest,
+  runtimeSubpathHonoRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteHonoHandlerFor()(
+  manifest,
+  runtimeSubpathHonoStreamRouteHandlerOptions
 );
 const honoAppContext: HonoAppContext = {
   req: { raw: new Request('https://example.com/rpc') },
@@ -19301,18 +19459,35 @@ honoHookContext.__requestType = (request: HookAppRequest) => request;
 // @ts-expect-error request-typed Hono contexts are not assignable to plain request contexts.
 const _wrongHonoHookContext: HonoContext<Request> = honoHookContext;
 honoHandler(honoContext);
+routeUnaryHonoHandler(honoContext);
+unaryRouteHonoHandler(honoContext);
+routeStreamHonoHandler(honoContext);
+streamRouteHonoHandler(honoContext);
 runtimeSubpathHonoHandler(honoContext);
+runtimeSubpathRouteUnaryHonoHandler(honoContext);
+runtimeSubpathUnaryRouteHonoHandler(honoContext);
+runtimeSubpathRouteStreamHonoHandler(honoContext);
+runtimeSubpathStreamRouteHonoHandler(honoContext);
 runtimeSubpathSyncHonoHandler(honoContext);
 typedHonoHandler(honoAppContext);
 runtimeSubpathTypedHonoHandler(honoAppContext);
 hookTypedHonoHandler(honoHookContext);
+routeUnaryHookTypedHonoHandler(honoHookContext);
 directHookTypedHonoHandler(honoHookContext);
+directHookTypedRouteUnaryHonoHandler(honoHookContext);
+runtimeSubpathRouteUnaryTypedHonoHandler(honoHookContext);
 // @ts-expect-error direct typed Hono handlers infer custom hook request context types.
 directHookTypedHonoHandler(honoContext);
+// @ts-expect-error direct typed route-unary Hono handlers infer custom hook request context types.
+directHookTypedRouteUnaryHonoHandler(honoContext);
 // @ts-expect-error typed Hono handlers preserve hook request context types.
 hookTypedHonoHandler(honoContext);
+// @ts-expect-error route-unary Hono handlers preserve hook request context types.
+routeUnaryHookTypedHonoHandler(honoContext);
 // @ts-expect-error service-dependent manifests require matching Hono adapter plugins.
 createHonoHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Hono adapter plugins.
+createRouteUnaryHonoHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Hono adapter plugins.
 createTypedHonoHandler(manifest);
 const _nodeHandler = createNodeRpcRequestHandler(manifest, handlerOptions);

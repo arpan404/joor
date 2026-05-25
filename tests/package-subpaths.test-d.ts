@@ -38,6 +38,8 @@ import {
   createExpressHandlerFor as createRootExpressHandlerFor,
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
+  createRouteUnaryHonoHandlerFor as createRootRouteUnaryHonoHandlerFor,
+  createStreamRouteHonoHandlerFor as createRootStreamRouteHonoHandlerFor,
   createJoorHandlerFor as createRootJoorHandlerFor,
   createRouteStreamJoorHandlerFor as createRootRouteStreamJoorHandlerFor,
   createRouteUnaryJoorHandlerFor as createRootRouteUnaryJoorHandlerFor,
@@ -289,7 +291,14 @@ import {
   createFastifyHandler,
   createFastifyHandlerFor,
 } from 'joor/runtime/fastify';
-import { createHonoHandler, createHonoHandlerFor } from 'joor/runtime/hono';
+import {
+  createHonoHandler,
+  createHonoHandlerFor,
+  createRouteStreamHonoHandler,
+  createRouteUnaryHonoHandler,
+  createStreamRouteHonoHandler,
+  createUnaryRouteHonoHandler,
+} from 'joor/runtime/hono';
 import {
   createRouteStreamJoorHandler,
   createRouteUnaryJoorHandler,
@@ -731,6 +740,12 @@ const packageSubpathValues = [
   createFastifyHandlerFor,
   createHonoHandler,
   createHonoHandlerFor,
+  createRouteStreamHonoHandler,
+  createRouteUnaryHonoHandler,
+  createRootRouteUnaryHonoHandlerFor,
+  createRootStreamRouteHonoHandlerFor,
+  createStreamRouteHonoHandler,
+  createUnaryRouteHonoHandler,
   createJoorHandler,
   createJoorHandlerFor,
   createRouteStreamJoorHandler,

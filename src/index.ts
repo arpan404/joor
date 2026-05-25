@@ -197,7 +197,18 @@ export {
   createFastifyHandler,
   createFastifyHandlerFor,
 } from './runtime/fastify.js';
-export { createHonoHandler, createHonoHandlerFor } from './runtime/hono.js';
+export {
+  createHonoHandler,
+  createHonoHandlerFor,
+  createRouteStreamHonoHandler,
+  createRouteStreamHonoHandlerFor,
+  createRouteUnaryHonoHandler,
+  createRouteUnaryHonoHandlerFor,
+  createStreamRouteHonoHandler,
+  createStreamRouteHonoHandlerFor,
+  createUnaryRouteHonoHandler,
+  createUnaryRouteHonoHandlerFor,
+} from './runtime/hono.js';
 export {
   createJoorHandler,
   createJoorHandlerFor,
