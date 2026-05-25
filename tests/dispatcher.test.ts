@@ -19,6 +19,7 @@ import {
 } from '../src/index.js';
 import {
   createCompiledRpcBodyResultHandler,
+  createCompiledRpcHandler,
   createCompiledRuntimeState,
 } from '../src/runtime/compiled.js';
 import {
@@ -528,6 +529,90 @@ describe('dispatcher', () => {
       'after',
       'after-body:compiled',
     ]);
+  });
+
+  it('freezes compiled runtime state and response headers', () => {
+    const options = {
+      path: '/rpc',
+      cors: {
+        origin: 'https://original.example',
+        headers: ['content-type'],
+        methods: ['POST'],
+      },
+      rateLimit: { trustProxy: true, maxEntries: 8 },
+    };
+    const state = createCompiledRuntimeState(options);
+
+    options.path = '/changed';
+    options.cors.origin = 'https://changed.example';
+    options.cors.headers.push('authorization');
+    options.rateLimit.maxEntries = 1;
+
+    expect(state.path).toBe('/rpc');
+    expect(state.runtime.cors?.['access-control-allow-origin']).toBe(
+      'https://original.example'
+    );
+    expect(state.runtime.cors?.['access-control-allow-headers']).toBe(
+      'content-type'
+    );
+    expect(state.runtime.rateLimit.maxEntries).toBe(8);
+    expect(Object.isFrozen(state)).toBe(true);
+    expect(Object.isFrozen(state.runtime)).toBe(true);
+    expect(Object.isFrozen(state.runtime.cors)).toBe(true);
+    expect(Object.isFrozen(state.runtime.rateLimit)).toBe(true);
+  });
+
+  it('snapshots compiled fetch handler config at creation time', async () => {
+    const events: string[] = [];
+    const options = {
+      path: '/rpc',
+      cors: { origin: 'https://original.example' },
+      hooks: {
+        beforeRequest() {
+          events.push('original');
+          return undefined;
+        },
+      },
+    };
+    const handler = createCompiledRpcHandler(
+      async (rpcRequest) => ({
+        ok: true,
+        id: rpcRequest.id,
+        traceId: 'trace-compiled-snapshot',
+        data: { ok: true },
+      }),
+      options
+    );
+
+    options.path = '/changed';
+    options.cors.origin = 'https://changed.example';
+    options.hooks.beforeRequest = () => {
+      events.push('changed');
+      return undefined;
+    };
+
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'compiled.snapshot', input: {} }),
+      })
+    );
+    const wrongPath = await handler(
+      new Request('http://localhost/changed', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'compiled.snapshot', input: {} }),
+      })
+    );
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('access-control-allow-origin')).toBe(
+      'https://original.example'
+    );
+    expect((await response.json()).ok).toBe(true);
+    expect(wrongPath.status).toBe(404);
+    expect(events).toEqual(['original']);
   });
 
   it('handles default-path compiled Deno transport requests', async () => {

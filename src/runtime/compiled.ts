@@ -194,6 +194,56 @@ type AnyJoorConfig = JoorConfig<
   never
 >;
 
+type FreezableCompiledConfig = {
+  readonly plugins?: readonly JoorPlugin<object>[];
+  readonly middleware?: readonly unknown[];
+  readonly hooks?: object;
+  readonly cors?:
+    | false
+    | {
+        readonly origin?: string;
+        readonly headers?: readonly string[];
+        readonly methods?: readonly string[];
+      };
+  readonly cache?: object;
+  readonly rateLimit?: object;
+};
+
+const freezeCompiledConfig = <TConfig extends FreezableCompiledConfig>(
+  config: TConfig
+): TConfig =>
+  Object.freeze({
+    ...config,
+    ...(config.plugins === undefined
+      ? {}
+      : { plugins: Object.freeze([...config.plugins]) }),
+    ...(config.middleware === undefined
+      ? {}
+      : { middleware: Object.freeze([...config.middleware]) }),
+    ...(config.hooks === undefined
+      ? {}
+      : { hooks: Object.freeze({ ...config.hooks }) }),
+    ...(config.cors === undefined || config.cors === false
+      ? {}
+      : {
+          cors: Object.freeze({
+            ...config.cors,
+            ...(config.cors.headers === undefined
+              ? {}
+              : { headers: Object.freeze([...config.cors.headers]) }),
+            ...(config.cors.methods === undefined
+              ? {}
+              : { methods: Object.freeze([...config.cors.methods]) }),
+          }),
+        }),
+    ...(config.cache === undefined
+      ? {}
+      : { cache: Object.freeze({ ...config.cache }) }),
+    ...(config.rateLimit === undefined
+      ? {}
+      : { rateLimit: Object.freeze({ ...config.rateLimit }) }),
+  }) as TConfig;
+
 export type CompiledRpcTransportBodyResultHandler<
   TBody = JsonValue,
   TResult extends CompiledBodyResult = CompiledBodyResult,
@@ -472,8 +522,12 @@ const requestPreflight = (
 
 const compiledCorsHeaders = (
   config: Pick<JoorConfig, 'cors'>
-): Record<string, string> | undefined =>
-  config.cors === undefined ? undefined : (createCorsHeaderRecord(config.cors) ?? {});
+): Record<string, string> | undefined => {
+  if (config.cors === undefined) return undefined;
+  return Object.freeze(
+    createCorsHeaderRecord(config.cors) ?? {}
+  ) as Record<string, string>;
+};
 
 const failure = <TId extends string>(
   id: TId,
@@ -1005,34 +1059,38 @@ export function createCompiledRuntimeState<const TConfig extends AnyJoorConfig>(
 export function createCompiledRuntimeState(
   config: JoorConfig = {}
 ): CompiledRuntimeState {
-  const servicesPromise = resolvePluginServices(config.plugins ?? []);
+  const runtimeConfig = freezeCompiledConfig(config);
+  const servicesPromise = resolvePluginServices(runtimeConfig.plugins ?? []);
   let services: object | undefined;
-  if (config.plugins === undefined || config.plugins.length === 0) {
+  if (
+    runtimeConfig.plugins === undefined ||
+    runtimeConfig.plugins.length === 0
+  ) {
     services = {};
   }
-  const path = config.path ?? '/rpc';
-  const cors = compiledCorsHeaders(config);
-  const runtime: CompiledRuntime = {
-    validateHeaders: config.validateHeaders ?? true,
-    validateInput: config.validateInput ?? true,
-    validateOutput: config.validateOutput ?? true,
-    validateResponseHeaders: config.validateResponseHeaders ?? true,
-    enforceRateLimit: config.enforceRateLimit ?? true,
+  const path = runtimeConfig.path ?? '/rpc';
+  const cors = compiledCorsHeaders(runtimeConfig);
+  const runtime: CompiledRuntime = Object.freeze({
+    validateHeaders: runtimeConfig.validateHeaders ?? true,
+    validateInput: runtimeConfig.validateInput ?? true,
+    validateOutput: runtimeConfig.validateOutput ?? true,
+    validateResponseHeaders: runtimeConfig.validateResponseHeaders ?? true,
+    enforceRateLimit: runtimeConfig.enforceRateLimit ?? true,
     ...(cors === undefined ? {} : { cors }),
     cacheMaxEntries:
-      config.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
-    maxBodyBytes: config.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
-    rateLimit: {
-      trustProxy: config.rateLimit?.trustProxy ?? false,
+      runtimeConfig.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
+    maxBodyBytes: runtimeConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    rateLimit: Object.freeze({
+      trustProxy: runtimeConfig.rateLimit?.trustProxy ?? false,
       maxEntries:
-        config.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
-      ...(config.rateLimit?.identity === undefined
+        runtimeConfig.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+      ...(runtimeConfig.rateLimit?.identity === undefined
         ? {}
-        : { identity: config.rateLimit.identity }),
-    },
-  };
+        : { identity: runtimeConfig.rateLimit.identity }),
+    }),
+  });
   let resolvedServices = services;
-  const state: CompiledRuntimeState = {
+  const state: CompiledRuntimeState = Object.freeze({
     path,
     runtime,
     get services(): object | undefined {
@@ -1044,7 +1102,7 @@ export function createCompiledRuntimeState(
     async resolveServices(): Promise<object> {
       return resolvedServices ?? (await servicesPromise);
     },
-  };
+  });
   if (services === undefined) {
     servicesPromise.then((resolved) => {
       resolvedServices = resolved;
@@ -1064,7 +1122,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
   serializationMode: CompiledSerializationMode = true,
   runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
 ): CompiledRpcTransportBodyResultHandlerForConfig<TConfig> => {
-  const handlerConfig = (config ?? {}) as TConfig;
+  const handlerConfig = freezeCompiledConfig((config ?? {}) as TConfig);
   const compiled = (runtimeState ??
     createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
     JoorConfigContext<TConfig>
@@ -1252,7 +1310,7 @@ export const createCompiledRpcHandler = <
   config?: TConfig,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
 ): CompiledRpcRequestHandlerForConfig<TConfig> => {
-  const handlerConfig = (config ?? {}) as TConfig;
+  const handlerConfig = freezeCompiledConfig((config ?? {}) as TConfig);
   const bodyLimit = normalizeMaxBodyBytes(
     handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
