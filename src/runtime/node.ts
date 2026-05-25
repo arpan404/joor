@@ -631,6 +631,10 @@ export const createNodeTransportRequestHandler = <
   extraResponseHeaders?: Record<string, string>
 ): NodeRpcRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
+  const responseHeaders =
+    extraResponseHeaders === undefined
+      ? undefined
+      : Object.freeze({ ...extraResponseHeaders });
   const requestPreflight =
     preflight === false
       ? undefined
@@ -639,7 +643,7 @@ export const createNodeTransportRequestHandler = <
     const request = requestSourceFromIncoming(incoming, hostname);
     const early = requestPreflight?.(request);
     if (early !== undefined) {
-      await writeResult(outgoing, early, extraResponseHeaders);
+      await writeResult(outgoing, early, responseHeaders);
       return;
     }
     let json: JsonValue;
@@ -649,7 +653,7 @@ export const createNodeTransportRequestHandler = <
     } catch (error) {
       const payloadTooLarge =
         error instanceof Error && isBodySizeLimitError(error);
-      const headers = createJsonHeaderRecord(extraResponseHeaders);
+      const headers = createJsonHeaderRecord(responseHeaders);
       outgoing.writeHead(payloadTooLarge ? 413 : 400, headers);
       outgoing.end(
         JSON.stringify({
@@ -670,7 +674,7 @@ export const createNodeTransportRequestHandler = <
     await writeResult(
       outgoing,
       await handler(request, json as TBody),
-      extraResponseHeaders
+      responseHeaders
     );
   };
 };

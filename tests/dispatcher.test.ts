@@ -27,7 +27,10 @@ import {
 } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
 import { createDenoRpcRequestHandler } from '../src/runtime/deno.js';
-import { createNodeTransportRequestHandlerWithPath } from '../src/runtime/node.js';
+import {
+  createNodeTransportRequestHandler,
+  createNodeTransportRequestHandlerWithPath,
+} from '../src/runtime/node.js';
 
 const manifest = {
   procedures: {
@@ -762,6 +765,52 @@ describe('dispatcher', () => {
       expect(response.headers.get('connection')).not.toBe('close');
       expect(response.headers.get('x-bad')).toBeNull();
       expect(response.headers.get('x-safe')).toBe('ok');
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
+  it('snapshots Node transport extra response headers', async () => {
+    const extraHeaders = { 'x-snapshot': 'original' };
+    const handler = createNodeTransportRequestHandler(
+      async () => ({
+        ok: true,
+        id: 'snapshot',
+        traceId: 'trace-node-snapshot',
+        data: { ok: true },
+      }),
+      '127.0.0.1',
+      undefined,
+      false,
+      extraHeaders
+    );
+    extraHeaders['x-snapshot'] = 'changed';
+    const server = createServer((incoming, outgoing) => {
+      void handler(incoming, outgoing);
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    try {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        throw new Error('Expected Node test server to listen on a TCP port');
+      }
+      const response = await fetch(`http://127.0.0.1:${address.port}/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'snapshot', input: {} }),
+      });
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('x-snapshot')).toBe('original');
+      expect((await response.json()).ok).toBe(true);
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => {
