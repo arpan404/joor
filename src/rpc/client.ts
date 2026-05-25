@@ -837,6 +837,20 @@ export type RpcRouteUnaryBatchRequestUnion<TRoutes extends RpcRouteMap> =
 export type RpcUnaryRouteBatchRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryBatchRequestUnion<TRoutes>;
 
+export type RpcRouteProtocolBatchRequestUnion<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryProtocolRequestUnion<TRoutes>;
+
+export type RpcRouteUnaryProtocolBatchRequestUnion<
+  TRoutes extends RpcRouteMap,
+> = RpcRouteProtocolBatchRequestUnion<TRoutes>;
+
+export type RpcUnaryRouteProtocolBatchRequestUnion<
+  TRoutes extends RpcRouteMap,
+> = RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>;
+
+export type RpcProtocolBatchRequestUnion<TRoutes extends RpcRouteMap> =
+  RpcRouteProtocolBatchRequestUnion<TRoutes>;
+
 export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly RpcRouteBatchRequestUnion<TRoutes>[] =
@@ -857,26 +871,28 @@ export type RpcUnaryRouteBatchRequest<
 
 export type RpcRouteProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
-    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[] =
+    readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[],
 > = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
 
 export type RpcRouteUnaryProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
-    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends
+    readonly RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>[] =
+      readonly RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>[],
 > = RpcRouteProtocolBatchRequest<TRoutes, TRequests>;
 
 export type RpcUnaryRouteProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
-    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends
+    readonly RpcUnaryRouteProtocolBatchRequestUnion<TRoutes>[] =
+      readonly RpcUnaryRouteProtocolBatchRequestUnion<TRoutes>[],
 > = RpcRouteUnaryProtocolBatchRequest<TRoutes, TRequests>;
 
 export type RpcProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[] =
-    readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[],
+  TRequests extends readonly RpcProtocolBatchRequestUnion<TRoutes>[] =
+    readonly RpcProtocolBatchRequestUnion<TRoutes>[],
 > = RpcRouteProtocolBatchRequest<TRoutes, TRequests>;
 
 export type RpcRouteBody<TRoutes extends RpcRouteMap> =

@@ -502,6 +502,21 @@ export type RpcManifestUnaryRouteBatchRequestUnion<
   TManifest extends RpcManifest,
 > = RpcManifestRouteUnaryBatchRequestUnion<TManifest>;
 
+export type RpcManifestRouteProtocolBatchRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryProtocolRequestUnion<TManifest>;
+
+export type RpcManifestRouteUnaryProtocolBatchRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteProtocolBatchRequestUnion<TManifest>;
+
+export type RpcManifestUnaryRouteProtocolBatchRequestUnion<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>;
+
+export type RpcManifestProtocolBatchRequestUnion<TManifest extends RpcManifest> =
+  RpcManifestRouteProtocolBatchRequestUnion<TManifest>;
+
 export type RpcManifestRouteBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
@@ -519,29 +534,29 @@ export type RpcManifestRouteUnaryBatchRequest<
 export type RpcManifestRouteProtocolBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
-      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[],
 > = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
 
 export type RpcManifestRouteUnaryProtocolBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
-      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteProtocolBatchRequest<TManifest, TRequests>;
 
 export type RpcManifestUnaryRouteProtocolBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
-      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteUnaryProtocolBatchRequest<TManifest, TRequests>;
 
 export type RpcManifestProtocolBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
-    readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[] =
-      readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[],
+    readonly RpcManifestProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestProtocolBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteProtocolBatchRequest<TManifest, TRequests>;
 
 type RpcManifestRouteBatchResultFor<

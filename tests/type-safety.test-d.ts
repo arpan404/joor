@@ -564,6 +564,7 @@ import {
   type JoorManifestRouteOutput,
   type JoorManifestRouteProcedure,
   type JoorManifestRouteProtocolBatchRequest,
+  type JoorManifestRouteProtocolBatchRequestUnion,
   type JoorManifestStreamRouteClientArgs,
   type JoorManifestStreamRouteClientHeaders,
   type JoorManifestStreamRouteBody,
@@ -617,6 +618,7 @@ import {
   type JoorManifestRouteUnaryBodyResult,
   type JoorManifestRouteUnaryBodyResultFor,
   type JoorManifestRouteUnaryProtocolBatchRequest,
+  type JoorManifestRouteUnaryProtocolBatchRequestUnion,
   type JoorManifestRouteUnaryProtocolRequest,
   type JoorManifestRouteUnaryProtocolRequestUnion,
   type JoorManifestRouteUnaryBatchClientHeaders,
@@ -654,6 +656,7 @@ import {
   type JoorManifestUnaryRouteBatchResults,
   type JoorManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteProtocolBatchRequest,
+  type JoorManifestUnaryRouteProtocolBatchRequestUnion,
   type JoorManifestUnaryRouteProtocolRequest,
   type JoorManifestUnaryRouteProtocolRequestUnion,
   type JoorManifestUnaryRouteResponseHeaders,
@@ -668,6 +671,7 @@ import {
   type JoorManifestUnaryRouteTransportClient,
   type JoorManifestUnaryRouteId,
   type JoorManifestProtocolBatchRequest,
+  type JoorManifestProtocolBatchRequestUnion,
   type LegacyBatchRequest,
   type LegacyRpcTransportClient,
   type ListenOptionsArgs,
@@ -806,6 +810,7 @@ import {
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteResultUnion,
   type RpcManifestProtocolBatchRequest,
+  type RpcManifestProtocolBatchRequestUnion,
   type RpcManifestRouteBatchRequest,
   type RpcManifestRouteBatchRequestUnion,
   type RpcManifestRouteClientArgs,
@@ -821,6 +826,7 @@ import {
   type RpcManifestRouteOutput,
   type RpcManifestRouteProcedure,
   type RpcManifestRouteProtocolBatchRequest,
+  type RpcManifestRouteProtocolBatchRequestUnion,
   type RpcManifestStreamRouteClientArgs,
   type RpcManifestStreamRouteClientHeaders,
   type RpcManifestStreamRouteBody,
@@ -879,6 +885,7 @@ import {
   type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryBatchRequestUnion,
   type RpcManifestRouteUnaryProtocolBatchRequest,
+  type RpcManifestRouteUnaryProtocolBatchRequestUnion,
   type RpcManifestRouteUnaryProtocolRequest,
   type RpcManifestRouteUnaryProtocolRequestUnion,
   type RpcManifestUnaryProtocolRequest,
@@ -911,6 +918,7 @@ import {
   type RpcManifestUnaryRouteBatchResults,
   type RpcManifestUnaryRouteProcedure,
   type RpcManifestUnaryRouteProtocolBatchRequest,
+  type RpcManifestUnaryRouteProtocolBatchRequestUnion,
   type RpcManifestUnaryRouteProtocolRequest,
   type RpcManifestUnaryRouteProtocolRequestUnion,
   type RpcManifestUnaryRouteResponseHeaders,
@@ -950,11 +958,13 @@ import {
   type RpcRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders,
   type RpcProtocolBatchRequest,
+  type RpcProtocolBatchRequestUnion,
   type RpcRouteBatchRequest,
   type RpcRouteBatchRequestUnion,
   type RpcRouteBatchClientHeaders,
   type RpcRouteBatchOptions,
   type RpcRouteProtocolBatchRequest,
+  type RpcRouteProtocolBatchRequestUnion,
   type RpcRouteProtocolRequest,
   type RpcRouteProtocolRequestUnion,
   type RpcProtocolRequest,
@@ -968,6 +978,7 @@ import {
   type RpcRouteStreamRequestUnion,
   type RpcRouteUnaryProtocolRequest,
   type RpcRouteUnaryProtocolBatchRequest,
+  type RpcRouteUnaryProtocolBatchRequestUnion,
   type RpcRouteUnaryProtocolRequestUnion,
   type RpcRouteUnaryBatchClientHeaders,
   type RpcUnaryProtocolRequest,
@@ -1033,6 +1044,7 @@ import {
   type RpcUnaryRouteBatchOptions,
   type RpcUnaryRouteProcedure,
   type RpcUnaryRouteProtocolBatchRequest,
+  type RpcUnaryRouteProtocolBatchRequestUnion,
   type RpcUnaryRouteProtocolRequest,
   type RpcUnaryRouteProtocolRequestUnion,
   type RpcUnaryRouteResponseHeaders,
@@ -1238,6 +1250,7 @@ import {
   type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
   type RpcManifestRouteClientHeaders as RpcSubpathManifestRouteClientHeaders,
   type RpcManifestRouteProtocolBatchRequest as RpcSubpathManifestRouteProtocolBatchRequest,
+  type RpcManifestRouteProtocolBatchRequestUnion as RpcSubpathManifestRouteProtocolBatchRequestUnion,
   type RpcManifestRouteBatchClientHeaders as RpcSubpathManifestRouteBatchClientHeaders,
   type RpcManifestRouteBatchOptions as RpcSubpathManifestRouteBatchOptions,
   type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
@@ -1274,6 +1287,7 @@ import {
   type RpcRouteRequiresHeaders as RpcSubpathRouteRequiresHeaders,
   type RpcRouteRequiresResponseHeaders as RpcSubpathRouteRequiresResponseHeaders,
   type RpcRouteProtocolBatchRequest as RpcSubpathRouteProtocolBatchRequest,
+  type RpcRouteProtocolBatchRequestUnion as RpcSubpathRouteProtocolBatchRequestUnion,
   type RpcRouteProtocolRequest as RpcSubpathRouteProtocolRequest,
   type RpcProtocolRequest as RpcSubpathProtocolRequest,
   type RpcProtocolRequestOptions as RpcSubpathProtocolRequestOptions,
@@ -1327,6 +1341,7 @@ import {
   type JoorManifestUnaryRouteBatchRequestUnion as JoorSubpathManifestUnaryRouteBatchRequestUnion,
   type JoorManifestUnaryRouteRequestOptions as JoorSubpathManifestUnaryRouteRequestOptions,
   type JoorManifestRouteProtocolBatchRequest as JoorSubpathManifestRouteProtocolBatchRequest,
+  type JoorManifestRouteProtocolBatchRequestUnion as JoorSubpathManifestRouteProtocolBatchRequestUnion,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
   type JoorManifestProtocolRequest as JoorSubpathManifestProtocolRequest,
   type JoorManifestProtocolRequestUnion as JoorSubpathManifestProtocolRequestUnion,
@@ -7043,14 +7058,34 @@ const manifestProtocolBatchRequestAlias: JoorManifestProtocolBatchRequest<
   typeof manifest,
   [typeof manifestUnaryProtocolRequest]
 > = manifestProtocolBatchRequest;
+const manifestRouteProtocolBatchRequestUnion: JoorManifestRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = manifestUnaryProtocolRequest;
+const manifestRouteUnaryProtocolBatchRequestUnion: JoorManifestRouteUnaryProtocolBatchRequestUnion<
+  typeof manifest
+> = manifestRouteProtocolBatchRequestUnion;
+const manifestUnaryRouteProtocolBatchRequestUnion: JoorManifestUnaryRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = manifestRouteUnaryProtocolBatchRequestUnion;
+const manifestProtocolBatchRequestUnion: JoorManifestProtocolBatchRequestUnion<
+  typeof manifest
+> = manifestUnaryRouteProtocolBatchRequestUnion;
 const manifestSubpathProtocolBatchRequest: JoorSubpathManifestRouteProtocolBatchRequest<
   typeof manifest,
   [typeof manifestUnaryProtocolRequest]
 > = manifestProtocolBatchRequestAlias;
+const manifestSubpathProtocolBatchRequestUnion: JoorSubpathManifestRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = manifestProtocolBatchRequestUnion;
 manifestBatchRequest[0].input.id.toUpperCase();
 manifestBatchRequestWithPending[0].headers['x-tenant-id'].toUpperCase();
+manifestRouteProtocolBatchRequestUnion.id.toUpperCase();
+manifestRouteUnaryProtocolBatchRequestUnion.id.toUpperCase();
+manifestUnaryRouteProtocolBatchRequestUnion.id.toUpperCase();
+manifestProtocolBatchRequestUnion.id.toUpperCase();
 manifestProtocolBatchRequest[0].traceId?.toUpperCase();
 manifestSubpathProtocolBatchRequest[0].id.toUpperCase();
+manifestSubpathProtocolBatchRequestUnion.id.toUpperCase();
 const defaultManifestBatchRequestFirst = defaultManifestBatchRequest[0];
 if (defaultManifestBatchRequestFirst) {
   defaultManifestBatchRequestFirst.id.toUpperCase();
@@ -8021,10 +8056,25 @@ const publicManifestProtocolBatchRequest: RpcManifestProtocolBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = publicManifestRouteProtocolBatchRequest;
+const publicManifestRouteProtocolBatchRequestUnion: RpcManifestRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = publicManifestUnaryProtocolRequest;
+const publicManifestRouteUnaryProtocolBatchRequestUnion: RpcManifestRouteUnaryProtocolBatchRequestUnion<
+  typeof manifest
+> = publicManifestRouteProtocolBatchRequestUnion;
+const publicManifestUnaryRouteProtocolBatchRequestUnion: RpcManifestUnaryRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = publicManifestRouteUnaryProtocolBatchRequestUnion;
+const publicManifestProtocolBatchRequestUnion: RpcManifestProtocolBatchRequestUnion<
+  typeof manifest
+> = publicManifestUnaryRouteProtocolBatchRequestUnion;
 const rpcSubpathManifestRouteProtocolBatchRequest: RpcSubpathManifestRouteProtocolBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
 > = publicManifestProtocolBatchRequest;
+const rpcSubpathManifestRouteProtocolBatchRequestUnion: RpcSubpathManifestRouteProtocolBatchRequestUnion<
+  typeof manifest
+> = publicManifestProtocolBatchRequestUnion;
 const publicManifestUnaryRouteBatchRequest: RpcManifestUnaryRouteBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryRouteProtocolRequest]
@@ -8053,7 +8103,12 @@ if (defaultPublicManifestBatchRequestFirst) {
 }
 publicManifestBatchRequestWithPending[0].headers['x-tenant-id'].toUpperCase();
 publicManifestUnaryRouteBatchRequestUnion.id.toUpperCase();
+publicManifestRouteProtocolBatchRequestUnion.id.toUpperCase();
+publicManifestRouteUnaryProtocolBatchRequestUnion.id.toUpperCase();
+publicManifestUnaryRouteProtocolBatchRequestUnion.id.toUpperCase();
+publicManifestProtocolBatchRequestUnion.id.toUpperCase();
 rpcSubpathManifestRouteProtocolBatchRequest[0].input.id.toUpperCase();
+rpcSubpathManifestRouteProtocolBatchRequestUnion.id.toUpperCase();
 publicManifestUnaryRouteBatchRequest[0].input.id.toUpperCase();
 publicManifestUnaryRouteProtocolBatchRequest[0].input.id.toUpperCase();
 const defaultPublicManifestUnaryRouteBatchRequestFirst =
@@ -18136,14 +18191,29 @@ const protocolBatchRequestAlias: RpcProtocolBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = routeProtocolBatchRequest;
+const routeProtocolBatchRequestUnion: RpcRouteProtocolBatchRequestUnion<Routes> =
+  routeProtocolRequest;
+const routeUnaryProtocolBatchRequestUnion: RpcRouteUnaryProtocolBatchRequestUnion<Routes> =
+  routeProtocolBatchRequestUnion;
+const unaryRouteProtocolBatchRequestUnion: RpcUnaryRouteProtocolBatchRequestUnion<Routes> =
+  routeUnaryProtocolBatchRequestUnion;
+const protocolBatchRequestUnion: RpcProtocolBatchRequestUnion<Routes> =
+  unaryRouteProtocolBatchRequestUnion;
 const rpcSubpathRouteProtocolBatchRequest: RpcSubpathRouteProtocolBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
 > = protocolBatchRequestAlias;
+const rpcSubpathRouteProtocolBatchRequestUnion: RpcSubpathRouteProtocolBatchRequestUnion<Routes> =
+  protocolBatchRequestUnion;
 routeBatchRequest[0].input.id.toUpperCase();
 routeBatchRequestWithPending[0].headers['x-tenant-id'].toUpperCase();
 routeBatchRequestUnion.id.toUpperCase();
+routeProtocolBatchRequestUnion.id.toUpperCase();
+routeUnaryProtocolBatchRequestUnion.id.toUpperCase();
+unaryRouteProtocolBatchRequestUnion.id.toUpperCase();
+protocolBatchRequestUnion.id.toUpperCase();
 rpcSubpathRouteProtocolBatchRequest[0].input.id.toUpperCase();
+rpcSubpathRouteProtocolBatchRequestUnion.id.toUpperCase();
 const defaultRouteBatchRequestFirst = defaultRouteBatchRequest[0];
 if (defaultRouteBatchRequestFirst) {
   defaultRouteBatchRequestFirst.id.toUpperCase();
