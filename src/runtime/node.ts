@@ -780,6 +780,7 @@ export function listen<TManifest extends JoorManifest>(
 
 const createNodeRpcRequestHandlerWithOptions = <
   TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
   options: HandlerOptions = {},
@@ -787,11 +788,16 @@ const createNodeRpcRequestHandlerWithOptions = <
 ): NodeRpcRequestHandler => {
   const handler = createRpcTransportBodyResultHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
+    options as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      TBody,
+      Request
+    >,
     false
   );
   return createNodeTransportRequestHandler(
-    (request, body) => handler(request, body as RpcManifestBody<TManifest>),
+    (request, body) => handler(request, body as TBody),
     hostname,
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options),
@@ -822,6 +828,64 @@ export function createNodeRpcRequestHandler<TManifest extends JoorManifest>(
   return createNodeRpcRequestHandlerWithOptions(manifest, options, hostname);
 }
 
+export function createRouteUnaryNodeRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): NodeRpcRequestHandler;
+export function createRouteUnaryNodeRpcRequestHandler<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options: HandlerOptions = {},
+  hostname = '0.0.0.0'
+): NodeRpcRequestHandler {
+  return createNodeRpcRequestHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteUnaryBody<TManifest>
+  >(manifest, options, hostname);
+}
+
+export const createUnaryRouteNodeRpcRequestHandler: typeof createRouteUnaryNodeRpcRequestHandler =
+  createRouteUnaryNodeRpcRequestHandler;
+
+export function createRouteStreamNodeRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: NodeRouteStreamRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): NodeRpcRequestHandler;
+export function createRouteStreamNodeRpcRequestHandler<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options: HandlerOptions = {},
+  hostname = '0.0.0.0'
+): NodeRpcRequestHandler {
+  return createNodeRpcRequestHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteStreamBody<TManifest>
+  >(manifest, options, hostname);
+}
+
+export const createStreamRouteNodeRpcRequestHandler: typeof createRouteStreamNodeRpcRequestHandler =
+  createRouteStreamNodeRpcRequestHandler;
+
 export const createNodeRpcRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -847,3 +911,133 @@ export const createNodeRpcRequestHandlerFor =
       args[1] ?? '0.0.0.0'
     ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
   };
+
+export const createRouteUnaryNodeRpcRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): NodeRpcRequestHandler<TIncoming, TOutgoing> => {
+    const options = (args[0] ?? {}) as HandlerOptions;
+    return createNodeRpcRequestHandlerWithOptions<
+      TManifest,
+      RpcManifestRouteUnaryBody<TManifest>
+    >(
+      manifest,
+      options,
+      args[1] ?? '0.0.0.0'
+    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
+  };
+
+export const createUnaryRouteNodeRpcRequestHandlerFor: typeof createRouteUnaryNodeRpcRequestHandlerFor =
+  createRouteUnaryNodeRpcRequestHandlerFor;
+
+export const createRouteStreamNodeRpcRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: NodeRouteStreamRpcRequestHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): NodeRpcRequestHandler<TIncoming, TOutgoing> => {
+    const options = (args[0] ?? {}) as HandlerOptions;
+    return createNodeRpcRequestHandlerWithOptions<
+      TManifest,
+      RpcManifestRouteStreamBody<TManifest>
+    >(
+      manifest,
+      options,
+      args[1] ?? '0.0.0.0'
+    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
+  };
+
+export const createStreamRouteNodeRpcRequestHandlerFor: typeof createRouteStreamNodeRpcRequestHandlerFor =
+  createRouteStreamNodeRpcRequestHandlerFor;
+
+export function listenRouteUnary<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: RouteUnaryListenOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): NodeServer;
+export function listenRouteUnary<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: ListenOptions = {}
+): NodeServer {
+  const port = options.port ?? 3000;
+  const hostname = options.hostname ?? '0.0.0.0';
+  const handler = createNodeRpcRequestHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteUnaryBody<TManifest>
+  >(manifest, options, hostname);
+  const server = createServer(handler);
+  server.listen(port, hostname);
+  return server;
+}
+
+export const listenUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeRouteUnary: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+
+export function listenRouteStream<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: RouteStreamListenOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): NodeServer;
+export function listenRouteStream<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: ListenOptions = {}
+): NodeServer {
+  const port = options.port ?? 3000;
+  const hostname = options.hostname ?? '0.0.0.0';
+  const handler = createNodeRpcRequestHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteStreamBody<TManifest>
+  >(manifest, options, hostname);
+  const server = createServer(handler);
+  server.listen(port, hostname);
+  return server;
+}
+
+export const listenStreamRoute: typeof listenRouteStream = listenRouteStream;
+export const listenNodeRouteStream: typeof listenRouteStream =
+  listenRouteStream;
+export const listenNodeStreamRoute: typeof listenRouteStream =
+  listenRouteStream;

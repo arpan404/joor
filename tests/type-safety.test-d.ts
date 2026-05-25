@@ -208,6 +208,16 @@ import {
   createNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor,
+  createRouteStreamNodeRpcRequestHandler,
+  createRouteStreamNodeRpcRequestHandlerFor,
+  createRouteUnaryNodeRpcRequestHandler,
+  createRouteUnaryNodeRpcRequestHandlerFor,
+  createStreamRouteNodeRpcRequestHandler,
+  createStreamRouteNodeRpcRequestHandlerFor,
+  createUnaryRouteNodeRpcRequestHandler,
+  createUnaryRouteNodeRpcRequestHandlerFor,
+  listenRouteStream,
+  listenRouteUnary,
   createRouteStreamVercelFetch,
   createRouteStreamVercelFetchFor,
   createRouteStreamVercelFunction,
@@ -2029,6 +2039,14 @@ import {
   createNodeTransportRequestHandlerFor as createRuntimeSubpathNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathNodeTransportRequestHandlerWithPathFor,
+  createRouteStreamNodeRpcRequestHandler as createRuntimeSubpathRouteStreamNodeRpcRequestHandler,
+  createRouteStreamNodeRpcRequestHandlerFor as createRuntimeSubpathRouteStreamNodeRpcRequestHandlerFor,
+  createRouteUnaryNodeRpcRequestHandler as createRuntimeSubpathRouteUnaryNodeRpcRequestHandler,
+  createRouteUnaryNodeRpcRequestHandlerFor as createRuntimeSubpathRouteUnaryNodeRpcRequestHandlerFor,
+  createStreamRouteNodeRpcRequestHandler as createRuntimeSubpathStreamRouteNodeRpcRequestHandler,
+  createStreamRouteNodeRpcRequestHandlerFor as createRuntimeSubpathStreamRouteNodeRpcRequestHandlerFor,
+  createUnaryRouteNodeRpcRequestHandler as createRuntimeSubpathUnaryRouteNodeRpcRequestHandler,
+  createUnaryRouteNodeRpcRequestHandlerFor as createRuntimeSubpathUnaryRouteNodeRpcRequestHandlerFor,
   createRouteStreamVercelFetch as createRuntimeSubpathRouteStreamVercelFetch,
   createRouteStreamVercelFetchFor as createRuntimeSubpathRouteStreamVercelFetchFor,
   createRouteStreamVercelFunction as createRuntimeSubpathRouteStreamVercelFunction,
@@ -20458,8 +20476,15 @@ typedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
 runtimeSubpathTypedNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
 // @ts-expect-error typed Node handlers preserve the response's incoming message type.
 createNodeRpcRequestHandlerFor<NodeAppRequest, NodeMismatchedResponse>();
+createRouteUnaryNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  // @ts-expect-error route-unary typed Node handlers preserve the response's incoming message type.
+  NodeMismatchedResponse
+>();
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Node adapter plugins.
+createRouteUnaryNodeRpcRequestHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Node adapter plugins.
 createTypedNodeRpcRequestHandler(manifest);
 const typedListenOptions: ListenOptionsFor<
@@ -20870,6 +20895,130 @@ runtimeSubpathRouteStreamListenOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+const routeUnaryNodeRpcRequestHandler: NodeRpcRequestHandler =
+  createRouteUnaryNodeRpcRequestHandler(
+    manifest,
+    nodeRouteUnaryRpcRequestHandlerOptions,
+    '127.0.0.1'
+  );
+const unaryRouteNodeRpcRequestHandler: NodeRpcRequestHandler =
+  createUnaryRouteNodeRpcRequestHandler(
+    manifest,
+    nodeUnaryRouteRpcRequestHandlerOptions
+  );
+const routeStreamNodeRpcRequestHandler: NodeRpcRequestHandler =
+  createRouteStreamNodeRpcRequestHandler(
+    manifest,
+    nodeRouteStreamRpcRequestHandlerOptions
+  );
+const streamRouteNodeRpcRequestHandler: NodeRpcRequestHandler =
+  createStreamRouteNodeRpcRequestHandler(
+    manifest,
+    nodeStreamRouteRpcRequestHandlerOptions
+  );
+const typedRouteUnaryNodeRpcRequestHandler: NodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRouteUnaryNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  NodeAppResponse
+>()(
+  manifest,
+  requestTypedNodeRouteUnaryRpcRequestHandlerOptions,
+  '127.0.0.1'
+);
+createUnaryRouteNodeRpcRequestHandlerFor()(
+  manifest,
+  nodeUnaryRouteRpcRequestHandlerOptions
+);
+createRouteStreamNodeRpcRequestHandlerFor()(
+  manifest,
+  nodeRouteStreamRpcRequestHandlerOptions
+);
+createStreamRouteNodeRpcRequestHandlerFor()(
+  manifest,
+  nodeStreamRouteRpcRequestHandlerOptions
+);
+const runtimeSubpathRouteUnaryNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler =
+  createRuntimeSubpathRouteUnaryNodeRpcRequestHandler(
+    manifest,
+    runtimeSubpathNodeRouteUnaryRpcRequestHandlerOptions
+  );
+const runtimeSubpathUnaryRouteNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler =
+  createRuntimeSubpathUnaryRouteNodeRpcRequestHandler(
+    manifest,
+    runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions
+  );
+const runtimeSubpathRouteStreamNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler =
+  createRuntimeSubpathRouteStreamNodeRpcRequestHandler(
+    manifest,
+    runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions
+  );
+const runtimeSubpathStreamRouteNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler =
+  createRuntimeSubpathStreamRouteNodeRpcRequestHandler(
+    manifest,
+    runtimeSubpathNodeStreamRouteRpcRequestHandlerOptions
+  );
+const runtimeSubpathTypedRouteUnaryNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathRouteUnaryNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  NodeAppResponse
+>()(
+  manifest,
+  requestTypedNodeRouteUnaryRpcRequestHandlerOptions,
+  '127.0.0.1'
+);
+createRuntimeSubpathUnaryRouteNodeRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions
+);
+createRuntimeSubpathRouteStreamNodeRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions
+);
+createRuntimeSubpathStreamRouteNodeRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathNodeStreamRouteRpcRequestHandlerOptions
+);
+typedRouteUnaryNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
+runtimeSubpathTypedRouteUnaryNodeRpcRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+routeUnaryNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+unaryRouteNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+routeStreamNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+streamRouteNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+runtimeSubpathRouteUnaryNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+runtimeSubpathUnaryRouteNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+runtimeSubpathRouteStreamNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
+runtimeSubpathStreamRouteNodeRpcRequestHandler(
+  {} as Parameters<NodeRpcRequestHandler>[0],
+  {} as Parameters<NodeRpcRequestHandler>[1]
+);
 const exactListenOptions: ListenOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -20914,7 +21063,17 @@ requestTypedNodeListenOptions.hooks?.beforeRequest?.(
 );
 const nodeServer: NodeServer = listen(manifest, typedListenOptions);
 listen(manifest, requestTypedListenOptions);
+const nodeRouteUnaryServer: NodeServer = listenRouteUnary(
+  manifest,
+  routeUnaryListenOptions
+);
+const nodeRouteStreamServer: NodeServer = listenRouteStream(
+  manifest,
+  routeStreamListenOptions
+);
 nodeServer.close();
+nodeRouteUnaryServer.close();
+nodeRouteStreamServer.close();
 nodeServer.address();
 nodeServer.ref().unref();
 // @ts-expect-error Node server close methods are readonly.
