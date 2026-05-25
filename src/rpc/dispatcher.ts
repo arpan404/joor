@@ -602,6 +602,18 @@ export type RpcManifestRouteBatchClientHeaders<
     : never;
 }[RpcManifestRouteBatchRequestIds<TManifest, TRequests>];
 
+export type RpcManifestRouteUnaryBatchClientHeaders<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteBatchClientHeaders<TManifest, TRequests>;
+
+export type RpcManifestUnaryRouteBatchClientHeaders<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestUnaryRouteBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteUnaryBatchClientHeaders<TManifest, TRequests>;
+
 export interface RpcManifestRouteBatchOptions<
   TManifest extends RpcManifest,
   TRequests extends readonly unknown[] =

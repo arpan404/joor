@@ -1139,6 +1139,18 @@ export type RpcRouteBatchClientHeaders<
     : never;
 }[RpcRouteBatchRequestIds<TRoutes, TRequests>];
 
+export type RpcRouteUnaryBatchClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteUnaryBatchRequestUnion<TRoutes>[],
+> = RpcRouteBatchClientHeaders<TRoutes, TRequests>;
+
+export type RpcUnaryRouteBatchClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
+> = RpcRouteUnaryBatchClientHeaders<TRoutes, TRequests>;
+
 export interface RpcRouteBatchOptions<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly unknown[] =
