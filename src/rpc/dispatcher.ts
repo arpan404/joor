@@ -66,6 +66,7 @@ import {
   type RpcFrameworkErrorCode,
   type RpcRequest,
 } from './protocol.js';
+import type { ClientRequestInit } from './client.js';
 import { parseDurationMs } from '../internal/duration.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -573,6 +574,54 @@ export type RpcManifestRouteUnaryBatchResults<
     readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[] =
       readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteBatchResults<TManifest, TRequests>;
+
+type RpcManifestRouteBatchRequestId<
+  TManifest extends RpcManifest,
+  TRequest,
+> = TRequest extends {
+  readonly id: infer TId extends RpcManifestRouteUnaryId<TManifest>;
+}
+  ? TId
+  : never;
+
+type RpcManifestRouteBatchRequestIds<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[],
+> = RpcManifestRouteBatchRequestId<TManifest, TRequests[number]>;
+
+export type RpcManifestRouteBatchClientHeaders<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
+> = {
+  [TId in RpcManifestRouteBatchRequestIds<
+    TManifest,
+    TRequests
+  >]: RpcManifestRouteHasHeaders<TManifest, TId> extends true
+    ? RpcManifestRouteClientHeaders<TManifest, TId>
+    : never;
+}[RpcManifestRouteBatchRequestIds<TManifest, TRequests>];
+
+export interface RpcManifestRouteBatchOptions<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
+> {
+  readonly headers?: RpcManifestRouteBatchClientHeaders<TManifest, TRequests>;
+  readonly request?: ClientRequestInit;
+}
+
+export type RpcManifestRouteUnaryBatchOptions<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteBatchOptions<TManifest, TRequests>;
+
+export type RpcManifestUnaryRouteBatchOptions<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestUnaryRouteBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteUnaryBatchOptions<TManifest, TRequests>;
 
 export type RpcManifestRouteStreamProtocolRequestUnion<
   TManifest extends RpcManifest,

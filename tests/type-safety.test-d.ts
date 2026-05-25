@@ -798,6 +798,8 @@ import {
   type RpcManifestBody,
   type RpcManifestBodyResult,
   type RpcManifestBodyResultFor,
+  type RpcManifestRouteBatchClientHeaders,
+  type RpcManifestRouteBatchOptions,
   type RpcManifestRouteBatchResults,
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteResultUnion,
@@ -870,6 +872,7 @@ import {
   type RpcManifestRouteUnaryBodyHandler,
   type RpcManifestRouteUnaryBodyResult,
   type RpcManifestRouteUnaryBodyResultFor,
+  type RpcManifestRouteUnaryBatchOptions,
   type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryBatchRequestUnion,
   type RpcManifestRouteUnaryProtocolBatchRequest,
@@ -898,6 +901,7 @@ import {
   type RpcManifestUnaryRouteHeaders,
   type RpcManifestUnaryRouteInput,
   type RpcManifestUnaryRouteOutput,
+  type RpcManifestUnaryRouteBatchOptions,
   type RpcManifestUnaryRouteBatchRequest,
   type RpcManifestUnaryRouteBatchRequestUnion,
   type RpcManifestUnaryRouteBatchResults,
@@ -1228,11 +1232,15 @@ import {
   type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
   type RpcManifestRouteClientHeaders as RpcSubpathManifestRouteClientHeaders,
   type RpcManifestRouteProtocolBatchRequest as RpcSubpathManifestRouteProtocolBatchRequest,
+  type RpcManifestRouteBatchClientHeaders as RpcSubpathManifestRouteBatchClientHeaders,
+  type RpcManifestRouteBatchOptions as RpcSubpathManifestRouteBatchOptions,
   type RpcManifestRouteRequest as RpcSubpathManifestRouteRequest,
   type RpcManifestRouteRequestOptions as RpcSubpathManifestRouteRequestOptions,
   type RpcManifestRouteRequestUnion as RpcSubpathManifestRouteRequestUnion,
   type RpcManifestRouteStreamEvent as RpcSubpathManifestRouteStreamEvent,
   type RpcManifestRouteStreamRequest as RpcSubpathManifestRouteStreamRequest,
+  type RpcManifestRouteUnaryBatchOptions as RpcSubpathManifestRouteUnaryBatchOptions,
+  type RpcManifestUnaryRouteBatchOptions as RpcSubpathManifestUnaryRouteBatchOptions,
   type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
   type RpcBodyHandler as RpcSubpathBodyHandler,
   type RpcBodyResultHandler as RpcSubpathBodyResultHandler,
@@ -8048,6 +8056,79 @@ const defaultPublicManifestUnaryBatchResult =
 if (defaultPublicManifestUnaryBatchResult) {
   defaultPublicManifestUnaryBatchResult.id.toUpperCase();
 }
+const publicManifestRouteBatchHeaders: RpcManifestRouteBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
+> = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-1',
+};
+publicManifestRouteBatchHeaders['x-tenant-id'].toUpperCase();
+const rpcSubpathManifestRouteBatchHeaders: RpcSubpathManifestRouteBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
+> = publicManifestRouteBatchHeaders;
+rpcSubpathManifestRouteBatchHeaders['x-tenant-id'].toUpperCase();
+const publicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
+> = {
+  headers: publicManifestRouteBatchHeaders,
+  request: clientRequestInit,
+};
+publicManifestRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const rpcSubpathManifestRouteBatchOptions: RpcSubpathManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
+> = publicManifestRouteBatchOptions;
+rpcSubpathManifestRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const publicManifestRouteUnaryBatchOptions: RpcManifestRouteUnaryBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryRouteRequest]
+> = publicManifestRouteBatchOptions;
+publicManifestRouteUnaryBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const rpcSubpathManifestRouteUnaryBatchOptions: RpcSubpathManifestRouteUnaryBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryRouteRequest]
+> = publicManifestRouteUnaryBatchOptions;
+rpcSubpathManifestRouteUnaryBatchOptions.headers?.[
+  'x-tenant-id'
+]?.toUpperCase();
+const publicManifestUnaryRouteBatchOptions: RpcManifestUnaryRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryRouteRequest]
+> = publicManifestRouteUnaryBatchOptions;
+const rpcSubpathManifestUnaryRouteBatchOptions: RpcSubpathManifestUnaryRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryRouteRequest]
+> = publicManifestUnaryRouteBatchOptions;
+publicManifestUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+rpcSubpathManifestUnaryRouteBatchOptions.headers?.[
+  'x-tenant-id'
+]?.toUpperCase();
+const _wrongPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
+> = {
+  headers: {
+    // @ts-expect-error RpcManifest route batch options preserve selected route headers.
+    missing: 'value',
+  },
+};
+_wrongPublicManifestRouteBatchOptions;
+const _noHeaderPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {};
+const _wrongNoHeaderPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {
+  // @ts-expect-error RpcManifest batch headers are unavailable when selected routes declare none.
+  headers: { 'x-tenant-id': 'tenant-1' },
+};
+_noHeaderPublicManifestRouteBatchOptions;
+_wrongNoHeaderPublicManifestRouteBatchOptions;
 const publicManifestEnvelopeUnion: RpcManifestRouteEnvelopeUnion<
   typeof manifest
 > = manifestRouteEnvelope;
