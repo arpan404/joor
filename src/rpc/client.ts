@@ -1032,14 +1032,6 @@ export type RpcManifestUnaryRouteResultUnion<
   TManifest extends JoorManifest,
 > = RpcManifestRouteUnaryResultUnion<TManifest>;
 
-declare const rpcRouteProtocolRequestKind: unique symbol;
-
-type RpcRouteProtocolRequestKind<TProcedure> = [
-  StreamEvent<TProcedure>,
-] extends [never]
-  ? { readonly [rpcRouteProtocolRequestKind]?: 'unary' }
-  : { readonly [rpcRouteProtocolRequestKind]?: 'stream' };
-
 type RpcRouteProtocolRequestFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes>,
@@ -1047,7 +1039,7 @@ type RpcRouteProtocolRequestFor<
   readonly id: TId;
   readonly input: RpcRouteInput<TRoutes, TId> & JsonValue;
   readonly traceId?: string;
-} & RpcRouteProtocolRequestKind<RpcRouteProcedure<TRoutes, TId>>;
+};
 
 export type RpcRouteProtocolRequest<
   TRoutes extends RpcRouteMap,

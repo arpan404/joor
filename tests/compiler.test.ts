@@ -93,6 +93,102 @@ describe('compiler', () => {
     }
   });
 
+  it('emits declarations for inferred protocol request constants', async () => {
+    const entry = await mkdtemp(join(repoRoot, '.tmp-joor-declarations-'));
+    try {
+      const sourceFile = join(entry, 'exports.ts');
+      await writeFile(
+        sourceFile,
+        `import { createManifestRouteUnaryProtocolRequest, defineManifest, defineProcedure, t } from 'joor';
+
+const procedure = defineProcedure({
+  input: t.object({ id: t.string() }),
+  output: t.object({ name: t.string() }),
+  handler(ctx, input) {
+    return ctx.ok({ name: input.id });
+  },
+});
+
+const manifest = defineManifest({
+  procedures: {
+    'users.get': procedure,
+  },
+});
+
+export const protocolRequest = createManifestRouteUnaryProtocolRequest(
+  manifest,
+  'users.get',
+  { id: '1' }
+);
+`
+      );
+      const tsconfigFile = join(entry, 'tsconfig.json');
+      await writeFile(
+        tsconfigFile,
+        JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2022',
+              module: 'ESNext',
+              lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+              moduleResolution: 'bundler',
+              declaration: true,
+              emitDeclarationOnly: true,
+              noEmitOnError: true,
+              rootDir: repoRoot,
+              outDir: join(entry, 'dist'),
+              strict: true,
+              noImplicitAny: true,
+              strictNullChecks: true,
+              exactOptionalPropertyTypes: true,
+              skipLibCheck: true,
+              verbatimModuleSyntax: true,
+              isolatedModules: true,
+              types: ['node'],
+              typeRoots: [join(repoRoot, 'node_modules/@types')],
+              baseUrl: repoRoot,
+              paths: {
+                joor: ['./src/index.ts'],
+              },
+            },
+            include: [sourceFile],
+          },
+          null,
+          2
+        )
+      );
+
+      try {
+        await execFileAsync(
+          join(repoRoot, 'node_modules/.bin/tsc'),
+          ['--project', tsconfigFile],
+          {
+            cwd: repoRoot,
+            maxBuffer: 1024 * 1024 * 4,
+          }
+        );
+      } catch (error) {
+        const output = error as { stdout?: string; stderr?: string };
+        throw new Error(
+          [output.stdout, output.stderr].filter(Boolean).join('\n')
+        );
+      }
+
+      const declaration = await readFile(
+        join(
+          entry,
+          'dist',
+          relative(repoRoot, sourceFile).replace(/\.ts$/, '.d.ts')
+        ),
+        'utf8'
+      );
+      expect(declaration).toContain('protocolRequest');
+      expect(declaration).toContain('users.get');
+    } finally {
+      await rm(entry, { force: true, recursive: true });
+    }
+  });
+
   it('emits artifacts', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
