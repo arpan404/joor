@@ -414,10 +414,12 @@ export const createDenoTransportRequestHandler = <
   handler: DenoTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false,
-  extraResponseHeaders?: Record<string, string>
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
 ): DenoTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const responseHeaders = snapshotExtraResponseHeaders(extraResponseHeaders);
+  const bodyReadError = onBodyReadError;
   const requestPreflight =
     preflight === false
       ? undefined
@@ -431,6 +433,7 @@ export const createDenoTransportRequestHandler = <
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
+      bodyReadError?.(error, request);
       return bodyReadFailure(request, error, responseHeaders);
     }
     return transportResultToResponse(
@@ -449,13 +452,15 @@ export const createDenoTransportRequestHandlerFor =
     handler: DenoTransportBodyResultHandler<TBody, TResult>,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
     preflight?: RpcRequestPreflight | false,
-    extraResponseHeaders?: Record<string, string>
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
   ): DenoTransportRequestHandler<TRequest> =>
     createDenoTransportRequestHandler(
       handler,
       maxBodyBytes,
       preflight,
-      extraResponseHeaders
+      extraResponseHeaders,
+      onBodyReadError
     ) as DenoTransportRequestHandler<TRequest>;
 
 export const createDenoTransportRequestHandlerWithPath = <
@@ -525,7 +530,8 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
       handler(request.toRequest(), body as RpcManifestBody<TManifest>),
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options),
-    createCorsHeaderRecord(options?.cors)
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -591,7 +597,8 @@ export function createDenoRpcRequestHandlerFor<
         ),
       options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
       createRpcRequestPreflight(options as unknown as HandlerOptions),
-      createCorsHeaderRecord(options.cors)
+      createCorsHeaderRecord(options.cors),
+      options.onError as ((error: Error, request: Request) => void) | undefined
     ) as DenoRpcRequestHandler<TRequest>;
   };
 }

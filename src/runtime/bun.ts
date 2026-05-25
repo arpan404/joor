@@ -528,10 +528,12 @@ export const createBunTransportRequestHandler = <
   handler: BunTransportBodyResultHandler<TBody, TResult>,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false,
-  extraResponseHeaders?: Record<string, string>
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
 ): BunTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const responseHeaders = snapshotExtraResponseHeaders(extraResponseHeaders);
+  const bodyReadError = onBodyReadError;
   const requestPreflight =
     preflight === false
       ? undefined
@@ -545,6 +547,7 @@ export const createBunTransportRequestHandler = <
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
       if (!(error instanceof Error)) throw error;
+      bodyReadError?.(error, request);
       return bodyReadFailure(request, error, responseHeaders);
     }
     return transportResultToResponse(
@@ -563,13 +566,15 @@ export const createBunTransportRequestHandlerFor =
     handler: BunTransportBodyResultHandler<TBody, TResult>,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
     preflight?: RpcRequestPreflight | false,
-    extraResponseHeaders?: Record<string, string>
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
   ): BunTransportRequestHandler<TRequest> =>
     createBunTransportRequestHandler(
       handler,
       maxBodyBytes,
       preflight,
-      extraResponseHeaders
+      extraResponseHeaders,
+      onBodyReadError
     ) as BunTransportRequestHandler<TRequest>;
 
 export const createBunTransportRequestHandlerWithPath = <
@@ -629,7 +634,8 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
       handler(request.toRequest(), body as RpcManifestBody<TManifest>),
     options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options),
-    createCorsHeaderRecord(options?.cors)
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -695,7 +701,8 @@ export function createBunRpcRequestHandlerFor<
         ),
       options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
       createRpcRequestPreflight(options as unknown as HandlerOptions),
-      createCorsHeaderRecord(options.cors)
+      createCorsHeaderRecord(options.cors),
+      options.onError as ((error: Error, request: Request) => void) | undefined
     ) as BunRpcRequestHandler<TRequest>;
   };
 }

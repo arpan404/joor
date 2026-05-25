@@ -920,6 +920,61 @@ describe('dispatcher', () => {
     expect((await denoResponse.json()).ok).toBe(true);
   });
 
+  it('calls snapshotted Bun and Deno RPC error hooks for invalid request bodies', async () => {
+    const errors: string[] = [];
+    const bunOptions = {
+      cors: { origin: 'https://bun-original.example' },
+      onError(_error: Error, request: Request) {
+        errors.push(`bun:${request.url}`);
+      },
+    };
+    const denoOptions = {
+      cors: { origin: 'https://deno-original.example' },
+      onError(_error: Error, request: Request) {
+        errors.push(`deno:${request.url}`);
+      },
+    };
+    const bun = createBunRpcRequestHandler({ procedures: {} }, bunOptions);
+    const deno = createDenoRpcRequestHandler({ procedures: {} }, denoOptions);
+
+    bunOptions.cors.origin = 'https://bun-changed.example';
+    bunOptions.onError = () => {
+      errors.push('bun:changed');
+    };
+    denoOptions.cors.origin = 'https://deno-changed.example';
+    denoOptions.onError = () => {
+      errors.push('deno:changed');
+    };
+
+    const request = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: '{',
+      });
+    const [bunResponse, denoResponse] = await Promise.all([
+      bun(request()),
+      deno(request()),
+    ]);
+    const bunBody = await bunResponse.json();
+    const denoBody = await denoResponse.json();
+
+    expect(bunResponse.status).toBe(400);
+    expect(denoResponse.status).toBe(400);
+    expect(bunResponse.headers.get('access-control-allow-origin')).toBe(
+      'https://bun-original.example'
+    );
+    expect(denoResponse.headers.get('access-control-allow-origin')).toBe(
+      'https://deno-original.example'
+    );
+    expect(bunBody.error.code).toBe('PARSE_ERROR');
+    expect(denoBody.error.code).toBe('PARSE_ERROR');
+    expect(errors).toEqual([
+      'bun:http://localhost/rpc',
+      'deno:http://localhost/rpc',
+    ]);
+  });
+
   it('caches successful query responses when meta.cache is configured', async () => {
     let calls = 0;
     const cached = defineProcedure({
