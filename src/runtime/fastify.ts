@@ -394,22 +394,55 @@ const parsedBodyWithinLimit = (
 const bodyFromFastifyRequest = (request: FastifyRequest): JsonValue =>
   request.body === undefined ? {} : (request.body as JsonValue);
 
+const snapshotFastifyOptions = (
+  options: FastifyHandlerOptions
+): FastifyHandlerOptions =>
+  Object.freeze({
+    ...options,
+    ...(options.plugins === undefined
+      ? {}
+      : { plugins: Object.freeze([...options.plugins]) }),
+    ...(options.middleware === undefined
+      ? {}
+      : { middleware: Object.freeze([...options.middleware]) }),
+    ...(options.cors === undefined
+      ? {}
+      : {
+          cors: Object.freeze({
+            ...options.cors,
+            ...(options.cors.headers === undefined
+              ? {}
+              : { headers: Object.freeze([...options.cors.headers]) }),
+            ...(options.cors.methods === undefined
+              ? {}
+              : { methods: Object.freeze([...options.cors.methods]) }),
+          }),
+        }),
+    ...(options.cache === undefined
+      ? {}
+      : { cache: Object.freeze({ ...options.cache }) }),
+    ...(options.rateLimit === undefined
+      ? {}
+      : { rateLimit: Object.freeze({ ...options.rateLimit }) }),
+  });
+
 const createFastifyHandlerWithOptions = <TManifest extends JoorManifest>(
   manifest: TManifest,
   options: FastifyHandlerOptions = {}
 ): FastifyHandler => {
+  const handlerOptions = snapshotFastifyOptions(options);
   const handler = createRpcTransportBodyResultHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
+    handlerOptions as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
     false
   );
-  const preflight = createRpcRequestPreflight(options);
-  const hostname = options.hostname ?? '0.0.0.0';
-  const extraResponseHeaders = createCorsHeaderRecord(options.cors);
+  const preflight = createRpcRequestPreflight(handlerOptions);
+  const hostname = handlerOptions.hostname ?? '0.0.0.0';
+  const extraResponseHeaders = createCorsHeaderRecord(handlerOptions.cors);
   const bodyLimit = normalizeMaxBodyBytes(
-    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    handlerOptions.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
-  const useOriginalUrl = options.useOriginalUrl ?? true;
+  const useOriginalUrl = handlerOptions.useOriginalUrl ?? true;
   return async (request, reply) => {
     const body = bodyFromFastifyRequest(request);
     const source = new FastifyRequestSource(
@@ -425,7 +458,7 @@ const createFastifyHandlerWithOptions = <TManifest extends JoorManifest>(
     }
     if (!parsedBodyWithinLimit(request, body, bodyLimit)) {
       const error = new BodySizeLimitError(bodyLimit);
-      options.onError?.(error, source.toRequest());
+      handlerOptions.onError?.(error, source.toRequest());
       await writeFastifyResult(
         reply,
         payloadTooLargeBody(source),

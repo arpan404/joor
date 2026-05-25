@@ -141,4 +141,67 @@ describe('fastify runtime', () => {
       await app.close();
     }
   });
+
+  it('snapshots Fastify handler options at creation time', async () => {
+    const procedure = defineProcedure({
+      input: t.json(),
+      output: t.json(),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const errors: string[] = [];
+    const options = {
+      path: '/rpc',
+      cors: { origin: 'https://original.example' },
+      maxBodyBytes: 1024,
+      onError() {
+        errors.push('original');
+      },
+    };
+    const app = fastify();
+    app.post(
+      '/rpc',
+      createFastifyHandler({ procedures: { ping: procedure } }, options)
+    );
+
+    options.cors.origin = 'https://changed.example';
+    options.maxBodyBytes = 1;
+    options.onError = () => {
+      errors.push('changed');
+    };
+
+    try {
+      const accepted = await app.inject({
+        method: 'POST',
+        url: '/rpc',
+        headers: { 'content-type': 'application/json' },
+        payload: {
+          id: 'ping',
+          input: { ok: true, pad: 'x'.repeat(32) },
+        },
+      });
+      const rejected = await app.inject({
+        method: 'POST',
+        url: '/rpc',
+        headers: { 'content-type': 'application/json' },
+        payload: {
+          id: 'ping',
+          input: { ok: true, pad: 'x'.repeat(2048) },
+        },
+      });
+
+      expect(accepted.statusCode).toBe(200);
+      expect(accepted.headers['access-control-allow-origin']).toBe(
+        'https://original.example'
+      );
+      expect(rejected.statusCode).toBe(413);
+      expect(rejected.headers['access-control-allow-origin']).toBe(
+        'https://original.example'
+      );
+      expect(errors).toEqual(['original']);
+    } finally {
+      await app.close();
+    }
+  });
 });
