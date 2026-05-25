@@ -106,26 +106,101 @@ describe('client', () => {
     >(
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' },
-      { headers }
+      { headers, traceId: 'trace-route' }
     );
     const manifestRouteRequest = createManifestRouteRequest(
       { procedures: { protected: getUser } },
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' },
-      { headers }
+      { headers, traceId: 'trace-manifest' }
     );
 
     expect(routeRequest).toEqual({
       id: 'protected',
       input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      traceId: 'trace-route',
       headers: { authorization: 'Bearer token' },
     });
-    expect(manifestRouteRequest).toEqual(routeRequest);
+    expect(manifestRouteRequest).toEqual({
+      ...routeRequest,
+      traceId: 'trace-manifest',
+    });
     expect(Object.isFrozen(routeRequest)).toBe(true);
     expect(Object.isFrozen(routeRequest.headers)).toBe(true);
     expect(Object.isFrozen(manifestRouteRequest)).toBe(true);
     expect(Object.isFrozen(manifestRouteRequest.headers)).toBe(true);
     expect(Object.isFrozen(headers)).toBe(false);
+  });
+
+  it('forwards typed trace ids through calls, requests, batches, and streams', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const bodies: JsonValue[] = [];
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      async fetch(request) {
+        const body = (await request.json()) as JsonValue;
+        bodies.push(body);
+        if (request.headers.get('accept') === 'text/event-stream') {
+          return new Response('event: data\ndata: {"ok":true}\n\nevent: done\ndata: null\n\n', {
+            headers: { 'content-type': 'text/event-stream' },
+          });
+        }
+        if (Array.isArray(body)) {
+          return Response.json(
+            body.map((entry) => ({
+              ok: true,
+              id: entry.id,
+              traceId: entry.traceId ?? 'generated',
+              data: { ok: true },
+            }))
+          );
+        }
+        const rpcRequest = body as { id: string; traceId?: string };
+        return Response.json({
+          ok: true,
+          id: rpcRequest.id,
+          traceId: rpcRequest.traceId ?? 'generated',
+          data: { ok: true },
+        });
+      },
+    });
+
+    const call = await client.call<typeof procedure>(
+      'call',
+      { ok: true },
+      { traceId: 'trace-call' }
+    );
+    const pending = client.request<typeof procedure>(
+      'pending',
+      { ok: true },
+      { traceId: 'trace-pending' }
+    );
+    const [batch] = await client.batch([pending] as const);
+    const streamEvents: JsonValue[] = [];
+    for await (const event of client.stream<StreamTestProcedure>(
+      'stream',
+      { ok: true },
+      { traceId: 'trace-stream' }
+    )) {
+      streamEvents.push(event);
+    }
+
+    expect(call.traceId).toBe('trace-call');
+    expect(pending.traceId).toBe('trace-pending');
+    expect(Object.isFrozen(pending)).toBe(true);
+    expect(batch?.traceId).toBe('trace-pending');
+    expect(streamEvents).toEqual([{ ok: true }]);
+    expect(bodies).toEqual([
+      { id: 'call', input: { ok: true }, traceId: 'trace-call' },
+      [{ id: 'pending', input: { ok: true }, traceId: 'trace-pending' }],
+      { id: 'stream', input: { ok: true }, traceId: 'trace-stream' },
+    ]);
   });
 
   it('batches standalone protocol requests', async () => {

@@ -1001,6 +1001,10 @@ type PendingRpcRequestHeaders<TProcedure> = [TProcedure] extends [never]
     ? { readonly headers?: ClientProcedureHeaders<TProcedure> }
     : { readonly headers: ClientProcedureHeaders<TProcedure> };
 
+interface ClientTraceOptions {
+  readonly traceId?: string;
+}
+
 type ClientRequestOptionsTuple<TProcedure> =
   ProcedureRequiresHeaders<TProcedure> extends false
     ? [ClientRequestOptions<TProcedure>?]
@@ -1012,6 +1016,7 @@ export type PendingRpcRequest<
 > = {
   readonly id: TId;
   readonly input: PendingRpcRequestInput<TProcedure>;
+  readonly traceId?: string;
 } & PendingRpcRequestHeaders<TProcedure>;
 
 type RpcRouteRequestFor<
@@ -1088,20 +1093,21 @@ export type RpcUnaryRouteBatchResults<
     readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
 > = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
 
-export type ClientRequestOptions<TProcedure> = [TProcedure] extends [never]
-  ? {
-      readonly headers?: ClientHeaderValues;
-      readonly request?: ClientRequestInit;
-    }
-  : ProcedureRequiresHeaders<TProcedure> extends false
+export type ClientRequestOptions<TProcedure> = ClientTraceOptions &
+  ([TProcedure] extends [never]
     ? {
-        readonly headers?: ClientProcedureHeaders<TProcedure>;
+        readonly headers?: ClientHeaderValues;
         readonly request?: ClientRequestInit;
       }
-    : {
-        readonly headers: ClientProcedureHeaders<TProcedure>;
-        readonly request?: ClientRequestInit;
-      };
+    : ProcedureRequiresHeaders<TProcedure> extends false
+      ? {
+          readonly headers?: ClientProcedureHeaders<TProcedure>;
+          readonly request?: ClientRequestInit;
+        }
+      : {
+          readonly headers: ClientProcedureHeaders<TProcedure>;
+          readonly request?: ClientRequestInit;
+        });
 
 export interface ClientBatchOptions {
   readonly headers?: ClientHeaderValues;
@@ -1183,6 +1189,9 @@ const createPendingRpcRequest = <TProcedure, TId extends string>(
   Object.freeze({
     id,
     input,
+    ...(requestOptions[0]?.traceId === undefined
+      ? {}
+      : { traceId: requestOptions[0].traceId }),
     ...(requestOptions[0]?.headers === undefined
       ? {}
       : { headers: Object.freeze({ ...requestOptions[0].headers }) }),
@@ -1200,11 +1209,14 @@ export function createRouteRequest<
 export function createRouteRequest(
   id: string,
   input: unknown,
-  ...options: [{ headers?: object }?]
+  ...options: [(ClientTraceOptions & { headers?: object })?]
 ): PendingRpcRequest {
   return Object.freeze({
     id,
     input: input as JsonValue,
+    ...(options[0]?.traceId === undefined
+      ? {}
+      : { traceId: options[0].traceId }),
     ...(options[0]?.headers === undefined
       ? {}
       : { headers: Object.freeze({ ...options[0].headers }) }),
@@ -1234,11 +1246,14 @@ export function createManifestRouteRequest(
   _manifest: JoorManifest,
   id: string,
   input: unknown,
-  ...options: [{ headers?: object }?]
+  ...options: [(ClientTraceOptions & { headers?: object })?]
 ): PendingRpcRequest {
   return Object.freeze({
     id,
     input: input as JsonValue,
+    ...(options[0]?.traceId === undefined
+      ? {}
+      : { traceId: options[0].traceId }),
     ...(options[0]?.headers === undefined
       ? {}
       : { headers: Object.freeze({ ...options[0].headers }) }),
@@ -1596,7 +1611,13 @@ export function createClient<TRequest extends Request = Request>(
     const response = await fetcher(
       requestFactory(createClientRequestFactoryArgs({
         url,
-        body: { id, input } as JsonValue,
+        body: {
+          id,
+          input,
+          ...(callOptions?.traceId === undefined
+            ? {}
+            : { traceId: callOptions.traceId }),
+        } as JsonValue,
         headers: createHeaders(baseHeaders, callOptions?.headers),
         baseRequest,
         request: callOptions?.request,
@@ -1669,7 +1690,13 @@ export function createClient<TRequest extends Request = Request>(
       const response = await fetcher(
         requestFactory(createClientRequestFactoryArgs({
           url,
-          body: { id, input } as JsonValue,
+          body: {
+            id,
+            input,
+            ...(requestOptions[0]?.traceId === undefined
+              ? {}
+              : { traceId: requestOptions[0].traceId }),
+          } as JsonValue,
           headers,
           baseRequest,
           request: requestOptions[0]?.request,

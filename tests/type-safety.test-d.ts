@@ -4790,12 +4790,22 @@ clientBatchOptions.headers = { 'x-batch': '2' };
 const clientRequestOptions: ClientRequestOptions<typeof procedure> = {
   headers: { 'x-tenant-id': 'tenant-1' },
   request: clientRequestInit,
+  traceId: 'trace-1',
 };
 clientRequestOptions.headers['x-tenant-id'].toUpperCase();
+clientRequestOptions.traceId?.toUpperCase();
 // @ts-expect-error client request option headers are readonly.
 clientRequestOptions.headers = { 'x-tenant-id': 'tenant-2' };
 // @ts-expect-error typed client request header fields are readonly.
 clientRequestOptions.headers['x-tenant-id'] = 'tenant-2';
+// @ts-expect-error client request trace ids are readonly.
+clientRequestOptions.traceId = 'trace-2';
+const _wrongClientRequestTraceOptions: ClientRequestOptions<typeof procedure> = {
+  headers: { 'x-tenant-id': 'tenant-1' },
+  // @ts-expect-error client request trace ids must be strings.
+  traceId: 1,
+};
+_wrongClientRequestTraceOptions.headers['x-tenant-id'].toUpperCase();
 client.call<typeof procedure>('users.get', { id: '1' }, clientRequestOptions);
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
 client.call<typeof procedure>('users.get', { id: '1' });
@@ -17786,10 +17796,14 @@ unaryRouteProtocolRequestUnionAlias.id.toUpperCase();
 const routePendingBatchRequest: RpcRouteRequest<Routes, 'users.get'> = {
   id: 'users.get',
   input: { id: '1' },
+  traceId: 'trace-pending',
   headers: { 'x-tenant-id': 'tenant-1' },
 };
+routePendingBatchRequest.traceId?.toUpperCase();
 // @ts-expect-error pending route request ids are readonly.
 routePendingBatchRequest.id = 'users.authenticated';
+// @ts-expect-error pending route request trace ids are readonly.
+routePendingBatchRequest.traceId = 'trace-changed';
 // @ts-expect-error pending route request headers are readonly.
 routePendingBatchRequest.headers = { 'x-tenant-id': 'tenant-2' };
 const routeBatchRequest: RpcRouteBatchRequest<
@@ -17925,6 +17939,7 @@ streamRouteClientShape.stream('users.watch', { userId: '1' });
 streamRouteClientShape.stream = routeClient.stream;
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {
   headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
+  traceId: 'trace-route',
 };
 // @ts-expect-error route request option headers are readonly.
 routeRequestOptions.headers = {
@@ -17933,8 +17948,11 @@ routeRequestOptions.headers = {
 };
 // @ts-expect-error route request header fields are readonly.
 routeRequestOptions.headers['x-tenant-id'] = 'tenant-2';
+// @ts-expect-error route request trace ids are readonly.
+routeRequestOptions.traceId = 'trace-changed';
 const defaultRouteRequestOptions: RpcRouteRequestOptions<Routes> =
   routeRequestOptions;
+routeRequestOptions.traceId?.toUpperCase();
 const routeClientHeaders: RpcRouteClientHeaders<Routes, 'users.get'> = {
   authorization: undefined,
   'x-tenant-id': 'tenant-1',
@@ -18075,13 +18093,15 @@ consumeRouteStream();
 const routeRequest = routeClient.request(
   'users.get',
   { id: '1' },
-  { headers: { 'x-tenant-id': 'tenant-1' } }
+  { headers: { 'x-tenant-id': 'tenant-1' }, traceId: 'trace-client' }
 );
+routeRequest.traceId?.toUpperCase();
 const standaloneRouteRequest = createRouteRequest<Routes, 'users.get'>(
   'users.get',
   { id: '1' },
-  { headers: { 'x-tenant-id': 'tenant-1' } }
+  { headers: { 'x-tenant-id': 'tenant-1' }, traceId: 'trace-standalone' }
 );
+standaloneRouteRequest.traceId?.toUpperCase();
 const standaloneRouteUnaryRequest = createRouteUnaryRequest<
   Routes,
   'users.get'
@@ -18106,8 +18126,9 @@ const standaloneManifestRouteRequest = createManifestRouteRequest(
   manifest,
   'users.get',
   { id: '1' },
-  { headers: { 'x-tenant-id': 'tenant-1' } }
+  { headers: { 'x-tenant-id': 'tenant-1' }, traceId: 'trace-manifest' }
 );
+standaloneManifestRouteRequest.traceId?.toUpperCase();
 const standaloneManifestRouteUnaryRequest = createManifestRouteUnaryRequest(
   manifest,
   'users.get',
