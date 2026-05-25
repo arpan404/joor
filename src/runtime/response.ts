@@ -3,6 +3,10 @@ import type {
   RpcManifest,
   RpcManifestBody,
   RpcManifestBodyResultFor,
+  RpcManifestRouteStreamBody,
+  RpcManifestRouteUnaryBody,
+  RpcManifestStreamRouteBody,
+  RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
 import type { JsonObject } from '../schema/json.js';
 
@@ -28,6 +32,30 @@ export type TransportBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 > = RpcManifestBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope;
+
+export type RouteUnaryTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
+
+export type UnaryRouteTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = RouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
+export type RouteStreamTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = TransportBodyResultFor<TManifest, TBody>;
+
+export type StreamRouteTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export const jsonContentHeaders = Object.freeze({
   'content-type': 'application/json',
@@ -147,9 +175,9 @@ export const createCorsHeaderRecord = (
   }
   if (hasInvalidHeaderValue(cors.origin)) return undefined;
   const methods = (cors.methods ?? ['POST', 'OPTIONS']).join(', ');
-  const headers = (cors.headers ?? ['content-type', 'accept', 'x-request-id']).join(
-    ', '
-  );
+  const headers = (
+    cors.headers ?? ['content-type', 'accept', 'x-request-id']
+  ).join(', ');
   return {
     'access-control-allow-origin': cors.origin,
     ...(hasInvalidHeaderValue(methods)

@@ -96,8 +96,12 @@ export {
 } from './response.js';
 export type {
   CorsHeaderOptions,
+  RouteStreamTransportBodyResultFor,
+  RouteUnaryTransportBodyResultFor,
   SerializedJsonEnvelope,
+  StreamRouteTransportBodyResultFor,
   TransportBodyResult,
   TransportBodyResultFor,
+  UnaryRouteTransportBodyResultFor,
 } from './response.js';
 export * from './vercel.js';

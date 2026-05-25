@@ -987,8 +987,12 @@ import {
   type RpcRouteUnaryBody,
   type RpcRouteBodyResult,
   type RpcRouteBodyResultFor,
+  type RouteStreamTransportBodyResultFor,
+  type RouteUnaryTransportBodyResultFor,
+  type StreamRouteTransportBodyResultFor,
   type TransportBodyResult,
   type TransportBodyResultFor,
+  type UnaryRouteTransportBodyResultFor,
   type RpcRouteHasHeaders,
   type RpcRouteHasResponseHeaders,
   type RpcRouteRequest,
@@ -1939,8 +1943,12 @@ import {
   type NodeUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathNodeUnaryRouteTransportBodyResultHandlerFor,
   type CorsHeaderOptions as RuntimeSubpathCorsHeaderOptions,
   type SerializedJsonEnvelope as RuntimeSubpathSerializedJsonEnvelope,
+  type RouteStreamTransportBodyResultFor as RuntimeSubpathRouteStreamTransportBodyResultFor,
+  type RouteUnaryTransportBodyResultFor as RuntimeSubpathRouteUnaryTransportBodyResultFor,
+  type StreamRouteTransportBodyResultFor as RuntimeSubpathStreamRouteTransportBodyResultFor,
   type TransportBodyResult as RuntimeSubpathTransportBodyResult,
   type TransportBodyResultFor as RuntimeSubpathTransportBodyResultFor,
+  type UnaryRouteTransportBodyResultFor as RuntimeSubpathUnaryRouteTransportBodyResultFor,
   type VercelFetchHandler as RuntimeSubpathVercelFetchHandler,
   type VercelFetchOptionsArgs as RuntimeSubpathVercelFetchOptionsArgs,
   type VercelFetchOptionsFor as RuntimeSubpathVercelFetchOptionsFor,
@@ -1975,8 +1983,12 @@ import {
   transportResultToResponse as runtimeResponseSubpathTransportResultToResponse,
   type CorsHeaderOptions as RuntimeResponseSubpathCorsHeaderOptions,
   type SerializedJsonEnvelope as RuntimeResponseSubpathSerializedJsonEnvelope,
+  type RouteStreamTransportBodyResultFor as RuntimeResponseSubpathRouteStreamTransportBodyResultFor,
+  type RouteUnaryTransportBodyResultFor as RuntimeResponseSubpathRouteUnaryTransportBodyResultFor,
+  type StreamRouteTransportBodyResultFor as RuntimeResponseSubpathStreamRouteTransportBodyResultFor,
   type TransportBodyResult as RuntimeResponseSubpathTransportBodyResult,
   type TransportBodyResultFor as RuntimeResponseSubpathTransportBodyResultFor,
+  type UnaryRouteTransportBodyResultFor as RuntimeResponseSubpathUnaryRouteTransportBodyResultFor,
 } from '../src/runtime/response.js';
 
 const typedStringMeta = t.string().example('Ada').default('Grace');
@@ -12623,6 +12635,22 @@ const exactTransportBodyResultFor: TransportBodyResultFor<
   typeof manifest,
   typeof manifestRouteRequest
 > = manifestRouteBodyResult;
+const routeUnaryTransportBodyResultFor: RouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = manifestRouteBodyResult;
+const unaryRouteTransportBodyResultFor: UnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = routeUnaryTransportBodyResultFor;
+const routeStreamTransportBodyResultFor: RouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamProtocolRequest
+> = new Response();
+const streamRouteTransportBodyResultFor: StreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteProtocolRequest
+> = routeStreamTransportBodyResultFor;
 const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
   typeof manifest
 > = transportBodyResultFor;
@@ -12630,6 +12658,22 @@ const runtimeSubpathExactTransportBodyResultFor: RuntimeSubpathTransportBodyResu
   typeof manifest,
   typeof manifestRouteRequest
 > = exactTransportBodyResultFor;
+const runtimeSubpathRouteUnaryTransportBodyResultFor: RuntimeSubpathRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = routeUnaryTransportBodyResultFor;
+const runtimeSubpathUnaryRouteTransportBodyResultFor: RuntimeSubpathUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = unaryRouteTransportBodyResultFor;
+const runtimeSubpathRouteStreamTransportBodyResultFor: RuntimeSubpathRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamProtocolRequest
+> = routeStreamTransportBodyResultFor;
+const runtimeSubpathStreamRouteTransportBodyResultFor: RuntimeSubpathStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteProtocolRequest
+> = streamRouteTransportBodyResultFor;
 const runtimeResponseSubpathTransportBodyResultFor: RuntimeResponseSubpathTransportBodyResultFor<
   typeof manifest
 > = transportBodyResultFor;
@@ -12637,6 +12681,30 @@ const runtimeResponseSubpathExactTransportBodyResultFor: RuntimeResponseSubpathT
   typeof manifest,
   typeof manifestRouteRequest
 > = exactTransportBodyResultFor;
+const runtimeResponseSubpathRouteUnaryTransportBodyResultFor: RuntimeResponseSubpathRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = routeUnaryTransportBodyResultFor;
+const runtimeResponseSubpathUnaryRouteTransportBodyResultFor: RuntimeResponseSubpathUnaryRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestUnaryProtocolRequest
+> = unaryRouteTransportBodyResultFor;
+const runtimeResponseSubpathRouteStreamTransportBodyResultFor: RuntimeResponseSubpathRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamProtocolRequest
+> = routeStreamTransportBodyResultFor;
+const runtimeResponseSubpathStreamRouteTransportBodyResultFor: RuntimeResponseSubpathStreamRouteTransportBodyResultFor<
+  typeof manifest,
+  typeof manifestStreamRouteProtocolRequest
+> = streamRouteTransportBodyResultFor;
+runtimeSubpathRouteUnaryTransportBodyResultFor.valueOf();
+runtimeSubpathUnaryRouteTransportBodyResultFor.valueOf();
+runtimeSubpathRouteStreamTransportBodyResultFor.valueOf();
+runtimeSubpathStreamRouteTransportBodyResultFor.valueOf();
+runtimeResponseSubpathRouteUnaryTransportBodyResultFor.valueOf();
+runtimeResponseSubpathUnaryRouteTransportBodyResultFor.valueOf();
+runtimeResponseSubpathRouteStreamTransportBodyResultFor.valueOf();
+runtimeResponseSubpathStreamRouteTransportBodyResultFor.valueOf();
 if (isSerializedJsonEnvelope(transportBodyResult)) {
   transportBodyResult.body.toUpperCase();
 }

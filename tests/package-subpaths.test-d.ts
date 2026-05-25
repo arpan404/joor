@@ -857,6 +857,22 @@ export type PackageSubpathSurface = [
   NodeRuntime.NodeServer,
   Root.NodeServer,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
+  ResponseRuntime.RouteUnaryTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
+  ResponseRuntime.UnaryRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
+  ResponseRuntime.RouteStreamTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
+  ResponseRuntime.StreamRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
   ResponseRuntime.CorsHeaderOptions,
   ResponseRuntime.TransportBodyResultFor<
     PackageSubpathManifest,

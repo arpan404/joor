@@ -1379,9 +1379,13 @@ export type {
 } from './runtime/vercel.js';
 export type {
   CorsHeaderOptions,
+  RouteStreamTransportBodyResultFor,
+  RouteUnaryTransportBodyResultFor,
   SerializedJsonEnvelope,
+  StreamRouteTransportBodyResultFor,
   TransportBodyResult,
   TransportBodyResultFor,
+  UnaryRouteTransportBodyResultFor,
 } from './runtime/response.js';
 export type {
   ArrayChain,
