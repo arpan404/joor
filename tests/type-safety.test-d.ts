@@ -354,6 +354,8 @@ import {
   readJsonRequestBody,
   readJsonRequestBodyWithLimit,
   serveBun,
+  serveRouteStreamBun,
+  serveRouteUnaryBun,
   serveDeno,
   serveRouteUnaryDeno,
   serveStreamRouteDeno,
@@ -1945,6 +1947,8 @@ import {
   createUnaryRouteBunFetchFor as createRuntimeSubpathUnaryRouteBunFetchFor,
   createUnaryRouteBunRpcRequestHandler as createRuntimeSubpathUnaryRouteBunRpcRequestHandler,
   createUnaryRouteBunRpcRequestHandlerFor as createRuntimeSubpathUnaryRouteBunRpcRequestHandlerFor,
+  serveRouteStreamBun as serveRuntimeSubpathRouteStreamBun,
+  serveRouteUnaryBun as serveRuntimeSubpathRouteUnaryBun,
   createBunTransportRequestHandler as createRuntimeSubpathBunTransportRequestHandler,
   createBunTransportRequestHandlerFor as createRuntimeSubpathBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
@@ -12122,7 +12126,29 @@ requestTypedBunServeOptions.hooks?.beforeRequest?.(
 );
 const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
 serveBun(manifest, requestTypedBunServeOptions);
+const routeUnaryBunServer: BunServer = serveRouteUnaryBun(
+  manifest,
+  bunRouteUnaryServeOptions
+);
+const routeStreamBunServer: BunServer = serveRouteStreamBun(
+  manifest,
+  bunRouteStreamServeOptions
+);
+const runtimeSubpathRouteUnaryBunServer: BunServer =
+  serveRuntimeSubpathRouteUnaryBun(
+    manifest,
+    runtimeSubpathBunRouteUnaryServeOptions
+  );
+const runtimeSubpathRouteStreamBunServer: BunServer =
+  serveRuntimeSubpathRouteStreamBun(
+    manifest,
+    runtimeSubpathBunRouteStreamServeOptions
+  );
 bunServer.stop();
+routeUnaryBunServer.stop();
+routeStreamBunServer.stop();
+runtimeSubpathRouteUnaryBunServer.stop();
+runtimeSubpathRouteStreamBunServer.stop();
 bunServer.ref?.();
 // @ts-expect-error Bun server control methods are readonly.
 bunServer.stop = () => undefined;

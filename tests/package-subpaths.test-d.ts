@@ -269,6 +269,8 @@ import {
   createStreamRouteBunRpcRequestHandler,
   createUnaryRouteBunFetch,
   createUnaryRouteBunRpcRequestHandler,
+  serveRouteStreamBun,
+  serveRouteUnaryBun,
   createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor,
 } from 'joor/runtime/bun';
@@ -679,6 +681,8 @@ const packageSubpathValues = [
   createStreamRouteBunRpcRequestHandler,
   createUnaryRouteBunFetch,
   createUnaryRouteBunRpcRequestHandler,
+  serveRouteStreamBun,
+  serveRouteUnaryBun,
   createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor,
   createRootBunFetchFor,

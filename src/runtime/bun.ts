@@ -1099,3 +1099,73 @@ export function serveBun<TManifest extends JoorManifest>(
     fetch,
   });
 }
+
+export function serveRouteUnaryBun<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: BunRouteUnaryServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): BunServer;
+export function serveRouteUnaryBun<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: BunServeOptions = {}
+): BunServer {
+  return serveBun(
+    manifest,
+    options as unknown as BunRouteUnaryServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveUnaryRouteBun: typeof serveRouteUnaryBun =
+  serveRouteUnaryBun;
+export const serveBunRouteUnary: typeof serveRouteUnaryBun =
+  serveRouteUnaryBun;
+export const serveBunUnaryRoute: typeof serveRouteUnaryBun =
+  serveRouteUnaryBun;
+
+export function serveRouteStreamBun<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: BunRouteStreamServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): BunServer;
+export function serveRouteStreamBun<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: BunServeOptions = {}
+): BunServer {
+  return serveBun(
+    manifest,
+    options as unknown as BunRouteStreamServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveStreamRouteBun: typeof serveRouteStreamBun =
+  serveRouteStreamBun;
+export const serveBunRouteStream: typeof serveRouteStreamBun =
+  serveRouteStreamBun;
+export const serveBunStreamRoute: typeof serveRouteStreamBun =
+  serveRouteStreamBun;

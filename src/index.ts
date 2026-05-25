@@ -143,6 +143,14 @@ export {
   createUnaryRouteBunFetchFor,
   createUnaryRouteBunRpcRequestHandler,
   createUnaryRouteBunRpcRequestHandlerFor,
+  serveBunRouteStream,
+  serveBunRouteUnary,
+  serveBunStreamRoute,
+  serveBunUnaryRoute,
+  serveRouteStreamBun,
+  serveRouteUnaryBun,
+  serveStreamRouteBun,
+  serveUnaryRouteBun,
   serveBun,
 } from './runtime/bun.js';
 export {
