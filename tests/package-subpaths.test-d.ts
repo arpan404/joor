@@ -52,11 +52,7 @@ import { createAuthPolicy } from 'joor/auth';
 import { createManifestClient } from 'joor/client';
 import { defineConfigFor } from 'joor/config';
 import { createRuntimeContext } from 'joor/context';
-import {
-  build,
-  createAiDocs,
-  createOpenApiDocument,
-} from 'joor/compiler';
+import { build, createAiDocs, createOpenApiDocument } from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import {
   createManifestRouteStreamProtocolRequest,
@@ -306,14 +302,13 @@ async function consumePackageSubpathStream() {
 }
 consumePackageSubpathStream();
 
-const packageSubpathAuthPolicy = createAuthPolicy.withContext<PackageSubpathServices>()(
-  {
+const packageSubpathAuthPolicy =
+  createAuthPolicy.withContext<PackageSubpathServices>()({
     name: 'package-subpath',
     authenticate(ctx) {
       return { user: ctx.services.users.findById('1') };
     },
-  }
-);
+  });
 packageSubpathAuthPolicy.name.toUpperCase();
 const packageSubpathAuthPolicyRequest: Context.AuthPolicyRequest<
   typeof packageSubpathAuthPolicy
@@ -503,11 +498,10 @@ type PackageSubpathClientProtocolBatch =
     PackageSubpathManifest,
     readonly [PackageSubpathClientProtocolRequest]
   >;
-type PackageSubpathClientMixedBatch =
-  Client.RpcManifestRouteBatchRequest<
-    PackageSubpathManifest,
-    readonly [PackageSubpathClientRequest]
-  >;
+type PackageSubpathClientMixedBatch = Client.RpcManifestRouteBatchRequest<
+  PackageSubpathManifest,
+  readonly [PackageSubpathClientRequest]
+>;
 type PackageSubpathClientMixedBatchResults =
   Client.RpcManifestRouteBatchResults<
     PackageSubpathManifest,
@@ -530,12 +524,16 @@ const packageSubpathClientProtocolBatchResults: PackageSubpathClientProtocolBatc
 if (packageSubpathClientProtocolBatchResults[0].ok) {
   packageSubpathClientProtocolBatchResults[0].data.name.toUpperCase();
 }
-type PackageSubpathClientRequest =
-  Client.RpcManifestRouteRequest<PackageSubpathManifest, 'users.get'>;
+type PackageSubpathClientRequest = Client.RpcManifestRouteRequest<
+  PackageSubpathManifest,
+  'users.get'
+>;
 type PackageSubpathClientRequestUnion =
   Client.RpcManifestRouteRequestUnion<PackageSubpathManifest>;
-type PackageSubpathClientStreamRequest =
-  Client.RpcManifestRouteStreamRequest<PackageSubpathManifest, 'users.watch'>;
+type PackageSubpathClientStreamRequest = Client.RpcManifestRouteStreamRequest<
+  PackageSubpathManifest,
+  'users.watch'
+>;
 type PackageSubpathClientStreamRequestUnion =
   Client.RpcManifestRouteStreamRequestUnion<PackageSubpathManifest>;
 type PackageSubpathClientBatch =
@@ -548,6 +546,66 @@ type PackageSubpathClientBatchOptions =
     PackageSubpathManifest,
     PackageSubpathClientBatch
   >;
+type PackageSubpathClientProtocolBatchClientHeaders =
+  Client.RpcManifestRouteProtocolBatchClientHeaders<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathClientProtocolBatchOptions =
+  Client.RpcManifestRouteProtocolBatchOptions<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathClientProtocolBatchOptionsTuple =
+  Client.RpcManifestRouteProtocolBatchOptionsTuple<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathManifestProtocolBatchClientHeaders =
+  Manifest.JoorManifestRouteProtocolBatchClientHeaders<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathManifestProtocolBatchOptions =
+  Manifest.JoorManifestRouteProtocolBatchOptions<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathManifestProtocolBatchOptionsTuple =
+  Manifest.JoorManifestRouteProtocolBatchOptionsTuple<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRpcProtocolBatchClientHeaders =
+  Rpc.RpcManifestRouteProtocolBatchClientHeaders<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRpcProtocolBatchOptions =
+  Rpc.RpcManifestRouteProtocolBatchOptions<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRpcProtocolBatchOptionsTuple =
+  Rpc.RpcManifestRouteProtocolBatchOptionsTuple<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRootProtocolBatchClientHeaders =
+  Root.RpcManifestRouteProtocolBatchClientHeaders<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRootProtocolBatchOptions =
+  Root.RpcManifestRouteProtocolBatchOptions<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathRootProtocolBatchOptionsTuple =
+  Root.RpcManifestRouteProtocolBatchOptionsTuple<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
 type PackageSubpathClientRequestOptions =
   Client.RpcManifestRouteUnaryRequestOptions<
     PackageSubpathManifest,
@@ -557,11 +615,10 @@ type PackageSubpathClientArgs = Client.RpcManifestRouteUnaryClientArgs<
   PackageSubpathManifest,
   'users.get'
 >;
-type PackageSubpathClientBodyResultFor =
-  Client.RpcManifestRouteBodyResultFor<
-    PackageSubpathManifest,
-    PackageSubpathClientProtocolRequest
-  >;
+type PackageSubpathClientBodyResultFor = Client.RpcManifestRouteBodyResultFor<
+  PackageSubpathManifest,
+  PackageSubpathClientProtocolRequest
+>;
 type PackageSubpathClientBodyResult =
   Client.RpcManifestRouteBodyResult<PackageSubpathManifest>;
 const packageSubpathClientBodyResultFor: PackageSubpathClientBodyResultFor =
@@ -583,20 +640,14 @@ export type PackageSubpathSurface = [
     { user: { id: string; name: string } }
   >,
   Client.ClientOptions,
-  Client.RpcManifestRouteProtocolRequest<
-    PackageSubpathManifest,
-    'users.get'
-  >,
+  Client.RpcManifestRouteProtocolRequest<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteProtocolRequestUnion<PackageSubpathManifest>,
   Client.RpcManifestRouteId<PackageSubpathManifest>,
   Client.RpcManifestRouteUnaryId<PackageSubpathManifest>,
   Client.RpcManifestRouteStreamId<PackageSubpathManifest>,
   Client.RpcManifestRouteProcedure<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteUnaryProcedure<PackageSubpathManifest, 'users.get'>,
-  Client.RpcManifestRouteStreamProcedure<
-    PackageSubpathManifest,
-    'users.watch'
-  >,
+  Client.RpcManifestRouteStreamProcedure<PackageSubpathManifest, 'users.watch'>,
   Client.RpcManifestRouteInput<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteUnaryInput<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteStreamInput<PackageSubpathManifest, 'users.watch'>,
@@ -612,20 +663,14 @@ export type PackageSubpathSurface = [
     PackageSubpathManifest,
     'users.watch'
   >,
-  Client.RpcManifestRouteResponseHeaders<
-    PackageSubpathManifest,
-    'users.get'
-  >,
+  Client.RpcManifestRouteResponseHeaders<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteUnaryResponseHeaders<
     PackageSubpathManifest,
     'users.get'
   >,
   Client.RpcManifestRouteErrorCode<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteUnaryErrorCode<PackageSubpathManifest, 'users.get'>,
-  Client.RpcManifestRouteStreamErrorCode<
-    PackageSubpathManifest,
-    'users.watch'
-  >,
+  Client.RpcManifestRouteStreamErrorCode<PackageSubpathManifest, 'users.watch'>,
   Client.RpcManifestRouteEnvelope<PackageSubpathManifest, 'users.get'>,
   Client.RpcManifestRouteEnvelopeUnion<PackageSubpathManifest>,
   Client.RpcManifestRouteResult<PackageSubpathManifest, 'users.get'>,
@@ -662,6 +707,18 @@ export type PackageSubpathSurface = [
   PackageSubpathClientProtocolBatch,
   PackageSubpathClientProtocolBatchResults,
   PackageSubpathClientBatchOptions,
+  PackageSubpathClientProtocolBatchClientHeaders,
+  PackageSubpathClientProtocolBatchOptions,
+  PackageSubpathClientProtocolBatchOptionsTuple,
+  PackageSubpathManifestProtocolBatchClientHeaders,
+  PackageSubpathManifestProtocolBatchOptions,
+  PackageSubpathManifestProtocolBatchOptionsTuple,
+  PackageSubpathRpcProtocolBatchClientHeaders,
+  PackageSubpathRpcProtocolBatchOptions,
+  PackageSubpathRpcProtocolBatchOptionsTuple,
+  PackageSubpathRootProtocolBatchClientHeaders,
+  PackageSubpathRootProtocolBatchOptions,
+  PackageSubpathRootProtocolBatchOptionsTuple,
   PackageSubpathClientRequestOptions,
   PackageSubpathClientArgs,
   Client.RpcManifestRouteBody<PackageSubpathManifest>,
@@ -685,10 +742,7 @@ export type PackageSubpathSurface = [
     PackageSubpathBody
   >,
   Context.JoorPlugin<PackageSubpathServices>,
-  Manifest.JoorManifestRouteUnaryRequest<
-    PackageSubpathManifest,
-    'users.get'
-  >,
+  Manifest.JoorManifestRouteUnaryRequest<PackageSubpathManifest, 'users.get'>,
   Manifest.JoorManifestRouteStreamRequest<
     PackageSubpathManifest,
     'users.watch'
