@@ -1159,3 +1159,73 @@ export function serveDeno<TManifest extends JoorManifest>(
     handler: fetch,
   });
 }
+
+export function serveRouteUnaryDeno<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteUnaryServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): DenoServer;
+export function serveRouteUnaryDeno<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: DenoServeOptions = {}
+): DenoServer {
+  return serveDeno(
+    manifest,
+    options as unknown as DenoRouteUnaryServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveUnaryRouteDeno: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+export const serveDenoRouteUnary: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+export const serveDenoUnaryRoute: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+
+export function serveRouteStreamDeno<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteStreamServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): DenoServer;
+export function serveRouteStreamDeno<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: DenoServeOptions = {}
+): DenoServer {
+  return serveDeno(
+    manifest,
+    options as unknown as DenoRouteStreamServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveStreamRouteDeno: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
+export const serveDenoRouteStream: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
+export const serveDenoStreamRoute: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;

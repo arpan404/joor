@@ -116,6 +116,8 @@ import {
   createUnaryRouteDenoFetchFor,
   createUnaryRouteDenoRpcRequestHandler,
   createUnaryRouteDenoRpcRequestHandlerFor,
+  createStandaloneRouteUnaryDenoRpcRequestHandler as createRootStandaloneRouteUnaryDenoRpcRequestHandler,
+  createStandaloneRouteUnaryDenoRpcRequestHandlerFor as createRootStandaloneRouteUnaryDenoRpcRequestHandlerFor,
   createStandaloneDenoRpcRequestHandler as createRootStandaloneDenoRpcRequestHandler,
   createStandaloneDenoRpcRequestHandlerFor as createRootStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRootStandaloneDenoTransportRequestHandler,
@@ -349,7 +351,11 @@ import {
   readJsonRequestBodyWithLimit,
   serveBun,
   serveDeno,
+  serveRouteUnaryDeno,
+  serveStreamRouteDeno,
   serveStandaloneDeno as serveRootStandaloneDeno,
+  serveStandaloneRouteUnaryDeno as serveRootStandaloneRouteUnaryDeno,
+  serveStandaloneStreamRouteDeno as serveRootStandaloneStreamRouteDeno,
   t,
   toJsonSchema,
   rpcEnvelopeToResponse,
@@ -1732,6 +1738,8 @@ import {
   type ValidationResult as SchemaSubpathValidationResult,
 } from '../src/schema/index.js';
 import {
+  createRouteUnaryDenoRpcRequestHandler as createStandaloneRouteUnaryDenoRpcRequestHandler,
+  createRouteUnaryDenoRpcRequestHandlerFor as createStandaloneRouteUnaryDenoRpcRequestHandlerFor,
   createDenoRpcRequestHandler as createStandaloneDenoRpcRequestHandler,
   createDenoRpcRequestHandlerFor as createStandaloneDenoRpcRequestHandlerFor,
   createDenoTransportRequestHandler as createStandaloneDenoTransportRequestHandler,
@@ -1739,6 +1747,8 @@ import {
   createDenoTransportRequestHandlerWithPath as createStandaloneDenoTransportRequestHandlerWithPath,
   createDenoTransportRequestHandlerWithPathFor as createStandaloneDenoTransportRequestHandlerWithPathFor,
   serveDeno as serveStandaloneDeno,
+  serveRouteUnaryDeno as serveStandaloneRouteUnaryDeno,
+  serveStreamRouteDeno as serveStandaloneStreamRouteDeno,
   type DenoRpcRequestHandlerOptionsArgs as StandaloneDenoRpcRequestHandlerOptionsArgs,
   type DenoRpcRequestHandlerOptionsFor as StandaloneDenoRpcRequestHandlerOptionsFor,
   type DenoRpcRequestHandler as StandaloneDenoRpcRequestHandler,
@@ -1946,6 +1956,8 @@ import {
   createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerWithPathFor,
   createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
   createStandaloneDenoRpcRequestHandlerFor as createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor,
+  createStandaloneRouteUnaryDenoRpcRequestHandler as createRuntimeSubpathStandaloneRouteUnaryDenoRpcRequestHandler,
+  createStandaloneRouteUnaryDenoRpcRequestHandlerFor as createRuntimeSubpathStandaloneRouteUnaryDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRuntimeSubpathStandaloneDenoTransportRequestHandler,
   createStandaloneDenoTransportRequestHandlerFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerFor,
   createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
@@ -2129,6 +2141,8 @@ import {
   readJsonRequestBodyWithLimit as readRuntimeSubpathJsonRequestBodyWithLimit,
   serializedEnvelopeToResponse as runtimeSubpathSerializedEnvelopeToResponse,
   serveStandaloneDeno as serveRuntimeSubpathStandaloneDeno,
+  serveStandaloneRouteUnaryDeno as serveRuntimeSubpathStandaloneRouteUnaryDeno,
+  serveStandaloneStreamRouteDeno as serveRuntimeSubpathStandaloneStreamRouteDeno,
   transportResultToResponse as runtimeSubpathTransportResultToResponse,
   type AwsLambdaHandler as RuntimeSubpathAwsLambdaHandler,
   type AwsLambdaHandlerOptionsFor as RuntimeSubpathAwsLambdaHandlerOptionsFor,
@@ -12704,7 +12718,17 @@ requestTypedDenoServeOptions.hooks?.beforeRequest?.(
 );
 const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
 serveDeno(manifest, requestTypedDenoServeOptions);
+const routeUnaryDenoServer: DenoServer = serveRouteUnaryDeno(
+  manifest,
+  denoRouteUnaryServeOptions
+);
+const streamRouteDenoServer: DenoServer = serveStreamRouteDeno(
+  manifest,
+  denoStreamRouteServeOptions
+);
 denoServer.shutdown().then(() => undefined);
+routeUnaryDenoServer.shutdown().then(() => undefined);
+streamRouteDenoServer.shutdown().then(() => undefined);
 denoServer.finished.then(() => undefined);
 // @ts-expect-error Deno server shutdown methods are readonly.
 denoServer.shutdown = async () => undefined;
@@ -12750,16 +12774,40 @@ const standaloneDenoHandler = createStandaloneDenoRpcRequestHandler(
   manifest,
   handlerOptions
 );
+const standaloneRouteUnaryDenoHandler =
+  createStandaloneRouteUnaryDenoRpcRequestHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 const typedStandaloneDenoHandler: StandaloneDenoRpcRequestHandler =
   standaloneDenoHandler;
+const typedStandaloneRouteUnaryDenoHandler: StandaloneDenoRpcRequestHandler =
+  standaloneRouteUnaryDenoHandler;
 const rootStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler =
   createRootStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
+const rootStandaloneRouteUnaryDenoHandler: RootStandaloneDenoRpcRequestHandler =
+  createRootStandaloneRouteUnaryDenoRpcRequestHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 const runtimeSubpathStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler =
   createRuntimeSubpathStandaloneDenoRpcRequestHandler(manifest, handlerOptions);
+const runtimeSubpathStandaloneRouteUnaryDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler =
+  createRuntimeSubpathStandaloneRouteUnaryDenoRpcRequestHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 const createTypedStandaloneDenoHandler =
   createStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
 const typedAppStandaloneDenoHandler: StandaloneDenoRpcRequestHandler<AppFetchRequest> =
   createTypedStandaloneDenoHandler(manifest, handlerOptions);
+const createRouteUnaryTypedStandaloneDenoHandler =
+  createStandaloneRouteUnaryDenoRpcRequestHandlerFor<AppFetchRequest>();
+const typedRouteUnaryAppStandaloneDenoHandler: StandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createRouteUnaryTypedStandaloneDenoHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 const hookTypedStandaloneDenoHandler =
   createStandaloneDenoRpcRequestHandlerFor<HookAppRequest>()(
     manifest,
@@ -12769,16 +12817,38 @@ const createRootTypedStandaloneDenoHandler =
   createRootStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
 const rootTypedAppStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler<AppFetchRequest> =
   createRootTypedStandaloneDenoHandler(manifest, handlerOptions);
+const createRootRouteUnaryTypedStandaloneDenoHandler =
+  createRootStandaloneRouteUnaryDenoRpcRequestHandlerFor<AppFetchRequest>();
+const rootTypedRouteUnaryAppStandaloneDenoHandler: RootStandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createRootRouteUnaryTypedStandaloneDenoHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 const createRuntimeSubpathTypedStandaloneDenoHandler =
   createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedAppStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler<AppFetchRequest> =
   createRuntimeSubpathTypedStandaloneDenoHandler(manifest, handlerOptions);
+const createRuntimeSubpathRouteUnaryTypedStandaloneDenoHandler =
+  createRuntimeSubpathStandaloneRouteUnaryDenoRpcRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedRouteUnaryAppStandaloneDenoHandler: RuntimeSubpathStandaloneDenoRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathRouteUnaryTypedStandaloneDenoHandler(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
 standaloneDenoHandler(new Request('https://example.com/rpc'));
 typedStandaloneDenoHandler(new Request('https://example.com/rpc'));
+typedStandaloneRouteUnaryDenoHandler(new Request('https://example.com/rpc'));
 rootStandaloneDenoHandler(new Request('https://example.com/rpc'));
+rootStandaloneRouteUnaryDenoHandler(new Request('https://example.com/rpc'));
 runtimeSubpathStandaloneDenoHandler(new Request('https://example.com/rpc'));
+runtimeSubpathStandaloneRouteUnaryDenoHandler(
+  new Request('https://example.com/rpc')
+);
 typedAppStandaloneDenoHandler(appFetchRequest);
+typedRouteUnaryAppStandaloneDenoHandler(appFetchRequest);
 rootTypedAppStandaloneDenoHandler(appFetchRequest);
+rootTypedRouteUnaryAppStandaloneDenoHandler(appFetchRequest);
+runtimeSubpathTypedRouteUnaryAppStandaloneDenoHandler(appFetchRequest);
 runtimeSubpathTypedAppStandaloneDenoHandler(appFetchRequest);
 hookTypedStandaloneDenoHandler(hookAppRequest);
 // @ts-expect-error typed standalone Deno RPC factories preserve hook request types.
@@ -13215,9 +13285,29 @@ const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
   typedStandaloneDenoServeOptions
 );
 serveStandaloneDeno(manifest, requestTypedStandaloneDenoServeOptions);
+const standaloneRouteUnaryDenoServer: StandaloneDenoServer =
+  serveStandaloneRouteUnaryDeno(
+    manifest,
+    standaloneDenoRouteUnaryServeOptions
+  );
+const standaloneStreamRouteDenoServer: StandaloneDenoServer =
+  serveStandaloneStreamRouteDeno(
+    manifest,
+    standaloneDenoStreamRouteServeOptions
+  );
 const rootStandaloneDenoServer: RootStandaloneDenoServer =
   serveRootStandaloneDeno(manifest, rootStandaloneDenoServeOptions);
 serveRootStandaloneDeno(manifest, requestTypedStandaloneDenoServeOptions);
+const rootStandaloneRouteUnaryDenoServer: RootStandaloneDenoServer =
+  serveRootStandaloneRouteUnaryDeno(
+    manifest,
+    rootStandaloneDenoRouteUnaryServeOptions
+  );
+const rootStandaloneStreamRouteDenoServer: RootStandaloneDenoServer =
+  serveRootStandaloneStreamRouteDeno(
+    manifest,
+    rootStandaloneDenoStreamRouteServeOptions
+  );
 const runtimeSubpathStandaloneDenoServer: RuntimeSubpathStandaloneDenoServer =
   serveRuntimeSubpathStandaloneDeno(
     manifest,
@@ -13227,9 +13317,25 @@ serveRuntimeSubpathStandaloneDeno(
   manifest,
   requestTypedStandaloneDenoServeOptions
 );
+const runtimeSubpathStandaloneRouteUnaryDenoServer: RuntimeSubpathStandaloneDenoServer =
+  serveRuntimeSubpathStandaloneRouteUnaryDeno(
+    manifest,
+    runtimeSubpathStandaloneDenoRouteUnaryServeOptions
+  );
+const runtimeSubpathStandaloneStreamRouteDenoServer: RuntimeSubpathStandaloneDenoServer =
+  serveRuntimeSubpathStandaloneStreamRouteDeno(
+    manifest,
+    runtimeSubpathStandaloneDenoStreamRouteServeOptions
+  );
 standaloneDenoServer.shutdown().then(() => undefined);
+standaloneRouteUnaryDenoServer.shutdown().then(() => undefined);
+standaloneStreamRouteDenoServer.shutdown().then(() => undefined);
 rootStandaloneDenoServer.finished.then(() => undefined);
+rootStandaloneRouteUnaryDenoServer.finished.then(() => undefined);
+rootStandaloneStreamRouteDenoServer.finished.then(() => undefined);
 runtimeSubpathStandaloneDenoServer.finished.then(() => undefined);
+runtimeSubpathStandaloneRouteUnaryDenoServer.finished.then(() => undefined);
+runtimeSubpathStandaloneStreamRouteDenoServer.finished.then(() => undefined);
 // @ts-expect-error standalone Deno server shutdown methods are readonly.
 standaloneDenoServer.shutdown = async () => undefined;
 // @ts-expect-error standalone Deno server shutdown methods are readonly across root exports.

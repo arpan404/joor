@@ -535,6 +535,72 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
   );
 }
 
+export function createRouteUnaryDenoRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): DenoRpcRequestHandler<TRequest>;
+export function createRouteUnaryDenoRpcRequestHandler<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): DenoRpcRequestHandler {
+  return createDenoRpcRequestHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createUnaryRouteDenoRpcRequestHandler: typeof createRouteUnaryDenoRpcRequestHandler =
+  createRouteUnaryDenoRpcRequestHandler;
+
+export function createRouteStreamDenoRpcRequestHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteStreamRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): DenoRpcRequestHandler<TRequest>;
+export function createRouteStreamDenoRpcRequestHandler<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): DenoRpcRequestHandler {
+  return createDenoRpcRequestHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createStreamRouteDenoRpcRequestHandler: typeof createRouteStreamDenoRpcRequestHandler =
+  createRouteStreamDenoRpcRequestHandler;
+
 export function createDenoRpcRequestHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -603,6 +669,116 @@ export function createDenoRpcRequestHandlerFor<
   };
 }
 
+export function createRouteUnaryDenoRpcRequestHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => DenoRpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryDenoRpcRequestHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => DenoRpcRequestHandler<TRequest>;
+export function createRouteUnaryDenoRpcRequestHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): DenoRpcRequestHandler<TRequest> =>
+    createRouteUnaryDenoRpcRequestHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteUnaryBody<TManifest>,
+        TRequest
+      >
+    ) as DenoRpcRequestHandler<TRequest>;
+}
+
+export const createUnaryRouteDenoRpcRequestHandlerFor: typeof createRouteUnaryDenoRpcRequestHandlerFor =
+  createRouteUnaryDenoRpcRequestHandlerFor;
+
+export function createRouteStreamDenoRpcRequestHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRouteStreamRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => DenoRpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteStreamDenoRpcRequestHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: DenoRouteStreamRpcRequestHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => DenoRpcRequestHandler<TRequest>;
+export function createRouteStreamDenoRpcRequestHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: DenoRouteStreamRpcRequestHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): DenoRpcRequestHandler<TRequest> =>
+    createRouteStreamDenoRpcRequestHandler(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteStreamBody<TManifest>,
+        TRequest
+      >
+    ) as DenoRpcRequestHandler<TRequest>;
+}
+
+export const createStreamRouteDenoRpcRequestHandlerFor: typeof createRouteStreamDenoRpcRequestHandlerFor =
+  createRouteStreamDenoRpcRequestHandlerFor;
+
 export function serveDeno<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -647,3 +823,73 @@ export function serveDeno<TManifest extends JoorManifest>(
     handler: fetch,
   });
 }
+
+export function serveRouteUnaryDeno<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteUnaryServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): DenoServer;
+export function serveRouteUnaryDeno<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: DenoServeOptions = {}
+): DenoServer {
+  return serveDeno(
+    manifest,
+    options as unknown as DenoRouteUnaryServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveUnaryRouteDeno: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+export const serveDenoRouteUnary: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+export const serveDenoUnaryRoute: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+
+export function serveRouteStreamDeno<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: DenoRouteStreamServeOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): DenoServer;
+export function serveRouteStreamDeno<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: DenoServeOptions = {}
+): DenoServer {
+  return serveDeno(
+    manifest,
+    options as unknown as DenoRouteStreamServeOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const serveStreamRouteDeno: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
+export const serveDenoRouteStream: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
+export const serveDenoStreamRoute: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
