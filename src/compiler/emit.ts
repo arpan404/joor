@@ -317,6 +317,8 @@ const emitProfileDispatcher = async (
   const configTypeImport = `import type { ${configTypeImports.join(', ')} } from 'joor/config';\n`;
   const handlerTypeImport =
     "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsBody, HandlerOptionsFor, HandlerOptionsManifest, HandlerOptionsRequest, HandlerOptionsServices, HandlerOptionsWithPreflightArgs, HandlerOptionsWithTrailingArgs, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsArgsFor, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamHandlerOptionsWithPreflightArgs, RpcManifestRouteStreamHandlerOptionsWithTrailingArgs, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsArgsFor, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs, RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
+  const handlerValueImport =
+    "import { defineHandlerOptions, defineRouteStreamHandlerOptions, defineRouteUnaryHandlerOptions, defineStreamRouteHandlerOptions, defineUnaryRouteHandlerOptions } from 'joor';\n";
   const nativeServicesType =
     configPath === undefined
       ? 'Record<string, never>'
@@ -665,6 +667,11 @@ export type NativeDefineRouteUnaryHandlerOptions = DefineRouteUnaryHandlerOption
 export type NativeDefineUnaryRouteHandlerOptions = NativeDefineRouteUnaryHandlerOptions;
 export type NativeDefineRouteStreamHandlerOptions = DefineRouteStreamHandlerOptions<NativeManifest>;
 export type NativeDefineStreamRouteHandlerOptions = NativeDefineRouteStreamHandlerOptions;
+export const defineNativeHandlerOptions: NativeDefineHandlerOptions = defineHandlerOptions<NativeManifest>();
+export const defineNativeRouteUnaryHandlerOptions: NativeDefineRouteUnaryHandlerOptions = defineRouteUnaryHandlerOptions<NativeManifest>();
+export const defineNativeUnaryRouteHandlerOptions: NativeDefineUnaryRouteHandlerOptions = defineUnaryRouteHandlerOptions<NativeManifest>();
+export const defineNativeRouteStreamHandlerOptions: NativeDefineRouteStreamHandlerOptions = defineRouteStreamHandlerOptions<NativeManifest>();
+export const defineNativeStreamRouteHandlerOptions: NativeDefineStreamRouteHandlerOptions = defineStreamRouteHandlerOptions<NativeManifest>();
 export type NativeHandlerHookContext<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody> =
   HandlerHookContextFor<NativeManifest, TPlugins, TBody>;
 export type NativeRouteUnaryHandlerHookContext<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody> =
@@ -937,7 +944,7 @@ ${unaryCases('response')}
     `import {
   ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${contextTypeImport}${configTypeImport}${handlerTypeImport}${configImport}${imports}
+${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${contextTypeImport}${configTypeImport}${handlerTypeImport}${handlerValueImport}${configImport}${imports}
 
 ${nativeManifestTypes}
 
