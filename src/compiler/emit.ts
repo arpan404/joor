@@ -39,16 +39,16 @@ const emitManifest = async (
   const entries = manifest.procedures
     .map(
       (entry) =>
-        `    ${JSON.stringify(entry.id)}: { ...${entry.exportName}, id: ${JSON.stringify(entry.id)} },`
+        `    ${JSON.stringify(entry.id)}: Object.freeze({ ...${entry.exportName}, id: ${JSON.stringify(entry.id)} } as const),`
     )
     .join('\n');
   const source = `${imports}
 
-export const manifest = {
-  procedures: {
+export const manifest = Object.freeze({
+  procedures: Object.freeze({
 ${entries}
-  },
-} as const;
+  }),
+} as const);
 `;
   await writeFile(manifestFile, source);
 };

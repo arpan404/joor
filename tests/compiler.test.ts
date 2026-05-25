@@ -68,9 +68,13 @@ describe('compiler', () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
       await build({ entry: fixture, outDir });
-      await expect(
-        readFile(join(outDir, 'manifest.ts'), 'utf8')
-      ).resolves.toContain('users.get');
+      const manifestSource = await readFile(join(outDir, 'manifest.ts'), 'utf8');
+      expect(manifestSource).toContain('users.get');
+      expect(manifestSource).toContain(
+        'export const manifest = Object.freeze({'
+      );
+      expect(manifestSource).toContain('procedures: Object.freeze({');
+      expect(manifestSource).toContain('Object.freeze({ ...');
       await expect(
         readFile(join(outDir, 'dispatcher.ts'), 'utf8')
       ).resolves.toContain("from './dispatcher.safe.ts'");
