@@ -8,10 +8,13 @@ export interface ProcedureFile {
 
 const toProcedureId = (entryRoot: string, file: string): string => {
   const relativePath = relative(entryRoot, file);
-  const noExtension = relativePath.replace(/\.rpc\.ts$/, '');
+  const noExtension = relativePath.replace(/\.rpc\.[cm]?[tj]s$/, '');
   const parts = noExtension.split(sep).filter((part) => part.length > 0);
   return parts.join('.');
 };
+
+const isProcedureModule = (fileName: string): boolean =>
+  /\.rpc\.[cm]?[tj]s$/.test(fileName);
 
 export const scanProcedureFiles = async (
   entry: string
@@ -25,7 +28,7 @@ export const scanProcedureFiles = async (
         await scan(path);
         continue;
       }
-      if (item.isFile() && item.name.endsWith('.rpc.ts')) {
+      if (item.isFile() && isProcedureModule(item.name)) {
         files.push(path);
       }
     }

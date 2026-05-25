@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
 import { emitArtifacts } from '../src/compiler/emit.js';
 import { loadProcedures } from '../src/compiler/load.js';
+import { scanProcedureFiles } from '../src/compiler/scan.js';
 import { defineProcedure, t } from '../src/index.js';
 
 const execFileAsync = promisify(execFile);
@@ -62,6 +63,34 @@ describe('compiler', () => {
     expect(manifest.procedures.every((entry) => Object.isFrozen(entry))).toBe(
       true
     );
+  });
+
+  it('discovers JavaScript and TypeScript procedure module extensions', async () => {
+    const entry = await mkdtemp(join(tmpdir(), 'joor-scan-'));
+    try {
+      await mkdir(join(entry, 'admin'), { recursive: true });
+      await mkdir(join(entry, 'users'), { recursive: true });
+      await writeFile(join(entry, 'health.rpc.ts'), '');
+      await writeFile(join(entry, 'admin', 'audit.rpc.mts'), '');
+      await writeFile(join(entry, 'admin', 'metrics.rpc.cts'), '');
+      await writeFile(join(entry, 'users', 'get.rpc.js'), '');
+      await writeFile(join(entry, 'users', 'list.rpc.mjs'), '');
+      await writeFile(join(entry, 'users', 'legacy.rpc.cjs'), '');
+      await writeFile(join(entry, 'users', 'ignored.ts'), '');
+
+      const files = await scanProcedureFiles(entry);
+
+      expect(files.map((file) => file.id)).toEqual([
+        'admin.audit',
+        'admin.metrics',
+        'health',
+        'users.get',
+        'users.legacy',
+        'users.list',
+      ]);
+    } finally {
+      await rm(entry, { force: true, recursive: true });
+    }
   });
 
   it('emits artifacts', async () => {
