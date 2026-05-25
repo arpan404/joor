@@ -364,15 +364,28 @@ export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
 export type NodeRpcRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
-> = (
-  incoming: TIncoming,
-  outgoing: TOutgoing
-) => void | Promise<void>;
+> = (incoming: TIncoming, outgoing: TOutgoing) => void | Promise<void>;
 
 export type NodeTransportRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = NodeRpcRequestHandler<TIncoming, TOutgoing>;
+export type NodeRouteUnaryTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeTransportRequestHandler<TIncoming, TOutgoing>;
+export type NodeUnaryRouteTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
+export type NodeRouteStreamTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeTransportRequestHandler<TIncoming, TOutgoing>;
+export type NodeStreamRouteTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
 
 export type NodeTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
@@ -552,14 +565,16 @@ const writeResult = async <TEnvelope extends RpcEnvelope = RpcEnvelope>(
     const headers = createJsonHeaderRecord(
       result.responseHeaders ?? result.headers
     );
-    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    if (extraHeaders !== undefined)
+      appendJsonStringHeaders(headers, extraHeaders);
     outgoing.writeHead(200, headers);
     outgoing.end(result.body);
     return;
   }
   if (result instanceof Response) {
     const headers = Object.fromEntries(result.headers);
-    if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+    if (extraHeaders !== undefined)
+      appendJsonStringHeaders(headers, extraHeaders);
     outgoing.writeHead(result.status, headers);
     if (result.body === null) {
       outgoing.end();
@@ -576,7 +591,8 @@ const writeResult = async <TEnvelope extends RpcEnvelope = RpcEnvelope>(
   ) {
     appendJsonStringHeaders(headers, result.headers);
   }
-  if (extraHeaders !== undefined) appendJsonStringHeaders(headers, extraHeaders);
+  if (extraHeaders !== undefined)
+    appendJsonStringHeaders(headers, extraHeaders);
   outgoing.writeHead(200, headers);
   outgoing.end(JSON.stringify(result));
 };
@@ -707,6 +723,106 @@ export const createNodeTransportRequestHandlerFor =
       onBodyReadError
     ) as NodeTransportRequestHandler<TIncoming, TOutgoing>;
 
+export const createRouteUnaryNodeTransportRequestHandler = <
+  TManifest extends JoorManifest,
+>(
+  handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  hostname = '0.0.0.0',
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
+): NodeRouteUnaryTransportRequestHandler =>
+  createNodeTransportRequestHandler(
+    handler as NodeTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      NodeRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    hostname,
+    maxBodyBytes,
+    preflight,
+    extraResponseHeaders,
+    onBodyReadError
+  );
+
+export const createUnaryRouteNodeTransportRequestHandler: typeof createRouteUnaryNodeTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandler;
+
+export const createRouteUnaryNodeTransportRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <TManifest extends JoorManifest>(
+    handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
+  ): NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing> =>
+    createRouteUnaryNodeTransportRequestHandler(
+      handler,
+      hostname,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders,
+      onBodyReadError
+    ) as NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
+
+export const createUnaryRouteNodeTransportRequestHandlerFor: typeof createRouteUnaryNodeTransportRequestHandlerFor =
+  createRouteUnaryNodeTransportRequestHandlerFor;
+
+export const createRouteStreamNodeTransportRequestHandler = <
+  TManifest extends JoorManifest,
+>(
+  handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  hostname = '0.0.0.0',
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
+): NodeRouteStreamTransportRequestHandler =>
+  createNodeTransportRequestHandler(
+    handler as NodeTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      NodeRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    hostname,
+    maxBodyBytes,
+    preflight,
+    extraResponseHeaders,
+    onBodyReadError
+  );
+
+export const createStreamRouteNodeTransportRequestHandler: typeof createRouteStreamNodeTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandler;
+
+export const createRouteStreamNodeTransportRequestHandlerFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <TManifest extends JoorManifest>(
+    handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
+  ): NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing> =>
+    createRouteStreamNodeTransportRequestHandler(
+      handler,
+      hostname,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders,
+      onBodyReadError
+    ) as NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
+
+export const createStreamRouteNodeTransportRequestHandlerFor: typeof createRouteStreamNodeTransportRequestHandlerFor =
+  createRouteStreamNodeTransportRequestHandlerFor;
+
 export const createNodeTransportRequestHandlerWithPath = <
   TBody = JsonValue,
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
@@ -743,6 +859,90 @@ export const createNodeTransportRequestHandlerWithPathFor =
       hostname,
       maxBodyBytes
     ) as NodeTransportRequestHandler<TIncoming, TOutgoing>;
+
+export const createRouteUnaryNodeTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+>(
+  handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  path: string,
+  hostname = '0.0.0.0',
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): NodeRouteUnaryTransportRequestHandler =>
+  createNodeTransportRequestHandlerWithPath(
+    handler as NodeTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      NodeRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    path,
+    hostname,
+    maxBodyBytes
+  );
+
+export const createUnaryRouteNodeTransportRequestHandlerWithPath: typeof createRouteUnaryNodeTransportRequestHandlerWithPath =
+  createRouteUnaryNodeTransportRequestHandlerWithPath;
+
+export const createRouteUnaryNodeTransportRequestHandlerWithPathFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <TManifest extends JoorManifest>(
+    handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    path: string,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing> =>
+    createRouteUnaryNodeTransportRequestHandlerWithPath(
+      handler,
+      path,
+      hostname,
+      maxBodyBytes
+    ) as NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
+
+export const createUnaryRouteNodeTransportRequestHandlerWithPathFor: typeof createRouteUnaryNodeTransportRequestHandlerWithPathFor =
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor;
+
+export const createRouteStreamNodeTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+>(
+  handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  path: string,
+  hostname = '0.0.0.0',
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): NodeRouteStreamTransportRequestHandler =>
+  createNodeTransportRequestHandlerWithPath(
+    handler as NodeTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      NodeRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    path,
+    hostname,
+    maxBodyBytes
+  );
+
+export const createStreamRouteNodeTransportRequestHandlerWithPath: typeof createRouteStreamNodeTransportRequestHandlerWithPath =
+  createRouteStreamNodeTransportRequestHandlerWithPath;
+
+export const createRouteStreamNodeTransportRequestHandlerWithPathFor =
+  <
+    TIncoming extends IncomingMessage = IncomingMessage,
+    TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+  >() =>
+  <TManifest extends JoorManifest>(
+    handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    path: string,
+    hostname = '0.0.0.0',
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing> =>
+    createRouteStreamNodeTransportRequestHandlerWithPath(
+      handler,
+      path,
+      hostname,
+      maxBodyBytes
+    ) as NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
+
+export const createStreamRouteNodeTransportRequestHandlerWithPathFor: typeof createRouteStreamNodeTransportRequestHandlerWithPathFor =
+  createRouteStreamNodeTransportRequestHandlerWithPathFor;
 
 export function listen<
   TManifest extends JoorManifest,
@@ -934,11 +1134,10 @@ export const createRouteUnaryNodeRpcRequestHandlerFor =
     return createNodeRpcRequestHandlerWithOptions<
       TManifest,
       RpcManifestRouteUnaryBody<TManifest>
-    >(
-      manifest,
-      options,
-      args[1] ?? '0.0.0.0'
-    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
+    >(manifest, options, args[1] ?? '0.0.0.0') as NodeRpcRequestHandler<
+      TIncoming,
+      TOutgoing
+    >;
   };
 
 export const createUnaryRouteNodeRpcRequestHandlerFor: typeof createRouteUnaryNodeRpcRequestHandlerFor =
@@ -966,11 +1165,10 @@ export const createRouteStreamNodeRpcRequestHandlerFor =
     return createNodeRpcRequestHandlerWithOptions<
       TManifest,
       RpcManifestRouteStreamBody<TManifest>
-    >(
-      manifest,
-      options,
-      args[1] ?? '0.0.0.0'
-    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
+    >(manifest, options, args[1] ?? '0.0.0.0') as NodeRpcRequestHandler<
+      TIncoming,
+      TOutgoing
+    >;
   };
 
 export const createStreamRouteNodeRpcRequestHandlerFor: typeof createRouteStreamNodeRpcRequestHandlerFor =

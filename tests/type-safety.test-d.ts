@@ -264,12 +264,28 @@ import {
   createNodeTransportRequestHandlerWithPathFor,
   createRouteStreamNodeRpcRequestHandler,
   createRouteStreamNodeRpcRequestHandlerFor,
+  createRouteStreamNodeTransportRequestHandler,
+  createRouteStreamNodeTransportRequestHandlerFor,
+  createRouteStreamNodeTransportRequestHandlerWithPath,
+  createRouteStreamNodeTransportRequestHandlerWithPathFor,
   createRouteUnaryNodeRpcRequestHandler,
   createRouteUnaryNodeRpcRequestHandlerFor,
+  createRouteUnaryNodeTransportRequestHandler,
+  createRouteUnaryNodeTransportRequestHandlerFor,
+  createRouteUnaryNodeTransportRequestHandlerWithPath,
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor,
   createStreamRouteNodeRpcRequestHandler,
   createStreamRouteNodeRpcRequestHandlerFor,
+  createStreamRouteNodeTransportRequestHandler,
+  createStreamRouteNodeTransportRequestHandlerFor,
+  createStreamRouteNodeTransportRequestHandlerWithPath,
+  createStreamRouteNodeTransportRequestHandlerWithPathFor,
   createUnaryRouteNodeRpcRequestHandler,
   createUnaryRouteNodeRpcRequestHandlerFor,
+  createUnaryRouteNodeTransportRequestHandler,
+  createUnaryRouteNodeTransportRequestHandlerFor,
+  createUnaryRouteNodeTransportRequestHandlerWithPath,
+  createUnaryRouteNodeTransportRequestHandlerWithPathFor,
   listenRouteStream,
   listenRouteUnary,
   createRouteStreamVercelFetch,
@@ -1029,11 +1045,13 @@ import {
   type NodeRouteStreamRpcRequestHandlerOptionsArgs,
   type NodeRouteStreamTransportBodyResultFor,
   type NodeRouteStreamTransportBodyResultHandlerFor,
+  type NodeRouteStreamTransportRequestHandler,
   type NodeRouteUnaryListenOptionsArgs,
   type NodeRouteUnaryListenOptionsFor,
   type NodeRouteUnaryRpcRequestHandlerOptionsArgs,
   type NodeRouteUnaryTransportBodyResultFor,
   type NodeRouteUnaryTransportBodyResultHandlerFor,
+  type NodeRouteUnaryTransportRequestHandler,
   type NodeRouteUnaryRpcRequestHandlerOptionsFor,
   type NodeStreamRouteListenOptionsArgs,
   type NodeStreamRouteListenOptionsFor,
@@ -1045,11 +1063,13 @@ import {
   type NodeTransportBodyResultHandlerFor,
   type NodeStreamRouteTransportBodyResultFor,
   type NodeStreamRouteTransportBodyResultHandlerFor,
+  type NodeStreamRouteTransportRequestHandler,
   type NodeUnaryRouteListenOptionsArgs,
   type NodeUnaryRouteListenOptionsFor,
   type NodeUnaryRouteRpcRequestHandlerOptionsArgs,
   type NodeUnaryRouteTransportBodyResultFor,
   type NodeUnaryRouteTransportBodyResultHandlerFor,
+  type NodeUnaryRouteTransportRequestHandler,
   type RouteStreamListenOptionsArgs,
   type RouteStreamListenOptionsFor,
   type RouteUnaryListenOptionsArgs,
@@ -2213,12 +2233,28 @@ import {
   createNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathNodeTransportRequestHandlerWithPathFor,
   createRouteStreamNodeRpcRequestHandler as createRuntimeSubpathRouteStreamNodeRpcRequestHandler,
   createRouteStreamNodeRpcRequestHandlerFor as createRuntimeSubpathRouteStreamNodeRpcRequestHandlerFor,
+  createRouteStreamNodeTransportRequestHandler as createRuntimeSubpathRouteStreamNodeTransportRequestHandler,
+  createRouteStreamNodeTransportRequestHandlerFor as createRuntimeSubpathRouteStreamNodeTransportRequestHandlerFor,
+  createRouteStreamNodeTransportRequestHandlerWithPath as createRuntimeSubpathRouteStreamNodeTransportRequestHandlerWithPath,
+  createRouteStreamNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathRouteStreamNodeTransportRequestHandlerWithPathFor,
   createRouteUnaryNodeRpcRequestHandler as createRuntimeSubpathRouteUnaryNodeRpcRequestHandler,
   createRouteUnaryNodeRpcRequestHandlerFor as createRuntimeSubpathRouteUnaryNodeRpcRequestHandlerFor,
+  createRouteUnaryNodeTransportRequestHandler as createRuntimeSubpathRouteUnaryNodeTransportRequestHandler,
+  createRouteUnaryNodeTransportRequestHandlerFor as createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerFor,
+  createRouteUnaryNodeTransportRequestHandlerWithPath as createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerWithPath,
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerWithPathFor,
   createStreamRouteNodeRpcRequestHandler as createRuntimeSubpathStreamRouteNodeRpcRequestHandler,
   createStreamRouteNodeRpcRequestHandlerFor as createRuntimeSubpathStreamRouteNodeRpcRequestHandlerFor,
+  createStreamRouteNodeTransportRequestHandler as createRuntimeSubpathStreamRouteNodeTransportRequestHandler,
+  createStreamRouteNodeTransportRequestHandlerFor as createRuntimeSubpathStreamRouteNodeTransportRequestHandlerFor,
+  createStreamRouteNodeTransportRequestHandlerWithPath as createRuntimeSubpathStreamRouteNodeTransportRequestHandlerWithPath,
+  createStreamRouteNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathStreamRouteNodeTransportRequestHandlerWithPathFor,
   createUnaryRouteNodeRpcRequestHandler as createRuntimeSubpathUnaryRouteNodeRpcRequestHandler,
   createUnaryRouteNodeRpcRequestHandlerFor as createRuntimeSubpathUnaryRouteNodeRpcRequestHandlerFor,
+  createUnaryRouteNodeTransportRequestHandler as createRuntimeSubpathUnaryRouteNodeTransportRequestHandler,
+  createUnaryRouteNodeTransportRequestHandlerFor as createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerFor,
+  createUnaryRouteNodeTransportRequestHandlerWithPath as createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerWithPath,
+  createUnaryRouteNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerWithPathFor,
   createRouteStreamVercelFetch as createRuntimeSubpathRouteStreamVercelFetch,
   createRouteStreamVercelFetchFor as createRuntimeSubpathRouteStreamVercelFetchFor,
   createRouteStreamVercelFunction as createRuntimeSubpathRouteStreamVercelFunction,
@@ -2559,14 +2595,17 @@ import {
   type NodeRouteStreamRpcRequestHandlerOptionsFor as RuntimeSubpathNodeRouteStreamRpcRequestHandlerOptionsFor,
   type NodeRouteStreamTransportBodyResultFor as RuntimeSubpathNodeRouteStreamTransportBodyResultFor,
   type NodeRouteStreamTransportBodyResultHandlerFor as RuntimeSubpathNodeRouteStreamTransportBodyResultHandlerFor,
+  type NodeRouteStreamTransportRequestHandler as RuntimeSubpathNodeRouteStreamTransportRequestHandler,
   type NodeRouteUnaryRpcRequestHandlerOptionsArgs as RuntimeSubpathNodeRouteUnaryRpcRequestHandlerOptionsArgs,
   type NodeRouteUnaryRpcRequestHandlerOptionsFor as RuntimeSubpathNodeRouteUnaryRpcRequestHandlerOptionsFor,
   type NodeRouteUnaryTransportBodyResultFor as RuntimeSubpathNodeRouteUnaryTransportBodyResultFor,
   type NodeRouteUnaryTransportBodyResultHandlerFor as RuntimeSubpathNodeRouteUnaryTransportBodyResultHandlerFor,
+  type NodeRouteUnaryTransportRequestHandler as RuntimeSubpathNodeRouteUnaryTransportRequestHandler,
   type NodeStreamRouteRpcRequestHandlerOptionsArgs as RuntimeSubpathNodeStreamRouteRpcRequestHandlerOptionsArgs,
   type NodeStreamRouteRpcRequestHandlerOptionsFor as RuntimeSubpathNodeStreamRouteRpcRequestHandlerOptionsFor,
   type NodeStreamRouteTransportBodyResultFor as RuntimeSubpathNodeStreamRouteTransportBodyResultFor,
   type NodeStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathNodeStreamRouteTransportBodyResultHandlerFor,
+  type NodeStreamRouteTransportRequestHandler as RuntimeSubpathNodeStreamRouteTransportRequestHandler,
   type ListenOptionsArgs as RuntimeSubpathListenOptionsArgs,
   type NodeListenOptions as RuntimeSubpathNodeListenOptions,
   type NodeListenOptionsArgs as RuntimeSubpathNodeListenOptionsArgs,
@@ -2591,6 +2630,7 @@ import {
   type NodeUnaryRouteRpcRequestHandlerOptionsFor as RuntimeSubpathNodeUnaryRouteRpcRequestHandlerOptionsFor,
   type NodeUnaryRouteTransportBodyResultFor as RuntimeSubpathNodeUnaryRouteTransportBodyResultFor,
   type NodeUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathNodeUnaryRouteTransportBodyResultHandlerFor,
+  type NodeUnaryRouteTransportRequestHandler as RuntimeSubpathNodeUnaryRouteTransportRequestHandler,
   type CorsHeaderOptions as RuntimeSubpathCorsHeaderOptions,
   type SerializedJsonEnvelope as RuntimeSubpathSerializedJsonEnvelope,
   type RouteStreamTransportBodyResultFor as RuntimeSubpathRouteStreamTransportBodyResultFor,
@@ -22348,8 +22388,135 @@ const syncManifestNodeRouteStreamTransportHandler: NodeRouteStreamTransportBodyR
 const manifestNodeStreamRouteTransportHandler: NodeStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeRouteStreamTransportHandler;
+const nodeRouteUnaryTransportRequestHandler: NodeRouteUnaryTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandler<typeof manifest>(
+    manifestNodeRouteUnaryTransportHandler
+  );
+const nodeUnaryRouteTransportRequestHandler: NodeUnaryRouteTransportRequestHandler =
+  createUnaryRouteNodeTransportRequestHandler<typeof manifest>(
+    manifestNodeUnaryRouteTransportHandler
+  );
+const nodeUnaryRouteTransportRequestHandlerWithPath: NodeUnaryRouteTransportRequestHandler =
+  createUnaryRouteNodeTransportRequestHandlerWithPath<typeof manifest>(
+    manifestNodeUnaryRouteTransportHandler,
+    '/rpc'
+  );
+const nodeRouteUnaryTransportRequestHandlerWithPath: NodeRouteUnaryTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandlerWithPath<typeof manifest>(
+    manifestNodeRouteUnaryTransportHandler,
+    '/rpc'
+  );
+const nodeRouteStreamTransportRequestHandler: NodeRouteStreamTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandler<typeof manifest>(
+    manifestNodeRouteStreamTransportHandler
+  );
+const nodeStreamRouteTransportRequestHandler: NodeStreamRouteTransportRequestHandler =
+  createStreamRouteNodeTransportRequestHandler<typeof manifest>(
+    manifestNodeStreamRouteTransportHandler
+  );
+const nodeRouteStreamTransportRequestHandlerWithPath: NodeRouteStreamTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandlerWithPath<typeof manifest>(
+    manifestNodeRouteStreamTransportHandler,
+    '/rpc'
+  );
+const createTypedNodeRouteUnaryTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeRouteUnaryTransportRequestHandler: NodeRouteUnaryTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeRouteUnaryTransportRequestHandler<typeof manifest>(
+  manifestNodeRouteUnaryTransportHandler
+);
+const createTypedNodeRouteUnaryTransportRequestHandlerWithPath =
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeRouteUnaryTransportRequestHandlerWithPath: NodeRouteUnaryTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeRouteUnaryTransportRequestHandlerWithPath<typeof manifest>(
+  manifestNodeRouteUnaryTransportHandler,
+  '/rpc'
+);
+const createTypedNodeUnaryRouteTransportRequestHandler =
+  createUnaryRouteNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeUnaryRouteTransportRequestHandler: NodeUnaryRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeUnaryRouteTransportRequestHandler<typeof manifest>(
+  manifestNodeUnaryRouteTransportHandler
+);
+const createTypedNodeUnaryRouteTransportRequestHandlerWithPath =
+  createUnaryRouteNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeUnaryRouteTransportRequestHandlerWithPath: NodeUnaryRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeUnaryRouteTransportRequestHandlerWithPath<typeof manifest>(
+  manifestNodeUnaryRouteTransportHandler,
+  '/rpc'
+);
+const createTypedNodeRouteStreamTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeRouteStreamTransportRequestHandler: NodeRouteStreamTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeRouteStreamTransportRequestHandler<typeof manifest>(
+  manifestNodeRouteStreamTransportHandler
+);
+const createTypedNodeRouteStreamTransportRequestHandlerWithPath =
+  createRouteStreamNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeRouteStreamTransportRequestHandlerWithPath: NodeRouteStreamTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeRouteStreamTransportRequestHandlerWithPath<typeof manifest>(
+  manifestNodeRouteStreamTransportHandler,
+  '/rpc'
+);
+const createTypedNodeStreamRouteTransportRequestHandler =
+  createStreamRouteNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeStreamRouteTransportRequestHandler: NodeStreamRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeStreamRouteTransportRequestHandler<typeof manifest>(
+  manifestNodeStreamRouteTransportHandler
+);
+const createTypedNodeStreamRouteTransportRequestHandlerWithPath =
+  createStreamRouteNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const typedNodeStreamRouteTransportRequestHandlerWithPath: NodeStreamRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createTypedNodeStreamRouteTransportRequestHandlerWithPath<typeof manifest>(
+  manifestNodeStreamRouteTransportHandler,
+  '/rpc'
+);
 createNodeTransportRequestHandler(manifestNodeTransportHandler);
 createNodeTransportRequestHandler(syncManifestNodeTransportHandler);
+createStreamRouteNodeTransportRequestHandlerWithPath<typeof manifest>(
+  manifestNodeStreamRouteTransportHandler,
+  '/rpc'
+);
 manifestNodeUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -22373,6 +22540,33 @@ manifestNodeRouteStreamTransportHandler(
 syncManifestNodeRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
+);
+nodeRouteUnaryTransportRequestHandler.length.toFixed();
+nodeUnaryRouteTransportRequestHandler.length.toFixed();
+nodeUnaryRouteTransportRequestHandlerWithPath.length.toFixed();
+nodeRouteUnaryTransportRequestHandlerWithPath.length.toFixed();
+nodeRouteStreamTransportRequestHandler.length.toFixed();
+nodeStreamRouteTransportRequestHandler.length.toFixed();
+nodeRouteStreamTransportRequestHandlerWithPath.length.toFixed();
+typedNodeRouteUnaryTransportRequestHandler(nodeAppRequest, nodeAppResponse);
+typedNodeRouteUnaryTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+typedNodeUnaryRouteTransportRequestHandler(nodeAppRequest, nodeAppResponse);
+typedNodeUnaryRouteTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+typedNodeRouteStreamTransportRequestHandler(nodeAppRequest, nodeAppResponse);
+typedNodeRouteStreamTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+typedNodeStreamRouteTransportRequestHandler(nodeAppRequest, nodeAppResponse);
+typedNodeStreamRouteTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
 );
 Promise.resolve(
   manifestNodeTransportHandler(createFetchRequestSourceForTypes(), {
@@ -22702,8 +22896,166 @@ const runtimeSubpathManifestNodeRouteUnaryTransportHandler: RuntimeSubpathNodeRo
 const runtimeSubpathManifestNodeRouteStreamTransportHandler: RuntimeSubpathNodeRouteStreamTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestNodeStreamRouteTransportHandler;
+const runtimeSubpathNodeRouteUnaryTransportRequestHandler: RuntimeSubpathNodeRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryNodeTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestNodeRouteUnaryTransportHandler
+  );
+const runtimeSubpathNodeUnaryRouteTransportRequestHandler: RuntimeSubpathNodeUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteNodeTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestNodeUnaryRouteTransportHandler
+  );
+const runtimeSubpathNodeUnaryRouteTransportRequestHandlerWithPath: RuntimeSubpathNodeUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestNodeUnaryRouteTransportHandler, '/rpc');
+const runtimeSubpathNodeRouteUnaryTransportRequestHandlerWithPath: RuntimeSubpathNodeRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestNodeRouteUnaryTransportHandler, '/rpc');
+const runtimeSubpathNodeRouteStreamTransportRequestHandler: RuntimeSubpathNodeRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamNodeTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestNodeRouteStreamTransportHandler
+  );
+const runtimeSubpathNodeStreamRouteTransportRequestHandler: RuntimeSubpathNodeStreamRouteTransportRequestHandler =
+  createRuntimeSubpathStreamRouteNodeTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestNodeStreamRouteTransportHandler
+  );
+const runtimeSubpathNodeRouteStreamTransportRequestHandlerWithPath: RuntimeSubpathNodeRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamNodeTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestNodeRouteStreamTransportHandler, '/rpc');
+const createRuntimeSubpathTypedNodeRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeRouteUnaryTransportRequestHandler: RuntimeSubpathNodeRouteUnaryTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeRouteUnaryTransportRequestHandler<
+  typeof manifest
+>(runtimeSubpathManifestNodeRouteUnaryTransportHandler);
+const createRuntimeSubpathTypedNodeRouteUnaryTransportRequestHandlerWithPath =
+  createRuntimeSubpathRouteUnaryNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeRouteUnaryTransportRequestHandlerWithPath: RuntimeSubpathNodeRouteUnaryTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeRouteUnaryTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestNodeRouteUnaryTransportHandler, '/rpc');
+const createRuntimeSubpathTypedNodeUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeUnaryRouteTransportRequestHandler: RuntimeSubpathNodeUnaryRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeUnaryRouteTransportRequestHandler<
+  typeof manifest
+>(runtimeSubpathManifestNodeUnaryRouteTransportHandler);
+const createRuntimeSubpathTypedNodeUnaryRouteTransportRequestHandlerWithPath =
+  createRuntimeSubpathUnaryRouteNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeUnaryRouteTransportRequestHandlerWithPath: RuntimeSubpathNodeUnaryRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeUnaryRouteTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestNodeUnaryRouteTransportHandler, '/rpc');
+const createRuntimeSubpathTypedNodeRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeRouteStreamTransportRequestHandler: RuntimeSubpathNodeRouteStreamTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeRouteStreamTransportRequestHandler<
+  typeof manifest
+>(runtimeSubpathManifestNodeRouteStreamTransportHandler);
+const createRuntimeSubpathTypedNodeRouteStreamTransportRequestHandlerWithPath =
+  createRuntimeSubpathRouteStreamNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeRouteStreamTransportRequestHandlerWithPath: RuntimeSubpathNodeRouteStreamTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeRouteStreamTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestNodeRouteStreamTransportHandler, '/rpc');
+const createRuntimeSubpathTypedNodeStreamRouteTransportRequestHandler =
+  createRuntimeSubpathStreamRouteNodeTransportRequestHandlerFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeStreamRouteTransportRequestHandler: RuntimeSubpathNodeStreamRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeStreamRouteTransportRequestHandler<
+  typeof manifest
+>(runtimeSubpathManifestNodeStreamRouteTransportHandler);
+const createRuntimeSubpathTypedNodeStreamRouteTransportRequestHandlerWithPath =
+  createRuntimeSubpathStreamRouteNodeTransportRequestHandlerWithPathFor<
+    NodeAppRequest,
+    NodeAppResponse
+  >();
+const runtimeSubpathTypedNodeStreamRouteTransportRequestHandlerWithPath: RuntimeSubpathNodeStreamRouteTransportRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathTypedNodeStreamRouteTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestNodeStreamRouteTransportHandler, '/rpc');
 createRuntimeSubpathNodeTransportRequestHandler(
   runtimeSubpathManifestNodeTransportHandler
+);
+createRuntimeSubpathStreamRouteNodeTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestNodeStreamRouteTransportHandler, '/rpc');
+runtimeSubpathNodeRouteUnaryTransportRequestHandler.length.toFixed();
+runtimeSubpathNodeUnaryRouteTransportRequestHandler.length.toFixed();
+runtimeSubpathNodeUnaryRouteTransportRequestHandlerWithPath.length.toFixed();
+runtimeSubpathNodeRouteUnaryTransportRequestHandlerWithPath.length.toFixed();
+runtimeSubpathNodeRouteStreamTransportRequestHandler.length.toFixed();
+runtimeSubpathNodeStreamRouteTransportRequestHandler.length.toFixed();
+runtimeSubpathNodeRouteStreamTransportRequestHandlerWithPath.length.toFixed();
+runtimeSubpathTypedNodeRouteUnaryTransportRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeRouteUnaryTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeUnaryRouteTransportRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeUnaryRouteTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeRouteStreamTransportRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeRouteStreamTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeStreamRouteTransportRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+runtimeSubpathTypedNodeStreamRouteTransportRequestHandlerWithPath(
+  nodeAppRequest,
+  nodeAppResponse
 );
 runtimeSubpathManifestBunUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
