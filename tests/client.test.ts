@@ -88,22 +88,29 @@ describe('client', () => {
     expect(manifestRouteRequest.traceId).toBe('trace-2');
     expect(manifestRouteUnaryRequest.id).toBe('protected');
     expect(manifestRouteStreamRequest.id).toBe('stream');
+    expect(Object.isFrozen(routeRequest)).toBe(true);
+    expect(Object.isFrozen(routeUnaryRequest)).toBe(true);
+    expect(Object.isFrozen(routeStreamRequest)).toBe(true);
+    expect(Object.isFrozen(manifestRouteRequest)).toBe(true);
+    expect(Object.isFrozen(manifestRouteUnaryRequest)).toBe(true);
+    expect(Object.isFrozen(manifestRouteStreamRequest)).toBe(true);
   });
 
   it('builds standalone route requests for batches', () => {
+    const headers = { authorization: 'Bearer token' };
     const routeRequest = createRouteRequest<
       { protected: typeof getUser },
       'protected'
     >(
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' },
-      { headers: { authorization: 'Bearer token' } }
+      { headers }
     );
     const manifestRouteRequest = createManifestRouteRequest(
       { procedures: { protected: getUser } },
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' },
-      { headers: { authorization: 'Bearer token' } }
+      { headers }
     );
 
     expect(routeRequest).toEqual({
@@ -112,6 +119,11 @@ describe('client', () => {
       headers: { authorization: 'Bearer token' },
     });
     expect(manifestRouteRequest).toEqual(routeRequest);
+    expect(Object.isFrozen(routeRequest)).toBe(true);
+    expect(Object.isFrozen(routeRequest.headers)).toBe(true);
+    expect(Object.isFrozen(manifestRouteRequest)).toBe(true);
+    expect(Object.isFrozen(manifestRouteRequest.headers)).toBe(true);
+    expect(Object.isFrozen(headers)).toBe(false);
   });
 
   it('batches standalone protocol requests', async () => {

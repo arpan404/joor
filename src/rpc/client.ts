@@ -615,7 +615,7 @@ const createProtocolRequestObject = <TId extends string>(
   input: unknown,
   options?: RpcProtocolRequestOptions
 ): RpcRequest<TId> =>
-  ({
+  Object.freeze({
     id,
     input: input as JsonValue,
     ...(options?.traceId === undefined ? {} : { traceId: options.traceId }),
@@ -1180,12 +1180,12 @@ const createPendingRpcRequest = <TProcedure, TId extends string>(
     ? [ClientRequestOptions<TProcedure>?]
     : [ClientRequestOptions<TProcedure>]
 ): PendingRpcRequest<TProcedure, TId> & PendingRpcRequestHeaders<TProcedure> =>
-  ({
+  Object.freeze({
     id,
     input,
     ...(requestOptions[0]?.headers === undefined
       ? {}
-      : { headers: requestOptions[0].headers }),
+      : { headers: Object.freeze({ ...requestOptions[0].headers }) }),
   }) as PendingRpcRequest<TProcedure, TId> &
     PendingRpcRequestHeaders<TProcedure>;
 
@@ -1202,13 +1202,13 @@ export function createRouteRequest(
   input: unknown,
   ...options: [{ headers?: object }?]
 ): PendingRpcRequest {
-  return {
+  return Object.freeze({
     id,
     input: input as JsonValue,
     ...(options[0]?.headers === undefined
       ? {}
-      : { headers: options[0].headers }),
-  } as PendingRpcRequest;
+      : { headers: Object.freeze({ ...options[0].headers }) }),
+  }) as PendingRpcRequest;
 }
 
 export const createRouteUnaryRequest: typeof createRouteRequest =
@@ -1236,13 +1236,13 @@ export function createManifestRouteRequest(
   input: unknown,
   ...options: [{ headers?: object }?]
 ): PendingRpcRequest {
-  return {
+  return Object.freeze({
     id,
     input: input as JsonValue,
     ...(options[0]?.headers === undefined
       ? {}
-      : { headers: options[0].headers }),
-  } as PendingRpcRequest;
+      : { headers: Object.freeze({ ...options[0].headers }) }),
+  }) as PendingRpcRequest;
 }
 
 export const createManifestRouteUnaryRequest: typeof createManifestRouteRequest =
