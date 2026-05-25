@@ -316,7 +316,7 @@ const emitProfileDispatcher = async (
   ];
   const configTypeImport = `import type { ${configTypeImports.join(', ')} } from 'joor/config';\n`;
   const handlerTypeImport =
-    "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsBody, HandlerOptionsFor, HandlerOptionsManifest, HandlerOptionsRequest, HandlerOptionsServices, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsArgsFor, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsArgsFor, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
+    "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsBody, HandlerOptionsFor, HandlerOptionsManifest, HandlerOptionsRequest, HandlerOptionsServices, HandlerOptionsWithPreflightArgs, HandlerOptionsWithTrailingArgs, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsArgsFor, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamHandlerOptionsWithPreflightArgs, RpcManifestRouteStreamHandlerOptionsWithTrailingArgs, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsArgsFor, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs, RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
   const nativeServicesType =
     configPath === undefined
       ? 'Record<string, never>'
@@ -640,6 +640,26 @@ export type NativeStreamRouteHandlerOptionsArgs<TPlugins extends readonly JoorPl
   NativeRouteStreamHandlerOptionsArgs<TPlugins, TBody, TRequest>;
 export type NativeStreamRouteHandlerOptionsArgsFor<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TOptionsOrBody extends NativeRouteStreamHandlerOptions<TPlugins> | NativeRouteStreamBody = NativeRouteStreamHandlerOptions<TPlugins, NativeRouteStreamBody>, TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   NativeRouteStreamHandlerOptionsArgsFor<TPlugins, TOptionsOrBody, TBody, TRequest>;
+export type NativeHandlerOptionsWithTrailingArgs<TTrailingArgs extends readonly unknown[], TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  HandlerOptionsWithTrailingArgs<NativeManifest, TTrailingArgs, TPlugins, TBody, TRequest>;
+export type NativeHandlerOptionsWithPreflightArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeBody = NativeBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  HandlerOptionsWithPreflightArgs<NativeManifest, TPlugins, TBody, TRequest>;
+export type NativeRouteUnaryHandlerOptionsWithTrailingArgs<TTrailingArgs extends readonly unknown[], TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs<NativeManifest, TTrailingArgs, TPlugins, TBody, TRequest>;
+export type NativeUnaryRouteHandlerOptionsWithTrailingArgs<TTrailingArgs extends readonly unknown[], TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  NativeRouteUnaryHandlerOptionsWithTrailingArgs<TTrailingArgs, TPlugins, TBody, TRequest>;
+export type NativeRouteStreamHandlerOptionsWithTrailingArgs<TTrailingArgs extends readonly unknown[], TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  RpcManifestRouteStreamHandlerOptionsWithTrailingArgs<NativeManifest, TTrailingArgs, TPlugins, TBody, TRequest>;
+export type NativeStreamRouteHandlerOptionsWithTrailingArgs<TTrailingArgs extends readonly unknown[], TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  NativeRouteStreamHandlerOptionsWithTrailingArgs<TTrailingArgs, TPlugins, TBody, TRequest>;
+export type NativeRouteUnaryHandlerOptionsWithPreflightArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs<NativeManifest, TPlugins, TBody, TRequest>;
+export type NativeUnaryRouteHandlerOptionsWithPreflightArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteUnaryBody = NativeRouteUnaryBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  NativeRouteUnaryHandlerOptionsWithPreflightArgs<TPlugins, TBody, TRequest>;
+export type NativeRouteStreamHandlerOptionsWithPreflightArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  RpcManifestRouteStreamHandlerOptionsWithPreflightArgs<NativeManifest, TPlugins, TBody, TRequest>;
+export type NativeStreamRouteHandlerOptionsWithPreflightArgs<TPlugins extends readonly JoorPlugin<object>[] = readonly JoorPlugin<object>[], TBody extends NativeRouteStreamBody = NativeRouteStreamBody, TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+  NativeRouteStreamHandlerOptionsWithPreflightArgs<TPlugins, TBody, TRequest>;
 export type NativeDefineHandlerOptions = DefineHandlerOptions<NativeManifest>;
 export type NativeDefineRouteUnaryHandlerOptions = DefineRouteUnaryHandlerOptions<NativeManifest>;
 export type NativeDefineUnaryRouteHandlerOptions = NativeDefineRouteUnaryHandlerOptions;
