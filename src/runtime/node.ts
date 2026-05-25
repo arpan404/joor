@@ -628,13 +628,15 @@ export const createNodeTransportRequestHandler = <
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
   preflight?: RpcRequestPreflight | false,
-  extraResponseHeaders?: Record<string, string>
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
 ): NodeRpcRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
   const responseHeaders =
     extraResponseHeaders === undefined
       ? undefined
       : Object.freeze({ ...extraResponseHeaders });
+  const bodyReadError = onBodyReadError;
   const requestPreflight =
     preflight === false
       ? undefined
@@ -653,6 +655,7 @@ export const createNodeTransportRequestHandler = <
     } catch (error) {
       const payloadTooLarge =
         error instanceof Error && isBodySizeLimitError(error);
+      if (error instanceof Error) bodyReadError?.(error, request.toRequest());
       const headers = createJsonHeaderRecord(responseHeaders);
       outgoing.writeHead(payloadTooLarge ? 413 : 400, headers);
       outgoing.end(
@@ -692,14 +695,16 @@ export const createNodeTransportRequestHandlerFor =
     hostname = '0.0.0.0',
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
     preflight?: RpcRequestPreflight | false,
-    extraResponseHeaders?: Record<string, string>
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
   ): NodeTransportRequestHandler<TIncoming, TOutgoing> =>
     createNodeTransportRequestHandler(
       handler,
       hostname,
       maxBodyBytes,
       preflight,
-      extraResponseHeaders
+      extraResponseHeaders,
+      onBodyReadError
     ) as NodeTransportRequestHandler<TIncoming, TOutgoing>;
 
 export const createNodeTransportRequestHandlerWithPath = <
@@ -790,7 +795,8 @@ const createNodeRpcRequestHandlerWithOptions = <
     hostname,
     options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
     createRpcRequestPreflight(options),
-    createCorsHeaderRecord(options.cors)
+    createCorsHeaderRecord(options.cors),
+    options.onError
   );
 };
 

@@ -32,6 +32,7 @@ import {
   createDenoTransportRequestHandler,
 } from '../src/runtime/deno.js';
 import {
+  createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath,
 } from '../src/runtime/node.js';
@@ -815,6 +816,58 @@ describe('dispatcher', () => {
       expect(response.status).toBe(200);
       expect(response.headers.get('x-snapshot')).toBe('original');
       expect((await response.json()).ok).toBe(true);
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
+  it('calls snapshotted Node RPC error hooks for invalid request bodies', async () => {
+    const errors: string[] = [];
+    const options = {
+      cors: { origin: 'https://original.example' },
+      onError() {
+        errors.push('original');
+      },
+    };
+    const handler = createNodeRpcRequestHandler(
+      { procedures: {} },
+      options,
+      '127.0.0.1'
+    );
+    options.cors.origin = 'https://changed.example';
+    options.onError = () => {
+      errors.push('changed');
+    };
+    const server = createServer((incoming, outgoing) => {
+      void handler(incoming, outgoing);
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    try {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        throw new Error('Expected Node test server to listen on a TCP port');
+      }
+      const response = await fetch(`http://127.0.0.1:${address.port}/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: '{',
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://original.example'
+      );
+      expect(body.error.code).toBe('PARSE_ERROR');
+      expect(errors).toEqual(['original']);
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => {
