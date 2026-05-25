@@ -1109,6 +1109,32 @@ export type RpcUnaryRouteBatchResults<
     readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
 > = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
 
+export type RpcRouteProtocolBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[] =
+    readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[],
+> = RpcRouteBatchResults<TRoutes, TRequests>;
+
+export type RpcRouteUnaryProtocolBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends
+    readonly RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>[] =
+      readonly RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>[],
+> = RpcRouteUnaryBatchResults<TRoutes, TRequests>;
+
+export type RpcUnaryRouteProtocolBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends
+    readonly RpcUnaryRouteProtocolBatchRequestUnion<TRoutes>[] =
+      readonly RpcUnaryRouteProtocolBatchRequestUnion<TRoutes>[],
+> = RpcRouteUnaryProtocolBatchResults<TRoutes, TRequests>;
+
+export type RpcProtocolBatchResults<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly RpcProtocolBatchRequestUnion<TRoutes>[] =
+    readonly RpcProtocolBatchRequestUnion<TRoutes>[],
+> = RpcRouteProtocolBatchResults<TRoutes, TRequests>;
+
 export type ClientRequestOptions<TProcedure> = ClientTraceOptions &
   ([TProcedure] extends [never]
     ? {
