@@ -52,6 +52,8 @@ import {
   createStreamRouteJoorHandlerFor as createRootStreamRouteJoorHandlerFor,
   createUnaryRouteJoorHandlerFor as createRootUnaryRouteJoorHandlerFor,
   createKoaHandlerFor as createRootKoaHandlerFor,
+  createRouteUnaryKoaHandlerFor as createRootRouteUnaryKoaHandlerFor,
+  createStreamRouteKoaHandlerFor as createRootStreamRouteKoaHandlerFor,
   createNodeRpcRequestHandlerFor as createRootNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandlerFor as createRootNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPathFor as createRootNodeTransportRequestHandlerWithPathFor,
@@ -323,7 +325,14 @@ import {
   createStreamRouteJoorHandler,
   createUnaryRouteJoorHandler,
 } from 'joor/runtime/fetch';
-import { createKoaHandler, createKoaHandlerFor } from 'joor/runtime/koa';
+import {
+  createKoaHandler,
+  createKoaHandlerFor,
+  createRouteStreamKoaHandler,
+  createRouteUnaryKoaHandler,
+  createStreamRouteKoaHandler,
+  createUnaryRouteKoaHandler,
+} from 'joor/runtime/koa';
 import {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
@@ -798,6 +807,12 @@ const packageSubpathValues = [
   createUnaryRouteJoorHandler,
   createKoaHandler,
   createKoaHandlerFor,
+  createRouteStreamKoaHandler,
+  createRouteUnaryKoaHandler,
+  createRootRouteUnaryKoaHandlerFor,
+  createRootStreamRouteKoaHandlerFor,
+  createStreamRouteKoaHandler,
+  createUnaryRouteKoaHandler,
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,

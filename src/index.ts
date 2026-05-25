@@ -245,7 +245,18 @@ export {
   createUnaryRouteJoorHandler,
   createUnaryRouteJoorHandlerFor,
 } from './runtime/fetch.js';
-export { createKoaHandler, createKoaHandlerFor } from './runtime/koa.js';
+export {
+  createKoaHandler,
+  createKoaHandlerFor,
+  createRouteStreamKoaHandler,
+  createRouteStreamKoaHandlerFor,
+  createRouteUnaryKoaHandler,
+  createRouteUnaryKoaHandlerFor,
+  createStreamRouteKoaHandler,
+  createStreamRouteKoaHandlerFor,
+  createUnaryRouteKoaHandler,
+  createUnaryRouteKoaHandlerFor,
+} from './runtime/koa.js';
 export {
   createNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor,
