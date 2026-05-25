@@ -1001,6 +1001,50 @@ export interface HandlerOptions<
   readonly onError?: (error: Error, request: TRequest) => void;
 }
 
+type FreezableHandlerOptions = {
+  readonly plugins?: readonly JoorPlugin<object>[];
+  readonly middleware?: readonly unknown[];
+  readonly cors?: {
+    readonly origin?: string;
+    readonly headers?: readonly string[];
+    readonly methods?: readonly string[];
+  };
+  readonly cache?: object;
+  readonly rateLimit?: object;
+};
+
+const freezeHandlerOptions = <TOptions extends FreezableHandlerOptions>(
+  options: TOptions
+): TOptions =>
+  Object.freeze({
+    ...options,
+    ...(options.plugins === undefined
+      ? {}
+      : { plugins: Object.freeze([...options.plugins]) }),
+    ...(options.middleware === undefined
+      ? {}
+      : { middleware: Object.freeze([...options.middleware]) }),
+    ...(options.cors === undefined
+      ? {}
+      : {
+          cors: Object.freeze({
+            ...options.cors,
+            ...(options.cors.headers === undefined
+              ? {}
+              : { headers: Object.freeze([...options.cors.headers]) }),
+            ...(options.cors.methods === undefined
+              ? {}
+              : { methods: Object.freeze([...options.cors.methods]) }),
+          }),
+        }),
+    ...(options.cache === undefined
+      ? {}
+      : { cache: Object.freeze({ ...options.cache }) }),
+    ...(options.rateLimit === undefined
+      ? {}
+      : { rateLimit: Object.freeze({ ...options.rateLimit }) }),
+  }) as TOptions;
+
 export type HandlerOptionServices<TOptions> =
   TOptions extends HandlerOptions<
     infer TPlugins,
@@ -1308,7 +1352,8 @@ export function defineHandlerOptions<
 export function defineHandlerOptions<TManifest extends RpcManifest>(
   _manifest?: TManifest
 ): DefineHandlerOptions<TManifest> {
-  return ((options) => options) as DefineHandlerOptions<TManifest>;
+  return ((options) =>
+    freezeHandlerOptions(options)) as DefineHandlerOptions<TManifest>;
 }
 
 export interface HandlerHookContext<
