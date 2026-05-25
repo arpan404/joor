@@ -1114,6 +1114,52 @@ export interface ClientBatchOptions {
   readonly request?: ClientRequestInit;
 }
 
+type RpcRouteBatchRequestId<
+  TRoutes extends RpcRouteMap,
+  TRequest,
+> = TRequest extends { readonly id: infer TId extends RpcRouteUnaryId<TRoutes> }
+  ? TId
+  : never;
+
+type RpcRouteBatchRequestIds<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[],
+> = RpcRouteBatchRequestId<TRoutes, TRequests[number]>;
+
+export type RpcRouteBatchClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteBatchRequestUnion<TRoutes>[],
+> = {
+  [TId in RpcRouteBatchRequestIds<
+    TRoutes,
+    TRequests
+  >]: RpcRouteHasHeaders<TRoutes, TId> extends true
+    ? RpcRouteClientHeaders<TRoutes, TId>
+    : never;
+}[RpcRouteBatchRequestIds<TRoutes, TRequests>];
+
+export interface RpcRouteBatchOptions<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteBatchRequestUnion<TRoutes>[],
+> {
+  readonly headers?: RpcRouteBatchClientHeaders<TRoutes, TRequests>;
+  readonly request?: ClientRequestInit;
+}
+
+export type RpcRouteUnaryBatchOptions<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteUnaryBatchRequestUnion<TRoutes>[],
+> = RpcRouteBatchOptions<TRoutes, TRequests>;
+
+export type RpcUnaryRouteBatchOptions<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
+> = RpcRouteUnaryBatchOptions<TRoutes, TRequests>;
+
 export type RpcRouteRequestOptions<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
@@ -1348,7 +1394,7 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
     const TRequests extends readonly [...RpcRouteBatchRequestUnion<TRoutes>[]],
   >(
     requests: TRequests,
-    options?: ClientBatchOptions
+    options?: RpcRouteBatchOptions<TRoutes, NoInfer<TRequests>>
   ) => Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
 }
 

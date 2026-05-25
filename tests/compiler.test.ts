@@ -647,7 +647,7 @@ describe('compiler', () => {
         'export type StreamRouteFunction<TId extends RouteStreamId = RouteStreamId> =\n  RouteStreamFunction<TId>;'
       );
       expect(clientSource).toContain(
-        'export type BatchFunction = <const TRequests extends RouteBatchRequest>'
+        'export type BatchFunction = <const TRequests extends readonly [...RouteBatchRequestUnion[]]>'
       );
       expect(clientSource).toContain(
         'readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;'
@@ -1441,7 +1441,7 @@ const missingGeneratedClientRequestFactory: GeneratedClientOptions<GeneratedRequ
   },
 };
 const batchOptions: BatchOptions = {
-  headers: { 'x-batch': '1' },
+  headers: { authorization: 'Bearer token' },
   request: { cache: 'no-store' },
 };
 createClient(options).users.watch({ userId: '1' });

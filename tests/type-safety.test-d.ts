@@ -937,6 +937,8 @@ import {
   type RpcProtocolBatchRequest,
   type RpcRouteBatchRequest,
   type RpcRouteBatchRequestUnion,
+  type RpcRouteBatchClientHeaders,
+  type RpcRouteBatchOptions,
   type RpcRouteProtocolBatchRequest,
   type RpcRouteProtocolRequest,
   type RpcRouteProtocolRequestUnion,
@@ -1011,6 +1013,7 @@ import {
   type RpcRouteUnaryBatchRequestUnion,
   type RpcUnaryRouteBatchRequestUnion,
   type RpcUnaryRouteBatchResults,
+  type RpcUnaryRouteBatchOptions,
   type RpcUnaryRouteProcedure,
   type RpcUnaryRouteProtocolBatchRequest,
   type RpcUnaryRouteProtocolRequest,
@@ -1229,6 +1232,7 @@ import {
   type RpcRequestHandler as RpcSubpathRequestHandler,
   type RpcRouteBody as RpcSubpathRouteBody,
   type RpcRouteBodyResultFor as RpcSubpathRouteBodyResultFor,
+  type RpcRouteBatchOptions as RpcSubpathRouteBatchOptions,
   type RpcRouteClientArgs as RpcSubpathRouteClientArgs,
   type RpcRouteClientHeaders as RpcSubpathRouteClientHeaders,
   type RpcRouteErrorCode as RpcSubpathRouteErrorCode,
@@ -17820,6 +17824,54 @@ const defaultRouteBatchRequest: RpcRouteBatchRequest<Routes> =
   routeBatchRequest;
 const routeBatchRequestUnion: RpcRouteBatchRequestUnion<Routes> =
   routePendingBatchRequest;
+const routeBatchHeaders: RpcRouteBatchClientHeaders<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-1',
+};
+routeBatchHeaders['x-tenant-id'].toUpperCase();
+const routeBatchOptions: RpcRouteBatchOptions<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = {
+  headers: routeBatchHeaders,
+  request: clientRequestInit,
+};
+routeBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const rpcSubpathRouteBatchOptions: RpcSubpathRouteBatchOptions<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = routeBatchOptions;
+rpcSubpathRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const unaryRouteBatchOptions: RpcUnaryRouteBatchOptions<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = routeBatchOptions;
+unaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const _wrongRouteBatchOptions: RpcRouteBatchOptions<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = {
+  headers: {
+    // @ts-expect-error route batch options preserve selected route headers.
+    missing: 'value',
+  },
+};
+_wrongRouteBatchOptions;
+const _noHeaderRouteBatchOptions: RpcRouteBatchOptions<
+  Routes,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {};
+const _wrongNoHeaderRouteBatchOptions: RpcRouteBatchOptions<
+  Routes,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {
+  // @ts-expect-error batch headers are unavailable when selected routes declare none.
+  headers: { 'x-tenant-id': 'tenant-1' },
+};
+_wrongNoHeaderRouteBatchOptions;
 const routeProtocolBatchRequest: RpcRouteProtocolBatchRequest<
   Routes,
   [typeof routeProtocolRequest]
@@ -18521,6 +18573,7 @@ routeClient
     firstRouteId.toUpperCase();
     secondRouteId.toUpperCase();
   });
+routeClient.batch([routePendingBatchRequest] as const, routeBatchOptions);
 
 routeClient
   .batch([
