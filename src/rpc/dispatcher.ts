@@ -1908,6 +1908,38 @@ export function defineHandlerOptions<TManifest extends RpcManifest>(
     freezeHandlerOptions(options)) as DefineHandlerOptions<TManifest>;
 }
 
+export function defineRouteUnaryHandlerOptions<TManifest extends RpcManifest>(
+  manifest: TManifest
+): DefineRouteUnaryHandlerOptions<TManifest>;
+export function defineRouteUnaryHandlerOptions<
+  TManifest extends RpcManifest,
+>(): DefineRouteUnaryHandlerOptions<TManifest>;
+export function defineRouteUnaryHandlerOptions<
+  TManifest extends RpcManifest,
+>(_manifest?: TManifest): DefineRouteUnaryHandlerOptions<TManifest> {
+  return ((options) =>
+    freezeHandlerOptions(options)) as DefineRouteUnaryHandlerOptions<TManifest>;
+}
+
+export const defineUnaryRouteHandlerOptions: typeof defineRouteUnaryHandlerOptions =
+  defineRouteUnaryHandlerOptions;
+
+export function defineRouteStreamHandlerOptions<TManifest extends RpcManifest>(
+  manifest: TManifest
+): DefineRouteStreamHandlerOptions<TManifest>;
+export function defineRouteStreamHandlerOptions<
+  TManifest extends RpcManifest,
+>(): DefineRouteStreamHandlerOptions<TManifest>;
+export function defineRouteStreamHandlerOptions<
+  TManifest extends RpcManifest,
+>(_manifest?: TManifest): DefineRouteStreamHandlerOptions<TManifest> {
+  return ((options) =>
+    freezeHandlerOptions(options)) as DefineRouteStreamHandlerOptions<TManifest>;
+}
+
+export const defineStreamRouteHandlerOptions: typeof defineRouteStreamHandlerOptions =
+  defineRouteStreamHandlerOptions;
+
 export interface HandlerHookContext<
   TServices extends object = object,
   TBody = unknown,

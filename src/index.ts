@@ -45,6 +45,10 @@ export {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   defineHandlerOptions,
+  defineRouteStreamHandlerOptions,
+  defineRouteUnaryHandlerOptions,
+  defineStreamRouteHandlerOptions,
+  defineUnaryRouteHandlerOptions,
 } from './rpc/dispatcher.js';
 export { createSseResponse, encodeSse } from './rpc/stream.js';
 export {

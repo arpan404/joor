@@ -118,6 +118,10 @@ import {
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
   defineHandlerOptions,
+  defineRouteStreamHandlerOptions,
+  defineRouteUnaryHandlerOptions,
+  defineStreamRouteHandlerOptions,
+  defineUnaryRouteHandlerOptions,
   encodeSse,
   appendJsonStringHeaders,
   createJsonHeaderRecord,
@@ -1248,6 +1252,10 @@ import {
   createUnaryRouteProtocolRequest as createRpcSubpathUnaryRouteProtocolRequest,
   createUnaryRouteRequest as createRpcSubpathUnaryRouteRequest,
   defineHandlerOptions as defineRpcSubpathHandlerOptions,
+  defineRouteStreamHandlerOptions as defineRpcSubpathRouteStreamHandlerOptions,
+  defineRouteUnaryHandlerOptions as defineRpcSubpathRouteUnaryHandlerOptions,
+  defineStreamRouteHandlerOptions as defineRpcSubpathStreamRouteHandlerOptions,
+  defineUnaryRouteHandlerOptions as defineRpcSubpathUnaryRouteHandlerOptions,
   type BatchResults as RpcSubpathBatchResults,
   type ClientBatchRequest as RpcSubpathClientBatchRequest,
   type ClientFetch as RpcSubpathClientFetch,
@@ -9640,8 +9648,28 @@ const definedUnaryRouteHandlerOptions = definedUnaryRouteHandlerOptionsFactory(
 );
 const definedStreamRouteHandlerOptions =
   definedStreamRouteHandlerOptionsFactory(definedRouteStreamHandlerOptions);
+const directDefinedRouteUnaryHandlerOptions = defineRouteUnaryHandlerOptions(
+  manifest
+)(manifestUnaryRouteHandlerOptions);
+const directDefinedUnaryRouteHandlerOptions = defineUnaryRouteHandlerOptions(
+  manifest
+)(directDefinedRouteUnaryHandlerOptions);
+const directDefinedRouteStreamHandlerOptions = defineRouteStreamHandlerOptions(
+  manifest
+)(manifestStreamRouteHandlerOptions);
+const directDefinedStreamRouteHandlerOptions = defineStreamRouteHandlerOptions(
+  manifest
+)(directDefinedRouteStreamHandlerOptions);
 definedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
 definedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+directDefinedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+directDefinedUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
 );
@@ -9650,6 +9678,14 @@ requestTypedDefinedRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
   exactManifestHandlerHookContext
 );
 definedRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+directDefinedRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+directDefinedStreamRouteHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
@@ -9722,6 +9758,30 @@ const rpcSubpathDefinedStreamRouteHandlerOptionsFactory: RpcSubpathDefineStreamR
   typeof manifest
 > = rpcSubpathDefinedRouteStreamHandlerOptionsFactory;
 rpcSubpathDefinedHandlerOptionsFactory({ plugins: [usersPlugin] as const });
+defineRpcSubpathRouteUnaryHandlerOptions(manifest)(
+  rpcSubpathManifestUnaryRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+defineRpcSubpathUnaryRouteHandlerOptions(manifest)(
+  rpcSubpathManifestUnaryRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+defineRpcSubpathRouteStreamHandlerOptions(manifest)(
+  rpcSubpathManifestStreamRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+defineRpcSubpathStreamRouteHandlerOptions(manifest)(
+  rpcSubpathManifestStreamRouteHandlerOptions
+).hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 rpcSubpathDefinedRouteUnaryHandlerOptionsFactory(
   rpcSubpathManifestUnaryRouteHandlerOptions
 ).hooks?.beforeRequest?.(
