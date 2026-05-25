@@ -360,6 +360,26 @@ export type CompiledRpcTransportBodyResultHandlerForConfig<TConfig> = [
   ? CompiledRpcTransportBodyResultHandler<CompiledConfigBody<TConfig>>
   : CompiledRpcTransportBodyResultHandlerFor<CompiledConfigManifest<TConfig>>;
 
+export type CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig> =
+  [CompiledConfigManifest<TConfig>] extends [never]
+    ? CompiledRpcTransportBodyResultHandler<CompiledConfigBody<TConfig>>
+    : CompiledRpcRouteUnaryTransportBodyResultHandlerFor<
+        CompiledConfigManifest<TConfig>
+      >;
+
+export type CompiledRpcUnaryRouteTransportBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig>;
+
+export type CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig> =
+  [CompiledConfigManifest<TConfig>] extends [never]
+    ? CompiledRpcTransportBodyResultHandler<CompiledConfigBody<TConfig>>
+    : CompiledRpcRouteStreamTransportBodyResultHandlerFor<
+        CompiledConfigManifest<TConfig>
+      >;
+
+export type CompiledRpcStreamRouteTransportBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig>;
+
 export type CompiledRpcBodyResultHandlerForConfig<TConfig> = [
   CompiledConfigManifest<TConfig>,
 ] extends [never]
@@ -372,6 +392,38 @@ export type CompiledRpcBodyResultHandlerForConfig<TConfig> = [
       CompiledConfigManifest<TConfig>,
       CompiledHookRequest<TConfig>
     >;
+
+export type CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig> = [
+  CompiledConfigManifest<TConfig>,
+] extends [never]
+  ? CompiledRpcBodyResultHandler<
+      CompiledConfigBody<TConfig>,
+      CompiledBodyResult,
+      CompiledHookRequest<TConfig>
+    >
+  : CompiledRpcRouteUnaryBodyResultHandlerFor<
+      CompiledConfigManifest<TConfig>,
+      CompiledHookRequest<TConfig>
+    >;
+
+export type CompiledRpcUnaryRouteBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig>;
+
+export type CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig> = [
+  CompiledConfigManifest<TConfig>,
+] extends [never]
+  ? CompiledRpcBodyResultHandler<
+      CompiledConfigBody<TConfig>,
+      CompiledBodyResult,
+      CompiledHookRequest<TConfig>
+    >
+  : CompiledRpcRouteStreamBodyResultHandlerFor<
+      CompiledConfigManifest<TConfig>,
+      CompiledHookRequest<TConfig>
+    >;
+
+export type CompiledRpcStreamRouteBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig>;
 
 export type CompiledRpcRequestHandlerForConfig<TConfig> =
   CompiledRpcRequestHandler<CompiledHookRequest<TConfig>>;
@@ -1327,6 +1379,50 @@ export const createCompiledRpcTransportBodyResultHandler = <
   }) as CompiledRpcTransportBodyResultHandlerForConfig<TConfig>;
 };
 
+export const createCompiledRouteUnaryRpcTransportBodyResultHandler = <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>,
+  preflight = true,
+  serializationMode: CompiledSerializationMode = true,
+  runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
+): CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig> =>
+  createCompiledRpcTransportBodyResultHandler(
+    dispatch,
+    config,
+    unaryDispatch,
+    preflight,
+    serializationMode,
+    runtimeState
+  ) as CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig>;
+
+export const createCompiledUnaryRouteRpcTransportBodyResultHandler: typeof createCompiledRouteUnaryRpcTransportBodyResultHandler =
+  createCompiledRouteUnaryRpcTransportBodyResultHandler;
+
+export const createCompiledRouteStreamRpcTransportBodyResultHandler = <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>,
+  preflight = true,
+  serializationMode: CompiledSerializationMode = true,
+  runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
+): CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig> =>
+  createCompiledRpcTransportBodyResultHandler(
+    dispatch,
+    config,
+    unaryDispatch,
+    preflight,
+    serializationMode,
+    runtimeState
+  ) as CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig>;
+
+export const createCompiledStreamRouteRpcTransportBodyResultHandler: typeof createCompiledRouteStreamRpcTransportBodyResultHandler =
+  createCompiledRouteStreamRpcTransportBodyResultHandler;
+
 export const createCompiledRpcBodyResultHandler = <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
@@ -1347,6 +1443,38 @@ export const createCompiledRpcBodyResultHandler = <
       handleTransport(createFetchRequestSource(request), body)
     )) as CompiledRpcBodyResultHandlerForConfig<TConfig>;
 };
+
+export const createCompiledRouteUnaryRpcBodyResultHandler = <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+): CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig> =>
+  createCompiledRpcBodyResultHandler(
+    dispatch,
+    config,
+    unaryDispatch
+  ) as CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig>;
+
+export const createCompiledUnaryRouteRpcBodyResultHandler: typeof createCompiledRouteUnaryRpcBodyResultHandler =
+  createCompiledRouteUnaryRpcBodyResultHandler;
+
+export const createCompiledRouteStreamRpcBodyResultHandler = <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
+  dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+  config?: TConfig,
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+): CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig> =>
+  createCompiledRpcBodyResultHandler(
+    dispatch,
+    config,
+    unaryDispatch
+  ) as CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig>;
+
+export const createCompiledStreamRouteRpcBodyResultHandler: typeof createCompiledRouteStreamRpcBodyResultHandler =
+  createCompiledRouteStreamRpcBodyResultHandler;
 
 export const createCompiledRpcHandler = <
   const TConfig extends AnyJoorConfig = Record<string, never>,

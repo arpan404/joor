@@ -61,7 +61,15 @@ import {
   defineRouteUnaryHandlerOptions as defineRootRouteUnaryHandlerOptions,
   defineStreamRouteHandlerOptions as defineRootStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions as defineRootUnaryRouteHandlerOptions,
+  createCompiledRouteStreamRpcBodyResultHandler as createRootCompiledRouteStreamRpcBodyResultHandler,
+  createCompiledRouteStreamRpcTransportBodyResultHandler as createRootCompiledRouteStreamRpcTransportBodyResultHandler,
+  createCompiledRouteUnaryRpcBodyResultHandler as createRootCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcTransportBodyResultHandler as createRootCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
+  createCompiledStreamRouteRpcBodyResultHandler as createRootCompiledStreamRouteRpcBodyResultHandler,
+  createCompiledStreamRouteRpcTransportBodyResultHandler as createRootCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRouteRpcBodyResultHandler as createRootCompiledUnaryRouteRpcBodyResultHandler,
+  createCompiledUnaryRouteRpcTransportBodyResultHandler as createRootCompiledUnaryRouteRpcTransportBodyResultHandler,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createNetlifyEdgeFunction as createRootNetlifyEdgeFunction,
   createNetlifyEdgeFunctionFor as createRootNetlifyEdgeFunctionFor,
@@ -127,7 +135,15 @@ import {
   encodeSse as rpcEncodeSse,
 } from 'joor/rpc';
 import {
+  createCompiledRouteStreamRpcBodyResultHandler as createRuntimeCompiledRouteStreamRpcBodyResultHandler,
+  createCompiledRouteStreamRpcTransportBodyResultHandler as createRuntimeCompiledRouteStreamRpcTransportBodyResultHandler,
+  createCompiledRouteUnaryRpcBodyResultHandler as createRuntimeCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcTransportBodyResultHandler as createRuntimeCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor as createRuntimeCompiledRpcHandlerFor,
+  createCompiledStreamRouteRpcBodyResultHandler as createRuntimeCompiledStreamRouteRpcBodyResultHandler,
+  createCompiledStreamRouteRpcTransportBodyResultHandler as createRuntimeCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRouteRpcBodyResultHandler as createRuntimeCompiledUnaryRouteRpcBodyResultHandler,
+  createCompiledUnaryRouteRpcTransportBodyResultHandler as createRuntimeCompiledUnaryRouteRpcTransportBodyResultHandler,
   createDenoCompiledTransportRequestHandlerFor as createRuntimeDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRuntimeDenoFetchFor,
@@ -162,8 +178,16 @@ import {
 } from 'joor/runtime/cloudflare';
 import {
   compiledCreateProcedureCacheKey,
+  createCompiledRouteStreamRpcBodyResultHandler,
+  createCompiledRouteStreamRpcTransportBodyResultHandler,
+  createCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandlerFor,
+  createCompiledStreamRouteRpcBodyResultHandler,
+  createCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRouteRpcBodyResultHandler,
+  createCompiledUnaryRouteRpcTransportBodyResultHandler,
 } from 'joor/runtime/compiled';
 import {
   createDenoCompiledTransportRequestHandler,
@@ -506,10 +530,34 @@ const packageSubpathValues = [
   defineRootUnaryRouteHandlerOptions,
   defineStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions,
+  createCompiledRouteStreamRpcBodyResultHandler,
+  createCompiledRouteStreamRpcTransportBodyResultHandler,
+  createCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createCompiledStreamRouteRpcBodyResultHandler,
+  createCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRouteRpcBodyResultHandler,
+  createCompiledUnaryRouteRpcTransportBodyResultHandler,
+  createRootCompiledRouteStreamRpcBodyResultHandler,
+  createRootCompiledRouteStreamRpcTransportBodyResultHandler,
+  createRootCompiledRouteUnaryRpcBodyResultHandler,
+  createRootCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor,
   createRootCompiledRpcHandlerFor,
   createRuntimeCompiledRpcHandlerFor,
   createCompiledRpcBodyResultHandler,
+  createRootCompiledStreamRouteRpcBodyResultHandler,
+  createRootCompiledStreamRouteRpcTransportBodyResultHandler,
+  createRootCompiledUnaryRouteRpcBodyResultHandler,
+  createRootCompiledUnaryRouteRpcTransportBodyResultHandler,
+  createRuntimeCompiledRouteStreamRpcBodyResultHandler,
+  createRuntimeCompiledRouteStreamRpcTransportBodyResultHandler,
+  createRuntimeCompiledRouteUnaryRpcBodyResultHandler,
+  createRuntimeCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createRuntimeCompiledStreamRouteRpcBodyResultHandler,
+  createRuntimeCompiledStreamRouteRpcTransportBodyResultHandler,
+  createRuntimeCompiledUnaryRouteRpcBodyResultHandler,
+  createRuntimeCompiledUnaryRouteRpcTransportBodyResultHandler,
   createDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPathFor,
@@ -1083,8 +1131,32 @@ export type PackageSubpathSurface = [
   Compiled.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
+  Compiled.CompiledRpcRouteStreamBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
   Root.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRpcRouteStreamBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
   Root.CompiledCachedProcedureHeaders,
