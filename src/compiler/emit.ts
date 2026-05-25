@@ -455,19 +455,27 @@ export type NativeRouteBatchRequestUnion = NativeRouteUnaryRequestUnion;
 export type NativeRouteUnaryBatchRequestUnion = NativeRouteBatchRequestUnion;
 export type NativeUnaryRouteBatchRequestUnion =
   NativeRouteUnaryBatchRequestUnion;
+export type NativeRouteProtocolBatchRequestUnion =
+  NativeRouteUnaryProtocolRequestUnion;
+export type NativeRouteUnaryProtocolBatchRequestUnion =
+  NativeRouteProtocolBatchRequestUnion;
+export type NativeUnaryRouteProtocolBatchRequestUnion =
+  NativeRouteUnaryProtocolBatchRequestUnion;
+export type NativeProtocolBatchRequestUnion =
+  NativeRouteProtocolBatchRequestUnion;
 export type NativeRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteUnaryBatchRequest<NativeManifest, TRequests>;
 export type NativeUnaryRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   NativeRouteUnaryBatchRequest<TRequests>;
-export type NativeRouteProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeRouteProtocolBatchRequest<TRequests extends readonly NativeRouteProtocolBatchRequestUnion[] = readonly NativeRouteProtocolBatchRequestUnion[]> =
   JoorManifestRouteProtocolBatchRequest<NativeManifest, TRequests>;
-export type NativeRouteUnaryProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeRouteUnaryProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryProtocolBatchRequestUnion[] = readonly NativeRouteUnaryProtocolBatchRequestUnion[]> =
   JoorManifestRouteUnaryProtocolBatchRequest<NativeManifest, TRequests>;
-export type NativeUnaryRouteProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeUnaryRouteProtocolBatchRequest<TRequests extends readonly NativeUnaryRouteProtocolBatchRequestUnion[] = readonly NativeUnaryRouteProtocolBatchRequestUnion[]> =
   NativeRouteUnaryProtocolBatchRequest<TRequests>;
-export type NativeProtocolBatchRequest<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeProtocolBatchRequest<TRequests extends readonly NativeProtocolBatchRequestUnion[] = readonly NativeProtocolBatchRequestUnion[]> =
   NativeRouteProtocolBatchRequest<TRequests>;
 export type NativeRouteBatchResults<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteBatchResults<NativeManifest, TRequests>;
@@ -475,13 +483,13 @@ export type NativeRouteUnaryBatchResults<TRequests extends readonly NativeRouteU
   JoorManifestRouteUnaryBatchResults<NativeManifest, TRequests>;
 export type NativeUnaryRouteBatchResults<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   NativeRouteUnaryBatchResults<TRequests>;
-export type NativeRouteProtocolBatchResults<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeRouteProtocolBatchResults<TRequests extends readonly NativeRouteProtocolBatchRequestUnion[] = readonly NativeRouteProtocolBatchRequestUnion[]> =
   NativeRouteBatchResults<TRequests>;
-export type NativeRouteUnaryProtocolBatchResults<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeRouteUnaryProtocolBatchResults<TRequests extends readonly NativeRouteUnaryProtocolBatchRequestUnion[] = readonly NativeRouteUnaryProtocolBatchRequestUnion[]> =
   NativeRouteUnaryBatchResults<TRequests>;
-export type NativeUnaryRouteProtocolBatchResults<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeUnaryRouteProtocolBatchResults<TRequests extends readonly NativeUnaryRouteProtocolBatchRequestUnion[] = readonly NativeUnaryRouteProtocolBatchRequestUnion[]> =
   NativeRouteUnaryProtocolBatchResults<TRequests>;
-export type NativeProtocolBatchResults<TRequests extends readonly NativeRouteUnaryProtocolRequestUnion[] = readonly NativeRouteUnaryProtocolRequestUnion[]> =
+export type NativeProtocolBatchResults<TRequests extends readonly NativeProtocolBatchRequestUnion[] = readonly NativeProtocolBatchRequestUnion[]> =
   NativeRouteProtocolBatchResults<TRequests>;
 export type NativeBatchBody = NativeRouteBatchRequest;
 export type NativeRouteBody = JoorManifestRouteBody<NativeManifest>;
