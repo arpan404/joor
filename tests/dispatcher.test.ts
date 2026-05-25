@@ -18,9 +18,11 @@ import {
   t,
 } from '../src/index.js';
 import {
+  compiledUncachedExecutionState,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
   createCompiledRuntimeState,
+  executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
 import {
   createBunRpcRequestHandler,
@@ -639,6 +641,57 @@ describe('dispatcher', () => {
     expect((await response.json()).ok).toBe(true);
     expect(wrongPath.status).toBe(404);
     expect(events).toEqual(['original']);
+  });
+
+  it('validates compiled procedure response headers', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      responseHeaders: t.object({ 'cache-control': t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok(input, {
+          'cache-control': 123 as unknown as string,
+        });
+      },
+    });
+    const request = createFetchRequestSource(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+      })
+    );
+    const state = createCompiledRuntimeState();
+    const result = await executeCompiledProcedure(
+      'ping',
+      procedure,
+      { id: 'ping', input: { ok: true } },
+      request,
+      {},
+      state.runtime,
+      compiledUncachedExecutionState,
+      false
+    );
+    const unvalidated = await executeCompiledProcedure(
+      'ping',
+      procedure,
+      { id: 'ping', input: { ok: true } },
+      request,
+      {},
+      { ...state.runtime, validateResponseHeaders: false },
+      compiledUncachedExecutionState,
+      false
+    );
+
+    expect(result).toMatchObject({
+      ok: false,
+      id: 'ping',
+      error: { code: 'RESPONSE_HEADER_VALIDATION_ERROR', status: 500 },
+    });
+    expect(unvalidated).toMatchObject({
+      ok: true,
+      id: 'ping',
+      headers: { 'cache-control': 123 },
+    });
   });
 
   it('handles default-path compiled Deno transport requests', async () => {

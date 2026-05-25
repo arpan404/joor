@@ -1009,6 +1009,44 @@ export const executeCompiledProcedure = async <
       );
     }
   }
+  if (
+    procedure.responseHeaders !== undefined &&
+    runtime.validateResponseHeaders
+  ) {
+    const responseHeaderResult = validate(
+      procedure.responseHeaders,
+      result.headers,
+      'responseHeaders'
+    );
+    if (!responseHeaderResult.ok) {
+      return failure(
+        rpcRequest.id,
+        trace,
+        'RESPONSE_HEADER_VALIDATION_ERROR',
+        'Handler returned invalid response headers',
+        500,
+        validationDetails(responseHeaderResult.issues)
+      );
+    }
+    const headers =
+      responseHeaderResult.value as CompiledCachedProcedureHeaders;
+    compiledWriteCache(
+      id,
+      procedure,
+      inputValue,
+      headerResult.value as CompiledProcedureCacheHeaderValues,
+      authResult,
+      result.data,
+      headers
+    );
+    return {
+      ok: true,
+      id: rpcRequest.id,
+      traceId: trace,
+      data: result.data,
+      headers,
+    };
+  }
   if (result.headers !== undefined) {
     compiledWriteCache(
       id,
