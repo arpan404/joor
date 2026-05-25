@@ -275,6 +275,10 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'bun.ts'), 'utf8')
       ).resolves.not.toContain('ReturnType<typeof nativeTransport>');
+      const generatedBunSource = await readFile(join(outDir, 'bun.ts'), 'utf8');
+      expect(generatedBunSource).toContain('nativeRouteUnaryTransport');
+      expect(generatedBunSource).toContain('nativeRouteStreamTransport');
+      expect(generatedBunSource).toContain('createFetchFromTransportFor');
       await expect(
         readFile(join(outDir, 'deno.ts'), 'utf8')
       ).resolves.toContain("from './deno-dispatcher.ts'");
@@ -1387,7 +1391,7 @@ import { createRouteStreamWorkerFor, createRouteUnaryWorkerFor, createWorkerFor,
 import { createHandlersFor, createRouteStreamHandlersFor, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercelFor, createRouteUnaryVercelFor, createVercelFor, vercel } from './vercel.js';
 import { createEdgeFor, createRouteStreamEdgeFor, createRouteUnaryEdgeFor, edge } from './netlify.js';
-import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
+import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
 import type { AppRequest } from '${procedureImport}';
 
@@ -1517,6 +1521,7 @@ bunHandler(appRequest);
 createBunFetch()(appRequest);
 createBunFetchFor()(undefined)(appRequest);
 createRouteUnaryBunFetchFor()(undefined)(appRequest);
+createRouteStreamBunFetchFor()(undefined)(appRequest);
 // @ts-expect-error generated Bun fetch defaults reject broad Request values.
 bunHandler(plainRequest);
 // @ts-expect-error generated Bun fetch factories default to the manifest request subtype.

@@ -2403,7 +2403,7 @@ export const createStreamRouteNodeServerFor: typeof createRouteStreamNodeServerF
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteUnaryBody, type NativeTransportResult } from '${dispatcherImport}';
 ${bunFastImports}
 
 interface JsonObject {
@@ -2860,6 +2860,10 @@ export type BunNativeRouteStreamFetchHandler<TRequest extends NativeRequiredRunt
   BunNativeFetchHandler<TRequest>;
 export type BunNativeStreamRouteFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
   BunNativeRouteStreamFetchHandler<TRequest>;
+type BunNativeTransportHandler<TBody extends NativeBody = NativeBody> = (
+  request: FetchRequestSource,
+  body: TBody
+) => NativeTransportResult | Promise<NativeTransportResult>;
 
 export interface BunNativeServer {
   readonly hostname?: string;
@@ -2870,7 +2874,8 @@ export interface BunNativeServer {
   unref?(): void;
 }
 
-export const createFetchFor =
+const createFetchFromTransportFor =
+  <TBody extends NativeBody>(transport: BunNativeTransportHandler<TBody>) =>
   <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
   (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
@@ -2913,20 +2918,25 @@ export const createFetchFor =
       }
     }
     return transportResultToResponse(
-      await nativeTransport(source, body as NativeBody),
+      await transport(source, body as TBody),
       cors
     );
   };
 };
+export const createFetchFor = createFetchFromTransportFor<NativeBody>(
+  nativeTransport
+);
 export const createBunFetchFor: typeof createFetchFor = createFetchFor;
-export const createRouteUnaryFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryFetchFor: typeof createFetchFor =
+  createFetchFromTransportFor<NativeRouteUnaryBody>(nativeRouteUnaryTransport);
 export const createUnaryRouteFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createRouteUnaryBunFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteBunFetchFor: typeof createRouteUnaryBunFetchFor =
   createRouteUnaryBunFetchFor;
-export const createRouteStreamFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteStreamFetchFor: typeof createFetchFor =
+  createFetchFromTransportFor<NativeRouteStreamBody>(nativeRouteStreamTransport);
 export const createStreamRouteFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createRouteStreamBunFetchFor: typeof createRouteStreamFetchFor =
@@ -2938,14 +2948,20 @@ export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = Nati
   options: BunNativeOptions = {}
 ): BunNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 export const createBunFetch: typeof createFetch = createFetch;
-export const createRouteUnaryFetch: typeof createFetch = createFetch;
+export const createRouteUnaryFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+  options: BunNativeOptions = {}
+): BunNativeRouteUnaryFetchHandler<TRequest> =>
+  createRouteUnaryFetchFor<TRequest>()(options);
 export const createUnaryRouteFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createRouteUnaryBunFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createUnaryRouteBunFetch: typeof createRouteUnaryBunFetch =
   createRouteUnaryBunFetch;
-export const createRouteStreamFetch: typeof createFetch = createFetch;
+export const createRouteStreamFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+  options: BunNativeOptions = {}
+): BunNativeRouteStreamFetchHandler<TRequest> =>
+  createRouteStreamFetchFor<TRequest>()(options);
 export const createStreamRouteFetch: typeof createRouteStreamFetch =
   createRouteStreamFetch;
 export const createRouteStreamBunFetch: typeof createRouteStreamFetch =
