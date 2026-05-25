@@ -920,7 +920,9 @@ export const emitCompiledProcedureSource = (
     inputValue,
     headerValue as Record<string, string>,
     ${authValueExpression},
-    ${dataExpression}${headersExpression === undefined ? '' : `,\n    ${headersExpression}`}
+    ${dataExpression},
+    ${headersExpression === undefined ? 'undefined' : headersExpression},
+    runtime.cacheMaxEntries
   );`
       : '';
   const contextCreationBlock =

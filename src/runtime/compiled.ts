@@ -702,7 +702,8 @@ export const compiledWriteCache = (
   headers: CompiledProcedureCacheHeaderValues,
   auth: object,
   data: JsonValue,
-  responseHeaders?: CompiledCachedProcedureHeaders
+  responseHeaders?: CompiledCachedProcedureHeaders,
+  maxEntries = DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES
 ): void => {
   const cacheConfig =
     procedure.meta.kind === 'query' ? procedure.meta.cache : undefined;
@@ -713,7 +714,7 @@ export const compiledWriteCache = (
     parseDurationMs(cacheConfig.ttl),
     data,
     responseHeaders,
-    DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES
+    maxEntries
   );
 };
 
@@ -982,7 +983,9 @@ export const executeCompiledProcedure = async <
       inputValue,
       headerResult.value as CompiledProcedureCacheHeaderValues,
       authResult,
-      result
+      result,
+      undefined,
+      runtime.cacheMaxEntries
     );
     return { ok: true, id: rpcRequest.id, traceId: trace, data: result };
   }
@@ -1037,7 +1040,8 @@ export const executeCompiledProcedure = async <
       headerResult.value as CompiledProcedureCacheHeaderValues,
       authResult,
       result.data,
-      headers
+      headers,
+      runtime.cacheMaxEntries
     );
     return {
       ok: true,
@@ -1055,7 +1059,8 @@ export const executeCompiledProcedure = async <
       headerResult.value as CompiledProcedureCacheHeaderValues,
       authResult,
       result.data,
-      result.headers
+      result.headers,
+      runtime.cacheMaxEntries
     );
     return {
       ok: true,
@@ -1071,7 +1076,9 @@ export const executeCompiledProcedure = async <
     inputValue,
     headerResult.value as CompiledProcedureCacheHeaderValues,
     authResult,
-    result.data
+    result.data,
+    undefined,
+    runtime.cacheMaxEntries
   );
   return { ok: true, id: rpcRequest.id, traceId: trace, data: result.data };
 };

@@ -694,6 +694,52 @@ describe('dispatcher', () => {
     });
   });
 
+  it('honors compiled runtime cache entry limits', async () => {
+    let calls = 0;
+    const cached = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ value: t.number() }),
+      meta: {
+        kind: 'query',
+        cache: {
+          ttl: '1m',
+          key: ['input.id'],
+        },
+      },
+      async handler(ctx) {
+        calls += 1;
+        return ctx.ok({ value: calls });
+      },
+    });
+    const request = createFetchRequestSource(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+      })
+    );
+    const state = createCompiledRuntimeState({ cache: { maxEntries: 1 } });
+    const execute = (id: string) =>
+      executeCompiledProcedure(
+        'compiled.cache.bound',
+        cached,
+        { id: 'compiled.cache.bound', input: { id } },
+        request,
+        {},
+        state.runtime,
+        compiledUncachedExecutionState,
+        false
+      );
+
+    const first = await execute('a');
+    const second = await execute('b');
+    const third = await execute('a');
+
+    expect(first).toMatchObject({ ok: true, data: { value: 1 } });
+    expect(second).toMatchObject({ ok: true, data: { value: 2 } });
+    expect(third).toMatchObject({ ok: true, data: { value: 3 } });
+    expect(calls).toBe(3);
+  });
+
   it('handles default-path compiled Deno transport requests', async () => {
     const handler = createDenoCompiledTransportRequestHandler(
       createCompiledRuntimeState(),
