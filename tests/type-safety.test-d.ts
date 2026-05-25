@@ -565,6 +565,9 @@ import {
   type JoorManifestRouteOutput,
   type JoorManifestRouteProcedure,
   type JoorManifestRouteProtocolBatchRequest,
+  type JoorManifestRouteProtocolBatchClientHeaders,
+  type JoorManifestRouteProtocolBatchOptions,
+  type JoorManifestRouteProtocolBatchOptionsTuple,
   type JoorManifestRouteProtocolBatchResults,
   type JoorManifestRouteProtocolBatchRequestUnion,
   type JoorManifestStreamRouteClientArgs,
@@ -620,6 +623,9 @@ import {
   type JoorManifestRouteUnaryBodyResult,
   type JoorManifestRouteUnaryBodyResultFor,
   type JoorManifestRouteUnaryProtocolBatchRequest,
+  type JoorManifestRouteUnaryProtocolBatchClientHeaders,
+  type JoorManifestRouteUnaryProtocolBatchOptions,
+  type JoorManifestRouteUnaryProtocolBatchOptionsTuple,
   type JoorManifestRouteUnaryProtocolBatchResults,
   type JoorManifestRouteUnaryProtocolBatchRequestUnion,
   type JoorManifestRouteUnaryProtocolRequest,
@@ -661,6 +667,9 @@ import {
   type JoorManifestUnaryRouteBatchResults,
   type JoorManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteProtocolBatchRequest,
+  type JoorManifestUnaryRouteProtocolBatchClientHeaders,
+  type JoorManifestUnaryRouteProtocolBatchOptions,
+  type JoorManifestUnaryRouteProtocolBatchOptionsTuple,
   type JoorManifestUnaryRouteProtocolBatchResults,
   type JoorManifestUnaryRouteProtocolBatchRequestUnion,
   type JoorManifestUnaryRouteProtocolRequest,
@@ -677,6 +686,9 @@ import {
   type JoorManifestUnaryRouteTransportClient,
   type JoorManifestUnaryRouteId,
   type JoorManifestProtocolBatchRequest,
+  type JoorManifestProtocolBatchClientHeaders,
+  type JoorManifestProtocolBatchOptions,
+  type JoorManifestProtocolBatchOptionsTuple,
   type JoorManifestProtocolBatchResults,
   type JoorManifestProtocolBatchRequestUnion,
   type LegacyBatchRequest,
@@ -818,6 +830,9 @@ import {
   type RpcManifestRouteEnvelopeUnion,
   type RpcManifestRouteResultUnion,
   type RpcManifestProtocolBatchRequest,
+  type RpcManifestProtocolBatchClientHeaders,
+  type RpcManifestProtocolBatchOptions,
+  type RpcManifestProtocolBatchOptionsTuple,
   type RpcManifestProtocolBatchResults,
   type RpcManifestProtocolBatchRequestUnion,
   type RpcManifestRouteBatchRequest,
@@ -833,6 +848,9 @@ import {
   type RpcManifestRouteId,
   type RpcManifestRouteInput,
   type RpcManifestRouteOutput,
+  type RpcManifestRouteProtocolBatchClientHeaders,
+  type RpcManifestRouteProtocolBatchOptions,
+  type RpcManifestRouteProtocolBatchOptionsTuple,
   type RpcManifestRouteProcedure,
   type RpcManifestRouteProtocolBatchRequest,
   type RpcManifestRouteProtocolBatchResults,
@@ -896,6 +914,9 @@ import {
   type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryBatchRequestUnion,
   type RpcManifestRouteUnaryProtocolBatchRequest,
+  type RpcManifestRouteUnaryProtocolBatchClientHeaders,
+  type RpcManifestRouteUnaryProtocolBatchOptions,
+  type RpcManifestRouteUnaryProtocolBatchOptionsTuple,
   type RpcManifestRouteUnaryProtocolBatchResults,
   type RpcManifestRouteUnaryProtocolBatchRequestUnion,
   type RpcManifestRouteUnaryProtocolRequest,
@@ -931,6 +952,9 @@ import {
   type RpcManifestUnaryRouteBatchResults,
   type RpcManifestUnaryRouteProcedure,
   type RpcManifestUnaryRouteProtocolBatchRequest,
+  type RpcManifestUnaryRouteProtocolBatchClientHeaders,
+  type RpcManifestUnaryRouteProtocolBatchOptions,
+  type RpcManifestUnaryRouteProtocolBatchOptionsTuple,
   type RpcManifestUnaryRouteProtocolBatchResults,
   type RpcManifestUnaryRouteProtocolBatchRequestUnion,
   type RpcManifestUnaryRouteProtocolRequest,
@@ -1272,6 +1296,9 @@ import {
   type RpcManifestRouteClientArgs as RpcSubpathManifestRouteClientArgs,
   type RpcManifestRouteClientHeaders as RpcSubpathManifestRouteClientHeaders,
   type RpcManifestRouteProtocolBatchRequest as RpcSubpathManifestRouteProtocolBatchRequest,
+  type RpcManifestRouteProtocolBatchClientHeaders as RpcSubpathManifestRouteProtocolBatchClientHeaders,
+  type RpcManifestRouteProtocolBatchOptions as RpcSubpathManifestRouteProtocolBatchOptions,
+  type RpcManifestRouteProtocolBatchOptionsTuple as RpcSubpathManifestRouteProtocolBatchOptionsTuple,
   type RpcManifestRouteProtocolBatchResults as RpcSubpathManifestRouteProtocolBatchResults,
   type RpcManifestRouteProtocolBatchRequestUnion as RpcSubpathManifestRouteProtocolBatchRequestUnion,
   type RpcManifestRouteBatchClientHeaders as RpcSubpathManifestRouteBatchClientHeaders,
@@ -1285,9 +1312,18 @@ import {
   type RpcManifestRouteUnaryBatchClientHeaders as RpcSubpathManifestRouteUnaryBatchClientHeaders,
   type RpcManifestRouteUnaryBatchOptions as RpcSubpathManifestRouteUnaryBatchOptions,
   type RpcManifestRouteUnaryBatchOptionsTuple as RpcSubpathManifestRouteUnaryBatchOptionsTuple,
+  type RpcManifestRouteUnaryProtocolBatchClientHeaders as RpcSubpathManifestRouteUnaryProtocolBatchClientHeaders,
+  type RpcManifestRouteUnaryProtocolBatchOptions as RpcSubpathManifestRouteUnaryProtocolBatchOptions,
+  type RpcManifestRouteUnaryProtocolBatchOptionsTuple as RpcSubpathManifestRouteUnaryProtocolBatchOptionsTuple,
   type RpcManifestUnaryRouteBatchClientHeaders as RpcSubpathManifestUnaryRouteBatchClientHeaders,
   type RpcManifestUnaryRouteBatchOptions as RpcSubpathManifestUnaryRouteBatchOptions,
   type RpcManifestUnaryRouteBatchOptionsTuple as RpcSubpathManifestUnaryRouteBatchOptionsTuple,
+  type RpcManifestUnaryRouteProtocolBatchClientHeaders as RpcSubpathManifestUnaryRouteProtocolBatchClientHeaders,
+  type RpcManifestUnaryRouteProtocolBatchOptions as RpcSubpathManifestUnaryRouteProtocolBatchOptions,
+  type RpcManifestUnaryRouteProtocolBatchOptionsTuple as RpcSubpathManifestUnaryRouteProtocolBatchOptionsTuple,
+  type RpcManifestProtocolBatchClientHeaders as RpcSubpathManifestProtocolBatchClientHeaders,
+  type RpcManifestProtocolBatchOptions as RpcSubpathManifestProtocolBatchOptions,
+  type RpcManifestProtocolBatchOptionsTuple as RpcSubpathManifestProtocolBatchOptionsTuple,
   type RpcManifestRouteResultUnion as RpcSubpathManifestRouteResultUnion,
   type RpcBodyHandler as RpcSubpathBodyHandler,
   type RpcBodyResultHandler as RpcSubpathBodyResultHandler,
@@ -1372,6 +1408,9 @@ import {
   type JoorManifestUnaryRouteBatchRequestUnion as JoorSubpathManifestUnaryRouteBatchRequestUnion,
   type JoorManifestUnaryRouteRequestOptions as JoorSubpathManifestUnaryRouteRequestOptions,
   type JoorManifestRouteProtocolBatchRequest as JoorSubpathManifestRouteProtocolBatchRequest,
+  type JoorManifestRouteProtocolBatchClientHeaders as JoorSubpathManifestRouteProtocolBatchClientHeaders,
+  type JoorManifestRouteProtocolBatchOptions as JoorSubpathManifestRouteProtocolBatchOptions,
+  type JoorManifestRouteProtocolBatchOptionsTuple as JoorSubpathManifestRouteProtocolBatchOptionsTuple,
   type JoorManifestRouteProtocolBatchResults as JoorSubpathManifestRouteProtocolBatchResults,
   type JoorManifestRouteProtocolBatchRequestUnion as JoorSubpathManifestRouteProtocolBatchRequestUnion,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
@@ -1955,7 +1994,9 @@ t.boolean().default('false');
 t.literal('ready').example('ready').default('ready');
 // @ts-expect-error literal schema metadata must match the literal value.
 t.literal('ready').example('waiting');
-t.enum(['draft', 'published'] as const).example('draft').default('published');
+t.enum(['draft', 'published'] as const)
+  .example('draft')
+  .default('published');
 // @ts-expect-error enum metadata examples must be one of the enum values.
 t.enum(['draft', 'published'] as const).example('archived');
 t.array(t.string()).example(['a']).default(['b']);
@@ -2134,10 +2175,11 @@ const requestTypedProcedure = defineProcedure.withContext<
     return { id: input.id };
   },
 });
-const requestTypedProcedureRequest: ProcedureRequest<typeof requestTypedProcedure> =
-  Object.assign(new Request('https://example.com/rpc'), {
-    requestId: 'req_1',
-  }) as ProcedureAppRequest;
+const requestTypedProcedureRequest: ProcedureRequest<
+  typeof requestTypedProcedure
+> = Object.assign(new Request('https://example.com/rpc'), {
+  requestId: 'req_1',
+}) as ProcedureAppRequest;
 requestTypedProcedureRequest.requestId.toUpperCase();
 // @ts-expect-error request-typed procedures are not assignable to plain request procedures.
 const _wrongRequestTypedProcedure: Procedure<
@@ -2277,9 +2319,9 @@ const requestTypedManifestDefaultConfigRequest: JoorConfigRequest<
   typeof requestTypedManifestDefaultConfig
 > = requestTypedProcedureRequest;
 requestTypedManifestDefaultConfigRequest.requestId.toUpperCase();
-const requestTypedManifestDefinedConfig = defineConfigFor(
-  requestTypedManifest
-)<readonly [typeof usersPlugin]>({
+const requestTypedManifestDefinedConfig = defineConfigFor(requestTypedManifest)<
+  readonly [typeof usersPlugin]
+>({
   plugins: [usersPlugin] as const,
 });
 const requestTypedManifestDefinedConfigRequest: JoorConfigRequest<
@@ -2402,11 +2444,10 @@ requestTypedManifestRpcBodyHandler(
   new Request('https://example.com/rpc'),
   { id: 'request.get', input: { id: '1' } }
 );
-const requestTypedManifestDefaultRpcBodyHandlerFor =
-  createRpcBodyHandlerFor()(
-    requestTypedManifest,
-    requestTypedManifestDefaultHandlerOptions
-  );
+const requestTypedManifestDefaultRpcBodyHandlerFor = createRpcBodyHandlerFor()(
+  requestTypedManifest,
+  requestTypedManifestDefaultHandlerOptions
+);
 requestTypedManifestDefaultRpcBodyHandlerFor(requestTypedProcedureRequest, {
   id: 'request.get',
   input: { id: '1' },
@@ -2706,11 +2747,10 @@ requestTypedManifestDefaultVercelFetchFor(
   // @ts-expect-error curried Vercel fetch defaults to the manifest required request subtype.
   new Request('https://example.com/rpc')
 );
-const requestTypedManifestDefaultVercelFunctionFor =
-  createVercelFunctionFor()(
-    requestTypedManifest,
-    requestTypedManifestVercelFetchOptions
-  );
+const requestTypedManifestDefaultVercelFunctionFor = createVercelFunctionFor()(
+  requestTypedManifest,
+  requestTypedManifestVercelFetchOptions
+);
 requestTypedManifestDefaultVercelFunctionFor.fetch(
   requestTypedProcedureRequest
 );
@@ -2987,7 +3027,9 @@ const requestTypedManifestDefaultBunRpcRequestHandlerFor =
     requestTypedManifest,
     requestTypedManifestBunRpcRequestHandlerOptions
   );
-requestTypedManifestDefaultBunRpcRequestHandlerFor(requestTypedProcedureRequest);
+requestTypedManifestDefaultBunRpcRequestHandlerFor(
+  requestTypedProcedureRequest
+);
 requestTypedManifestDefaultBunRpcRequestHandlerFor(
   // @ts-expect-error curried Bun RPC handlers default to the manifest required request subtype.
   new Request('https://example.com/rpc')
@@ -3261,10 +3303,11 @@ requestTypedManifestRuntimeSubpathStandaloneDenoServeOptions.hooks?.beforeReques
   requestTypedProcedureRequest,
   { services: { users: { findById: (id) => ({ id, name: 'Ada' }) } } }
 );
-const requestTypedManifestStandaloneDenoRpcRequestHandler = createRootStandaloneDenoRpcRequestHandler(
-  requestTypedManifest,
-  requestTypedManifestStandaloneDenoRpcRequestHandlerOptions
-);
+const requestTypedManifestStandaloneDenoRpcRequestHandler =
+  createRootStandaloneDenoRpcRequestHandler(
+    requestTypedManifest,
+    requestTypedManifestStandaloneDenoRpcRequestHandlerOptions
+  );
 requestTypedManifestStandaloneDenoRpcRequestHandler(
   requestTypedProcedureRequest
 );
@@ -3344,10 +3387,10 @@ requestTypedManifestCompiledUnaryRouteBodyHandler(
 const rootRequestTypedManifestCompiledBodyHandler: RootCompiledRpcBodyResultHandlerFor<
   typeof requestTypedManifest
 > = requestTypedManifestCompiledBodyHandler;
-rootRequestTypedManifestCompiledBodyHandler(
-  requestTypedProcedureRequest,
-  { id: 'request.get', input: { id: '1' } }
-);
+rootRequestTypedManifestCompiledBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
 // @ts-expect-error compiled body handler aliases reject explicit request types that are too broad.
 const _wrongRequestTypedManifestCompiledBodyHandler: CompiledRpcBodyResultHandlerFor<
   typeof requestTypedManifest,
@@ -3568,18 +3611,17 @@ const authSubpathResultLike: AuthSubpathPolicyResultLike<
   AuthSubpathPolicyAuth<typeof authSubpathPolicy>
 > = Promise.resolve(authSubpathResult);
 Promise.resolve(authSubpathResultLike).then((result) => result.valueOf());
-const requestTypedAuthSubpathPolicy =
-  createAuthPolicySubpath.withContext<Services, ProcedureAppRequest>()<
-    { authorization: string },
-    { userId: string }
-  >({
-    name: 'subpath-request-session',
-    authenticate(ctx) {
-      ctx.request.requestId.toUpperCase();
-      ctx.headers.authorization.toUpperCase();
-      return { userId: ctx.request.requestId };
-    },
-  });
+const requestTypedAuthSubpathPolicy = createAuthPolicySubpath.withContext<
+  Services,
+  ProcedureAppRequest
+>()<{ authorization: string }, { userId: string }>({
+  name: 'subpath-request-session',
+  authenticate(ctx) {
+    ctx.request.requestId.toUpperCase();
+    ctx.headers.authorization.toUpperCase();
+    return { userId: ctx.request.requestId };
+  },
+});
 const authSubpathRequest: AuthSubpathPolicyRequest<
   typeof requestTypedAuthSubpathPolicy
 > = requestTypedProcedureRequest;
@@ -4884,11 +4926,12 @@ clientRequestOptions.headers = { 'x-tenant-id': 'tenant-2' };
 clientRequestOptions.headers['x-tenant-id'] = 'tenant-2';
 // @ts-expect-error client request trace ids are readonly.
 clientRequestOptions.traceId = 'trace-2';
-const _wrongClientRequestTraceOptions: ClientRequestOptions<typeof procedure> = {
-  headers: { 'x-tenant-id': 'tenant-1' },
-  // @ts-expect-error client request trace ids must be strings.
-  traceId: 1,
-};
+const _wrongClientRequestTraceOptions: ClientRequestOptions<typeof procedure> =
+  {
+    headers: { 'x-tenant-id': 'tenant-1' },
+    // @ts-expect-error client request trace ids must be strings.
+    traceId: 1,
+  };
 _wrongClientRequestTraceOptions.headers['x-tenant-id'].toUpperCase();
 client.call<typeof procedure>('users.get', { id: '1' }, clientRequestOptions);
 // @ts-expect-error x-tenant-id is required by the procedure header schema.
@@ -5447,10 +5490,11 @@ defineConfigSubpathFor(manifest)({
   // @ts-expect-error config subpath manifest-aware configs reject missing service plugins.
   plugins: [] as const,
 });
-const packageConfigSubpathManifestAwareConfig =
-  definePackageConfigSubpathFor(manifest)({
-    plugins: [usersPlugin] as const,
-  });
+const packageConfigSubpathManifestAwareConfig = definePackageConfigSubpathFor(
+  manifest
+)({
+  plugins: [usersPlugin] as const,
+});
 const packageConfigSubpathManifestAwareConfigShape: PackageConfigSubpathConfigFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -5782,7 +5826,10 @@ const requestTypedJoorManifestClientOptions: JoorManifestClientOptions<
 const requestTypedRpcSubpathManifestClientOptions: RpcSubpathManifestClientOptions<
   typeof requestTypedManifest
 > = requestTypedManifestClientOptions;
-createRootManifestClient(requestTypedManifest, requestTypedManifestClientOptions);
+createRootManifestClient(
+  requestTypedManifest,
+  requestTypedManifestClientOptions
+);
 createRootManifestClient(
   requestTypedManifest,
   requestTypedJoorManifestClientOptions
@@ -6884,6 +6931,79 @@ const manifestSubpathUnaryRouteBatchOptions: JoorSubpathManifestUnaryRouteBatchO
 > = manifestUnaryRouteBatchOptions;
 manifestUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
 manifestSubpathUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const manifestRouteProtocolBatchHeaders: JoorManifestRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = { 'x-tenant-id': 'tenant-1' };
+const manifestProtocolBatchHeaders: JoorManifestProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchHeaders;
+const manifestRouteUnaryProtocolBatchHeaders: JoorManifestRouteUnaryProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchHeaders;
+const manifestUnaryRouteProtocolBatchHeaders: JoorManifestUnaryRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteUnaryProtocolBatchHeaders;
+const manifestRouteProtocolBatchOptions: JoorManifestRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = { headers: manifestRouteProtocolBatchHeaders };
+const manifestProtocolBatchOptions: JoorManifestProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptions;
+const manifestRouteUnaryProtocolBatchOptions: JoorManifestRouteUnaryProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptions;
+const manifestUnaryRouteProtocolBatchOptions: JoorManifestUnaryRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteUnaryProtocolBatchOptions;
+const manifestRouteProtocolBatchOptionsTuple: JoorManifestRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = [manifestRouteProtocolBatchOptions];
+const manifestProtocolBatchOptionsTuple: JoorManifestProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptionsTuple;
+const manifestRouteUnaryProtocolBatchOptionsTuple: JoorManifestRouteUnaryProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptionsTuple;
+const manifestUnaryRouteProtocolBatchOptionsTuple: JoorManifestUnaryRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteUnaryProtocolBatchOptionsTuple;
+const manifestSubpathRouteProtocolBatchHeaders: JoorSubpathManifestRouteProtocolBatchClientHeaders<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchHeaders;
+const manifestSubpathRouteProtocolBatchOptions: JoorSubpathManifestRouteProtocolBatchOptions<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptions;
+const manifestSubpathRouteProtocolBatchOptionsTuple: JoorSubpathManifestRouteProtocolBatchOptionsTuple<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestUnaryProtocolRequest]
+> = manifestRouteProtocolBatchOptionsTuple;
+manifestProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+manifestUnaryRouteProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+manifestProtocolBatchOptions.headers['x-tenant-id'].toUpperCase();
+manifestUnaryRouteProtocolBatchOptions.headers['x-tenant-id'].toUpperCase();
+manifestProtocolBatchOptionsTuple[0].headers['x-tenant-id'].toUpperCase();
+manifestUnaryRouteProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
+manifestSubpathRouteProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+manifestSubpathRouteProtocolBatchOptions.headers['x-tenant-id'].toUpperCase();
+manifestSubpathRouteProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
 const _wrongManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
   typeof manifest,
   readonly [typeof manifestRouteRequest]
@@ -6896,11 +7016,15 @@ const _wrongManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
 _wrongManifestRouteBatchOptions;
 const _noHeaderManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
   typeof manifest,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {};
 const _wrongNoHeaderManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
   typeof manifest,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {
   // @ts-expect-error manifest batch headers are unavailable when selected routes declare none.
   headers: { 'x-tenant-id': 'tenant-1' },
@@ -8158,8 +8282,7 @@ const publicManifestRouteProtocolBatchRequest: RpcManifestRouteProtocolBatchRequ
   [typeof publicManifestUnaryProtocolRequest]
 > = [publicManifestUnaryProtocolRequest];
 // @ts-expect-error public manifest protocol batches are readonly tuples.
-publicManifestRouteProtocolBatchRequest[0] =
-  publicManifestUnaryProtocolRequest;
+publicManifestRouteProtocolBatchRequest[0] = publicManifestUnaryProtocolRequest;
 const publicManifestProtocolBatchRequest: RpcManifestProtocolBatchRequest<
   typeof manifest,
   [typeof publicManifestUnaryProtocolRequest]
@@ -8395,6 +8518,131 @@ publicManifestUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
 rpcSubpathManifestUnaryRouteBatchOptions.headers?.[
   'x-tenant-id'
 ]?.toUpperCase();
+const publicManifestRouteProtocolBatchHeaders: RpcManifestRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = { 'x-tenant-id': 'tenant-1' };
+const publicManifestProtocolBatchHeaders: RpcManifestProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchHeaders;
+const publicManifestRouteUnaryProtocolBatchHeaders: RpcManifestRouteUnaryProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchHeaders;
+const publicManifestUnaryRouteProtocolBatchHeaders: RpcManifestUnaryRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchHeaders;
+const publicManifestRouteProtocolBatchOptions: RpcManifestRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = { headers: publicManifestRouteProtocolBatchHeaders };
+const publicManifestProtocolBatchOptions: RpcManifestProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptions;
+const publicManifestRouteUnaryProtocolBatchOptions: RpcManifestRouteUnaryProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptions;
+const publicManifestUnaryRouteProtocolBatchOptions: RpcManifestUnaryRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchOptions;
+const publicManifestRouteProtocolBatchOptionsTuple: RpcManifestRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = [publicManifestRouteProtocolBatchOptions];
+const publicManifestProtocolBatchOptionsTuple: RpcManifestProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptionsTuple;
+const publicManifestRouteUnaryProtocolBatchOptionsTuple: RpcManifestRouteUnaryProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptionsTuple;
+const publicManifestUnaryRouteProtocolBatchOptionsTuple: RpcManifestUnaryRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchOptionsTuple;
+const rpcSubpathManifestRouteProtocolBatchHeaders: RpcSubpathManifestRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchHeaders;
+const rpcSubpathManifestProtocolBatchHeaders: RpcSubpathManifestProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = rpcSubpathManifestRouteProtocolBatchHeaders;
+const rpcSubpathManifestRouteProtocolBatchOptions: RpcSubpathManifestRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptions;
+const rpcSubpathManifestProtocolBatchOptions: RpcSubpathManifestProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = rpcSubpathManifestRouteProtocolBatchOptions;
+const rpcSubpathManifestRouteProtocolBatchOptionsTuple: RpcSubpathManifestRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteProtocolBatchOptionsTuple;
+const rpcSubpathManifestProtocolBatchOptionsTuple: RpcSubpathManifestProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = rpcSubpathManifestRouteProtocolBatchOptionsTuple;
+const rpcSubpathManifestRouteUnaryProtocolBatchHeaders: RpcSubpathManifestRouteUnaryProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchHeaders;
+const rpcSubpathManifestUnaryRouteProtocolBatchHeaders: RpcSubpathManifestUnaryRouteProtocolBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestUnaryRouteProtocolBatchHeaders;
+const rpcSubpathManifestRouteUnaryProtocolBatchOptions: RpcSubpathManifestRouteUnaryProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchOptions;
+const rpcSubpathManifestUnaryRouteProtocolBatchOptions: RpcSubpathManifestUnaryRouteProtocolBatchOptions<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestUnaryRouteProtocolBatchOptions;
+const rpcSubpathManifestRouteUnaryProtocolBatchOptionsTuple: RpcSubpathManifestRouteUnaryProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestRouteUnaryProtocolBatchOptionsTuple;
+const rpcSubpathManifestUnaryRouteProtocolBatchOptionsTuple: RpcSubpathManifestUnaryRouteProtocolBatchOptionsTuple<
+  typeof manifest,
+  readonly [typeof publicManifestUnaryProtocolRequest]
+> = publicManifestUnaryRouteProtocolBatchOptionsTuple;
+publicManifestProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+publicManifestUnaryRouteProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+publicManifestProtocolBatchOptions.headers['x-tenant-id'].toUpperCase();
+publicManifestUnaryRouteProtocolBatchOptions.headers[
+  'x-tenant-id'
+].toUpperCase();
+publicManifestProtocolBatchOptionsTuple[0].headers['x-tenant-id'].toUpperCase();
+publicManifestUnaryRouteProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
+rpcSubpathManifestProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+rpcSubpathManifestProtocolBatchOptions.headers['x-tenant-id'].toUpperCase();
+rpcSubpathManifestProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
+rpcSubpathManifestRouteUnaryProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+rpcSubpathManifestUnaryRouteProtocolBatchHeaders['x-tenant-id'].toUpperCase();
+rpcSubpathManifestRouteUnaryProtocolBatchOptions.headers[
+  'x-tenant-id'
+].toUpperCase();
+rpcSubpathManifestUnaryRouteProtocolBatchOptions.headers[
+  'x-tenant-id'
+].toUpperCase();
+rpcSubpathManifestRouteUnaryProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
+rpcSubpathManifestUnaryRouteProtocolBatchOptionsTuple[0].headers[
+  'x-tenant-id'
+].toUpperCase();
 const _wrongPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
   typeof manifest,
   readonly [typeof publicManifestRouteRequest]
@@ -8407,11 +8655,15 @@ const _wrongPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
 _wrongPublicManifestRouteBatchOptions;
 const _noHeaderPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
   typeof manifest,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {};
 const _wrongNoHeaderPublicManifestRouteBatchOptions: RpcManifestRouteBatchOptions<
   typeof manifest,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {
   // @ts-expect-error RpcManifest batch headers are unavailable when selected routes declare none.
   headers: { 'x-tenant-id': 'tenant-1' },
@@ -8723,10 +8975,9 @@ serviceAwareHandlerHooks.beforeRequest?.(
 interface HookAppRequest extends Request {
   readonly requestId: string;
 }
-const hookAppRequest = Object.assign(
-  new Request('https://example.com/rpc'),
-  { requestId: 'req_1' }
-) as HookAppRequest;
+const hookAppRequest = Object.assign(new Request('https://example.com/rpc'), {
+  requestId: 'req_1',
+}) as HookAppRequest;
 const typedRequestHandlerHooks: HandlerHooks<
   RootPluginServices,
   typeof manifestRouteRequest,
@@ -9081,8 +9332,10 @@ typedRequestHandlerOptions.hooks?.beforeRequest?.(
 );
 // @ts-expect-error handler option error hooks are readonly.
 typedRequestHandlerOptions.onError = () => undefined;
-const typedHookJoorHandler =
-  createJoorHandlerFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const typedHookJoorHandler = createJoorHandlerFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 typedHookJoorHandler(hookAppRequest);
 // @ts-expect-error typed fetch handlers preserve hook request types through options.
 typedHookJoorHandler(new Request('https://example.com/rpc'));
@@ -9449,22 +9702,15 @@ const typedRpcSubpathBodyHandler: RpcSubpathBodyHandler<typeof manifest> =
   rpcSubpathBodyHandler;
 const syncRpcSubpathBodyHandler: RpcSubpathBodyHandler<typeof manifest> =
   syncRpcBodyHandler;
-const createTypedRpcBodyHandler =
-  createRpcBodyHandlerFor<AppFetchRequest>();
-const typedAppRpcBodyHandler: RpcBodyHandler<
-  typeof manifest,
-  AppFetchRequest
-> = createTypedRpcBodyHandler(manifest, handlerOptions);
+const createTypedRpcBodyHandler = createRpcBodyHandlerFor<AppFetchRequest>();
+const typedAppRpcBodyHandler: RpcBodyHandler<typeof manifest, AppFetchRequest> =
+  createTypedRpcBodyHandler(manifest, handlerOptions);
 const createDefaultRpcBodyHandler = createRpcBodyHandlerFor();
 const defaultRpcBodyHandler: RpcBodyHandler<typeof manifest> =
   createDefaultRpcBodyHandler(manifest, handlerOptions);
-const createHookTypedRpcBodyHandler =
-  createRpcBodyHandlerFor<HookAppRequest>();
+const createHookTypedRpcBodyHandler = createRpcBodyHandlerFor<HookAppRequest>();
 const hookTypedRpcBodyHandler: RpcBodyHandler<typeof manifest, HookAppRequest> =
-  createHookTypedRpcBodyHandler(
-    manifest,
-    lowLevelRequestTypedHandlerOptions
-  );
+  createHookTypedRpcBodyHandler(manifest, lowLevelRequestTypedHandlerOptions);
 const createTypedRpcSubpathBodyHandler =
   createRpcSubpathBodyHandlerFor<AppFetchRequest>();
 const typedAppRpcSubpathBodyHandler: RpcSubpathBodyHandler<
@@ -9550,7 +9796,9 @@ Promise.resolve(
     }
   }
 });
-Promise.resolve(hookTypedRpcBodyResultHandler(hookAppRequest, manifestRouteBody));
+Promise.resolve(
+  hookTypedRpcBodyResultHandler(hookAppRequest, manifestRouteBody)
+);
 Promise.resolve(
   defaultRpcBodyResultHandler(
     new Request('https://example.com/rpc'),
@@ -9640,20 +9888,14 @@ const syncPublicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyRe
   _request: Request,
   _body: TBody
 ) =>
-  new Response() as RpcManifestRouteUnaryBodyResultFor<
-    typeof manifest,
-    TBody
-  >;
+  new Response() as RpcManifestRouteUnaryBodyResultFor<typeof manifest, TBody>;
 const syncPublicManifestRouteStreamBodyResultHandler: RpcManifestRouteStreamBodyResultHandler<
   typeof manifest
 > = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
   _request: Request,
   _body: TBody
 ) =>
-  new Response() as RpcManifestRouteStreamBodyResultFor<
-    typeof manifest,
-    TBody
-  >;
+  new Response() as RpcManifestRouteStreamBodyResultFor<typeof manifest, TBody>;
 const publicManifestUnaryRouteBodyHandler: RpcManifestUnaryRouteBodyHandler<
   typeof manifest
 > = publicManifestRouteUnaryBodyHandler;
@@ -9684,20 +9926,14 @@ const syncPublicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRo
   _request: ContextRequestSource,
   _body: TBody
 ) =>
-  new Response() as RpcManifestRouteUnaryBodyResultFor<
-    typeof manifest,
-    TBody
-  >;
+  new Response() as RpcManifestRouteUnaryBodyResultFor<typeof manifest, TBody>;
 const syncPublicManifestStreamRouteTransportBodyResultHandler: RpcManifestStreamRouteTransportBodyResultHandler<
   typeof manifest
 > = <const TBody extends JoorManifestRouteStreamBody<typeof manifest>>(
   _request: ContextRequestSource,
   _body: TBody
 ) =>
-  new Response() as RpcManifestRouteStreamBodyResultFor<
-    typeof manifest,
-    TBody
-  >;
+  new Response() as RpcManifestRouteStreamBodyResultFor<typeof manifest, TBody>;
 const publicJoorManifestUnaryRouteBodyHandler: JoorManifestUnaryRouteBodyHandler<
   typeof manifest
 > = rpcBodyHandler;
@@ -10132,17 +10368,23 @@ const runtimeSubpathTypedBunFetch: RuntimeSubpathBunFetchHandler =
 const runtimeSubpathSyncTypedBunFetch: RuntimeSubpathBunFetchHandler =
   syncTypedBunFetch;
 const createTypedBunFetch = createBunFetchFor<AppFetchRequest>();
-const typedAppBunFetch: BunFetchHandler<AppFetchRequest> =
-  createTypedBunFetch(manifest, handlerOptions);
+const typedAppBunFetch: BunFetchHandler<AppFetchRequest> = createTypedBunFetch(
+  manifest,
+  handlerOptions
+);
 const createDefaultBunFetch = createBunFetchFor();
 const defaultBunFetch: BunFetchHandler = createDefaultBunFetch(
   manifest,
   handlerOptions
 );
-const directHookTypedBunFetch: BunFetchHandler<HookAppRequest> =
-  createBunFetch(manifest, typedRequestHandlerOptions);
-const hookTypedBunFetch =
-  createBunFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const directHookTypedBunFetch: BunFetchHandler<HookAppRequest> = createBunFetch(
+  manifest,
+  typedRequestHandlerOptions
+);
+const hookTypedBunFetch = createBunFetchFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const createRuntimeSubpathTypedBunFetch =
   createRuntimeSubpathBunFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppBunFetch: RuntimeSubpathBunFetchHandler<AppFetchRequest> =
@@ -10175,11 +10417,10 @@ const typedBunRpcHandler: BunRpcRequestHandler<AppFetchRequest> =
   createTypedBunRpcHandler(manifest, handlerOptions);
 const directHookTypedBunRpcHandler: BunRpcRequestHandler<HookAppRequest> =
   createBunRpcRequestHandler(manifest, typedRequestHandlerOptions);
-const hookTypedBunRpcHandler =
-  createBunRpcRequestHandlerFor<HookAppRequest>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedBunRpcHandler = createBunRpcRequestHandlerFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const createRuntimeSubpathTypedBunRpcHandler =
   createRuntimeSubpathBunRpcRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<AppFetchRequest> =
@@ -10625,8 +10866,10 @@ const defaultDenoFetch: DenoFetchHandler = createDefaultDenoFetch(
 );
 const directHookTypedDenoFetch: DenoFetchHandler<HookAppRequest> =
   createDenoFetch(manifest, typedRequestHandlerOptions);
-const hookTypedDenoFetch =
-  createDenoFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const hookTypedDenoFetch = createDenoFetchFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const createRuntimeSubpathTypedDenoFetch =
   createRuntimeSubpathDenoFetchFor<AppFetchRequest>();
 const runtimeSubpathTypedAppDenoFetch: RuntimeSubpathDenoFetchHandler<AppFetchRequest> =
@@ -11076,11 +11319,10 @@ const typedAppDenoHandler: DenoRpcRequestHandler<AppFetchRequest> =
   createTypedDenoHandler(manifest, handlerOptions);
 const directHookTypedDenoHandler: DenoRpcRequestHandler<HookAppRequest> =
   createDenoRpcRequestHandler(manifest, typedRequestHandlerOptions);
-const hookTypedDenoHandler =
-  createDenoRpcRequestHandlerFor<HookAppRequest>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedDenoHandler = createDenoRpcRequestHandlerFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const createRuntimeSubpathTypedDenoHandler =
   createRuntimeSubpathDenoRpcRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedAppDenoHandler: RuntimeSubpathDenoRpcRequestHandler<AppFetchRequest> =
@@ -11743,7 +11985,10 @@ const manifestDenoStreamRouteTransportHandler: DenoStreamRouteTransportBodyResul
 createDenoTransportRequestHandler(manifestDenoTransportHandler);
 createDenoTransportRequestHandler(syncManifestDenoTransportHandler);
 Promise.resolve(
-  manifestDenoTransportHandler(createFetchRequestSourceForTypes(), manifestRouteRequest)
+  manifestDenoTransportHandler(
+    createFetchRequestSourceForTypes(),
+    manifestRouteRequest
+  )
 ).then((result) => {
   if (!(result instanceof Response) && 'ok' in result && result.ok) {
     result.data.name.toUpperCase();
@@ -12085,7 +12330,9 @@ const runtimeSubpathStandaloneDenoTransportRequestHandler: RuntimeSubpathStandal
 const createTypedStandaloneDenoTransportRequestHandler =
   createStandaloneDenoTransportRequestHandlerFor<AppFetchRequest>();
 const typedStandaloneDenoTransportRequestHandler: StandaloneDenoTransportRequestHandler<AppFetchRequest> =
-  createTypedStandaloneDenoTransportRequestHandler(standaloneDenoTransportHandler);
+  createTypedStandaloneDenoTransportRequestHandler(
+    standaloneDenoTransportHandler
+  );
 const createTypedStandaloneDenoTransportRequestHandlerWithPath =
   createStandaloneDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
 const typedStandaloneDenoTransportRequestHandlerWithPath: StandaloneDenoTransportRequestHandler<AppFetchRequest> =
@@ -12475,9 +12722,10 @@ runtimeSubpathJsonOkResponseInit.headers = {};
 // @ts-expect-error runtime/response JSON response init status is readonly.
 runtimeResponseSubpathJsonOkResponseInit.status = 201;
 rpcEnvelopeToResponse(manifestRouteEnvelope).headers.get('content-type');
-rpcEnvelopeToResponse(manifestRouteEnvelope, readonlyJsonHeaderSource).headers.get(
-  'content-type'
-);
+rpcEnvelopeToResponse(
+  manifestRouteEnvelope,
+  readonlyJsonHeaderSource
+).headers.get('content-type');
 runtimeSubpathRpcEnvelopeToResponse(manifestRouteEnvelope).headers.get(
   'content-type'
 );
@@ -12610,8 +12858,8 @@ const manifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor
   }
   return compiledSerializedEnvelope;
 };
-const syncCompiledTransportHandler: CompiledRpcTransportBodyResultHandler = () =>
-  compiledSerializedEnvelope;
+const syncCompiledTransportHandler: CompiledRpcTransportBodyResultHandler =
+  () => compiledSerializedEnvelope;
 const rootSyncCompiledTransportHandler: RootCompiledRpcTransportBodyResultHandler =
   syncCompiledTransportHandler;
 const syncManifestCompiledTransportHandler: CompiledRpcTransportBodyResultHandlerFor<
@@ -12951,8 +13199,9 @@ compiledCreateProcedureCacheKey(
 );
 const rootRateLimitIdentity: RootRateLimitIdentityResolver = (request) =>
   request.headers.get('x-user') ?? undefined;
-const typedRootRateLimitIdentity: RootRateLimitIdentityResolver<HookAppRequest> =
-  (request) => request.requestId;
+const typedRootRateLimitIdentity: RootRateLimitIdentityResolver<
+  HookAppRequest
+> = (request) => request.requestId;
 typedRootRateLimitIdentity(hookAppRequest)?.toUpperCase();
 typedRootRateLimitIdentity(
   // @ts-expect-error typed rate-limit identity resolvers preserve custom request types.
@@ -12971,9 +13220,7 @@ const compiledRuntimeRateLimit: CompiledRuntime['rateLimit'] =
   rpcSubpathRateLimitOptions;
 const rootCompiledRuntimeRateLimit: RootCompiledRuntime['rateLimit'] =
   compiledRuntimeRateLimit;
-rootCompiledRuntimeRateLimit.identity?.(
-  new Request('https://example.com/rpc')
-);
+rootCompiledRuntimeRateLimit.identity?.(new Request('https://example.com/rpc'));
 const cachedProcedureSuccess: CompiledCachedProcedureSuccess = {
   data: { ok: true },
   headers: cachedProcedureHeaders,
@@ -13413,10 +13660,10 @@ const requestTypedConfigWithoutHooksCompiledBodyHandler: CompiledRpcBodyResultHa
   requestTypedConfigWithoutHooks,
   _serviceTypedCompiledUnaryDispatch
 );
-requestTypedConfigWithoutHooksCompiledBodyHandler(
-  hookAppRequest,
-  { id: 'users.get', input: { id: '1' } }
-);
+requestTypedConfigWithoutHooksCompiledBodyHandler(hookAppRequest, {
+  id: 'users.get',
+  input: { id: '1' },
+});
 requestTypedConfigWithoutHooksCompiledBodyHandler(
   // @ts-expect-error config-aware compiled body handlers preserve explicit request types without hooks.
   new Request('https://example.com/rpc'),
@@ -13585,9 +13832,7 @@ typedDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
 rootTypedDenoCompiledTransportRequestHandler(appFetchRequest);
 rootTypedDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
 runtimeSubpathTypedDenoCompiledTransportRequestHandler(appFetchRequest);
-runtimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath(
-  appFetchRequest
-);
+runtimeSubpathTypedDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
 const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
@@ -14582,12 +14827,18 @@ const syncAwsLambdaHandler: AwsLambdaHandler = () => ({
 });
 const awsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createAwsLambdaHttpApiHandler(manifest, handlerOptions);
-createAwsLambdaHttpApiHandler(manifest, requestTypedAwsLambdaHttpApiHandlerOptions);
+createAwsLambdaHttpApiHandler(
+  manifest,
+  requestTypedAwsLambdaHttpApiHandlerOptions
+);
 const syncAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   syncAwsLambdaHandler;
 const awsLambdaRestApiHandler: AwsLambdaRestApiHandler =
   createAwsLambdaRestApiHandler(manifest, handlerOptions);
-createAwsLambdaRestApiHandler(manifest, requestTypedAwsLambdaRestApiHandlerOptions);
+createAwsLambdaRestApiHandler(
+  manifest,
+  requestTypedAwsLambdaRestApiHandlerOptions
+);
 const syncAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = () => ({
   statusCode: 200,
   headers: {},
@@ -14774,7 +15025,9 @@ const nextDynamicRouteHandler: NextRouteHandler<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = async (request, context) => {
   const params = await context.params;
-  return new Response(`${params.team}:${params.slug?.join('/')}:${request.url}`);
+  return new Response(
+    `${params.team}:${params.slug?.join('/')}:${request.url}`
+  );
 };
 const runtimeSubpathNextDynamicRouteHandler: RuntimeSubpathNextRouteHandler<
   RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>
@@ -14806,24 +15059,24 @@ const runtimeSubpathNextDynamicRequestRouteHandler: RuntimeSubpathNextRouteHandl
   RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
 > = nextDynamicRequestRouteHandler;
-const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<
-  NextDynamicRouteParamsForTypes
-> = {
-  params: Promise.resolve({
-    team: `${runtimeSubpathNextRouteParamValue}`,
-    ...(Array.isArray(runtimeSubpathNextRouteSlug)
-      ? { slug: runtimeSubpathNextRouteSlug }
-    : {}),
-  }),
-};
+const runtimeSubpathNextDynamicRouteContext: RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes> =
+  {
+    params: Promise.resolve({
+      team: `${runtimeSubpathNextRouteParamValue}`,
+      ...(Array.isArray(runtimeSubpathNextRouteSlug)
+        ? { slug: runtimeSubpathNextRouteSlug }
+        : {}),
+    }),
+  };
 // @ts-expect-error Next route context params are readonly.
 runtimeSubpathNextDynamicRouteContext.params = Promise.resolve({ team: 'red' });
 // @ts-expect-error typed Next route contexts are not assignable to plain route contexts.
 const _wrongNextDynamicRouteContext: NextRouteContext =
   runtimeSubpathNextDynamicRouteContext;
-const createTypedNextRouteHandlers = createNextRouteHandlersFor<
-  NextRouteContext<NextDynamicRouteParamsForTypes>
->();
+const createTypedNextRouteHandlers =
+  createNextRouteHandlersFor<
+    NextRouteContext<NextDynamicRouteParamsForTypes>
+  >();
 const nextTypedHandlers: NextRouteHandlers<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = createTypedNextRouteHandlers(manifest, handlerOptions);
@@ -14849,9 +15102,8 @@ const nextContextRequestTypedHandlers: NextRouteHandlers<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
 > = createContextRequestTypedNextRouteHandlers(manifest, handlerOptions);
-const createTypedNextHandler = createNextHandlerFor<
-  NextRouteContext<NextDynamicRouteParamsForTypes>
->();
+const createTypedNextHandler =
+  createNextHandlerFor<NextRouteContext<NextDynamicRouteParamsForTypes>>();
 const nextTypedHandler: NextHandler<
   NextRouteContext<NextDynamicRouteParamsForTypes>
 > = createTypedNextHandler(manifest, handlerOptions);
@@ -14861,11 +15113,10 @@ const createRequestTypedNextHandler = createNextHandlerFor<
 >();
 const nextRequestTypedHandler: NextHandler<never, AppFetchRequest> =
   createRequestTypedNextHandler(manifest, handlerOptions);
-const hookTypedNextHandler =
-  createNextHandlerFor<never, HookAppRequest>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedNextHandler = createNextHandlerFor<never, HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedNextHandler: NextHandler<never, HookAppRequest> =
   createNextHandler(manifest, typedRequestHandlerOptions);
 const createContextRequestTypedNextHandler = createNextHandlerFor<
@@ -14888,10 +15139,7 @@ const createRuntimeSubpathRequestTypedNextRouteHandlers =
 const runtimeSubpathRequestTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
   never,
   AppFetchRequest
-> = createRuntimeSubpathRequestTypedNextRouteHandlers(
-  manifest,
-  handlerOptions
-);
+> = createRuntimeSubpathRequestTypedNextRouteHandlers(manifest, handlerOptions);
 const createRuntimeSubpathContextRequestTypedNextRouteHandlers =
   createRuntimeSubpathNextRouteHandlersFor<
     RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
@@ -14925,7 +15173,10 @@ const createRuntimeSubpathContextRequestTypedNextHandler =
 const runtimeSubpathContextRequestTypedNextHandler: RuntimeSubpathNextHandler<
   RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
-> = createRuntimeSubpathContextRequestTypedNextHandler(manifest, handlerOptions);
+> = createRuntimeSubpathContextRequestTypedNextHandler(
+  manifest,
+  handlerOptions
+);
 nextHandler.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
 nextHandlers.POST(new Request('https://example.com/rpc'));
@@ -15020,18 +15271,16 @@ const runtimeSubpathDirectCloudflareFetch: RuntimeSubpathCloudflareFetchHandler 
   createRuntimeSubpathCloudflareFetch(manifest, handlerOptions);
 const runtimeSubpathCloudflareFetch: RuntimeSubpathCloudflareFetchHandler =
   cloudflareFetch;
-const createTypedCloudflareFetch =
-  createCloudflareFetchFor<AppFetchRequest>();
+const createTypedCloudflareFetch = createCloudflareFetchFor<AppFetchRequest>();
 const typedCloudflareFetch: CloudflareFetchHandler<AppFetchRequest> =
   createTypedCloudflareFetch(manifest, handlerOptions);
 const createDefaultCloudflareFetch = createCloudflareFetchFor();
 const defaultCloudflareFetch: CloudflareFetchHandler =
   createDefaultCloudflareFetch(manifest, handlerOptions);
-const hookTypedCloudflareFetch =
-  createCloudflareFetchFor<HookAppRequest>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedCloudflareFetch = createCloudflareFetchFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedCloudflareFetch: CloudflareFetchHandler<HookAppRequest> =
   createCloudflareFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedCloudflareFetch =
@@ -15503,8 +15752,10 @@ const defaultNetlifyFetch: NetlifyFetchHandler = createDefaultNetlifyFetch(
   manifest,
   handlerOptions
 );
-const hookTypedNetlifyFetch =
-  createNetlifyFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const hookTypedNetlifyFetch = createNetlifyFetchFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedNetlifyFetch: NetlifyFetchHandler<HookAppRequest> =
   createNetlifyFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedNetlifyFetch =
@@ -15530,15 +15781,18 @@ const netlifyEdgeFetch: NetlifyEdgeFetchHandler<NetlifyContextForTypes> = (
       url: request.url,
     })
   );
-const runtimeSubpathNetlifyEdgeFetch: RuntimeSubpathNetlifyEdgeFetchHandler<
-  NetlifyContextForTypes
-> = netlifyEdgeFetch;
-const netlifyEdgeFunction: NetlifyEdgeFetchHandler =
-  createNetlifyEdgeFunction(manifest, handlerOptions);
+const runtimeSubpathNetlifyEdgeFetch: RuntimeSubpathNetlifyEdgeFetchHandler<NetlifyContextForTypes> =
+  netlifyEdgeFetch;
+const netlifyEdgeFunction: NetlifyEdgeFetchHandler = createNetlifyEdgeFunction(
+  manifest,
+  handlerOptions
+);
 const runtimeSubpathNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler =
   createRuntimeSubpathNetlifyEdgeFunction(manifest, handlerOptions);
-const createTypedNetlifyEdgeFunction =
-  createNetlifyEdgeFunctionFor<NetlifyContextForTypes, AppFetchRequest>();
+const createTypedNetlifyEdgeFunction = createNetlifyEdgeFunctionFor<
+  NetlifyContextForTypes,
+  AppFetchRequest
+>();
 const typedNetlifyEdgeFunction: NetlifyEdgeFetchHandler<
   NetlifyContextForTypes,
   AppFetchRequest
@@ -15787,7 +16041,9 @@ runtimeSubpathTypedNetlifyEdgeFunction(appFetchRequest, {
     city: 'San Francisco',
   },
 });
-new Response(`${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`);
+new Response(
+  `${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`
+);
 // @ts-expect-error direct typed Netlify fetch factories infer custom hook request types.
 directHookTypedNetlifyFetch(new Request('https://example.com/rpc'));
 // @ts-expect-error direct typed Netlify edge factories infer custom hook request types.
@@ -15819,8 +16075,10 @@ const defaultVercelFetch: VercelFetchHandler = createDefaultVercelFetch(
   manifest,
   handlerOptions
 );
-const hookTypedVercelFetch =
-  createVercelFetchFor<HookAppRequest>()(manifest, typedRequestHandlerOptions);
+const hookTypedVercelFetch = createVercelFetchFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedVercelFetch: VercelFetchHandler<HookAppRequest> =
   createVercelFetch(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedVercelFetch =
@@ -15841,11 +16099,10 @@ const defaultVercelFunction: VercelFunction = createDefaultVercelFunction(
   manifest,
   handlerOptions
 );
-const hookTypedVercelFunction =
-  createVercelFunctionFor<HookAppRequest>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedVercelFunction = createVercelFunctionFor<HookAppRequest>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedVercelFunction: VercelFunction<HookAppRequest> =
   createVercelFunction(manifest, typedRequestHandlerOptions);
 const createRuntimeSubpathTypedVercelFunction =
@@ -16012,10 +16269,7 @@ runtimeSubpathVercelRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
 createVercelFetch(manifest, vercelFetchOptions);
 createVercelFunction(manifest, vercelFetchOptions);
 createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
-createRuntimeSubpathVercelFunction(
-  manifest,
-  runtimeSubpathVercelFetchOptions
-);
+createRuntimeSubpathVercelFunction(manifest, runtimeSubpathVercelFetchOptions);
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 defaultVercelFetch(new Request('https://example.com/rpc'));
@@ -16361,11 +16615,10 @@ interface ElysiaHookContext extends ElysiaContext<HookAppRequest> {
 const createTypedElysiaHandler = createElysiaHandlerFor<ElysiaAppContext>();
 const typedElysiaHandler: ElysiaHandler<ElysiaAppContext> =
   createTypedElysiaHandler(manifest, elysiaHandlerOptions);
-const hookTypedElysiaHandler =
-  createElysiaHandlerFor<ElysiaHookContext>()(
-    manifest,
-    typedRequestHandlerOptions
-  );
+const hookTypedElysiaHandler = createElysiaHandlerFor<ElysiaHookContext>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedElysiaHandler: ElysiaHandler<
   ElysiaContext<HookAppRequest>
 > = createElysiaHandler(manifest, typedRequestHandlerOptions);
@@ -16562,8 +16815,10 @@ interface FastifyAppBody {
 interface FastifyAppIncoming extends IncomingMessage {
   requestId: string;
 }
-interface FastifyAppRequest
-  extends FastifyRequest<FastifyAppBody, FastifyAppIncoming> {
+interface FastifyAppRequest extends FastifyRequest<
+  FastifyAppBody,
+  FastifyAppIncoming
+> {
   params: {
     id: string;
   };
@@ -16582,10 +16837,8 @@ const createTypedFastifyHandler = createFastifyHandlerFor<
   FastifyAppRequest,
   FastifyAppReply
 >();
-const typedFastifyHandler: FastifyHandler<
-  FastifyAppRequest,
-  FastifyAppReply
-> = createTypedFastifyHandler(manifest, fastifyHandlerOptions);
+const typedFastifyHandler: FastifyHandler<FastifyAppRequest, FastifyAppReply> =
+  createTypedFastifyHandler(manifest, fastifyHandlerOptions);
 const createRuntimeSubpathTypedFastifyHandler =
   createRuntimeSubpathFastifyHandlerFor<
     RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
@@ -16785,17 +17038,13 @@ interface KoaAppContext extends KoaContext<KoaAppRequest, KoaAppResponse> {
   };
 }
 type KoaAppNext = () => Promise<'ok'>;
-const createTypedKoaHandler = createKoaHandlerFor<
-  KoaAppContext,
-  KoaAppNext
->();
+const createTypedKoaHandler = createKoaHandlerFor<KoaAppContext, KoaAppNext>();
 const typedKoaMiddleware: KoaMiddleware<KoaAppContext, KoaAppNext> =
   createTypedKoaHandler(manifest, koaHandlerOptions);
-const createRuntimeSubpathTypedKoaHandler =
-  createRuntimeSubpathKoaHandlerFor<
-    RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
-    RuntimeSubpathKoaNext & KoaAppNext
-  >();
+const createRuntimeSubpathTypedKoaHandler = createRuntimeSubpathKoaHandlerFor<
+  RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
+  RuntimeSubpathKoaNext & KoaAppNext
+>();
 const runtimeSubpathTypedKoaMiddleware: RuntimeSubpathKoaMiddleware<
   RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
   RuntimeSubpathKoaNext & KoaAppNext
@@ -16921,14 +17170,15 @@ const typedHonoHandler: HonoHandler<HonoAppContext> = createTypedHonoHandler(
   manifest,
   honoHandlerOptions
 );
-const hookTypedHonoHandler =
-  createHonoHandlerFor<HonoHookContext>()(manifest, typedRequestHandlerOptions);
+const hookTypedHonoHandler = createHonoHandlerFor<HonoHookContext>()(
+  manifest,
+  typedRequestHandlerOptions
+);
 const directHookTypedHonoHandler: HonoHandler<HonoContext<HookAppRequest>> =
   createHonoHandler(manifest, typedRequestHandlerOptions);
-const createRuntimeSubpathTypedHonoHandler =
-  createRuntimeSubpathHonoHandlerFor<
-    RuntimeSubpathHonoContext & HonoAppContext
-  >();
+const createRuntimeSubpathTypedHonoHandler = createRuntimeSubpathHonoHandlerFor<
+  RuntimeSubpathHonoContext & HonoAppContext
+>();
 const runtimeSubpathTypedHonoHandler: RuntimeSubpathHonoHandler<
   RuntimeSubpathHonoContext & HonoAppContext
 > = createRuntimeSubpathTypedHonoHandler(
@@ -17557,10 +17807,7 @@ const runtimeSubpathTypedNodeTransportRequestHandlerWithPath: RuntimeSubpathNode
   '/rpc'
 );
 runtimeSubpathNodeTransportRequestHandler.length.toFixed();
-runtimeSubpathTypedNodeTransportRequestHandler(
-  nodeAppRequest,
-  nodeAppResponse
-);
+runtimeSubpathTypedNodeTransportRequestHandler(nodeAppRequest, nodeAppResponse);
 runtimeSubpathTypedNodeTransportRequestHandlerWithPath(
   nodeAppRequest,
   nodeAppResponse
@@ -18173,10 +18420,10 @@ const defaultStreamOnlyRequest: RpcRouteStreamRequest<Routes> =
   streamOnlyRequest;
 const streamRouteRequestAlias: RpcStreamRouteRequest<Routes, 'users.watch'> =
   streamOnlyRequest;
-const builtStreamOnlyRequest = createRouteStreamRequest<
-  Routes,
-  'users.watch'
->('users.watch', { userId: '1' });
+const builtStreamOnlyRequest = createRouteStreamRequest<Routes, 'users.watch'>(
+  'users.watch',
+  { userId: '1' }
+);
 const builtStreamRouteRequestAlias = createStreamRouteRequest<
   Routes,
   'users.watch'
@@ -18378,11 +18625,15 @@ const _wrongRouteBatchOptions: RpcRouteBatchOptions<
 _wrongRouteBatchOptions;
 const _noHeaderRouteBatchOptions: RpcRouteBatchOptions<
   Routes,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {};
 const _wrongNoHeaderRouteBatchOptions: RpcRouteBatchOptions<
   Routes,
-  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+  readonly [
+    { readonly id: 'users.authenticated'; readonly input: { ok: true } },
+  ]
 > = {
   // @ts-expect-error batch headers are unavailable when selected routes declare none.
   headers: { 'x-tenant-id': 'tenant-1' },
@@ -19132,16 +19383,19 @@ routeClient
 routeClient.batch([routePendingBatchRequest] as const, routeBatchOptions);
 
 routeClient
-  .batch([
-    standaloneRouteUnaryProtocolRequest,
-    standaloneUnaryRouteProtocolRequest,
-    createRouteUnaryProtocolRequest<Routes, 'users.authenticated'>(
-      'users.authenticated',
-      { ok: true }
-    ),
-  ] as const, {
-    headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
-  })
+  .batch(
+    [
+      standaloneRouteUnaryProtocolRequest,
+      standaloneUnaryRouteProtocolRequest,
+      createRouteUnaryProtocolRequest<Routes, 'users.authenticated'>(
+        'users.authenticated',
+        { ok: true }
+      ),
+    ] as const,
+    {
+      headers: { authorization: undefined, 'x-tenant-id': 'tenant-1' },
+    }
+  )
   .then((results) => {
     const firstProtocolBatchRouteId: 'users.get' = results[0].id;
     const secondProtocolBatchRouteId: 'users.get' = results[1].id;

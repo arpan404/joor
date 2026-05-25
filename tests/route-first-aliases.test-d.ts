@@ -86,6 +86,42 @@ export type RouteFirstJoorManifestProtocolBatchAliasSurface = [
   Root.JoorManifestRouteProtocolBatchRequestUnion<AliasManifest>,
   Root.JoorManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
   Root.JoorManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.JoorManifestRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestRouteUnaryProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestUnaryRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestProtocolBatchClientHeaders<AliasManifest, UnaryBatchRequest>,
+  Root.JoorManifestRouteProtocolBatchOptions<AliasManifest, UnaryBatchRequest>,
+  Root.JoorManifestRouteUnaryProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestUnaryRouteProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestProtocolBatchOptions<AliasManifest, UnaryBatchRequest>,
+  Root.JoorManifestRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestRouteUnaryProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestUnaryRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestProtocolBatchOptionsTuple<AliasManifest, UnaryBatchRequest>,
   Root.JoorManifestRouteProtocolBatchRequest<AliasManifest, UnaryBatchRequest>,
   Root.JoorManifestRouteUnaryProtocolBatchRequest<
     AliasManifest,
@@ -107,6 +143,18 @@ export type RouteFirstJoorManifestProtocolBatchAliasSurface = [
   ManifestSubpath.JoorManifestRouteProtocolBatchRequestUnion<AliasManifest>,
   ManifestSubpath.JoorManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
   ManifestSubpath.JoorManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  ManifestSubpath.JoorManifestRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
   ManifestSubpath.JoorManifestRouteProtocolBatchRequest<
     AliasManifest,
     UnaryBatchRequest
@@ -183,6 +231,42 @@ export type RootRouteFirstRpcAliasSurface = [
   Root.RpcManifestRouteProtocolBatchRequestUnion<AliasManifest>,
   Root.RpcManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
   Root.RpcManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.RpcManifestRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestRouteUnaryProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestUnaryRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestProtocolBatchClientHeaders<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteProtocolBatchOptions<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteUnaryProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestUnaryRouteProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestProtocolBatchOptions<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestRouteUnaryProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestUnaryRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestProtocolBatchOptionsTuple<AliasManifest, UnaryBatchRequest>,
   Root.RpcManifestRouteProtocolBatchRequest<AliasManifest, UnaryBatchRequest>,
   Root.RpcManifestRouteUnaryProtocolBatchRequest<
     AliasManifest,
@@ -331,6 +415,18 @@ export type RpcSubpathRouteFirstAliasSurface = [
   RpcSubpath.RpcManifestRouteProtocolBatchRequestUnion<AliasManifest>,
   RpcSubpath.RpcManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
   RpcSubpath.RpcManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  RpcSubpath.RpcManifestRouteProtocolBatchClientHeaders<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteProtocolBatchOptions<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteProtocolBatchOptionsTuple<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
   RpcSubpath.RpcManifestRouteProtocolBatchRequest<
     AliasManifest,
     UnaryBatchRequest
