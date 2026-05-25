@@ -221,6 +221,7 @@ const packageSubpathManifest = defineManifest({
     'users.watch': packageSubpathStreamProcedure,
   },
 });
+type PackageSubpathManifest = typeof packageSubpathManifest;
 
 const packageSubpathPlugin = createPlugin({
   name: 'package-subpath',
@@ -261,13 +262,31 @@ packageSubpathServices.users.findById('1').name.toUpperCase();
 const packageSubpathClient = createManifestClient(packageSubpathManifest, {
   url: 'https://example.com/rpc',
 });
+const typedPackageSubpathClient: Client.RpcManifestTransportClient<PackageSubpathManifest> =
+  packageSubpathClient;
+const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClient<PackageSubpathManifest> =
+  packageSubpathClient;
+const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
+  packageSubpathClient;
 const packageSubpathRequest = packageSubpathClient.request('users.get', {
   id: '1',
 });
+const typedPackageSubpathRequest: Client.RpcManifestRouteRequest<
+  PackageSubpathManifest,
+  'users.get'
+> = packageSubpathRequest;
 packageSubpathRequest.input.id.toUpperCase();
 const packageSubpathStream = packageSubpathClient.stream('users.watch', {
   userId: '1',
 });
+const typedPackageSubpathStream: AsyncIterable<
+  Client.RpcManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'> &
+    Root.JsonValue
+> = packageSubpathStream;
+typedPackageSubpathClient.call('users.get', { id: '1' });
+typedPackageSubpathUnaryClient.batch([typedPackageSubpathRequest] as const);
+typedPackageSubpathStreamClient.stream('users.watch', { userId: '1' });
+typedPackageSubpathStream[Symbol.asyncIterator]();
 const packageSubpathStreamRequest = createManifestRouteStreamProtocolRequest(
   packageSubpathManifest,
   'users.watch',
@@ -469,7 +488,6 @@ const packageSubpathValues = [
 ] as const;
 packageSubpathValues.length.toFixed();
 
-type PackageSubpathManifest = typeof packageSubpathManifest;
 type PackageSubpathPlugins = readonly [typeof packageSubpathPlugin];
 type PackageSubpathBody =
   Manifest.JoorManifestRouteUnaryBody<PackageSubpathManifest>;
@@ -484,6 +502,16 @@ type PackageSubpathClientProtocolBatch =
   Client.RpcManifestRouteProtocolBatchRequest<
     PackageSubpathManifest,
     readonly [PackageSubpathClientProtocolRequest]
+  >;
+type PackageSubpathClientMixedBatch =
+  Client.RpcManifestRouteBatchRequest<
+    PackageSubpathManifest,
+    readonly [PackageSubpathClientRequest]
+  >;
+type PackageSubpathClientMixedBatchResults =
+  Client.RpcManifestRouteBatchResults<
+    PackageSubpathManifest,
+    PackageSubpathClientMixedBatch
   >;
 type PackageSubpathClientProtocolBatchResults =
   Client.RpcManifestRouteProtocolBatchResults<
@@ -612,6 +640,25 @@ export type PackageSubpathSurface = [
     'users.watch'
   >,
   Client.RpcManifestRouteProtocolBatchRequestUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteBatchRequestUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteUnaryBatchRequestUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteBatchRequest<
+    PackageSubpathManifest,
+    readonly [PackageSubpathClientRequest]
+  >,
+  Client.RpcManifestRouteUnaryBatchRequest<
+    PackageSubpathManifest,
+    readonly [PackageSubpathClientRequest]
+  >,
+  Client.RpcManifestRouteBatchResults<
+    PackageSubpathManifest,
+    PackageSubpathClientMixedBatch
+  >,
+  Client.RpcManifestRouteUnaryBatchResults<
+    PackageSubpathManifest,
+    PackageSubpathClientMixedBatch
+  >,
+  PackageSubpathClientMixedBatchResults,
   PackageSubpathClientProtocolBatch,
   PackageSubpathClientProtocolBatchResults,
   PackageSubpathClientBatchOptions,
