@@ -506,6 +506,10 @@ type PackageSubpathClientRequest =
   Client.RpcManifestRouteRequest<PackageSubpathManifest, 'users.get'>;
 type PackageSubpathClientRequestUnion =
   Client.RpcManifestRouteRequestUnion<PackageSubpathManifest>;
+type PackageSubpathClientStreamRequest =
+  Client.RpcManifestRouteStreamRequest<PackageSubpathManifest, 'users.watch'>;
+type PackageSubpathClientStreamRequestUnion =
+  Client.RpcManifestRouteStreamRequestUnion<PackageSubpathManifest>;
 type PackageSubpathClientBodyResultFor =
   Client.RpcManifestRouteBodyResultFor<
     PackageSubpathManifest,
@@ -555,6 +559,8 @@ export type PackageSubpathSurface = [
   PackageSubpathClientBodyResult,
   PackageSubpathClientRequest,
   PackageSubpathClientRequestUnion,
+  PackageSubpathClientStreamRequest,
+  PackageSubpathClientStreamRequestUnion,
   Compiler.BuildOptions,
   Compiler.CompiledProcedureGenerationOptions,
   Compiler.CompilerManifest,

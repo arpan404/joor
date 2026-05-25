@@ -685,7 +685,7 @@ export function createManifestRouteProtocolRequest<
   id: TId,
   input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
   options?: RpcProtocolRequestOptions
-): RpcRouteProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+): RpcManifestRouteProtocolRequest<TManifest, TId>;
 export function createManifestRouteProtocolRequest(
   _manifest: JoorManifest,
   id: string,
@@ -705,7 +705,7 @@ export function createManifestRouteUnaryProtocolRequest<
   id: TId,
   input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
   options?: RpcProtocolRequestOptions
-): RpcRouteUnaryProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+): RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
 export function createManifestRouteUnaryProtocolRequest(
   _manifest: JoorManifest,
   id: string,
@@ -727,7 +727,7 @@ export function createManifestRouteStreamProtocolRequest<
   id: TId,
   input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
   options?: RpcProtocolRequestOptions
-): RpcRouteStreamProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+): RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
 export function createManifestRouteStreamProtocolRequest(
   _manifest: JoorManifest,
   id: string,
@@ -768,7 +768,7 @@ export function createManifestRouteStreamRequest<
   id: TId,
   input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
   options?: RpcProtocolRequestOptions
-): RpcRouteStreamRequest<JoorManifestRoutes<TManifest>, TId>;
+): RpcManifestRouteStreamRequest<TManifest, TId>;
 export function createManifestRouteStreamRequest(
   _manifest: JoorManifest,
   id: string,
@@ -907,6 +907,26 @@ export type RpcRouteStreamRequestUnion<TRoutes extends RpcRouteMap> =
 
 export type RpcStreamRouteRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteStreamRequestUnion<TRoutes>;
+
+export type RpcManifestRouteStreamRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+> = RpcRouteStreamRequest<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestStreamRouteRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteStreamRequest<TManifest, TId>;
+
+export type RpcManifestRouteStreamRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteStreamRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestStreamRouteRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamRequestUnion<TManifest>;
 
 export type RpcRouteBatchRequestUnion<TRoutes extends RpcRouteMap> =
   | RpcRouteRequestUnion<TRoutes>
@@ -1606,7 +1626,7 @@ export function createManifestRouteRequest<
   ...options: ClientRequestOptionsTuple<
     RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>
   >
-): RpcRouteRequest<JoorManifestRoutes<TManifest>, TId>;
+): RpcManifestRouteRequest<TManifest, TId>;
 export function createManifestRouteRequest(
   _manifest: JoorManifest,
   id: string,
