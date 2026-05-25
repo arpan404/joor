@@ -94,6 +94,22 @@ import {
   createNetlifyEdgeFunctionFor,
   createNetlifyFetch,
   createNetlifyFetchFor,
+  createRouteStreamNetlifyEdgeFunction,
+  createRouteStreamNetlifyEdgeFunctionFor,
+  createRouteStreamNetlifyFetch,
+  createRouteStreamNetlifyFetchFor,
+  createRouteUnaryNetlifyEdgeFunction,
+  createRouteUnaryNetlifyEdgeFunctionFor,
+  createRouteUnaryNetlifyFetch,
+  createRouteUnaryNetlifyFetchFor,
+  createStreamRouteNetlifyEdgeFunction,
+  createStreamRouteNetlifyEdgeFunctionFor,
+  createStreamRouteNetlifyFetch,
+  createStreamRouteNetlifyFetchFor,
+  createUnaryRouteNetlifyEdgeFunction,
+  createUnaryRouteNetlifyEdgeFunctionFor,
+  createUnaryRouteNetlifyFetch,
+  createUnaryRouteNetlifyFetchFor,
   createNextHandler,
   createNextHandlerFor,
   createNextRouteHandlers,
@@ -1811,6 +1827,22 @@ import {
   createNetlifyEdgeFunctionFor as createRuntimeSubpathNetlifyEdgeFunctionFor,
   createNetlifyFetch as createRuntimeSubpathNetlifyFetch,
   createNetlifyFetchFor as createRuntimeSubpathNetlifyFetchFor,
+  createRouteStreamNetlifyEdgeFunction as createRuntimeSubpathRouteStreamNetlifyEdgeFunction,
+  createRouteStreamNetlifyEdgeFunctionFor as createRuntimeSubpathRouteStreamNetlifyEdgeFunctionFor,
+  createRouteStreamNetlifyFetch as createRuntimeSubpathRouteStreamNetlifyFetch,
+  createRouteStreamNetlifyFetchFor as createRuntimeSubpathRouteStreamNetlifyFetchFor,
+  createRouteUnaryNetlifyEdgeFunction as createRuntimeSubpathRouteUnaryNetlifyEdgeFunction,
+  createRouteUnaryNetlifyEdgeFunctionFor as createRuntimeSubpathRouteUnaryNetlifyEdgeFunctionFor,
+  createRouteUnaryNetlifyFetch as createRuntimeSubpathRouteUnaryNetlifyFetch,
+  createRouteUnaryNetlifyFetchFor as createRuntimeSubpathRouteUnaryNetlifyFetchFor,
+  createStreamRouteNetlifyEdgeFunction as createRuntimeSubpathStreamRouteNetlifyEdgeFunction,
+  createStreamRouteNetlifyEdgeFunctionFor as createRuntimeSubpathStreamRouteNetlifyEdgeFunctionFor,
+  createStreamRouteNetlifyFetch as createRuntimeSubpathStreamRouteNetlifyFetch,
+  createStreamRouteNetlifyFetchFor as createRuntimeSubpathStreamRouteNetlifyFetchFor,
+  createUnaryRouteNetlifyEdgeFunction as createRuntimeSubpathUnaryRouteNetlifyEdgeFunction,
+  createUnaryRouteNetlifyEdgeFunctionFor as createRuntimeSubpathUnaryRouteNetlifyEdgeFunctionFor,
+  createUnaryRouteNetlifyFetch as createRuntimeSubpathUnaryRouteNetlifyFetch,
+  createUnaryRouteNetlifyFetchFor as createRuntimeSubpathUnaryRouteNetlifyFetchFor,
   createNextHandler as createRuntimeSubpathNextHandler,
   createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
@@ -17332,16 +17364,171 @@ createRuntimeSubpathNetlifyEdgeFunction(
   manifest,
   runtimeSubpathNetlifyFetchOptions
 );
+const routeUnaryNetlifyFetch = createRouteUnaryNetlifyFetch(
+  manifest,
+  netlifyRouteUnaryFetchOptions
+);
+const unaryRouteNetlifyFetch = createUnaryRouteNetlifyFetch(
+  manifest,
+  netlifyUnaryRouteFetchOptions
+);
+const routeStreamNetlifyFetch = createRouteStreamNetlifyFetch(
+  manifest,
+  netlifyRouteStreamFetchOptions
+);
+const streamRouteNetlifyFetch = createStreamRouteNetlifyFetch(
+  manifest,
+  netlifyStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryNetlifyFetch =
+  createRuntimeSubpathRouteUnaryNetlifyFetch(
+    manifest,
+    runtimeSubpathNetlifyRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteNetlifyFetch =
+  createRuntimeSubpathUnaryRouteNetlifyFetch(
+    manifest,
+    runtimeSubpathNetlifyUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamNetlifyFetch =
+  createRuntimeSubpathRouteStreamNetlifyFetch(
+    manifest,
+    runtimeSubpathNetlifyRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteNetlifyFetch =
+  createRuntimeSubpathStreamRouteNetlifyFetch(
+    manifest,
+    runtimeSubpathNetlifyStreamRouteFetchOptions
+  );
+const typedRouteUnaryNetlifyFetch =
+  createRouteUnaryNetlifyFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedNetlifyRouteUnaryFetchOptions
+  );
+createUnaryRouteNetlifyFetchFor()(manifest, netlifyUnaryRouteFetchOptions);
+createRouteStreamNetlifyFetchFor()(manifest, netlifyRouteStreamFetchOptions);
+createStreamRouteNetlifyFetchFor()(manifest, netlifyStreamRouteFetchOptions);
+createRuntimeSubpathRouteUnaryNetlifyFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedNetlifyRouteUnaryFetchOptions
+);
+createRuntimeSubpathUnaryRouteNetlifyFetchFor()(
+  manifest,
+  runtimeSubpathNetlifyUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamNetlifyFetchFor()(
+  manifest,
+  runtimeSubpathNetlifyRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteNetlifyFetchFor()(
+  manifest,
+  runtimeSubpathNetlifyStreamRouteFetchOptions
+);
+const routeUnaryNetlifyEdgeFunction = createRouteUnaryNetlifyEdgeFunction(
+  manifest,
+  netlifyRouteUnaryFetchOptions
+);
+const unaryRouteNetlifyEdgeFunction = createUnaryRouteNetlifyEdgeFunction(
+  manifest,
+  netlifyUnaryRouteFetchOptions
+);
+const routeStreamNetlifyEdgeFunction = createRouteStreamNetlifyEdgeFunction(
+  manifest,
+  netlifyRouteStreamFetchOptions
+);
+const streamRouteNetlifyEdgeFunction = createStreamRouteNetlifyEdgeFunction(
+  manifest,
+  netlifyStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryNetlifyEdgeFunction =
+  createRuntimeSubpathRouteUnaryNetlifyEdgeFunction(
+    manifest,
+    runtimeSubpathNetlifyRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteNetlifyEdgeFunction =
+  createRuntimeSubpathUnaryRouteNetlifyEdgeFunction(
+    manifest,
+    runtimeSubpathNetlifyUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamNetlifyEdgeFunction =
+  createRuntimeSubpathRouteStreamNetlifyEdgeFunction(
+    manifest,
+    runtimeSubpathNetlifyRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteNetlifyEdgeFunction =
+  createRuntimeSubpathStreamRouteNetlifyEdgeFunction(
+    manifest,
+    runtimeSubpathNetlifyStreamRouteFetchOptions
+  );
+const typedRouteUnaryNetlifyEdgeFunction =
+  createRouteUnaryNetlifyEdgeFunctionFor<
+    NetlifyContextForTypes,
+    HookAppRequest
+  >()(manifest, requestTypedNetlifyRouteUnaryFetchOptions);
+createUnaryRouteNetlifyEdgeFunctionFor()(manifest, netlifyUnaryRouteFetchOptions);
+createRouteStreamNetlifyEdgeFunctionFor()(
+  manifest,
+  netlifyRouteStreamFetchOptions
+);
+createStreamRouteNetlifyEdgeFunctionFor()(
+  manifest,
+  netlifyStreamRouteFetchOptions
+);
+createRuntimeSubpathRouteUnaryNetlifyEdgeFunctionFor<
+  NetlifyContextForTypes,
+  HookAppRequest
+>()(manifest, requestTypedNetlifyRouteUnaryFetchOptions);
+createRuntimeSubpathUnaryRouteNetlifyEdgeFunctionFor()(
+  manifest,
+  runtimeSubpathNetlifyUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamNetlifyEdgeFunctionFor()(
+  manifest,
+  runtimeSubpathNetlifyRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteNetlifyEdgeFunctionFor()(
+  manifest,
+  runtimeSubpathNetlifyStreamRouteFetchOptions
+);
 netlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathNetlifyFetch(new Request('https://example.com/rpc'));
 defaultNetlifyFetch(new Request('https://example.com/rpc'));
+routeUnaryNetlifyFetch(new Request('https://example.com/rpc'));
+unaryRouteNetlifyFetch(new Request('https://example.com/rpc'));
+routeStreamNetlifyFetch(new Request('https://example.com/rpc'));
+streamRouteNetlifyFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryNetlifyFetch(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteNetlifyFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamNetlifyFetch(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteNetlifyFetch(new Request('https://example.com/rpc'));
 typedAppNetlifyFetch(appFetchRequest);
 runtimeSubpathTypedAppNetlifyFetch(appFetchRequest);
 hookTypedNetlifyFetch(hookAppRequest);
 directHookTypedNetlifyFetch(hookAppRequest);
+typedRouteUnaryNetlifyFetch(hookAppRequest);
 netlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 defaultNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+routeUnaryNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+unaryRouteNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+routeStreamNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+streamRouteNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+runtimeSubpathRouteUnaryNetlifyEdgeFunction(
+  new Request('https://example.com/rpc'),
+  {}
+);
+runtimeSubpathUnaryRouteNetlifyEdgeFunction(
+  new Request('https://example.com/rpc'),
+  {}
+);
+runtimeSubpathRouteStreamNetlifyEdgeFunction(
+  new Request('https://example.com/rpc'),
+  {}
+);
+runtimeSubpathStreamRouteNetlifyEdgeFunction(
+  new Request('https://example.com/rpc'),
+  {}
+);
 typedNetlifyEdgeFunction(appFetchRequest, {
   cookies: {
     get: (name) => name,
@@ -17374,11 +17561,23 @@ runtimeSubpathTypedNetlifyEdgeFunction(appFetchRequest, {
     city: 'San Francisco',
   },
 });
+typedRouteUnaryNetlifyEdgeFunction(hookAppRequest, {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 new Response(
   `${netlifyEdgeUrlResult.pathname}:${runtimeSubpathNetlifyEdgeBypassResult}`
 );
 // @ts-expect-error direct typed Netlify fetch factories infer custom hook request types.
 directHookTypedNetlifyFetch(new Request('https://example.com/rpc'));
+typedRouteUnaryNetlifyFetch(
+  // @ts-expect-error route-unary Netlify fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Netlify edge factories infer custom hook request types.
 directHookTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
   cookies: {
@@ -17388,6 +17587,18 @@ directHookTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
     city: 'San Francisco',
   },
 });
+typedRouteUnaryNetlifyEdgeFunction(
+  // @ts-expect-error route-unary Netlify edge factories preserve custom request types.
+  new Request('https://example.com/rpc'),
+  {
+    cookies: {
+      get: (name) => name,
+    },
+    geo: {
+      city: 'San Francisco',
+    },
+  }
+);
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Netlify fetch plugins.
