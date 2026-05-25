@@ -7317,6 +7317,11 @@ const _wrongManifestBatchBodyResultFor: JoorManifestRouteBodyResultFor<
   typeof manifest,
   readonly [InvalidManifestUnaryProtocolRequest]
 > = [manifestRouteEnvelope];
+// @ts-expect-error manifest body result inference rejects pending client request batches.
+const _wrongManifestPendingBatchBodyResultFor: JoorManifestRouteBodyResultFor<
+  typeof manifest,
+  readonly [typeof manifestRouteRequest]
+> = [manifestRouteEnvelope];
 type _WrongManifestRouteBatchResults = JoorManifestRouteBatchResults<
   typeof manifest,
   // @ts-expect-error manifest route batch results reject invalid request tuples.
@@ -8368,6 +8373,11 @@ const publicManifestBodyResultFor: RpcManifestBodyResultFor<
 const _wrongPublicManifestBatchBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
   readonly [InvalidManifestUnaryProtocolRequest]
+> = [publicManifestEnvelopeUnion];
+// @ts-expect-error public manifest body result inference rejects pending client request batches.
+const _wrongPublicManifestPendingBatchBodyResultFor: RpcManifestBodyResultFor<
+  typeof manifest,
+  readonly [typeof publicManifestRouteRequest]
 > = [publicManifestEnvelopeUnion];
 // @ts-expect-error public manifest body result inference validates request input by route id.
 const _wrongPublicManifestSingleBodyResultFor: RpcManifestBodyResultFor<
@@ -19182,6 +19192,11 @@ const _wrongRouteBodyResultFor: RpcRouteBodyResultFor<
   Routes,
   InvalidRouteProtocolBody
 > = routeEnvelopeUnion;
+// @ts-expect-error route body result inference rejects pending client request batches.
+const _wrongRoutePendingBatchBodyResultFor: RpcRouteBodyResultFor<
+  Routes,
+  readonly [typeof routePendingBatchRequest]
+> = [routeEnvelopeUnion];
 const rpcSubpathRouteProtocolRequest: RpcSubpathRouteProtocolRequest<
   Routes,
   'users.get'

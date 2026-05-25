@@ -869,11 +869,28 @@ export type RpcUnaryRouteBatchRequest<
     readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
 > = RpcRouteUnaryBatchRequest<TRoutes, TRequests>;
 
+type RpcRouteProtocolBatchRequestHasHeaders<TRequest> =
+  'headers' extends keyof TRequest
+    ? [Exclude<TRequest['headers'], undefined>] extends [never]
+      ? false
+      : true
+    : false;
+
+type RpcRouteProtocolBatchRequestRejectsHeaders<
+  TRequests extends readonly unknown[],
+> = true extends {
+  [TIndex in keyof TRequests]: RpcRouteProtocolBatchRequestHasHeaders<
+    TRequests[TIndex]
+  >;
+}[number]
+  ? never
+  : Readonly<TRequests>;
+
 export type RpcRouteProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[] =
     readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[],
-> = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
+> = RpcRouteProtocolBatchRequestRejectsHeaders<TRequests>;
 
 export type RpcRouteUnaryProtocolBatchRequest<
   TRoutes extends RpcRouteMap,
@@ -954,8 +971,10 @@ export type RpcRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
   TBody,
 > = TBody extends readonly unknown[]
-  ? TBody extends readonly RpcRouteBatchRequestUnion<TRoutes>[]
-    ? RpcRouteBatchResults<TRoutes, TBody> | Response
+  ? TBody extends readonly RpcRouteProtocolBatchRequestUnion<TRoutes>[]
+    ? RpcRouteProtocolBatchRequest<TRoutes, TBody> extends never
+      ? never
+      : RpcRouteProtocolBatchResults<TRoutes, TBody> | Response
     : never
   : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
 

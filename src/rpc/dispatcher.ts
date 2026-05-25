@@ -531,12 +531,29 @@ export type RpcManifestRouteUnaryBatchRequest<
       readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteBatchRequest<TManifest, TRequests>;
 
+type RpcManifestRouteProtocolBatchRequestHasHeaders<TRequest> =
+  'headers' extends keyof TRequest
+    ? [Exclude<TRequest['headers'], undefined>] extends [never]
+      ? false
+      : true
+    : false;
+
+type RpcManifestRouteProtocolBatchRequestRejectsHeaders<
+  TRequests extends readonly unknown[],
+> = true extends {
+  [TIndex in keyof TRequests]: RpcManifestRouteProtocolBatchRequestHasHeaders<
+    TRequests[TIndex]
+  >;
+}[number]
+  ? never
+  : Readonly<TRequests>;
+
 export type RpcManifestRouteProtocolBatchRequest<
   TManifest extends RpcManifest,
   TRequests extends
     readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[] =
       readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[],
-> = 'headers' extends keyof TRequests[number] ? never : Readonly<TRequests>;
+> = RpcManifestRouteProtocolBatchRequestRejectsHeaders<TRequests>;
 
 export type RpcManifestRouteUnaryProtocolBatchRequest<
   TManifest extends RpcManifest,
@@ -925,8 +942,10 @@ export type RpcManifestBodyResultFor<
   TManifest extends RpcManifest,
   TBody,
 > = TBody extends readonly unknown[]
-  ? TBody extends readonly RpcManifestRouteBatchRequestUnion<TManifest>[]
-    ? RpcManifestRouteBatchResults<TManifest, TBody> | Response
+  ? TBody extends readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[]
+    ? RpcManifestRouteProtocolBatchRequest<TManifest, TBody> extends never
+      ? never
+      : RpcManifestRouteProtocolBatchResults<TManifest, TBody> | Response
     : never
   : RpcManifestProtocolBodyResultFor<TManifest, TBody>;
 
