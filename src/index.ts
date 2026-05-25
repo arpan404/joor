@@ -188,6 +188,14 @@ export {
 export {
   createElysiaHandler,
   createElysiaHandlerFor,
+  createRouteStreamElysiaHandler,
+  createRouteStreamElysiaHandlerFor,
+  createRouteUnaryElysiaHandler,
+  createRouteUnaryElysiaHandlerFor,
+  createStreamRouteElysiaHandler,
+  createStreamRouteElysiaHandlerFor,
+  createUnaryRouteElysiaHandler,
+  createUnaryRouteElysiaHandlerFor,
 } from './runtime/elysia.js';
 export {
   createExpressHandler,

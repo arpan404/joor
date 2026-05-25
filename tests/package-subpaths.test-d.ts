@@ -35,6 +35,8 @@ import {
   createUnaryRouteCloudflareWorkerFor as createRootUnaryRouteCloudflareWorkerFor,
   createCorsHeaderRecord as createRootCorsHeaderRecord,
   createElysiaHandlerFor as createRootElysiaHandlerFor,
+  createRouteUnaryElysiaHandlerFor as createRootRouteUnaryElysiaHandlerFor,
+  createStreamRouteElysiaHandlerFor as createRootStreamRouteElysiaHandlerFor,
   createExpressHandlerFor as createRootExpressHandlerFor,
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
@@ -282,6 +284,10 @@ import {
 import {
   createElysiaHandler,
   createElysiaHandlerFor,
+  createRouteStreamElysiaHandler,
+  createRouteUnaryElysiaHandler,
+  createStreamRouteElysiaHandler,
+  createUnaryRouteElysiaHandler,
 } from 'joor/runtime/elysia';
 import {
   createExpressHandler,
@@ -734,6 +740,12 @@ const packageSubpathValues = [
   createRuntimeStandaloneDenoTransportRequestHandlerWithPathFor,
   createElysiaHandler,
   createElysiaHandlerFor,
+  createRouteStreamElysiaHandler,
+  createRouteUnaryElysiaHandler,
+  createRootRouteUnaryElysiaHandlerFor,
+  createRootStreamRouteElysiaHandlerFor,
+  createStreamRouteElysiaHandler,
+  createUnaryRouteElysiaHandler,
   createExpressHandler,
   createExpressHandlerFor,
   createFastifyHandler,

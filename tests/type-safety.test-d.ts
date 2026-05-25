@@ -104,6 +104,14 @@ import {
   createDenoTransportRequestHandlerWithPathFor,
   createElysiaHandler,
   createElysiaHandlerFor,
+  createRouteStreamElysiaHandler,
+  createRouteStreamElysiaHandlerFor,
+  createRouteUnaryElysiaHandler,
+  createRouteUnaryElysiaHandlerFor,
+  createStreamRouteElysiaHandler,
+  createStreamRouteElysiaHandlerFor,
+  createUnaryRouteElysiaHandler,
+  createUnaryRouteElysiaHandlerFor,
   createExpressHandler,
   createExpressHandlerFor,
   createFastifyHandler,
@@ -1877,6 +1885,14 @@ import {
   createDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoTransportRequestHandlerWithPathFor,
   createElysiaHandler as createRuntimeSubpathElysiaHandler,
   createElysiaHandlerFor as createRuntimeSubpathElysiaHandlerFor,
+  createRouteStreamElysiaHandler as createRuntimeSubpathRouteStreamElysiaHandler,
+  createRouteStreamElysiaHandlerFor as createRuntimeSubpathRouteStreamElysiaHandlerFor,
+  createRouteUnaryElysiaHandler as createRuntimeSubpathRouteUnaryElysiaHandler,
+  createRouteUnaryElysiaHandlerFor as createRuntimeSubpathRouteUnaryElysiaHandlerFor,
+  createStreamRouteElysiaHandler as createRuntimeSubpathStreamRouteElysiaHandler,
+  createStreamRouteElysiaHandlerFor as createRuntimeSubpathStreamRouteElysiaHandlerFor,
+  createUnaryRouteElysiaHandler as createRuntimeSubpathUnaryRouteElysiaHandler,
+  createUnaryRouteElysiaHandlerFor as createRuntimeSubpathUnaryRouteElysiaHandlerFor,
   createExpressHandler as createRuntimeSubpathExpressHandler,
   createExpressHandlerFor as createRuntimeSubpathExpressHandlerFor,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
@@ -1985,6 +2001,14 @@ import {
   type ElysiaContext as RuntimeSubpathElysiaContext,
   type ElysiaHandler as RuntimeSubpathElysiaHandler,
   type ElysiaHandlerOptionsFor as RuntimeSubpathElysiaHandlerOptionsFor,
+  type ElysiaRouteStreamHandlerOptionsArgs as RuntimeSubpathElysiaRouteStreamHandlerOptionsArgs,
+  type ElysiaRouteStreamHandlerOptionsFor as RuntimeSubpathElysiaRouteStreamHandlerOptionsFor,
+  type ElysiaRouteUnaryHandlerOptionsArgs as RuntimeSubpathElysiaRouteUnaryHandlerOptionsArgs,
+  type ElysiaRouteUnaryHandlerOptionsFor as RuntimeSubpathElysiaRouteUnaryHandlerOptionsFor,
+  type ElysiaStreamRouteHandlerOptionsArgs as RuntimeSubpathElysiaStreamRouteHandlerOptionsArgs,
+  type ElysiaStreamRouteHandlerOptionsFor as RuntimeSubpathElysiaStreamRouteHandlerOptionsFor,
+  type ElysiaUnaryRouteHandlerOptionsArgs as RuntimeSubpathElysiaUnaryRouteHandlerOptionsArgs,
+  type ElysiaUnaryRouteHandlerOptionsFor as RuntimeSubpathElysiaUnaryRouteHandlerOptionsFor,
   type ExpressHandlerOptionsFor as RuntimeSubpathExpressHandlerOptionsFor,
   type ExpressRequest as RuntimeSubpathExpressRequest,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
@@ -18674,6 +18698,28 @@ const elysiaStreamRouteHandlerOptions: ElysiaStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = elysiaRouteStreamHandlerOptions;
+const requestTypedElysiaRouteUnaryHandlerOptions: ElysiaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const runtimeSubpathElysiaRouteUnaryHandlerOptions: RuntimeSubpathElysiaRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaUnaryRouteHandlerOptions;
+const runtimeSubpathElysiaRouteStreamHandlerOptions: RuntimeSubpathElysiaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaStreamRouteHandlerOptions;
+const runtimeSubpathElysiaUnaryRouteHandlerOptions: RuntimeSubpathElysiaUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteUnaryHandlerOptions;
+const runtimeSubpathElysiaStreamRouteHandlerOptions: RuntimeSubpathElysiaStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteStreamHandlerOptions;
 runtimeSubpathElysiaHandlerOptions.plugins?.[0]?.name.toUpperCase();
 requestTypedElysiaHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
@@ -18707,15 +18753,91 @@ const elysiaStreamRouteHandlerOptionsArgs: ElysiaStreamRouteHandlerOptionsArgs<
 > = elysiaRouteStreamHandlerOptionsArgs;
 elysiaUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 elysiaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const runtimeSubpathElysiaRouteUnaryHandlerOptionsArgs: RuntimeSubpathElysiaRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaUnaryRouteHandlerOptionsArgs;
+const runtimeSubpathElysiaRouteStreamHandlerOptionsArgs: RuntimeSubpathElysiaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaStreamRouteHandlerOptionsArgs;
+const runtimeSubpathElysiaUnaryRouteHandlerOptionsArgs: RuntimeSubpathElysiaUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathElysiaStreamRouteHandlerOptionsArgs: RuntimeSubpathElysiaStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = elysiaRouteStreamHandlerOptionsArgs;
+runtimeSubpathElysiaRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathElysiaRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathElysiaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathElysiaRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathElysiaUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathElysiaStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const elysiaHandler: ElysiaHandler = createElysiaHandler(
   manifest,
   elysiaHandlerOptions
+);
+const routeUnaryElysiaHandler: ElysiaHandler = createRouteUnaryElysiaHandler(
+  manifest,
+  elysiaRouteUnaryHandlerOptions
+);
+const unaryRouteElysiaHandler: ElysiaHandler = createUnaryRouteElysiaHandler(
+  manifest,
+  elysiaUnaryRouteHandlerOptions
+);
+const routeStreamElysiaHandler: ElysiaHandler = createRouteStreamElysiaHandler(
+  manifest,
+  elysiaRouteStreamHandlerOptions
+);
+const streamRouteElysiaHandler: ElysiaHandler = createStreamRouteElysiaHandler(
+  manifest,
+  elysiaStreamRouteHandlerOptions
 );
 const syncElysiaHandler: ElysiaHandler = () => new Response();
 const runtimeSubpathElysiaHandler: RuntimeSubpathElysiaHandler =
   createRuntimeSubpathElysiaHandler(
     manifest,
     runtimeSubpathElysiaHandlerOptions
+  );
+const runtimeSubpathRouteUnaryElysiaHandler: RuntimeSubpathElysiaHandler =
+  createRuntimeSubpathRouteUnaryElysiaHandler(
+    manifest,
+    runtimeSubpathElysiaRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteElysiaHandler: RuntimeSubpathElysiaHandler =
+  createRuntimeSubpathUnaryRouteElysiaHandler(
+    manifest,
+    runtimeSubpathElysiaUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamElysiaHandler: RuntimeSubpathElysiaHandler =
+  createRuntimeSubpathRouteStreamElysiaHandler(
+    manifest,
+    runtimeSubpathElysiaRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteElysiaHandler: RuntimeSubpathElysiaHandler =
+  createRuntimeSubpathStreamRouteElysiaHandler(
+    manifest,
+    runtimeSubpathElysiaStreamRouteHandlerOptions
   );
 const runtimeSubpathSyncElysiaHandler: RuntimeSubpathElysiaHandler =
   syncElysiaHandler;
@@ -18739,9 +18861,26 @@ const hookTypedElysiaHandler = createElysiaHandlerFor<ElysiaHookContext>()(
   manifest,
   typedRequestHandlerOptions
 );
+const routeUnaryHookTypedElysiaHandler =
+  createRouteUnaryElysiaHandlerFor<ElysiaHookContext>()(
+    manifest,
+    requestTypedElysiaRouteUnaryHandlerOptions
+  );
+createUnaryRouteElysiaHandlerFor()(manifest, elysiaUnaryRouteHandlerOptions);
+createRouteStreamElysiaHandlerFor()(manifest, elysiaRouteStreamHandlerOptions);
+createStreamRouteElysiaHandlerFor()(
+  manifest,
+  elysiaStreamRouteHandlerOptions
+);
 const directHookTypedElysiaHandler: ElysiaHandler<
   ElysiaContext<HookAppRequest>
 > = createElysiaHandler(manifest, typedRequestHandlerOptions);
+const directHookTypedRouteUnaryElysiaHandler: ElysiaHandler<
+  ElysiaContext<HookAppRequest>
+> = createRouteUnaryElysiaHandler(
+  manifest,
+  requestTypedElysiaRouteUnaryHandlerOptions
+);
 const createRuntimeSubpathTypedElysiaHandler =
   createRuntimeSubpathElysiaHandlerFor<
     RuntimeSubpathElysiaContext & ElysiaAppContext
@@ -18751,6 +18890,28 @@ const runtimeSubpathTypedElysiaHandler: RuntimeSubpathElysiaHandler<
 > = createRuntimeSubpathTypedElysiaHandler(
   manifest,
   runtimeSubpathElysiaHandlerOptions
+);
+const createRuntimeSubpathRouteUnaryTypedElysiaHandler =
+  createRuntimeSubpathRouteUnaryElysiaHandlerFor<
+    RuntimeSubpathElysiaContext<HookAppRequest> & ElysiaHookContext
+  >();
+const runtimeSubpathRouteUnaryTypedElysiaHandler: RuntimeSubpathElysiaHandler<
+  RuntimeSubpathElysiaContext<HookAppRequest> & ElysiaHookContext
+> = createRuntimeSubpathRouteUnaryTypedElysiaHandler(
+  manifest,
+  requestTypedElysiaRouteUnaryHandlerOptions
+);
+createRuntimeSubpathUnaryRouteElysiaHandlerFor()(
+  manifest,
+  runtimeSubpathElysiaUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamElysiaHandlerFor()(
+  manifest,
+  runtimeSubpathElysiaRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteElysiaHandlerFor()(
+  manifest,
+  runtimeSubpathElysiaStreamRouteHandlerOptions
 );
 const elysiaAppContext: ElysiaAppContext = {
   request: new Request('https://example.com/rpc'),
@@ -18768,18 +18929,35 @@ elysiaHookContext.__requestType = (request: HookAppRequest) => request;
 // @ts-expect-error request-typed Elysia contexts are not assignable to plain request contexts.
 const _wrongElysiaHookContext: ElysiaContext<Request> = elysiaHookContext;
 elysiaHandler(elysiaContext);
+routeUnaryElysiaHandler(elysiaContext);
+unaryRouteElysiaHandler(elysiaContext);
+routeStreamElysiaHandler(elysiaContext);
+streamRouteElysiaHandler(elysiaContext);
 runtimeSubpathElysiaHandler(elysiaContext);
+runtimeSubpathRouteUnaryElysiaHandler(elysiaContext);
+runtimeSubpathUnaryRouteElysiaHandler(elysiaContext);
+runtimeSubpathRouteStreamElysiaHandler(elysiaContext);
+runtimeSubpathStreamRouteElysiaHandler(elysiaContext);
 runtimeSubpathSyncElysiaHandler(elysiaContext);
 typedElysiaHandler(elysiaAppContext);
 runtimeSubpathTypedElysiaHandler(elysiaAppContext);
 hookTypedElysiaHandler(elysiaHookContext);
+routeUnaryHookTypedElysiaHandler(elysiaHookContext);
 directHookTypedElysiaHandler(elysiaHookContext);
+directHookTypedRouteUnaryElysiaHandler(elysiaHookContext);
+runtimeSubpathRouteUnaryTypedElysiaHandler(elysiaHookContext);
 // @ts-expect-error direct typed Elysia handlers infer custom hook request context types.
 directHookTypedElysiaHandler(elysiaContext);
+// @ts-expect-error direct typed route-unary Elysia handlers infer custom hook request context types.
+directHookTypedRouteUnaryElysiaHandler(elysiaContext);
 // @ts-expect-error typed Elysia handlers preserve hook request context types.
 hookTypedElysiaHandler(elysiaContext);
+// @ts-expect-error route-unary Elysia handlers preserve hook request context types.
+routeUnaryHookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
 createElysiaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Elysia adapter plugins.
+createRouteUnaryElysiaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Elysia adapter plugins.
 createTypedElysiaHandler(manifest);
 const fastifyHandlerOptionsBase: FastifyHandlerOptions = { hostname: 'app' };
