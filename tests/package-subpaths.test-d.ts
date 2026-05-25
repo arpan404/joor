@@ -510,6 +510,25 @@ type PackageSubpathClientStreamRequest =
   Client.RpcManifestRouteStreamRequest<PackageSubpathManifest, 'users.watch'>;
 type PackageSubpathClientStreamRequestUnion =
   Client.RpcManifestRouteStreamRequestUnion<PackageSubpathManifest>;
+type PackageSubpathClientBatch =
+  Client.RpcManifestRouteUnaryProtocolBatchRequest<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolBatch
+  >;
+type PackageSubpathClientBatchOptions =
+  Client.RpcManifestRouteUnaryBatchOptions<
+    PackageSubpathManifest,
+    PackageSubpathClientBatch
+  >;
+type PackageSubpathClientRequestOptions =
+  Client.RpcManifestRouteUnaryRequestOptions<
+    PackageSubpathManifest,
+    'users.get'
+  >;
+type PackageSubpathClientArgs = Client.RpcManifestRouteUnaryClientArgs<
+  PackageSubpathManifest,
+  'users.get'
+>;
 type PackageSubpathClientBodyResultFor =
   Client.RpcManifestRouteBodyResultFor<
     PackageSubpathManifest,
@@ -541,6 +560,49 @@ export type PackageSubpathSurface = [
     'users.get'
   >,
   Client.RpcManifestRouteProtocolRequestUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteId<PackageSubpathManifest>,
+  Client.RpcManifestRouteUnaryId<PackageSubpathManifest>,
+  Client.RpcManifestRouteStreamId<PackageSubpathManifest>,
+  Client.RpcManifestRouteProcedure<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteUnaryProcedure<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteStreamProcedure<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Client.RpcManifestRouteInput<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteUnaryInput<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteStreamInput<PackageSubpathManifest, 'users.watch'>,
+  Client.RpcManifestRouteOutput<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteUnaryOutput<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteStreamOutput<PackageSubpathManifest, 'users.watch'>,
+  Client.RpcManifestRouteClientHeaders<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteUnaryClientHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Client.RpcManifestRouteStreamClientHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Client.RpcManifestRouteResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Client.RpcManifestRouteUnaryResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Client.RpcManifestRouteErrorCode<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteUnaryErrorCode<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteStreamErrorCode<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Client.RpcManifestRouteEnvelope<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteEnvelopeUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteResult<PackageSubpathManifest, 'users.get'>,
+  Client.RpcManifestRouteResultUnion<PackageSubpathManifest>,
+  Client.RpcManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'>,
   Client.RpcManifestRouteUnaryProtocolRequest<
     PackageSubpathManifest,
     'users.get'
@@ -552,6 +614,9 @@ export type PackageSubpathSurface = [
   Client.RpcManifestRouteProtocolBatchRequestUnion<PackageSubpathManifest>,
   PackageSubpathClientProtocolBatch,
   PackageSubpathClientProtocolBatchResults,
+  PackageSubpathClientBatchOptions,
+  PackageSubpathClientRequestOptions,
+  PackageSubpathClientArgs,
   Client.RpcManifestRouteBody<PackageSubpathManifest>,
   Client.RpcManifestRouteUnaryBody<PackageSubpathManifest>,
   Client.RpcManifestRouteStreamBody<PackageSubpathManifest>,
