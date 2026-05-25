@@ -211,6 +211,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain('createCompiledRpcHandler');
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('createCompiledRouteUnaryRpcHandlerFor');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('createCompiledRouteStreamRpcHandlerFor');
+      await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain("from 'joor/manifest'");
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')

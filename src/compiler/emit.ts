@@ -128,6 +128,8 @@ const emitProfileDispatcher = async (
     'createCompiledRpcBodyResultHandler',
     'createCompiledRpcHandler',
     'createCompiledRpcHandlerFor',
+    'createCompiledRouteStreamRpcHandlerFor',
+    'createCompiledRouteUnaryRpcHandlerFor',
     'createCompiledRpcTransportBodyResultHandler',
     ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
     ...(usesValidationDetails ? ['compiledValidationDetails'] : []),
@@ -1020,10 +1022,12 @@ export const transport: NativeTransportHandler = createCompiledRpcTransportBodyR
 ) as NativeTransportHandler;
 export const createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
   createCompiledRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
-export const createRouteUnaryFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryFetchFor: typeof createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
+  createCompiledRouteUnaryRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const createUnaryRouteFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
-export const createRouteStreamFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteStreamFetchFor: typeof createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
+  createCompiledRouteStreamRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const createStreamRouteFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
