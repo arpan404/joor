@@ -2617,11 +2617,17 @@ if (defaultProtocolBatchFirst) {
   defaultProtocolBatchFirst.id.toUpperCase();
 }
 protocolBatchAlias[0].input.id.toUpperCase();
+const routeProtocolBatchBody: RouteBody = protocolBatch;
+const routeUnaryProtocolBatchBody: RouteUnaryBody = unaryProtocolBatch;
+const unaryRouteProtocolBatchBody: UnaryRouteBody = unaryRouteProtocolBatch;
 const readonlyRouteBody: RouteBody = protocolBatch;
 protocolRequestUnion.id.toUpperCase();
 routeBody.id.toUpperCase();
 routeUnaryBody.id.toUpperCase();
 routeStreamBody.input.userId.toUpperCase();
+routeProtocolBatchBody.length.toFixed();
+routeUnaryProtocolBatchBody.length.toFixed();
+unaryRouteProtocolBatchBody.length.toFixed();
 readonlyRouteBody.length.toFixed();
 routeUnaryBodyResult.valueOf();
 routeStreamBodyResult.headers.get('content-type');
@@ -3506,6 +3512,13 @@ const nativeRouteUnaryProtocolBatchRequest: NativeRouteUnaryProtocolBatchRequest
 const nativeUnaryRouteProtocolBatchRequest: NativeUnaryRouteProtocolBatchRequest<
   readonly [typeof nativeUnaryBody]
 > = nativeRouteUnaryProtocolBatchRequest;
+const nativeProtocolBatchBody: NativeBatchBody = nativeProtocolBatchRequest;
+const nativeRouteProtocolBatchBody: NativeRouteBody =
+  nativeRouteProtocolBatchRequest;
+const nativeRouteUnaryProtocolBatchBody: NativeRouteUnaryBody =
+  nativeRouteUnaryProtocolBatchRequest;
+const nativeUnaryRouteProtocolBatchBody: NativeUnaryRouteBody =
+  nativeUnaryRouteProtocolBatchRequest;
 const nativeRouteBatchResults: NativeRouteBatchResults<readonly [typeof nativeUnaryBody]> =
   [nativeRouteEnvelope];
 const nativeRouteProtocolBatchResults: NativeRouteProtocolBatchResults<
@@ -3532,6 +3545,10 @@ nativeRouteUnaryBatchResults[0].id.toUpperCase();
 nativeProtocolBatchRequest[0].input.id.toUpperCase();
 nativeRouteProtocolBatchRequest[0].input.id.toUpperCase();
 nativeUnaryRouteProtocolBatchRequest[0].input.id.toUpperCase();
+nativeProtocolBatchBody.length.toFixed();
+nativeRouteProtocolBatchBody.length.toFixed();
+nativeRouteUnaryProtocolBatchBody.length.toFixed();
+nativeUnaryRouteProtocolBatchBody.length.toFixed();
 nativeRouteProtocolBatchResults[0].id.toUpperCase();
 nativeRouteUnaryProtocolBatchResults[0].id.toUpperCase();
 nativeUnaryRouteProtocolBatchResults[0].id.toUpperCase();

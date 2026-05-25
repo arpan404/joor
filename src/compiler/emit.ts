@@ -491,12 +491,12 @@ export type NativeUnaryRouteProtocolBatchResults<TRequests extends readonly Nati
   NativeRouteUnaryProtocolBatchResults<TRequests>;
 export type NativeProtocolBatchResults<TRequests extends readonly NativeProtocolBatchRequestUnion[] = readonly NativeProtocolBatchRequestUnion[]> =
   NativeRouteProtocolBatchResults<TRequests>;
-export type NativeBatchBody = NativeRouteBatchRequest;
+export type NativeBatchBody = NativeRouteProtocolBatchRequest;
 export type NativeRouteBody = JoorManifestRouteBody<NativeManifest>;
 export type NativeBody = NativeRouteBody;
 export type NativeRouteUnaryBody =
   | NativeRouteUnaryProtocolRequestUnion
-  | NativeRouteUnaryBatchRequest<readonly NativeRouteUnaryProtocolRequestUnion[]>;
+  | NativeRouteUnaryProtocolBatchRequest;
 export type NativeUnaryRouteBody = NativeRouteUnaryBody;
 export type NativeRouteStreamBody = NativeRouteStreamProtocolRequestUnion;
 export type NativeStreamRouteBody = NativeRouteStreamBody;
@@ -2908,7 +2908,7 @@ export type ProtocolBatchResults<TRequests extends readonly ProtocolBatchRequest
 export type RouteBody = JoorManifestRouteBody<Manifest>;
 export type RouteUnaryBody =
   | RouteUnaryProtocolRequestUnion
-  | RouteUnaryProtocolBatchRequest<readonly RouteUnaryProtocolRequestUnion[]>;
+  | RouteUnaryProtocolBatchRequest;
 export type UnaryRouteBody = RouteUnaryBody;
 export type RouteStreamBody = RouteStreamProtocolRequestUnion;
 export type StreamRouteBody = RouteStreamBody;
