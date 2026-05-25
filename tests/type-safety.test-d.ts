@@ -320,8 +320,12 @@ import {
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   createCompiledRpcBodyResultHandler as createRootCompiledRpcBodyResultHandler,
   createCompiledRouteStreamRpcBodyResultHandler as createRootCompiledRouteStreamRpcBodyResultHandler,
+  createCompiledRouteStreamRpcHandler as createRootCompiledRouteStreamRpcHandler,
+  createCompiledRouteStreamRpcHandlerFor as createRootCompiledRouteStreamRpcHandlerFor,
   createCompiledRouteStreamRpcTransportBodyResultHandler as createRootCompiledRouteStreamRpcTransportBodyResultHandler,
   createCompiledRouteUnaryRpcBodyResultHandler as createRootCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcHandler as createRootCompiledRouteUnaryRpcHandler,
+  createCompiledRouteUnaryRpcHandlerFor as createRootCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRootCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcTransportBodyResultHandler as createRootCompiledRpcTransportBodyResultHandler,
   createCompiledRuntimeState as createRootCompiledRuntimeState,
@@ -597,8 +601,10 @@ import {
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
   type CompiledRouteStreamBodyResultFor as RootCompiledRouteStreamBodyResultFor,
+  type CompiledRouteStreamRpcRequestHandler as RootCompiledRouteStreamRpcRequestHandler,
   type CompiledRouteStreamTransportBodyResultFor as RootCompiledRouteStreamTransportBodyResultFor,
   type CompiledRouteUnaryBodyResultFor as RootCompiledRouteUnaryBodyResultFor,
+  type CompiledRouteUnaryRpcRequestHandler as RootCompiledRouteUnaryRpcRequestHandler,
   type CompiledRouteUnaryTransportBodyResultFor as RootCompiledRouteUnaryTransportBodyResultFor,
   type CompiledStreamRouteBodyResultFor as RootCompiledStreamRouteBodyResultFor,
   type CompiledStreamRouteTransportBodyResultFor as RootCompiledStreamRouteTransportBodyResultFor,
@@ -1820,10 +1826,18 @@ import {
   createCompiledRpcHandler,
   createCompiledRpcHandlerFor,
   createCompiledRpcTransportBodyResultHandler,
+  createCompiledRouteStreamRpcHandler,
+  createCompiledRouteStreamRpcHandlerFor,
+  createCompiledRouteUnaryRpcHandler,
+  createCompiledRouteUnaryRpcHandlerFor,
   createCompiledRuntimeState,
   createCompiledStreamRouteRpcBodyResultHandler,
+  createCompiledStreamRouteRpcHandler,
+  createCompiledStreamRouteRpcHandlerFor,
   createCompiledStreamRouteRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler,
+  createCompiledUnaryRouteRpcHandler,
+  createCompiledUnaryRouteRpcHandlerFor,
   createCompiledUnaryRouteRpcTransportBodyResultHandler,
   type executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
@@ -1867,13 +1881,17 @@ import type {
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
   CompiledRouteStreamBodyResultFor,
+  CompiledRouteStreamRpcRequestHandler,
   CompiledRouteStreamTransportBodyResultFor,
   CompiledRouteUnaryBodyResultFor,
+  CompiledRouteUnaryRpcRequestHandler,
   CompiledRouteUnaryTransportBodyResultFor,
   CompiledStreamRouteBodyResultFor,
+  CompiledStreamRouteRpcRequestHandler,
   CompiledStreamRouteTransportBodyResultFor,
   CompiledTransportBodyResultFor,
   CompiledUnaryRouteBodyResultFor,
+  CompiledUnaryRouteRpcRequestHandler,
   CompiledUnaryRouteTransportBodyResultFor,
 } from '../src/runtime/compiled.js';
 import {
@@ -1980,11 +1998,17 @@ import {
   createUnaryRouteDenoRpcRequestHandler as createRuntimeSubpathUnaryRouteDenoRpcRequestHandler,
   createUnaryRouteDenoRpcRequestHandlerFor as createRuntimeSubpathUnaryRouteDenoRpcRequestHandlerFor,
   createCompiledRouteUnaryRpcBodyResultHandler as createRuntimeSubpathCompiledRouteUnaryRpcBodyResultHandler,
+  createCompiledRouteUnaryRpcHandler as createRuntimeSubpathCompiledRouteUnaryRpcHandler,
+  createCompiledRouteUnaryRpcHandlerFor as createRuntimeSubpathCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRuntimeSubpathCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createCompiledRouteStreamRpcHandler as createRuntimeSubpathCompiledRouteStreamRpcHandler,
+  createCompiledRouteStreamRpcHandlerFor as createRuntimeSubpathCompiledRouteStreamRpcHandlerFor,
   createCompiledRpcHandlerFor as createRuntimeSubpathCompiledRpcHandlerFor,
   createCompiledStreamRouteRpcBodyResultHandler as createRuntimeSubpathCompiledStreamRouteRpcBodyResultHandler,
   createCompiledStreamRouteRpcTransportBodyResultHandler as createRuntimeSubpathCompiledStreamRouteRpcTransportBodyResultHandler,
   type CompiledRpcRequestHandlerForConfig as RuntimeSubpathCompiledRpcRequestHandlerForConfig,
+  type CompiledRouteStreamRpcRequestHandler as RuntimeSubpathCompiledRouteStreamRpcRequestHandler,
+  type CompiledRouteUnaryRpcRequestHandler as RuntimeSubpathCompiledRouteUnaryRpcRequestHandler,
   type CompiledRpcRouteUnaryBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcRouteUnaryBodyResultHandlerForConfig,
   type CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcRouteUnaryTransportBodyResultHandlerForConfig,
   type CompiledRpcStreamRouteBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcStreamRouteBodyResultHandlerForConfig,
@@ -15016,12 +15040,86 @@ const compiledRpcHandler: CompiledRpcRequestHandler = createCompiledRpcHandler(
   config,
   _serviceTypedCompiledUnaryDispatch
 );
+const compiledRouteUnaryRpcHandler: CompiledRouteUnaryRpcRequestHandler =
+  createCompiledRouteUnaryRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const compiledUnaryRouteRpcHandler: CompiledUnaryRouteRpcRequestHandler =
+  createCompiledUnaryRouteRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const compiledRouteStreamRpcHandler: CompiledRouteStreamRpcRequestHandler =
+  createCompiledRouteStreamRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const compiledStreamRouteRpcHandler: CompiledStreamRouteRpcRequestHandler =
+  createCompiledStreamRouteRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const rootCompiledRouteUnaryRpcHandler: RootCompiledRouteUnaryRpcRequestHandler =
+  createRootCompiledRouteUnaryRpcHandler(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+const rootCompiledRouteStreamRpcHandler: RootCompiledRouteStreamRpcRequestHandler =
+  createRootCompiledRouteStreamRpcHandler(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
 const runtimeSubpathCompiledRpcHandler: RuntimeSubpathCompiledRpcRequestHandler =
   compiledRpcHandler;
+const runtimeSubpathCompiledRouteUnaryRpcHandler: RuntimeSubpathCompiledRouteUnaryRpcRequestHandler =
+  createRuntimeSubpathCompiledRouteUnaryRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const runtimeSubpathCompiledRouteStreamRpcHandler: RuntimeSubpathCompiledRouteStreamRpcRequestHandler =
+  createRuntimeSubpathCompiledRouteStreamRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
 const createTypedCompiledRpcHandler =
   createCompiledRpcHandlerFor<AppFetchRequest>();
 const typedAppCompiledRpcHandler: CompiledRpcRequestHandler<AppFetchRequest> =
   createTypedCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const createTypedRouteUnaryCompiledRpcHandler =
+  createCompiledRouteUnaryRpcHandlerFor<AppFetchRequest>();
+const typedAppRouteUnaryCompiledRpcHandler: CompiledRouteUnaryRpcRequestHandler<AppFetchRequest> =
+  createTypedRouteUnaryCompiledRpcHandler(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const typedAppUnaryRouteCompiledRpcHandler: CompiledUnaryRouteRpcRequestHandler<AppFetchRequest> =
+  createCompiledUnaryRouteRpcHandlerFor<AppFetchRequest>()(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const typedAppRouteStreamCompiledRpcHandler: CompiledRouteStreamRpcRequestHandler<AppFetchRequest> =
+  createCompiledRouteStreamRpcHandlerFor<AppFetchRequest>()(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const typedAppStreamRouteCompiledRpcHandler: CompiledStreamRouteRpcRequestHandler<AppFetchRequest> =
+  createCompiledStreamRouteRpcHandlerFor<AppFetchRequest>()(
     _serviceTypedCompiledDispatch,
     config,
     _serviceTypedCompiledUnaryDispatch
@@ -15034,6 +15132,18 @@ const rootTypedAppCompiledRpcHandler: RootCompiledRpcRequestHandler<AppFetchRequ
     config,
     _rootServiceTypedCompiledUnaryDispatch
   );
+const rootTypedAppRouteUnaryCompiledRpcHandler: RootCompiledRouteUnaryRpcRequestHandler<AppFetchRequest> =
+  createRootCompiledRouteUnaryRpcHandlerFor<AppFetchRequest>()(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+const rootTypedAppRouteStreamCompiledRpcHandler: RootCompiledRouteStreamRpcRequestHandler<AppFetchRequest> =
+  createRootCompiledRouteStreamRpcHandlerFor<AppFetchRequest>()(
+    _rootServiceTypedCompiledDispatch,
+    config,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
 const createRuntimeSubpathTypedCompiledRpcHandler =
   createRuntimeSubpathCompiledRpcHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedAppCompiledRpcHandler: RuntimeSubpathCompiledRpcRequestHandler<AppFetchRequest> =
@@ -15042,11 +15152,39 @@ const runtimeSubpathTypedAppCompiledRpcHandler: RuntimeSubpathCompiledRpcRequest
     config,
     _serviceTypedCompiledUnaryDispatch
   );
+const runtimeSubpathTypedAppRouteUnaryCompiledRpcHandler: RuntimeSubpathCompiledRouteUnaryRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathCompiledRouteUnaryRpcHandlerFor<AppFetchRequest>()(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const runtimeSubpathTypedAppRouteStreamCompiledRpcHandler: RuntimeSubpathCompiledRouteStreamRpcRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathCompiledRouteStreamRpcHandlerFor<AppFetchRequest>()(
+    _serviceTypedCompiledDispatch,
+    config,
+    _serviceTypedCompiledUnaryDispatch
+  );
 compiledRpcHandler(new Request('https://example.com/rpc'));
+compiledRouteUnaryRpcHandler(new Request('https://example.com/rpc'));
+compiledUnaryRouteRpcHandler(new Request('https://example.com/rpc'));
+compiledRouteStreamRpcHandler(new Request('https://example.com/rpc'));
+compiledStreamRouteRpcHandler(new Request('https://example.com/rpc'));
+rootCompiledRouteUnaryRpcHandler(new Request('https://example.com/rpc'));
+rootCompiledRouteStreamRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathCompiledRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathCompiledRouteUnaryRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathCompiledRouteStreamRpcHandler(new Request('https://example.com/rpc'));
 typedAppCompiledRpcHandler(appFetchRequest);
+typedAppRouteUnaryCompiledRpcHandler(appFetchRequest);
+typedAppUnaryRouteCompiledRpcHandler(appFetchRequest);
+typedAppRouteStreamCompiledRpcHandler(appFetchRequest);
+typedAppStreamRouteCompiledRpcHandler(appFetchRequest);
 rootTypedAppCompiledRpcHandler(appFetchRequest);
+rootTypedAppRouteUnaryCompiledRpcHandler(appFetchRequest);
+rootTypedAppRouteStreamCompiledRpcHandler(appFetchRequest);
 runtimeSubpathTypedAppCompiledRpcHandler(appFetchRequest);
+runtimeSubpathTypedAppRouteUnaryCompiledRpcHandler(appFetchRequest);
+runtimeSubpathTypedAppRouteStreamCompiledRpcHandler(appFetchRequest);
 createCompiledRpcTransportBodyResultHandler(
   _serviceTypedCompiledDispatch,
   manifestAwareConfig,

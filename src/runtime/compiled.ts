@@ -186,6 +186,18 @@ export type CompiledStreamRouteBodyResultFor<
 > = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
 export type CompiledRpcRequestHandler<TRequest extends Request = Request> =
   JoorFetchHandler<TRequest>;
+export type CompiledRouteUnaryRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRpcRequestHandler<TRequest>;
+export type CompiledUnaryRouteRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRouteUnaryRpcRequestHandler<TRequest>;
+export type CompiledRouteStreamRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRpcRequestHandler<TRequest>;
+export type CompiledStreamRouteRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRouteStreamRpcRequestHandler<TRequest>;
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
 type AnyJoorConfig = JoorConfig<
@@ -427,6 +439,14 @@ export type CompiledRpcStreamRouteBodyResultHandlerForConfig<TConfig> =
 
 export type CompiledRpcRequestHandlerForConfig<TConfig> =
   CompiledRpcRequestHandler<CompiledHookRequest<TConfig>>;
+export type CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig> =
+  CompiledRpcRequestHandlerForConfig<TConfig>;
+export type CompiledUnaryRouteRpcRequestHandlerForConfig<TConfig> =
+  CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig>;
+export type CompiledRouteStreamRpcRequestHandlerForConfig<TConfig> =
+  CompiledRpcRequestHandlerForConfig<TConfig>;
+export type CompiledStreamRouteRpcRequestHandlerForConfig<TConfig> =
+  CompiledRouteStreamRpcRequestHandlerForConfig<TConfig>;
 
 type IsDefaultRequest<TRequest extends Request> = [Request] extends [TRequest]
   ? true
@@ -1530,6 +1550,15 @@ export const createCompiledRpcHandler = <
   }) as CompiledRpcRequestHandlerForConfig<TConfig>;
 };
 
+export const createCompiledRouteUnaryRpcHandler: typeof createCompiledRpcHandler =
+  createCompiledRpcHandler;
+export const createCompiledUnaryRouteRpcHandler: typeof createCompiledRouteUnaryRpcHandler =
+  createCompiledRouteUnaryRpcHandler;
+export const createCompiledRouteStreamRpcHandler: typeof createCompiledRpcHandler =
+  createCompiledRpcHandler;
+export const createCompiledStreamRouteRpcHandler: typeof createCompiledRouteStreamRpcHandler =
+  createCompiledRouteStreamRpcHandler;
+
 export function createCompiledRpcHandlerFor(): <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
@@ -1558,3 +1587,12 @@ export function createCompiledRpcHandlerFor<
       unaryDispatch
     ) as unknown as CompiledRpcRequestHandler<TRequest>;
 }
+
+export const createCompiledRouteUnaryRpcHandlerFor: typeof createCompiledRpcHandlerFor =
+  createCompiledRpcHandlerFor;
+export const createCompiledUnaryRouteRpcHandlerFor: typeof createCompiledRouteUnaryRpcHandlerFor =
+  createCompiledRouteUnaryRpcHandlerFor;
+export const createCompiledRouteStreamRpcHandlerFor: typeof createCompiledRpcHandlerFor =
+  createCompiledRpcHandlerFor;
+export const createCompiledStreamRouteRpcHandlerFor: typeof createCompiledRouteStreamRpcHandlerFor =
+  createCompiledRouteStreamRpcHandlerFor;
