@@ -124,6 +124,14 @@ import {
   createUnaryRouteExpressHandlerFor,
   createFastifyHandler,
   createFastifyHandlerFor,
+  createRouteStreamFastifyHandler,
+  createRouteStreamFastifyHandlerFor,
+  createRouteUnaryFastifyHandler,
+  createRouteUnaryFastifyHandlerFor,
+  createStreamRouteFastifyHandler,
+  createStreamRouteFastifyHandlerFor,
+  createUnaryRouteFastifyHandler,
+  createUnaryRouteFastifyHandlerFor,
   createHonoHandler,
   createHonoHandlerFor,
   createRouteStreamHonoHandler,
@@ -1913,6 +1921,14 @@ import {
   createUnaryRouteExpressHandlerFor as createRuntimeSubpathUnaryRouteExpressHandlerFor,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createFastifyHandlerFor as createRuntimeSubpathFastifyHandlerFor,
+  createRouteStreamFastifyHandler as createRuntimeSubpathRouteStreamFastifyHandler,
+  createRouteStreamFastifyHandlerFor as createRuntimeSubpathRouteStreamFastifyHandlerFor,
+  createRouteUnaryFastifyHandler as createRuntimeSubpathRouteUnaryFastifyHandler,
+  createRouteUnaryFastifyHandlerFor as createRuntimeSubpathRouteUnaryFastifyHandlerFor,
+  createStreamRouteFastifyHandler as createRuntimeSubpathStreamRouteFastifyHandler,
+  createStreamRouteFastifyHandlerFor as createRuntimeSubpathStreamRouteFastifyHandlerFor,
+  createUnaryRouteFastifyHandler as createRuntimeSubpathUnaryRouteFastifyHandler,
+  createUnaryRouteFastifyHandlerFor as createRuntimeSubpathUnaryRouteFastifyHandlerFor,
   createHonoHandler as createRuntimeSubpathHonoHandler,
   createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
   createRouteStreamHonoHandler as createRuntimeSubpathRouteStreamHonoHandler,
@@ -2041,6 +2057,14 @@ import {
   type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
   type FastifyReply as RuntimeSubpathFastifyReply,
   type FastifyRequest as RuntimeSubpathFastifyRequest,
+  type FastifyRouteStreamHandlerOptionsArgs as RuntimeSubpathFastifyRouteStreamHandlerOptionsArgs,
+  type FastifyRouteStreamHandlerOptionsFor as RuntimeSubpathFastifyRouteStreamHandlerOptionsFor,
+  type FastifyRouteUnaryHandlerOptionsArgs as RuntimeSubpathFastifyRouteUnaryHandlerOptionsArgs,
+  type FastifyRouteUnaryHandlerOptionsFor as RuntimeSubpathFastifyRouteUnaryHandlerOptionsFor,
+  type FastifyStreamRouteHandlerOptionsArgs as RuntimeSubpathFastifyStreamRouteHandlerOptionsArgs,
+  type FastifyStreamRouteHandlerOptionsFor as RuntimeSubpathFastifyStreamRouteHandlerOptionsFor,
+  type FastifyUnaryRouteHandlerOptionsArgs as RuntimeSubpathFastifyUnaryRouteHandlerOptionsArgs,
+  type FastifyUnaryRouteHandlerOptionsFor as RuntimeSubpathFastifyUnaryRouteHandlerOptionsFor,
   type HonoContext as RuntimeSubpathHonoContext,
   type HonoHandler as RuntimeSubpathHonoHandler,
   type HonoHandlerOptionsFor as RuntimeSubpathHonoHandlerOptionsFor,
@@ -19186,6 +19210,22 @@ const fastifyStreamRouteHandlerOptions: FastifyStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = fastifyRouteStreamHandlerOptions;
+const runtimeSubpathFastifyRouteUnaryHandlerOptions: RuntimeSubpathFastifyRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyUnaryRouteHandlerOptions;
+const runtimeSubpathFastifyRouteStreamHandlerOptions: RuntimeSubpathFastifyRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyStreamRouteHandlerOptions;
+const runtimeSubpathFastifyUnaryRouteHandlerOptions: RuntimeSubpathFastifyUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteUnaryHandlerOptions;
+const runtimeSubpathFastifyStreamRouteHandlerOptions: RuntimeSubpathFastifyStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteStreamHandlerOptions;
 runtimeSubpathFastifyHandlerOptions.plugins?.[0]?.name.toUpperCase();
 exactFastifyHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -19265,6 +19305,22 @@ const fastifyStreamRouteHandlerOptionsArgs: FastifyStreamRouteHandlerOptionsArgs
   readonly [typeof usersPlugin]
 > = fastifyRouteStreamHandlerOptionsArgs;
 fastifyUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const runtimeSubpathFastifyRouteUnaryHandlerOptionsArgs: RuntimeSubpathFastifyRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyUnaryRouteHandlerOptionsArgs;
+const runtimeSubpathFastifyRouteStreamHandlerOptionsArgs: RuntimeSubpathFastifyRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyStreamRouteHandlerOptionsArgs;
+const runtimeSubpathFastifyUnaryRouteHandlerOptionsArgs: RuntimeSubpathFastifyUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathFastifyStreamRouteHandlerOptionsArgs: RuntimeSubpathFastifyStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = fastifyRouteStreamHandlerOptionsArgs;
 exactFastifyHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -19274,16 +19330,72 @@ requestTypedFastifyRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   exactManifestHandlerHookContext
 );
 fastifyStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathFastifyRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathFastifyRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathFastifyRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathFastifyRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathFastifyUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathFastifyStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const fastifyHandler: FastifyHandler = createFastifyHandler(
   manifest,
   fastifyHandlerOptions
 );
+const routeUnaryFastifyHandler: FastifyHandler = createRouteUnaryFastifyHandler(
+  manifest,
+  fastifyRouteUnaryHandlerOptions
+);
+const unaryRouteFastifyHandler: FastifyHandler = createUnaryRouteFastifyHandler(
+  manifest,
+  fastifyUnaryRouteHandlerOptions
+);
+const routeStreamFastifyHandler: FastifyHandler =
+  createRouteStreamFastifyHandler(manifest, fastifyRouteStreamHandlerOptions);
+const streamRouteFastifyHandler: FastifyHandler =
+  createStreamRouteFastifyHandler(manifest, fastifyStreamRouteHandlerOptions);
 createFastifyHandler(manifest, requestTypedFastifyHandlerOptions);
 const syncFastifyHandler: FastifyHandler = () => undefined;
 const runtimeSubpathFastifyHandler: RuntimeSubpathFastifyHandler =
   createRuntimeSubpathFastifyHandler(
     manifest,
     runtimeSubpathFastifyHandlerOptions
+  );
+const runtimeSubpathRouteUnaryFastifyHandler: RuntimeSubpathFastifyHandler =
+  createRuntimeSubpathRouteUnaryFastifyHandler(
+    manifest,
+    runtimeSubpathFastifyRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteFastifyHandler: RuntimeSubpathFastifyHandler =
+  createRuntimeSubpathUnaryRouteFastifyHandler(
+    manifest,
+    runtimeSubpathFastifyUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamFastifyHandler: RuntimeSubpathFastifyHandler =
+  createRuntimeSubpathRouteStreamFastifyHandler(
+    manifest,
+    runtimeSubpathFastifyRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteFastifyHandler: RuntimeSubpathFastifyHandler =
+  createRuntimeSubpathStreamRouteFastifyHandler(
+    manifest,
+    runtimeSubpathFastifyStreamRouteHandlerOptions
   );
 const runtimeSubpathSyncFastifyHandler: RuntimeSubpathFastifyHandler =
   syncFastifyHandler;
@@ -19322,6 +19434,22 @@ const createTypedFastifyHandler = createFastifyHandlerFor<
 >();
 const typedFastifyHandler: FastifyHandler<FastifyAppRequest, FastifyAppReply> =
   createTypedFastifyHandler(manifest, fastifyHandlerOptions);
+const typedRouteUnaryFastifyHandler: FastifyHandler<
+  FastifyAppRequest,
+  FastifyAppReply
+> = createRouteUnaryFastifyHandlerFor<
+  FastifyAppRequest,
+  FastifyAppReply
+>()(manifest, fastifyRouteUnaryHandlerOptions);
+createUnaryRouteFastifyHandlerFor()(manifest, fastifyUnaryRouteHandlerOptions);
+createRouteStreamFastifyHandlerFor()(
+  manifest,
+  fastifyRouteStreamHandlerOptions
+);
+createStreamRouteFastifyHandlerFor()(
+  manifest,
+  fastifyStreamRouteHandlerOptions
+);
 const createRuntimeSubpathTypedFastifyHandler =
   createRuntimeSubpathFastifyHandlerFor<
     RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
@@ -19336,6 +19464,27 @@ const runtimeSubpathTypedFastifyHandler: RuntimeSubpathFastifyHandler<
   manifest,
   runtimeSubpathFastifyHandlerOptions
 );
+const runtimeSubpathTypedRouteUnaryFastifyHandler: RuntimeSubpathFastifyHandler<
+  RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+    FastifyAppRequest,
+  RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
+> = createRuntimeSubpathRouteUnaryFastifyHandlerFor<
+  RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+    FastifyAppRequest,
+  RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
+>()(manifest, runtimeSubpathFastifyRouteUnaryHandlerOptions);
+createRuntimeSubpathUnaryRouteFastifyHandlerFor()(
+  manifest,
+  runtimeSubpathFastifyUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamFastifyHandlerFor()(
+  manifest,
+  runtimeSubpathFastifyRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteFastifyHandlerFor()(
+  manifest,
+  runtimeSubpathFastifyStreamRouteHandlerOptions
+);
 const fastifyAppRequest = {} as FastifyAppRequest;
 const fastifyAppReply = {} as FastifyAppReply;
 fastifyAppRequest.body?.id.toUpperCase();
@@ -19347,15 +19496,35 @@ const _wrongFastifyAppRequest: FastifyRequest = fastifyAppRequest;
 // @ts-expect-error typed Fastify replies are not assignable to plain replies.
 const _wrongFastifyAppReply: FastifyReply = fastifyAppReply;
 fastifyHandler(fastifyRequest, fastifyReply);
+routeUnaryFastifyHandler(fastifyRequest, fastifyReply);
+unaryRouteFastifyHandler(fastifyRequest, fastifyReply);
+routeStreamFastifyHandler(fastifyRequest, fastifyReply);
+streamRouteFastifyHandler(fastifyRequest, fastifyReply);
 syncFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathFastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathRouteUnaryFastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathUnaryRouteFastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathRouteStreamFastifyHandler(fastifyRequest, fastifyReply);
+runtimeSubpathStreamRouteFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
 typedFastifyHandler(fastifyAppRequest, fastifyAppReply);
+typedRouteUnaryFastifyHandler(fastifyAppRequest, fastifyAppReply);
 runtimeSubpathTypedFastifyHandler(fastifyAppRequest, fastifyAppReply);
+runtimeSubpathTypedRouteUnaryFastifyHandler(
+  fastifyAppRequest,
+  fastifyAppReply
+);
 // @ts-expect-error typed Fastify handlers preserve the reply's incoming message type.
 createFastifyHandlerFor<FastifyAppRequest, FastifyMismatchedReply>();
+createRouteUnaryFastifyHandlerFor<
+  FastifyAppRequest,
+  // @ts-expect-error route-unary typed Fastify handlers preserve the reply's incoming message type.
+  FastifyMismatchedReply
+>();
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
 createFastifyHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Fastify adapter plugins.
+createRouteUnaryFastifyHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Fastify adapter plugins.
 createTypedFastifyHandler(manifest);
 const koaHandlerOptionsBase: KoaHandlerOptions = { hostname: 'app' };

@@ -212,6 +212,14 @@ export {
 export {
   createFastifyHandler,
   createFastifyHandlerFor,
+  createRouteStreamFastifyHandler,
+  createRouteStreamFastifyHandlerFor,
+  createRouteUnaryFastifyHandler,
+  createRouteUnaryFastifyHandlerFor,
+  createStreamRouteFastifyHandler,
+  createStreamRouteFastifyHandlerFor,
+  createUnaryRouteFastifyHandler,
+  createUnaryRouteFastifyHandlerFor,
 } from './runtime/fastify.js';
 export {
   createHonoHandler,
