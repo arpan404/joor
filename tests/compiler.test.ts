@@ -3523,13 +3523,13 @@ const nativeRouteBatchResults: NativeRouteBatchResults<readonly [typeof nativeUn
   [nativeRouteEnvelope];
 const nativeRouteProtocolBatchResults: NativeRouteProtocolBatchResults<
   readonly [typeof nativeUnaryBody]
-> = nativeRouteBatchResults;
+> = [nativeRouteEnvelope];
 const nativeRouteUnaryBatchResults: NativeRouteUnaryBatchResults<
   readonly [typeof nativeUnaryBody]
 > = nativeRouteBatchResults;
 const nativeRouteUnaryProtocolBatchResults: NativeRouteUnaryProtocolBatchResults<
   readonly [typeof nativeUnaryBody]
-> = nativeRouteUnaryBatchResults;
+> = nativeRouteProtocolBatchResults;
 const nativeUnaryRouteBatchResults: NativeUnaryRouteBatchResults<
   readonly [typeof nativeUnaryBody]
 > = nativeRouteUnaryBatchResults;
