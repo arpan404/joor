@@ -542,7 +542,10 @@ import {
   type JoorManifestRouteBody,
   type JoorManifestRouteBodyResult,
   type JoorManifestRouteBodyResultFor,
+  type JoorManifestRouteBatchClientHeaders,
+  type JoorManifestRouteBatchOptions,
   type JoorManifestRouteBatchRequest,
+  type JoorManifestRouteBatchRequestUnion,
   type JoorManifestRouteBatchResults,
   type JoorManifestRouteClientArgs,
   type JoorManifestRouteClientHeaders,
@@ -616,6 +619,8 @@ import {
   type JoorManifestRouteUnaryProtocolBatchRequest,
   type JoorManifestRouteUnaryProtocolRequest,
   type JoorManifestRouteUnaryProtocolRequestUnion,
+  type JoorManifestRouteUnaryBatchOptions,
+  type JoorManifestRouteUnaryBatchRequestUnion,
   type JoorManifestUnaryProtocolRequest,
   type JoorManifestUnaryProtocolRequestUnion,
   type JoorManifestRouteUnaryTransportClient,
@@ -641,7 +646,9 @@ import {
   type JoorManifestUnaryRouteHeaders,
   type JoorManifestUnaryRouteInput,
   type JoorManifestUnaryRouteOutput,
+  type JoorManifestUnaryRouteBatchOptions,
   type JoorManifestUnaryRouteBatchRequest,
+  type JoorManifestUnaryRouteBatchRequestUnion,
   type JoorManifestUnaryRouteBatchResults,
   type JoorManifestUnaryRouteProcedure,
   type JoorManifestUnaryRouteProtocolBatchRequest,
@@ -1269,6 +1276,9 @@ import {
   type JoorManifestClientOptions as JoorSubpathManifestClientOptions,
   type JoorManifestRouteBody as JoorSubpathManifestRouteBody,
   type JoorManifestRouteBodyResultFor as JoorSubpathManifestRouteBodyResultFor,
+  type JoorManifestRouteBatchClientHeaders as JoorSubpathManifestRouteBatchClientHeaders,
+  type JoorManifestRouteBatchOptions as JoorSubpathManifestRouteBatchOptions,
+  type JoorManifestRouteBatchRequestUnion as JoorSubpathManifestRouteBatchRequestUnion,
   type JoorManifestRouteClientArgs as JoorSubpathManifestRouteClientArgs,
   type JoorManifestRouteClientHeaders as JoorSubpathManifestRouteClientHeaders,
   type JoorManifestRouteEnvelope as JoorSubpathManifestRouteEnvelope,
@@ -1287,11 +1297,15 @@ import {
   type JoorManifestStreamRouteResponseHeaders as JoorSubpathManifestStreamRouteResponseHeaders,
   type JoorManifestStreamRouteRequestOptions as JoorSubpathManifestStreamRouteRequestOptions,
   type JoorManifestStreamRouteRequest as JoorSubpathManifestStreamRouteRequest,
+  type JoorManifestRouteUnaryBatchOptions as JoorSubpathManifestRouteUnaryBatchOptions,
+  type JoorManifestRouteUnaryBatchRequestUnion as JoorSubpathManifestRouteUnaryBatchRequestUnion,
   type JoorManifestUnaryRouteClientArgs as JoorSubpathManifestUnaryRouteClientArgs,
   type JoorManifestUnaryRouteBodyHandler as JoorSubpathManifestUnaryRouteBodyHandler,
   type JoorManifestUnaryRouteBodyResultHandler as JoorSubpathManifestUnaryRouteBodyResultHandler,
   type JoorManifestUnaryRouteTransportBodyResultHandler as JoorSubpathManifestUnaryRouteTransportBodyResultHandler,
   type JoorManifestUnaryRouteProcedure as JoorSubpathManifestUnaryRouteProcedure,
+  type JoorManifestUnaryRouteBatchOptions as JoorSubpathManifestUnaryRouteBatchOptions,
+  type JoorManifestUnaryRouteBatchRequestUnion as JoorSubpathManifestUnaryRouteBatchRequestUnion,
   type JoorManifestUnaryRouteRequestOptions as JoorSubpathManifestUnaryRouteRequestOptions,
   type JoorManifestRouteProtocolBatchRequest as JoorSubpathManifestRouteProtocolBatchRequest,
   type JoorManifestRouteProtocolRequest as JoorSubpathManifestRouteProtocolRequest,
@@ -6627,6 +6641,30 @@ const manifestUnaryRouteRequestUnion: JoorManifestUnaryRouteRequestUnion<
   typeof manifest
 > = manifestUnaryRouteRequest;
 manifestUnaryRouteRequestUnion.id.toUpperCase();
+const manifestRouteBatchRequestUnion: JoorManifestRouteBatchRequestUnion<
+  typeof manifest
+> = manifestRouteRequest;
+const manifestSubpathRouteBatchRequestUnion: JoorSubpathManifestRouteBatchRequestUnion<
+  typeof manifestFromSubpath
+> = manifestRouteBatchRequestUnion;
+manifestRouteBatchRequestUnion.id.toUpperCase();
+manifestSubpathRouteBatchRequestUnion.id.toUpperCase();
+const manifestRouteUnaryBatchRequestUnion: JoorManifestRouteUnaryBatchRequestUnion<
+  typeof manifest
+> = manifestUnaryRouteRequest;
+const manifestUnaryRouteBatchRequestUnion: JoorManifestUnaryRouteBatchRequestUnion<
+  typeof manifest
+> = manifestRouteUnaryBatchRequestUnion;
+const manifestSubpathRouteUnaryBatchRequestUnion: JoorSubpathManifestRouteUnaryBatchRequestUnion<
+  typeof manifestFromSubpath
+> = manifestRouteUnaryBatchRequestUnion;
+const manifestSubpathUnaryRouteBatchRequestUnion: JoorSubpathManifestUnaryRouteBatchRequestUnion<
+  typeof manifestFromSubpath
+> = manifestUnaryRouteBatchRequestUnion;
+manifestRouteUnaryBatchRequestUnion.input.id.toUpperCase();
+manifestUnaryRouteBatchRequestUnion.input.id.toUpperCase();
+manifestSubpathRouteUnaryBatchRequestUnion.input.id.toUpperCase();
+manifestSubpathUnaryRouteBatchRequestUnion.input.id.toUpperCase();
 const manifestRouteBatchResults: JoorManifestRouteBatchResults<
   typeof manifest,
   [typeof manifestRouteRequest]
@@ -6654,6 +6692,75 @@ const defaultManifestUnaryRouteBatchResult =
 if (defaultManifestUnaryRouteBatchResult) {
   defaultManifestUnaryRouteBatchResult.id.toUpperCase();
 }
+const manifestRouteBatchHeaders: JoorManifestRouteBatchClientHeaders<
+  typeof manifest,
+  readonly [typeof manifestRouteRequest]
+> = {
+  authorization: undefined,
+  'x-tenant-id': 'tenant-1',
+};
+manifestRouteBatchHeaders['x-tenant-id'].toUpperCase();
+const manifestSubpathRouteBatchHeaders: JoorSubpathManifestRouteBatchClientHeaders<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestRouteRequest]
+> = manifestRouteBatchHeaders;
+manifestSubpathRouteBatchHeaders['x-tenant-id'].toUpperCase();
+const manifestRouteBatchOptions: JoorManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestRouteRequest]
+> = {
+  headers: manifestRouteBatchHeaders,
+  request: clientRequestInit,
+};
+manifestRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const manifestSubpathRouteBatchOptions: JoorSubpathManifestRouteBatchOptions<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestRouteRequest]
+> = manifestRouteBatchOptions;
+manifestSubpathRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const manifestRouteUnaryBatchOptions: JoorManifestRouteUnaryBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryRouteRequest]
+> = manifestRouteBatchOptions;
+manifestRouteUnaryBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const manifestSubpathRouteUnaryBatchOptions: JoorSubpathManifestRouteUnaryBatchOptions<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestUnaryRouteRequest]
+> = manifestRouteUnaryBatchOptions;
+manifestSubpathRouteUnaryBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const manifestUnaryRouteBatchOptions: JoorManifestUnaryRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestUnaryRouteRequest]
+> = manifestRouteUnaryBatchOptions;
+const manifestSubpathUnaryRouteBatchOptions: JoorSubpathManifestUnaryRouteBatchOptions<
+  typeof manifestFromSubpath,
+  readonly [typeof manifestUnaryRouteRequest]
+> = manifestUnaryRouteBatchOptions;
+manifestUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+manifestSubpathUnaryRouteBatchOptions.headers?.['x-tenant-id'].toUpperCase();
+const _wrongManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [typeof manifestRouteRequest]
+> = {
+  headers: {
+    // @ts-expect-error manifest route batch options preserve selected route headers.
+    missing: 'value',
+  },
+};
+_wrongManifestRouteBatchOptions;
+const _noHeaderManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {};
+const _wrongNoHeaderManifestRouteBatchOptions: JoorManifestRouteBatchOptions<
+  typeof manifest,
+  readonly [{ readonly id: 'users.authenticated'; readonly input: { ok: true } }]
+> = {
+  // @ts-expect-error manifest batch headers are unavailable when selected routes declare none.
+  headers: { 'x-tenant-id': 'tenant-1' },
+};
+_noHeaderManifestRouteBatchOptions;
+_wrongNoHeaderManifestRouteBatchOptions;
 const manifestStreamEvent: JoorManifestRouteStreamEvent<
   typeof manifest,
   'users.watch'
