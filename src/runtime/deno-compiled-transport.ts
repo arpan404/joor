@@ -33,6 +33,18 @@ import { jsonContentHeaders, transportResultToResponse } from './response.js';
 export type DenoCompiledTransportRequestHandler<
   TRequest extends Request = Request,
 > = JoorFetchHandler<TRequest>;
+export type DenoCompiledRouteUnaryTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledTransportRequestHandler<TRequest>;
+export type DenoCompiledUnaryRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
+export type DenoCompiledRouteStreamTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledTransportRequestHandler<TRequest>;
+export type DenoCompiledStreamRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
 
 export type DenoCompiledTransportBodyResult<
   TEnvelope extends RpcEnvelope = RpcEnvelope,
@@ -175,6 +187,100 @@ export const createDenoCompiledTransportRequestHandlerFor =
       preflight
     ) as DenoCompiledTransportRequestHandler<TRequest>;
 
+export const createRouteUnaryDenoCompiledTransportRequestHandler = <
+  TManifest extends JoorManifest,
+  TServices extends object = object,
+>(
+  runtimeState: CompiledRuntimeState<TServices>,
+  handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false
+): DenoCompiledRouteUnaryTransportRequestHandler =>
+  createDenoCompiledTransportRequestHandler(
+    runtimeState,
+    handler as DenoCompiledTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      DenoCompiledRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    unaryDispatch,
+    maxBodyBytes,
+    preflight
+  );
+
+export const createUnaryRouteDenoCompiledTransportRequestHandler: typeof createRouteUnaryDenoCompiledTransportRequestHandler =
+  createRouteUnaryDenoCompiledTransportRequestHandler;
+
+export const createRouteUnaryDenoCompiledTransportRequestHandlerFor =
+  <TRequest extends Request = Request>() =>
+  <
+    TManifest extends JoorManifest,
+    TServices extends object = object,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false
+  ): DenoCompiledRouteUnaryTransportRequestHandler<TRequest> =>
+    createRouteUnaryDenoCompiledTransportRequestHandler(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      maxBodyBytes,
+      preflight
+    ) as DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
+
+export const createUnaryRouteDenoCompiledTransportRequestHandlerFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerFor =
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor;
+
+export const createRouteStreamDenoCompiledTransportRequestHandler = <
+  TManifest extends JoorManifest,
+  TServices extends object = object,
+>(
+  runtimeState: CompiledRuntimeState<TServices>,
+  handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false
+): DenoCompiledRouteStreamTransportRequestHandler =>
+  createDenoCompiledTransportRequestHandler(
+    runtimeState,
+    handler as DenoCompiledTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      DenoCompiledRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    unaryDispatch,
+    maxBodyBytes,
+    preflight
+  );
+
+export const createStreamRouteDenoCompiledTransportRequestHandler: typeof createRouteStreamDenoCompiledTransportRequestHandler =
+  createRouteStreamDenoCompiledTransportRequestHandler;
+
+export const createRouteStreamDenoCompiledTransportRequestHandlerFor =
+  <TRequest extends Request = Request>() =>
+  <
+    TManifest extends JoorManifest,
+    TServices extends object = object,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false
+  ): DenoCompiledRouteStreamTransportRequestHandler<TRequest> =>
+    createRouteStreamDenoCompiledTransportRequestHandler(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      maxBodyBytes,
+      preflight
+    ) as DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
+
+export const createStreamRouteDenoCompiledTransportRequestHandlerFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerFor =
+  createRouteStreamDenoCompiledTransportRequestHandlerFor;
+
 const matchesPath = (url: string, path: string): boolean => {
   const protocolIndex = url.indexOf('://');
   const pathStart =
@@ -304,3 +410,97 @@ export const createDenoCompiledTransportRequestHandlerWithPathFor =
       path,
       maxBodyBytes
     ) as DenoCompiledTransportRequestHandler<TRequest>;
+
+export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+  TServices extends object = object,
+>(
+  runtimeState: CompiledRuntimeState<TServices>,
+  handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): DenoCompiledRouteUnaryTransportRequestHandler =>
+  createDenoCompiledTransportRequestHandlerWithPath(
+    runtimeState,
+    handler as DenoCompiledTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      DenoCompiledRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    unaryDispatch,
+    path,
+    maxBodyBytes
+  );
+
+export const createUnaryRouteDenoCompiledTransportRequestHandlerWithPath: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPath;
+
+export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
+  <TRequest extends Request = Request>() =>
+  <
+    TManifest extends JoorManifest,
+    TServices extends object = object,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): DenoCompiledRouteUnaryTransportRequestHandler<TRequest> =>
+    createRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      path,
+      maxBodyBytes
+    ) as DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
+
+export const createUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor;
+
+export const createRouteStreamDenoCompiledTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+  TServices extends object = object,
+>(
+  runtimeState: CompiledRuntimeState<TServices>,
+  handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): DenoCompiledRouteStreamTransportRequestHandler =>
+  createDenoCompiledTransportRequestHandlerWithPath(
+    runtimeState,
+    handler as DenoCompiledTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      DenoCompiledRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    unaryDispatch,
+    path,
+    maxBodyBytes
+  );
+
+export const createStreamRouteDenoCompiledTransportRequestHandlerWithPath: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPath =
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPath;
+
+export const createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
+  <TRequest extends Request = Request>() =>
+  <
+    TManifest extends JoorManifest,
+    TServices extends object = object,
+  >(
+    runtimeState: CompiledRuntimeState<TServices>,
+    handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): DenoCompiledRouteStreamTransportRequestHandler<TRequest> =>
+    createRouteStreamDenoCompiledTransportRequestHandlerWithPath(
+      runtimeState,
+      handler,
+      unaryDispatch,
+      path,
+      maxBodyBytes
+    ) as DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
+
+export const createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor;

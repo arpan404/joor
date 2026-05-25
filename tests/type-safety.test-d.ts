@@ -98,6 +98,10 @@ import {
   createDenoCompiledTransportRequestHandlerFor as createRootDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath as createRootDenoCompiledTransportRequestHandlerWithPath,
   createDenoCompiledTransportRequestHandlerWithPathFor as createRootDenoCompiledTransportRequestHandlerWithPathFor,
+  createRouteUnaryDenoCompiledTransportRequestHandler as createRootRouteUnaryDenoCompiledTransportRequestHandler,
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor as createRootRouteUnaryDenoCompiledTransportRequestHandlerFor,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPath as createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPath,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoRpcRequestHandler,
   createDenoRpcRequestHandlerFor,
   createRouteStreamDenoFetch,
@@ -619,13 +623,17 @@ import {
   type DenoCompiledTransportBodyResultHandlerFor as RootDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledRouteStreamTransportBodyResultFor as RootDenoCompiledRouteStreamTransportBodyResultFor,
   type DenoCompiledRouteStreamTransportBodyResultHandlerFor as RootDenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportRequestHandler as RootDenoCompiledRouteStreamTransportRequestHandler,
   type DenoCompiledRouteUnaryTransportBodyResultFor as RootDenoCompiledRouteUnaryTransportBodyResultFor,
   type DenoCompiledRouteUnaryTransportBodyResultHandlerFor as RootDenoCompiledRouteUnaryTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportRequestHandler as RootDenoCompiledRouteUnaryTransportRequestHandler,
   type DenoCompiledStreamRouteTransportBodyResultFor as RootDenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor as RootDenoCompiledStreamRouteTransportBodyResultHandlerFor,
+  type DenoCompiledStreamRouteTransportRequestHandler as RootDenoCompiledStreamRouteTransportRequestHandler,
   type DenoCompiledTransportRequestHandler as RootDenoCompiledTransportRequestHandler,
   type DenoCompiledUnaryRouteTransportBodyResultFor as RootDenoCompiledUnaryRouteTransportBodyResultFor,
   type DenoCompiledUnaryRouteTransportBodyResultHandlerFor as RootDenoCompiledUnaryRouteTransportBodyResultHandlerFor,
+  type DenoCompiledUnaryRouteTransportRequestHandler as RootDenoCompiledUnaryRouteTransportRequestHandler,
   type DenoFetchOptionsArgs,
   type DenoFetchOptionsFor,
   type DenoFetchHandler,
@@ -1799,19 +1807,33 @@ import {
   createDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPath,
   createDenoCompiledTransportRequestHandlerWithPathFor,
+  createRouteStreamDenoCompiledTransportRequestHandler,
+  createRouteStreamDenoCompiledTransportRequestHandlerFor,
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPath,
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor,
+  createRouteUnaryDenoCompiledTransportRequestHandler,
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPath,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createStreamRouteDenoCompiledTransportRequestHandler,
+  createUnaryRouteDenoCompiledTransportRequestHandler,
   type DenoCompiledTransportBodyResult,
   type DenoCompiledTransportBodyResultFor,
   type DenoCompiledTransportBodyResultHandler,
   type DenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledRouteStreamTransportBodyResultFor,
   type DenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportRequestHandler,
   type DenoCompiledRouteUnaryTransportBodyResultFor,
   type DenoCompiledRouteUnaryTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportRequestHandler,
   type DenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor,
+  type DenoCompiledStreamRouteTransportRequestHandler,
   type DenoCompiledTransportRequestHandler,
   type DenoCompiledUnaryRouteTransportBodyResultFor,
   type DenoCompiledUnaryRouteTransportBodyResultHandlerFor,
+  type DenoCompiledUnaryRouteTransportRequestHandler,
 } from '../src/runtime/deno-compiled-transport.js';
 import {
   compiledCreateProcedureCacheKey,
@@ -1976,6 +1998,10 @@ import {
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerWithPathFor,
+  createRouteUnaryDenoCompiledTransportRequestHandler as createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandler,
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor as createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerFor,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPath as createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerWithPath,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createStandaloneDenoRpcRequestHandler as createRuntimeSubpathStandaloneDenoRpcRequestHandler,
   createStandaloneDenoRpcRequestHandlerFor as createRuntimeSubpathStandaloneDenoRpcRequestHandlerFor,
   createStandaloneRouteUnaryDenoRpcRequestHandler as createRuntimeSubpathStandaloneRouteUnaryDenoRpcRequestHandler,
@@ -2316,13 +2342,17 @@ import {
   type DenoCompiledTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledTransportBodyResultHandlerFor,
   type DenoCompiledRouteStreamTransportBodyResultFor as RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultFor,
   type DenoCompiledRouteStreamTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteStreamTransportRequestHandler as RuntimeSubpathDenoCompiledRouteStreamTransportRequestHandler,
   type DenoCompiledRouteUnaryTransportBodyResultFor as RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultFor,
   type DenoCompiledRouteUnaryTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledRouteUnaryTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportRequestHandler as RuntimeSubpathDenoCompiledRouteUnaryTransportRequestHandler,
   type DenoCompiledStreamRouteTransportBodyResultFor as RuntimeSubpathDenoCompiledStreamRouteTransportBodyResultFor,
   type DenoCompiledStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledStreamRouteTransportBodyResultHandlerFor,
+  type DenoCompiledStreamRouteTransportRequestHandler as RuntimeSubpathDenoCompiledStreamRouteTransportRequestHandler,
   type DenoCompiledTransportRequestHandler as RuntimeSubpathDenoCompiledTransportRequestHandler,
   type DenoCompiledUnaryRouteTransportBodyResultFor as RuntimeSubpathDenoCompiledUnaryRouteTransportBodyResultFor,
   type DenoCompiledUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathDenoCompiledUnaryRouteTransportBodyResultHandlerFor,
+  type DenoCompiledUnaryRouteTransportRequestHandler as RuntimeSubpathDenoCompiledUnaryRouteTransportRequestHandler,
   type DenoFetchOptionsArgs as RuntimeSubpathDenoFetchOptionsArgs,
   type DenoFetchOptionsFor as RuntimeSubpathDenoFetchOptionsFor,
   type DenoFetchHandler as RuntimeSubpathDenoFetchHandler,
@@ -15898,6 +15928,176 @@ runtimeSubpathManifestDenoCompiledRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
+const routeUnaryDenoCompiledTransportRequestHandler: DenoCompiledRouteUnaryTransportRequestHandler =
+  createRouteUnaryDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteUnaryTransportHandler,
+    compiledUnaryDispatch
+  );
+const unaryRouteDenoCompiledTransportRequestHandler: DenoCompiledUnaryRouteTransportRequestHandler =
+  createUnaryRouteDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteUnaryTransportHandler,
+    compiledUnaryDispatch
+  );
+const routeStreamDenoCompiledTransportRequestHandler: DenoCompiledRouteStreamTransportRequestHandler =
+  createRouteStreamDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteStreamTransportHandler,
+    compiledUnaryDispatch
+  );
+const streamRouteDenoCompiledTransportRequestHandler: DenoCompiledStreamRouteTransportRequestHandler =
+  createStreamRouteDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteStreamTransportHandler,
+    compiledUnaryDispatch
+  );
+createRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+  compiledRuntimeState,
+  manifestDenoCompiledRouteUnaryTransportHandler,
+  compiledUnaryDispatch,
+  '/rpc'
+);
+createRouteStreamDenoCompiledTransportRequestHandlerWithPath(
+  compiledRuntimeState,
+  manifestDenoCompiledRouteStreamTransportHandler,
+  compiledUnaryDispatch,
+  '/rpc'
+);
+createRouteUnaryDenoCompiledTransportRequestHandler(
+  compiledRuntimeState,
+  // @ts-expect-error route-unary compiled Deno transports reject stream-only handlers.
+  manifestDenoCompiledRouteStreamTransportHandler,
+  compiledUnaryDispatch
+);
+const createTypedRouteUnaryDenoCompiledTransportRequestHandler =
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const typedRouteUnaryDenoCompiledTransportRequestHandler: DenoCompiledRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createTypedRouteUnaryDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteUnaryTransportHandler,
+    compiledUnaryDispatch
+  );
+const createTypedRouteStreamDenoCompiledTransportRequestHandler =
+  createRouteStreamDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const typedRouteStreamDenoCompiledTransportRequestHandler: DenoCompiledRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createTypedRouteStreamDenoCompiledTransportRequestHandler(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteStreamTransportHandler,
+    compiledUnaryDispatch
+  );
+const createTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedRouteUnaryDenoCompiledTransportRequestHandlerWithPath: DenoCompiledRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteUnaryTransportHandler,
+    compiledUnaryDispatch,
+    '/rpc'
+  );
+const createTypedRouteStreamDenoCompiledTransportRequestHandlerWithPath =
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedRouteStreamDenoCompiledTransportRequestHandlerWithPath: DenoCompiledRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createTypedRouteStreamDenoCompiledTransportRequestHandlerWithPath(
+    compiledRuntimeState,
+    manifestDenoCompiledRouteStreamTransportHandler,
+    compiledUnaryDispatch,
+    '/rpc'
+  );
+const rootRouteUnaryDenoCompiledTransportRequestHandler: RootDenoCompiledRouteUnaryTransportRequestHandler =
+  createRootRouteUnaryDenoCompiledTransportRequestHandler(
+    rootCompiledRuntimeState,
+    rootManifestDenoCompiledRouteUnaryTransportHandler,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+const rootUnaryRouteDenoCompiledTransportRequestHandler: RootDenoCompiledUnaryRouteTransportRequestHandler =
+  rootRouteUnaryDenoCompiledTransportRequestHandler;
+const rootRouteStreamDenoCompiledTransportRequestHandler: RootDenoCompiledRouteStreamTransportRequestHandler =
+  routeStreamDenoCompiledTransportRequestHandler;
+const rootStreamRouteDenoCompiledTransportRequestHandler: RootDenoCompiledStreamRouteTransportRequestHandler =
+  rootRouteStreamDenoCompiledTransportRequestHandler;
+const createRootTypedRouteUnaryDenoCompiledTransportRequestHandler =
+  createRootRouteUnaryDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const rootTypedRouteUnaryDenoCompiledTransportRequestHandler: RootDenoCompiledRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createRootTypedRouteUnaryDenoCompiledTransportRequestHandler(
+    rootCompiledRuntimeState,
+    rootManifestDenoCompiledRouteUnaryTransportHandler,
+    _rootServiceTypedCompiledUnaryDispatch
+  );
+createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+  rootCompiledRuntimeState,
+  rootManifestDenoCompiledRouteUnaryTransportHandler,
+  _rootServiceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+const createRootTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
+  createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+createRootTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+  rootCompiledRuntimeState,
+  rootManifestDenoCompiledRouteUnaryTransportHandler,
+  _rootServiceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+const runtimeSubpathRouteUnaryDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandler(
+    typedCompiledRuntimeState,
+    runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler,
+    _serviceTypedCompiledUnaryDispatch
+  );
+const runtimeSubpathUnaryRouteDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledUnaryRouteTransportRequestHandler =
+  runtimeSubpathRouteUnaryDenoCompiledTransportRequestHandler;
+const runtimeSubpathRouteStreamDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledRouteStreamTransportRequestHandler =
+  routeStreamDenoCompiledTransportRequestHandler;
+const runtimeSubpathStreamRouteDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledStreamRouteTransportRequestHandler =
+  runtimeSubpathRouteStreamDenoCompiledTransportRequestHandler;
+const createRuntimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler: RuntimeSubpathDenoCompiledRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler(
+    typedCompiledRuntimeState,
+    runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler,
+    _serviceTypedCompiledUnaryDispatch
+  );
+createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+  typedCompiledRuntimeState,
+  runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler,
+  _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+const createRuntimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
+  createRuntimeSubpathRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor<AppFetchRequest>();
+createRuntimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
+  typedCompiledRuntimeState,
+  runtimeSubpathManifestDenoCompiledRouteUnaryTransportHandler,
+  _serviceTypedCompiledUnaryDispatch,
+  '/rpc'
+);
+routeUnaryDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+unaryRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+routeStreamDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+streamRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+typedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
+typedRouteStreamDenoCompiledTransportRequestHandler(appFetchRequest);
+typedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
+typedRouteStreamDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
+rootRouteUnaryDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+rootUnaryRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+rootRouteStreamDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+rootStreamRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+rootTypedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
+runtimeSubpathRouteUnaryDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathUnaryRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
 syncManifestDenoCompiledTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestRouteRequest
