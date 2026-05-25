@@ -1224,6 +1224,61 @@ describe('dispatcher', () => {
     expect(calls).toBe(1);
   });
 
+  it('caches successful query responses with validated response headers', async () => {
+    let calls = 0;
+    const cached = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ value: t.number() }),
+      responseHeaders: t.object({ 'cache-control': t.string() }),
+      meta: {
+        kind: 'query',
+        cache: {
+          ttl: '1m',
+          key: ['input.id'],
+        },
+      },
+      async handler(ctx) {
+        calls += 1;
+        return ctx.ok(
+          { value: calls },
+          { 'cache-control': `private, max-age=${calls}` }
+        );
+      },
+    });
+    const handler = createJoorHandler({
+      procedures: { 'cached.headers': cached },
+    });
+    const request = (): Promise<Response> =>
+      Promise.resolve(
+        handler(
+          new Request('http://localhost/rpc', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              id: 'cached.headers',
+              input: { id: 'same' },
+            }),
+          })
+        )
+      );
+
+    const firstResponse = await request();
+    const first = await firstResponse.json();
+    const secondResponse = await request();
+    const second = await secondResponse.json();
+
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    expect(first.data.value).toBe(1);
+    expect(second.data.value).toBe(1);
+    expect(first.headers['cache-control']).toBe('private, max-age=1');
+    expect(second.headers['cache-control']).toBe('private, max-age=1');
+    expect(secondResponse.headers.get('cache-control')).toBe(
+      'private, max-age=1'
+    );
+    expect(calls).toBe(1);
+  });
+
   it('memoizes auth within a batch for shared policies', async () => {
     let authCalls = 0;
     const auth = createAuthPolicy({

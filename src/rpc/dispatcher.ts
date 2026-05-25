@@ -2177,12 +2177,24 @@ const executeUnary = async <TId extends string>(
         validationDetails(responseHeaderResult.issues)
       );
     }
+    const responseHeaders =
+      responseHeaderResult.value as CachedProcedureHeaders;
+    if (cacheKey !== undefined && cacheConfig !== undefined) {
+      writeCachedProcedureSuccess(
+        procedureSuccessCache,
+        cacheKey,
+        parseDurationMs(cacheConfig.ttl),
+        data,
+        responseHeaders,
+        runtime.cacheMaxEntries
+      );
+    }
     return {
       ok: true,
       id: rpcRequest.id,
       traceId: trace,
       data,
-      headers: responseHeaderResult.value as CachedProcedureHeaders,
+      headers: responseHeaders,
     };
   }
   if (headers !== undefined) {
