@@ -275,6 +275,96 @@ export function createNextRouteHandlers<TManifest extends JoorManifest>(
 export const createNextHandler: typeof createNextRouteHandlers =
   createNextRouteHandlers;
 
+export function createRouteUnaryNextRouteHandlers<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: NextRouteUnaryHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): NextRouteHandlers<never, TRequest>;
+export function createRouteUnaryNextRouteHandlers<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): NextRouteHandlers {
+  return createRouteHandlers<
+    never,
+    Request,
+    TManifest,
+    readonly JoorPlugin<object>[],
+    RpcManifestRouteUnaryBody<TManifest>
+  >(
+    manifest,
+    options as
+      | HandlerOptionsFor<
+          TManifest,
+          readonly JoorPlugin<object>[],
+          RpcManifestRouteUnaryBody<TManifest>,
+          Request
+        >
+      | undefined
+  );
+}
+
+export const createUnaryRouteNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createRouteUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createUnaryRouteNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+
+export function createRouteStreamNextRouteHandlers<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: NextRouteStreamHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): NextRouteHandlers<never, TRequest>;
+export function createRouteStreamNextRouteHandlers<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): NextRouteHandlers {
+  return createRouteHandlers<
+    never,
+    Request,
+    TManifest,
+    readonly JoorPlugin<object>[],
+    RpcManifestRouteStreamBody<TManifest>
+  >(
+    manifest,
+    options as
+      | HandlerOptionsFor<
+          TManifest,
+          readonly JoorPlugin<object>[],
+          RpcManifestRouteStreamBody<TManifest>,
+          Request
+        >
+      | undefined
+  );
+}
+
+export const createStreamRouteNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createRouteStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createStreamRouteNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+
 export function createNextRouteHandlersFor<TContext = never>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -340,3 +430,147 @@ export function createNextRouteHandlersFor<
 
 export const createNextHandlerFor: typeof createNextRouteHandlersFor =
   createNextRouteHandlersFor;
+
+export function createRouteUnaryNextRouteHandlersFor<
+  TContext = never,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteUnaryHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => NextRouteHandlers<
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteUnaryNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteUnaryHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => NextRouteHandlers<TContext, TRequest>;
+export function createRouteUnaryNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: NextRouteUnaryHandlersOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): NextRouteHandlers<TContext, TRequest> =>
+    createRouteHandlers<
+      TContext,
+      TRequest,
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>
+    >(
+      manifest,
+      args[0] as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteUnaryBody<TManifest>,
+        TRequest
+      >
+    );
+}
+
+export const createUnaryRouteNextRouteHandlersFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
+export const createRouteUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
+export const createUnaryRouteNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
+
+export function createRouteStreamNextRouteHandlersFor<
+  TContext = never,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteStreamHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => NextRouteHandlers<
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteStreamNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: NextRouteStreamHandlersOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => NextRouteHandlers<TContext, TRequest>;
+export function createRouteStreamNextRouteHandlersFor<
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: NextRouteStreamHandlersOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): NextRouteHandlers<TContext, TRequest> =>
+    createRouteHandlers<
+      TContext,
+      TRequest,
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>
+    >(
+      manifest,
+      args[0] as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteStreamBody<TManifest>,
+        TRequest
+      >
+    );
+}
+
+export const createStreamRouteNextRouteHandlersFor: typeof createRouteStreamNextRouteHandlersFor =
+  createRouteStreamNextRouteHandlersFor;
+export const createRouteStreamNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
+  createRouteStreamNextRouteHandlersFor;
+export const createStreamRouteNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
+  createRouteStreamNextRouteHandlersFor;

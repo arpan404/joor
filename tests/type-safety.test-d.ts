@@ -186,6 +186,22 @@ import {
   createNextHandlerFor,
   createNextRouteHandlers,
   createNextRouteHandlersFor,
+  createRouteStreamNextHandler,
+  createRouteStreamNextHandlerFor,
+  createRouteStreamNextRouteHandlers,
+  createRouteStreamNextRouteHandlersFor,
+  createRouteUnaryNextHandler,
+  createRouteUnaryNextHandlerFor,
+  createRouteUnaryNextRouteHandlers,
+  createRouteUnaryNextRouteHandlersFor,
+  createStreamRouteNextHandler,
+  createStreamRouteNextHandlerFor,
+  createStreamRouteNextRouteHandlers,
+  createStreamRouteNextRouteHandlersFor,
+  createUnaryRouteNextHandler,
+  createUnaryRouteNextHandlerFor,
+  createUnaryRouteNextRouteHandlers,
+  createUnaryRouteNextRouteHandlersFor,
   createNodeRpcRequestHandler,
   createNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler,
@@ -1991,6 +2007,22 @@ import {
   createNextHandlerFor as createRuntimeSubpathNextHandlerFor,
   createNextRouteHandlers as createRuntimeSubpathNextRouteHandlers,
   createNextRouteHandlersFor as createRuntimeSubpathNextRouteHandlersFor,
+  createRouteStreamNextHandler as createRuntimeSubpathRouteStreamNextHandler,
+  createRouteStreamNextHandlerFor as createRuntimeSubpathRouteStreamNextHandlerFor,
+  createRouteStreamNextRouteHandlers as createRuntimeSubpathRouteStreamNextRouteHandlers,
+  createRouteStreamNextRouteHandlersFor as createRuntimeSubpathRouteStreamNextRouteHandlersFor,
+  createRouteUnaryNextHandler as createRuntimeSubpathRouteUnaryNextHandler,
+  createRouteUnaryNextHandlerFor as createRuntimeSubpathRouteUnaryNextHandlerFor,
+  createRouteUnaryNextRouteHandlers as createRuntimeSubpathRouteUnaryNextRouteHandlers,
+  createRouteUnaryNextRouteHandlersFor as createRuntimeSubpathRouteUnaryNextRouteHandlersFor,
+  createStreamRouteNextHandler as createRuntimeSubpathStreamRouteNextHandler,
+  createStreamRouteNextHandlerFor as createRuntimeSubpathStreamRouteNextHandlerFor,
+  createStreamRouteNextRouteHandlers as createRuntimeSubpathStreamRouteNextRouteHandlers,
+  createStreamRouteNextRouteHandlersFor as createRuntimeSubpathStreamRouteNextRouteHandlersFor,
+  createUnaryRouteNextHandler as createRuntimeSubpathUnaryRouteNextHandler,
+  createUnaryRouteNextHandlerFor as createRuntimeSubpathUnaryRouteNextHandlerFor,
+  createUnaryRouteNextRouteHandlers as createRuntimeSubpathUnaryRouteNextRouteHandlers,
+  createUnaryRouteNextRouteHandlersFor as createRuntimeSubpathUnaryRouteNextRouteHandlersFor,
   createNodeRpcRequestHandler as createRuntimeSubpathNodeRpcRequestHandler,
   createNodeRpcRequestHandlerFor as createRuntimeSubpathNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandler as createRuntimeSubpathNodeTransportRequestHandler,
@@ -16198,6 +16230,70 @@ createRuntimeSubpathNextRouteHandlers(
   manifest,
   runtimeSubpathNextRouteHandlersOptions
 );
+const routeUnaryNextRouteHandlers: NextRouteHandlers =
+  createRouteUnaryNextRouteHandlers(manifest, nextRouteUnaryHandlersOptions);
+const unaryRouteNextRouteHandlers: NextRouteHandlers =
+  createUnaryRouteNextRouteHandlers(manifest, nextUnaryRouteHandlersOptions);
+const routeStreamNextRouteHandlers: NextRouteHandlers =
+  createRouteStreamNextRouteHandlers(manifest, nextRouteStreamHandlersOptions);
+const streamRouteNextRouteHandlers: NextRouteHandlers =
+  createStreamRouteNextRouteHandlers(manifest, nextStreamRouteHandlersOptions);
+const routeUnaryNextHandler: NextHandler = createRouteUnaryNextHandler(
+  manifest,
+  nextRouteUnaryHandlerOptions
+);
+const unaryRouteNextHandler: NextHandler = createUnaryRouteNextHandler(
+  manifest,
+  nextUnaryHandlerOptions
+);
+const routeStreamNextHandler: NextHandler = createRouteStreamNextHandler(
+  manifest,
+  nextRouteStreamHandlerOptions
+);
+const streamRouteNextHandler: NextHandler = createStreamRouteNextHandler(
+  manifest,
+  nextStreamHandlerOptions
+);
+const runtimeSubpathRouteUnaryNextRouteHandlers: RuntimeSubpathNextRouteHandlers =
+  createRuntimeSubpathRouteUnaryNextRouteHandlers(
+    manifest,
+    runtimeSubpathNextRouteUnaryHandlersOptions
+  );
+const runtimeSubpathUnaryRouteNextRouteHandlers: RuntimeSubpathNextRouteHandlers =
+  createRuntimeSubpathUnaryRouteNextRouteHandlers(
+    manifest,
+    runtimeSubpathNextUnaryRouteHandlersOptions
+  );
+const runtimeSubpathRouteStreamNextRouteHandlers: RuntimeSubpathNextRouteHandlers =
+  createRuntimeSubpathRouteStreamNextRouteHandlers(
+    manifest,
+    runtimeSubpathNextRouteStreamHandlersOptions
+  );
+const runtimeSubpathStreamRouteNextRouteHandlers: RuntimeSubpathNextRouteHandlers =
+  createRuntimeSubpathStreamRouteNextRouteHandlers(
+    manifest,
+    runtimeSubpathNextStreamRouteHandlersOptions
+  );
+const runtimeSubpathRouteUnaryNextHandler: RuntimeSubpathNextHandler =
+  createRuntimeSubpathRouteUnaryNextHandler(
+    manifest,
+    runtimeSubpathNextRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteNextHandler: RuntimeSubpathNextHandler =
+  createRuntimeSubpathUnaryRouteNextHandler(
+    manifest,
+    runtimeSubpathNextUnaryHandlerOptions
+  );
+const runtimeSubpathRouteStreamNextHandler: RuntimeSubpathNextHandler =
+  createRuntimeSubpathRouteStreamNextHandler(
+    manifest,
+    runtimeSubpathNextRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteNextHandler: RuntimeSubpathNextHandler =
+  createRuntimeSubpathStreamRouteNextHandler(
+    manifest,
+    runtimeSubpathNextStreamHandlerOptions
+  );
 const nextHandler: NextHandler = createNextHandler(
   manifest,
   nextHandlerOptions
@@ -16797,10 +16893,34 @@ const hookTypedNextRouteHandlers = createNextRouteHandlersFor<
   never,
   HookAppRequest
 >()(manifest, typedRequestHandlerOptions);
+const routeUnaryHookTypedNextRouteHandlers =
+  createRouteUnaryNextRouteHandlersFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedNextRouteUnaryHandlersOptions
+  );
+createUnaryRouteNextRouteHandlersFor()(
+  manifest,
+  nextUnaryRouteHandlersOptions
+);
+createRouteStreamNextRouteHandlersFor()(
+  manifest,
+  nextRouteStreamHandlersOptions
+);
+createStreamRouteNextRouteHandlersFor()(
+  manifest,
+  nextStreamRouteHandlersOptions
+);
 const directHookTypedNextRouteHandlers: NextRouteHandlers<
   never,
   HookAppRequest
 > = createNextRouteHandlers(manifest, typedRequestHandlerOptions);
+const directHookTypedRouteUnaryNextRouteHandlers: NextRouteHandlers<
+  never,
+  HookAppRequest
+> = createRouteUnaryNextRouteHandlers(
+  manifest,
+  requestTypedNextRouteUnaryHandlersOptions
+);
 const createContextRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -16824,8 +16944,20 @@ const hookTypedNextHandler = createNextHandlerFor<never, HookAppRequest>()(
   manifest,
   typedRequestHandlerOptions
 );
+const routeUnaryHookTypedNextHandler =
+  createRouteUnaryNextHandlerFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedNextRouteUnaryHandlerOptions
+  );
+createUnaryRouteNextHandlerFor()(manifest, nextUnaryHandlerOptions);
+createRouteStreamNextHandlerFor()(manifest, nextRouteStreamHandlerOptions);
+createStreamRouteNextHandlerFor()(manifest, nextStreamHandlerOptions);
 const directHookTypedNextHandler: NextHandler<never, HookAppRequest> =
   createNextHandler(manifest, typedRequestHandlerOptions);
+const directHookTypedRouteUnaryNextHandler: NextHandler<
+  never,
+  HookAppRequest
+> = createRouteUnaryNextHandler(manifest, requestTypedNextRouteUnaryHandlerOptions);
 const createContextRequestTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -16847,6 +16979,23 @@ const runtimeSubpathRequestTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
   never,
   AppFetchRequest
 > = createRuntimeSubpathRequestTypedNextRouteHandlers(manifest, handlerOptions);
+const runtimeSubpathRouteUnaryHookTypedNextRouteHandlers =
+  createRuntimeSubpathRouteUnaryNextRouteHandlersFor<
+    never,
+    HookAppRequest
+  >()(manifest, requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions);
+createRuntimeSubpathUnaryRouteNextRouteHandlersFor()(
+  manifest,
+  runtimeSubpathNextUnaryRouteHandlersOptions
+);
+createRuntimeSubpathRouteStreamNextRouteHandlersFor()(
+  manifest,
+  runtimeSubpathNextRouteStreamHandlersOptions
+);
+createRuntimeSubpathStreamRouteNextRouteHandlersFor()(
+  manifest,
+  runtimeSubpathNextStreamRouteHandlersOptions
+);
 const createRuntimeSubpathContextRequestTypedNextRouteHandlers =
   createRuntimeSubpathNextRouteHandlersFor<
     RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
@@ -16872,6 +17021,23 @@ const runtimeSubpathRequestTypedNextHandler: RuntimeSubpathNextHandler<
   never,
   AppFetchRequest
 > = createRuntimeSubpathRequestTypedNextHandler(manifest, handlerOptions);
+const runtimeSubpathRouteUnaryHookTypedNextHandler =
+  createRuntimeSubpathRouteUnaryNextHandlerFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions
+  );
+createRuntimeSubpathUnaryRouteNextHandlerFor()(
+  manifest,
+  runtimeSubpathNextUnaryHandlerOptions
+);
+createRuntimeSubpathRouteStreamNextHandlerFor()(
+  manifest,
+  runtimeSubpathNextRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteNextHandlerFor()(
+  manifest,
+  runtimeSubpathNextStreamHandlerOptions
+);
 const createRuntimeSubpathContextRequestTypedNextHandler =
   createRuntimeSubpathNextHandlerFor<
     RuntimeSubpathNextRouteContext<NextDynamicRouteParamsForTypes>,
@@ -16885,7 +17051,39 @@ const runtimeSubpathContextRequestTypedNextHandler: RuntimeSubpathNextHandler<
   handlerOptions
 );
 nextHandler.POST(new Request('https://example.com/rpc'));
+routeUnaryNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+unaryRouteNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+routeStreamNextRouteHandlers.POST(new Request('https://example.com/rpc'));
+streamRouteNextRouteHandlers.POST(new Request('https://example.com/rpc'));
+routeUnaryNextHandler.GET(new Request('https://example.com/rpc'));
+unaryRouteNextHandler.GET(new Request('https://example.com/rpc'));
+routeStreamNextHandler.POST(new Request('https://example.com/rpc'));
+streamRouteNextHandler.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextHandler.POST(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryNextRouteHandlers.GET(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathUnaryRouteNextRouteHandlers.GET(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamNextRouteHandlers.POST(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteNextRouteHandlers.POST(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteUnaryNextHandler.GET(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathUnaryRouteNextHandler.GET(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamNextHandler.POST(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteNextHandler.POST(
+  new Request('https://example.com/rpc')
+);
 nextHandlers.POST(new Request('https://example.com/rpc'));
 runtimeSubpathNextRouteHandler(new Request('https://example.com/rpc'));
 nextRequestRouteHandler(appFetchRequest);
@@ -16910,9 +17108,13 @@ nextDynamicHandlers.GET(new Request('https://example.com/rpc'), {
 nextRequestTypedHandlers.GET(appFetchRequest);
 nextRequestTypedHandler.POST(appFetchRequest);
 hookTypedNextRouteHandlers.GET(hookAppRequest);
+routeUnaryHookTypedNextRouteHandlers.GET(hookAppRequest);
 hookTypedNextHandler.POST(hookAppRequest);
+routeUnaryHookTypedNextHandler.POST(hookAppRequest);
 directHookTypedNextRouteHandlers.GET(hookAppRequest);
+directHookTypedRouteUnaryNextRouteHandlers.GET(hookAppRequest);
 directHookTypedNextHandler.POST(hookAppRequest);
+directHookTypedRouteUnaryNextHandler.POST(hookAppRequest);
 nextContextRequestTypedHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -16939,6 +17141,8 @@ runtimeSubpathTypedNextHandler.GET(
 );
 runtimeSubpathRequestTypedNextHandlers.GET(appFetchRequest);
 runtimeSubpathRequestTypedNextHandler.POST(appFetchRequest);
+runtimeSubpathRouteUnaryHookTypedNextRouteHandlers.GET(hookAppRequest);
+runtimeSubpathRouteUnaryHookTypedNextHandler.POST(hookAppRequest);
 runtimeSubpathContextRequestTypedNextHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -16951,12 +17155,24 @@ runtimeSubpathContextRequestTypedNextHandler.POST(
 nextRequestTypedHandlers.GET(new Request('https://example.com/rpc'));
 // @ts-expect-error hook-typed Next handlers require the configured request subtype.
 hookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+// @ts-expect-error route-unary hook-typed Next handlers require the configured request subtype.
+routeUnaryHookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
 // @ts-expect-error hook-typed Next handler aliases require the configured request subtype.
 hookTypedNextHandler.POST(new Request('https://example.com/rpc'));
+// @ts-expect-error route-unary hook-typed Next handler aliases require the configured request subtype.
+routeUnaryHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 // @ts-expect-error direct typed Next route handlers infer custom hook request types.
 directHookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+directHookTypedRouteUnaryNextRouteHandlers.GET(
+  // @ts-expect-error direct typed route-unary Next route handlers infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Next handler aliases infer custom hook request types.
 directHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
+directHookTypedRouteUnaryNextHandler.POST(
+  // @ts-expect-error direct typed route-unary Next handler aliases infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
 nextContextRequestTypedHandlers.GET(
   // @ts-expect-error context-aware typed Next handlers require the configured request subtype.
   new Request('https://example.com/rpc'),
@@ -16964,6 +17180,8 @@ nextContextRequestTypedHandlers.GET(
 );
 // @ts-expect-error service-dependent manifests require matching Next adapter plugins.
 createNextRouteHandlers(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Next adapter plugins.
+createRouteUnaryNextRouteHandlers(manifest);
 const cloudflareWorker: CloudflareWorker = createCloudflareWorker(
   manifest,
   handlerOptions
