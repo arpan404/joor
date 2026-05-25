@@ -977,6 +977,14 @@ export const nativeTransport: NativeTransportHandler = createCompiledRpcTranspor
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
+export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler =
+  nativeTransport as NativeRouteUnaryTransportHandler;
+export const nativeUnaryRouteTransport: NativeUnaryRouteTransportHandler =
+  nativeRouteUnaryTransport;
+export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler =
+  nativeTransport as NativeRouteStreamTransportHandler;
+export const nativeStreamRouteTransport: NativeStreamRouteTransportHandler =
+  nativeRouteStreamTransport;
 export const nativeResponseTransport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
   ${configValue},
@@ -990,6 +998,14 @@ export const nativeBody: NativeBodyHandler = createCompiledRpcBodyResultHandler(
   ${configValue},
   nativeUnaryDispatch
 ) as NativeBodyHandler;
+export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler =
+  nativeBody as NativeRouteUnaryBodyHandler;
+export const nativeUnaryRouteBody: NativeUnaryRouteBodyHandler =
+  nativeRouteUnaryBody;
+export const nativeRouteStreamBody: NativeRouteStreamBodyHandler =
+  nativeBody as NativeRouteStreamBodyHandler;
+export const nativeStreamRouteBody: NativeStreamRouteBodyHandler =
+  nativeRouteStreamBody;
 export const transport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   dispatch,
   ${configValue},
