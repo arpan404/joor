@@ -675,6 +675,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain('export type RouteBatchResults');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')
+      ).resolves.toContain('export type RouteBatchOptionsTuple');
+      await expect(
+        readFile(join(outDir, 'client.ts'), 'utf8')
       ).resolves.toContain('export type UnaryRouteBatchResults');
       await expect(
         readFile(join(outDir, 'client.ts'), 'utf8')

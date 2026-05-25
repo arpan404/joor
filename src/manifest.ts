@@ -16,6 +16,7 @@ import type {
   RpcProtocolBatchRequestUnion,
   RpcRouteBatchClientHeaders,
   RpcRouteBatchOptions,
+  RpcRouteBatchOptionsTuple,
   RpcRouteBatchRequest,
   RpcRouteBatchRequestUnion,
   RpcRouteBatchResults,
@@ -71,6 +72,7 @@ import type {
   RpcRouteUnaryBatchRequestUnion,
   RpcRouteUnaryBatchClientHeaders,
   RpcRouteUnaryBatchOptions,
+  RpcRouteUnaryBatchOptionsTuple,
   RpcRouteUnaryBatchResults,
   RpcRouteUnaryClientArgs,
   RpcRouteUnaryClientHeaders,
@@ -106,6 +108,7 @@ import type {
   RpcRouteUnaryBodyResultFor,
   RpcUnaryRouteBatchClientHeaders,
   RpcUnaryRouteBatchOptions,
+  RpcUnaryRouteBatchOptionsTuple,
   RpcUnaryRouteBatchRequestUnion,
   RpcRouteUnaryId,
   RpcStreamRouteRequest,
@@ -819,6 +822,24 @@ export type JoorManifestUnaryRouteBatchOptions<
   TRequests extends readonly unknown[] =
     readonly JoorManifestUnaryRouteBatchRequestUnion<TManifest>[],
 > = RpcUnaryRouteBatchOptions<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type JoorManifestRouteBatchOptionsTuple<
+  TManifest,
+  TRequests extends readonly unknown[] =
+    readonly JoorManifestRouteBatchRequestUnion<TManifest>[],
+> = RpcRouteBatchOptionsTuple<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type JoorManifestRouteUnaryBatchOptionsTuple<
+  TManifest,
+  TRequests extends readonly unknown[] =
+    readonly JoorManifestRouteUnaryBatchRequestUnion<TManifest>[],
+> = RpcRouteUnaryBatchOptionsTuple<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type JoorManifestUnaryRouteBatchOptionsTuple<
+  TManifest,
+  TRequests extends readonly unknown[] =
+    readonly JoorManifestUnaryRouteBatchRequestUnion<TManifest>[],
+> = RpcUnaryRouteBatchOptionsTuple<JoorManifestRoutes<TManifest>, TRequests>;
 
 export type JoorManifestRouteStreamEvent<
   TManifest,

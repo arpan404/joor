@@ -648,18 +648,35 @@ type RpcManifestRouteBatchRequestIds<
   TRequests extends readonly unknown[],
 > = RpcManifestRouteBatchRequestId<TManifest, TRequests[number]>;
 
-export type RpcManifestRouteBatchClientHeaders<
+type RpcManifestRouteBatchClientHeaderIds<
   TManifest extends RpcManifest,
-  TRequests extends readonly unknown[] =
-    readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
+  TRequests extends readonly unknown[],
 > = {
   [TId in RpcManifestRouteBatchRequestIds<
     TManifest,
     TRequests
-  >]: RpcManifestRouteHasHeaders<TManifest, TId> extends true
-    ? RpcManifestRouteClientHeaders<TManifest, TId>
-    : never;
+  >]: RpcManifestRouteHasHeaders<TManifest, TId> extends true ? TId : never;
 }[RpcManifestRouteBatchRequestIds<TManifest, TRequests>];
+
+type RpcManifestRouteBatchClientHeadersForIds<
+  TManifest extends RpcManifest,
+  TIds extends RpcManifestRouteUnaryId<TManifest>,
+> = [TIds] extends [never]
+  ? never
+  : UnionToIntersection<
+      TIds extends RpcManifestRouteUnaryId<TManifest>
+        ? RpcManifestRouteClientHeaders<TManifest, TIds>
+        : never
+    >;
+
+export type RpcManifestRouteBatchClientHeaders<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteBatchClientHeadersForIds<
+  TManifest,
+  RpcManifestRouteBatchClientHeaderIds<TManifest, TRequests>
+>;
 
 export type RpcManifestRouteUnaryBatchClientHeaders<
   TManifest extends RpcManifest,
@@ -673,14 +690,62 @@ export type RpcManifestUnaryRouteBatchClientHeaders<
     readonly RpcManifestUnaryRouteBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteUnaryBatchClientHeaders<TManifest, TRequests>;
 
-export interface RpcManifestRouteBatchOptions<
+type RpcManifestRouteBatchRequestCarriesHeaders<TRequest> =
+  'headers' extends keyof TRequest
+    ? [Exclude<TRequest['headers'], undefined>] extends [never]
+      ? false
+      : true
+    : false;
+
+type RpcManifestRouteBatchRequestMissingHeaderId<
+  TManifest extends RpcManifest,
+  TRequest,
+> = TRequest extends {
+  readonly id: infer TId extends RpcManifestRouteUnaryId<TManifest>;
+}
+  ? RpcManifestRouteRequiresHeaders<TManifest, TId> extends true
+    ? RpcManifestRouteBatchRequestCarriesHeaders<TRequest> extends true
+      ? never
+      : TId
+    : never
+  : never;
+
+type RpcManifestRouteBatchMissingHeaderIds<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[],
+> = RpcManifestRouteBatchRequestMissingHeaderId<TManifest, TRequests[number]>;
+
+type RpcManifestRouteBatchMissingClientHeaders<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[],
+> = RpcManifestRouteBatchClientHeadersForIds<
+  TManifest,
+  RpcManifestRouteBatchMissingHeaderIds<TManifest, TRequests>
+>;
+
+type RpcManifestRouteBatchBaseOptions = {
+  readonly request?: ClientRequestInit;
+};
+
+export type RpcManifestRouteBatchOptions<
   TManifest extends RpcManifest,
   TRequests extends readonly unknown[] =
     readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
-> {
-  readonly headers?: RpcManifestRouteBatchClientHeaders<TManifest, TRequests>;
-  readonly request?: ClientRequestInit;
-}
+> = [RpcManifestRouteBatchMissingHeaderIds<TManifest, TRequests>] extends [
+  never,
+]
+  ? RpcManifestRouteBatchBaseOptions & {
+      readonly headers?: RpcManifestRouteBatchClientHeaders<
+        TManifest,
+        TRequests
+      >;
+    }
+  : RpcManifestRouteBatchBaseOptions & {
+      readonly headers: RpcManifestRouteBatchMissingClientHeaders<
+        TManifest,
+        TRequests
+      >;
+    };
 
 export type RpcManifestRouteUnaryBatchOptions<
   TManifest extends RpcManifest,
@@ -693,6 +758,29 @@ export type RpcManifestUnaryRouteBatchOptions<
   TRequests extends readonly unknown[] =
     readonly RpcManifestUnaryRouteBatchRequestUnion<TManifest>[],
 > = RpcManifestRouteUnaryBatchOptions<TManifest, TRequests>;
+
+export type RpcManifestRouteBatchOptionsTuple<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteBatchRequestUnion<TManifest>[],
+> =
+  RpcManifestRouteBatchOptions<TManifest, TRequests> extends {
+    readonly headers: unknown;
+  }
+    ? [options: RpcManifestRouteBatchOptions<TManifest, TRequests>]
+    : [options?: RpcManifestRouteBatchOptions<TManifest, TRequests>];
+
+export type RpcManifestRouteUnaryBatchOptionsTuple<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteBatchOptionsTuple<TManifest, TRequests>;
+
+export type RpcManifestUnaryRouteBatchOptionsTuple<
+  TManifest extends RpcManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcManifestUnaryRouteBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteUnaryBatchOptionsTuple<TManifest, TRequests>;
 
 export type RpcManifestRouteStreamProtocolRequestUnion<
   TManifest extends RpcManifest,

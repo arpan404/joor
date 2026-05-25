@@ -1983,18 +1983,42 @@ type RpcRouteBatchRequestIds<
   TRequests extends readonly unknown[],
 > = RpcRouteBatchRequestId<TRoutes, TRequests[number]>;
 
-export type RpcRouteBatchClientHeaders<
+type UnionToIntersection<TUnion> =
+  (TUnion extends unknown ? (value: TUnion) => void : never) extends (
+    value: infer TIntersection
+  ) => void
+    ? TIntersection
+    : never;
+
+type RpcRouteBatchClientHeaderIds<
   TRoutes extends RpcRouteMap,
-  TRequests extends readonly unknown[] =
-    readonly RpcRouteBatchRequestUnion<TRoutes>[],
+  TRequests extends readonly unknown[],
 > = {
   [TId in RpcRouteBatchRequestIds<
     TRoutes,
     TRequests
-  >]: RpcRouteHasHeaders<TRoutes, TId> extends true
-    ? RpcRouteClientHeaders<TRoutes, TId>
-    : never;
+  >]: RpcRouteHasHeaders<TRoutes, TId> extends true ? TId : never;
 }[RpcRouteBatchRequestIds<TRoutes, TRequests>];
+
+type RpcRouteBatchClientHeadersForIds<
+  TRoutes extends RpcRouteMap,
+  TIds extends RpcRouteUnaryId<TRoutes>,
+> = [TIds] extends [never]
+  ? never
+  : UnionToIntersection<
+      TIds extends RpcRouteUnaryId<TRoutes>
+        ? RpcRouteClientHeaders<TRoutes, TIds>
+        : never
+    >;
+
+export type RpcRouteBatchClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteBatchRequestUnion<TRoutes>[],
+> = RpcRouteBatchClientHeadersForIds<
+  TRoutes,
+  RpcRouteBatchClientHeaderIds<TRoutes, TRequests>
+>;
 
 export type RpcRouteUnaryBatchClientHeaders<
   TRoutes extends RpcRouteMap,
@@ -2008,14 +2032,54 @@ export type RpcUnaryRouteBatchClientHeaders<
     readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
 > = RpcRouteUnaryBatchClientHeaders<TRoutes, TRequests>;
 
-export interface RpcRouteBatchOptions<
+type RpcRouteBatchRequestCarriesHeaders<TRequest> =
+  'headers' extends keyof TRequest
+    ? [Exclude<TRequest['headers'], undefined>] extends [never]
+      ? false
+      : true
+    : false;
+
+type RpcRouteBatchRequestMissingHeaderId<
+  TRoutes extends RpcRouteMap,
+  TRequest,
+> = TRequest extends {
+  readonly id: infer TId extends RpcRouteUnaryId<TRoutes>;
+}
+  ? RpcRouteRequiresHeaders<TRoutes, TId> extends true
+    ? RpcRouteBatchRequestCarriesHeaders<TRequest> extends true
+      ? never
+      : TId
+    : never
+  : never;
+
+type RpcRouteBatchMissingHeaderIds<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[],
+> = RpcRouteBatchRequestMissingHeaderId<TRoutes, TRequests[number]>;
+
+type RpcRouteBatchMissingClientHeaders<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[],
+> = RpcRouteBatchClientHeadersForIds<
+  TRoutes,
+  RpcRouteBatchMissingHeaderIds<TRoutes, TRequests>
+>;
+
+type RpcRouteBatchBaseOptions = {
+  readonly request?: ClientRequestInit;
+};
+
+export type RpcRouteBatchOptions<
   TRoutes extends RpcRouteMap,
   TRequests extends readonly unknown[] =
     readonly RpcRouteBatchRequestUnion<TRoutes>[],
-> {
-  readonly headers?: RpcRouteBatchClientHeaders<TRoutes, TRequests>;
-  readonly request?: ClientRequestInit;
-}
+> = [RpcRouteBatchMissingHeaderIds<TRoutes, TRequests>] extends [never]
+  ? RpcRouteBatchBaseOptions & {
+      readonly headers?: RpcRouteBatchClientHeaders<TRoutes, TRequests>;
+    }
+  : RpcRouteBatchBaseOptions & {
+      readonly headers: RpcRouteBatchMissingClientHeaders<TRoutes, TRequests>;
+    };
 
 export type RpcRouteUnaryBatchOptions<
   TRoutes extends RpcRouteMap,
@@ -2064,6 +2128,45 @@ export type RpcManifestUnaryRouteBatchOptions<
   TRequests extends readonly unknown[] =
     readonly RpcUnaryRouteBatchRequestUnion<JoorManifestRoutes<TManifest>>[],
 > = RpcManifestRouteUnaryBatchOptions<TManifest, TRequests>;
+
+export type RpcRouteBatchOptionsTuple<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteBatchRequestUnion<TRoutes>[],
+> =
+  RpcRouteBatchOptions<TRoutes, TRequests> extends { readonly headers: unknown }
+    ? [options: RpcRouteBatchOptions<TRoutes, TRequests>]
+    : [options?: RpcRouteBatchOptions<TRoutes, TRequests>];
+
+export type RpcRouteUnaryBatchOptionsTuple<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteUnaryBatchRequestUnion<TRoutes>[],
+> = RpcRouteBatchOptionsTuple<TRoutes, TRequests>;
+
+export type RpcUnaryRouteBatchOptionsTuple<
+  TRoutes extends RpcRouteMap,
+  TRequests extends readonly unknown[] =
+    readonly RpcUnaryRouteBatchRequestUnion<TRoutes>[],
+> = RpcRouteUnaryBatchOptionsTuple<TRoutes, TRequests>;
+
+export type RpcManifestRouteBatchOptionsTuple<
+  TManifest extends JoorManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteBatchRequestUnion<JoorManifestRoutes<TManifest>>[],
+> = RpcRouteBatchOptionsTuple<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type RpcManifestRouteUnaryBatchOptionsTuple<
+  TManifest extends JoorManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcRouteUnaryBatchRequestUnion<JoorManifestRoutes<TManifest>>[],
+> = RpcRouteUnaryBatchOptionsTuple<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type RpcManifestUnaryRouteBatchOptionsTuple<
+  TManifest extends JoorManifest,
+  TRequests extends readonly unknown[] =
+    readonly RpcUnaryRouteBatchRequestUnion<JoorManifestRoutes<TManifest>>[],
+> = RpcManifestRouteUnaryBatchOptionsTuple<TManifest, TRequests>;
 
 export type RpcRouteRequestOptions<
   TRoutes extends RpcRouteMap,
@@ -2357,7 +2460,7 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
     const TRequests extends readonly [...RpcRouteBatchRequestUnion<TRoutes>[]],
   >(
     requests: TRequests,
-    options?: RpcRouteBatchOptions<TRoutes, NoInfer<TRequests>>
+    ...options: RpcRouteBatchOptionsTuple<TRoutes, NoInfer<TRequests>>
   ) => Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
 }
 
@@ -2409,7 +2512,7 @@ export interface RpcManifestRouteUnaryTransportClient<
     ],
   >(
     requests: TRequests,
-    options?: RpcManifestRouteBatchOptions<TManifest, NoInfer<TRequests>>
+    ...options: RpcManifestRouteBatchOptionsTuple<TManifest, NoInfer<TRequests>>
   ) => Promise<RpcManifestRouteBatchResults<TManifest, TRequests>>;
 }
 
