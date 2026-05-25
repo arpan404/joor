@@ -5,8 +5,10 @@ import listPosts from './fixtures/basic-app/rpc/posts/list.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
 import {
   createAuthPolicy,
+  createFetchRequestSource,
   createJoorHandler,
   createPlugin,
+  createRpcRequestPreflight,
   defineConfig,
   defineConfigFor,
   defineHandlerOptions,
@@ -154,6 +156,42 @@ describe('dispatcher', () => {
     expect(Object.isFrozen(source)).toBe(false);
     expect(Object.isFrozen(source.plugins)).toBe(false);
     expect(Object.isFrozen(source.middleware)).toBe(false);
+  });
+
+  it('snapshots preflight options at creation time', () => {
+    const options = {
+      path: '/rpc',
+      cors: {
+        origin: 'https://original.example',
+      },
+    };
+    const preflight = createRpcRequestPreflight(options);
+
+    options.path = '/changed';
+    options.cors.origin = 'https://changed.example';
+
+    const wrongPath = preflight(
+      createFetchRequestSource(
+        new Request('http://localhost/changed', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+        })
+      )
+    );
+    const optionsResponse = preflight(
+      createFetchRequestSource(
+        new Request('http://localhost/rpc', { method: 'OPTIONS' })
+      )
+    );
+
+    expect(wrongPath?.status).toBe(404);
+    expect(wrongPath?.headers.get('access-control-allow-origin')).toBe(
+      'https://original.example'
+    );
+    expect(optionsResponse?.status).toBe(204);
+    expect(optionsResponse?.headers.get('access-control-allow-origin')).toBe(
+      'https://original.example'
+    );
   });
 
   it('handles unary success', async () => {

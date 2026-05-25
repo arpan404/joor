@@ -1914,12 +1914,14 @@ export const createRpcRequestPreflight = (
   options: HandlerOptions = {}
 ): RpcRequestPreflight => {
   const cors = corsHeaders(options);
+  const responseCors = options.cors === undefined ? undefined : cors;
+  const corsEnabled = options.cors !== undefined;
   const rpcPath = options.path ?? '/rpc';
   return (request: ContextRequestSource): Response | undefined => {
     if (!matchesPath(request.url, rpcPath)) {
       return new Response(null, { status: 404, headers: cors });
     }
-    if (request.method === 'OPTIONS' && options.cors !== undefined) {
+    if (request.method === 'OPTIONS' && corsEnabled) {
       return new Response(null, { status: 204, headers: cors });
     }
     if (request.method !== 'POST') {
@@ -1930,7 +1932,7 @@ export const createRpcRequestPreflight = (
     }
     const contentType = request.getHeader('content-type') ?? '';
     if (!isJsonContentType(contentType)) {
-      return toResponse(
+      return rpcEnvelopeToResponse(
         rpcFailure(
           '',
           traceId(request),
@@ -1938,7 +1940,7 @@ export const createRpcRequestPreflight = (
           'Content-Type must be application/json',
           415
         ),
-        options
+        responseCors
       );
     }
     return undefined;
