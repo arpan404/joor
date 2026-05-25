@@ -2480,9 +2480,10 @@ export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {}
 ): RpcRequestHandler {
+  const handlerOptions = freezeHandlerOptions(options);
   const handleParsed = createRpcBodyHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<
+    handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestBody<TManifest>,
@@ -2490,9 +2491,9 @@ export function createRpcHandler<TManifest extends RpcManifest>(
     >,
     false
   );
-  const preflight = createRpcRequestPreflight(options);
+  const preflight = createRpcRequestPreflight(handlerOptions);
   const bodyLimit = normalizeMaxBodyBytes(
-    options.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    handlerOptions.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
   );
   return async (request: Request): Promise<Response> => {
     const source = createFetchRequestSource(request);
@@ -2502,7 +2503,7 @@ export function createRpcHandler<TManifest extends RpcManifest>(
     try {
       body = await readJsonRequestBodyWithLimit(request, bodyLimit);
     } catch (error) {
-      if (error instanceof Error) options.onError?.(error, request);
+      if (error instanceof Error) handlerOptions.onError?.(error, request);
       const payloadTooLarge =
         error instanceof Error && isBodySizeLimitError(error);
       const status = payloadTooLarge ? 413 : 400;
@@ -2517,7 +2518,9 @@ export function createRpcHandler<TManifest extends RpcManifest>(
         status,
         headers: {
           ...jsonContentHeaders,
-          ...(options.cors === undefined ? {} : corsHeaders(options)),
+          ...(handlerOptions.cors === undefined
+            ? {}
+            : corsHeaders(handlerOptions)),
         },
       });
     }
@@ -2591,9 +2594,10 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
   options: HandlerOptions = {},
   preflight = true
 ): RpcBodyHandler<TManifest, Request> {
+  const handlerOptions = freezeHandlerOptions(options);
   const handleResult = createRpcBodyResultHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<
+    handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestBody<TManifest>,
@@ -2601,7 +2605,7 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
     >,
     preflight
   );
-  const extraHeaders = optionalCorsHeaders(options);
+  const extraHeaders = optionalCorsHeaders(handlerOptions);
   return async (
     request: Request,
     body: RpcManifestBody<TManifest>
@@ -2609,7 +2613,7 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
     const result = await handleResult(request, body);
     return result instanceof Response
       ? transportResultToResponse(result, extraHeaders)
-      : toResponse(result, options);
+      : toResponse(result, handlerOptions);
   };
 }
 
@@ -2680,9 +2684,10 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
   options: HandlerOptions = {},
   preflight = true
 ): RpcBodyResultHandler<TManifest, Request> {
+  const handlerOptions = freezeHandlerOptions(options);
   const handleTransport = createRpcTransportBodyResultHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<
+    handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestBody<TManifest>,
@@ -2767,27 +2772,28 @@ export function createRpcTransportBodyResultHandler<
   options: HandlerOptions = {},
   preflight = true
 ): RpcTransportBodyResultHandler<TManifest> {
+  const handlerOptions = freezeHandlerOptions(options);
   const procedures = prepareProcedures(manifest);
   const requestPreflight = preflight
-    ? createRpcRequestPreflight(options)
+    ? createRpcRequestPreflight(handlerOptions)
     : undefined;
   const runtime: RuntimeOptions = {
-    cors: corsHeaders(options),
+    cors: corsHeaders(handlerOptions),
     cacheMaxEntries:
-      options.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
-    enforceRateLimit: options.enforceRateLimit ?? true,
+      handlerOptions.cache?.maxEntries ?? DEFAULT_PROCEDURE_CACHE_MAX_ENTRIES,
+    enforceRateLimit: handlerOptions.enforceRateLimit ?? true,
     rateLimit: {
-      trustProxy: options.rateLimit?.trustProxy ?? false,
+      trustProxy: handlerOptions.rateLimit?.trustProxy ?? false,
       maxEntries:
-        options.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
-      ...(options.rateLimit?.identity === undefined
+        handlerOptions.rateLimit?.maxEntries ?? DEFAULT_RATE_LIMIT_MAX_ENTRIES,
+      ...(handlerOptions.rateLimit?.identity === undefined
         ? {}
-        : { identity: options.rateLimit.identity }),
+        : { identity: handlerOptions.rateLimit.identity }),
     },
-    validateHeaders: options.validateHeaders ?? true,
-    validateInput: options.validateInput ?? true,
-    validateOutput: options.validateOutput ?? true,
-    validateResponseHeaders: options.validateResponseHeaders ?? true,
+    validateHeaders: handlerOptions.validateHeaders ?? true,
+    validateInput: handlerOptions.validateInput ?? true,
+    validateOutput: handlerOptions.validateOutput ?? true,
+    validateResponseHeaders: handlerOptions.validateResponseHeaders ?? true,
   };
   const useTrustedUnary =
     !runtime.enforceRateLimit &&
@@ -2795,7 +2801,7 @@ export function createRpcTransportBodyResultHandler<
     !runtime.validateInput &&
     !runtime.validateOutput &&
     !runtime.validateResponseHeaders;
-  const plugins = options.plugins ?? [];
+  const plugins = handlerOptions.plugins ?? [];
   let services: object | undefined;
   const servicesPromise =
     plugins.length === 0
@@ -2805,12 +2811,12 @@ export function createRpcTransportBodyResultHandler<
           return resolved;
         });
   if (plugins.length === 0) services = {};
-  const middleware = options.middleware ?? [];
+  const middleware = handlerOptions.middleware ?? [];
   const hasBeforeHooks =
-    options.hooks?.beforeRequest !== undefined ||
+    handlerOptions.hooks?.beforeRequest !== undefined ||
     middleware.some((item) => item.beforeRequest !== undefined);
   const hasAfterHooks =
-    options.hooks?.afterResponse !== undefined ||
+    handlerOptions.hooks?.afterResponse !== undefined ||
     middleware.some((item) => item.afterResponse !== undefined);
   const createHookContext = async (
     body?: unknown
@@ -2824,7 +2830,7 @@ export function createRpcTransportBodyResultHandler<
   ): Promise<Response | undefined> => {
     const hookRequest = request.toRequest();
     const context = await createHookContext(body);
-    const hookResult = await options.hooks?.beforeRequest?.(
+    const hookResult = await handlerOptions.hooks?.beforeRequest?.(
       hookRequest,
       context
     );
@@ -2847,7 +2853,7 @@ export function createRpcTransportBodyResultHandler<
       const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
     }
-    const hookResult = await options.hooks?.afterResponse?.(
+    const hookResult = await handlerOptions.hooks?.afterResponse?.(
       next,
       hookRequest,
       context
@@ -2991,7 +2997,7 @@ export function createRpcTransportBodyResultHandler<
       )) as RpcManifestBodyResultFor<TManifest, TBody>;
     }
     return (await runAfter(
-      toResponse(result, options),
+      toResponse(result, handlerOptions),
       request,
       body
     )) as RpcManifestBodyResultFor<TManifest, TBody>;

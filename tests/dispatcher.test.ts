@@ -8,6 +8,7 @@ import {
   createFetchRequestSource,
   createJoorHandler,
   createPlugin,
+  createRpcHandler,
   createRpcRequestPreflight,
   defineConfig,
   defineConfigFor,
@@ -190,6 +191,53 @@ describe('dispatcher', () => {
     );
     expect(optionsResponse?.status).toBe(204);
     expect(optionsResponse?.headers.get('access-control-allow-origin')).toBe(
+      'https://original.example'
+    );
+  });
+
+  it('snapshots RPC handler options at creation time', async () => {
+    const errors: string[] = [];
+    const options = {
+      cors: {
+        origin: 'https://original.example',
+      },
+      maxBodyBytes: 1024,
+      onError() {
+        errors.push('original');
+      },
+    };
+    const handler = createRpcHandler({ procedures: {} }, options);
+
+    options.cors.origin = 'https://changed.example';
+    options.maxBodyBytes = 1;
+    options.onError = () => {
+      errors.push('changed');
+    };
+
+    const parseError = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: '{',
+      })
+    );
+    const missingProcedure = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'missing', input: {} }),
+      })
+    );
+    const missingBody = await missingProcedure.json();
+
+    expect(errors).toEqual(['original']);
+    expect(parseError.status).toBe(400);
+    expect(parseError.headers.get('access-control-allow-origin')).toBe(
+      'https://original.example'
+    );
+    expect(missingProcedure.status).toBe(200);
+    expect(missingBody.error.code).toBe('NOT_FOUND');
+    expect(missingProcedure.headers.get('access-control-allow-origin')).toBe(
       'https://original.example'
     );
   });
