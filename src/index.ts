@@ -6,7 +6,14 @@ export {
   emptyJsonObject,
 } from './context/context.js';
 export { createPlugin, resolvePluginServices } from './context/plugin.js';
-export { defineConfig, defineConfigFor } from './config.js';
+export {
+  defineConfig,
+  defineConfigFor,
+  defineRouteStreamConfigFor,
+  defineRouteUnaryConfigFor,
+  defineStreamRouteConfigFor,
+  defineUnaryRouteConfigFor,
+} from './config.js';
 export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
 export { errorStatus } from './procedure/errors.js';

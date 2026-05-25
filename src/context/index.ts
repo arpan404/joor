@@ -1,5 +1,12 @@
 export { createAuthPolicy } from '../auth/policy.js';
-export { defineConfig, defineConfigFor } from '../config.js';
+export {
+  defineConfig,
+  defineConfigFor,
+  defineRouteStreamConfigFor,
+  defineRouteUnaryConfigFor,
+  defineStreamRouteConfigFor,
+  defineUnaryRouteConfigFor,
+} from '../config.js';
 export {
   createFetchRequestSource,
   createRuntimeContext,

@@ -27,6 +27,10 @@ import {
   createNodeRpcRequestHandlerFor as createRootNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandlerFor as createRootNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPathFor as createRootNodeTransportRequestHandlerWithPathFor,
+  defineRouteStreamConfigFor as defineRootRouteStreamConfigFor,
+  defineRouteUnaryConfigFor as defineRootRouteUnaryConfigFor,
+  defineStreamRouteConfigFor as defineRootStreamRouteConfigFor,
+  defineUnaryRouteConfigFor as defineRootUnaryRouteConfigFor,
   defineManifest,
   defineProcedure,
   errorStatus,
@@ -54,8 +58,20 @@ import {
 } from 'joor';
 import { createAuthPolicy } from 'joor/auth';
 import { createManifestClient } from 'joor/client';
-import { defineConfigFor } from 'joor/config';
-import { createRuntimeContext } from 'joor/context';
+import {
+  defineConfigFor,
+  defineRouteStreamConfigFor,
+  defineRouteUnaryConfigFor,
+  defineStreamRouteConfigFor,
+  defineUnaryRouteConfigFor,
+} from 'joor/config';
+import {
+  createRuntimeContext,
+  defineRouteStreamConfigFor as defineContextRouteStreamConfigFor,
+  defineRouteUnaryConfigFor as defineContextRouteUnaryConfigFor,
+  defineStreamRouteConfigFor as defineContextStreamRouteConfigFor,
+  defineUnaryRouteConfigFor as defineContextUnaryRouteConfigFor,
+} from 'joor/context';
 import { build, createAiDocs, createOpenApiDocument } from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import {
@@ -475,6 +491,18 @@ const packageSubpathValues = [
   createRootNodeRpcRequestHandlerFor,
   createRootNodeTransportRequestHandlerFor,
   createRootNodeTransportRequestHandlerWithPathFor,
+  defineContextRouteStreamConfigFor,
+  defineContextRouteUnaryConfigFor,
+  defineContextStreamRouteConfigFor,
+  defineContextUnaryRouteConfigFor,
+  defineRouteStreamConfigFor,
+  defineRouteUnaryConfigFor,
+  defineRootRouteStreamConfigFor,
+  defineRootRouteUnaryConfigFor,
+  defineRootStreamRouteConfigFor,
+  defineRootUnaryRouteConfigFor,
+  defineStreamRouteConfigFor,
+  defineUnaryRouteConfigFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
   createRootNetlifyFetchFor,

@@ -201,3 +201,35 @@ export function defineConfigFor<TManifest extends RpcManifest>(
 ): DefineConfigFor<TManifest> {
   return ((config) => freezeConfig(config)) as DefineConfigFor<TManifest>;
 }
+
+export function defineRouteUnaryConfigFor<TManifest extends RpcManifest>(
+  manifest: TManifest
+): DefineRouteUnaryConfigFor<TManifest>;
+export function defineRouteUnaryConfigFor<
+  TManifest extends RpcManifest,
+>(): DefineRouteUnaryConfigFor<TManifest>;
+export function defineRouteUnaryConfigFor<
+  TManifest extends RpcManifest,
+>(_manifest?: TManifest): DefineRouteUnaryConfigFor<TManifest> {
+  return ((config) =>
+    freezeConfig(config)) as DefineRouteUnaryConfigFor<TManifest>;
+}
+
+export const defineUnaryRouteConfigFor: typeof defineRouteUnaryConfigFor =
+  defineRouteUnaryConfigFor;
+
+export function defineRouteStreamConfigFor<TManifest extends RpcManifest>(
+  manifest: TManifest
+): DefineRouteStreamConfigFor<TManifest>;
+export function defineRouteStreamConfigFor<
+  TManifest extends RpcManifest,
+>(): DefineRouteStreamConfigFor<TManifest>;
+export function defineRouteStreamConfigFor<
+  TManifest extends RpcManifest,
+>(_manifest?: TManifest): DefineRouteStreamConfigFor<TManifest> {
+  return ((config) =>
+    freezeConfig(config)) as DefineRouteStreamConfigFor<TManifest>;
+}
+
+export const defineStreamRouteConfigFor: typeof defineRouteStreamConfigFor =
+  defineRouteStreamConfigFor;

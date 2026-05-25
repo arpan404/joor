@@ -6,6 +6,10 @@ import {
   createRuntimeContext,
   defineConfig,
   defineConfigFor,
+  defineRouteStreamConfigFor,
+  defineRouteUnaryConfigFor,
+  defineStreamRouteConfigFor,
+  defineUnaryRouteConfigFor,
   defineManifest,
   defineProcedure,
   errorStatus as rootErrorStatus,
@@ -1160,6 +1164,10 @@ import {
   createPlugin as createContextSubpathPlugin,
   defineConfig as defineContextSubpathConfig,
   defineConfigFor as defineContextSubpathConfigFor,
+  defineRouteStreamConfigFor as defineContextSubpathRouteStreamConfigFor,
+  defineRouteUnaryConfigFor as defineContextSubpathRouteUnaryConfigFor,
+  defineStreamRouteConfigFor as defineContextSubpathStreamRouteConfigFor,
+  defineUnaryRouteConfigFor as defineContextSubpathUnaryRouteConfigFor,
   resolvePluginServices as resolveContextSubpathPluginServices,
   type AuthPolicy as ContextSubpathAuthPolicy,
   type AuthPolicyAuth as ContextSubpathAuthPolicyAuth,
@@ -1185,6 +1193,10 @@ import {
 } from '../src/context/index.js';
 import {
   defineConfigFor as defineConfigSubpathFor,
+  defineRouteStreamConfigFor as defineConfigSubpathRouteStreamConfigFor,
+  defineRouteUnaryConfigFor as defineConfigSubpathRouteUnaryConfigFor,
+  defineStreamRouteConfigFor as defineConfigSubpathStreamRouteConfigFor,
+  defineUnaryRouteConfigFor as defineConfigSubpathUnaryRouteConfigFor,
   type DefineConfigFor as ConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as ConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as ConfigSubpathDefineUnaryRouteConfigFor,
@@ -5454,6 +5466,18 @@ manifestRouteUnaryConfigFactory(manifestRouteUnaryConfigShape);
 manifestRouteStreamConfigFactory(manifestRouteStreamConfigShape);
 manifestUnaryRouteConfigFactory(manifestUnaryRouteConfigShape);
 manifestStreamRouteConfigFactory(manifestStreamRouteConfigShape);
+defineRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
+defineUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
+defineRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
+defineStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
+defineContextSubpathRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
+defineContextSubpathUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
+defineContextSubpathRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
+defineContextSubpathStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
+defineConfigSubpathRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
+defineConfigSubpathUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
+defineConfigSubpathRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
+defineConfigSubpathStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
 const manifestAwareConfigFactory: DefineConfigFor<typeof manifest> =
   defineConfigFor(manifest);
 manifestAwareConfigFactory({ plugins: [usersPlugin] as const });
