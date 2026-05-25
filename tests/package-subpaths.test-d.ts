@@ -488,6 +488,10 @@ type PackageSubpathBody =
   Manifest.JoorManifestRouteUnaryBody<PackageSubpathManifest>;
 type PackageSubpathStreamBody =
   Manifest.JoorManifestRouteStreamBody<PackageSubpathManifest>;
+type PackageSubpathManifestBody =
+  Manifest.JoorManifestRouteBody<PackageSubpathManifest>;
+type PackageSubpathRootManifestBody =
+  Root.JoorManifestRouteBody<PackageSubpathManifest>;
 type PackageSubpathClientProtocolRequest =
   Client.RpcManifestRouteUnaryProtocolRequest<
     PackageSubpathManifest,
@@ -635,6 +639,20 @@ type PackageSubpathRootBodyResultFor = Root.RpcManifestRouteBodyResultFor<
 >;
 type PackageSubpathRootBodyResult =
   Root.RpcManifestRouteBodyResult<PackageSubpathManifest>;
+type PackageSubpathManifestBodyResultFor =
+  Manifest.JoorManifestRouteBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolRequest
+  >;
+type PackageSubpathManifestBodyResult =
+  Manifest.JoorManifestRouteBodyResult<PackageSubpathManifest>;
+type PackageSubpathRootManifestBodyResultFor =
+  Root.JoorManifestRouteBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathClientProtocolRequest
+  >;
+type PackageSubpathRootManifestBodyResult =
+  Root.JoorManifestRouteBodyResult<PackageSubpathManifest>;
 const packageSubpathClientBodyResultFor: PackageSubpathClientBodyResultFor =
   new Response();
 packageSubpathClientBodyResultFor.headers.get('content-type');
@@ -658,6 +676,24 @@ packageSubpathRootBodyResultFor.valueOf();
 const packageSubpathRootBodyResult: PackageSubpathRootBodyResult =
   packageSubpathRpcBodyResult;
 packageSubpathRootBodyResult.valueOf();
+const packageSubpathManifestBody: PackageSubpathManifestBody =
+  packageSubpathRpcBody;
+packageSubpathManifestBody.input.id.toUpperCase();
+const packageSubpathRootManifestBody: PackageSubpathRootManifestBody =
+  packageSubpathManifestBody;
+packageSubpathRootManifestBody.input.id.toUpperCase();
+const packageSubpathManifestBodyResultFor: PackageSubpathManifestBodyResultFor =
+  packageSubpathRootBodyResultFor;
+packageSubpathManifestBodyResultFor.valueOf();
+const packageSubpathManifestBodyResult: PackageSubpathManifestBodyResult =
+  packageSubpathRootBodyResult;
+packageSubpathManifestBodyResult.valueOf();
+const packageSubpathRootManifestBodyResultFor: PackageSubpathRootManifestBodyResultFor =
+  packageSubpathManifestBodyResultFor;
+packageSubpathRootManifestBodyResultFor.valueOf();
+const packageSubpathRootManifestBodyResult: PackageSubpathRootManifestBodyResult =
+  packageSubpathManifestBodyResult;
+packageSubpathRootManifestBodyResult.valueOf();
 
 export type PackageSubpathSurface = [
   Root.JoorConfigFor<
@@ -763,6 +799,12 @@ export type PackageSubpathSurface = [
   PackageSubpathRootBody,
   PackageSubpathRootBodyResultFor,
   PackageSubpathRootBodyResult,
+  PackageSubpathManifestBody,
+  PackageSubpathManifestBodyResultFor,
+  PackageSubpathManifestBodyResult,
+  PackageSubpathRootManifestBody,
+  PackageSubpathRootManifestBodyResultFor,
+  PackageSubpathRootManifestBodyResult,
   PackageSubpathClientRequest,
   PackageSubpathClientRequestUnion,
   PackageSubpathClientStreamRequest,
