@@ -451,6 +451,10 @@ export type NativeStreamProtocolRequest<TId extends NativeRouteStreamId = Native
   NativeStreamRouteRequest<TId>;
 export type NativeStreamProtocolRequestUnion =
   NativeRouteStreamProtocolRequestUnion;
+export type NativeRouteBatchRequestUnion = NativeRouteUnaryRequestUnion;
+export type NativeRouteUnaryBatchRequestUnion = NativeRouteBatchRequestUnion;
+export type NativeUnaryRouteBatchRequestUnion =
+  NativeRouteUnaryBatchRequestUnion;
 export type NativeRouteBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
   JoorManifestRouteBatchRequest<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchRequest<TRequests extends readonly NativeRouteUnaryRequest[] = readonly NativeRouteUnaryRequest[]> =
