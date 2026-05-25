@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
 import {
+  type ClientRequestFactoryArgs,
   type ClientRequestInit,
   createClient,
   createManifestRouteRequest,
@@ -358,9 +359,12 @@ describe('client', () => {
     }
 
     const seen: AppRequest[] = [];
+    const seenArgs: ClientRequestFactoryArgs[] = [];
+    const callRequest: ClientRequestInit = { cache: 'reload' };
     const client = createClient<never, AppRequest>({
       url: 'http://localhost/rpc',
       createRequest(args) {
+        seenArgs.push(args);
         return Object.assign(
           new Request(args.url, {
             ...args.baseRequest,
@@ -383,12 +387,25 @@ describe('client', () => {
       },
     });
 
-    await client.call<typeof procedure>('call', { ok: true });
+    await client.call<typeof procedure>('call', { ok: true }, {
+      request: callRequest,
+    });
     await client.batch([{ id: 'batch', input: { ok: true } }] as const);
 
     expect(seen).toHaveLength(2);
     expect(seen[0]?.requestId).toBe('req_1');
     expect(seen[1]?.requestId).toBe('req_1');
+    const firstArgs = seenArgs[0];
+    const secondArgs = seenArgs[1];
+    if (firstArgs === undefined || secondArgs === undefined) {
+      throw new Error('Expected request factory args');
+    }
+    expect(Object.isFrozen(firstArgs)).toBe(true);
+    expect(Object.isFrozen(firstArgs.body)).toBe(true);
+    expect(firstArgs.request).not.toBe(callRequest);
+    expect(Object.isFrozen(firstArgs.request)).toBe(true);
+    expect(Object.isFrozen(secondArgs)).toBe(true);
+    expect(Object.isFrozen(secondArgs.body)).toBe(true);
   });
 
   it('bounds SSE event buffering', async () => {

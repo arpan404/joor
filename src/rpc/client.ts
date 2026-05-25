@@ -1412,12 +1412,24 @@ const createHeaders = (
   return output;
 };
 
+const freezeRequestBody = (body: JsonValue): JsonValue =>
+  body !== null && typeof body === 'object' ? Object.freeze(body) : body;
+
 const copyClientRequestInit = (
   value: ClientRequestInit | undefined
 ): ClientRequestInit | undefined =>
   value === undefined
     ? undefined
     : Object.freeze({ ...value }) as ClientRequestInit;
+
+const createClientRequestFactoryArgs = (
+  args: ClientRequestFactoryArgs
+): ClientRequestFactoryArgs =>
+  Object.freeze({
+    ...args,
+    body: freezeRequestBody(args.body),
+    request: copyClientRequestInit(args.request),
+  });
 
 const createRpcRequest = (
   url: string,
@@ -1582,13 +1594,13 @@ export function createClient<TRequest extends Request = Request>(
   > => {
     const [callOptions] = requestOptions;
     const response = await fetcher(
-      requestFactory({
+      requestFactory(createClientRequestFactoryArgs({
         url,
         body: { id, input } as JsonValue,
         headers: createHeaders(baseHeaders, callOptions?.headers),
         baseRequest,
         request: callOptions?.request,
-      })
+      }))
     );
     return (await response.json()) as RpcEnvelope<
       ProcedureOutput<TProcedure> & JsonValue,
@@ -1631,13 +1643,13 @@ export function createClient<TRequest extends Request = Request>(
     }
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(
-      requestFactory({
+      requestFactory(createClientRequestFactoryArgs({
         url,
         body,
         headers: requestHeaders,
         baseRequest,
         request: batchOptions?.request,
-      })
+      }))
     );
     return (await response.json()) as BatchResults<TRequests>;
   };
@@ -1655,13 +1667,13 @@ export function createClient<TRequest extends Request = Request>(
       );
       headers.set('accept', 'text/event-stream');
       const response = await fetcher(
-        requestFactory({
+        requestFactory(createClientRequestFactoryArgs({
           url,
           body: { id, input } as JsonValue,
           headers,
           baseRequest,
           request: requestOptions[0]?.request,
-        })
+        }))
       );
       await assertSseResponse(response);
       yield* parseSse<JsonValue>(
