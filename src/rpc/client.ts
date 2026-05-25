@@ -897,11 +897,11 @@ export type RpcProtocolBatchRequest<
 
 export type RpcRouteBody<TRoutes extends RpcRouteMap> =
   | RpcRouteProtocolRequestUnion<TRoutes>
-  | readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[];
+  | RpcRouteProtocolBatchRequest<TRoutes>;
 
 export type RpcRouteUnaryBody<TRoutes extends RpcRouteMap> =
   | RpcRouteUnaryProtocolRequestUnion<TRoutes>
-  | readonly RpcRouteUnaryProtocolRequestUnion<TRoutes>[];
+  | RpcRouteUnaryProtocolBatchRequest<TRoutes>;
 
 export type RpcUnaryRouteBody<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryBody<TRoutes>;

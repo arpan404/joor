@@ -712,11 +712,11 @@ export type RpcManifestStreamRouteRequestUnion<TManifest extends RpcManifest> =
 
 export type RpcManifestBody<TManifest extends RpcManifest> =
   | RpcManifestRouteProtocolRequestUnion<TManifest>
-  | readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[];
+  | RpcManifestRouteProtocolBatchRequest<TManifest>;
 
 export type RpcManifestRouteUnaryBody<TManifest extends RpcManifest> =
   | RpcManifestRouteUnaryProtocolRequestUnion<TManifest>
-  | readonly RpcManifestRouteUnaryProtocolRequestUnion<TManifest>[];
+  | RpcManifestRouteUnaryProtocolBatchRequest<TManifest>;
 
 export type RpcManifestUnaryRouteBody<TManifest extends RpcManifest> =
   RpcManifestRouteUnaryBody<TManifest>;

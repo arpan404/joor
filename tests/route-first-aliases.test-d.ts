@@ -129,6 +129,27 @@ export type RootRouteFirstRpcAliasSurface = [
   Root.RpcManifestRouteUnaryRequestUnion<AliasManifest>,
   Root.RpcManifestRouteUnaryBatchRequest<AliasManifest, UnaryBatchRequest>,
   Root.RpcManifestRouteUnaryBatchResults<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.RpcManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
+  Root.RpcManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.RpcManifestRouteProtocolBatchRequest<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteUnaryProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestUnaryRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestRouteProtocolBatchResults<AliasManifest, UnaryBatchRequest>,
+  Root.RpcManifestRouteUnaryProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.RpcManifestUnaryRouteProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
   UnaryBody,
   StreamBody,
   Root.RpcManifestRouteUnaryBodyResult<AliasManifest>,
@@ -253,6 +274,33 @@ export type RpcSubpathRouteFirstAliasSurface = [
     UnaryBatchRequest
   >,
   RpcSubpath.RpcManifestRouteUnaryBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteProtocolBatchRequestUnion<AliasManifest>,
+  RpcSubpath.RpcManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
+  RpcSubpath.RpcManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  RpcSubpath.RpcManifestRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteUnaryProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestUnaryRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestRouteUnaryProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  RpcSubpath.RpcManifestUnaryRouteProtocolBatchResults<
     AliasManifest,
     UnaryBatchRequest
   >,
