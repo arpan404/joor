@@ -200,6 +200,14 @@ export {
 export {
   createExpressHandler,
   createExpressHandlerFor,
+  createRouteStreamExpressHandler,
+  createRouteStreamExpressHandlerFor,
+  createRouteUnaryExpressHandler,
+  createRouteUnaryExpressHandlerFor,
+  createStreamRouteExpressHandler,
+  createStreamRouteExpressHandlerFor,
+  createUnaryRouteExpressHandler,
+  createUnaryRouteExpressHandlerFor,
 } from './runtime/express.js';
 export {
   createFastifyHandler,

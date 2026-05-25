@@ -114,6 +114,14 @@ import {
   createUnaryRouteElysiaHandlerFor,
   createExpressHandler,
   createExpressHandlerFor,
+  createRouteStreamExpressHandler,
+  createRouteStreamExpressHandlerFor,
+  createRouteUnaryExpressHandler,
+  createRouteUnaryExpressHandlerFor,
+  createStreamRouteExpressHandler,
+  createStreamRouteExpressHandlerFor,
+  createUnaryRouteExpressHandler,
+  createUnaryRouteExpressHandlerFor,
   createFastifyHandler,
   createFastifyHandlerFor,
   createHonoHandler,
@@ -1895,6 +1903,14 @@ import {
   createUnaryRouteElysiaHandlerFor as createRuntimeSubpathUnaryRouteElysiaHandlerFor,
   createExpressHandler as createRuntimeSubpathExpressHandler,
   createExpressHandlerFor as createRuntimeSubpathExpressHandlerFor,
+  createRouteStreamExpressHandler as createRuntimeSubpathRouteStreamExpressHandler,
+  createRouteStreamExpressHandlerFor as createRuntimeSubpathRouteStreamExpressHandlerFor,
+  createRouteUnaryExpressHandler as createRuntimeSubpathRouteUnaryExpressHandler,
+  createRouteUnaryExpressHandlerFor as createRuntimeSubpathRouteUnaryExpressHandlerFor,
+  createStreamRouteExpressHandler as createRuntimeSubpathStreamRouteExpressHandler,
+  createStreamRouteExpressHandlerFor as createRuntimeSubpathStreamRouteExpressHandlerFor,
+  createUnaryRouteExpressHandler as createRuntimeSubpathUnaryRouteExpressHandler,
+  createUnaryRouteExpressHandlerFor as createRuntimeSubpathUnaryRouteExpressHandlerFor,
   createFastifyHandler as createRuntimeSubpathFastifyHandler,
   createFastifyHandlerFor as createRuntimeSubpathFastifyHandlerFor,
   createHonoHandler as createRuntimeSubpathHonoHandler,
@@ -2013,6 +2029,14 @@ import {
   type ExpressRequest as RuntimeSubpathExpressRequest,
   type ExpressRequestHandler as RuntimeSubpathExpressRequestHandler,
   type ExpressResponse as RuntimeSubpathExpressResponse,
+  type ExpressRouteStreamHandlerOptionsArgs as RuntimeSubpathExpressRouteStreamHandlerOptionsArgs,
+  type ExpressRouteStreamHandlerOptionsFor as RuntimeSubpathExpressRouteStreamHandlerOptionsFor,
+  type ExpressRouteUnaryHandlerOptionsArgs as RuntimeSubpathExpressRouteUnaryHandlerOptionsArgs,
+  type ExpressRouteUnaryHandlerOptionsFor as RuntimeSubpathExpressRouteUnaryHandlerOptionsFor,
+  type ExpressStreamRouteHandlerOptionsArgs as RuntimeSubpathExpressStreamRouteHandlerOptionsArgs,
+  type ExpressStreamRouteHandlerOptionsFor as RuntimeSubpathExpressStreamRouteHandlerOptionsFor,
+  type ExpressUnaryRouteHandlerOptionsArgs as RuntimeSubpathExpressUnaryRouteHandlerOptionsArgs,
+  type ExpressUnaryRouteHandlerOptionsFor as RuntimeSubpathExpressUnaryRouteHandlerOptionsFor,
   type FastifyHandler as RuntimeSubpathFastifyHandler,
   type FastifyHandlerOptionsFor as RuntimeSubpathFastifyHandlerOptionsFor,
   type FastifyReply as RuntimeSubpathFastifyReply,
@@ -18489,6 +18513,22 @@ const expressStreamRouteHandlerOptions: ExpressStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = expressRouteStreamHandlerOptions;
+const runtimeSubpathExpressRouteUnaryHandlerOptions: RuntimeSubpathExpressRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressUnaryRouteHandlerOptions;
+const runtimeSubpathExpressRouteStreamHandlerOptions: RuntimeSubpathExpressRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressStreamRouteHandlerOptions;
+const runtimeSubpathExpressUnaryRouteHandlerOptions: RuntimeSubpathExpressUnaryRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteUnaryHandlerOptions;
+const runtimeSubpathExpressStreamRouteHandlerOptions: RuntimeSubpathExpressStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteStreamHandlerOptions;
 expressHandlerOptionsBase.plugins?.[0]?.name.toUpperCase();
 // @ts-expect-error Express adapter hostnames are readonly.
 expressHandlerOptionsBase.hostname = 'localhost';
@@ -18575,6 +18615,22 @@ const expressStreamRouteHandlerOptionsArgs: ExpressStreamRouteHandlerOptionsArgs
   readonly [typeof usersPlugin]
 > = expressRouteStreamHandlerOptionsArgs;
 expressUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+const runtimeSubpathExpressRouteUnaryHandlerOptionsArgs: RuntimeSubpathExpressRouteUnaryHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressUnaryRouteHandlerOptionsArgs;
+const runtimeSubpathExpressRouteStreamHandlerOptionsArgs: RuntimeSubpathExpressRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressStreamRouteHandlerOptionsArgs;
+const runtimeSubpathExpressUnaryRouteHandlerOptionsArgs: RuntimeSubpathExpressUnaryRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteUnaryHandlerOptionsArgs;
+const runtimeSubpathExpressStreamRouteHandlerOptionsArgs: RuntimeSubpathExpressStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin]
+> = expressRouteStreamHandlerOptionsArgs;
 exactExpressHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
@@ -18584,15 +18640,67 @@ requestTypedExpressRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   exactManifestHandlerHookContext
 );
 expressStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathExpressRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathExpressRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathExpressRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathExpressRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathExpressUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteHandlerHookContext
+);
+runtimeSubpathExpressStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const expressHandler: ExpressRequestHandler = createExpressHandler(
   manifest,
   expressHandlerOptions
 );
+const routeUnaryExpressHandler: ExpressRequestHandler =
+  createRouteUnaryExpressHandler(manifest, expressRouteUnaryHandlerOptions);
+const unaryRouteExpressHandler: ExpressRequestHandler =
+  createUnaryRouteExpressHandler(manifest, expressUnaryRouteHandlerOptions);
+const routeStreamExpressHandler: ExpressRequestHandler =
+  createRouteStreamExpressHandler(manifest, expressRouteStreamHandlerOptions);
+const streamRouteExpressHandler: ExpressRequestHandler =
+  createStreamRouteExpressHandler(manifest, expressStreamRouteHandlerOptions);
 createExpressHandler(manifest, requestTypedExpressHandlerOptions);
 const runtimeSubpathExpressHandler: RuntimeSubpathExpressRequestHandler =
   createRuntimeSubpathExpressHandler(
     manifest,
     runtimeSubpathExpressHandlerOptions
+  );
+const runtimeSubpathRouteUnaryExpressHandler: RuntimeSubpathExpressRequestHandler =
+  createRuntimeSubpathRouteUnaryExpressHandler(
+    manifest,
+    runtimeSubpathExpressRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteExpressHandler: RuntimeSubpathExpressRequestHandler =
+  createRuntimeSubpathUnaryRouteExpressHandler(
+    manifest,
+    runtimeSubpathExpressUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamExpressHandler: RuntimeSubpathExpressRequestHandler =
+  createRuntimeSubpathRouteStreamExpressHandler(
+    manifest,
+    runtimeSubpathExpressRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteExpressHandler: RuntimeSubpathExpressRequestHandler =
+  createRuntimeSubpathStreamRouteExpressHandler(
+    manifest,
+    runtimeSubpathExpressStreamRouteHandlerOptions
   );
 const expressNext: ExpressNextFunction = (_error?: unknown) => undefined;
 expressHandler.valueOf();
@@ -18630,6 +18738,21 @@ const typedExpressHandler: ExpressRequestHandler<
   ExpressAppResponse,
   ExpressAppNext
 > = createTypedExpressHandler(manifest, expressHandlerOptions);
+const typedRouteUnaryExpressHandler: ExpressRequestHandler<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+> = createRouteUnaryExpressHandlerFor<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+>()(manifest, expressRouteUnaryHandlerOptions);
+createUnaryRouteExpressHandlerFor()(manifest, expressUnaryRouteHandlerOptions);
+createRouteStreamExpressHandlerFor()(manifest, expressRouteStreamHandlerOptions);
+createStreamRouteExpressHandlerFor()(
+  manifest,
+  expressStreamRouteHandlerOptions
+);
 const createRuntimeSubpathTypedExpressHandler =
   createRuntimeSubpathExpressHandlerFor<
     RuntimeSubpathExpressRequest & ExpressAppRequest,
@@ -18644,22 +18767,84 @@ const runtimeSubpathTypedExpressHandler: RuntimeSubpathExpressRequestHandler<
   manifest,
   runtimeSubpathExpressHandlerOptions
 );
+const runtimeSubpathTypedRouteUnaryExpressHandler: RuntimeSubpathExpressRequestHandler<
+  RuntimeSubpathExpressRequest & ExpressAppRequest,
+  RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
+  ExpressAppNext
+> = createRuntimeSubpathRouteUnaryExpressHandlerFor<
+  RuntimeSubpathExpressRequest & ExpressAppRequest,
+  RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
+  ExpressAppNext
+>()(manifest, runtimeSubpathExpressRouteUnaryHandlerOptions);
+createRuntimeSubpathUnaryRouteExpressHandlerFor()(
+  manifest,
+  runtimeSubpathExpressUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamExpressHandlerFor()(
+  manifest,
+  runtimeSubpathExpressRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteExpressHandlerFor()(
+  manifest,
+  runtimeSubpathExpressStreamRouteHandlerOptions
+);
 const expressAppRequest = {} as ExpressAppRequest;
 const expressAppResponse = {} as ExpressAppResponse;
 expressAppRequest.user.id.toUpperCase();
 expressAppResponse.locals.requestId.toUpperCase();
 // @ts-expect-error request-typed Express responses are not assignable to plain responses.
 const _wrongExpressAppResponse: ExpressResponse = expressAppResponse;
+routeUnaryExpressHandler(expressRequest, expressResponse, expressNext);
+unaryRouteExpressHandler(expressRequest, expressResponse, expressNext);
+routeStreamExpressHandler(expressRequest, expressResponse, expressNext);
+streamRouteExpressHandler(expressRequest, expressResponse, expressNext);
+runtimeSubpathRouteUnaryExpressHandler(
+  expressRequest,
+  expressResponse,
+  expressNext
+);
+runtimeSubpathUnaryRouteExpressHandler(
+  expressRequest,
+  expressResponse,
+  expressNext
+);
+runtimeSubpathRouteStreamExpressHandler(
+  expressRequest,
+  expressResponse,
+  expressNext
+);
+runtimeSubpathStreamRouteExpressHandler(
+  expressRequest,
+  expressResponse,
+  expressNext
+);
 typedExpressHandler(expressAppRequest, expressAppResponse, expressNext);
+typedRouteUnaryExpressHandler(
+  expressAppRequest,
+  expressAppResponse,
+  expressNext
+);
 runtimeSubpathTypedExpressHandler(
+  expressAppRequest,
+  expressAppResponse,
+  expressNext
+);
+runtimeSubpathTypedRouteUnaryExpressHandler(
   expressAppRequest,
   expressAppResponse,
   expressNext
 );
 // @ts-expect-error typed Express handlers preserve the response's request type.
 createExpressHandlerFor<ExpressAppRequest, ExpressMismatchedResponse>();
+createRouteUnaryExpressHandlerFor<
+  ExpressAppRequest,
+  // @ts-expect-error route-unary typed Express handlers preserve the response's request type.
+  ExpressMismatchedResponse
+>();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
 createExpressHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary Express adapter plugins.
+createRouteUnaryExpressHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Express adapter plugins.
 createTypedExpressHandler(manifest);
 const elysiaHandlerOptions: ElysiaHandlerOptionsFor<

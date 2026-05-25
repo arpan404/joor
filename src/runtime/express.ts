@@ -161,13 +161,21 @@ export type ExpressStreamRouteHandlerOptionsArgs<
   TRequest
 >;
 
-const createExpressHandlerWithOptions = <TManifest extends JoorManifest>(
+const createExpressHandlerWithOptions = <
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+>(
   manifest: TManifest,
   options: ExpressHandlerOptions = {}
 ): ExpressRequestHandler => {
   const handler = createNodeRpcRequestHandler(
     manifest,
-    options as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
+    options as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      TBody,
+      Request
+    >,
     options.hostname ?? '0.0.0.0'
   );
   const useOriginalUrl = options.useOriginalUrl ?? true;
@@ -204,6 +212,58 @@ export function createExpressHandler<TManifest extends JoorManifest>(
   return createExpressHandlerWithOptions(manifest, options);
 }
 
+export function createRouteUnaryExpressHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: ExpressRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): ExpressRequestHandler;
+export function createRouteUnaryExpressHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: ExpressHandlerOptions = {}
+): ExpressRequestHandler {
+  return createExpressHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteUnaryBody<TManifest>
+  >(manifest, options);
+}
+
+export const createUnaryRouteExpressHandler: typeof createRouteUnaryExpressHandler =
+  createRouteUnaryExpressHandler;
+
+export function createRouteStreamExpressHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: ExpressRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): ExpressRequestHandler;
+export function createRouteStreamExpressHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options: ExpressHandlerOptions = {}
+): ExpressRequestHandler {
+  return createExpressHandlerWithOptions<
+    TManifest,
+    RpcManifestRouteStreamBody<TManifest>
+  >(manifest, options);
+}
+
+export const createStreamRouteExpressHandler: typeof createRouteStreamExpressHandler =
+  createRouteStreamExpressHandler;
+
 export const createExpressHandlerFor =
   <
     TRequest extends ExpressRequest = ExpressRequest,
@@ -227,3 +287,63 @@ export const createExpressHandlerFor =
       manifest,
       (args[0] ?? {}) as ExpressHandlerOptions
     ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;
+
+export const createRouteUnaryExpressHandlerFor =
+  <
+    TRequest extends ExpressRequest = ExpressRequest,
+    TResponse extends ExpressResponse<TRequest> = ExpressResponse<TRequest>,
+    TNext extends ExpressNextFunction = ExpressNextFunction,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: ExpressRouteUnaryHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      THookRequest
+    >
+  ): ExpressRequestHandler<TRequest, TResponse, TNext> =>
+    createExpressHandlerWithOptions<
+      TManifest,
+      RpcManifestRouteUnaryBody<TManifest>
+    >(
+      manifest,
+      (args[0] ?? {}) as ExpressHandlerOptions
+    ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;
+
+export const createUnaryRouteExpressHandlerFor: typeof createRouteUnaryExpressHandlerFor =
+  createRouteUnaryExpressHandlerFor;
+
+export const createRouteStreamExpressHandlerFor =
+  <
+    TRequest extends ExpressRequest = ExpressRequest,
+    TResponse extends ExpressResponse<TRequest> = ExpressResponse<TRequest>,
+    TNext extends ExpressNextFunction = ExpressNextFunction,
+  >() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: ExpressRouteStreamHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      THookRequest
+    >
+  ): ExpressRequestHandler<TRequest, TResponse, TNext> =>
+    createExpressHandlerWithOptions<
+      TManifest,
+      RpcManifestRouteStreamBody<TManifest>
+    >(
+      manifest,
+      (args[0] ?? {}) as ExpressHandlerOptions
+    ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;
+
+export const createStreamRouteExpressHandlerFor: typeof createRouteStreamExpressHandlerFor =
+  createRouteStreamExpressHandlerFor;

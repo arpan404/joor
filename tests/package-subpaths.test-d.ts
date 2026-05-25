@@ -38,6 +38,8 @@ import {
   createRouteUnaryElysiaHandlerFor as createRootRouteUnaryElysiaHandlerFor,
   createStreamRouteElysiaHandlerFor as createRootStreamRouteElysiaHandlerFor,
   createExpressHandlerFor as createRootExpressHandlerFor,
+  createRouteUnaryExpressHandlerFor as createRootRouteUnaryExpressHandlerFor,
+  createStreamRouteExpressHandlerFor as createRootStreamRouteExpressHandlerFor,
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
   createRouteUnaryHonoHandlerFor as createRootRouteUnaryHonoHandlerFor,
@@ -292,6 +294,10 @@ import {
 import {
   createExpressHandler,
   createExpressHandlerFor,
+  createRouteStreamExpressHandler,
+  createRouteUnaryExpressHandler,
+  createStreamRouteExpressHandler,
+  createUnaryRouteExpressHandler,
 } from 'joor/runtime/express';
 import {
   createFastifyHandler,
@@ -748,6 +754,12 @@ const packageSubpathValues = [
   createUnaryRouteElysiaHandler,
   createExpressHandler,
   createExpressHandlerFor,
+  createRouteStreamExpressHandler,
+  createRouteUnaryExpressHandler,
+  createRootRouteUnaryExpressHandlerFor,
+  createRootStreamRouteExpressHandlerFor,
+  createStreamRouteExpressHandler,
+  createUnaryRouteExpressHandler,
   createFastifyHandler,
   createFastifyHandlerFor,
   createHonoHandler,
