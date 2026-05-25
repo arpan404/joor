@@ -156,6 +156,9 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteBody',
     'JoorManifestRouteBodyResultFor',
     'JoorManifestRouteBodyResult',
+    'JoorManifestRouteBatchClientHeaders',
+    'JoorManifestRouteBatchOptions',
+    'JoorManifestRouteBatchOptionsTuple',
     'JoorManifestRouteBatchRequest',
     'JoorManifestRouteBatchResults',
     'JoorManifestRouteEnvelope',
@@ -208,6 +211,9 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteStreamProtocolRequest',
     'JoorManifestRouteStreamProtocolRequestUnion',
     'JoorManifestUnaryRouteClientArgs',
+    'JoorManifestUnaryRouteBatchClientHeaders',
+    'JoorManifestUnaryRouteBatchOptions',
+    'JoorManifestUnaryRouteBatchOptionsTuple',
     'JoorManifestUnaryRouteClientHeaders',
     'JoorManifestUnaryRouteEnvelope',
     'JoorManifestUnaryRouteError',
@@ -258,6 +264,9 @@ const emitProfileDispatcher = async (
     'JoorManifestRouteStreamRequestOptions',
     'JoorManifestRouteUnaryClientArgs',
     'JoorManifestRouteStreamClientArgs',
+    'JoorManifestRouteUnaryBatchClientHeaders',
+    'JoorManifestRouteUnaryBatchOptions',
+    'JoorManifestRouteUnaryBatchOptionsTuple',
     'JoorManifestRouteUnaryBatchRequest',
     'JoorManifestRouteUnaryBatchResults',
     'JoorManifestRouteUnaryBodyResult',
@@ -479,6 +488,30 @@ export type NativeUnaryRouteProtocolBatchRequest<TRequests extends readonly Nati
   NativeRouteUnaryProtocolBatchRequest<TRequests>;
 export type NativeProtocolBatchRequest<TRequests extends readonly NativeProtocolBatchRequestUnion[] = readonly NativeProtocolBatchRequestUnion[]> =
   NativeRouteProtocolBatchRequest<TRequests>;
+export type NativeRouteBatchClientHeaders<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  JoorManifestRouteBatchClientHeaders<NativeManifest, TRequests>;
+export type NativeBatchClientHeaders<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  NativeRouteBatchClientHeaders<TRequests>;
+export type NativeRouteUnaryBatchClientHeaders<TRequests extends readonly unknown[] = NativeRouteUnaryBatchRequest> =
+  JoorManifestRouteUnaryBatchClientHeaders<NativeManifest, TRequests>;
+export type NativeUnaryRouteBatchClientHeaders<TRequests extends readonly unknown[] = NativeUnaryRouteBatchRequest> =
+  JoorManifestUnaryRouteBatchClientHeaders<NativeManifest, TRequests>;
+export type NativeRouteBatchOptions<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  JoorManifestRouteBatchOptions<NativeManifest, TRequests>;
+export type NativeRouteUnaryBatchOptions<TRequests extends readonly unknown[] = NativeRouteUnaryBatchRequest> =
+  JoorManifestRouteUnaryBatchOptions<NativeManifest, TRequests>;
+export type NativeUnaryRouteBatchOptions<TRequests extends readonly unknown[] = NativeUnaryRouteBatchRequest> =
+  JoorManifestUnaryRouteBatchOptions<NativeManifest, TRequests>;
+export type NativeBatchOptions<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  NativeRouteBatchOptions<TRequests>;
+export type NativeRouteBatchOptionsTuple<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  JoorManifestRouteBatchOptionsTuple<NativeManifest, TRequests>;
+export type NativeRouteUnaryBatchOptionsTuple<TRequests extends readonly unknown[] = NativeRouteUnaryBatchRequest> =
+  JoorManifestRouteUnaryBatchOptionsTuple<NativeManifest, TRequests>;
+export type NativeUnaryRouteBatchOptionsTuple<TRequests extends readonly unknown[] = NativeUnaryRouteBatchRequest> =
+  JoorManifestUnaryRouteBatchOptionsTuple<NativeManifest, TRequests>;
+export type NativeBatchOptionsTuple<TRequests extends readonly unknown[] = NativeRouteBatchRequest> =
+  NativeRouteBatchOptionsTuple<TRequests>;
 export type NativeRouteBatchResults<TRequests extends readonly NativeRouteBatchRequestUnion[] = readonly NativeRouteBatchRequestUnion[]> =
   JoorManifestRouteBatchResults<NativeManifest, TRequests>;
 export type NativeRouteUnaryBatchResults<TRequests extends readonly NativeRouteUnaryBatchRequestUnion[] = readonly NativeRouteUnaryBatchRequestUnion[]> =
