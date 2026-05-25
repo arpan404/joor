@@ -391,6 +391,18 @@ export type BunRpcRequestHandler<TRequest extends Request = Request> =
   JoorFetchHandler<TRequest>;
 export type BunTransportRequestHandler<TRequest extends Request = Request> =
   JoorFetchHandler<TRequest>;
+export type BunRouteUnaryTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunTransportRequestHandler<TRequest>;
+export type BunUnaryRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunRouteUnaryTransportRequestHandler<TRequest>;
+export type BunRouteStreamTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunTransportRequestHandler<TRequest>;
+export type BunStreamRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunRouteStreamTransportRequestHandler<TRequest>;
 
 export type BunTransportBodyResultHandler<
   TBody = JsonValue,
@@ -473,7 +485,12 @@ export function createBunFetch<TManifest extends JoorManifest>(
 ): BunFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >
   );
 }
 
@@ -749,6 +766,92 @@ export const createBunTransportRequestHandlerFor =
       onBodyReadError
     ) as BunTransportRequestHandler<TRequest>;
 
+export const createRouteUnaryBunTransportRequestHandler = <
+  TManifest extends JoorManifest,
+>(
+  handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
+): BunRouteUnaryTransportRequestHandler =>
+  createBunTransportRequestHandler(
+    handler as BunTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      BunRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    maxBodyBytes,
+    preflight,
+    extraResponseHeaders,
+    onBodyReadError
+  );
+
+export const createUnaryRouteBunTransportRequestHandler: typeof createRouteUnaryBunTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandler;
+
+export const createRouteUnaryBunTransportRequestHandlerFor =
+  <TRequest extends Request = Request>() =>
+  <TManifest extends JoorManifest>(
+    handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
+  ): BunRouteUnaryTransportRequestHandler<TRequest> =>
+    createRouteUnaryBunTransportRequestHandler(
+      handler,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders,
+      onBodyReadError
+    ) as BunRouteUnaryTransportRequestHandler<TRequest>;
+
+export const createUnaryRouteBunTransportRequestHandlerFor: typeof createRouteUnaryBunTransportRequestHandlerFor =
+  createRouteUnaryBunTransportRequestHandlerFor;
+
+export const createRouteStreamBunTransportRequestHandler = <
+  TManifest extends JoorManifest,
+>(
+  handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  preflight?: RpcRequestPreflight | false,
+  extraResponseHeaders?: Record<string, string>,
+  onBodyReadError?: (error: Error, request: Request) => void
+): BunRouteStreamTransportRequestHandler =>
+  createBunTransportRequestHandler(
+    handler as BunTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      BunRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    maxBodyBytes,
+    preflight,
+    extraResponseHeaders,
+    onBodyReadError
+  );
+
+export const createStreamRouteBunTransportRequestHandler: typeof createRouteStreamBunTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandler;
+
+export const createRouteStreamBunTransportRequestHandlerFor =
+  <TRequest extends Request = Request>() =>
+  <TManifest extends JoorManifest>(
+    handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+    preflight?: RpcRequestPreflight | false,
+    extraResponseHeaders?: Record<string, string>,
+    onBodyReadError?: (error: Error, request: Request) => void
+  ): BunRouteStreamTransportRequestHandler<TRequest> =>
+    createRouteStreamBunTransportRequestHandler(
+      handler,
+      maxBodyBytes,
+      preflight,
+      extraResponseHeaders,
+      onBodyReadError
+    ) as BunRouteStreamTransportRequestHandler<TRequest>;
+
+export const createStreamRouteBunTransportRequestHandlerFor: typeof createRouteStreamBunTransportRequestHandlerFor =
+  createRouteStreamBunTransportRequestHandlerFor;
+
 export const createBunTransportRequestHandlerWithPath = <
   TBody = JsonValue,
   TResult extends BunTransportBodyResult = BunTransportBodyResult,
@@ -779,6 +882,76 @@ export const createBunTransportRequestHandlerWithPathFor =
       maxBodyBytes
     ) as BunTransportRequestHandler<TRequest>;
 
+export const createRouteUnaryBunTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+>(
+  handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): BunRouteUnaryTransportRequestHandler =>
+  createBunTransportRequestHandlerWithPath(
+    handler as BunTransportBodyResultHandler<
+      RpcManifestRouteUnaryBody<TManifest>,
+      BunRouteUnaryTransportBodyResultFor<TManifest>
+    >,
+    path,
+    maxBodyBytes
+  );
+
+export const createUnaryRouteBunTransportRequestHandlerWithPath: typeof createRouteUnaryBunTransportRequestHandlerWithPath =
+  createRouteUnaryBunTransportRequestHandlerWithPath;
+
+export const createRouteUnaryBunTransportRequestHandlerWithPathFor =
+  <TRequest extends Request = Request>() =>
+  <TManifest extends JoorManifest>(
+    handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): BunRouteUnaryTransportRequestHandler<TRequest> =>
+    createRouteUnaryBunTransportRequestHandlerWithPath(
+      handler,
+      path,
+      maxBodyBytes
+    ) as BunRouteUnaryTransportRequestHandler<TRequest>;
+
+export const createUnaryRouteBunTransportRequestHandlerWithPathFor: typeof createRouteUnaryBunTransportRequestHandlerWithPathFor =
+  createRouteUnaryBunTransportRequestHandlerWithPathFor;
+
+export const createRouteStreamBunTransportRequestHandlerWithPath = <
+  TManifest extends JoorManifest,
+>(
+  handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
+  path: string,
+  maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+): BunRouteStreamTransportRequestHandler =>
+  createBunTransportRequestHandlerWithPath(
+    handler as BunTransportBodyResultHandler<
+      RpcManifestRouteStreamBody<TManifest>,
+      BunRouteStreamTransportBodyResultFor<TManifest>
+    >,
+    path,
+    maxBodyBytes
+  );
+
+export const createStreamRouteBunTransportRequestHandlerWithPath: typeof createRouteStreamBunTransportRequestHandlerWithPath =
+  createRouteStreamBunTransportRequestHandlerWithPath;
+
+export const createRouteStreamBunTransportRequestHandlerWithPathFor =
+  <TRequest extends Request = Request>() =>
+  <TManifest extends JoorManifest>(
+    handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
+    path: string,
+    maxBodyBytes = DEFAULT_MAX_BODY_BYTES
+  ): BunRouteStreamTransportRequestHandler<TRequest> =>
+    createRouteStreamBunTransportRequestHandlerWithPath(
+      handler,
+      path,
+      maxBodyBytes
+    ) as BunRouteStreamTransportRequestHandler<TRequest>;
+
+export const createStreamRouteBunTransportRequestHandlerWithPathFor: typeof createRouteStreamBunTransportRequestHandlerWithPathFor =
+  createRouteStreamBunTransportRequestHandlerWithPathFor;
+
 export function createBunRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -798,7 +971,12 @@ export function createBunRpcRequestHandler<TManifest extends JoorManifest>(
 ): BunRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >,
     false
   );
   return createBunTransportRequestHandler(
@@ -826,10 +1004,7 @@ export function createRouteUnaryBunRpcRequestHandler<
 ): BunRpcRequestHandler<TRequest>;
 export function createRouteUnaryBunRpcRequestHandler<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): BunRpcRequestHandler {
+>(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
   return createBunRpcRequestHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
@@ -859,10 +1034,7 @@ export function createRouteStreamBunRpcRequestHandler<
 ): BunRpcRequestHandler<TRequest>;
 export function createRouteStreamBunRpcRequestHandler<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): BunRpcRequestHandler {
+>(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
   return createBunRpcRequestHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
@@ -1128,12 +1300,9 @@ export function serveRouteUnaryBun<TManifest extends JoorManifest>(
   );
 }
 
-export const serveUnaryRouteBun: typeof serveRouteUnaryBun =
-  serveRouteUnaryBun;
-export const serveBunRouteUnary: typeof serveRouteUnaryBun =
-  serveRouteUnaryBun;
-export const serveBunUnaryRoute: typeof serveRouteUnaryBun =
-  serveRouteUnaryBun;
+export const serveUnaryRouteBun: typeof serveRouteUnaryBun = serveRouteUnaryBun;
+export const serveBunRouteUnary: typeof serveRouteUnaryBun = serveRouteUnaryBun;
+export const serveBunUnaryRoute: typeof serveRouteUnaryBun = serveRouteUnaryBun;
 
 export function serveRouteStreamBun<
   TManifest extends JoorManifest,

@@ -72,6 +72,22 @@ import {
   createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath,
   createBunTransportRequestHandlerWithPathFor,
+  createRouteStreamBunTransportRequestHandler,
+  createRouteStreamBunTransportRequestHandlerFor,
+  createRouteStreamBunTransportRequestHandlerWithPath,
+  createRouteStreamBunTransportRequestHandlerWithPathFor,
+  createRouteUnaryBunTransportRequestHandler,
+  createRouteUnaryBunTransportRequestHandlerFor,
+  createRouteUnaryBunTransportRequestHandlerWithPath,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createStreamRouteBunTransportRequestHandler,
+  createStreamRouteBunTransportRequestHandlerFor,
+  createStreamRouteBunTransportRequestHandlerWithPath,
+  createStreamRouteBunTransportRequestHandlerWithPathFor,
+  createUnaryRouteBunTransportRequestHandler,
+  createUnaryRouteBunTransportRequestHandlerFor,
+  createUnaryRouteBunTransportRequestHandlerWithPath,
+  createUnaryRouteBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch,
   createCloudflareFetchFor,
   createCloudflareWorker,
@@ -434,6 +450,7 @@ import {
   type BunRouteStreamServeOptionsFor,
   type BunRouteStreamTransportBodyResultFor,
   type BunRouteStreamTransportBodyResultHandlerFor,
+  type BunRouteStreamTransportRequestHandler,
   type BunRouteUnaryFetchOptionsArgs,
   type BunRouteUnaryFetchOptionsFor,
   type BunRouteUnaryRpcRequestHandlerOptionsArgs,
@@ -442,6 +459,7 @@ import {
   type BunRouteUnaryServeOptionsFor,
   type BunRouteUnaryTransportBodyResultFor,
   type BunRouteUnaryTransportBodyResultHandlerFor,
+  type BunRouteUnaryTransportRequestHandler,
   type BunServer,
   type BunStreamRouteFetchOptionsArgs,
   type BunStreamRouteFetchOptionsFor,
@@ -466,6 +484,7 @@ import {
   type BunTransportBodyResultHandlerFor,
   type BunStreamRouteTransportBodyResultFor,
   type BunStreamRouteTransportBodyResultHandlerFor,
+  type BunStreamRouteTransportRequestHandler,
   type BunTransportRequestHandler,
   type BunUnaryRouteFetchOptionsArgs,
   type BunUnaryRouteFetchOptionsFor,
@@ -475,6 +494,7 @@ import {
   type BunUnaryRouteServeOptionsFor,
   type BunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor,
+  type BunUnaryRouteTransportRequestHandler,
   type ElysiaContext,
   type ElysiaHandler,
   type ElysiaHandlerOptionsArgs,
@@ -1994,6 +2014,22 @@ import {
   createBunTransportRequestHandlerFor as createRuntimeSubpathBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPath as createRuntimeSubpathBunTransportRequestHandlerWithPath,
   createBunTransportRequestHandlerWithPathFor as createRuntimeSubpathBunTransportRequestHandlerWithPathFor,
+  createRouteStreamBunTransportRequestHandler as createRuntimeSubpathRouteStreamBunTransportRequestHandler,
+  createRouteStreamBunTransportRequestHandlerFor as createRuntimeSubpathRouteStreamBunTransportRequestHandlerFor,
+  createRouteStreamBunTransportRequestHandlerWithPath as createRuntimeSubpathRouteStreamBunTransportRequestHandlerWithPath,
+  createRouteStreamBunTransportRequestHandlerWithPathFor as createRuntimeSubpathRouteStreamBunTransportRequestHandlerWithPathFor,
+  createRouteUnaryBunTransportRequestHandler as createRuntimeSubpathRouteUnaryBunTransportRequestHandler,
+  createRouteUnaryBunTransportRequestHandlerFor as createRuntimeSubpathRouteUnaryBunTransportRequestHandlerFor,
+  createRouteUnaryBunTransportRequestHandlerWithPath as createRuntimeSubpathRouteUnaryBunTransportRequestHandlerWithPath,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor as createRuntimeSubpathRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createStreamRouteBunTransportRequestHandler as createRuntimeSubpathStreamRouteBunTransportRequestHandler,
+  createStreamRouteBunTransportRequestHandlerFor as createRuntimeSubpathStreamRouteBunTransportRequestHandlerFor,
+  createStreamRouteBunTransportRequestHandlerWithPath as createRuntimeSubpathStreamRouteBunTransportRequestHandlerWithPath,
+  createStreamRouteBunTransportRequestHandlerWithPathFor as createRuntimeSubpathStreamRouteBunTransportRequestHandlerWithPathFor,
+  createUnaryRouteBunTransportRequestHandler as createRuntimeSubpathUnaryRouteBunTransportRequestHandler,
+  createUnaryRouteBunTransportRequestHandlerFor as createRuntimeSubpathUnaryRouteBunTransportRequestHandlerFor,
+  createUnaryRouteBunTransportRequestHandlerWithPath as createRuntimeSubpathUnaryRouteBunTransportRequestHandlerWithPath,
+  createUnaryRouteBunTransportRequestHandlerWithPathFor as createRuntimeSubpathUnaryRouteBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch as createRuntimeSubpathCloudflareFetch,
   createCloudflareFetchFor as createRuntimeSubpathCloudflareFetchFor,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
@@ -2306,6 +2342,7 @@ import {
   type BunRouteStreamServeOptionsFor as RuntimeSubpathBunRouteStreamServeOptionsFor,
   type BunRouteStreamTransportBodyResultFor as RuntimeSubpathBunRouteStreamTransportBodyResultFor,
   type BunRouteStreamTransportBodyResultHandlerFor as RuntimeSubpathBunRouteStreamTransportBodyResultHandlerFor,
+  type BunRouteStreamTransportRequestHandler as RuntimeSubpathBunRouteStreamTransportRequestHandler,
   type BunRouteUnaryFetchOptionsArgs as RuntimeSubpathBunRouteUnaryFetchOptionsArgs,
   type BunRouteUnaryFetchOptionsFor as RuntimeSubpathBunRouteUnaryFetchOptionsFor,
   type BunRouteUnaryRpcRequestHandlerOptionsArgs as RuntimeSubpathBunRouteUnaryRpcRequestHandlerOptionsArgs,
@@ -2314,6 +2351,7 @@ import {
   type BunRouteUnaryServeOptionsFor as RuntimeSubpathBunRouteUnaryServeOptionsFor,
   type BunRouteUnaryTransportBodyResultFor as RuntimeSubpathBunRouteUnaryTransportBodyResultFor,
   type BunRouteUnaryTransportBodyResultHandlerFor as RuntimeSubpathBunRouteUnaryTransportBodyResultHandlerFor,
+  type BunRouteUnaryTransportRequestHandler as RuntimeSubpathBunRouteUnaryTransportRequestHandler,
   type BunStreamRouteFetchOptionsArgs as RuntimeSubpathBunStreamRouteFetchOptionsArgs,
   type BunStreamRouteFetchOptionsFor as RuntimeSubpathBunStreamRouteFetchOptionsFor,
   type BunStreamRouteRpcRequestHandlerOptionsArgs as RuntimeSubpathBunStreamRouteRpcRequestHandlerOptionsArgs,
@@ -2326,6 +2364,7 @@ import {
   type BunTransportBodyResultHandlerFor as RuntimeSubpathBunTransportBodyResultHandlerFor,
   type BunStreamRouteTransportBodyResultFor as RuntimeSubpathBunStreamRouteTransportBodyResultFor,
   type BunStreamRouteTransportBodyResultHandlerFor as RuntimeSubpathBunStreamRouteTransportBodyResultHandlerFor,
+  type BunStreamRouteTransportRequestHandler as RuntimeSubpathBunStreamRouteTransportRequestHandler,
   type BunTransportRequestHandler as RuntimeSubpathBunTransportRequestHandler,
   type BunUnaryRouteFetchOptionsArgs as RuntimeSubpathBunUnaryRouteFetchOptionsArgs,
   type BunUnaryRouteFetchOptionsFor as RuntimeSubpathBunUnaryRouteFetchOptionsFor,
@@ -2335,6 +2374,7 @@ import {
   type BunUnaryRouteServeOptionsFor as RuntimeSubpathBunUnaryRouteServeOptionsFor,
   type BunUnaryRouteTransportBodyResultFor as RuntimeSubpathBunUnaryRouteTransportBodyResultFor,
   type BunUnaryRouteTransportBodyResultHandlerFor as RuntimeSubpathBunUnaryRouteTransportBodyResultHandlerFor,
+  type BunUnaryRouteTransportRequestHandler as RuntimeSubpathBunUnaryRouteTransportRequestHandler,
   type CloudflareFetchHandler as RuntimeSubpathCloudflareFetchHandler,
   type CloudflareFetchOptionsArgs as RuntimeSubpathCloudflareFetchOptionsArgs,
   type CloudflareFetchOptionsFor as RuntimeSubpathCloudflareFetchOptionsFor,
@@ -6042,14 +6082,26 @@ defineRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
 defineUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
 defineRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
 defineStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
-defineContextSubpathRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
-defineContextSubpathUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
-defineContextSubpathRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
-defineContextSubpathStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
+defineContextSubpathRouteUnaryConfigFor(manifest)(
+  manifestRouteUnaryConfigShape
+);
+defineContextSubpathUnaryRouteConfigFor(manifest)(
+  manifestUnaryRouteConfigShape
+);
+defineContextSubpathRouteStreamConfigFor(manifest)(
+  manifestRouteStreamConfigShape
+);
+defineContextSubpathStreamRouteConfigFor(manifest)(
+  manifestStreamRouteConfigShape
+);
 defineConfigSubpathRouteUnaryConfigFor(manifest)(manifestRouteUnaryConfigShape);
 defineConfigSubpathUnaryRouteConfigFor(manifest)(manifestUnaryRouteConfigShape);
-defineConfigSubpathRouteStreamConfigFor(manifest)(manifestRouteStreamConfigShape);
-defineConfigSubpathStreamRouteConfigFor(manifest)(manifestStreamRouteConfigShape);
+defineConfigSubpathRouteStreamConfigFor(manifest)(
+  manifestRouteStreamConfigShape
+);
+defineConfigSubpathStreamRouteConfigFor(manifest)(
+  manifestStreamRouteConfigShape
+);
 const manifestAwareConfigFactory: DefineConfigFor<typeof manifest> =
   defineConfigFor(manifest);
 manifestAwareConfigFactory({ plugins: [usersPlugin] as const });
@@ -10538,13 +10590,14 @@ const hookTypedStreamRouteRpcBodyHandler = streamRouteRpcBodyHandlerFor(
   manifest,
   manifestStreamRouteHandlerOptions
 );
-const defaultRouteUnaryRpcBodyHandler =
-  createRouteUnaryRpcBodyHandlerFor()(manifest, manifestUnaryRouteHandlerOptions);
-const defaultRouteStreamRpcBodyHandler =
-  createRouteStreamRpcBodyHandlerFor()(
-    manifest,
-    manifestStreamRouteHandlerOptions
-  );
+const defaultRouteUnaryRpcBodyHandler = createRouteUnaryRpcBodyHandlerFor()(
+  manifest,
+  manifestUnaryRouteHandlerOptions
+);
+const defaultRouteStreamRpcBodyHandler = createRouteStreamRpcBodyHandlerFor()(
+  manifest,
+  manifestStreamRouteHandlerOptions
+);
 createRpcSubpathRouteUnaryBodyHandlerFor<HookAppRequest>()(
   manifest,
   rpcSubpathManifestUnaryRouteHandlerOptions
@@ -10741,15 +10794,9 @@ const routeStreamRpcBodyResultHandlerFor =
 const streamRouteRpcBodyResultHandlerFor =
   createStreamRouteRpcBodyResultHandlerFor<HookAppRequest>();
 const hookTypedRouteUnaryRpcBodyResultHandler =
-  routeUnaryRpcBodyResultHandlerFor(
-    manifest,
-    manifestUnaryRouteHandlerOptions
-  );
+  routeUnaryRpcBodyResultHandlerFor(manifest, manifestUnaryRouteHandlerOptions);
 const hookTypedUnaryRouteRpcBodyResultHandler =
-  unaryRouteRpcBodyResultHandlerFor(
-    manifest,
-    manifestUnaryRouteHandlerOptions
-  );
+  unaryRouteRpcBodyResultHandlerFor(manifest, manifestUnaryRouteHandlerOptions);
 const hookTypedRouteStreamRpcBodyResultHandler =
   routeStreamRpcBodyResultHandlerFor(
     manifest,
@@ -11970,16 +12017,14 @@ const streamRouteBunFetch = createStreamRouteBunFetch(
   manifest,
   bunStreamRouteFetchOptions
 );
-const runtimeSubpathRouteUnaryBunFetch =
-  createRuntimeSubpathRouteUnaryBunFetch(
-    manifest,
-    runtimeSubpathBunRouteUnaryFetchOptions
-  );
-const runtimeSubpathUnaryRouteBunFetch =
-  createRuntimeSubpathUnaryRouteBunFetch(
-    manifest,
-    runtimeSubpathBunUnaryRouteFetchOptions
-  );
+const runtimeSubpathRouteUnaryBunFetch = createRuntimeSubpathRouteUnaryBunFetch(
+  manifest,
+  runtimeSubpathBunRouteUnaryFetchOptions
+);
+const runtimeSubpathUnaryRouteBunFetch = createRuntimeSubpathUnaryRouteBunFetch(
+  manifest,
+  runtimeSubpathBunUnaryRouteFetchOptions
+);
 const runtimeSubpathRouteStreamBunFetch =
   createRuntimeSubpathRouteStreamBunFetch(
     manifest,
@@ -11990,11 +12035,10 @@ const runtimeSubpathStreamRouteBunFetch =
     manifest,
     runtimeSubpathBunStreamRouteFetchOptions
   );
-const typedRouteUnaryBunFetch =
-  createRouteUnaryBunFetchFor<HookAppRequest>()(
-    manifest,
-    requestTypedBunRouteUnaryFetchOptions
-  );
+const typedRouteUnaryBunFetch = createRouteUnaryBunFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedBunRouteUnaryFetchOptions
+);
 createUnaryRouteBunFetchFor()(manifest, bunUnaryRouteFetchOptions);
 createRouteStreamBunFetchFor()(manifest, bunRouteStreamFetchOptions);
 createStreamRouteBunFetchFor()(manifest, bunStreamRouteFetchOptions);
@@ -12632,11 +12676,10 @@ const runtimeSubpathStreamRouteDenoFetch =
     manifest,
     runtimeSubpathDenoStreamRouteFetchOptions
   );
-const typedRouteUnaryDenoFetch =
-  createRouteUnaryDenoFetchFor<HookAppRequest>()(
-    manifest,
-    requestTypedDenoRouteUnaryFetchOptions
-  );
+const typedRouteUnaryDenoFetch = createRouteUnaryDenoFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedDenoRouteUnaryFetchOptions
+);
 createUnaryRouteDenoFetchFor()(manifest, denoUnaryRouteFetchOptions);
 createRouteStreamDenoFetchFor()(manifest, denoRouteStreamFetchOptions);
 createStreamRouteDenoFetchFor()(manifest, denoStreamRouteFetchOptions);
@@ -13392,10 +13435,7 @@ const standaloneDenoServer: StandaloneDenoServer = serveStandaloneDeno(
 );
 serveStandaloneDeno(manifest, requestTypedStandaloneDenoServeOptions);
 const standaloneRouteUnaryDenoServer: StandaloneDenoServer =
-  serveStandaloneRouteUnaryDeno(
-    manifest,
-    standaloneDenoRouteUnaryServeOptions
-  );
+  serveStandaloneRouteUnaryDeno(manifest, standaloneDenoRouteUnaryServeOptions);
 const standaloneStreamRouteDenoServer: StandaloneDenoServer =
   serveStandaloneStreamRouteDeno(
     manifest,
@@ -13651,9 +13691,9 @@ const rootStandaloneDenoRouteUnaryTransportRequestHandler: RootStandaloneDenoRou
 const createRootTypedStandaloneDenoRouteUnaryTransportRequestHandler =
   createRootStandaloneRouteUnaryDenoTransportRequestHandlerFor<AppFetchRequest>();
 const rootTypedStandaloneDenoRouteUnaryTransportRequestHandler: RootStandaloneDenoRouteUnaryTransportRequestHandler<AppFetchRequest> =
-  createRootTypedStandaloneDenoRouteUnaryTransportRequestHandler<typeof manifest>(
-    manifestDenoRouteUnaryTransportHandler
-  );
+  createRootTypedStandaloneDenoRouteUnaryTransportRequestHandler<
+    typeof manifest
+  >(manifestDenoRouteUnaryTransportHandler);
 const createStandaloneTypedDenoRouteUnaryTransportRequestHandler =
   createStandaloneRouteUnaryDenoTransportRequestHandlerFor<AppFetchRequest>();
 const standaloneTypedDenoRouteUnaryTransportRequestHandler: StandaloneDenoRouteUnaryTransportRequestHandler<AppFetchRequest> =
@@ -13675,15 +13715,14 @@ const runtimeSubpathDenoStreamRouteTransportRequestHandler: RuntimeSubpathDenoSt
 const createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandler =
   createRuntimeSubpathRouteUnaryDenoTransportRequestHandlerFor<AppFetchRequest>();
 const runtimeSubpathTypedDenoRouteUnaryTransportRequestHandler: RuntimeSubpathDenoRouteUnaryTransportRequestHandler<AppFetchRequest> =
-  createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandler<typeof manifest>(
-    earlyRuntimeSubpathManifestDenoRouteUnaryTransportHandler
-  );
+  createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandler<
+    typeof manifest
+  >(earlyRuntimeSubpathManifestDenoRouteUnaryTransportHandler);
 const createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandlerWithPath =
   createRuntimeSubpathRouteUnaryDenoTransportRequestHandlerWithPathFor<AppFetchRequest>();
-createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandlerWithPath<typeof manifest>(
-  earlyRuntimeSubpathManifestDenoRouteUnaryTransportHandler,
-  '/rpc'
-);
+createRuntimeSubpathTypedDenoRouteUnaryTransportRequestHandlerWithPath<
+  typeof manifest
+>(earlyRuntimeSubpathManifestDenoRouteUnaryTransportHandler, '/rpc');
 const runtimeSubpathStandaloneDenoRouteUnaryTransportRequestHandler: RuntimeSubpathStandaloneDenoRouteUnaryTransportRequestHandler =
   rootStandaloneDenoRouteUnaryTransportRequestHandler;
 const runtimeSubpathStandaloneDenoRouteStreamTransportRequestHandler: RuntimeSubpathStandaloneDenoRouteStreamTransportRequestHandler =
@@ -13903,8 +13942,95 @@ const manifestBunUnaryRouteTransportHandler: BunUnaryRouteTransportBodyResultHan
 const manifestBunStreamRouteTransportHandler: BunStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestBunRouteStreamTransportHandler;
+const bunRouteUnaryTransportRequestHandler: BunRouteUnaryTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandler<typeof manifest>(
+    manifestBunRouteUnaryTransportHandler
+  );
+const bunUnaryRouteTransportRequestHandler: BunUnaryRouteTransportRequestHandler =
+  createUnaryRouteBunTransportRequestHandler<typeof manifest>(
+    manifestBunUnaryRouteTransportHandler
+  );
+const bunUnaryRouteTransportRequestHandlerWithPath: BunUnaryRouteTransportRequestHandler =
+  createUnaryRouteBunTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunUnaryRouteTransportHandler,
+    '/rpc'
+  );
+const bunRouteUnaryTransportRequestHandlerWithPath: BunRouteUnaryTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunRouteUnaryTransportHandler,
+    '/rpc'
+  );
+const bunRouteStreamTransportRequestHandler: BunRouteStreamTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandler<typeof manifest>(
+    manifestBunRouteStreamTransportHandler
+  );
+const bunStreamRouteTransportRequestHandler: BunStreamRouteTransportRequestHandler =
+  createStreamRouteBunTransportRequestHandler<typeof manifest>(
+    manifestBunStreamRouteTransportHandler
+  );
+const bunRouteStreamTransportRequestHandlerWithPath: BunRouteStreamTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunRouteStreamTransportHandler,
+    '/rpc'
+  );
+const createTypedBunRouteUnaryTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandlerFor<AppFetchRequest>();
+const typedBunRouteUnaryTransportRequestHandler: BunRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createTypedBunRouteUnaryTransportRequestHandler<typeof manifest>(
+    manifestBunRouteUnaryTransportHandler
+  );
+const createTypedBunRouteUnaryTransportRequestHandlerWithPath =
+  createRouteUnaryBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedBunRouteUnaryTransportRequestHandlerWithPath: BunRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createTypedBunRouteUnaryTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunRouteUnaryTransportHandler,
+    '/rpc'
+  );
+const createTypedBunUnaryRouteTransportRequestHandler =
+  createUnaryRouteBunTransportRequestHandlerFor<AppFetchRequest>();
+const typedBunUnaryRouteTransportRequestHandler: BunUnaryRouteTransportRequestHandler<AppFetchRequest> =
+  createTypedBunUnaryRouteTransportRequestHandler<typeof manifest>(
+    manifestBunUnaryRouteTransportHandler
+  );
+const createTypedBunUnaryRouteTransportRequestHandlerWithPath =
+  createUnaryRouteBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedBunUnaryRouteTransportRequestHandlerWithPath: BunUnaryRouteTransportRequestHandler<AppFetchRequest> =
+  createTypedBunUnaryRouteTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunUnaryRouteTransportHandler,
+    '/rpc'
+  );
+const createTypedBunRouteStreamTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandlerFor<AppFetchRequest>();
+const typedBunRouteStreamTransportRequestHandler: BunRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createTypedBunRouteStreamTransportRequestHandler<typeof manifest>(
+    manifestBunRouteStreamTransportHandler
+  );
+const createTypedBunRouteStreamTransportRequestHandlerWithPath =
+  createRouteStreamBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedBunRouteStreamTransportRequestHandlerWithPath: BunRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createTypedBunRouteStreamTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunRouteStreamTransportHandler,
+    '/rpc'
+  );
+const createTypedBunStreamRouteTransportRequestHandler =
+  createStreamRouteBunTransportRequestHandlerFor<AppFetchRequest>();
+const typedBunStreamRouteTransportRequestHandler: BunStreamRouteTransportRequestHandler<AppFetchRequest> =
+  createTypedBunStreamRouteTransportRequestHandler<typeof manifest>(
+    manifestBunStreamRouteTransportHandler
+  );
+const createTypedBunStreamRouteTransportRequestHandlerWithPath =
+  createStreamRouteBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const typedBunStreamRouteTransportRequestHandlerWithPath: BunStreamRouteTransportRequestHandler<AppFetchRequest> =
+  createTypedBunStreamRouteTransportRequestHandlerWithPath<typeof manifest>(
+    manifestBunStreamRouteTransportHandler,
+    '/rpc'
+  );
 createBunTransportRequestHandler(manifestBunTransportHandler);
 createBunTransportRequestHandler(syncManifestBunTransportHandler);
+createStreamRouteBunTransportRequestHandlerWithPath<typeof manifest>(
+  manifestBunStreamRouteTransportHandler,
+  '/rpc'
+);
 manifestBunUnaryRouteTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -13929,6 +14055,27 @@ syncManifestBunRouteStreamTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
+bunRouteUnaryTransportRequestHandler(new Request('https://example.com/rpc'));
+bunUnaryRouteTransportRequestHandler(new Request('https://example.com/rpc'));
+bunUnaryRouteTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+bunRouteUnaryTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+bunRouteStreamTransportRequestHandler(new Request('https://example.com/rpc'));
+bunStreamRouteTransportRequestHandler(new Request('https://example.com/rpc'));
+bunRouteStreamTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+typedBunRouteUnaryTransportRequestHandler(appFetchRequest);
+typedBunRouteUnaryTransportRequestHandlerWithPath(appFetchRequest);
+typedBunUnaryRouteTransportRequestHandler(appFetchRequest);
+typedBunUnaryRouteTransportRequestHandlerWithPath(appFetchRequest);
+typedBunRouteStreamTransportRequestHandler(appFetchRequest);
+typedBunRouteStreamTransportRequestHandlerWithPath(appFetchRequest);
+typedBunStreamRouteTransportRequestHandler(appFetchRequest);
+typedBunStreamRouteTransportRequestHandlerWithPath(appFetchRequest);
 manifestBunTransportHandler(createFetchRequestSourceForTypes(), {
   // @ts-expect-error manifest-aware Bun handlers reject unknown body route ids.
   id: 'users.missing',
@@ -15393,8 +15540,12 @@ compiledStreamRouteRpcHandler(new Request('https://example.com/rpc'));
 rootCompiledRouteUnaryRpcHandler(new Request('https://example.com/rpc'));
 rootCompiledRouteStreamRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathCompiledRpcHandler(new Request('https://example.com/rpc'));
-runtimeSubpathCompiledRouteUnaryRpcHandler(new Request('https://example.com/rpc'));
-runtimeSubpathCompiledRouteStreamRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathCompiledRouteUnaryRpcHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathCompiledRouteStreamRpcHandler(
+  new Request('https://example.com/rpc')
+);
 typedAppCompiledRpcHandler(appFetchRequest);
 typedAppRouteUnaryCompiledRpcHandler(appFetchRequest);
 typedAppUnaryRouteCompiledRpcHandler(appFetchRequest);
@@ -16237,18 +16388,34 @@ createRuntimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
   _serviceTypedCompiledUnaryDispatch,
   '/rpc'
 );
-routeUnaryDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-unaryRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-routeStreamDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-streamRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+routeUnaryDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+unaryRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+routeStreamDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+streamRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 typedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
 typedRouteStreamDenoCompiledTransportRequestHandler(appFetchRequest);
 typedRouteUnaryDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
 typedRouteStreamDenoCompiledTransportRequestHandlerWithPath(appFetchRequest);
-rootRouteUnaryDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-rootUnaryRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-rootRouteStreamDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
-rootStreamRouteDenoCompiledTransportRequestHandler(new Request('https://example.com/rpc'));
+rootRouteUnaryDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+rootUnaryRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+rootRouteStreamDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+rootStreamRouteDenoCompiledTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
 rootTypedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
 runtimeSubpathRouteUnaryDenoCompiledTransportRequestHandler(
   new Request('https://example.com/rpc')
@@ -16262,7 +16429,9 @@ runtimeSubpathRouteStreamDenoCompiledTransportRequestHandler(
 runtimeSubpathStreamRouteDenoCompiledTransportRequestHandler(
   new Request('https://example.com/rpc')
 );
-runtimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedRouteUnaryDenoCompiledTransportRequestHandler(
+  appFetchRequest
+);
 syncManifestDenoCompiledTransportHandler(
   createFetchRequestSourceForTypes(),
   manifestRouteRequest
@@ -16593,7 +16762,9 @@ defaultRouteUnaryJoorHandler(hookAppRequest);
 defaultRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRequestTypedRouteUnaryJoorHandler(hookAppRequest);
 runtimeSubpathDefaultRouteUnaryJoorHandler(hookAppRequest);
-runtimeSubpathDefaultRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathDefaultRouteUnaryJoorHandler(
+  new Request('https://example.com/rpc')
+);
 requestTypedRouteUnaryJoorHandler(
   // @ts-expect-error route-unary fetch handler factories preserve custom request types.
   new Request('https://example.com/rpc')
@@ -17379,9 +17550,15 @@ const routeUnaryAwsLambdaHandler: AwsLambdaHandler =
 const unaryRouteAwsLambdaHandler: AwsLambdaHandler =
   createUnaryRouteAwsLambdaHandler(manifest, awsLambdaUnaryRouteHandlerOptions);
 const routeStreamAwsLambdaHandler: AwsLambdaHandler =
-  createRouteStreamAwsLambdaHandler(manifest, awsLambdaRouteStreamHandlerOptions);
+  createRouteStreamAwsLambdaHandler(
+    manifest,
+    awsLambdaRouteStreamHandlerOptions
+  );
 const streamRouteAwsLambdaHandler: AwsLambdaHandler =
-  createStreamRouteAwsLambdaHandler(manifest, awsLambdaStreamRouteHandlerOptions);
+  createStreamRouteAwsLambdaHandler(
+    manifest,
+    awsLambdaStreamRouteHandlerOptions
+  );
 const routeUnaryAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createRouteUnaryAwsLambdaHttpApiHandler(
     manifest,
@@ -17613,7 +17790,10 @@ const runtimeSubpathTypedStreamRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLa
     manifest,
     awsLambdaRestApiStreamRouteHandlerOptions
   );
-createUnaryRouteAwsLambdaHandlerFor()(manifest, awsLambdaUnaryRouteHandlerOptions);
+createUnaryRouteAwsLambdaHandlerFor()(
+  manifest,
+  awsLambdaUnaryRouteHandlerOptions
+);
 createRouteStreamAwsLambdaHandlerFor()(
   manifest,
   awsLambdaRouteStreamHandlerOptions
@@ -17870,10 +18050,7 @@ const routeUnaryHookTypedNextRouteHandlers =
     manifest,
     requestTypedNextRouteUnaryHandlersOptions
   );
-createUnaryRouteNextRouteHandlersFor()(
-  manifest,
-  nextUnaryRouteHandlersOptions
-);
+createUnaryRouteNextRouteHandlersFor()(manifest, nextUnaryRouteHandlersOptions);
 createRouteStreamNextRouteHandlersFor()(
   manifest,
   nextRouteStreamHandlersOptions
@@ -17916,20 +18093,20 @@ const hookTypedNextHandler = createNextHandlerFor<never, HookAppRequest>()(
   manifest,
   typedRequestHandlerOptions
 );
-const routeUnaryHookTypedNextHandler =
-  createRouteUnaryNextHandlerFor<never, HookAppRequest>()(
-    manifest,
-    requestTypedNextRouteUnaryHandlerOptions
-  );
+const routeUnaryHookTypedNextHandler = createRouteUnaryNextHandlerFor<
+  never,
+  HookAppRequest
+>()(manifest, requestTypedNextRouteUnaryHandlerOptions);
 createUnaryRouteNextHandlerFor()(manifest, nextUnaryHandlerOptions);
 createRouteStreamNextHandlerFor()(manifest, nextRouteStreamHandlerOptions);
 createStreamRouteNextHandlerFor()(manifest, nextStreamHandlerOptions);
 const directHookTypedNextHandler: NextHandler<never, HookAppRequest> =
   createNextHandler(manifest, typedRequestHandlerOptions);
-const directHookTypedRouteUnaryNextHandler: NextHandler<
-  never,
-  HookAppRequest
-> = createRouteUnaryNextHandler(manifest, requestTypedNextRouteUnaryHandlerOptions);
+const directHookTypedRouteUnaryNextHandler: NextHandler<never, HookAppRequest> =
+  createRouteUnaryNextHandler(
+    manifest,
+    requestTypedNextRouteUnaryHandlerOptions
+  );
 const createContextRequestTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -17952,10 +18129,10 @@ const runtimeSubpathRequestTypedNextHandlers: RuntimeSubpathNextRouteHandlers<
   AppFetchRequest
 > = createRuntimeSubpathRequestTypedNextRouteHandlers(manifest, handlerOptions);
 const runtimeSubpathRouteUnaryHookTypedNextRouteHandlers =
-  createRuntimeSubpathRouteUnaryNextRouteHandlersFor<
-    never,
-    HookAppRequest
-  >()(manifest, requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions);
+  createRuntimeSubpathRouteUnaryNextRouteHandlersFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions
+  );
 createRuntimeSubpathUnaryRouteNextRouteHandlersFor()(
   manifest,
   runtimeSubpathNextUnaryRouteHandlersOptions
@@ -18044,12 +18221,8 @@ runtimeSubpathRouteStreamNextRouteHandlers.POST(
 runtimeSubpathStreamRouteNextRouteHandlers.POST(
   new Request('https://example.com/rpc')
 );
-runtimeSubpathRouteUnaryNextHandler.GET(
-  new Request('https://example.com/rpc')
-);
-runtimeSubpathUnaryRouteNextHandler.GET(
-  new Request('https://example.com/rpc')
-);
+runtimeSubpathRouteUnaryNextHandler.GET(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteNextHandler.GET(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamNextHandler.POST(
   new Request('https://example.com/rpc')
 );
@@ -18127,8 +18300,10 @@ runtimeSubpathContextRequestTypedNextHandler.POST(
 nextRequestTypedHandlers.GET(new Request('https://example.com/rpc'));
 // @ts-expect-error hook-typed Next handlers require the configured request subtype.
 hookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
-// @ts-expect-error route-unary hook-typed Next handlers require the configured request subtype.
-routeUnaryHookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
+routeUnaryHookTypedNextRouteHandlers.GET(
+  // @ts-expect-error route-unary hook-typed Next handlers require the configured request subtype.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error hook-typed Next handler aliases require the configured request subtype.
 hookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 // @ts-expect-error route-unary hook-typed Next handler aliases require the configured request subtype.
@@ -18658,7 +18833,10 @@ const typedRouteUnaryCloudflareFetch =
     manifest,
     requestTypedCloudflareRouteUnaryFetchOptions
   );
-createUnaryRouteCloudflareFetchFor()(manifest, cloudflareUnaryRouteFetchOptions);
+createUnaryRouteCloudflareFetchFor()(
+  manifest,
+  cloudflareUnaryRouteFetchOptions
+);
 createRouteStreamCloudflareFetchFor()(
   manifest,
   cloudflareRouteStreamFetchOptions
@@ -18719,15 +18897,23 @@ const runtimeSubpathStreamRouteCloudflareWorker =
     manifest,
     runtimeSubpathCloudflareStreamRouteWorkerOptions
   );
-const typedRouteUnaryCloudflareWorker =
-  createRouteUnaryCloudflareWorkerFor<
-    CloudflareEnvForTypes,
-    CloudflareContextForTypes,
-    HookAppRequest
-  >()(manifest, requestTypedCloudflareRouteUnaryWorkerOptions);
-createUnaryRouteCloudflareWorkerFor()(manifest, cloudflareUnaryRouteWorkerOptions);
-createRouteStreamCloudflareWorkerFor()(manifest, cloudflareRouteStreamWorkerOptions);
-createStreamRouteCloudflareWorkerFor()(manifest, cloudflareStreamRouteWorkerOptions);
+const typedRouteUnaryCloudflareWorker = createRouteUnaryCloudflareWorkerFor<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes,
+  HookAppRequest
+>()(manifest, requestTypedCloudflareRouteUnaryWorkerOptions);
+createUnaryRouteCloudflareWorkerFor()(
+  manifest,
+  cloudflareUnaryRouteWorkerOptions
+);
+createRouteStreamCloudflareWorkerFor()(
+  manifest,
+  cloudflareRouteStreamWorkerOptions
+);
+createStreamRouteCloudflareWorkerFor()(
+  manifest,
+  cloudflareStreamRouteWorkerOptions
+);
 createRuntimeSubpathRouteUnaryCloudflareWorkerFor<
   CloudflareEnvForTypes,
   CloudflareContextForTypes,
@@ -18756,8 +18942,12 @@ routeStreamCloudflareFetch(new Request('https://example.com/rpc'));
 streamRouteCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteCloudflareFetch(new Request('https://example.com/rpc'));
-runtimeSubpathRouteStreamCloudflareFetch(new Request('https://example.com/rpc'));
-runtimeSubpathStreamRouteCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamCloudflareFetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteCloudflareFetch(
+  new Request('https://example.com/rpc')
+);
 typedCloudflareFetch(appFetchRequest);
 runtimeSubpathTypedCloudflareFetch(appFetchRequest);
 hookTypedCloudflareFetch(hookAppRequest);
@@ -19173,7 +19363,10 @@ const typedRouteUnaryNetlifyEdgeFunction =
     NetlifyContextForTypes,
     HookAppRequest
   >()(manifest, requestTypedNetlifyRouteUnaryFetchOptions);
-createUnaryRouteNetlifyEdgeFunctionFor()(manifest, netlifyUnaryRouteFetchOptions);
+createUnaryRouteNetlifyEdgeFunctionFor()(
+  manifest,
+  netlifyUnaryRouteFetchOptions
+);
 createRouteStreamNetlifyEdgeFunctionFor()(
   manifest,
   netlifyRouteStreamFetchOptions
@@ -19986,7 +20179,10 @@ const typedRouteUnaryExpressHandler: ExpressRequestHandler<
   ExpressAppNext
 >()(manifest, expressRouteUnaryHandlerOptions);
 createUnaryRouteExpressHandlerFor()(manifest, expressUnaryRouteHandlerOptions);
-createRouteStreamExpressHandlerFor()(manifest, expressRouteStreamHandlerOptions);
+createRouteStreamExpressHandlerFor()(
+  manifest,
+  expressRouteStreamHandlerOptions
+);
 createStreamRouteExpressHandlerFor()(
   manifest,
   expressStreamRouteHandlerOptions
@@ -20291,10 +20487,7 @@ const routeUnaryHookTypedElysiaHandler =
   );
 createUnaryRouteElysiaHandlerFor()(manifest, elysiaUnaryRouteHandlerOptions);
 createRouteStreamElysiaHandlerFor()(manifest, elysiaRouteStreamHandlerOptions);
-createStreamRouteElysiaHandlerFor()(
-  manifest,
-  elysiaStreamRouteHandlerOptions
-);
+createStreamRouteElysiaHandlerFor()(manifest, elysiaStreamRouteHandlerOptions);
 const directHookTypedElysiaHandler: ElysiaHandler<
   ElysiaContext<HookAppRequest>
 > = createElysiaHandler(manifest, typedRequestHandlerOptions);
@@ -20651,10 +20844,10 @@ const typedFastifyHandler: FastifyHandler<FastifyAppRequest, FastifyAppReply> =
 const typedRouteUnaryFastifyHandler: FastifyHandler<
   FastifyAppRequest,
   FastifyAppReply
-> = createRouteUnaryFastifyHandlerFor<
-  FastifyAppRequest,
-  FastifyAppReply
->()(manifest, fastifyRouteUnaryHandlerOptions);
+> = createRouteUnaryFastifyHandlerFor<FastifyAppRequest, FastifyAppReply>()(
+  manifest,
+  fastifyRouteUnaryHandlerOptions
+);
 createUnaryRouteFastifyHandlerFor()(manifest, fastifyUnaryRouteHandlerOptions);
 createRouteStreamFastifyHandlerFor()(
   manifest,
@@ -20724,10 +20917,7 @@ runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
 typedFastifyHandler(fastifyAppRequest, fastifyAppReply);
 typedRouteUnaryFastifyHandler(fastifyAppRequest, fastifyAppReply);
 runtimeSubpathTypedFastifyHandler(fastifyAppRequest, fastifyAppReply);
-runtimeSubpathTypedRouteUnaryFastifyHandler(
-  fastifyAppRequest,
-  fastifyAppReply
-);
+runtimeSubpathTypedRouteUnaryFastifyHandler(fastifyAppRequest, fastifyAppReply);
 // @ts-expect-error typed Fastify handlers preserve the reply's incoming message type.
 createFastifyHandlerFor<FastifyAppRequest, FastifyMismatchedReply>();
 createRouteUnaryFastifyHandlerFor<
@@ -21873,10 +22063,7 @@ const streamRouteNodeRpcRequestHandler: NodeRpcRequestHandler =
 const typedRouteUnaryNodeRpcRequestHandler: NodeRpcRequestHandler<
   NodeAppRequest,
   NodeAppResponse
-> = createRouteUnaryNodeRpcRequestHandlerFor<
-  NodeAppRequest,
-  NodeAppResponse
->()(
+> = createRouteUnaryNodeRpcRequestHandlerFor<NodeAppRequest, NodeAppResponse>()(
   manifest,
   requestTypedNodeRouteUnaryRpcRequestHandlerOptions,
   '127.0.0.1'
@@ -21919,11 +22106,7 @@ const runtimeSubpathTypedRouteUnaryNodeRpcRequestHandler: RuntimeSubpathNodeRpcR
 > = createRuntimeSubpathRouteUnaryNodeRpcRequestHandlerFor<
   NodeAppRequest,
   NodeAppResponse
->()(
-  manifest,
-  requestTypedNodeRouteUnaryRpcRequestHandlerOptions,
-  '127.0.0.1'
-);
+>()(manifest, requestTypedNodeRouteUnaryRpcRequestHandlerOptions, '127.0.0.1');
 createRuntimeSubpathUnaryRouteNodeRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions
@@ -22356,6 +22539,82 @@ const runtimeSubpathManifestBunUnaryRouteTransportHandler: RuntimeSubpathBunUnar
 const runtimeSubpathManifestBunStreamRouteTransportHandler: RuntimeSubpathBunStreamRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestBunRouteStreamTransportHandler;
+const runtimeSubpathBunRouteUnaryTransportRequestHandler: RuntimeSubpathBunRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryBunTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestBunRouteUnaryTransportHandler
+  );
+const runtimeSubpathBunUnaryRouteTransportRequestHandler: RuntimeSubpathBunUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteBunTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestBunUnaryRouteTransportHandler
+  );
+const runtimeSubpathBunUnaryRouteTransportRequestHandlerWithPath: RuntimeSubpathBunUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteBunTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunUnaryRouteTransportHandler, '/rpc');
+const runtimeSubpathBunRouteUnaryTransportRequestHandlerWithPath: RuntimeSubpathBunRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryBunTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteUnaryTransportHandler, '/rpc');
+const runtimeSubpathBunRouteStreamTransportRequestHandler: RuntimeSubpathBunRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamBunTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestBunRouteStreamTransportHandler
+  );
+const runtimeSubpathBunStreamRouteTransportRequestHandler: RuntimeSubpathBunStreamRouteTransportRequestHandler =
+  createRuntimeSubpathStreamRouteBunTransportRequestHandler<typeof manifest>(
+    runtimeSubpathManifestBunStreamRouteTransportHandler
+  );
+const runtimeSubpathBunRouteStreamTransportRequestHandlerWithPath: RuntimeSubpathBunRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamBunTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteStreamTransportHandler, '/rpc');
+const createRuntimeSubpathTypedBunRouteUnaryTransportRequestHandler =
+  createRuntimeSubpathRouteUnaryBunTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunRouteUnaryTransportRequestHandler: RuntimeSubpathBunRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunRouteUnaryTransportRequestHandler<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteUnaryTransportHandler);
+const createRuntimeSubpathTypedBunRouteUnaryTransportRequestHandlerWithPath =
+  createRuntimeSubpathRouteUnaryBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedBunRouteUnaryTransportRequestHandlerWithPath: RuntimeSubpathBunRouteUnaryTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunRouteUnaryTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteUnaryTransportHandler, '/rpc');
+const createRuntimeSubpathTypedBunUnaryRouteTransportRequestHandler =
+  createRuntimeSubpathUnaryRouteBunTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunUnaryRouteTransportRequestHandler: RuntimeSubpathBunUnaryRouteTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunUnaryRouteTransportRequestHandler<
+    typeof manifest
+  >(runtimeSubpathManifestBunUnaryRouteTransportHandler);
+const createRuntimeSubpathTypedBunUnaryRouteTransportRequestHandlerWithPath =
+  createRuntimeSubpathUnaryRouteBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedBunUnaryRouteTransportRequestHandlerWithPath: RuntimeSubpathBunUnaryRouteTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunUnaryRouteTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunUnaryRouteTransportHandler, '/rpc');
+const createRuntimeSubpathTypedBunRouteStreamTransportRequestHandler =
+  createRuntimeSubpathRouteStreamBunTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunRouteStreamTransportRequestHandler: RuntimeSubpathBunRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunRouteStreamTransportRequestHandler<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteStreamTransportHandler);
+const createRuntimeSubpathTypedBunRouteStreamTransportRequestHandlerWithPath =
+  createRuntimeSubpathRouteStreamBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedBunRouteStreamTransportRequestHandlerWithPath: RuntimeSubpathBunRouteStreamTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunRouteStreamTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunRouteStreamTransportHandler, '/rpc');
+const createRuntimeSubpathTypedBunStreamRouteTransportRequestHandler =
+  createRuntimeSubpathStreamRouteBunTransportRequestHandlerFor<AppFetchRequest>();
+const runtimeSubpathTypedBunStreamRouteTransportRequestHandler: RuntimeSubpathBunStreamRouteTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunStreamRouteTransportRequestHandler<
+    typeof manifest
+  >(runtimeSubpathManifestBunStreamRouteTransportHandler);
+const createRuntimeSubpathTypedBunStreamRouteTransportRequestHandlerWithPath =
+  createRuntimeSubpathStreamRouteBunTransportRequestHandlerWithPathFor<AppFetchRequest>();
+const runtimeSubpathTypedBunStreamRouteTransportRequestHandlerWithPath: RuntimeSubpathBunStreamRouteTransportRequestHandler<AppFetchRequest> =
+  createRuntimeSubpathTypedBunStreamRouteTransportRequestHandlerWithPath<
+    typeof manifest
+  >(runtimeSubpathManifestBunStreamRouteTransportHandler, '/rpc');
 const runtimeSubpathManifestDenoTransportHandler: RuntimeSubpathDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestBunTransportHandler;
@@ -22373,6 +22632,46 @@ const runtimeSubpathManifestDenoStreamRouteTransportHandler: RuntimeSubpathDenoS
 > = runtimeSubpathManifestDenoRouteStreamTransportHandler;
 createRuntimeSubpathBunTransportRequestHandler(
   runtimeSubpathManifestBunTransportHandler
+);
+createRuntimeSubpathStreamRouteBunTransportRequestHandlerWithPath<
+  typeof manifest
+>(runtimeSubpathManifestBunStreamRouteTransportHandler, '/rpc');
+runtimeSubpathBunRouteUnaryTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunUnaryRouteTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunUnaryRouteTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunRouteUnaryTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunRouteStreamTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunStreamRouteTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathBunRouteStreamTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathTypedBunRouteUnaryTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedBunRouteUnaryTransportRequestHandlerWithPath(
+  appFetchRequest
+);
+runtimeSubpathTypedBunUnaryRouteTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedBunUnaryRouteTransportRequestHandlerWithPath(
+  appFetchRequest
+);
+runtimeSubpathTypedBunRouteStreamTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedBunRouteStreamTransportRequestHandlerWithPath(
+  appFetchRequest
+);
+runtimeSubpathTypedBunStreamRouteTransportRequestHandler(appFetchRequest);
+runtimeSubpathTypedBunStreamRouteTransportRequestHandlerWithPath(
+  appFetchRequest
 );
 createRuntimeSubpathDenoTransportRequestHandler(
   runtimeSubpathManifestDenoTransportHandler

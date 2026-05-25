@@ -17,6 +17,10 @@ import {
   createStreamRouteBunRpcRequestHandlerFor as createRootStreamRouteBunRpcRequestHandlerFor,
   createBunTransportRequestHandlerFor as createRootBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor as createRootBunTransportRequestHandlerWithPathFor,
+  createRouteUnaryBunTransportRequestHandlerFor as createRootRouteUnaryBunTransportRequestHandlerFor,
+  createStreamRouteBunTransportRequestHandlerFor as createRootStreamRouteBunTransportRequestHandlerFor,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor as createRootRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createStreamRouteBunTransportRequestHandlerWithPathFor as createRootStreamRouteBunTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRootDenoFetchFor,
   createDenoCompiledTransportRequestHandlerFor as createRootDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPathFor as createRootDenoCompiledTransportRequestHandlerWithPathFor,
@@ -281,6 +285,10 @@ import {
   serveRouteUnaryBun,
   createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor,
+  createRouteUnaryBunTransportRequestHandlerFor,
+  createStreamRouteBunTransportRequestHandlerFor,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createStreamRouteBunTransportRequestHandlerWithPathFor,
 } from 'joor/runtime/bun';
 import {
   createCloudflareFetch,
@@ -699,10 +707,18 @@ const packageSubpathValues = [
   serveRouteUnaryBun,
   createBunTransportRequestHandlerFor,
   createBunTransportRequestHandlerWithPathFor,
+  createRouteUnaryBunTransportRequestHandlerFor,
+  createStreamRouteBunTransportRequestHandlerFor,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createStreamRouteBunTransportRequestHandlerWithPathFor,
   createRootBunFetchFor,
   createRootBunRpcRequestHandlerFor,
   createRootBunTransportRequestHandlerFor,
   createRootBunTransportRequestHandlerWithPathFor,
+  createRootRouteUnaryBunTransportRequestHandlerFor,
+  createRootStreamRouteBunTransportRequestHandlerFor,
+  createRootRouteUnaryBunTransportRequestHandlerWithPathFor,
+  createRootStreamRouteBunTransportRequestHandlerWithPathFor,
   createCloudflareFetch,
   createCloudflareFetchFor,
   createCloudflareWorker,
@@ -1317,8 +1333,7 @@ packageSubpathClientBodyResultFor.headers.get('content-type');
 const packageSubpathClientBodyResult: PackageSubpathClientBodyResult =
   packageSubpathClientProtocolBatchResults;
 packageSubpathClientBodyResult.valueOf();
-const packageSubpathRpcBody: PackageSubpathRpcBody =
-  typedPackageSubpathRequest;
+const packageSubpathRpcBody: PackageSubpathRpcBody = typedPackageSubpathRequest;
 packageSubpathRpcBody.input.id.toUpperCase();
 const packageSubpathRpcBodyResultFor: PackageSubpathRpcBodyResultFor =
   packageSubpathClientBodyResultFor;
