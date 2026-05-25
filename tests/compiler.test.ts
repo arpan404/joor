@@ -670,14 +670,26 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const createFetchFor =');
       await expect(
+        readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryFetchFor');
+      await expect(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
       ).resolves.toContain('export const createWorkerFor =');
+      await expect(
+        readFile(join(outDir, 'cloudflare.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryCloudflareWorkerFor');
       await expect(
         readFile(join(outDir, 'vercel.ts'), 'utf8')
       ).resolves.toContain('export const createVercelFor =');
       await expect(
+        readFile(join(outDir, 'vercel.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteStreamVercelFunctionFor');
+      await expect(
         readFile(join(outDir, 'netlify.ts'), 'utf8')
       ).resolves.toContain('export const createEdgeFor =');
+      await expect(
+        readFile(join(outDir, 'netlify.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryNetlifyEdgeFunctionFor');
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
@@ -1352,14 +1364,14 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
-import { createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
-import { createWorkerFor, worker } from './cloudflare.js';
-import { createHandlersFor, handlers, GET } from './next.js';
-import { createVercelFor, vercel } from './vercel.js';
-import { createEdgeFor, edge } from './netlify.js';
-import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
-import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
+import { createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
+import { createRouteStreamWorkerFor, createRouteUnaryWorkerFor, createWorkerFor, worker } from './cloudflare.js';
+import { createHandlersFor, createRouteStreamHandlersFor, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
+import { createRouteStreamVercelFor, createRouteUnaryVercelFor, createVercelFor, vercel } from './vercel.js';
+import { createEdgeFor, createRouteStreamEdgeFor, createRouteUnaryEdgeFor, edge } from './netlify.js';
+import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
+import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
 import type { AppRequest } from '${procedureImport}';
 
 const appRequest = Object.assign(new Request('https://example.com/rpc'), {
@@ -1424,6 +1436,12 @@ nativeRouteUnaryBodyHandler(plainRequest, nativeBodyValue);
 createFetchFor()(appRequest);
 // @ts-expect-error generated native fetch factories default to the manifest request subtype.
 createFetchFor()(plainRequest);
+createRouteUnaryFetchFor()(appRequest);
+createUnaryRouteFetchFor()(appRequest);
+createRouteStreamFetchFor()(appRequest);
+createStreamRouteFetchFor()(appRequest);
+// @ts-expect-error generated route-first native fetch factories default to the manifest request subtype.
+createRouteUnaryFetchFor()(plainRequest);
 // @ts-expect-error generated native fetch handler type parameters must satisfy the manifest request subtype.
 const broadNativeHandler: NativeFetchHandler<Request> = fetch;
 broadNativeHandler;
@@ -1432,12 +1450,15 @@ runtimeFetch(appRequest);
 // @ts-expect-error generated fetch target defaults reject broad Request values.
 runtimeFetch(plainRequest);
 createRuntimeFetchFor()(appRequest);
+createRuntimeRouteUnaryFetchFor()(appRequest);
 // @ts-expect-error generated fetch target factories default to the manifest request subtype.
 createRuntimeFetchFor()(plainRequest);
 
 const cloudflareWorker = createWorkerFor();
 cloudflareWorker.fetch(appRequest);
 worker.fetch(appRequest);
+createRouteUnaryWorkerFor().fetch(appRequest);
+createRouteStreamWorkerFor().fetch(appRequest);
 // @ts-expect-error generated Cloudflare workers default to the manifest request subtype.
 cloudflareWorker.fetch(plainRequest);
 // @ts-expect-error generated named Cloudflare workers preserve the manifest request subtype.
@@ -1447,6 +1468,8 @@ const nextHandlers = createHandlersFor();
 nextHandlers.GET(appRequest);
 handlers.POST(appRequest);
 GET(appRequest);
+createRouteUnaryHandlersFor().POST(appRequest);
+createRouteStreamHandlersFor().GET(appRequest);
 // @ts-expect-error generated Next handlers default to the manifest request subtype.
 nextHandlers.GET(plainRequest);
 // @ts-expect-error generated named Next handlers preserve the manifest request subtype.
@@ -1455,6 +1478,8 @@ handlers.POST(plainRequest);
 const vercelFunction = createVercelFor();
 vercelFunction.fetch(appRequest);
 vercel.fetch(appRequest);
+createRouteUnaryVercelFor().fetch(appRequest);
+createRouteStreamVercelFor().fetch(appRequest);
 // @ts-expect-error generated Vercel functions default to the manifest request subtype.
 vercelFunction.fetch(plainRequest);
 // @ts-expect-error generated named Vercel functions preserve the manifest request subtype.
@@ -1463,6 +1488,8 @@ vercel.fetch(plainRequest);
 const netlifyEdge = createEdgeFor();
 netlifyEdge(appRequest, {});
 edge(appRequest, {});
+createRouteUnaryEdgeFor()(appRequest, {});
+createRouteStreamEdgeFor()(appRequest, {});
 // @ts-expect-error generated Netlify edge functions default to the manifest request subtype.
 netlifyEdge(plainRequest, {});
 // @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.
@@ -1472,6 +1499,7 @@ const bunHandler: BunNativeFetchHandler = bunFetch;
 bunHandler(appRequest);
 createBunFetch()(appRequest);
 createBunFetchFor()(undefined)(appRequest);
+createRouteUnaryBunFetchFor()(undefined)(appRequest);
 // @ts-expect-error generated Bun fetch defaults reject broad Request values.
 bunHandler(plainRequest);
 // @ts-expect-error generated Bun fetch factories default to the manifest request subtype.
@@ -1481,6 +1509,7 @@ const denoHandler: DenoNativeFetchHandler = denoFetch;
 denoHandler(appRequest);
 createDenoFetch()(appRequest);
 createDenoFetchFor()(undefined)(appRequest);
+createRouteUnaryDenoFetchFor()(undefined)(appRequest);
 // @ts-expect-error generated Deno fetch defaults reject broad Request values.
 denoHandler(plainRequest);
 // @ts-expect-error generated Deno fetch factories default to the manifest request subtype.
