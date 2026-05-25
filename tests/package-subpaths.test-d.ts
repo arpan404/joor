@@ -621,12 +621,43 @@ type PackageSubpathClientBodyResultFor = Client.RpcManifestRouteBodyResultFor<
 >;
 type PackageSubpathClientBodyResult =
   Client.RpcManifestRouteBodyResult<PackageSubpathManifest>;
+type PackageSubpathRpcBody = Rpc.RpcManifestRouteBody<PackageSubpathManifest>;
+type PackageSubpathRpcBodyResultFor = Rpc.RpcManifestRouteBodyResultFor<
+  PackageSubpathManifest,
+  PackageSubpathClientProtocolRequest
+>;
+type PackageSubpathRpcBodyResult =
+  Rpc.RpcManifestRouteBodyResult<PackageSubpathManifest>;
+type PackageSubpathRootBody = Root.RpcManifestRouteBody<PackageSubpathManifest>;
+type PackageSubpathRootBodyResultFor = Root.RpcManifestRouteBodyResultFor<
+  PackageSubpathManifest,
+  PackageSubpathClientProtocolRequest
+>;
+type PackageSubpathRootBodyResult =
+  Root.RpcManifestRouteBodyResult<PackageSubpathManifest>;
 const packageSubpathClientBodyResultFor: PackageSubpathClientBodyResultFor =
   new Response();
 packageSubpathClientBodyResultFor.headers.get('content-type');
 const packageSubpathClientBodyResult: PackageSubpathClientBodyResult =
   packageSubpathClientProtocolBatchResults;
 packageSubpathClientBodyResult.valueOf();
+const packageSubpathRpcBody: PackageSubpathRpcBody =
+  typedPackageSubpathRequest;
+packageSubpathRpcBody.input.id.toUpperCase();
+const packageSubpathRpcBodyResultFor: PackageSubpathRpcBodyResultFor =
+  packageSubpathClientBodyResultFor;
+packageSubpathRpcBodyResultFor.valueOf();
+const packageSubpathRpcBodyResult: PackageSubpathRpcBodyResult =
+  packageSubpathClientBodyResult;
+packageSubpathRpcBodyResult.valueOf();
+const packageSubpathRootBody: PackageSubpathRootBody = packageSubpathRpcBody;
+packageSubpathRootBody.input.id.toUpperCase();
+const packageSubpathRootBodyResultFor: PackageSubpathRootBodyResultFor =
+  packageSubpathRpcBodyResultFor;
+packageSubpathRootBodyResultFor.valueOf();
+const packageSubpathRootBodyResult: PackageSubpathRootBodyResult =
+  packageSubpathRpcBodyResult;
+packageSubpathRootBodyResult.valueOf();
 
 export type PackageSubpathSurface = [
   Root.JoorConfigFor<
@@ -726,6 +757,12 @@ export type PackageSubpathSurface = [
   Client.RpcManifestRouteStreamBody<PackageSubpathManifest>,
   PackageSubpathClientBodyResultFor,
   PackageSubpathClientBodyResult,
+  PackageSubpathRpcBody,
+  PackageSubpathRpcBodyResultFor,
+  PackageSubpathRpcBodyResult,
+  PackageSubpathRootBody,
+  PackageSubpathRootBodyResultFor,
+  PackageSubpathRootBodyResult,
   PackageSubpathClientRequest,
   PackageSubpathClientRequestUnion,
   PackageSubpathClientStreamRequest,

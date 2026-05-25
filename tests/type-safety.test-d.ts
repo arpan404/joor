@@ -823,6 +823,9 @@ import {
   type RpcManifestBody,
   type RpcManifestBodyResult,
   type RpcManifestBodyResultFor,
+  type RpcManifestRouteBody,
+  type RpcManifestRouteBodyResult,
+  type RpcManifestRouteBodyResultFor,
   type RpcManifestRouteBatchClientHeaders,
   type RpcManifestRouteBatchOptions,
   type RpcManifestRouteBatchOptionsTuple,
@@ -1280,6 +1283,9 @@ import {
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
+  type RpcManifestRouteBody as RpcSubpathManifestRouteBody,
+  type RpcManifestRouteBodyResult as RpcSubpathManifestRouteBodyResult,
+  type RpcManifestRouteBodyResultFor as RpcSubpathManifestRouteBodyResultFor,
   type RpcManifestRouteInput as RpcSubpathManifestRouteInput,
   type RpcManifestRouteOutput as RpcSubpathManifestRouteOutput,
   type RpcManifestStreamRouteClientArgs as RpcSubpathManifestStreamRouteClientArgs,
@@ -8196,6 +8202,12 @@ publicManifestStreamRequestUnion.input.userId.toUpperCase();
 publicManifestStreamRouteRequestUnion.input.userId.toUpperCase();
 const publicManifestBody: RpcManifestBody<typeof manifest> =
   publicManifestProtocolRequest;
+const publicManifestRouteBody: RpcManifestRouteBody<typeof manifest> =
+  publicManifestBody;
+const rpcSubpathManifestRouteBody: RpcSubpathManifestRouteBody<
+  typeof manifest
+> = publicManifestRouteBody;
+rpcSubpathManifestRouteBody.id.toUpperCase();
 const publicManifestRouteUnaryBody =
   publicManifestUnaryProtocolRequest satisfies RpcManifestRouteUnaryBody<
     typeof manifest
@@ -8723,6 +8735,22 @@ const publicManifestBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
   typeof publicManifestProtocolRequest
 > = publicManifestEnvelopeUnion;
+const publicManifestRouteBodyResult: RpcManifestRouteBodyResult<
+  typeof manifest
+> = publicManifestBodyResult;
+const publicManifestRouteBodyResultFor: RpcManifestRouteBodyResultFor<
+  typeof manifest,
+  typeof publicManifestProtocolRequest
+> = publicManifestBodyResultFor;
+const rpcSubpathManifestRouteBodyResult: RpcSubpathManifestRouteBodyResult<
+  typeof manifest
+> = publicManifestRouteBodyResult;
+const rpcSubpathManifestRouteBodyResultFor: RpcSubpathManifestRouteBodyResultFor<
+  typeof manifest,
+  typeof publicManifestProtocolRequest
+> = publicManifestRouteBodyResultFor;
+rpcSubpathManifestRouteBodyResult.valueOf();
+rpcSubpathManifestRouteBodyResultFor.valueOf();
 // @ts-expect-error public manifest batch result inference rejects invalid request tuples.
 const _wrongPublicManifestBatchBodyResultFor: RpcManifestBodyResultFor<
   typeof manifest,
