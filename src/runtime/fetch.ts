@@ -126,6 +126,68 @@ export function createJoorHandler<TManifest extends JoorManifest>(
   );
 }
 
+export function createRouteUnaryJoorHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: JoorRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): JoorFetchHandler<TRequest>;
+export function createRouteUnaryJoorHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): JoorFetchHandler {
+  return createRpcHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createUnaryRouteJoorHandler: typeof createRouteUnaryJoorHandler =
+  createRouteUnaryJoorHandler;
+
+export function createRouteStreamJoorHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: JoorRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): JoorFetchHandler<TRequest>;
+export function createRouteStreamJoorHandler<TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): JoorFetchHandler {
+  return createRpcHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createStreamRouteJoorHandler: typeof createRouteStreamJoorHandler =
+  createRouteStreamJoorHandler;
+
 export function createJoorHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -173,3 +235,113 @@ export function createJoorHandlerFor<TRequest extends Request = Request>() {
       >
     ) as JoorFetchHandler<TRequest>;
 }
+
+export function createRouteUnaryJoorHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => JoorFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryJoorHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => JoorFetchHandler<TRequest>;
+export function createRouteUnaryJoorHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: JoorRouteUnaryHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): JoorFetchHandler<TRequest> =>
+    createRouteUnaryJoorHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as JoorRouteUnaryHandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteUnaryBody<TManifest>,
+        TRequest
+      >
+    ) as JoorFetchHandler<TRequest>;
+}
+
+export const createUnaryRouteJoorHandlerFor: typeof createRouteUnaryJoorHandlerFor =
+  createRouteUnaryJoorHandlerFor;
+
+export function createRouteStreamJoorHandlerFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => JoorFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteStreamJoorHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: JoorRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => JoorFetchHandler<TRequest>;
+export function createRouteStreamJoorHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: JoorRouteStreamHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): JoorFetchHandler<TRequest> =>
+    createRouteStreamJoorHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as JoorRouteStreamHandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteStreamBody<TManifest>,
+        TRequest
+      >
+    ) as JoorFetchHandler<TRequest>;
+}
+
+export const createStreamRouteJoorHandlerFor: typeof createRouteStreamJoorHandlerFor =
+  createRouteStreamJoorHandlerFor;

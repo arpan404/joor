@@ -150,7 +150,18 @@ export {
   createFastifyHandlerFor,
 } from './runtime/fastify.js';
 export { createHonoHandler, createHonoHandlerFor } from './runtime/hono.js';
-export { createJoorHandler, createJoorHandlerFor } from './runtime/fetch.js';
+export {
+  createJoorHandler,
+  createJoorHandlerFor,
+  createRouteStreamJoorHandler,
+  createRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandler,
+  createRouteUnaryJoorHandlerFor,
+  createStreamRouteJoorHandler,
+  createStreamRouteJoorHandlerFor,
+  createUnaryRouteJoorHandler,
+  createUnaryRouteJoorHandlerFor,
+} from './runtime/fetch.js';
 export { createKoaHandler, createKoaHandlerFor } from './runtime/koa.js';
 export {
   createNetlifyEdgeFunction,

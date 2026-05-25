@@ -23,6 +23,10 @@ import {
   createFastifyHandlerFor as createRootFastifyHandlerFor,
   createHonoHandlerFor as createRootHonoHandlerFor,
   createJoorHandlerFor as createRootJoorHandlerFor,
+  createRouteStreamJoorHandlerFor as createRootRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandlerFor as createRootRouteUnaryJoorHandlerFor,
+  createStreamRouteJoorHandlerFor as createRootStreamRouteJoorHandlerFor,
+  createUnaryRouteJoorHandlerFor as createRootUnaryRouteJoorHandlerFor,
   createKoaHandlerFor as createRootKoaHandlerFor,
   createNodeRpcRequestHandlerFor as createRootNodeRpcRequestHandlerFor,
   createNodeTransportRequestHandlerFor as createRootNodeTransportRequestHandlerFor,
@@ -152,6 +156,10 @@ import {
   createDenoTransportRequestHandlerWithPathFor as createRuntimeDenoTransportRequestHandlerWithPathFor,
   createJoorHandler,
   createJoorHandlerFor,
+  createRouteStreamJoorHandlerFor as createRuntimeRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandlerFor as createRuntimeRouteUnaryJoorHandlerFor,
+  createStreamRouteJoorHandlerFor as createRuntimeStreamRouteJoorHandlerFor,
+  createUnaryRouteJoorHandlerFor as createRuntimeUnaryRouteJoorHandlerFor,
   createStandaloneDenoRpcRequestHandlerFor as createRuntimeStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandlerFor as createRuntimeStandaloneDenoTransportRequestHandlerFor,
   createStandaloneDenoTransportRequestHandlerWithPathFor as createRuntimeStandaloneDenoTransportRequestHandlerWithPathFor,
@@ -220,6 +228,12 @@ import {
   createFastifyHandlerFor,
 } from 'joor/runtime/fastify';
 import { createHonoHandler, createHonoHandlerFor } from 'joor/runtime/hono';
+import {
+  createRouteStreamJoorHandler,
+  createRouteUnaryJoorHandler,
+  createStreamRouteJoorHandler,
+  createUnaryRouteJoorHandler,
+} from 'joor/runtime/fetch';
 import { createKoaHandler, createKoaHandlerFor } from 'joor/runtime/koa';
 import {
   createNetlifyEdgeFunction,
@@ -595,6 +609,18 @@ const packageSubpathValues = [
   createHonoHandlerFor,
   createJoorHandler,
   createJoorHandlerFor,
+  createRouteStreamJoorHandler,
+  createRouteUnaryJoorHandler,
+  createRootRouteStreamJoorHandlerFor,
+  createRootRouteUnaryJoorHandlerFor,
+  createRootStreamRouteJoorHandlerFor,
+  createRootUnaryRouteJoorHandlerFor,
+  createRuntimeRouteStreamJoorHandlerFor,
+  createRuntimeRouteUnaryJoorHandlerFor,
+  createRuntimeStreamRouteJoorHandlerFor,
+  createRuntimeUnaryRouteJoorHandlerFor,
+  createStreamRouteJoorHandler,
+  createUnaryRouteJoorHandler,
   createKoaHandler,
   createKoaHandlerFor,
   createNetlifyEdgeFunction,
@@ -1204,6 +1230,16 @@ export type PackageSubpathSurface = [
   Express.ExpressRequestHandler,
   Fastify.FastifyHandler,
   FetchRuntime.JoorFetchHandler,
+  FetchRuntime.JoorRouteStreamHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  FetchRuntime.JoorRouteUnaryHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
   Hono.HonoHandler,
   Koa.KoaMiddleware,
   Netlify.NetlifyEdgeFetchHandler,

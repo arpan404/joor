@@ -64,6 +64,14 @@ import {
   createHonoHandlerFor,
   createJoorHandler,
   createJoorHandlerFor,
+  createRouteStreamJoorHandler,
+  createRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandler,
+  createRouteUnaryJoorHandlerFor,
+  createStreamRouteJoorHandler,
+  createStreamRouteJoorHandlerFor,
+  createUnaryRouteJoorHandler,
+  createUnaryRouteJoorHandlerFor,
   createKoaHandler,
   createKoaHandlerFor,
   createNetlifyEdgeFunction,
@@ -1741,6 +1749,14 @@ import {
   createHonoHandlerFor as createRuntimeSubpathHonoHandlerFor,
   createJoorHandler as createRuntimeSubpathJoorHandler,
   createJoorHandlerFor as createRuntimeSubpathJoorHandlerFor,
+  createRouteStreamJoorHandler as createRuntimeSubpathRouteStreamJoorHandler,
+  createRouteStreamJoorHandlerFor as createRuntimeSubpathRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandler as createRuntimeSubpathRouteUnaryJoorHandler,
+  createRouteUnaryJoorHandlerFor as createRuntimeSubpathRouteUnaryJoorHandlerFor,
+  createStreamRouteJoorHandler as createRuntimeSubpathStreamRouteJoorHandler,
+  createStreamRouteJoorHandlerFor as createRuntimeSubpathStreamRouteJoorHandlerFor,
+  createUnaryRouteJoorHandler as createRuntimeSubpathUnaryRouteJoorHandler,
+  createUnaryRouteJoorHandlerFor as createRuntimeSubpathUnaryRouteJoorHandlerFor,
   createKoaHandler as createRuntimeSubpathKoaHandler,
   createKoaHandlerFor as createRuntimeSubpathKoaHandlerFor,
   createNetlifyEdgeFunction as createRuntimeSubpathNetlifyEdgeFunction,
@@ -15147,6 +15163,94 @@ runtimeSubpathJoorRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 );
 createJoorHandler(manifest, joorHandlerOptions);
 createRuntimeSubpathJoorHandler(manifest, runtimeSubpathJoorHandlerOptions);
+const routeUnaryJoorHandler = createRouteUnaryJoorHandler(
+  manifest,
+  joorRouteUnaryHandlerOptions
+);
+const unaryRouteJoorHandler = createUnaryRouteJoorHandler(
+  manifest,
+  joorUnaryRouteHandlerOptions
+);
+const routeStreamJoorHandler = createRouteStreamJoorHandler(
+  manifest,
+  joorRouteStreamHandlerOptions
+);
+const streamRouteJoorHandler = createStreamRouteJoorHandler(
+  manifest,
+  joorStreamRouteHandlerOptions
+);
+const runtimeSubpathRouteUnaryJoorHandler =
+  createRuntimeSubpathRouteUnaryJoorHandler(
+    manifest,
+    runtimeSubpathJoorRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteJoorHandler =
+  createRuntimeSubpathUnaryRouteJoorHandler(
+    manifest,
+    runtimeSubpathJoorUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamJoorHandler =
+  createRuntimeSubpathRouteStreamJoorHandler(
+    manifest,
+    runtimeSubpathJoorRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteJoorHandler =
+  createRuntimeSubpathStreamRouteJoorHandler(
+    manifest,
+    runtimeSubpathJoorStreamRouteHandlerOptions
+  );
+const requestTypedRouteUnaryJoorHandler =
+  createRouteUnaryJoorHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedJoorRouteUnaryHandlerOptions
+  );
+const defaultRouteUnaryJoorHandler = createRouteUnaryJoorHandlerFor()(
+  manifest,
+  joorRouteUnaryHandlerOptions
+);
+const runtimeSubpathRequestTypedRouteUnaryJoorHandler =
+  createRuntimeSubpathRouteUnaryJoorHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions
+  );
+const runtimeSubpathDefaultRouteUnaryJoorHandler =
+  createRuntimeSubpathRouteUnaryJoorHandlerFor()(
+    manifest,
+    runtimeSubpathJoorRouteUnaryHandlerOptions
+  );
+createUnaryRouteJoorHandlerFor()(manifest, joorUnaryRouteHandlerOptions);
+createRouteStreamJoorHandlerFor()(manifest, joorRouteStreamHandlerOptions);
+createStreamRouteJoorHandlerFor()(manifest, joorStreamRouteHandlerOptions);
+createRuntimeSubpathUnaryRouteJoorHandlerFor()(
+  manifest,
+  runtimeSubpathJoorUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamJoorHandlerFor()(
+  manifest,
+  runtimeSubpathJoorRouteStreamHandlerOptions
+);
+createRuntimeSubpathStreamRouteJoorHandlerFor()(
+  manifest,
+  runtimeSubpathJoorStreamRouteHandlerOptions
+);
+routeUnaryJoorHandler(new Request('https://example.com/rpc'));
+unaryRouteJoorHandler(new Request('https://example.com/rpc'));
+routeStreamJoorHandler(new Request('https://example.com/rpc'));
+streamRouteJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteJoorHandler(new Request('https://example.com/rpc'));
+requestTypedRouteUnaryJoorHandler(hookAppRequest);
+defaultRouteUnaryJoorHandler(hookAppRequest);
+defaultRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
+runtimeSubpathRequestTypedRouteUnaryJoorHandler(hookAppRequest);
+runtimeSubpathDefaultRouteUnaryJoorHandler(hookAppRequest);
+runtimeSubpathDefaultRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
+requestTypedRouteUnaryJoorHandler(
+  // @ts-expect-error route-unary fetch handler factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
   manifest,
   handlerOptions
