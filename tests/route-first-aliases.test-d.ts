@@ -82,6 +82,57 @@ export type RouteFirstManifestHandlerAliasSurface = [
   ManifestSubpath.JoorManifestRouteStreamTransportBodyResultHandler<AliasManifest>,
 ];
 
+export type RouteFirstJoorManifestProtocolBatchAliasSurface = [
+  Root.JoorManifestRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.JoorManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
+  Root.JoorManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  Root.JoorManifestRouteProtocolBatchRequest<AliasManifest, UnaryBatchRequest>,
+  Root.JoorManifestRouteUnaryProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestUnaryRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestRouteProtocolBatchResults<AliasManifest, UnaryBatchRequest>,
+  Root.JoorManifestRouteUnaryProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  Root.JoorManifestUnaryRouteProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteProtocolBatchRequestUnion<AliasManifest>,
+  ManifestSubpath.JoorManifestRouteUnaryProtocolBatchRequestUnion<AliasManifest>,
+  ManifestSubpath.JoorManifestUnaryRouteProtocolBatchRequestUnion<AliasManifest>,
+  ManifestSubpath.JoorManifestRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteUnaryProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestUnaryRouteProtocolBatchRequest<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestRouteUnaryProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+  ManifestSubpath.JoorManifestUnaryRouteProtocolBatchResults<
+    AliasManifest,
+    UnaryBatchRequest
+  >,
+];
+
 export type RootRouteFirstRpcAliasSurface = [
   Root.DefineRouteUnaryHandlerOptions<AliasManifest>,
   Root.DefineRouteStreamHandlerOptions<AliasManifest>,
