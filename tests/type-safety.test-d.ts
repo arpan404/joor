@@ -76,6 +76,22 @@ import {
   createDenoCompiledTransportRequestHandlerWithPathFor as createRootDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoRpcRequestHandler,
   createDenoRpcRequestHandlerFor,
+  createRouteStreamDenoFetch,
+  createRouteStreamDenoFetchFor,
+  createRouteStreamDenoRpcRequestHandler,
+  createRouteStreamDenoRpcRequestHandlerFor,
+  createRouteUnaryDenoFetch,
+  createRouteUnaryDenoFetchFor,
+  createRouteUnaryDenoRpcRequestHandler,
+  createRouteUnaryDenoRpcRequestHandlerFor,
+  createStreamRouteDenoFetch,
+  createStreamRouteDenoFetchFor,
+  createStreamRouteDenoRpcRequestHandler,
+  createStreamRouteDenoRpcRequestHandlerFor,
+  createUnaryRouteDenoFetch,
+  createUnaryRouteDenoFetchFor,
+  createUnaryRouteDenoRpcRequestHandler,
+  createUnaryRouteDenoRpcRequestHandlerFor,
   createStandaloneDenoRpcRequestHandler as createRootStandaloneDenoRpcRequestHandler,
   createStandaloneDenoRpcRequestHandlerFor as createRootStandaloneDenoRpcRequestHandlerFor,
   createStandaloneDenoTransportRequestHandler as createRootStandaloneDenoTransportRequestHandler,
@@ -1821,6 +1837,22 @@ import {
   createStandaloneDenoTransportRequestHandlerWithPath as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPath,
   createStandaloneDenoTransportRequestHandlerWithPathFor as createRuntimeSubpathStandaloneDenoTransportRequestHandlerWithPathFor,
   createDenoFetchFor as createRuntimeSubpathDenoFetchFor,
+  createRouteStreamDenoFetch as createRuntimeSubpathRouteStreamDenoFetch,
+  createRouteStreamDenoFetchFor as createRuntimeSubpathRouteStreamDenoFetchFor,
+  createRouteStreamDenoRpcRequestHandler as createRuntimeSubpathRouteStreamDenoRpcRequestHandler,
+  createRouteStreamDenoRpcRequestHandlerFor as createRuntimeSubpathRouteStreamDenoRpcRequestHandlerFor,
+  createRouteUnaryDenoFetch as createRuntimeSubpathRouteUnaryDenoFetch,
+  createRouteUnaryDenoFetchFor as createRuntimeSubpathRouteUnaryDenoFetchFor,
+  createRouteUnaryDenoRpcRequestHandler as createRuntimeSubpathRouteUnaryDenoRpcRequestHandler,
+  createRouteUnaryDenoRpcRequestHandlerFor as createRuntimeSubpathRouteUnaryDenoRpcRequestHandlerFor,
+  createStreamRouteDenoFetch as createRuntimeSubpathStreamRouteDenoFetch,
+  createStreamRouteDenoFetchFor as createRuntimeSubpathStreamRouteDenoFetchFor,
+  createStreamRouteDenoRpcRequestHandler as createRuntimeSubpathStreamRouteDenoRpcRequestHandler,
+  createStreamRouteDenoRpcRequestHandlerFor as createRuntimeSubpathStreamRouteDenoRpcRequestHandlerFor,
+  createUnaryRouteDenoFetch as createRuntimeSubpathUnaryRouteDenoFetch,
+  createUnaryRouteDenoFetchFor as createRuntimeSubpathUnaryRouteDenoFetchFor,
+  createUnaryRouteDenoRpcRequestHandler as createRuntimeSubpathUnaryRouteDenoRpcRequestHandler,
+  createUnaryRouteDenoRpcRequestHandlerFor as createRuntimeSubpathUnaryRouteDenoRpcRequestHandlerFor,
   createCompiledRouteUnaryRpcBodyResultHandler as createRuntimeSubpathCompiledRouteUnaryRpcBodyResultHandler,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRuntimeSubpathCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor as createRuntimeSubpathCompiledRpcHandlerFor,
@@ -11921,6 +11953,18 @@ const denoStreamRouteRpcRequestHandlerOptions: DenoStreamRouteRpcRequestHandlerO
   typeof manifest,
   readonly [typeof usersPlugin]
 > = denoRouteStreamRpcRequestHandlerOptions;
+const requestTypedDenoRouteUnaryFetchOptions: DenoRouteUnaryFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
+const requestTypedDenoRouteUnaryRpcRequestHandlerOptions: DenoRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = typedRequestHandlerOptions;
 const denoFetchOptionsArgs: DenoFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -12214,6 +12258,161 @@ runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
 );
 runtimeSubpathDenoFetchOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathDenoRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
+const routeUnaryDenoFetch = createRouteUnaryDenoFetch(
+  manifest,
+  denoRouteUnaryFetchOptions
+);
+const unaryRouteDenoFetch = createUnaryRouteDenoFetch(
+  manifest,
+  denoUnaryRouteFetchOptions
+);
+const routeStreamDenoFetch = createRouteStreamDenoFetch(
+  manifest,
+  denoRouteStreamFetchOptions
+);
+const streamRouteDenoFetch = createStreamRouteDenoFetch(
+  manifest,
+  denoStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryDenoFetch =
+  createRuntimeSubpathRouteUnaryDenoFetch(
+    manifest,
+    runtimeSubpathDenoRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteDenoFetch =
+  createRuntimeSubpathUnaryRouteDenoFetch(
+    manifest,
+    runtimeSubpathDenoUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamDenoFetch =
+  createRuntimeSubpathRouteStreamDenoFetch(
+    manifest,
+    runtimeSubpathDenoRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteDenoFetch =
+  createRuntimeSubpathStreamRouteDenoFetch(
+    manifest,
+    runtimeSubpathDenoStreamRouteFetchOptions
+  );
+const typedRouteUnaryDenoFetch =
+  createRouteUnaryDenoFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedDenoRouteUnaryFetchOptions
+  );
+createUnaryRouteDenoFetchFor()(manifest, denoUnaryRouteFetchOptions);
+createRouteStreamDenoFetchFor()(manifest, denoRouteStreamFetchOptions);
+createStreamRouteDenoFetchFor()(manifest, denoStreamRouteFetchOptions);
+createRuntimeSubpathRouteUnaryDenoFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedDenoRouteUnaryFetchOptions
+);
+createRuntimeSubpathUnaryRouteDenoFetchFor()(
+  manifest,
+  runtimeSubpathDenoUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamDenoFetchFor()(
+  manifest,
+  runtimeSubpathDenoRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteDenoFetchFor()(
+  manifest,
+  runtimeSubpathDenoStreamRouteFetchOptions
+);
+const routeUnaryDenoRpcHandler = createRouteUnaryDenoRpcRequestHandler(
+  manifest,
+  denoRouteUnaryRpcRequestHandlerOptions
+);
+const unaryRouteDenoRpcHandler = createUnaryRouteDenoRpcRequestHandler(
+  manifest,
+  denoUnaryRouteRpcRequestHandlerOptions
+);
+const routeStreamDenoRpcHandler = createRouteStreamDenoRpcRequestHandler(
+  manifest,
+  denoRouteStreamRpcRequestHandlerOptions
+);
+const streamRouteDenoRpcHandler = createStreamRouteDenoRpcRequestHandler(
+  manifest,
+  denoStreamRouteRpcRequestHandlerOptions
+);
+const runtimeSubpathRouteUnaryDenoRpcHandler =
+  createRuntimeSubpathRouteUnaryDenoRpcRequestHandler(
+    manifest,
+    runtimeSubpathDenoRouteUnaryRpcRequestHandlerOptions
+  );
+const runtimeSubpathUnaryRouteDenoRpcHandler =
+  createRuntimeSubpathUnaryRouteDenoRpcRequestHandler(
+    manifest,
+    runtimeSubpathDenoUnaryRouteRpcRequestHandlerOptions
+  );
+const runtimeSubpathRouteStreamDenoRpcHandler =
+  createRuntimeSubpathRouteStreamDenoRpcRequestHandler(
+    manifest,
+    runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions
+  );
+const runtimeSubpathStreamRouteDenoRpcHandler =
+  createRuntimeSubpathStreamRouteDenoRpcRequestHandler(
+    manifest,
+    runtimeSubpathDenoStreamRouteRpcRequestHandlerOptions
+  );
+const typedRouteUnaryDenoRpcHandler =
+  createRouteUnaryDenoRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedDenoRouteUnaryRpcRequestHandlerOptions
+  );
+createUnaryRouteDenoRpcRequestHandlerFor()(
+  manifest,
+  denoUnaryRouteRpcRequestHandlerOptions
+);
+createRouteStreamDenoRpcRequestHandlerFor()(
+  manifest,
+  denoRouteStreamRpcRequestHandlerOptions
+);
+createStreamRouteDenoRpcRequestHandlerFor()(
+  manifest,
+  denoStreamRouteRpcRequestHandlerOptions
+);
+createRuntimeSubpathRouteUnaryDenoRpcRequestHandlerFor<HookAppRequest>()(
+  manifest,
+  requestTypedDenoRouteUnaryRpcRequestHandlerOptions
+);
+createRuntimeSubpathUnaryRouteDenoRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathDenoUnaryRouteRpcRequestHandlerOptions
+);
+createRuntimeSubpathRouteStreamDenoRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions
+);
+createRuntimeSubpathStreamRouteDenoRpcRequestHandlerFor()(
+  manifest,
+  runtimeSubpathDenoStreamRouteRpcRequestHandlerOptions
+);
+routeUnaryDenoFetch(new Request('https://example.com/rpc'));
+unaryRouteDenoFetch(new Request('https://example.com/rpc'));
+routeStreamDenoFetch(new Request('https://example.com/rpc'));
+streamRouteDenoFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryDenoFetch(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteDenoFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamDenoFetch(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteDenoFetch(new Request('https://example.com/rpc'));
+typedRouteUnaryDenoFetch(hookAppRequest);
+routeUnaryDenoRpcHandler(new Request('https://example.com/rpc'));
+unaryRouteDenoRpcHandler(new Request('https://example.com/rpc'));
+routeStreamDenoRpcHandler(new Request('https://example.com/rpc'));
+streamRouteDenoRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryDenoRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteDenoRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamDenoRpcHandler(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteDenoRpcHandler(new Request('https://example.com/rpc'));
+typedRouteUnaryDenoRpcHandler(hookAppRequest);
+typedRouteUnaryDenoFetch(
+  // @ts-expect-error route-unary Deno fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+typedRouteUnaryDenoRpcHandler(
+  // @ts-expect-error route-unary Deno RPC factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 const exactDenoServeOptions: DenoServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
