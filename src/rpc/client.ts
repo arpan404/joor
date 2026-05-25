@@ -1412,6 +1412,13 @@ const createHeaders = (
   return output;
 };
 
+const copyClientRequestInit = (
+  value: ClientRequestInit | undefined
+): ClientRequestInit | undefined =>
+  value === undefined
+    ? undefined
+    : Object.freeze({ ...value }) as ClientRequestInit;
+
 const createRpcRequest = (
   url: string,
   body: JsonValue,
@@ -1545,6 +1552,12 @@ export function createClient<
 export function createClient<TRequest extends Request = Request>(
   options: ClientOptions<JoorManifest | undefined, TRequest>
 ): LegacyRpcTransportClient | RouteRpcTransportClient<RpcRouteMap> {
+  const url = options.url;
+  const baseHeaders =
+    options.headers === undefined
+      ? undefined
+      : Object.freeze({ ...options.headers });
+  const baseRequest = copyClientRequestInit(options.request);
   const fetcher =
     options.fetch ??
     ((request: TRequest): Promise<Response> => globalThis.fetch(request));
@@ -1570,10 +1583,10 @@ export function createClient<TRequest extends Request = Request>(
     const [callOptions] = requestOptions;
     const response = await fetcher(
       requestFactory({
-        url: options.url,
+        url,
         body: { id, input } as JsonValue,
-        headers: createHeaders(options.headers, callOptions?.headers),
-        baseRequest: options.request,
+        headers: createHeaders(baseHeaders, callOptions?.headers),
+        baseRequest,
         request: callOptions?.request,
       })
     );
@@ -1607,7 +1620,7 @@ export function createClient<TRequest extends Request = Request>(
           : {}),
     }));
     const requestHeaders = createHeaders(
-      options.headers,
+      baseHeaders,
       batchOptions?.headers
     );
     for (const pending of requests) {
@@ -1619,10 +1632,10 @@ export function createClient<TRequest extends Request = Request>(
     requestHeaders.set('content-type', 'application/json');
     const response = await fetcher(
       requestFactory({
-        url: options.url,
+        url,
         body,
         headers: requestHeaders,
-        baseRequest: options.request,
+        baseRequest,
         request: batchOptions?.request,
       })
     );
@@ -1637,16 +1650,16 @@ export function createClient<TRequest extends Request = Request>(
   ): AsyncIterable<StreamEvent<TProcedure> & JsonValue> => ({
     async *[Symbol.asyncIterator]() {
       const headers = createHeaders(
-        options.headers,
+        baseHeaders,
         requestOptions[0]?.headers
       );
       headers.set('accept', 'text/event-stream');
       const response = await fetcher(
         requestFactory({
-          url: options.url,
+          url,
           body: { id, input } as JsonValue,
           headers,
-          baseRequest: options.request,
+          baseRequest,
           request: requestOptions[0]?.request,
         })
       );
@@ -1657,12 +1670,12 @@ export function createClient<TRequest extends Request = Request>(
       ) as AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
     },
   });
-  return {
+  return Object.freeze({
     call,
     request,
     batch,
     stream,
-  };
+  });
 }
 
 export const createManifestClient = <

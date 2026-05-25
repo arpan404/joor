@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
 import config from './fixtures/basic-app/joor.config.js';
 import {
+  type ClientRequestInit,
   createClient,
   createManifestRouteRequest,
   createManifestRouteProtocolRequest,
@@ -309,6 +310,39 @@ describe('client', () => {
     expect(seen[1]?.headers.get('x-batch')).toBe('1');
     expect(seen[2]?.redirect).toBe('manual');
     expect(seen[2]?.cache).toBe('reload');
+  });
+
+  it('snapshots client options at creation time', async () => {
+    const procedure = defineProcedure({
+      input: t.object({}),
+      output: t.object({}),
+      async handler(ctx) {
+        return ctx.ok({});
+      },
+    });
+    const seen: Request[] = [];
+    const request: ClientRequestInit = { cache: 'reload' };
+    const options = {
+      url: 'http://localhost/rpc',
+      headers: { authorization: 'Bearer original' },
+      request,
+      async fetch(fetchRequest) {
+        seen.push(fetchRequest);
+        return Response.json({ ok: true, id: 'snapshot', data: {} });
+      },
+    } satisfies Parameters<typeof createClient>[0];
+    const client = createClient(options);
+
+    options.url = 'http://localhost/changed';
+    options.headers.authorization = 'Bearer changed';
+    options.request = { cache: 'no-store' };
+
+    await client.call<typeof procedure>('snapshot', {});
+
+    expect(Object.isFrozen(client)).toBe(true);
+    expect(seen[0]?.url).toBe('http://localhost/rpc');
+    expect(seen[0]?.headers.get('authorization')).toBe('Bearer original');
+    expect(seen[0]?.cache).toBe('reload');
   });
 
   it('uses custom request factories for typed client fetches', async () => {
