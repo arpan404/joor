@@ -811,6 +811,87 @@ export type RpcStreamProtocolRequestUnion<TRoutes extends RpcRouteMap> =
 export type RpcStreamRouteProtocolRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteStreamProtocolRequestUnion<TRoutes>;
 
+export type RpcManifestRouteProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteId<JoorManifestRoutes<TManifest>> = RpcRouteId<
+    JoorManifestRoutes<TManifest>
+  >,
+> = RpcRouteProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteId<JoorManifestRoutes<TManifest>> = RpcRouteId<
+    JoorManifestRoutes<TManifest>
+  >,
+> = RpcManifestRouteProtocolRequest<TManifest, TId>;
+
+export type RpcManifestRouteUnaryProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcRouteUnaryProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestUnaryProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
+
+export type RpcManifestUnaryRouteProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
+
+export type RpcManifestRouteStreamProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+> = RpcRouteStreamProtocolRequest<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestStreamProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
+
+export type RpcManifestStreamRouteProtocolRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
+    RpcRouteStreamId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
+
+export type RpcManifestRouteProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteProtocolRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestProtocolRequestUnion<TManifest extends JoorManifest> =
+  RpcManifestRouteProtocolRequestUnion<TManifest>;
+
+export type RpcManifestRouteUnaryProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteUnaryProtocolRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestUnaryProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryProtocolRequestUnion<TManifest>;
+
+export type RpcManifestUnaryRouteProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryProtocolRequestUnion<TManifest>;
+
+export type RpcManifestRouteStreamProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteStreamProtocolRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestStreamProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
+
+export type RpcManifestStreamRouteProtocolRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamProtocolRequestUnion<TManifest>;
+
 export type RpcRouteStreamRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
@@ -850,6 +931,22 @@ export type RpcUnaryRouteProtocolBatchRequestUnion<
 
 export type RpcProtocolBatchRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteProtocolBatchRequestUnion<TRoutes>;
+
+export type RpcManifestRouteProtocolBatchRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteProtocolBatchRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestRouteUnaryProtocolBatchRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcRouteUnaryProtocolBatchRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestUnaryRouteProtocolBatchRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>;
+
+export type RpcManifestProtocolBatchRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteProtocolBatchRequestUnion<TManifest>;
 
 export type RpcRouteBatchRequest<
   TRoutes extends RpcRouteMap,
@@ -912,6 +1009,37 @@ export type RpcProtocolBatchRequest<
     readonly RpcProtocolBatchRequestUnion<TRoutes>[],
 > = RpcRouteProtocolBatchRequest<TRoutes, TRequests>;
 
+export type RpcManifestRouteProtocolBatchRequest<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[],
+> = RpcRouteProtocolBatchRequest<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type RpcManifestRouteUnaryProtocolBatchRequest<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[],
+> = RpcRouteUnaryProtocolBatchRequest<
+  JoorManifestRoutes<TManifest>,
+  TRequests
+>;
+
+export type RpcManifestUnaryRouteProtocolBatchRequest<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteUnaryProtocolBatchRequest<TManifest, TRequests>;
+
+export type RpcManifestProtocolBatchRequest<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestProtocolBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteProtocolBatchRequest<TManifest, TRequests>;
+
 export type RpcRouteBody<TRoutes extends RpcRouteMap> =
   | RpcRouteProtocolRequestUnion<TRoutes>
   | RpcRouteProtocolBatchRequest<TRoutes>;
@@ -947,6 +1075,39 @@ export type RpcRouteStreamBodyResult<
 export type RpcStreamRouteBodyResult<
   TRoutes extends RpcRouteMap = RpcRouteMap,
 > = RpcRouteStreamBodyResult<TRoutes>;
+
+export type RpcManifestRouteBody<TManifest extends JoorManifest> =
+  RpcRouteBody<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestRouteUnaryBody<TManifest extends JoorManifest> =
+  RpcRouteUnaryBody<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestUnaryRouteBody<TManifest extends JoorManifest> =
+  RpcManifestRouteUnaryBody<TManifest>;
+
+export type RpcManifestRouteStreamBody<TManifest extends JoorManifest> =
+  RpcRouteStreamBody<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestStreamRouteBody<TManifest extends JoorManifest> =
+  RpcManifestRouteStreamBody<TManifest>;
+
+export type RpcManifestRouteBodyResult<TManifest extends JoorManifest> =
+  RpcRouteBodyResult<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestRouteUnaryBodyResult<
+  TManifest extends JoorManifest,
+> = RpcRouteUnaryBodyResult<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestUnaryRouteBodyResult<TManifest extends JoorManifest> =
+  RpcManifestRouteUnaryBodyResult<TManifest>;
+
+export type RpcManifestRouteStreamBodyResult<
+  TManifest extends JoorManifest = JoorManifest,
+> = RpcRouteStreamBodyResult<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestStreamRouteBodyResult<
+  TManifest extends JoorManifest = JoorManifest,
+> = RpcManifestRouteStreamBodyResult<TManifest>;
 
 type RpcRouteProtocolBodyResultFor<
   TRoutes extends RpcRouteMap,
@@ -997,6 +1158,31 @@ export type RpcStreamRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
   TBody extends RpcRouteStreamBody<TRoutes>,
 > = RpcRouteStreamBodyResultFor<TRoutes, TBody>;
+
+export type RpcManifestRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteBody<TManifest>,
+> = RpcRouteBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
+
+export type RpcManifestRouteUnaryBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest>,
+> = RpcRouteUnaryBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
+
+export type RpcManifestUnaryRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest>,
+> = RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>;
+
+export type RpcManifestRouteStreamBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest>,
+> = RpcRouteStreamBodyResultFor<JoorManifestRoutes<TManifest>, TBody>;
+
+export type RpcManifestStreamRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest>,
+> = RpcManifestRouteStreamBodyResultFor<TManifest, TBody>;
 
 type PendingRpcRequestInput<TProcedure> = [TProcedure] extends [never]
   ? JsonValue
@@ -1087,6 +1273,35 @@ export type RpcRouteUnaryRequestUnion<TRoutes extends RpcRouteMap> =
 export type RpcUnaryRouteRequestUnion<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryRequestUnion<TRoutes>;
 
+export type RpcManifestRouteRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcRouteRequest<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestRouteUnaryRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteRequest<TManifest, TId>;
+
+export type RpcManifestUnaryRouteRequest<
+  TManifest extends JoorManifest,
+  TId extends RpcRouteUnaryId<JoorManifestRoutes<TManifest>> =
+    RpcRouteUnaryId<JoorManifestRoutes<TManifest>>,
+> = RpcManifestRouteUnaryRequest<TManifest, TId>;
+
+export type RpcManifestRouteRequestUnion<TManifest extends JoorManifest> =
+  RpcRouteRequestUnion<JoorManifestRoutes<TManifest>>;
+
+export type RpcManifestRouteUnaryRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteRequestUnion<TManifest>;
+
+export type RpcManifestUnaryRouteRequestUnion<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryRequestUnion<TManifest>;
+
 type RpcRouteBatchResultFor<
   TRoutes extends RpcRouteMap,
   TRequest,
@@ -1153,6 +1368,37 @@ export type RpcProtocolBatchResults<
   TRequests extends readonly RpcProtocolBatchRequestUnion<TRoutes>[] =
     readonly RpcProtocolBatchRequestUnion<TRoutes>[],
 > = RpcRouteProtocolBatchResults<TRoutes, TRequests>;
+
+export type RpcManifestRouteProtocolBatchResults<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteProtocolBatchRequestUnion<TManifest>[],
+> = RpcRouteProtocolBatchResults<JoorManifestRoutes<TManifest>, TRequests>;
+
+export type RpcManifestRouteUnaryProtocolBatchResults<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[],
+> = RpcRouteUnaryProtocolBatchResults<
+  JoorManifestRoutes<TManifest>,
+  TRequests
+>;
+
+export type RpcManifestUnaryRouteProtocolBatchResults<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestUnaryRouteProtocolBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteUnaryProtocolBatchResults<TManifest, TRequests>;
+
+export type RpcManifestProtocolBatchResults<
+  TManifest extends JoorManifest,
+  TRequests extends
+    readonly RpcManifestProtocolBatchRequestUnion<TManifest>[] =
+      readonly RpcManifestProtocolBatchRequestUnion<TManifest>[],
+> = RpcManifestRouteProtocolBatchResults<TManifest, TRequests>;
 
 export type ClientRequestOptions<TProcedure> = ClientTraceOptions &
   ([TProcedure] extends [never]
