@@ -12,6 +12,10 @@ import type { JoorPlugin } from '../context/plugin.js';
 import {
   createJoorHandler,
   createJoorHandlerFor,
+  createRouteStreamJoorHandler,
+  createRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandler,
+  createRouteUnaryJoorHandlerFor,
   type JoorFetchHandler,
 } from './fetch.js';
 
@@ -285,6 +289,72 @@ export function createCloudflareFetch<TManifest extends JoorManifest>(
   );
 }
 
+export function createRouteUnaryCloudflareFetch<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): CloudflareFetchHandler<TRequest>;
+export function createRouteUnaryCloudflareFetch<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): CloudflareFetchHandler {
+  return createRouteUnaryJoorHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createUnaryRouteCloudflareFetch: typeof createRouteUnaryCloudflareFetch =
+  createRouteUnaryCloudflareFetch;
+
+export function createRouteStreamCloudflareFetch<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): CloudflareFetchHandler<TRequest>;
+export function createRouteStreamCloudflareFetch<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): CloudflareFetchHandler {
+  return createRouteStreamJoorHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+}
+
+export const createStreamRouteCloudflareFetch: typeof createRouteStreamCloudflareFetch =
+  createRouteStreamCloudflareFetch;
+
 export function createCloudflareFetchFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -335,6 +405,116 @@ export function createCloudflareFetchFor<
     );
 }
 
+export function createRouteUnaryCloudflareFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryCloudflareFetchFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => CloudflareFetchHandler<TRequest>;
+export function createRouteUnaryCloudflareFetchFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: CloudflareRouteUnaryFetchOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): CloudflareFetchHandler<TRequest> =>
+    createRouteUnaryJoorHandlerFor<TRequest>()(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteUnaryBody<TManifest>,
+        TRequest
+      >
+    );
+}
+
+export const createUnaryRouteCloudflareFetchFor: typeof createRouteUnaryCloudflareFetchFor =
+  createRouteUnaryCloudflareFetchFor;
+
+export function createRouteStreamCloudflareFetchFor(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteStreamCloudflareFetchFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamFetchOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => CloudflareFetchHandler<TRequest>;
+export function createRouteStreamCloudflareFetchFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: CloudflareRouteStreamFetchOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): CloudflareFetchHandler<TRequest> =>
+    createRouteStreamJoorHandlerFor<TRequest>()(
+      manifest,
+      (args[0] ?? {}) as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteStreamBody<TManifest>,
+        TRequest
+      >
+    );
+}
+
+export const createStreamRouteCloudflareFetchFor: typeof createRouteStreamCloudflareFetchFor =
+  createRouteStreamCloudflareFetchFor;
+
 export function createCloudflareWorker<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -359,6 +539,76 @@ export function createCloudflareWorker<TManifest extends JoorManifest>(
     ),
   };
 }
+
+export function createRouteUnaryCloudflareWorker<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): CloudflareWorker<never, never, TRequest>;
+export function createRouteUnaryCloudflareWorker<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): CloudflareWorker {
+  return {
+    fetch: createRouteUnaryCloudflareFetch(
+      manifest,
+      (options ?? {}) as unknown as HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteUnaryBody<TManifest>,
+        Request
+      >
+    ),
+  };
+}
+
+export const createUnaryRouteCloudflareWorker: typeof createRouteUnaryCloudflareWorker =
+  createRouteUnaryCloudflareWorker;
+
+export function createRouteStreamCloudflareWorker<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): CloudflareWorker<never, never, TRequest>;
+export function createRouteStreamCloudflareWorker<
+  TManifest extends JoorManifest,
+>(
+  manifest: TManifest,
+  options?: HandlerOptions
+): CloudflareWorker {
+  return {
+    fetch: createRouteStreamCloudflareFetch(
+      manifest,
+      (options ?? {}) as unknown as HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteStreamBody<TManifest>,
+        Request
+      >
+    ),
+  };
+}
+
+export const createStreamRouteCloudflareWorker: typeof createRouteStreamCloudflareWorker =
+  createRouteStreamCloudflareWorker;
 
 export function createCloudflareWorkerFor<
   TEnv = never,
@@ -424,3 +674,139 @@ export function createCloudflareWorkerFor<
       ),
     }) as CloudflareWorker<TEnv, TContext, TRequest>;
 }
+
+export function createRouteUnaryCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareWorker<
+  TEnv,
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteUnaryCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteUnaryWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => CloudflareWorker<TEnv, TContext, TRequest>;
+export function createRouteUnaryCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: CloudflareRouteUnaryWorkerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): CloudflareWorker<TEnv, TContext, TRequest> =>
+    ({
+      fetch: createRouteUnaryJoorHandlerFor<TRequest>()(
+        manifest,
+        (args[0] ?? {}) as HandlerOptionsFor<
+          TManifest,
+          TPlugins,
+          RpcManifestRouteUnaryBody<TManifest>,
+          TRequest
+        >
+      ),
+    }) as CloudflareWorker<TEnv, TContext, TRequest>;
+}
+
+export const createUnaryRouteCloudflareWorkerFor: typeof createRouteUnaryCloudflareWorkerFor =
+  createRouteUnaryCloudflareWorkerFor;
+
+export function createRouteStreamCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => CloudflareWorker<
+  TEnv,
+  TContext,
+  RpcManifestRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteStreamCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>(): <
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: CloudflareRouteStreamWorkerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => CloudflareWorker<TEnv, TContext, TRequest>;
+export function createRouteStreamCloudflareWorkerFor<
+  TEnv = never,
+  TContext = never,
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: CloudflareRouteStreamWorkerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): CloudflareWorker<TEnv, TContext, TRequest> =>
+    ({
+      fetch: createRouteStreamJoorHandlerFor<TRequest>()(
+        manifest,
+        (args[0] ?? {}) as HandlerOptionsFor<
+          TManifest,
+          TPlugins,
+          RpcManifestRouteStreamBody<TManifest>,
+          TRequest
+        >
+      ),
+    }) as CloudflareWorker<TEnv, TContext, TRequest>;
+}
+
+export const createStreamRouteCloudflareWorkerFor: typeof createRouteStreamCloudflareWorkerFor =
+  createRouteStreamCloudflareWorkerFor;

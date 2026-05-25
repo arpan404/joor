@@ -36,6 +36,22 @@ import {
   createCloudflareFetchFor,
   createCloudflareWorker,
   createCloudflareWorkerFor,
+  createRouteStreamCloudflareFetch,
+  createRouteStreamCloudflareFetchFor,
+  createRouteStreamCloudflareWorker,
+  createRouteStreamCloudflareWorkerFor,
+  createRouteUnaryCloudflareFetch,
+  createRouteUnaryCloudflareFetchFor,
+  createRouteUnaryCloudflareWorker,
+  createRouteUnaryCloudflareWorkerFor,
+  createStreamRouteCloudflareFetch,
+  createStreamRouteCloudflareFetchFor,
+  createStreamRouteCloudflareWorker,
+  createStreamRouteCloudflareWorkerFor,
+  createUnaryRouteCloudflareFetch,
+  createUnaryRouteCloudflareFetchFor,
+  createUnaryRouteCloudflareWorker,
+  createUnaryRouteCloudflareWorkerFor,
   createDenoFetch,
   createDenoFetchFor,
   createDenoCompiledTransportRequestHandler as createRootDenoCompiledTransportRequestHandler,
@@ -1715,6 +1731,22 @@ import {
   createCloudflareFetchFor as createRuntimeSubpathCloudflareFetchFor,
   createCloudflareWorker as createRuntimeSubpathCloudflareWorker,
   createCloudflareWorkerFor as createRuntimeSubpathCloudflareWorkerFor,
+  createRouteStreamCloudflareFetch as createRuntimeSubpathRouteStreamCloudflareFetch,
+  createRouteStreamCloudflareFetchFor as createRuntimeSubpathRouteStreamCloudflareFetchFor,
+  createRouteStreamCloudflareWorker as createRuntimeSubpathRouteStreamCloudflareWorker,
+  createRouteStreamCloudflareWorkerFor as createRuntimeSubpathRouteStreamCloudflareWorkerFor,
+  createRouteUnaryCloudflareFetch as createRuntimeSubpathRouteUnaryCloudflareFetch,
+  createRouteUnaryCloudflareFetchFor as createRuntimeSubpathRouteUnaryCloudflareFetchFor,
+  createRouteUnaryCloudflareWorker as createRuntimeSubpathRouteUnaryCloudflareWorker,
+  createRouteUnaryCloudflareWorkerFor as createRuntimeSubpathRouteUnaryCloudflareWorkerFor,
+  createStreamRouteCloudflareFetch as createRuntimeSubpathStreamRouteCloudflareFetch,
+  createStreamRouteCloudflareFetchFor as createRuntimeSubpathStreamRouteCloudflareFetchFor,
+  createStreamRouteCloudflareWorker as createRuntimeSubpathStreamRouteCloudflareWorker,
+  createStreamRouteCloudflareWorkerFor as createRuntimeSubpathStreamRouteCloudflareWorkerFor,
+  createUnaryRouteCloudflareFetch as createRuntimeSubpathUnaryRouteCloudflareFetch,
+  createUnaryRouteCloudflareFetchFor as createRuntimeSubpathUnaryRouteCloudflareFetchFor,
+  createUnaryRouteCloudflareWorker as createRuntimeSubpathUnaryRouteCloudflareWorker,
+  createUnaryRouteCloudflareWorkerFor as createRuntimeSubpathUnaryRouteCloudflareWorkerFor,
   createDenoCompiledTransportRequestHandler as createRuntimeSubpathDenoCompiledTransportRequestHandler,
   createDenoCompiledTransportRequestHandlerFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerFor,
   createDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeSubpathDenoCompiledTransportRequestHandlerWithPathFor,
@@ -16813,16 +16845,192 @@ createRuntimeSubpathCloudflareFetch(
   manifest,
   runtimeSubpathCloudflareFetchOptions
 );
+const routeUnaryCloudflareFetch = createRouteUnaryCloudflareFetch(
+  manifest,
+  cloudflareRouteUnaryFetchOptions
+);
+const unaryRouteCloudflareFetch = createUnaryRouteCloudflareFetch(
+  manifest,
+  cloudflareUnaryRouteFetchOptions
+);
+const routeStreamCloudflareFetch = createRouteStreamCloudflareFetch(
+  manifest,
+  cloudflareRouteStreamFetchOptions
+);
+const streamRouteCloudflareFetch = createStreamRouteCloudflareFetch(
+  manifest,
+  cloudflareStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryCloudflareFetch =
+  createRuntimeSubpathRouteUnaryCloudflareFetch(
+    manifest,
+    runtimeSubpathCloudflareRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteCloudflareFetch =
+  createRuntimeSubpathUnaryRouteCloudflareFetch(
+    manifest,
+    runtimeSubpathCloudflareUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamCloudflareFetch =
+  createRuntimeSubpathRouteStreamCloudflareFetch(
+    manifest,
+    runtimeSubpathCloudflareRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteCloudflareFetch =
+  createRuntimeSubpathStreamRouteCloudflareFetch(
+    manifest,
+    runtimeSubpathCloudflareStreamRouteFetchOptions
+  );
+const typedRouteUnaryCloudflareFetch =
+  createRouteUnaryCloudflareFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedCloudflareRouteUnaryFetchOptions
+  );
+createUnaryRouteCloudflareFetchFor()(manifest, cloudflareUnaryRouteFetchOptions);
+createRouteStreamCloudflareFetchFor()(
+  manifest,
+  cloudflareRouteStreamFetchOptions
+);
+createStreamRouteCloudflareFetchFor()(
+  manifest,
+  cloudflareStreamRouteFetchOptions
+);
+createRuntimeSubpathRouteUnaryCloudflareFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedCloudflareRouteUnaryFetchOptions
+);
+createRuntimeSubpathUnaryRouteCloudflareFetchFor()(
+  manifest,
+  runtimeSubpathCloudflareUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamCloudflareFetchFor()(
+  manifest,
+  runtimeSubpathCloudflareRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteCloudflareFetchFor()(
+  manifest,
+  runtimeSubpathCloudflareStreamRouteFetchOptions
+);
+const routeUnaryCloudflareWorker = createRouteUnaryCloudflareWorker(
+  manifest,
+  cloudflareRouteUnaryWorkerOptions
+);
+const unaryRouteCloudflareWorker = createUnaryRouteCloudflareWorker(
+  manifest,
+  cloudflareUnaryRouteWorkerOptions
+);
+const routeStreamCloudflareWorker = createRouteStreamCloudflareWorker(
+  manifest,
+  cloudflareRouteStreamWorkerOptions
+);
+const streamRouteCloudflareWorker = createStreamRouteCloudflareWorker(
+  manifest,
+  cloudflareStreamRouteWorkerOptions
+);
+const runtimeSubpathRouteUnaryCloudflareWorker =
+  createRuntimeSubpathRouteUnaryCloudflareWorker(
+    manifest,
+    runtimeSubpathCloudflareRouteUnaryWorkerOptions
+  );
+const runtimeSubpathUnaryRouteCloudflareWorker =
+  createRuntimeSubpathUnaryRouteCloudflareWorker(
+    manifest,
+    runtimeSubpathCloudflareUnaryRouteWorkerOptions
+  );
+const runtimeSubpathRouteStreamCloudflareWorker =
+  createRuntimeSubpathRouteStreamCloudflareWorker(
+    manifest,
+    runtimeSubpathCloudflareRouteStreamWorkerOptions
+  );
+const runtimeSubpathStreamRouteCloudflareWorker =
+  createRuntimeSubpathStreamRouteCloudflareWorker(
+    manifest,
+    runtimeSubpathCloudflareStreamRouteWorkerOptions
+  );
+const typedRouteUnaryCloudflareWorker =
+  createRouteUnaryCloudflareWorkerFor<
+    CloudflareEnvForTypes,
+    CloudflareContextForTypes,
+    HookAppRequest
+  >()(manifest, requestTypedCloudflareRouteUnaryWorkerOptions);
+createUnaryRouteCloudflareWorkerFor()(manifest, cloudflareUnaryRouteWorkerOptions);
+createRouteStreamCloudflareWorkerFor()(manifest, cloudflareRouteStreamWorkerOptions);
+createStreamRouteCloudflareWorkerFor()(manifest, cloudflareStreamRouteWorkerOptions);
+createRuntimeSubpathRouteUnaryCloudflareWorkerFor<
+  CloudflareEnvForTypes,
+  CloudflareContextForTypes,
+  HookAppRequest
+>()(manifest, requestTypedCloudflareRouteUnaryWorkerOptions);
+createRuntimeSubpathUnaryRouteCloudflareWorkerFor()(
+  manifest,
+  runtimeSubpathCloudflareUnaryRouteWorkerOptions
+);
+createRuntimeSubpathRouteStreamCloudflareWorkerFor()(
+  manifest,
+  runtimeSubpathCloudflareRouteStreamWorkerOptions
+);
+createRuntimeSubpathStreamRouteCloudflareWorkerFor()(
+  manifest,
+  runtimeSubpathCloudflareStreamRouteWorkerOptions
+);
 cloudflareWorker.fetch(new Request('https://example.com/rpc'));
 directCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathDirectCloudflareFetch(new Request('https://example.com/rpc'));
 runtimeSubpathCloudflareFetch(new Request('https://example.com/rpc'));
 defaultCloudflareFetch(new Request('https://example.com/rpc'));
+routeUnaryCloudflareFetch(new Request('https://example.com/rpc'));
+unaryRouteCloudflareFetch(new Request('https://example.com/rpc'));
+routeStreamCloudflareFetch(new Request('https://example.com/rpc'));
+streamRouteCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamCloudflareFetch(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteCloudflareFetch(new Request('https://example.com/rpc'));
 typedCloudflareFetch(appFetchRequest);
 runtimeSubpathTypedCloudflareFetch(appFetchRequest);
 hookTypedCloudflareFetch(hookAppRequest);
+typedRouteUnaryCloudflareFetch(hookAppRequest);
+routeUnaryCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+unaryRouteCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+routeStreamCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+streamRouteCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryCloudflareWorker.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathUnaryRouteCloudflareWorker.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamCloudflareWorker.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteCloudflareWorker.fetch(
+  new Request('https://example.com/rpc')
+);
+typedRouteUnaryCloudflareWorker.fetch(
+  hookAppRequest,
+  { accountId: 'acct_1' },
+  {
+    waitUntil(promise) {
+      promise.then(Boolean);
+    },
+  }
+);
+typedRouteUnaryCloudflareFetch(
+  // @ts-expect-error route-unary Cloudflare fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Cloudflare fetch factories infer custom hook request types.
 directHookTypedCloudflareFetch(new Request('https://example.com/rpc'));
+typedRouteUnaryCloudflareWorker.fetch(
+  // @ts-expect-error route-unary Cloudflare workers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  { accountId: 'acct_1' },
+  {
+    waitUntil(promise) {
+      promise.then(Boolean);
+    },
+  }
+);
 // @ts-expect-error direct typed Cloudflare workers infer custom hook request types.
 directHookTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 // @ts-expect-error service-dependent manifests require matching Cloudflare fetch plugins.
