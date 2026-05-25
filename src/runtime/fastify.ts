@@ -405,6 +405,9 @@ const snapshotFastifyOptions = (
     ...(options.middleware === undefined
       ? {}
       : { middleware: Object.freeze([...options.middleware]) }),
+    ...(options.hooks === undefined
+      ? {}
+      : { hooks: Object.freeze({ ...options.hooks }) }),
     ...(options.cors === undefined
       ? {}
       : {

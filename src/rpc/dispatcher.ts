@@ -1004,6 +1004,7 @@ export interface HandlerOptions<
 type FreezableHandlerOptions = {
   readonly plugins?: readonly JoorPlugin<object>[];
   readonly middleware?: readonly unknown[];
+  readonly hooks?: object;
   readonly cors?: {
     readonly origin?: string;
     readonly headers?: readonly string[];
@@ -1024,6 +1025,9 @@ const freezeHandlerOptions = <TOptions extends FreezableHandlerOptions>(
     ...(options.middleware === undefined
       ? {}
       : { middleware: Object.freeze([...options.middleware]) }),
+    ...(options.hooks === undefined
+      ? {}
+      : { hooks: Object.freeze({ ...options.hooks }) }),
     ...(options.cors === undefined
       ? {}
       : {

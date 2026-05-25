@@ -151,10 +151,17 @@ describe('fastify runtime', () => {
       },
     });
     const errors: string[] = [];
+    const hooks: string[] = [];
     const options = {
       path: '/rpc',
       cors: { origin: 'https://original.example' },
       maxBodyBytes: 1024,
+      hooks: {
+        beforeRequest() {
+          hooks.push('original');
+          return undefined;
+        },
+      },
       onError() {
         errors.push('original');
       },
@@ -167,6 +174,10 @@ describe('fastify runtime', () => {
 
     options.cors.origin = 'https://changed.example';
     options.maxBodyBytes = 1;
+    options.hooks.beforeRequest = () => {
+      hooks.push('changed');
+      return undefined;
+    };
     options.onError = () => {
       errors.push('changed');
     };
@@ -200,6 +211,7 @@ describe('fastify runtime', () => {
         'https://original.example'
       );
       expect(errors).toEqual(['original']);
+      expect(hooks).toEqual(['original']);
     } finally {
       await app.close();
     }

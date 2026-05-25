@@ -102,6 +102,7 @@ export type JoorConfigRequest<TConfig> =
 type FreezableConfig = {
   readonly plugins?: readonly JoorPlugin<object>[];
   readonly middleware?: readonly unknown[];
+  readonly hooks?: object;
   readonly cors?: {
     readonly origin?: string;
     readonly headers?: readonly string[];
@@ -122,6 +123,9 @@ const freezeConfig = <TConfig extends FreezableConfig>(
     ...(config.middleware === undefined
       ? {}
       : { middleware: Object.freeze([...config.middleware]) }),
+    ...(config.hooks === undefined
+      ? {}
+      : { hooks: Object.freeze({ ...config.hooks }) }),
     ...(config.cors === undefined
       ? {}
       : {

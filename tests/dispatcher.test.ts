@@ -91,6 +91,11 @@ describe('dispatcher', () => {
       outDir: './.joor',
       plugins: [auditPlugin] as const,
       middleware,
+      hooks: {
+        beforeRequest() {
+          return undefined;
+        },
+      },
       cors: {
         origin: 'https://example.com',
         headers: ['x-trace-id'] as const,
@@ -107,6 +112,7 @@ describe('dispatcher', () => {
     expect(defined).not.toBe(source);
     expect(defined.plugins).not.toBe(source.plugins);
     expect(defined.middleware).not.toBe(source.middleware);
+    expect(defined.hooks).not.toBe(source.hooks);
     expect(defined.cors).not.toBe(source.cors);
     expect(defined.cors?.headers).not.toBe(source.cors.headers);
     expect(defined.cors?.methods).not.toBe(source.cors.methods);
@@ -115,6 +121,7 @@ describe('dispatcher', () => {
     expect(Object.isFrozen(defined)).toBe(true);
     expect(Object.isFrozen(defined.plugins)).toBe(true);
     expect(Object.isFrozen(defined.middleware)).toBe(true);
+    expect(Object.isFrozen(defined.hooks)).toBe(true);
     expect(Object.isFrozen(defined.cors)).toBe(true);
     expect(Object.isFrozen(defined.cors?.headers)).toBe(true);
     expect(Object.isFrozen(defined.cors?.methods)).toBe(true);
@@ -137,6 +144,11 @@ describe('dispatcher', () => {
     const source = {
       plugins: [auditPlugin] as const,
       middleware: [{ name: 'audit' }] as const,
+      hooks: {
+        beforeRequest() {
+          return undefined;
+        },
+      },
       cors: {
         origin: 'https://example.com',
         headers: ['x-trace-id'] as const,
@@ -150,6 +162,7 @@ describe('dispatcher', () => {
     expect(defined).not.toBe(source);
     expect(defined.plugins).not.toBe(source.plugins);
     expect(defined.middleware).not.toBe(source.middleware);
+    expect(defined.hooks).not.toBe(source.hooks);
     expect(defined.cors).not.toBe(source.cors);
     expect(defined.cors?.headers).not.toBe(source.cors.headers);
     expect(defined.cors?.methods).not.toBe(source.cors.methods);
@@ -158,6 +171,7 @@ describe('dispatcher', () => {
     expect(Object.isFrozen(defined)).toBe(true);
     expect(Object.isFrozen(defined.plugins)).toBe(true);
     expect(Object.isFrozen(defined.middleware)).toBe(true);
+    expect(Object.isFrozen(defined.hooks)).toBe(true);
     expect(Object.isFrozen(defined.cors)).toBe(true);
     expect(Object.isFrozen(defined.cors?.headers)).toBe(true);
     expect(Object.isFrozen(defined.cors?.methods)).toBe(true);
@@ -206,11 +220,18 @@ describe('dispatcher', () => {
 
   it('snapshots RPC handler options at creation time', async () => {
     const errors: string[] = [];
+    const hooks: string[] = [];
     const options = {
       cors: {
         origin: 'https://original.example',
       },
       maxBodyBytes: 1024,
+      hooks: {
+        beforeRequest() {
+          hooks.push('original');
+          return undefined;
+        },
+      },
       onError() {
         errors.push('original');
       },
@@ -219,6 +240,10 @@ describe('dispatcher', () => {
 
     options.cors.origin = 'https://changed.example';
     options.maxBodyBytes = 1;
+    options.hooks.beforeRequest = () => {
+      hooks.push('changed');
+      return undefined;
+    };
     options.onError = () => {
       errors.push('changed');
     };
@@ -240,6 +265,7 @@ describe('dispatcher', () => {
     const missingBody = await missingProcedure.json();
 
     expect(errors).toEqual(['original']);
+    expect(hooks).toEqual(['original']);
     expect(parseError.status).toBe(400);
     expect(parseError.headers.get('access-control-allow-origin')).toBe(
       'https://original.example'
