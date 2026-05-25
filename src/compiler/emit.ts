@@ -1478,11 +1478,17 @@ ${nodeFastCases}
 };`;
   const denoUseCompiledUnaryFastPath = useBareDispatcher;
   const denoTransportImport = denoUseCompiledUnaryFastPath
-    ? "import { createDenoCompiledTransportRequestHandlerFor } from 'joor/runtime/deno-compiled-transport';"
-    : "import { createDenoTransportRequestHandlerFor } from 'joor/runtime/deno-transport';";
+    ? "import { createDenoCompiledTransportRequestHandlerFor, createRouteStreamDenoCompiledTransportRequestHandlerFor, createRouteUnaryDenoCompiledTransportRequestHandlerFor, type DenoCompiledRouteStreamTransportBodyResultHandlerFor, type DenoCompiledRouteUnaryTransportBodyResultHandlerFor } from 'joor/runtime/deno-compiled-transport';"
+    : "import { createDenoTransportRequestHandlerFor, createRouteStreamDenoTransportRequestHandlerFor, createRouteUnaryDenoTransportRequestHandlerFor, type DenoRouteStreamTransportBodyResultHandlerFor, type DenoRouteUnaryTransportBodyResultHandlerFor } from 'joor/runtime/deno-transport';";
+  const denoRouteUnaryTransportHandlerType = denoUseCompiledUnaryFastPath
+    ? 'DenoCompiledRouteUnaryTransportBodyResultHandlerFor<NativeManifest>'
+    : 'DenoRouteUnaryTransportBodyResultHandlerFor<NativeManifest>';
+  const denoRouteStreamTransportHandlerType = denoUseCompiledUnaryFastPath
+    ? 'DenoCompiledRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
+    : 'DenoRouteStreamTransportBodyResultHandlerFor<NativeManifest>';
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
-    ? "import { nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';"
-    : "import { nativeTransport, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';";
+    ? "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeManifest, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';"
+    : "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeTransport, type NativeManifest, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
     ? `return createDenoCompiledTransportRequestHandlerFor<TRequest>()(
     nativeRuntime,
@@ -1493,6 +1499,32 @@ ${nodeFastCases}
   );`
     : `return createDenoTransportRequestHandlerFor<TRequest>()(
     nativeTransport,
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
+  );`;
+  const denoCreateRouteUnaryFetchReturn = denoUseCompiledUnaryFastPath
+    ? `return createRouteUnaryDenoCompiledTransportRequestHandlerFor<TRequest>()<NativeManifest>(
+    nativeRuntime,
+    nativeRouteUnaryTransport as ${denoRouteUnaryTransportHandlerType},
+    nativeUnaryDispatch,
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
+  );`
+    : `return createRouteUnaryDenoTransportRequestHandlerFor<TRequest>()<NativeManifest>(
+    nativeRouteUnaryTransport as ${denoRouteUnaryTransportHandlerType},
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
+  );`;
+  const denoCreateRouteStreamFetchReturn = denoUseCompiledUnaryFastPath
+    ? `return createRouteStreamDenoCompiledTransportRequestHandlerFor<TRequest>()<NativeManifest>(
+    nativeRuntime,
+    nativeRouteStreamTransport as ${denoRouteStreamTransportHandlerType},
+    nativeUnaryDispatch,
+    bodyLimit,
+    createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
+  );`
+    : `return createRouteStreamDenoTransportRequestHandlerFor<TRequest>()<NativeManifest>(
+    nativeRouteStreamTransport as ${denoRouteStreamTransportHandlerType},
     bodyLimit,
     createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`;
@@ -3006,14 +3038,30 @@ export const createFetchFor =
   ${denoCreateFetchReturn}
 };
 export const createDenoFetchFor: typeof createFetchFor = createFetchFor;
-export const createRouteUnaryFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryFetchFor =
+  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
+  (options: DenoNativeOptions = {}): DenoNativeRouteUnaryFetchHandler<TRequest> => {
+  const path = options.path ?? configuredPath;
+  const cors = resolveCorsOptions(options.cors);
+  const bodyLimit =
+    options.maxBodyBytes ?? configuredMaxBodyBytes;
+  ${denoCreateRouteUnaryFetchReturn}
+};
 export const createUnaryRouteFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createRouteUnaryDenoFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteDenoFetchFor: typeof createRouteUnaryDenoFetchFor =
   createRouteUnaryDenoFetchFor;
-export const createRouteStreamFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteStreamFetchFor =
+  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
+  (options: DenoNativeOptions = {}): DenoNativeRouteStreamFetchHandler<TRequest> => {
+  const path = options.path ?? configuredPath;
+  const cors = resolveCorsOptions(options.cors);
+  const bodyLimit =
+    options.maxBodyBytes ?? configuredMaxBodyBytes;
+  ${denoCreateRouteStreamFetchReturn}
+};
 export const createStreamRouteFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createRouteStreamDenoFetchFor: typeof createRouteStreamFetchFor =
@@ -3025,14 +3073,20 @@ export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = Nati
   options: DenoNativeOptions = {}
 ): DenoNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 export const createDenoFetch: typeof createFetch = createFetch;
-export const createRouteUnaryFetch: typeof createFetch = createFetch;
+export const createRouteUnaryFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+  options: DenoNativeOptions = {}
+): DenoNativeRouteUnaryFetchHandler<TRequest> =>
+  createRouteUnaryFetchFor<TRequest>()(options);
 export const createUnaryRouteFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createRouteUnaryDenoFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createUnaryRouteDenoFetch: typeof createRouteUnaryDenoFetch =
   createRouteUnaryDenoFetch;
-export const createRouteStreamFetch: typeof createFetch = createFetch;
+export const createRouteStreamFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+  options: DenoNativeOptions = {}
+): DenoNativeRouteStreamFetchHandler<TRequest> =>
+  createRouteStreamFetchFor<TRequest>()(options);
 export const createStreamRouteFetch: typeof createRouteStreamFetch =
   createRouteStreamFetch;
 export const createRouteStreamDenoFetch: typeof createRouteStreamFetch =

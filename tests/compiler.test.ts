@@ -272,6 +272,15 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'deno.ts'), 'utf8')
       ).resolves.toContain("from './deno-dispatcher.ts'");
+      const denoSource = await readFile(join(outDir, 'deno.ts'), 'utf8');
+      expect(denoSource).toMatch(
+        /createRouteUnaryDeno(?:Compiled)?TransportRequestHandlerFor/
+      );
+      expect(denoSource).toMatch(
+        /createRouteStreamDeno(?:Compiled)?TransportRequestHandlerFor/
+      );
+      expect(denoSource).toContain('nativeRouteUnaryTransport');
+      expect(denoSource).toContain('nativeRouteStreamTransport');
       await expect(
         readFile(join(outDir, 'deno-dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('_execute_serialized');
@@ -689,7 +698,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain('export const createEdgeFor =');
       await expect(
         readFile(join(outDir, 'netlify.ts'), 'utf8')
-      ).resolves.toContain('export const createRouteUnaryNetlifyEdgeFunctionFor');
+      ).resolves.toContain(
+        'export const createRouteUnaryNetlifyEdgeFunctionFor'
+      );
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
