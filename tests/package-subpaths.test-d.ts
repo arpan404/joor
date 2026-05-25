@@ -498,8 +498,34 @@ type PackageSubpathRpcRouteUnaryHandlerOptionsArgsFor =
     PackageSubpathPlugins,
     PackageSubpathBody
   >;
+type PackageSubpathRpcRouteUnaryHandlerOptionsWithTrailingArgs =
+  Rpc.RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs<
+    PackageSubpathManifest,
+    [preflight?: boolean],
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
+type PackageSubpathRpcRouteUnaryHandlerOptionsWithPreflightArgs =
+  Rpc.RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
 type PackageSubpathRpcRouteStreamHandlerOptionsArgsFor =
   Rpc.RpcManifestRouteStreamHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
+type PackageSubpathRpcRouteStreamHandlerOptionsWithTrailingArgs =
+  Rpc.RpcManifestRouteStreamHandlerOptionsWithTrailingArgs<
+    PackageSubpathManifest,
+    [preflight?: boolean],
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
+type PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs =
+  Rpc.RpcManifestRouteStreamHandlerOptionsWithPreflightArgs<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathStreamBody
@@ -510,8 +536,34 @@ type PackageSubpathRootRouteUnaryHandlerOptionsArgsFor =
     PackageSubpathPlugins,
     PackageSubpathBody
   >;
+type PackageSubpathRootRouteUnaryHandlerOptionsWithTrailingArgs =
+  Root.RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs<
+    PackageSubpathManifest,
+    [preflight?: boolean],
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
+type PackageSubpathRootRouteUnaryHandlerOptionsWithPreflightArgs =
+  Root.RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >;
 type PackageSubpathRootRouteStreamHandlerOptionsArgsFor =
   Root.RpcManifestRouteStreamHandlerOptionsArgsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
+type PackageSubpathRootRouteStreamHandlerOptionsWithTrailingArgs =
+  Root.RpcManifestRouteStreamHandlerOptionsWithTrailingArgs<
+    PackageSubpathManifest,
+    [preflight?: boolean],
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >;
+type PackageSubpathRootRouteStreamHandlerOptionsWithPreflightArgs =
+  Root.RpcManifestRouteStreamHandlerOptionsWithPreflightArgs<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathStreamBody
@@ -830,9 +882,17 @@ export type PackageSubpathSurface = [
   PackageSubpathRootManifestBodyResultFor,
   PackageSubpathRootManifestBodyResult,
   PackageSubpathRpcRouteUnaryHandlerOptionsArgsFor,
+  PackageSubpathRpcRouteUnaryHandlerOptionsWithTrailingArgs,
+  PackageSubpathRpcRouteUnaryHandlerOptionsWithPreflightArgs,
   PackageSubpathRpcRouteStreamHandlerOptionsArgsFor,
+  PackageSubpathRpcRouteStreamHandlerOptionsWithTrailingArgs,
+  PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs,
   PackageSubpathRootRouteUnaryHandlerOptionsArgsFor,
+  PackageSubpathRootRouteUnaryHandlerOptionsWithTrailingArgs,
+  PackageSubpathRootRouteUnaryHandlerOptionsWithPreflightArgs,
   PackageSubpathRootRouteStreamHandlerOptionsArgsFor,
+  PackageSubpathRootRouteStreamHandlerOptionsWithTrailingArgs,
+  PackageSubpathRootRouteStreamHandlerOptionsWithPreflightArgs,
   PackageSubpathClientRequest,
   PackageSubpathClientRequestUnion,
   PackageSubpathClientStreamRequest,
