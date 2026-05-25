@@ -512,11 +512,13 @@ import {
   type RpcManifestStreamRouteHandlerHookContextFor,
   type RpcManifestStreamRouteHandlerHooksFor,
   type RpcManifestStreamRouteHandlerOptionsArgs,
+  type RpcManifestStreamRouteHandlerOptionsArgsFor,
   type RpcManifestStreamRouteHandlerOptionsFor,
   type RpcManifestStreamRouteMiddlewareFor,
   type RpcManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor,
   type RpcManifestUnaryRouteHandlerOptionsArgs,
+  type RpcManifestUnaryRouteHandlerOptionsArgsFor,
   type RpcManifestUnaryRouteHandlerOptionsFor,
   type RpcManifestUnaryRouteMiddlewareFor,
   type JoorConfig,
@@ -1272,11 +1274,13 @@ import {
   type RpcManifestStreamRouteHandlerHookContextFor as RpcSubpathManifestStreamRouteHandlerHookContextFor,
   type RpcManifestStreamRouteHandlerHooksFor as RpcSubpathManifestStreamRouteHandlerHooksFor,
   type RpcManifestStreamRouteHandlerOptionsArgs as RpcSubpathManifestStreamRouteHandlerOptionsArgs,
+  type RpcManifestStreamRouteHandlerOptionsArgsFor as RpcSubpathManifestStreamRouteHandlerOptionsArgsFor,
   type RpcManifestStreamRouteHandlerOptionsFor as RpcSubpathManifestStreamRouteHandlerOptionsFor,
   type RpcManifestStreamRouteMiddlewareFor as RpcSubpathManifestStreamRouteMiddlewareFor,
   type RpcManifestUnaryRouteHandlerHookContextFor as RpcSubpathManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor as RpcSubpathManifestUnaryRouteHandlerHooksFor,
   type RpcManifestUnaryRouteHandlerOptionsArgs as RpcSubpathManifestUnaryRouteHandlerOptionsArgs,
+  type RpcManifestUnaryRouteHandlerOptionsArgsFor as RpcSubpathManifestUnaryRouteHandlerOptionsArgsFor,
   type RpcManifestUnaryRouteHandlerOptionsFor as RpcSubpathManifestUnaryRouteHandlerOptionsFor,
   type RpcManifestUnaryRouteMiddlewareFor as RpcSubpathManifestUnaryRouteMiddlewareFor,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
@@ -9464,6 +9468,26 @@ const rpcSubpathManifestStreamRouteHandlerOptionsArgs: RpcSubpathManifestStreamR
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptionsArgs;
+const exactManifestUnaryRouteHandlerOptionsArgsFor: RpcManifestUnaryRouteHandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestUnaryRouteBody
+> = [{ path: '/rpc', plugins: [usersPlugin] as const }];
+const exactManifestStreamRouteHandlerOptionsArgsFor: RpcManifestStreamRouteHandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteBody
+> = [{ path: '/rpc', plugins: [usersPlugin] as const }];
+const rpcSubpathExactManifestUnaryRouteHandlerOptionsArgsFor: RpcSubpathManifestUnaryRouteHandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestUnaryRouteBody
+> = exactManifestUnaryRouteHandlerOptionsArgsFor;
+const rpcSubpathExactManifestStreamRouteHandlerOptionsArgsFor: RpcSubpathManifestStreamRouteHandlerOptionsArgsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteBody
+> = exactManifestStreamRouteHandlerOptionsArgsFor;
 rpcSubpathManifestUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -9472,6 +9496,8 @@ rpcSubpathManifestStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+rpcSubpathExactManifestUnaryRouteHandlerOptionsArgsFor[0]?.plugins?.[0]?.name.toUpperCase();
+rpcSubpathExactManifestStreamRouteHandlerOptionsArgsFor[0]?.plugins?.[0]?.name.toUpperCase();
 const rpcSubpathExactHandlerOptionsArgs: RpcSubpathHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin],

@@ -316,7 +316,17 @@ export type RootRouteFirstRpcAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  Root.RpcManifestRouteUnaryHandlerOptionsArgsFor<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
   Root.RpcManifestRouteStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+  Root.RpcManifestRouteStreamHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     StreamBody
@@ -482,7 +492,17 @@ export type RpcSubpathRouteFirstAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  RpcSubpath.RpcManifestRouteUnaryHandlerOptionsArgsFor<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
   RpcSubpath.RpcManifestRouteStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+  RpcSubpath.RpcManifestRouteStreamHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     StreamBody
