@@ -22,6 +22,30 @@ import {
   createAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler,
   createAwsLambdaRestApiHandlerFor,
+  createRouteStreamAwsLambdaHandler,
+  createRouteStreamAwsLambdaHandlerFor,
+  createRouteStreamAwsLambdaHttpApiHandler,
+  createRouteStreamAwsLambdaHttpApiHandlerFor,
+  createRouteStreamAwsLambdaRestApiHandler,
+  createRouteStreamAwsLambdaRestApiHandlerFor,
+  createRouteUnaryAwsLambdaHandler,
+  createRouteUnaryAwsLambdaHandlerFor,
+  createRouteUnaryAwsLambdaHttpApiHandler,
+  createRouteUnaryAwsLambdaHttpApiHandlerFor,
+  createRouteUnaryAwsLambdaRestApiHandler,
+  createRouteUnaryAwsLambdaRestApiHandlerFor,
+  createStreamRouteAwsLambdaHandler,
+  createStreamRouteAwsLambdaHandlerFor,
+  createStreamRouteAwsLambdaHttpApiHandler,
+  createStreamRouteAwsLambdaHttpApiHandlerFor,
+  createStreamRouteAwsLambdaRestApiHandler,
+  createStreamRouteAwsLambdaRestApiHandlerFor,
+  createUnaryRouteAwsLambdaHandler,
+  createUnaryRouteAwsLambdaHandlerFor,
+  createUnaryRouteAwsLambdaHttpApiHandler,
+  createUnaryRouteAwsLambdaHttpApiHandlerFor,
+  createUnaryRouteAwsLambdaRestApiHandler,
+  createUnaryRouteAwsLambdaRestApiHandlerFor,
   BodySizeLimitError,
   DEFAULT_MAX_BODY_BYTES,
   createBunFetch,
@@ -1851,6 +1875,30 @@ import {
   createAwsLambdaHttpApiHandlerFor as createRuntimeSubpathAwsLambdaHttpApiHandlerFor,
   createAwsLambdaRestApiHandler as createRuntimeSubpathAwsLambdaRestApiHandler,
   createAwsLambdaRestApiHandlerFor as createRuntimeSubpathAwsLambdaRestApiHandlerFor,
+  createRouteStreamAwsLambdaHandler as createRuntimeSubpathRouteStreamAwsLambdaHandler,
+  createRouteStreamAwsLambdaHandlerFor as createRuntimeSubpathRouteStreamAwsLambdaHandlerFor,
+  createRouteStreamAwsLambdaHttpApiHandler as createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandler,
+  createRouteStreamAwsLambdaHttpApiHandlerFor as createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandlerFor,
+  createRouteStreamAwsLambdaRestApiHandler as createRuntimeSubpathRouteStreamAwsLambdaRestApiHandler,
+  createRouteStreamAwsLambdaRestApiHandlerFor as createRuntimeSubpathRouteStreamAwsLambdaRestApiHandlerFor,
+  createRouteUnaryAwsLambdaHandler as createRuntimeSubpathRouteUnaryAwsLambdaHandler,
+  createRouteUnaryAwsLambdaHandlerFor as createRuntimeSubpathRouteUnaryAwsLambdaHandlerFor,
+  createRouteUnaryAwsLambdaHttpApiHandler as createRuntimeSubpathRouteUnaryAwsLambdaHttpApiHandler,
+  createRouteUnaryAwsLambdaHttpApiHandlerFor as createRuntimeSubpathRouteUnaryAwsLambdaHttpApiHandlerFor,
+  createRouteUnaryAwsLambdaRestApiHandler as createRuntimeSubpathRouteUnaryAwsLambdaRestApiHandler,
+  createRouteUnaryAwsLambdaRestApiHandlerFor as createRuntimeSubpathRouteUnaryAwsLambdaRestApiHandlerFor,
+  createStreamRouteAwsLambdaHandler as createRuntimeSubpathStreamRouteAwsLambdaHandler,
+  createStreamRouteAwsLambdaHandlerFor as createRuntimeSubpathStreamRouteAwsLambdaHandlerFor,
+  createStreamRouteAwsLambdaHttpApiHandler as createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandler,
+  createStreamRouteAwsLambdaHttpApiHandlerFor as createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandlerFor,
+  createStreamRouteAwsLambdaRestApiHandler as createRuntimeSubpathStreamRouteAwsLambdaRestApiHandler,
+  createStreamRouteAwsLambdaRestApiHandlerFor as createRuntimeSubpathStreamRouteAwsLambdaRestApiHandlerFor,
+  createUnaryRouteAwsLambdaHandler as createRuntimeSubpathUnaryRouteAwsLambdaHandler,
+  createUnaryRouteAwsLambdaHandlerFor as createRuntimeSubpathUnaryRouteAwsLambdaHandlerFor,
+  createUnaryRouteAwsLambdaHttpApiHandler as createRuntimeSubpathUnaryRouteAwsLambdaHttpApiHandler,
+  createUnaryRouteAwsLambdaHttpApiHandlerFor as createRuntimeSubpathUnaryRouteAwsLambdaHttpApiHandlerFor,
+  createUnaryRouteAwsLambdaRestApiHandler as createRuntimeSubpathUnaryRouteAwsLambdaRestApiHandler,
+  createUnaryRouteAwsLambdaRestApiHandlerFor as createRuntimeSubpathUnaryRouteAwsLambdaRestApiHandlerFor,
   createBunFetchFor as createRuntimeSubpathBunFetchFor,
   createBunRpcRequestHandlerFor as createRuntimeSubpathBunRpcRequestHandlerFor,
   createRouteStreamBunFetch as createRuntimeSubpathRouteStreamBunFetch,
@@ -16447,6 +16495,12 @@ const awsLambdaHttpApiRouteUnaryHandlerOptions: AwsLambdaHttpApiRouteUnaryHandle
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiHandlerOptions;
+const requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions: AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiHandlerOptions;
 const awsLambdaHttpApiUnaryRouteHandlerOptions: AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -16483,6 +16537,12 @@ const awsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRouteUnaryHandle
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiHandlerOptions;
+const requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRestApiHandlerOptions;
 const awsLambdaRestApiUnaryRouteHandlerOptions: AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -16679,6 +16739,114 @@ const runtimeSubpathAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandl
   createRuntimeSubpathAwsLambdaRestApiHandler(manifest, handlerOptions);
 const runtimeSubpathSyncAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
   syncAwsLambdaRestApiHandler;
+const routeUnaryAwsLambdaHandler: AwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler(manifest, awsLambdaRouteUnaryHandlerOptions);
+const unaryRouteAwsLambdaHandler: AwsLambdaHandler =
+  createUnaryRouteAwsLambdaHandler(manifest, awsLambdaUnaryRouteHandlerOptions);
+const routeStreamAwsLambdaHandler: AwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler(manifest, awsLambdaRouteStreamHandlerOptions);
+const streamRouteAwsLambdaHandler: AwsLambdaHandler =
+  createStreamRouteAwsLambdaHandler(manifest, awsLambdaStreamRouteHandlerOptions);
+const routeUnaryAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createRouteUnaryAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiRouteUnaryHandlerOptions
+  );
+const unaryRouteAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createUnaryRouteAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiUnaryRouteHandlerOptions
+  );
+const routeStreamAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiRouteStreamHandlerOptions
+  );
+const streamRouteAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createStreamRouteAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiStreamRouteHandlerOptions
+  );
+const routeUnaryAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createRouteUnaryAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiRouteUnaryHandlerOptions
+  );
+const unaryRouteAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createUnaryRouteAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiUnaryRouteHandlerOptions
+  );
+const routeStreamAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiRouteStreamHandlerOptions
+  );
+const streamRouteAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createStreamRouteAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiStreamRouteHandlerOptions
+  );
+const runtimeSubpathRouteUnaryAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathRouteUnaryAwsLambdaHandler(
+    manifest,
+    awsLambdaRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathUnaryRouteAwsLambdaHandler(
+    manifest,
+    awsLambdaUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaHandler(
+    manifest,
+    awsLambdaRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathStreamRouteAwsLambdaHandler(
+    manifest,
+    awsLambdaStreamRouteHandlerOptions
+  );
+const runtimeSubpathRouteUnaryAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathRouteUnaryAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathUnaryRouteAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandler(
+    manifest,
+    awsLambdaHttpApiStreamRouteHandlerOptions
+  );
+const runtimeSubpathRouteUnaryAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathRouteUnaryAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiRouteUnaryHandlerOptions
+  );
+const runtimeSubpathUnaryRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathUnaryRouteAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiUnaryRouteHandlerOptions
+  );
+const runtimeSubpathRouteStreamAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiRouteStreamHandlerOptions
+  );
+const runtimeSubpathStreamRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathStreamRouteAwsLambdaRestApiHandler(
+    manifest,
+    awsLambdaRestApiStreamRouteHandlerOptions
+  );
 const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   rawPath: '/rpc',
   headers: { 'content-type': 'application/json' },
@@ -16750,6 +16918,111 @@ const createRuntimeSubpathTypedAwsLambdaRestApiHandler =
   createRuntimeSubpathAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>();
 const runtimeSubpathTypedAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
   createRuntimeSubpathTypedAwsLambdaRestApiHandler(manifest, handlerOptions);
+const typedRouteUnaryAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRouteUnaryAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRouteUnaryHandlerOptions
+  );
+const typedStreamRouteAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createStreamRouteAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    awsLambdaStreamRouteHandlerOptions
+  );
+const typedRouteUnaryAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRouteUnaryAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions
+  );
+const typedStreamRouteAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createStreamRouteAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    awsLambdaHttpApiStreamRouteHandlerOptions
+  );
+const typedRouteUnaryAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRouteUnaryAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions
+  );
+const typedStreamRouteAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createStreamRouteAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    awsLambdaRestApiStreamRouteHandlerOptions
+  );
+const runtimeSubpathTypedRouteUnaryAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathRouteUnaryAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRouteUnaryHandlerOptions
+  );
+const runtimeSubpathTypedStreamRouteAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathStreamRouteAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    awsLambdaStreamRouteHandlerOptions
+  );
+const runtimeSubpathTypedRouteUnaryAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathRouteUnaryAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions
+  );
+const runtimeSubpathTypedStreamRouteAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    awsLambdaHttpApiStreamRouteHandlerOptions
+  );
+const runtimeSubpathTypedRouteUnaryAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRuntimeSubpathRouteUnaryAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions
+  );
+const runtimeSubpathTypedStreamRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRuntimeSubpathStreamRouteAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    awsLambdaRestApiStreamRouteHandlerOptions
+  );
+createUnaryRouteAwsLambdaHandlerFor()(manifest, awsLambdaUnaryRouteHandlerOptions);
+createRouteStreamAwsLambdaHandlerFor()(
+  manifest,
+  awsLambdaRouteStreamHandlerOptions
+);
+createUnaryRouteAwsLambdaHttpApiHandlerFor()(
+  manifest,
+  awsLambdaHttpApiUnaryRouteHandlerOptions
+);
+createRouteStreamAwsLambdaHttpApiHandlerFor()(
+  manifest,
+  awsLambdaHttpApiRouteStreamHandlerOptions
+);
+createUnaryRouteAwsLambdaRestApiHandlerFor()(
+  manifest,
+  awsLambdaRestApiUnaryRouteHandlerOptions
+);
+createRouteStreamAwsLambdaRestApiHandlerFor()(
+  manifest,
+  awsLambdaRestApiRouteStreamHandlerOptions
+);
+createRuntimeSubpathUnaryRouteAwsLambdaHandlerFor()(
+  manifest,
+  awsLambdaUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamAwsLambdaHandlerFor()(
+  manifest,
+  awsLambdaRouteStreamHandlerOptions
+);
+createRuntimeSubpathUnaryRouteAwsLambdaHttpApiHandlerFor()(
+  manifest,
+  awsLambdaHttpApiUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandlerFor()(
+  manifest,
+  awsLambdaHttpApiRouteStreamHandlerOptions
+);
+createRuntimeSubpathUnaryRouteAwsLambdaRestApiHandlerFor()(
+  manifest,
+  awsLambdaRestApiUnaryRouteHandlerOptions
+);
+createRuntimeSubpathRouteStreamAwsLambdaRestApiHandlerFor()(
+  manifest,
+  awsLambdaRestApiRouteStreamHandlerOptions
+);
 const typedAwsLambdaEvent: AwsLambdaHttpApiEventForTypes = {
   ...awsLambdaEvent,
   requestContext: {
@@ -16782,6 +17055,14 @@ typedAwsLambdaHandler(typedAwsLambdaEvent);
 typedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedAwsLambdaHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+typedRouteUnaryAwsLambdaHandler(typedAwsLambdaEvent);
+typedStreamRouteAwsLambdaHandler(typedAwsLambdaEvent);
+typedRouteUnaryAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+typedStreamRouteAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedRouteUnaryAwsLambdaHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedStreamRouteAwsLambdaHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedRouteUnaryAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedStreamRouteAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
   (response) => {
     const typedResponse: AwsLambdaRestApiResponseV1 = response;
@@ -16797,16 +17078,54 @@ Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
 syncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 typedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 runtimeSubpathTypedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
+typedRouteUnaryAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
+typedStreamRouteAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
+runtimeSubpathTypedRouteUnaryAwsLambdaRestApiHandler(
+  typedAwsLambdaRestApiEvent
+);
+runtimeSubpathTypedStreamRouteAwsLambdaRestApiHandler(
+  typedAwsLambdaRestApiEvent
+);
 runtimeSubpathAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathSyncAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathSyncAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 runtimeSubpathSyncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+routeUnaryAwsLambdaHandler(awsLambdaEvent);
+unaryRouteAwsLambdaHandler(awsLambdaEvent);
+routeStreamAwsLambdaHandler(awsLambdaEvent);
+streamRouteAwsLambdaHandler(awsLambdaEvent);
+routeUnaryAwsLambdaHttpApiHandler(awsLambdaEvent);
+unaryRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
+routeStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
+streamRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
+routeUnaryAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+unaryRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+routeStreamAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+streamRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+runtimeSubpathRouteUnaryAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathUnaryRouteAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathRouteStreamAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathStreamRouteAwsLambdaHandler(awsLambdaEvent);
+runtimeSubpathRouteUnaryAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathUnaryRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathRouteStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathStreamRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
+runtimeSubpathRouteUnaryAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+runtimeSubpathUnaryRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+runtimeSubpathRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+runtimeSubpathStreamRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda adapter plugins.
 createAwsLambdaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary AWS Lambda adapter plugins.
+createRouteUnaryAwsLambdaHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary AWS Lambda HTTP API adapter plugins.
+createRouteUnaryAwsLambdaHttpApiHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda REST API adapter plugins.
 createAwsLambdaRestApiHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching route-unary AWS Lambda REST API adapter plugins.
+createRouteUnaryAwsLambdaRestApiHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed AWS Lambda adapter plugins.
 createTypedAwsLambdaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed AWS Lambda HTTP API adapter plugins.

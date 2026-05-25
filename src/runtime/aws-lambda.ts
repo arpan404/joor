@@ -570,11 +570,22 @@ const responseToRestApiLambda = async (
   };
 };
 
-const createFetch = <TManifest extends JoorManifest>(
+const createFetch = <
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+>(
   manifest: TManifest,
   options?: HandlerOptions
 ) =>
-  createJoorHandler(manifest, (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>);
+  createJoorHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      TBody,
+      Request
+    >
+  );
 
 export function createAwsLambdaHandler<
   TManifest extends JoorManifest,
@@ -597,6 +608,58 @@ export function createAwsLambdaHandler<TManifest extends JoorManifest>(
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
+export function createRouteUnaryAwsLambdaHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaHandler;
+export function createRouteUnaryAwsLambdaHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export const createUnaryRouteAwsLambdaHandler: typeof createRouteUnaryAwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler;
+
+export function createRouteStreamAwsLambdaHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaHandler;
+export function createRouteStreamAwsLambdaHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export const createStreamRouteAwsLambdaHandler: typeof createRouteStreamAwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler;
+
 export const createAwsLambdaHandlerFor =
   <TEvent extends AwsLambdaHttpEventV2>() =>
   <
@@ -615,6 +678,56 @@ export const createAwsLambdaHandlerFor =
     const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
     return async (event) => responseToLambda(await fetch(eventToRequest(event)));
   };
+
+export const createRouteUnaryAwsLambdaHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaRouteUnaryHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
+
+export const createUnaryRouteAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandlerFor =
+  createRouteUnaryAwsLambdaHandlerFor;
+
+export const createRouteStreamAwsLambdaHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaRouteStreamHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
+
+export const createStreamRouteAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandlerFor =
+  createRouteStreamAwsLambdaHandlerFor;
 
 export function createAwsLambdaHttpApiHandler<
   TManifest extends JoorManifest,
@@ -637,6 +750,58 @@ export function createAwsLambdaHttpApiHandler<TManifest extends JoorManifest>(
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
+export function createRouteUnaryAwsLambdaHttpApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaHttpApiHandler;
+export function createRouteUnaryAwsLambdaHttpApiHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaHttpApiHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export const createUnaryRouteAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHttpApiHandler =
+  createRouteUnaryAwsLambdaHttpApiHandler;
+
+export function createRouteStreamAwsLambdaHttpApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaHttpApiHandler;
+export function createRouteStreamAwsLambdaHttpApiHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaHttpApiHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+}
+
+export const createStreamRouteAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler;
+
 export const createAwsLambdaHttpApiHandlerFor =
   <TEvent extends AwsLambdaHttpEventV2>() =>
   <
@@ -655,6 +820,56 @@ export const createAwsLambdaHttpApiHandlerFor =
     const fetch = createFetch(manifest, (args[0] ?? {}) as HandlerOptions);
     return async (event) => responseToLambda(await fetch(eventToRequest(event)));
   };
+
+export const createRouteUnaryAwsLambdaHttpApiHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaHttpApiHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
+
+export const createUnaryRouteAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandlerFor =
+  createRouteUnaryAwsLambdaHttpApiHandlerFor;
+
+export const createRouteStreamAwsLambdaHttpApiHandlerFor =
+  <TEvent extends AwsLambdaHttpEventV2>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaHttpApiHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) => responseToLambda(await fetch(eventToRequest(event)));
+  };
+
+export const createStreamRouteAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandlerFor =
+  createRouteStreamAwsLambdaHttpApiHandlerFor;
 
 export function createAwsLambdaRestApiHandler<
   TManifest extends JoorManifest,
@@ -678,6 +893,60 @@ export function createAwsLambdaRestApiHandler<TManifest extends JoorManifest>(
     responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
 }
 
+export function createRouteUnaryAwsLambdaRestApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaRestApiHandler;
+export function createRouteUnaryAwsLambdaRestApiHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaRestApiHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) =>
+    responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
+}
+
+export const createUnaryRouteAwsLambdaRestApiHandler: typeof createRouteUnaryAwsLambdaRestApiHandler =
+  createRouteUnaryAwsLambdaRestApiHandler;
+
+export function createRouteStreamAwsLambdaRestApiHandler<
+  TManifest extends JoorManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): AwsLambdaRestApiHandler;
+export function createRouteStreamAwsLambdaRestApiHandler<
+  TManifest extends JoorManifest,
+>(manifest: TManifest, options?: HandlerOptions): AwsLambdaRestApiHandler {
+  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    manifest,
+    options
+  );
+  return async (event) =>
+    responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
+}
+
+export const createStreamRouteAwsLambdaRestApiHandler: typeof createRouteStreamAwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler;
+
 export const createAwsLambdaRestApiHandlerFor =
   <TEvent extends AwsLambdaRestApiEventV1>() =>
   <
@@ -697,3 +966,55 @@ export const createAwsLambdaRestApiHandlerFor =
     return async (event) =>
       responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
   };
+
+export const createRouteUnaryAwsLambdaRestApiHandlerFor =
+  <TEvent extends AwsLambdaRestApiEventV1>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaRestApiRouteUnaryHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaRestApiHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) =>
+      responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
+  };
+
+export const createUnaryRouteAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandlerFor =
+  createRouteUnaryAwsLambdaRestApiHandlerFor;
+
+export const createRouteStreamAwsLambdaRestApiHandlerFor =
+  <TEvent extends AwsLambdaRestApiEventV1>() =>
+  <
+    TManifest extends JoorManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  >(
+    manifest: TManifest,
+    ...args: AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): AwsLambdaRestApiHandler<TEvent> => {
+    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+      manifest,
+      (args[0] ?? {}) as HandlerOptions
+    );
+    return async (event) =>
+      responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
+  };
+
+export const createStreamRouteAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandlerFor =
+  createRouteStreamAwsLambdaRestApiHandlerFor;
