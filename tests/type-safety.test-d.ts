@@ -104,6 +104,22 @@ import {
   createNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor,
+  createRouteStreamVercelFetch,
+  createRouteStreamVercelFetchFor,
+  createRouteStreamVercelFunction,
+  createRouteStreamVercelFunctionFor,
+  createRouteUnaryVercelFetch,
+  createRouteUnaryVercelFetchFor,
+  createRouteUnaryVercelFunction,
+  createRouteUnaryVercelFunctionFor,
+  createStreamRouteVercelFetch,
+  createStreamRouteVercelFetchFor,
+  createStreamRouteVercelFunction,
+  createStreamRouteVercelFunctionFor,
+  createUnaryRouteVercelFetch,
+  createUnaryRouteVercelFetchFor,
+  createUnaryRouteVercelFunction,
+  createUnaryRouteVercelFunctionFor,
   createVercelFetch,
   createVercelFetchFor,
   createVercelFunction,
@@ -1805,6 +1821,22 @@ import {
   createNodeTransportRequestHandlerFor as createRuntimeSubpathNodeTransportRequestHandlerFor,
   createNodeTransportRequestHandlerWithPath as createRuntimeSubpathNodeTransportRequestHandlerWithPath,
   createNodeTransportRequestHandlerWithPathFor as createRuntimeSubpathNodeTransportRequestHandlerWithPathFor,
+  createRouteStreamVercelFetch as createRuntimeSubpathRouteStreamVercelFetch,
+  createRouteStreamVercelFetchFor as createRuntimeSubpathRouteStreamVercelFetchFor,
+  createRouteStreamVercelFunction as createRuntimeSubpathRouteStreamVercelFunction,
+  createRouteStreamVercelFunctionFor as createRuntimeSubpathRouteStreamVercelFunctionFor,
+  createRouteUnaryVercelFetch as createRuntimeSubpathRouteUnaryVercelFetch,
+  createRouteUnaryVercelFetchFor as createRuntimeSubpathRouteUnaryVercelFetchFor,
+  createRouteUnaryVercelFunction as createRuntimeSubpathRouteUnaryVercelFunction,
+  createRouteUnaryVercelFunctionFor as createRuntimeSubpathRouteUnaryVercelFunctionFor,
+  createStreamRouteVercelFetch as createRuntimeSubpathStreamRouteVercelFetch,
+  createStreamRouteVercelFetchFor as createRuntimeSubpathStreamRouteVercelFetchFor,
+  createStreamRouteVercelFunction as createRuntimeSubpathStreamRouteVercelFunction,
+  createStreamRouteVercelFunctionFor as createRuntimeSubpathStreamRouteVercelFunctionFor,
+  createUnaryRouteVercelFetch as createRuntimeSubpathUnaryRouteVercelFetch,
+  createUnaryRouteVercelFetchFor as createRuntimeSubpathUnaryRouteVercelFetchFor,
+  createUnaryRouteVercelFunction as createRuntimeSubpathUnaryRouteVercelFunction,
+  createUnaryRouteVercelFunctionFor as createRuntimeSubpathUnaryRouteVercelFunctionFor,
   createVercelFetch as createRuntimeSubpathVercelFetch,
   createVercelFetchFor as createRuntimeSubpathVercelFetchFor,
   createVercelFunction as createRuntimeSubpathVercelFunction,
@@ -17571,20 +17603,166 @@ createVercelFetch(manifest, vercelFetchOptions);
 createVercelFunction(manifest, vercelFetchOptions);
 createRuntimeSubpathVercelFetch(manifest, runtimeSubpathVercelFetchOptions);
 createRuntimeSubpathVercelFunction(manifest, runtimeSubpathVercelFetchOptions);
+const routeUnaryVercelFetch = createRouteUnaryVercelFetch(
+  manifest,
+  vercelRouteUnaryFetchOptions
+);
+const unaryRouteVercelFetch = createUnaryRouteVercelFetch(
+  manifest,
+  vercelUnaryRouteFetchOptions
+);
+const routeStreamVercelFetch = createRouteStreamVercelFetch(
+  manifest,
+  vercelRouteStreamFetchOptions
+);
+const streamRouteVercelFetch = createStreamRouteVercelFetch(
+  manifest,
+  vercelStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryVercelFetch =
+  createRuntimeSubpathRouteUnaryVercelFetch(
+    manifest,
+    runtimeSubpathVercelRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteVercelFetch =
+  createRuntimeSubpathUnaryRouteVercelFetch(
+    manifest,
+    runtimeSubpathVercelUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamVercelFetch =
+  createRuntimeSubpathRouteStreamVercelFetch(
+    manifest,
+    runtimeSubpathVercelRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteVercelFetch =
+  createRuntimeSubpathStreamRouteVercelFetch(
+    manifest,
+    runtimeSubpathVercelStreamRouteFetchOptions
+  );
+const typedRouteUnaryVercelFetch =
+  createRouteUnaryVercelFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedVercelRouteUnaryFetchOptions
+  );
+createUnaryRouteVercelFetchFor()(manifest, vercelUnaryRouteFetchOptions);
+createRouteStreamVercelFetchFor()(manifest, vercelRouteStreamFetchOptions);
+createStreamRouteVercelFetchFor()(manifest, vercelStreamRouteFetchOptions);
+createRuntimeSubpathRouteUnaryVercelFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedVercelRouteUnaryFetchOptions
+);
+createRuntimeSubpathUnaryRouteVercelFetchFor()(
+  manifest,
+  runtimeSubpathVercelUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamVercelFetchFor()(
+  manifest,
+  runtimeSubpathVercelRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteVercelFetchFor()(
+  manifest,
+  runtimeSubpathVercelStreamRouteFetchOptions
+);
+const routeUnaryVercelFunction = createRouteUnaryVercelFunction(
+  manifest,
+  vercelRouteUnaryFetchOptions
+);
+const unaryRouteVercelFunction = createUnaryRouteVercelFunction(
+  manifest,
+  vercelUnaryRouteFetchOptions
+);
+const routeStreamVercelFunction = createRouteStreamVercelFunction(
+  manifest,
+  vercelRouteStreamFetchOptions
+);
+const streamRouteVercelFunction = createStreamRouteVercelFunction(
+  manifest,
+  vercelStreamRouteFetchOptions
+);
+const runtimeSubpathRouteUnaryVercelFunction =
+  createRuntimeSubpathRouteUnaryVercelFunction(
+    manifest,
+    runtimeSubpathVercelRouteUnaryFetchOptions
+  );
+const runtimeSubpathUnaryRouteVercelFunction =
+  createRuntimeSubpathUnaryRouteVercelFunction(
+    manifest,
+    runtimeSubpathVercelUnaryRouteFetchOptions
+  );
+const runtimeSubpathRouteStreamVercelFunction =
+  createRuntimeSubpathRouteStreamVercelFunction(
+    manifest,
+    runtimeSubpathVercelRouteStreamFetchOptions
+  );
+const runtimeSubpathStreamRouteVercelFunction =
+  createRuntimeSubpathStreamRouteVercelFunction(
+    manifest,
+    runtimeSubpathVercelStreamRouteFetchOptions
+  );
+const typedRouteUnaryVercelFunction =
+  createRouteUnaryVercelFunctionFor<HookAppRequest>()(
+    manifest,
+    requestTypedVercelRouteUnaryFetchOptions
+  );
+createUnaryRouteVercelFunctionFor()(manifest, vercelUnaryRouteFetchOptions);
+createRouteStreamVercelFunctionFor()(manifest, vercelRouteStreamFetchOptions);
+createStreamRouteVercelFunctionFor()(manifest, vercelStreamRouteFetchOptions);
+createRuntimeSubpathRouteUnaryVercelFunctionFor<HookAppRequest>()(
+  manifest,
+  requestTypedVercelRouteUnaryFetchOptions
+);
+createRuntimeSubpathUnaryRouteVercelFunctionFor()(
+  manifest,
+  runtimeSubpathVercelUnaryRouteFetchOptions
+);
+createRuntimeSubpathRouteStreamVercelFunctionFor()(
+  manifest,
+  runtimeSubpathVercelRouteStreamFetchOptions
+);
+createRuntimeSubpathStreamRouteVercelFunctionFor()(
+  manifest,
+  runtimeSubpathVercelStreamRouteFetchOptions
+);
 vercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFetch(new Request('https://example.com/rpc'));
 defaultVercelFetch(new Request('https://example.com/rpc'));
+routeUnaryVercelFetch(new Request('https://example.com/rpc'));
+unaryRouteVercelFetch(new Request('https://example.com/rpc'));
+routeStreamVercelFetch(new Request('https://example.com/rpc'));
+streamRouteVercelFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryVercelFetch(new Request('https://example.com/rpc'));
+runtimeSubpathUnaryRouteVercelFetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteStreamVercelFetch(new Request('https://example.com/rpc'));
+runtimeSubpathStreamRouteVercelFetch(new Request('https://example.com/rpc'));
 typedAppVercelFetch(appFetchRequest);
 runtimeSubpathTypedAppVercelFetch(appFetchRequest);
 hookTypedVercelFetch(hookAppRequest);
 directHookTypedVercelFetch(hookAppRequest);
+typedRouteUnaryVercelFetch(hookAppRequest);
 vercelFunction.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathVercelFunction.fetch(new Request('https://example.com/rpc'));
 defaultVercelFunction.fetch(new Request('https://example.com/rpc'));
+routeUnaryVercelFunction.fetch(new Request('https://example.com/rpc'));
+unaryRouteVercelFunction.fetch(new Request('https://example.com/rpc'));
+routeStreamVercelFunction.fetch(new Request('https://example.com/rpc'));
+streamRouteVercelFunction.fetch(new Request('https://example.com/rpc'));
+runtimeSubpathRouteUnaryVercelFunction.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathUnaryRouteVercelFunction.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamVercelFunction.fetch(
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathStreamRouteVercelFunction.fetch(
+  new Request('https://example.com/rpc')
+);
 typedVercelFunction.fetch(appFetchRequest);
 runtimeSubpathTypedVercelFunction.fetch(appFetchRequest);
 hookTypedVercelFunction.fetch(hookAppRequest);
 directHookTypedVercelFunction.fetch(hookAppRequest);
+typedRouteUnaryVercelFunction.fetch(hookAppRequest);
 // @ts-expect-error Vercel function fetch handlers are readonly.
 vercelFunction.fetch = vercelFetch;
 // @ts-expect-error Vercel function fetch handlers are readonly across subpath exports.
@@ -17593,8 +17771,16 @@ runtimeSubpathVercelFunction.fetch = runtimeSubpathVercelFetch;
 const _wrongVercelFunction: VercelFunction = hookTypedVercelFunction;
 // @ts-expect-error direct typed Vercel fetch factories infer custom hook request types.
 directHookTypedVercelFetch(new Request('https://example.com/rpc'));
+typedRouteUnaryVercelFetch(
+  // @ts-expect-error route-unary Vercel fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Vercel functions infer custom hook request types.
 directHookTypedVercelFunction.fetch(new Request('https://example.com/rpc'));
+typedRouteUnaryVercelFunction.fetch(
+  // @ts-expect-error route-unary Vercel function factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
 createVercelFetch(manifest);
 // @ts-expect-error service-dependent manifests require matching typed Vercel fetch plugins.
