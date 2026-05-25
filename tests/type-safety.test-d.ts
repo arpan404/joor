@@ -116,16 +116,24 @@ import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
   createRouteStreamRpcBodyHandler,
+  createRouteStreamRpcBodyHandlerFor,
   createRouteStreamRpcBodyResultHandler,
+  createRouteStreamRpcBodyResultHandlerFor,
   createRouteStreamRpcTransportBodyResultHandler,
   createRouteUnaryRpcBodyHandler,
+  createRouteUnaryRpcBodyHandlerFor,
   createRouteUnaryRpcBodyResultHandler,
+  createRouteUnaryRpcBodyResultHandlerFor,
   createRouteUnaryRpcTransportBodyResultHandler,
   createStreamRouteRpcBodyHandler,
+  createStreamRouteRpcBodyHandlerFor,
   createStreamRouteRpcBodyResultHandler,
+  createStreamRouteRpcBodyResultHandlerFor,
   createStreamRouteRpcTransportBodyResultHandler,
   createUnaryRouteRpcBodyHandler,
+  createUnaryRouteRpcBodyHandlerFor,
   createUnaryRouteRpcBodyResultHandler,
+  createUnaryRouteRpcBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
   createCompiledRpcHandler as createRootCompiledRpcHandler,
@@ -1256,16 +1264,24 @@ import {
   createRpcHandlerFor as createRpcSubpathHandlerFor,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
   createRouteStreamRpcBodyHandler as createRpcSubpathRouteStreamBodyHandler,
+  createRouteStreamRpcBodyHandlerFor as createRpcSubpathRouteStreamBodyHandlerFor,
   createRouteStreamRpcBodyResultHandler as createRpcSubpathRouteStreamBodyResultHandler,
+  createRouteStreamRpcBodyResultHandlerFor as createRpcSubpathRouteStreamBodyResultHandlerFor,
   createRouteStreamRpcTransportBodyResultHandler as createRpcSubpathRouteStreamTransportBodyResultHandler,
   createRouteUnaryRpcBodyHandler as createRpcSubpathRouteUnaryBodyHandler,
+  createRouteUnaryRpcBodyHandlerFor as createRpcSubpathRouteUnaryBodyHandlerFor,
   createRouteUnaryRpcBodyResultHandler as createRpcSubpathRouteUnaryBodyResultHandler,
+  createRouteUnaryRpcBodyResultHandlerFor as createRpcSubpathRouteUnaryBodyResultHandlerFor,
   createRouteUnaryRpcTransportBodyResultHandler as createRpcSubpathRouteUnaryTransportBodyResultHandler,
   createStreamRouteRpcBodyHandler as createRpcSubpathStreamRouteBodyHandler,
+  createStreamRouteRpcBodyHandlerFor as createRpcSubpathStreamRouteBodyHandlerFor,
   createStreamRouteRpcBodyResultHandler as createRpcSubpathStreamRouteBodyResultHandler,
+  createStreamRouteRpcBodyResultHandlerFor as createRpcSubpathStreamRouteBodyResultHandlerFor,
   createStreamRouteRpcTransportBodyResultHandler as createRpcSubpathStreamRouteTransportBodyResultHandler,
   createUnaryRouteRpcBodyHandler as createRpcSubpathUnaryRouteBodyHandler,
+  createUnaryRouteRpcBodyHandlerFor as createRpcSubpathUnaryRouteBodyHandlerFor,
   createUnaryRouteRpcBodyResultHandler as createRpcSubpathUnaryRouteBodyResultHandler,
+  createUnaryRouteRpcBodyResultHandlerFor as createRpcSubpathUnaryRouteBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler as createRpcSubpathUnaryRouteTransportBodyResultHandler,
   createManifestRouteProtocolRequest as createRpcSubpathManifestRouteProtocolRequest,
   createManifestRouteRequest as createRpcSubpathManifestRouteRequest,
@@ -9966,6 +9982,53 @@ const rpcSubpathStreamRouteRpcBodyHandler =
     manifest,
     rpcSubpathManifestStreamRouteHandlerOptions
   );
+const routeUnaryRpcBodyHandlerFor =
+  createRouteUnaryRpcBodyHandlerFor<HookAppRequest>();
+const unaryRouteRpcBodyHandlerFor =
+  createUnaryRouteRpcBodyHandlerFor<HookAppRequest>();
+const routeStreamRpcBodyHandlerFor =
+  createRouteStreamRpcBodyHandlerFor<HookAppRequest>();
+const streamRouteRpcBodyHandlerFor =
+  createStreamRouteRpcBodyHandlerFor<HookAppRequest>();
+const hookTypedRouteUnaryRpcBodyHandler = routeUnaryRpcBodyHandlerFor(
+  manifest,
+  manifestUnaryRouteHandlerOptions
+);
+const hookTypedUnaryRouteRpcBodyHandler = unaryRouteRpcBodyHandlerFor(
+  manifest,
+  manifestUnaryRouteHandlerOptions
+);
+const hookTypedRouteStreamRpcBodyHandler = routeStreamRpcBodyHandlerFor(
+  manifest,
+  manifestStreamRouteHandlerOptions
+);
+const hookTypedStreamRouteRpcBodyHandler = streamRouteRpcBodyHandlerFor(
+  manifest,
+  manifestStreamRouteHandlerOptions
+);
+const defaultRouteUnaryRpcBodyHandler =
+  createRouteUnaryRpcBodyHandlerFor()(manifest, manifestUnaryRouteHandlerOptions);
+const defaultRouteStreamRpcBodyHandler =
+  createRouteStreamRpcBodyHandlerFor()(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+createRpcSubpathRouteUnaryBodyHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestUnaryRouteHandlerOptions
+);
+createRpcSubpathUnaryRouteBodyHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestUnaryRouteHandlerOptions
+);
+createRpcSubpathRouteStreamBodyHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestStreamRouteHandlerOptions
+);
+createRpcSubpathStreamRouteBodyHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestStreamRouteHandlerOptions
+);
 const createTypedRpcBodyHandler = createRpcBodyHandlerFor<AppFetchRequest>();
 const typedAppRpcBodyHandler: RpcBodyHandler<typeof manifest, AppFetchRequest> =
   createTypedRpcBodyHandler(manifest, handlerOptions);
@@ -10035,6 +10098,23 @@ rpcSubpathUnaryRouteRpcBodyHandler(
 rpcSubpathStreamRouteRpcBodyHandler(
   new Request('https://example.com/rpc'),
   manifestStreamRouteBody
+);
+hookTypedRouteUnaryRpcBodyHandler(hookAppRequest, manifestUnaryRouteBody);
+hookTypedUnaryRouteRpcBodyHandler(hookAppRequest, manifestUnaryRouteBody);
+hookTypedRouteStreamRpcBodyHandler(hookAppRequest, manifestStreamRouteBody);
+hookTypedStreamRouteRpcBodyHandler(hookAppRequest, manifestStreamRouteBody);
+defaultRouteUnaryRpcBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
+);
+defaultRouteStreamRpcBodyHandler(
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+hookTypedRouteUnaryRpcBodyHandler(
+  // @ts-expect-error route body handler factories preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
 );
 routeUnaryRpcBodyHandler(
   new Request('https://example.com/rpc'),
@@ -10120,6 +10200,60 @@ const rpcSubpathStreamRouteRpcBodyResultHandler =
     manifest,
     rpcSubpathManifestStreamRouteHandlerOptions
   );
+const routeUnaryRpcBodyResultHandlerFor =
+  createRouteUnaryRpcBodyResultHandlerFor<HookAppRequest>();
+const unaryRouteRpcBodyResultHandlerFor =
+  createUnaryRouteRpcBodyResultHandlerFor<HookAppRequest>();
+const routeStreamRpcBodyResultHandlerFor =
+  createRouteStreamRpcBodyResultHandlerFor<HookAppRequest>();
+const streamRouteRpcBodyResultHandlerFor =
+  createStreamRouteRpcBodyResultHandlerFor<HookAppRequest>();
+const hookTypedRouteUnaryRpcBodyResultHandler =
+  routeUnaryRpcBodyResultHandlerFor(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
+const hookTypedUnaryRouteRpcBodyResultHandler =
+  unaryRouteRpcBodyResultHandlerFor(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
+const hookTypedRouteStreamRpcBodyResultHandler =
+  routeStreamRpcBodyResultHandlerFor(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+const hookTypedStreamRouteRpcBodyResultHandler =
+  streamRouteRpcBodyResultHandlerFor(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+const defaultRouteUnaryRpcBodyResultHandler =
+  createRouteUnaryRpcBodyResultHandlerFor()(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
+const defaultRouteStreamRpcBodyResultHandler =
+  createRouteStreamRpcBodyResultHandlerFor()(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+createRpcSubpathRouteUnaryBodyResultHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestUnaryRouteHandlerOptions
+);
+createRpcSubpathUnaryRouteBodyResultHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestUnaryRouteHandlerOptions
+);
+createRpcSubpathRouteStreamBodyResultHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestStreamRouteHandlerOptions
+);
+createRpcSubpathStreamRouteBodyResultHandlerFor<HookAppRequest>()(
+  manifest,
+  rpcSubpathManifestStreamRouteHandlerOptions
+);
 // @ts-expect-error service-dependent manifests require matching body result handler plugins.
 createRpcBodyResultHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching typed body result handler plugins.
@@ -10188,6 +10322,47 @@ Promise.resolve(
     new Request('https://example.com/rpc'),
     manifestStreamRouteBody
   )
+);
+Promise.resolve(
+  hookTypedRouteUnaryRpcBodyResultHandler(
+    hookAppRequest,
+    manifestUnaryRouteBody
+  )
+);
+Promise.resolve(
+  hookTypedUnaryRouteRpcBodyResultHandler(
+    hookAppRequest,
+    manifestUnaryRouteBody
+  )
+);
+Promise.resolve(
+  hookTypedRouteStreamRpcBodyResultHandler(
+    hookAppRequest,
+    manifestStreamRouteBody
+  )
+);
+Promise.resolve(
+  hookTypedStreamRouteRpcBodyResultHandler(
+    hookAppRequest,
+    manifestStreamRouteBody
+  )
+);
+Promise.resolve(
+  defaultRouteUnaryRpcBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestUnaryRouteBody
+  )
+);
+Promise.resolve(
+  defaultRouteStreamRpcBodyResultHandler(
+    new Request('https://example.com/rpc'),
+    manifestStreamRouteBody
+  )
+);
+hookTypedRouteUnaryRpcBodyResultHandler(
+  // @ts-expect-error route body result handler factories preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestUnaryRouteBody
 );
 Promise.resolve(
   defaultRpcBodyResultHandler(
