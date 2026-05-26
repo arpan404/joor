@@ -18364,6 +18364,22 @@ const nextRouteStreamHandlersOptions: NextRouteStreamHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedNextRouteStreamHandlersOptions: NextRouteStreamHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const nextStreamRouteHandlersOptions: NextStreamRouteHandlersOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -18386,6 +18402,12 @@ const nextRouteStreamHandlerOptions: NextRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteStreamHandlersOptions;
+const requestTypedNextRouteStreamHandlerOptions: NextRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const nextStreamHandlerOptions: NextStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19609,6 +19631,11 @@ createRouteStreamNextRouteHandlersFor()(
   manifest,
   nextRouteStreamHandlersOptions
 );
+const routeStreamHookTypedNextRouteHandlers =
+  createRouteStreamNextRouteHandlersFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedNextRouteStreamHandlersOptions
+  );
 createStreamRouteNextRouteHandlersFor()(
   manifest,
   nextStreamRouteHandlersOptions
@@ -19623,6 +19650,13 @@ const directHookTypedRouteUnaryNextRouteHandlers: NextRouteHandlers<
 > = createRouteUnaryNextRouteHandlers(
   manifest,
   requestTypedNextRouteUnaryHandlersOptions
+);
+const directHookTypedRouteStreamNextRouteHandlers: NextRouteHandlers<
+  never,
+  HookAppRequest
+> = createRouteStreamNextRouteHandlers(
+  manifest,
+  requestTypedNextRouteStreamHandlersOptions
 );
 const createContextRequestTypedNextRouteHandlers = createNextRouteHandlersFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
@@ -19653,6 +19687,10 @@ const routeUnaryHookTypedNextHandler = createRouteUnaryNextHandlerFor<
 >()(manifest, requestTypedNextRouteUnaryHandlerOptions);
 createUnaryRouteNextHandlerFor()(manifest, nextUnaryHandlerOptions);
 createRouteStreamNextHandlerFor()(manifest, nextRouteStreamHandlerOptions);
+const routeStreamHookTypedNextHandler = createRouteStreamNextHandlerFor<
+  never,
+  HookAppRequest
+>()(manifest, requestTypedNextRouteStreamHandlerOptions);
 createStreamRouteNextHandlerFor()(manifest, nextStreamHandlerOptions);
 const directHookTypedNextHandler: NextHandler<never, HookAppRequest> =
   createNextHandler(manifest, typedRequestHandlerOptions);
@@ -19661,6 +19699,13 @@ const directHookTypedRouteUnaryNextHandler: NextHandler<never, HookAppRequest> =
     manifest,
     requestTypedNextRouteUnaryHandlerOptions
   );
+const directHookTypedRouteStreamNextHandler: NextHandler<
+  never,
+  HookAppRequest
+> = createRouteStreamNextHandler(
+  manifest,
+  requestTypedNextRouteStreamHandlerOptions
+);
 const createContextRequestTypedNextHandler = createNextHandlerFor<
   NextRouteContext<NextDynamicRouteParamsForTypes>,
   AppFetchRequest
@@ -19808,12 +19853,16 @@ nextRequestTypedHandlers.GET(appFetchRequest);
 nextRequestTypedHandler.POST(appFetchRequest);
 hookTypedNextRouteHandlers.GET(hookAppRequest);
 routeUnaryHookTypedNextRouteHandlers.GET(hookAppRequest);
+routeStreamHookTypedNextRouteHandlers.POST(hookAppRequest);
 hookTypedNextHandler.POST(hookAppRequest);
 routeUnaryHookTypedNextHandler.POST(hookAppRequest);
+routeStreamHookTypedNextHandler.POST(hookAppRequest);
 directHookTypedNextRouteHandlers.GET(hookAppRequest);
 directHookTypedRouteUnaryNextRouteHandlers.GET(hookAppRequest);
+directHookTypedRouteStreamNextRouteHandlers.POST(hookAppRequest);
 directHookTypedNextHandler.POST(hookAppRequest);
 directHookTypedRouteUnaryNextHandler.POST(hookAppRequest);
+directHookTypedRouteStreamNextHandler.POST(hookAppRequest);
 nextContextRequestTypedHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -19858,20 +19907,34 @@ routeUnaryHookTypedNextRouteHandlers.GET(
   // @ts-expect-error route-unary hook-typed Next handlers require the configured request subtype.
   new Request('https://example.com/rpc')
 );
+routeStreamHookTypedNextRouteHandlers.POST(
+  // @ts-expect-error route-stream hook-typed Next handlers require the configured request subtype.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error hook-typed Next handler aliases require the configured request subtype.
 hookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 // @ts-expect-error route-unary hook-typed Next handler aliases require the configured request subtype.
 routeUnaryHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
+// @ts-expect-error route-stream hook-typed Next handler aliases require the configured request subtype.
+routeStreamHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 // @ts-expect-error direct typed Next route handlers infer custom hook request types.
 directHookTypedNextRouteHandlers.GET(new Request('https://example.com/rpc'));
 directHookTypedRouteUnaryNextRouteHandlers.GET(
   // @ts-expect-error direct typed route-unary Next route handlers infer custom hook request types.
   new Request('https://example.com/rpc')
 );
+directHookTypedRouteStreamNextRouteHandlers.POST(
+  // @ts-expect-error direct typed route-stream Next route handlers infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Next handler aliases infer custom hook request types.
 directHookTypedNextHandler.POST(new Request('https://example.com/rpc'));
 directHookTypedRouteUnaryNextHandler.POST(
   // @ts-expect-error direct typed route-unary Next handler aliases infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamNextHandler.POST(
+  // @ts-expect-error direct typed route-stream Next handler aliases infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 nextContextRequestTypedHandlers.GET(
