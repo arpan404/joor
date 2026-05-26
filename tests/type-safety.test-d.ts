@@ -3219,6 +3219,26 @@ routeKindScopedStreamNetlifyEdgeFunction(
   requestTypedProcedureRequest,
   {}
 );
+const routeKindScopedUnaryElysiaHandler = createRouteUnaryElysiaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryElysiaHandler({ request: requestTypedProcedureRequest });
+routeKindScopedUnaryElysiaHandler({
+  // @ts-expect-error route-unary Elysia handlers default to unary-only request requirements.
+  request: requestTypedStreamProcedureRequest,
+});
+const routeKindScopedStreamElysiaHandler = createRouteStreamElysiaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamElysiaHandler({
+  request: requestTypedStreamProcedureRequest,
+});
+routeKindScopedStreamElysiaHandler({
+  // @ts-expect-error route-stream Elysia handlers default to stream-only request requirements.
+  request: requestTypedProcedureRequest,
+});
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]

@@ -7,7 +7,13 @@ import type {
   RpcManifestBody,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamHandlerOptionsArgs,
+  RpcManifestRouteStreamHandlerOptionsFor,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryHandlerOptionsArgs,
+  RpcManifestRouteUnaryHandlerOptionsFor,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from '../rpc/dispatcher.js';
 import {
   createJoorHandler,
@@ -27,9 +33,8 @@ type ElysiaContextLike = {
   readonly request: Request;
 };
 
-export type ElysiaHandler<
-  TContext extends ElysiaContextLike = ElysiaContext,
-> = (context: TContext) => Response | Promise<Response>;
+export type ElysiaHandler<TContext extends ElysiaContextLike = ElysiaContext> =
+  (context: TContext) => Response | Promise<Response>;
 
 type ElysiaContextRequest<TContext extends ElysiaContextLike> =
   TContext extends ElysiaContext<infer TRequest> ? TRequest : Request;
@@ -48,8 +53,14 @@ export type ElysiaRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type ElysiaUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -57,7 +68,8 @@ export type ElysiaUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteStreamHandlerOptionsFor<
@@ -66,8 +78,14 @@ export type ElysiaRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = ElysiaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type ElysiaStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -75,7 +93,8 @@ export type ElysiaStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaHandlerOptionsArgs<
@@ -92,8 +111,14 @@ export type ElysiaRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type ElysiaUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -101,7 +126,8 @@ export type ElysiaUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type ElysiaRouteStreamHandlerOptionsArgs<
@@ -110,8 +136,14 @@ export type ElysiaRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = ElysiaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type ElysiaStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -119,7 +151,8 @@ export type ElysiaStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export function createElysiaHandler<
@@ -141,7 +174,12 @@ export function createElysiaHandler<TManifest extends JoorManifest>(
 ): ElysiaHandler {
   const fetch = createJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >
   );
   return (context) => fetch(context.request);
 }
@@ -149,7 +187,8 @@ export function createElysiaHandler<TManifest extends JoorManifest>(
 export function createRouteUnaryElysiaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: ElysiaRouteUnaryHandlerOptionsArgs<
@@ -165,7 +204,7 @@ export function createRouteUnaryElysiaHandler<TManifest extends JoorManifest>(
 ): ElysiaHandler {
   const fetch = createRouteUnaryJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
@@ -181,7 +220,8 @@ export const createUnaryRouteElysiaHandler: typeof createRouteUnaryElysiaHandler
 export function createRouteStreamElysiaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: ElysiaRouteStreamHandlerOptionsArgs<
@@ -197,7 +237,7 @@ export function createRouteStreamElysiaHandler<TManifest extends JoorManifest>(
 ): ElysiaHandler {
   const fetch = createRouteStreamJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
@@ -221,9 +261,7 @@ export function createElysiaHandlerFor(): <
     RpcManifestBody<TManifest>,
     RpcManifestRequiredRuntimeRequest<TManifest>
   >
-) => ElysiaHandler<
-  ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>
->;
+) => ElysiaHandler<ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>>;
 export function createElysiaHandlerFor<TContext extends ElysiaContextLike>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -258,7 +296,8 @@ export function createElysiaHandlerFor<TContext extends ElysiaContextLike>() {
         ElysiaContextRequest<TContext>
       >
     );
-    return (context) => fetch(context.request as ElysiaContextRequest<TContext>);
+    return (context) =>
+      fetch(context.request as ElysiaContextRequest<TContext>);
   };
 }
 
@@ -271,10 +310,10 @@ export function createRouteUnaryElysiaHandlerFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
   >
 ) => ElysiaHandler<
-  ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>
+  ElysiaContext<RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>>
 >;
 export function createRouteUnaryElysiaHandlerFor<
   TContext extends ElysiaContextLike,
@@ -309,7 +348,7 @@ export function createRouteUnaryElysiaHandlerFor<
       ElysiaContextRequest<TContext>
     >()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
@@ -333,10 +372,10 @@ export function createRouteStreamElysiaHandlerFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
   >
 ) => ElysiaHandler<
-  ElysiaContext<RpcManifestRequiredRuntimeRequest<TManifest>>
+  ElysiaContext<RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>>
 >;
 export function createRouteStreamElysiaHandlerFor<
   TContext extends ElysiaContextLike,
@@ -371,7 +410,7 @@ export function createRouteStreamElysiaHandlerFor<
       ElysiaContextRequest<TContext>
     >()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,
