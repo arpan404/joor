@@ -2407,6 +2407,358 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestStreamRouteId<PackageSubpathManifest>,
   Rpc.RpcManifestStreamRouteEvent<PackageSubpathManifest, 'users.watch'>,
 ];
+type PackageSubpathManifestRouteDetailSurface = [
+  Manifest.JoorManifestRouteUnaryTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryId<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteId<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamId<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteId<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProcedure<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteProcedure<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamProcedure<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteProcedure<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryInput<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteInput<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamInput<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestStreamRouteInput<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestRouteUnaryOutput<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteOutput<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamOutput<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestStreamRouteOutput<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestRouteUnaryRequiredServices<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteRequiredServices<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamRequiredServices<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteRequiredServices<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryRequiredRuntimeRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteRequiredRuntimeRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamRequiredRuntimeRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteRequiredRuntimeRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryHeaders<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteHeaders<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryClientHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteClientHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamClientHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteClientHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryHasHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteHasHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamHasHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteHasHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryRequiresHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteRequiresHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamRequiresHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteRequiresHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryHasResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteHasResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamHasResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteHasResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryRequiresResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteRequiresResponseHeaders<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamRequiresResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteRequiresResponseHeaders<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryError<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteError<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamError<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestStreamRouteError<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestRouteUnaryErrorCode<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteErrorCode<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamErrorCode<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteErrorCode<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryErrorDetails<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteErrorDetails<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamErrorDetails<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteErrorDetails<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryEnvelope<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteEnvelope<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteUnaryEnvelopeUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteEnvelopeUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryResult<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteResult<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteUnaryResultUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteResultUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProtocolRequest<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteProtocolRequest<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamProtocolRequest<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteProtocolRequest<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryProtocolRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteProtocolRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamProtocolRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteProtocolRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProtocolBatchRequest<
+    PackageSubpathManifest,
+    readonly [
+      Manifest.JoorManifestRouteUnaryProtocolRequest<
+        PackageSubpathManifest,
+        'users.get'
+      >,
+    ]
+  >,
+  Manifest.JoorManifestUnaryRouteProtocolBatchRequest<
+    PackageSubpathManifest,
+    readonly [
+      Manifest.JoorManifestUnaryRouteProtocolRequest<
+        PackageSubpathManifest,
+        'users.get'
+      >,
+    ]
+  >,
+  Manifest.JoorManifestRouteUnaryProtocolBatchRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteProtocolBatchRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProtocolBatchResults<
+    PackageSubpathManifest,
+    readonly [
+      Manifest.JoorManifestRouteUnaryProtocolRequest<
+        PackageSubpathManifest,
+        'users.get'
+      >,
+    ]
+  >,
+  Manifest.JoorManifestUnaryRouteProtocolBatchResults<
+    PackageSubpathManifest,
+    readonly [
+      Manifest.JoorManifestUnaryRouteProtocolRequest<
+        PackageSubpathManifest,
+        'users.get'
+      >,
+    ]
+  >,
+  Manifest.JoorManifestRouteUnaryProtocolBatchClientHeaders<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteProtocolBatchClientHeaders<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProtocolBatchOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteProtocolBatchOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryProtocolBatchOptionsTuple<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteProtocolBatchOptionsTuple<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryRequest<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestUnaryRouteRequest<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteStreamRequest<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteRequest<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryRequestOptions<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteRequestOptions<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamRequestOptions<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteRequestOptions<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryClientArgs<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestUnaryRouteClientArgs<
+    PackageSubpathManifest,
+    'users.get'
+  >,
+  Manifest.JoorManifestRouteStreamClientArgs<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestStreamRouteClientArgs<
+    PackageSubpathManifest,
+    'users.watch'
+  >,
+  Manifest.JoorManifestRouteUnaryBatchRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchRequest<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBatchRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchRequestUnion<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBatchResults<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchResults<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBatchClientHeaders<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchClientHeaders<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBatchOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBatchOptionsTuple<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBatchOptionsTuple<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBody<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBody<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamBody<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteBody<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBodyResult<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBodyResult<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamBodyResult<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteBodyResult<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBodyResultFor<
+    PackageSubpathManifest,
+    Manifest.JoorManifestRouteUnaryProtocolRequest<
+      PackageSubpathManifest,
+      'users.get'
+    >
+  >,
+  Manifest.JoorManifestUnaryRouteBodyResultFor<
+    PackageSubpathManifest,
+    Manifest.JoorManifestUnaryRouteProtocolRequest<
+      PackageSubpathManifest,
+      'users.get'
+    >
+  >,
+  Manifest.JoorManifestRouteStreamBodyResultFor<
+    PackageSubpathManifest,
+    Manifest.JoorManifestRouteStreamProtocolRequest<
+      PackageSubpathManifest,
+      'users.watch'
+    >
+  >,
+  Manifest.JoorManifestStreamRouteBodyResultFor<
+    PackageSubpathManifest,
+    Manifest.JoorManifestStreamRouteProtocolRequest<
+      PackageSubpathManifest,
+      'users.watch'
+    >
+  >,
+  Manifest.JoorManifestRouteUnaryBodyHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBodyHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamBodyHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteBodyHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteUnaryTransportBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteTransportBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamTransportBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteTransportBodyResultHandler<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'>,
+  Manifest.JoorManifestStreamRouteEvent<PackageSubpathManifest, 'users.watch'>,
+];
 type PackageSubpathClientProtocolRequest =
   Client.RpcManifestRouteUnaryProtocolRequest<
     PackageSubpathManifest,
@@ -2727,6 +3079,7 @@ export type PackageSubpathSurface = [
   PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs,
   PackageSubpathRpcRouteCoreSurface,
   PackageSubpathRpcRouteDetailSurface,
+  PackageSubpathManifestRouteDetailSurface,
   PackageSubpathRootRouteUnaryHandlerOptionsArgsFor,
   PackageSubpathRootRouteUnaryHandlerOptionsWithTrailingArgs,
   PackageSubpathRootRouteUnaryHandlerOptionsWithPreflightArgs,
