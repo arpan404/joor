@@ -39,7 +39,13 @@ import {
   type BunRouteStreamTransportBodyResultHandlerFor,
   type BunRouteUnaryTransportBodyResultHandlerFor,
 } from '../src/runtime/bun.js';
-import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
+import {
+  createDenoCompiledTransportRequestHandler,
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPath,
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  type DenoCompiledRouteStreamTransportBodyResultHandlerFor,
+  type DenoCompiledRouteUnaryTransportBodyResultHandlerFor,
+} from '../src/runtime/deno-compiled-transport.js';
 import {
   createRouteStreamDenoRpcRequestHandler as createStandaloneRouteStreamDenoRpcRequestHandler,
   createRouteUnaryDenoRpcRequestHandler as createStandaloneRouteUnaryDenoRpcRequestHandler,
@@ -883,6 +889,107 @@ describe('dispatcher', () => {
       traceId: 'trace-deno-compiled',
       data: { ok: true },
     });
+  });
+
+  it('handles route-specific compiled Deno transport requests', async () => {
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { ok: input.ok, event: 'updated' };
+      },
+    });
+    const routeManifest = {
+      procedures: {
+        ping: unary,
+        watch: stream,
+      },
+    };
+    type RouteManifest = typeof routeManifest;
+    const runtimeState = createCompiledRuntimeState();
+    const unaryDispatch = async () => undefined;
+    const unaryTransport = (async (_request: unknown, body: unknown) => {
+      const requestBody = body as { id: 'ping'; input: { ok: boolean } };
+      return {
+        ok: true,
+        id: requestBody.id,
+        traceId: 'trace-deno-compiled-route-unary',
+        data: { ok: requestBody.input.ok },
+      };
+    }) as unknown as DenoCompiledRouteUnaryTransportBodyResultHandlerFor<RouteManifest>;
+    const streamTransport = (async () =>
+      new Response(
+        [
+          'event: data',
+          'data: {"ok":true,"event":"updated"}',
+          '',
+          'event: done',
+          'data: {}',
+          '',
+        ].join('\n'),
+        { headers: { 'content-type': 'text/event-stream' } }
+      )) as unknown as DenoCompiledRouteStreamTransportBodyResultHandlerFor<RouteManifest>;
+    const unaryHandler =
+      createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor()<
+        RouteManifest
+      >(runtimeState, unaryTransport, unaryDispatch, '/rpc');
+    const streamHandler =
+      createRouteStreamDenoCompiledTransportRequestHandlerWithPath<RouteManifest>(
+        runtimeState,
+        streamTransport,
+        unaryDispatch,
+        '/rpc'
+      );
+
+    const wrongPath = await unaryHandler(
+      new Request('http://localhost/not-rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      })
+    );
+    const unaryResponse = await unaryHandler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      })
+    );
+    const unaryBody = await unaryResponse.json();
+    const streamResponse = await streamHandler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      })
+    );
+    const streamBody = await streamResponse.text();
+
+    expect(wrongPath.status).toBe(404);
+    expect(unaryResponse.status).toBe(200);
+    expect(unaryBody).toMatchObject({
+      ok: true,
+      id: 'ping',
+      traceId: 'trace-deno-compiled-route-unary',
+      data: { ok: true },
+    });
+    expect(streamResponse.status).toBe(200);
+    expect(streamResponse.headers.get('content-type')).toContain(
+      'text/event-stream'
+    );
+    expect(streamBody).toContain('event: data');
+    expect(streamBody).toContain('"event":"updated"');
+    expect(streamBody).toContain('event: done');
   });
 
   it('handles path-scoped Bun transport requests', async () => {
