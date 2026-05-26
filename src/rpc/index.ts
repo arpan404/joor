@@ -58,6 +58,7 @@ export {
   defineUnaryRouteHandlerOptions,
 } from './dispatcher.js';
 export { createSseResponse, encodeSse } from './stream.js';
+export { validationDetails } from './protocol.js';
 
 export type {
   BatchResults,

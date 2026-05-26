@@ -140,6 +140,7 @@ import {
   createUnaryRouteRpcBodyResultHandler as createRootUnaryRouteRpcBodyResultHandler,
   createUnaryRouteRpcBodyResultHandlerFor as createRootUnaryRouteRpcBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler as createRootUnaryRouteRpcTransportBodyResultHandler,
+  validationDetails as rootValidationDetails,
   defineRouteStreamHandlerOptions as defineRootRouteStreamHandlerOptions,
   defineRouteUnaryHandlerOptions as defineRootRouteUnaryHandlerOptions,
   defineStreamRouteHandlerOptions as defineRootStreamRouteHandlerOptions,
@@ -224,6 +225,7 @@ import {
   defineRouteUnaryConfigFor as defineContextRouteUnaryConfigFor,
   defineStreamRouteConfigFor as defineContextStreamRouteConfigFor,
   defineUnaryRouteConfigFor as defineContextUnaryRouteConfigFor,
+  type UnionToIntersection as ContextUnionToIntersection,
 } from 'joor/context';
 import { build, createAiDocs, createOpenApiDocument } from 'joor/compiler';
 import { ok } from 'joor/procedure';
@@ -258,6 +260,7 @@ import {
   defineStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions,
   encodeSse as rpcEncodeSse,
+  validationDetails as rpcValidationDetails,
 } from 'joor/rpc';
 import {
   compiledAuthenticate as runtimeCompiledAuthenticate,
@@ -776,6 +779,17 @@ const rootPackageSubpathProcedureRequest: Root.ProcedureRequest<
   typeof packageSubpathProcedure
 > = packageSubpathProcedureRequest;
 rootPackageSubpathProcedureRequest.url.toUpperCase();
+type RootUnionToIntersection = Root.UnionToIntersection<
+  { readonly user: string } | { readonly org: string }
+>;
+type ContextSubpathUnionToIntersection = ContextUnionToIntersection<
+  { readonly user: string } | { readonly org: string }
+>;
+const rootUnionToIntersection = {} as RootUnionToIntersection;
+const contextSubpathUnionToIntersection =
+  rootUnionToIntersection as ContextSubpathUnionToIntersection;
+contextSubpathUnionToIntersection.user.toUpperCase();
+contextSubpathUnionToIntersection.org.toUpperCase();
 
 const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
   procedures: [
@@ -803,6 +817,8 @@ rootCompiledCreateProcedureCacheKey(
   {},
   {}
 ).toUpperCase();
+rpcValidationDetails([]).valueOf();
+rootValidationDetails([]).valueOf();
 createCorsHeaderRecord({ origin: 'https://app.example' })?.[
   'access-control-allow-origin'
 ]?.toUpperCase();
@@ -952,6 +968,7 @@ const packageSubpathValues = [
   rootCompiledUncachedExecutionState,
   rootCompiledValidationDetails,
   rootCompiledWriteCache,
+  rootValidationDetails,
   createManifestRouteStreamProtocolRequest,
   createRpcBodyHandlerFor,
   createRootRpcBodyHandlerFor,
@@ -1007,6 +1024,7 @@ const packageSubpathValues = [
   defineRootUnaryRouteHandlerOptions,
   defineStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions,
+  rpcValidationDetails,
   createCompiledRouteStreamRpcBodyResultHandler,
   createCompiledRouteStreamRpcHandler,
   createCompiledRouteStreamRpcTransportBodyResultHandler,

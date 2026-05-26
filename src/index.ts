@@ -77,6 +77,7 @@ export {
   defineStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions,
 } from './rpc/dispatcher.js';
+export { validationDetails } from './rpc/protocol.js';
 export { createSseResponse, encodeSse } from './rpc/stream.js';
 export {
   createAwsLambdaHandler,
@@ -556,7 +557,11 @@ export type {
   DefineAuthPolicy,
 } from './auth/policy.js';
 export type { ContextRequestSource, JoorContext } from './context/context.js';
-export type { JoorPlugin, PluginServices } from './context/plugin.js';
+export type {
+  JoorPlugin,
+  PluginServices,
+  UnionToIntersection,
+} from './context/plugin.js';
 export type {
   DefineConfigFor,
   DefineRouteStreamConfigFor,

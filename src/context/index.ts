@@ -51,4 +51,8 @@ export type {
   JoorUnaryRouteConfigFor,
 } from '../config.js';
 export type { ContextRequestSource, JoorContext } from './context.js';
-export type { JoorPlugin, PluginServices } from './plugin.js';
+export type {
+  JoorPlugin,
+  PluginServices,
+  UnionToIntersection,
+} from './plugin.js';

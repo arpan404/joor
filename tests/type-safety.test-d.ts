@@ -408,6 +408,7 @@ import {
   defineStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions,
   encodeSse,
+  validationDetails as rootValidationDetails,
   appendJsonStringHeaders,
   createJsonHeaderRecord,
   hasInvalidHeaderValue,
@@ -852,6 +853,7 @@ import {
   type JoorUnaryRouteConfigFor,
   type JoorContext,
   type PluginServices,
+  type UnionToIntersection,
   type Infer,
   type HeaderObjectSchema,
   type HeaderValueSchema,
@@ -1502,6 +1504,7 @@ import {
   type JoorUnaryRouteConfigFor as ContextSubpathUnaryRouteConfigFor,
   type JoorContext as ContextSubpathJoorContext,
   type PluginServices as ContextSubpathPluginServices,
+  type UnionToIntersection as ContextSubpathUnionToIntersection,
 } from '../src/context/index.js';
 import {
   defineConfigFor as defineConfigSubpathFor,
@@ -1600,6 +1603,7 @@ import {
   defineRouteUnaryHandlerOptions as defineRpcSubpathRouteUnaryHandlerOptions,
   defineStreamRouteHandlerOptions as defineRpcSubpathStreamRouteHandlerOptions,
   defineUnaryRouteHandlerOptions as defineRpcSubpathUnaryRouteHandlerOptions,
+  validationDetails as rpcSubpathValidationDetails,
   type BatchResults as RpcSubpathBatchResults,
   type ClientBatchRequest as RpcSubpathClientBatchRequest,
   type ClientFetch as RpcSubpathClientFetch,
@@ -2827,6 +2831,16 @@ const rootPluginServices: RootPluginServices = {
   },
 };
 rootPluginServices.users.findById('1').name.toUpperCase();
+type RootUnionToIntersection = UnionToIntersection<
+  { readonly user: string } | { readonly org: string }
+>;
+type ContextUnionToIntersection = ContextSubpathUnionToIntersection<
+  { readonly user: string } | { readonly org: string }
+>;
+const contextUnionToIntersection =
+  {} as RootUnionToIntersection as ContextUnionToIntersection;
+contextUnionToIntersection.user.toUpperCase();
+contextUnionToIntersection.org.toUpperCase();
 const configWithServiceAwareHooks = defineConfig({
   plugins: [usersPlugin] as const,
   hooks: {
@@ -4754,6 +4768,8 @@ const rootCompiledHelpers: [
   rootCompiledWriteCache,
 ];
 rootCompiledHelpers.length.toFixed();
+rootValidationDetails([]).valueOf();
+rpcSubpathValidationDetails([]).valueOf();
 
 // @ts-expect-error id is required and must be a string.
 const _invalidInput: ProcedureInput<typeof procedure> = { id: 1 };
