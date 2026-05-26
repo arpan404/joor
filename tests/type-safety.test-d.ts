@@ -3599,6 +3599,28 @@ createRouteStreamExpressHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamExpressHandlerOptions
 );
+createRouteUnaryExpressHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      // @ts-expect-error route-unary Express factories default hooks to unary-only request requirements.
+      request.streamRequestId;
+      return undefined;
+    },
+  },
+});
+createRouteStreamExpressHandlerFor()(routeKindScopedManifest, {
+  plugins: [auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.streamRequestId.toUpperCase();
+      // @ts-expect-error route-stream Express factories default hooks to stream-only request requirements.
+      request.requestId;
+      return undefined;
+    },
+  },
+});
 const routeKindScopedUnaryKoaHandlerOptions: KoaRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -3631,6 +3653,28 @@ createRouteStreamKoaHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamKoaHandlerOptions
 );
+createRouteUnaryKoaHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      // @ts-expect-error route-unary Koa factories default hooks to unary-only request requirements.
+      request.streamRequestId;
+      return undefined;
+    },
+  },
+});
+createRouteStreamKoaHandlerFor()(routeKindScopedManifest, {
+  plugins: [auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.streamRequestId.toUpperCase();
+      // @ts-expect-error route-stream Koa factories default hooks to stream-only request requirements.
+      request.requestId;
+      return undefined;
+    },
+  },
+});
 const routeKindScopedUnaryHonoHandler = createRouteUnaryHonoHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
@@ -3689,6 +3733,28 @@ createRouteStreamFastifyHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamFastifyHandlerOptions
 );
+createRouteUnaryFastifyHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      // @ts-expect-error route-unary Fastify factories default hooks to unary-only request requirements.
+      request.streamRequestId;
+      return undefined;
+    },
+  },
+});
+createRouteStreamFastifyHandlerFor()(routeKindScopedManifest, {
+  plugins: [auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.streamRequestId.toUpperCase();
+      // @ts-expect-error route-stream Fastify factories default hooks to stream-only request requirements.
+      request.requestId;
+      return undefined;
+    },
+  },
+});
 const routeKindScopedUnaryNodeRpcOptions: NodeRouteUnaryRpcRequestHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]

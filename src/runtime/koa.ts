@@ -340,7 +340,7 @@ export const createRouteUnaryKoaHandlerFor =
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
     THookRequest extends Request =
-      RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+      RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: KoaRouteUnaryHandlerOptionsArgs<
@@ -370,7 +370,8 @@ export const createRouteStreamKoaHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+    THookRequest extends Request =
+      RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: KoaRouteStreamHandlerOptionsArgs<
