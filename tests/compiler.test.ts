@@ -153,6 +153,51 @@ const expectRouteFirstAliasesPrimary = (source: string) => {
   }
 };
 
+const routeTwinName = (name: string): string | undefined => {
+  if (name.includes('RouteUnary')) {
+    return name.replaceAll('RouteUnary', 'UnaryRoute');
+  }
+  if (name.includes('UnaryRoute')) {
+    return name.replaceAll('UnaryRoute', 'RouteUnary');
+  }
+  if (name.includes('RouteStream')) {
+    return name.replaceAll('RouteStream', 'StreamRoute');
+  }
+  if (name.includes('StreamRoute')) {
+    return name.replaceAll('StreamRoute', 'RouteStream');
+  }
+
+  return undefined;
+};
+
+const collectGeneratedExports = (source: string): ReadonlySet<string> =>
+  new Set(
+    [
+      ...source.matchAll(
+        /^export\s+(?:declare\s+)?(?:const|function|type|interface|class)\s+([A-Za-z_][A-Za-z0-9_]*)/gm
+      ),
+    ]
+      .map((match) => match[1])
+      .filter((name): name is string => name !== undefined)
+  );
+
+const expectGeneratedRouteAliasPairs = (
+  label: string,
+  source: string
+): void => {
+  const exports = collectGeneratedExports(source);
+  const missing = [...exports]
+    .flatMap((name) => {
+      const twin = routeTwinName(name);
+      return twin !== undefined && !exports.has(twin)
+        ? [`${name} is missing ${twin}`]
+        : [];
+    })
+    .sort();
+
+  expect(missing, `${label} route alias parity`).toEqual([]);
+};
+
 const createGeneratedRpcRequest = (
   id: string,
   input: unknown,
@@ -1327,6 +1372,29 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
       );
+      const generatedFetchSource = await readFile(
+        join(outDir, 'fetch.ts'),
+        'utf8'
+      );
+      const generatedNodeSource = await readFile(
+        join(outDir, 'node.ts'),
+        'utf8'
+      );
+      for (const [label, source] of [
+        ['dispatcher.safe.ts', dispatcherSafeSource],
+        ['client.ts', clientSource],
+        ['fetch.ts', generatedFetchSource],
+        ['aws-lambda.ts', generatedAwsLambdaSource],
+        ['cloudflare.ts', generatedCloudflareSource],
+        ['next.ts', generatedNextSource],
+        ['vercel.ts', generatedVercelSource],
+        ['netlify.ts', generatedNetlifySource],
+        ['node.ts', generatedNodeSource],
+        ['bun.ts', generatedNativeBunSource],
+        ['deno.ts', generatedNativeDenoSource],
+      ] as const) {
+        expectGeneratedRouteAliasPairs(label, source);
+      }
       expectRouteFirstAliasesPrimary(clientSource);
       expectRouteFirstAliasesPrimary(dispatcherSafeSource);
       expect(clientSource).toContain("from 'joor/manifest'");
