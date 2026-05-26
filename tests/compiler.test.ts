@@ -80,6 +80,14 @@ type GeneratedNetlifyModule = {
   readonly edge: GeneratedNetlifyEdgeFunction;
 };
 
+type GeneratedNativeFetchModule = {
+  readonly createRouteStreamFetchFor: () => (
+    options?: object
+  ) => GeneratedFetchHandler;
+  readonly createRouteUnaryFetch: (options?: object) => GeneratedFetchHandler;
+  readonly fetch: GeneratedFetchHandler;
+};
+
 const toRelativeModuleSpecifier = (fromDir: string, toFile: string): string => {
   const specifier = relative(fromDir, toFile).replaceAll('\\', '/');
   return specifier.startsWith('.') ? specifier : `./${specifier}`;
@@ -1704,6 +1712,82 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(await netlifyStreamResponse.text()).toContain(
         '"userId":"netlify-stream"'
+      );
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('dispatches generated Bun and Deno fetch handlers through compiled runtime', async () => {
+    const outDir = await mkdtemp(join(repoRoot, '.tmp-joor-native-fetch-'));
+    try {
+      await build({ config: fixtureConfig, outDir });
+      const [bun, deno] = (await Promise.all([
+        import(/* @vite-ignore */ pathToFileURL(join(outDir, 'bun.ts')).href),
+        import(/* @vite-ignore */ pathToFileURL(join(outDir, 'deno.ts')).href),
+      ])) as [GeneratedNativeFetchModule, GeneratedNativeFetchModule];
+      const userId = '550e8400-e29b-41d4-a716-446655440000';
+
+      await expectGeneratedJsonData(
+        await bun.fetch(
+          createGeneratedRpcRequest('posts.list', { userId: 'bun' })
+        ),
+        [{ id: 'post-bun', title: 'Hello' }]
+      );
+      await expectGeneratedJsonData(
+        await bun.createRouteUnaryFetch()(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { authorization: 'Bearer test' }
+          )
+        ),
+        { id: userId, name: 'Ada' }
+      );
+      const bunStreamResponse = await bun.createRouteStreamFetchFor()()(
+        createGeneratedRpcRequest(
+          'users.watch',
+          { userId: 'bun-stream' },
+          { accept: 'text/event-stream' }
+        )
+      );
+      expect(bunStreamResponse.status).toBe(200);
+      expect(bunStreamResponse.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(await bunStreamResponse.text()).toContain(
+        '"userId":"bun-stream"'
+      );
+
+      await expectGeneratedJsonData(
+        await deno.fetch(
+          createGeneratedRpcRequest('posts.list', { userId: 'deno' })
+        ),
+        [{ id: 'post-deno', title: 'Hello' }]
+      );
+      await expectGeneratedJsonData(
+        await deno.createRouteUnaryFetch()(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { authorization: 'Bearer test' }
+          )
+        ),
+        { id: userId, name: 'Ada' }
+      );
+      const denoStreamResponse = await deno.createRouteStreamFetchFor()()(
+        createGeneratedRpcRequest(
+          'users.watch',
+          { userId: 'deno-stream' },
+          { accept: 'text/event-stream' }
+        )
+      );
+      expect(denoStreamResponse.status).toBe(200);
+      expect(denoStreamResponse.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(await denoStreamResponse.text()).toContain(
+        '"userId":"deno-stream"'
       );
     } finally {
       await rm(outDir, { recursive: true, force: true });
