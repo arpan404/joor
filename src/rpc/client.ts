@@ -2893,6 +2893,7 @@ export function createClient<TRequest extends Request = Request>(
   options: ClientOptions<JoorManifest | undefined, TRequest>
 ): LegacyRpcTransportClient | RouteRpcTransportClient<RpcRouteMap> {
   const url = options.url;
+  const manifest = options.manifest;
   const baseHeaders =
     options.headers === undefined
       ? undefined
@@ -2921,6 +2922,9 @@ export function createClient<TRequest extends Request = Request>(
     >
   > => {
     const [callOptions] = requestOptions;
+    if (manifest !== undefined) {
+      assertManifestRouteRequestKind(manifest, id, 'unary');
+    }
     const response = await fetcher(
       requestFactory(
         createClientRequestFactoryArgs({
@@ -2952,12 +2956,21 @@ export function createClient<TRequest extends Request = Request>(
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
   ): PendingRpcRequest<TProcedure, TId> &
-    PendingRpcRequestHeaders<TProcedure> =>
-    createPendingRpcRequest(id, input, ...requestOptions);
+    PendingRpcRequestHeaders<TProcedure> => {
+    if (manifest !== undefined) {
+      assertManifestRouteRequestKind(manifest, id, 'unary');
+    }
+    return createPendingRpcRequest(id, input, ...requestOptions);
+  };
   const batch = async <const TRequests extends readonly LegacyBatchRequest[]>(
     requests: TRequests,
     batchOptions?: ClientBatchOptions
   ): Promise<BatchResults<TRequests>> => {
+    if (manifest !== undefined) {
+      for (const pending of requests) {
+        assertManifestRouteRequestKind(manifest, pending.id, 'unary');
+      }
+    }
     const body: JsonValue = requests.map(
       (pending): JsonValue => ({
         id: pending.id,
@@ -2996,34 +3009,39 @@ export function createClient<TRequest extends Request = Request>(
     ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
-  ): AsyncIterable<StreamEvent<TProcedure> & JsonValue> => ({
-    async *[Symbol.asyncIterator]() {
-      const headers = createHeaders(baseHeaders, requestOptions[0]?.headers);
-      headers.set('accept', 'text/event-stream');
-      const response = await fetcher(
-        requestFactory(
-          createClientRequestFactoryArgs({
-            url,
-            body: {
-              id,
-              input,
-              ...(requestOptions[0]?.traceId === undefined
-                ? {}
-                : { traceId: requestOptions[0].traceId }),
-            } as JsonValue,
-            headers,
-            baseRequest,
-            request: requestOptions[0]?.request,
-          })
-        )
-      );
-      await assertSseResponse(response);
-      yield* parseSse<JsonValue>(
-        response,
-        maxStreamEventBytes
-      ) as AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
-    },
-  });
+  ): AsyncIterable<StreamEvent<TProcedure> & JsonValue> => {
+    if (manifest !== undefined) {
+      assertManifestRouteRequestKind(manifest, id, 'stream');
+    }
+    return {
+      async *[Symbol.asyncIterator]() {
+        const headers = createHeaders(baseHeaders, requestOptions[0]?.headers);
+        headers.set('accept', 'text/event-stream');
+        const response = await fetcher(
+          requestFactory(
+            createClientRequestFactoryArgs({
+              url,
+              body: {
+                id,
+                input,
+                ...(requestOptions[0]?.traceId === undefined
+                  ? {}
+                  : { traceId: requestOptions[0].traceId }),
+              } as JsonValue,
+              headers,
+              baseRequest,
+              request: requestOptions[0]?.request,
+            })
+          )
+        );
+        await assertSseResponse(response);
+        yield* parseSse<JsonValue>(
+          response,
+          maxStreamEventBytes
+        ) as AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
+      },
+    };
+  };
   return Object.freeze({
     call,
     request,

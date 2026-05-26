@@ -191,6 +191,51 @@ describe('client', () => {
     ).toThrowError('RPC route "protected" is a unary route, expected stream');
   });
 
+  it('validates manifest client ids and route kinds at runtime', async () => {
+    const streamProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const manifest = {
+      procedures: { protected: getUser, stream: streamProcedure },
+    };
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      manifest,
+      async fetch() {
+        throw new Error('Unexpected fetch');
+      },
+    }) as unknown as {
+      readonly call: (id: string, input: unknown) => Promise<unknown>;
+      readonly request: (id: string, input: unknown) => unknown;
+      readonly batch: (
+        requests: readonly { readonly id: string; readonly input: unknown }[]
+      ) => Promise<unknown>;
+      readonly stream: (id: string, input: unknown) => AsyncIterable<unknown>;
+    };
+
+    await expect(client.call('missing', {})).rejects.toThrowError(
+      'Unknown RPC route "missing"'
+    );
+    await expect(client.call('stream', { ok: true })).rejects.toThrowError(
+      'RPC route "stream" is a stream route, expected unary'
+    );
+    expect(() => client.request('stream', { ok: true })).toThrowError(
+      'RPC route "stream" is a stream route, expected unary'
+    );
+    await expect(
+      client.batch([{ id: 'stream', input: { ok: true } }] as const)
+    ).rejects.toThrowError(
+      'RPC route "stream" is a stream route, expected unary'
+    );
+    expect(() => client.stream('protected', {})).toThrowError(
+      'RPC route "protected" is a unary route, expected stream'
+    );
+  });
+
   it('forwards typed trace ids through calls, requests, batches, and streams', async () => {
     const procedure = defineProcedure({
       input: t.object({ ok: t.boolean() }),
