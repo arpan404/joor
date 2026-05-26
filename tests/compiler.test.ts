@@ -691,6 +691,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const createRouteUnaryFetchFor');
+      await expect(readFile(join(outDir, 'fetch.ts'), 'utf8')).resolves.toContain(
+        'export const createRouteUnaryFetch'
+      );
+      await expect(readFile(join(outDir, 'fetch.ts'), 'utf8')).resolves.toContain(
+        'export const createRouteStreamFetch'
+      );
       await expect(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
       ).resolves.toContain('export const createWorkerFor =');
@@ -1458,7 +1464,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       await writeFile(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
-import { createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
 import { createRouteStreamWorkerFor, createRouteUnaryWorkerFor, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlersFor, createRouteStreamHandlersFor, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercelFor, createRouteUnaryVercelFor, createVercelFor, vercel } from './vercel.js';
@@ -1542,8 +1548,19 @@ broadNativeHandler;
 runtimeFetch(appRequest);
 // @ts-expect-error generated fetch target defaults reject broad Request values.
 runtimeFetch(plainRequest);
+createRuntimeFetch()(appRequest);
+createRuntimeRouteUnaryFetch()(appRequest);
+createRuntimeUnaryRouteFetch()(appRequest);
+createRuntimeRouteStreamFetch()(appRequest);
+createRuntimeStreamRouteFetch()(appRequest);
 createRuntimeFetchFor()(appRequest);
 createRuntimeRouteUnaryFetchFor()(appRequest);
+// @ts-expect-error generated fetch target creators default to the manifest request subtype.
+createRuntimeFetch()(plainRequest);
+// @ts-expect-error generated route-first fetch target creators default to the manifest request subtype.
+createRuntimeRouteUnaryFetch()(plainRequest);
+// @ts-expect-error generated route-first stream fetch target creators default to the manifest request subtype.
+createRuntimeRouteStreamFetch()(plainRequest);
 // @ts-expect-error generated fetch target factories default to the manifest request subtype.
 createRuntimeFetchFor()(plainRequest);
 

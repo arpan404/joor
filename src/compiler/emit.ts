@@ -1539,6 +1539,16 @@ ${nodeFastCases}
     `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRouteStreamFetchHandler, type NativeRouteUnaryFetchHandler, type NativeStreamRouteFetchHandler, type NativeUnaryRouteFetchHandler } from '${dispatcherImport}';
 
 export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch };
+export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
+  createFetchFor<TRequest>();
+export const createRouteUnaryFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeRouteUnaryFetchHandler<TRequest> =>
+  createRouteUnaryFetchFor<TRequest>();
+export const createUnaryRouteFetch: typeof createRouteUnaryFetch =
+  createRouteUnaryFetch;
+export const createRouteStreamFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeRouteStreamFetchHandler<TRequest> =>
+  createRouteStreamFetchFor<TRequest>();
+export const createStreamRouteFetch: typeof createRouteStreamFetch =
+  createRouteStreamFetch;
 export type { NativeFetchHandler, NativeRequiredRuntimeRequest, NativeRouteStreamFetchHandler, NativeRouteUnaryFetchHandler, NativeStreamRouteFetchHandler, NativeUnaryRouteFetchHandler };
 export default fetch;
 `
