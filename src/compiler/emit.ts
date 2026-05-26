@@ -2422,6 +2422,11 @@ export const createRouteUnaryNodeServerFor: typeof createRouteUnaryServerFor =
   createRouteUnaryServerFor;
 export const createUnaryRouteNodeServerFor: typeof createRouteUnaryNodeServerFor =
   createRouteUnaryNodeServerFor;
+export const listenRouteUnary: typeof createRouteUnaryServerFor =
+  createRouteUnaryServerFor;
+export const listenUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeRouteUnary: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
 export const createRouteStreamServerFor: typeof listen = (
   options: NodeListenOptions = {}
 ): NodeNativeServer => listenWithHandler(createRouteStreamHandler, options);
@@ -2431,6 +2436,13 @@ export const createRouteStreamNodeServerFor: typeof createRouteStreamServerFor =
   createRouteStreamServerFor;
 export const createStreamRouteNodeServerFor: typeof createRouteStreamNodeServerFor =
   createRouteStreamNodeServerFor;
+export const listenRouteStream: typeof createRouteStreamServerFor =
+  createRouteStreamServerFor;
+export const listenStreamRoute: typeof listenRouteStream = listenRouteStream;
+export const listenNodeRouteStream: typeof listenRouteStream =
+  listenRouteStream;
+export const listenNodeStreamRoute: typeof listenRouteStream =
+  listenRouteStream;
 `
   );
 

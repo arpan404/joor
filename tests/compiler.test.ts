@@ -824,6 +824,8 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(nodeSource).toContain('nativeRouteStreamTransport');
       expect(nodeSource).toContain('createHandlerFromTransport');
       expect(nodeSource).toContain('listenWithHandler');
+      expect(nodeSource).toContain('listenRouteUnary');
+      expect(nodeSource).toContain('listenRouteStream');
       expect(nodeSource).toMatch(
         /createJsonHeaderRecord\(\s*result\.responseHeaders \?\? result\.headers\s*\)/
       );
@@ -1702,7 +1704,7 @@ import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor
 import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
 import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
 import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, handlers as namedNextHandlers } from './next.js';
-import { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
+import { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
 import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
@@ -2148,9 +2150,15 @@ const routeUnaryNodeServer: NodeNativeServer =
   createRouteUnaryNodeNativeServerFor(nodeNativeOptions);
 const routeStreamNodeServer: NodeNativeServer =
   createRouteStreamNodeNativeServerFor(nodeNativeOptions);
+const routeUnaryNodeListener: NodeNativeServer =
+  listenRouteUnaryNodeNative(nodeNativeOptions);
+const routeStreamNodeListener: NodeNativeServer =
+  listenRouteStreamNodeNative(nodeNativeOptions);
 nodeServer.close();
 routeUnaryNodeServer.close();
 routeStreamNodeServer.close();
+routeUnaryNodeListener.close();
+routeStreamNodeListener.close();
 nodeServer.address();
 nodeServer.ref().unref();
 const requiredServices: RequiredServices = {
