@@ -18460,6 +18460,12 @@ const runtimeSubpathNextRouteStreamHandlersOptions: RuntimeSubpathNextRouteStrea
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteStreamHandlersOptions;
+const requestTypedRuntimeSubpathNextRouteStreamHandlersOptions: RuntimeSubpathNextRouteStreamHandlersOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const runtimeSubpathNextUnaryHandlerOptions: RuntimeSubpathNextUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -18482,6 +18488,12 @@ const runtimeSubpathNextRouteStreamHandlerOptions: RuntimeSubpathNextRouteStream
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nextRouteStreamHandlerOptions;
+const requestTypedRuntimeSubpathNextRouteStreamHandlerOptions: RuntimeSubpathNextRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlerOptions;
 const exactRuntimeSubpathNextHandlerOptions: RuntimeSubpathNextHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -18717,6 +18729,13 @@ const runtimeSubpathRouteStreamNextRouteHandlers: RuntimeSubpathNextRouteHandler
     manifest,
     runtimeSubpathNextRouteStreamHandlersOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamNextRouteHandlers: RuntimeSubpathNextRouteHandlers<
+  never,
+  HookAppRequest
+> = createRuntimeSubpathRouteStreamNextRouteHandlers(
+  manifest,
+  requestTypedRuntimeSubpathNextRouteStreamHandlersOptions
+);
 const runtimeSubpathStreamRouteNextRouteHandlers: RuntimeSubpathNextRouteHandlers =
   createRuntimeSubpathStreamRouteNextRouteHandlers(
     manifest,
@@ -18737,6 +18756,13 @@ const runtimeSubpathRouteStreamNextHandler: RuntimeSubpathNextHandler =
     manifest,
     runtimeSubpathNextRouteStreamHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamNextHandler: RuntimeSubpathNextHandler<
+  never,
+  HookAppRequest
+> = createRuntimeSubpathRouteStreamNextHandler(
+  manifest,
+  requestTypedRuntimeSubpathNextRouteStreamHandlerOptions
+);
 const runtimeSubpathStreamRouteNextHandler: RuntimeSubpathNextHandler =
   createRuntimeSubpathStreamRouteNextHandler(
     manifest,
@@ -19732,6 +19758,11 @@ const runtimeSubpathRouteUnaryHookTypedNextRouteHandlers =
     manifest,
     requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions
   );
+const runtimeSubpathRouteStreamHookTypedNextRouteHandlers =
+  createRuntimeSubpathRouteStreamNextRouteHandlersFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathNextRouteStreamHandlersOptions
+  );
 createRuntimeSubpathUnaryRouteNextRouteHandlersFor()(
   manifest,
   runtimeSubpathNextUnaryRouteHandlersOptions
@@ -19773,6 +19804,11 @@ const runtimeSubpathRouteUnaryHookTypedNextHandler =
   createRuntimeSubpathRouteUnaryNextHandlerFor<never, HookAppRequest>()(
     manifest,
     requestTypedRuntimeSubpathNextRouteUnaryHandlerOptions
+  );
+const runtimeSubpathRouteStreamHookTypedNextHandler =
+  createRuntimeSubpathRouteStreamNextHandlerFor<never, HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathNextRouteStreamHandlerOptions
   );
 createRuntimeSubpathUnaryRouteNextHandlerFor()(
   manifest,
@@ -19890,7 +19926,11 @@ runtimeSubpathTypedNextHandler.GET(
 runtimeSubpathRequestTypedNextHandlers.GET(appFetchRequest);
 runtimeSubpathRequestTypedNextHandler.POST(appFetchRequest);
 runtimeSubpathRouteUnaryHookTypedNextRouteHandlers.GET(hookAppRequest);
+runtimeSubpathRouteStreamHookTypedNextRouteHandlers.POST(hookAppRequest);
 runtimeSubpathRouteUnaryHookTypedNextHandler.POST(hookAppRequest);
+runtimeSubpathRouteStreamHookTypedNextHandler.POST(hookAppRequest);
+directRuntimeSubpathHookTypedRouteStreamNextRouteHandlers.POST(hookAppRequest);
+directRuntimeSubpathHookTypedRouteStreamNextHandler.POST(hookAppRequest);
 runtimeSubpathContextRequestTypedNextHandlers.GET(
   appFetchRequest,
   runtimeSubpathNextDynamicRouteContext
@@ -19935,6 +19975,22 @@ directHookTypedRouteUnaryNextHandler.POST(
 );
 directHookTypedRouteStreamNextHandler.POST(
   // @ts-expect-error direct typed route-stream Next handler aliases infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamHookTypedNextRouteHandlers.POST(
+  // @ts-expect-error runtime-subpath route-stream hook-typed Next handlers require the configured request subtype.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamHookTypedNextHandler.POST(
+  // @ts-expect-error runtime-subpath route-stream hook-typed Next handler aliases require the configured request subtype.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamNextRouteHandlers.POST(
+  // @ts-expect-error direct runtime-subpath route-stream Next route handlers infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamNextHandler.POST(
+  // @ts-expect-error direct runtime-subpath route-stream Next handler aliases infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 nextContextRequestTypedHandlers.GET(
