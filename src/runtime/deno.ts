@@ -15,6 +15,8 @@ import type { JoorManifest } from '../manifest.js';
 import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
+  createRouteStreamRpcBodyResultHandler,
+  createRouteUnaryRpcBodyResultHandler,
 } from '../rpc/dispatcher.js';
 import type { RpcEnvelope } from '../rpc/protocol.js';
 import {
@@ -1065,7 +1067,7 @@ export function createRouteUnaryDenoRpcRequestHandler<
 export function createRouteUnaryDenoRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): DenoRpcRequestHandler {
-  const handler = createRpcBodyResultHandler(
+  const handler = createRouteUnaryRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
@@ -1108,7 +1110,7 @@ export function createRouteStreamDenoRpcRequestHandler<
 export function createRouteStreamDenoRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): DenoRpcRequestHandler {
-  const handler = createRpcBodyResultHandler(
+  const handler = createRouteStreamRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,

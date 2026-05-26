@@ -19,6 +19,8 @@ import type { JoorPlugin } from '../context/plugin.js';
 import {
   createRpcBodyResultHandler,
   createRpcRequestPreflight,
+  createRouteStreamRpcBodyResultHandler,
+  createRouteUnaryRpcBodyResultHandler,
 } from '../rpc/dispatcher.js';
 import type { RpcEnvelope } from '../rpc/protocol.js';
 import type { JsonValue } from '../schema/json.js';
@@ -1005,7 +1007,7 @@ export function createRouteUnaryBunRpcRequestHandler<
 export function createRouteUnaryBunRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
-  const handler = createRpcBodyResultHandler(
+  const handler = createRouteUnaryRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
@@ -1048,7 +1050,7 @@ export function createRouteStreamBunRpcRequestHandler<
 export function createRouteStreamBunRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
-  const handler = createRpcBodyResultHandler(
+  const handler = createRouteStreamRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,

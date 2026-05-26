@@ -218,4 +218,86 @@ describe('express runtime', () => {
       });
     }
   });
+
+  it('rejects wrong route kinds in route-specific Express handlers', async () => {
+    let unaryInvoked = false;
+    let streamInvoked = false;
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        unaryInvoked = true;
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        streamInvoked = true;
+        yield input;
+      },
+    });
+    const manifest = { procedures: { unary, stream } };
+    const app = express();
+    app.use(
+      '/api/unary',
+      createRouteUnaryExpressHandlerFor()(manifest, { path: '/api/unary' })
+    );
+    app.use(
+      '/api/stream',
+      createRouteStreamExpressHandler(manifest, { path: '/api/stream' })
+    );
+    const server = await new Promise<ReturnType<typeof app.listen>>(
+      (resolve) => {
+        const listening = app.listen(0, '127.0.0.1', () => {
+          resolve(listening);
+        });
+      }
+    );
+    try {
+      const address = server.address() as AddressInfo;
+      const unaryResponse = await fetch(
+        `http://127.0.0.1:${address.port}/api/unary`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: 'stream', input: { ok: true } }),
+        }
+      );
+      const streamResponse = await fetch(
+        `http://127.0.0.1:${address.port}/api/stream`,
+        {
+          method: 'POST',
+          headers: {
+            accept: 'text/event-stream',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ id: 'unary', input: { ok: true } }),
+        }
+      );
+
+      expect(unaryResponse.status).toBe(200);
+      expect(await unaryResponse.json()).toMatchObject({
+        ok: false,
+        id: 'stream',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+      expect(streamResponse.status).toBe(200);
+      expect(await streamResponse.json()).toMatchObject({
+        ok: false,
+        id: 'unary',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+      expect(unaryInvoked).toBe(false);
+      expect(streamInvoked).toBe(false);
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
 });

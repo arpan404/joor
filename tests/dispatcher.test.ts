@@ -1493,6 +1493,81 @@ describe('dispatcher', () => {
     }
   });
 
+  it('rejects wrong route kinds in route-specific Bun and Deno RPC request handlers', async () => {
+    let unaryCalls = 0;
+    let streamCalls = 0;
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        unaryCalls += 1;
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        streamCalls += 1;
+        yield input;
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    const options = { cors: { origin: 'https://route.example' } };
+    const wrongUnaryRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      });
+    const wrongStreamRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const unaryHandlers = [
+      createRouteUnaryBunRpcRequestHandler(routeManifest, options),
+      createRouteUnaryDenoRpcRequestHandler(routeManifest, options),
+      createStandaloneRouteUnaryDenoRpcRequestHandler(routeManifest, options),
+    ];
+    const streamHandlers = [
+      createRouteStreamBunRpcRequestHandler(routeManifest, options),
+      createRouteStreamDenoRpcRequestHandler(routeManifest, options),
+      createStandaloneRouteStreamDenoRpcRequestHandler(routeManifest, options),
+    ];
+
+    for (const handler of unaryHandlers) {
+      const response = await handler(wrongUnaryRequest());
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body).toMatchObject({
+        ok: false,
+        id: 'watch',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+    }
+
+    for (const handler of streamHandlers) {
+      const response = await handler(wrongStreamRequest());
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body).toMatchObject({
+        ok: false,
+        id: 'ping',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+    }
+
+    expect(unaryCalls).toBe(0);
+    expect(streamCalls).toBe(0);
+  });
+
   it('dispatches route-specific Bun and Deno fetch handlers', async () => {
     const unary = defineProcedure({
       input: t.object({ ok: t.boolean() }),

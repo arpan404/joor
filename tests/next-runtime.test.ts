@@ -156,4 +156,65 @@ describe('next runtime', () => {
     expect(body).toContain('"event":"updated"');
     expect(body).toContain('event: done');
   });
+
+  it('rejects wrong route kinds in route-specific Next.js handlers', async () => {
+    let unaryInvoked = false;
+    let streamInvoked = false;
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        unaryInvoked = true;
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        streamInvoked = true;
+        yield input;
+      },
+    });
+    const manifest = { procedures: { unary, stream } };
+    const unaryHandlers = createRouteUnaryNextRouteHandlersFor()(manifest, {
+      path: '/api/rpc',
+    });
+    const streamHandlers = createRouteStreamNextRouteHandlers(manifest, {
+      path: '/api/rpc',
+    });
+
+    const unaryResponse = await unaryHandlers.POST(
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'stream', input: { ok: true } }),
+      })
+    );
+    const streamResponse = await streamHandlers.POST(
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'unary', input: { ok: true } }),
+      })
+    );
+
+    expect(unaryResponse.status).toBe(200);
+    expect(await unaryResponse.json()).toMatchObject({
+      ok: false,
+      id: 'stream',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(streamResponse.status).toBe(200);
+    expect(await streamResponse.json()).toMatchObject({
+      ok: false,
+      id: 'unary',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(unaryInvoked).toBe(false);
+    expect(streamInvoked).toBe(false);
+  });
 });

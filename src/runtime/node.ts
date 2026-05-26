@@ -14,6 +14,7 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
   RpcRequestPreflight,
+  RpcTransportBodyResultHandler,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import type { RpcEnvelope } from '../rpc/protocol.js';
@@ -978,15 +979,30 @@ export function listen<TManifest extends JoorManifest>(
   return server;
 }
 
+type NodeRpcHandlerRouteKind = 'unary' | 'stream';
+
 const createNodeRpcRequestHandlerWithOptions = <
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
   options: HandlerOptions = {},
-  hostname = '0.0.0.0'
+  hostname = '0.0.0.0',
+  routeKind?: NodeRpcHandlerRouteKind
 ): NodeRpcRequestHandler => {
-  const handler = createRpcTransportBodyResultHandler(
+  const handler = (
+    createRpcTransportBodyResultHandler as unknown as (
+      handlerManifest: TManifest,
+      handlerOptions: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        TBody,
+        Request
+      >,
+      preflight: boolean,
+      handlerRouteKind?: NodeRpcHandlerRouteKind
+    ) => RpcTransportBodyResultHandler<TManifest>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -994,7 +1010,8 @@ const createNodeRpcRequestHandlerWithOptions = <
       TBody,
       Request
     >,
-    false
+    false,
+    routeKind
   );
   return createNodeTransportRequestHandler(
     (request, body) => handler(request, body as TBody),
@@ -1051,7 +1068,7 @@ export function createRouteUnaryNodeRpcRequestHandler<
   return createNodeRpcRequestHandlerWithOptions<
     TManifest,
     RpcManifestRouteUnaryBody<TManifest>
-  >(manifest, options, hostname);
+  >(manifest, options, hostname, 'unary');
 }
 
 export const createUnaryRouteNodeRpcRequestHandler: typeof createRouteUnaryNodeRpcRequestHandler =
@@ -1080,7 +1097,7 @@ export function createRouteStreamNodeRpcRequestHandler<
   return createNodeRpcRequestHandlerWithOptions<
     TManifest,
     RpcManifestRouteStreamBody<TManifest>
-  >(manifest, options, hostname);
+  >(manifest, options, hostname, 'stream');
 }
 
 export const createStreamRouteNodeRpcRequestHandler: typeof createRouteStreamNodeRpcRequestHandler =
@@ -1134,10 +1151,12 @@ export const createRouteUnaryNodeRpcRequestHandlerFor =
     return createNodeRpcRequestHandlerWithOptions<
       TManifest,
       RpcManifestRouteUnaryBody<TManifest>
-    >(manifest, options, args[1] ?? '0.0.0.0') as NodeRpcRequestHandler<
-      TIncoming,
-      TOutgoing
-    >;
+    >(
+      manifest,
+      options,
+      args[1] ?? '0.0.0.0',
+      'unary'
+    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
   };
 
 export const createUnaryRouteNodeRpcRequestHandlerFor: typeof createRouteUnaryNodeRpcRequestHandlerFor =
@@ -1165,10 +1184,12 @@ export const createRouteStreamNodeRpcRequestHandlerFor =
     return createNodeRpcRequestHandlerWithOptions<
       TManifest,
       RpcManifestRouteStreamBody<TManifest>
-    >(manifest, options, args[1] ?? '0.0.0.0') as NodeRpcRequestHandler<
-      TIncoming,
-      TOutgoing
-    >;
+    >(
+      manifest,
+      options,
+      args[1] ?? '0.0.0.0',
+      'stream'
+    ) as NodeRpcRequestHandler<TIncoming, TOutgoing>;
   };
 
 export const createStreamRouteNodeRpcRequestHandlerFor: typeof createRouteStreamNodeRpcRequestHandlerFor =
@@ -1196,7 +1217,7 @@ export function listenRouteUnary<TManifest extends JoorManifest>(
   const handler = createNodeRpcRequestHandlerWithOptions<
     TManifest,
     RpcManifestRouteUnaryBody<TManifest>
-  >(manifest, options, hostname);
+  >(manifest, options, hostname, 'unary');
   const server = createServer(handler);
   server.listen(port, hostname);
   return server;
@@ -1228,7 +1249,7 @@ export function listenRouteStream<TManifest extends JoorManifest>(
   const handler = createNodeRpcRequestHandlerWithOptions<
     TManifest,
     RpcManifestRouteStreamBody<TManifest>
-  >(manifest, options, hostname);
+  >(manifest, options, hostname, 'stream');
   const server = createServer(handler);
   server.listen(port, hostname);
   return server;

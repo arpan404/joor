@@ -155,4 +155,90 @@ describe('koa runtime', () => {
       await closeServer(server);
     }
   });
+
+  it('rejects wrong route kinds in route-specific Koa handlers', async () => {
+    let unaryInvoked = false;
+    let streamInvoked = false;
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        unaryInvoked = true;
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        streamInvoked = true;
+        yield input;
+      },
+    });
+    const manifest = { procedures: { unary, stream } };
+    const unaryHandler = createRouteUnaryKoaHandlerFor()(manifest, {
+      path: '/api/unary',
+    });
+    const streamHandler = createRouteStreamKoaHandler(manifest, {
+      path: '/api/stream',
+    });
+    const server = createServer((request, response) => {
+      const context: KoaContext = {
+        req: request,
+        res: response,
+        ...(request.url === undefined ? {} : { originalUrl: request.url }),
+      };
+      const handler = request.url?.startsWith('/api/stream')
+        ? streamHandler
+        : unaryHandler;
+      Promise.resolve(handler(context, async () => undefined)).catch(
+        (error) => {
+          response.statusCode = 500;
+          response.end(String(error));
+        }
+      );
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+    try {
+      const address = server.address() as AddressInfo;
+      const unaryResponse = await fetch(
+        `http://127.0.0.1:${address.port}/api/unary`,
+        {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ id: 'stream', input: { ok: true } }),
+        }
+      );
+      const streamResponse = await fetch(
+        `http://127.0.0.1:${address.port}/api/stream`,
+        {
+          method: 'POST',
+          headers: {
+            accept: 'text/event-stream',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ id: 'unary', input: { ok: true } }),
+        }
+      );
+
+      expect(unaryResponse.status).toBe(200);
+      expect(await unaryResponse.json()).toMatchObject({
+        ok: false,
+        id: 'stream',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+      expect(streamResponse.status).toBe(200);
+      expect(await streamResponse.json()).toMatchObject({
+        ok: false,
+        id: 'unary',
+        error: { code: 'NOT_FOUND', status: 404 },
+      });
+      expect(unaryInvoked).toBe(false);
+      expect(streamInvoked).toBe(false);
+    } finally {
+      await closeServer(server);
+    }
+  });
 });
