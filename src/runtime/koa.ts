@@ -10,7 +10,12 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import { createNodeRpcRequestHandler } from './node.js';
+import {
+  createNodeRpcRequestHandler,
+  createRouteStreamNodeRpcRequestHandler,
+  createRouteUnaryNodeRpcRequestHandler,
+  type NodeRpcRequestHandler,
+} from './node.js';
 
 export interface KoaContext<
   TRequest extends IncomingMessage = IncomingMessage,
@@ -150,14 +155,33 @@ export type KoaStreamRouteHandlerOptionsArgs<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = KoaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+type KoaNodeHandlerFactory<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = (
+  manifest: TManifest,
+  options: HandlerOptionsFor<
+    TManifest,
+    readonly JoorPlugin<object>[],
+    TBody,
+    Request
+  >,
+  hostname: string
+) => NodeRpcRequestHandler;
+
 const createKoaHandlerWithOptions = <
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
-  options: KoaHandlerOptions = {}
+  options: KoaHandlerOptions = {},
+  createHandler: KoaNodeHandlerFactory<TManifest, TBody> = ((
+    handlerManifest,
+    handlerOptions,
+    hostname
+  ) => createNodeRpcRequestHandler(handlerManifest, handlerOptions, hostname))
 ): KoaMiddleware => {
-  const handler = createNodeRpcRequestHandler(
+  const handler = createHandler(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -222,7 +246,7 @@ export function createRouteUnaryKoaHandler<TManifest extends JoorManifest>(
   return createKoaHandlerWithOptions<
     TManifest,
     RpcManifestRouteUnaryBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteUnaryNodeRpcRequestHandler);
 }
 
 export const createUnaryRouteKoaHandler: typeof createRouteUnaryKoaHandler =
@@ -248,7 +272,7 @@ export function createRouteStreamKoaHandler<TManifest extends JoorManifest>(
   return createKoaHandlerWithOptions<
     TManifest,
     RpcManifestRouteStreamBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteStreamNodeRpcRequestHandler);
 }
 
 export const createStreamRouteKoaHandler: typeof createRouteStreamKoaHandler =
@@ -300,7 +324,8 @@ export const createRouteUnaryKoaHandlerFor =
       RpcManifestRouteUnaryBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as KoaHandlerOptions
+      (args[0] ?? {}) as KoaHandlerOptions,
+      createRouteUnaryNodeRpcRequestHandler
     ) as KoaMiddleware<TContext, TNext>;
 
 export const createUnaryRouteKoaHandlerFor: typeof createRouteUnaryKoaHandlerFor =
@@ -329,7 +354,8 @@ export const createRouteStreamKoaHandlerFor =
       RpcManifestRouteStreamBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as KoaHandlerOptions
+      (args[0] ?? {}) as KoaHandlerOptions,
+      createRouteStreamNodeRpcRequestHandler
     ) as KoaMiddleware<TContext, TNext>;
 
 export const createStreamRouteKoaHandlerFor: typeof createRouteStreamKoaHandlerFor =
