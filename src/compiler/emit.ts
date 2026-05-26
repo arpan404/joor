@@ -3007,7 +3007,9 @@ export const createStreamRouteBunFetch: typeof createRouteStreamBunFetch =
 
 export const fetch: BunNativeFetchHandler = createFetch();
 
-export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
+const createServerFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  (options: BunNativeOptions = {}): BunNativeServer => {
   const bunGlobal = globalThis as typeof globalThis & {
     Bun?: {
       serve(config: {
@@ -3023,11 +3025,28 @@ export const serve = (options: BunNativeOptions = {}): BunNativeServer => {
   return bunGlobal.Bun.serve({
     port: options.port ?? 3000,
     hostname: options.hostname ?? '0.0.0.0',
-    fetch: createFetch(options),
+    fetch: fetchFactory(options),
   });
 };
+export const serve = createServerFromFetch(createFetch);
 export const listen: typeof serve = serve;
 export const serveBun: typeof serve = serve;
+export const serveRouteUnary = createServerFromFetch(createRouteUnaryFetch);
+export const serveUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const listenRouteUnary: typeof serveRouteUnary = serveRouteUnary;
+export const listenUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const serveRouteUnaryBun: typeof serveRouteUnary = serveRouteUnary;
+export const serveUnaryRouteBun: typeof serveRouteUnary = serveRouteUnary;
+export const serveBunRouteUnary: typeof serveRouteUnary = serveRouteUnary;
+export const serveBunUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const serveRouteStream = createServerFromFetch(createRouteStreamFetch);
+export const serveStreamRoute: typeof serveRouteStream = serveRouteStream;
+export const listenRouteStream: typeof serveRouteStream = serveRouteStream;
+export const listenStreamRoute: typeof serveRouteStream = serveRouteStream;
+export const serveRouteStreamBun: typeof serveRouteStream = serveRouteStream;
+export const serveStreamRouteBun: typeof serveRouteStream = serveRouteStream;
+export const serveBunRouteStream: typeof serveRouteStream = serveRouteStream;
+export const serveBunStreamRoute: typeof serveRouteStream = serveRouteStream;
 `
   );
 
@@ -3152,7 +3171,9 @@ export const createStreamRouteDenoFetch: typeof createRouteStreamDenoFetch =
 
 export const fetch: DenoNativeFetchHandler = createFetch();
 
-export const serve = (options: DenoNativeOptions = {}): DenoNativeServer => {
+const createServerFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  (options: DenoNativeOptions = {}): DenoNativeServer => {
   const denoGlobal = globalThis as typeof globalThis & {
     Deno?: {
       serve(config: {
@@ -3168,11 +3189,28 @@ export const serve = (options: DenoNativeOptions = {}): DenoNativeServer => {
   return denoGlobal.Deno.serve({
     port: options.port ?? 3000,
     hostname: options.hostname ?? '0.0.0.0',
-    handler: createFetch(options),
+    handler: fetchFactory(options),
   });
 };
+export const serve = createServerFromFetch(createFetch);
 export const listen: typeof serve = serve;
 export const serveDeno: typeof serve = serve;
+export const serveRouteUnary = createServerFromFetch(createRouteUnaryFetch);
+export const serveUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const listenRouteUnary: typeof serveRouteUnary = serveRouteUnary;
+export const listenUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const serveRouteUnaryDeno: typeof serveRouteUnary = serveRouteUnary;
+export const serveUnaryRouteDeno: typeof serveRouteUnary = serveRouteUnary;
+export const serveDenoRouteUnary: typeof serveRouteUnary = serveRouteUnary;
+export const serveDenoUnaryRoute: typeof serveRouteUnary = serveRouteUnary;
+export const serveRouteStream = createServerFromFetch(createRouteStreamFetch);
+export const serveStreamRoute: typeof serveRouteStream = serveRouteStream;
+export const listenRouteStream: typeof serveRouteStream = serveRouteStream;
+export const listenStreamRoute: typeof serveRouteStream = serveRouteStream;
+export const serveRouteStreamDeno: typeof serveRouteStream = serveRouteStream;
+export const serveStreamRouteDeno: typeof serveRouteStream = serveRouteStream;
+export const serveDenoRouteStream: typeof serveRouteStream = serveRouteStream;
+export const serveDenoStreamRoute: typeof serveRouteStream = serveRouteStream;
 `
   );
 };

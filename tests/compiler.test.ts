@@ -755,6 +755,28 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(generatedNetlifySource).toContain(
         'createEdgeFromFetchFor(createRouteStreamFetchFor)'
       );
+      const generatedNativeBunSource = await readFile(
+        join(outDir, 'bun.ts'),
+        'utf8'
+      );
+      expect(generatedNativeBunSource).toContain('createServerFromFetch');
+      expect(generatedNativeBunSource).toContain(
+        'createServerFromFetch(createRouteUnaryFetch)'
+      );
+      expect(generatedNativeBunSource).toContain(
+        'createServerFromFetch(createRouteStreamFetch)'
+      );
+      const generatedNativeDenoSource = await readFile(
+        join(outDir, 'deno.ts'),
+        'utf8'
+      );
+      expect(generatedNativeDenoSource).toContain('createServerFromFetch');
+      expect(generatedNativeDenoSource).toContain(
+        'createServerFromFetch(createRouteUnaryFetch)'
+      );
+      expect(generatedNativeDenoSource).toContain(
+        'createServerFromFetch(createRouteStreamFetch)'
+      );
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
@@ -1675,9 +1697,9 @@ import type { NativeProtocolBatchClientHeaders, NativeProtocolBatchOptions, Nati
 import type { NativeConfig, NativeConfigBody, NativeConfigFor, NativeConfigManifest, NativeConfigRequest, NativeConfigServices, NativeDefineConfig, NativeDefineHandlerOptions, NativeDefineRouteStreamConfig, NativeDefineRouteStreamHandlerOptions, NativeDefineRouteUnaryConfig, NativeDefineRouteUnaryHandlerOptions, NativeDefineStreamRouteConfig, NativeDefineStreamRouteHandlerOptions, NativeDefineUnaryRouteConfig, NativeDefineUnaryRouteHandlerOptions, NativeHandlerHookContext, NativeHandlerHooks, NativeHandlerOptionServices, NativeHandlerOptions, NativeHandlerOptionsArgs, NativeHandlerOptionsArgsFor, NativeHandlerOptionsBody, NativeHandlerOptionsFor, NativeHandlerOptionsManifest, NativeHandlerOptionsRequest, NativeHandlerOptionsServices, NativeHandlerOptionsWithPreflightArgs, NativeHandlerOptionsWithTrailingArgs, NativeMiddleware, NativeRouteStreamConfig, NativeRouteStreamConfigFor, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeRouteUnaryConfig, NativeRouteUnaryConfigFor, NativeRouteUnaryHandlerHookContext, NativeRouteUnaryHandlerHooks, NativeRouteUnaryHandlerOptions, NativeRouteUnaryHandlerOptionsArgs, NativeRouteUnaryHandlerOptionsArgsFor, NativeRouteUnaryHandlerOptionsFor, NativeRouteUnaryHandlerOptionsWithPreflightArgs, NativeRouteUnaryHandlerOptionsWithTrailingArgs, NativeRouteUnaryMiddleware, NativeStreamRouteConfig, NativeStreamRouteConfigFor, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware, NativeUnaryRouteConfig, NativeUnaryRouteConfigFor, NativeUnaryRouteHandlerHookContext, NativeUnaryRouteHandlerHooks, NativeUnaryRouteHandlerOptions, NativeUnaryRouteHandlerOptionsArgs, NativeUnaryRouteHandlerOptionsArgsFor, NativeUnaryRouteHandlerOptionsFor, NativeUnaryRouteHandlerOptionsWithPreflightArgs, NativeUnaryRouteHandlerOptionsWithTrailingArgs, NativeUnaryRouteMiddleware } from './dispatcher.safe.js';
 import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
 import { createPlugin } from 'joor';
-import { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, serve as serveBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
+import { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, serve as serveBunNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
 import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
-import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
+import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
 import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
 import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, handlers as namedNextHandlers } from './next.js';
 import { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
@@ -2028,7 +2050,11 @@ directTypedBunFetchHandler(new Request('https://example.com/rpc'));
 bunDefaultFetchHandler(new Request('https://example.com/rpc'));
 syncBunFetchHandler(new Request('https://example.com/rpc'));
 const bunServer: BunNativeServer = serveBunNative({ ...bunNativeOptions, port: 3000 });
+const routeUnaryBunServer: BunNativeServer = serveRouteUnaryBunNative({ ...bunNativeOptions, port: 3001 });
+const routeStreamBunServer: BunNativeServer = serveRouteStreamBunNative({ ...bunNativeOptions, port: 3002 });
 bunServer.stop?.();
+routeUnaryBunServer.stop?.();
+routeStreamBunServer.stop?.();
 bunServer.ref?.();
 const denoNativeCors: DenoNativeCorsOptions = { origin: 'https://example.com' };
 // @ts-expect-error generated Deno CORS options are readonly.
@@ -2059,8 +2085,14 @@ directTypedDenoFetchHandler(new Request('https://example.com/rpc'));
 denoDefaultFetchHandler(new Request('https://example.com/rpc'));
 syncDenoFetchHandler(new Request('https://example.com/rpc'));
 const denoServer: DenoNativeServer = serveDenoNative({ ...denoNativeOptions, port: 3000 });
+const routeUnaryDenoServer: DenoNativeServer = serveRouteUnaryDenoNative({ ...denoNativeOptions, port: 3001 });
+const routeStreamDenoServer: DenoNativeServer = serveRouteStreamDenoNative({ ...denoNativeOptions, port: 3002 });
 denoServer.shutdown();
+routeUnaryDenoServer.shutdown();
+routeStreamDenoServer.shutdown();
 denoServer.finished.then(() => undefined);
+routeUnaryDenoServer.finished.then(() => undefined);
+routeStreamDenoServer.finished.then(() => undefined);
 const nodeNativeCors: NodeNativeCorsOptions = { origin: 'https://example.com' };
 // @ts-expect-error generated Node CORS options are readonly.
 nodeNativeCors.origin = 'https://other.example.com';
