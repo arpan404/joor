@@ -2,6 +2,7 @@ import { execFile } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
+import { Readable } from 'node:stream';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import { describe, expect, it } from 'vitest';
@@ -88,6 +89,23 @@ type GeneratedNativeFetchModule = {
   readonly fetch: GeneratedFetchHandler;
 };
 
+type GeneratedNodeHandler = (
+  incoming: object,
+  outgoing: object
+) => void | Promise<void>;
+
+type GeneratedNodeModule = {
+  readonly createRouteStreamHandler: (options?: object) => GeneratedNodeHandler;
+  readonly createRouteUnaryHandler: (options?: object) => GeneratedNodeHandler;
+  readonly handler: GeneratedNodeHandler;
+};
+
+type CapturedNodeResponse = {
+  readonly body: string;
+  readonly headers: Readonly<Record<string, string>>;
+  readonly statusCode: number | undefined;
+};
+
 const toRelativeModuleSpecifier = (fromDir: string, toFile: string): string => {
   const specifier = relative(fromDir, toFile).replaceAll('\\', '/');
   return specifier.startsWith('.') ? specifier : `./${specifier}`;
@@ -132,6 +150,75 @@ const expectGeneratedJsonData = async (
 ): Promise<void> => {
   expect(response.status).toBe(200);
   const payload = JSON.parse(await response.text()) as {
+    readonly data?: unknown;
+    readonly ok?: boolean;
+  };
+  expect(payload.ok).toBe(true);
+  expect(payload.data).toEqual(data);
+};
+
+const createGeneratedNodeIncoming = (
+  id: string,
+  input: unknown,
+  headers: Record<string, string> = {}
+): object => {
+  const body = JSON.stringify({ id, input });
+  return Object.assign(Readable.from([body]), {
+    headers: {
+      'content-length': String(Buffer.byteLength(body)),
+      'content-type': 'application/json',
+      host: 'example.test',
+      ...headers,
+    },
+    method: 'POST',
+    socket: { remoteAddress: '127.0.0.1' },
+    url: '/rpc',
+  });
+};
+
+const invokeGeneratedNodeHandler = async (
+  handler: GeneratedNodeHandler,
+  incoming: object
+): Promise<CapturedNodeResponse> => {
+  let statusCode: number | undefined;
+  let headers: Record<string, string> = {};
+  const chunks: Buffer[] = [];
+  const outgoing = {
+    end(chunk?: string | Uint8Array) {
+      if (typeof chunk === 'string') chunks.push(Buffer.from(chunk));
+      else if (chunk !== undefined) chunks.push(Buffer.from(chunk));
+    },
+    off() {
+      return outgoing;
+    },
+    once() {
+      return outgoing;
+    },
+    write(chunk: string | Uint8Array) {
+      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : Buffer.from(chunk));
+      return true;
+    },
+    writeHead(nextStatusCode: number, nextHeaders?: Record<string, string>) {
+      statusCode = nextStatusCode;
+      headers = nextHeaders ?? {};
+      return outgoing;
+    },
+  };
+  await handler(incoming, outgoing);
+  return {
+    body: Buffer.concat(chunks).toString('utf8'),
+    headers,
+    statusCode,
+  };
+};
+
+const expectGeneratedNodeJsonData = (
+  response: CapturedNodeResponse,
+  data: unknown
+): void => {
+  expect(response.statusCode).toBe(200);
+  expect(response.headers['content-type']).toBe('application/json');
+  const payload = JSON.parse(response.body) as {
     readonly data?: unknown;
     readonly ok?: boolean;
   };
@@ -1713,6 +1800,52 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(await netlifyStreamResponse.text()).toContain(
         '"userId":"netlify-stream"'
       );
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('dispatches generated Node handlers through compiled runtime', async () => {
+    const outDir = await mkdtemp(join(repoRoot, '.tmp-joor-node-runtime-'));
+    try {
+      await build({ config: fixtureConfig, outDir });
+      const node = (await import(
+        /* @vite-ignore */ pathToFileURL(join(outDir, 'node.ts')).href
+      )) as GeneratedNodeModule;
+      const userId = '550e8400-e29b-41d4-a716-446655440000';
+
+      expectGeneratedNodeJsonData(
+        await invokeGeneratedNodeHandler(
+          node.handler,
+          createGeneratedNodeIncoming('posts.list', { userId: 'node' })
+        ),
+        [{ id: 'post-node', title: 'Hello' }]
+      );
+      expectGeneratedNodeJsonData(
+        await invokeGeneratedNodeHandler(
+          node.createRouteUnaryHandler(),
+          createGeneratedNodeIncoming(
+            'users.get',
+            { id: userId },
+            { authorization: 'Bearer test' }
+          )
+        ),
+        { id: userId, name: 'Ada' }
+      );
+      const streamResponse = await invokeGeneratedNodeHandler(
+        node.createRouteStreamHandler(),
+        createGeneratedNodeIncoming(
+          'users.watch',
+          { userId: 'node-stream' },
+          { accept: 'text/event-stream' }
+        )
+      );
+      expect(streamResponse.statusCode).toBe(200);
+      expect(streamResponse.headers['content-type']).toContain(
+        'text/event-stream'
+      );
+      expect(streamResponse.body).toContain('"userId":"node-stream"');
+      expect(streamResponse.body).toContain('event: done');
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
