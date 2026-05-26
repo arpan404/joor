@@ -1948,6 +1948,7 @@ const packageSubpathValues = [
 packageSubpathValues.length.toFixed();
 
 type PackageSubpathPlugins = readonly [typeof packageSubpathPlugin];
+type PackageSubpathRoutes = Manifest.JoorManifestRoutes<PackageSubpathManifest>;
 type PackageSubpathBody =
   Manifest.JoorManifestRouteUnaryBody<PackageSubpathManifest>;
 type PackageSubpathStreamBody =
@@ -2032,6 +2033,184 @@ type PackageSubpathRootRouteStreamHandlerOptionsWithPreflightArgs =
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >;
+type PackageSubpathClientRouteDetailSurface = [
+  Client.RpcRouteUnaryId<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteId<PackageSubpathRoutes>,
+  Client.RpcRouteStreamId<PackageSubpathRoutes>,
+  Client.RpcStreamRouteId<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProcedure<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteProcedure<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamProcedure<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteProcedure<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryInput<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteInput<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamInput<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteInput<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryOutput<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteOutput<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamOutput<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteOutput<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryClientHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteClientHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamClientHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteClientHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryResponseHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteResponseHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamResponseHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteResponseHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryHasHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteHasHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamHasHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteHasHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryRequiresHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteRequiresHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamRequiresHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteRequiresHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryHasResponseHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteHasResponseHeaders<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamHasResponseHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteHasResponseHeaders<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryRequiresResponseHeaders<
+    PackageSubpathRoutes,
+    'users.get'
+  >,
+  Client.RpcUnaryRouteRequiresResponseHeaders<
+    PackageSubpathRoutes,
+    'users.get'
+  >,
+  Client.RpcRouteStreamRequiresResponseHeaders<
+    PackageSubpathRoutes,
+    'users.watch'
+  >,
+  Client.RpcStreamRouteRequiresResponseHeaders<
+    PackageSubpathRoutes,
+    'users.watch'
+  >,
+  Client.RpcRouteUnaryError<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteError<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamError<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteError<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryErrorCode<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteErrorCode<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamErrorCode<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteErrorCode<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryErrorDetails<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteErrorDetails<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamErrorDetails<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteErrorDetails<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteStreamEvent<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteEvent<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryEnvelope<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteEnvelope<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteUnaryEnvelopeUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteEnvelopeUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryResult<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteResult<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteUnaryResultUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteResultUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamProtocolRequest<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteProtocolRequest<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryProtocolRequestUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteProtocolRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteStreamProtocolRequestUnion<PackageSubpathRoutes>,
+  Client.RpcStreamRouteProtocolRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProtocolBatchRequest<
+    PackageSubpathRoutes,
+    readonly [
+      Client.RpcRouteUnaryProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+    ]
+  >,
+  Client.RpcUnaryRouteProtocolBatchRequest<
+    PackageSubpathRoutes,
+    readonly [
+      Client.RpcUnaryRouteProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+    ]
+  >,
+  Client.RpcRouteUnaryProtocolBatchRequestUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteProtocolBatchRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProtocolBatchResults<
+    PackageSubpathRoutes,
+    readonly [
+      Client.RpcRouteUnaryProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+    ]
+  >,
+  Client.RpcUnaryRouteProtocolBatchResults<
+    PackageSubpathRoutes,
+    readonly [
+      Client.RpcUnaryRouteProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+    ]
+  >,
+  Client.RpcRouteUnaryProtocolBatchClientHeaders<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteProtocolBatchClientHeaders<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProtocolBatchOptions<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteProtocolBatchOptions<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryProtocolBatchOptionsTuple<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteProtocolBatchOptionsTuple<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryRequest<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteRequest<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamRequest<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteRequest<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryRequestUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteStreamRequestUnion<PackageSubpathRoutes>,
+  Client.RpcStreamRouteRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryRequestOptions<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteRequestOptions<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamRequestOptions<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteRequestOptions<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryClientArgs<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcUnaryRouteClientArgs<PackageSubpathRoutes, 'users.get'>,
+  Client.RpcRouteStreamClientArgs<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcStreamRouteClientArgs<PackageSubpathRoutes, 'users.watch'>,
+  Client.RpcRouteUnaryBatchRequest<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchRequest<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBatchRequestUnion<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchRequestUnion<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBatchResults<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchResults<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBatchClientHeaders<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchClientHeaders<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBatchOptions<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchOptions<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBatchOptionsTuple<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBatchOptionsTuple<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBody<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBody<PackageSubpathRoutes>,
+  Client.RpcRouteStreamBody<PackageSubpathRoutes>,
+  Client.RpcStreamRouteBody<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBodyResult<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteBodyResult<PackageSubpathRoutes>,
+  Client.RpcRouteStreamBodyResult<PackageSubpathRoutes>,
+  Client.RpcStreamRouteBodyResult<PackageSubpathRoutes>,
+  Client.RpcRouteUnaryBodyResultFor<
+    PackageSubpathRoutes,
+    Client.RpcRouteUnaryProtocolRequest<PackageSubpathRoutes, 'users.get'>
+  >,
+  Client.RpcUnaryRouteBodyResultFor<
+    PackageSubpathRoutes,
+    Client.RpcUnaryRouteProtocolRequest<PackageSubpathRoutes, 'users.get'>
+  >,
+  Client.RpcRouteStreamBodyResultFor<
+    PackageSubpathRoutes,
+    Client.RpcRouteStreamProtocolRequest<PackageSubpathRoutes, 'users.watch'>
+  >,
+  Client.RpcStreamRouteBodyResultFor<
+    PackageSubpathRoutes,
+    Client.RpcStreamRouteProtocolRequest<PackageSubpathRoutes, 'users.watch'>
+  >,
+  Client.RpcRouteUnaryTransportClient<PackageSubpathRoutes>,
+  Client.RpcUnaryRouteTransportClient<PackageSubpathRoutes>,
+  Client.RpcRouteStreamTransportClient<PackageSubpathRoutes>,
+  Client.RpcStreamRouteTransportClient<PackageSubpathRoutes>,
+  Client.RpcManifestUnaryRouteTransportClient<PackageSubpathManifest>,
+  Client.RpcManifestStreamRouteTransportClient<PackageSubpathManifest>,
+];
 type PackageSubpathRpcRouteCoreSurface = [
   Rpc.RpcManifestRouteUnaryRequiredRuntimeRequest<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteRequiredRuntimeRequest<PackageSubpathManifest>,
@@ -3077,6 +3256,7 @@ export type PackageSubpathSurface = [
   PackageSubpathRpcRouteStreamHandlerOptionsArgsFor,
   PackageSubpathRpcRouteStreamHandlerOptionsWithTrailingArgs,
   PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs,
+  PackageSubpathClientRouteDetailSurface,
   PackageSubpathRpcRouteCoreSurface,
   PackageSubpathRpcRouteDetailSurface,
   PackageSubpathManifestRouteDetailSurface,
