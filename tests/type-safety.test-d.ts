@@ -677,10 +677,12 @@ import {
   type CompiledRpcTransportBodyResultHandler as RootCompiledRpcTransportBodyResultHandler,
   type CompiledRpcTransportBodyResultHandlerFor as RootCompiledRpcTransportBodyResultHandlerFor,
   type CompiledRpcTransportBodyResultHandlerForConfig as RootCompiledRpcTransportBodyResultHandlerForConfig,
+  type CompiledRouteStreamRpcRequestHandlerForConfig as RootCompiledRouteStreamRpcRequestHandlerForConfig,
   type CompiledRpcUnaryRouteBodyResultHandlerFor as RootCompiledRpcUnaryRouteBodyResultHandlerFor,
   type CompiledRpcUnaryRouteBodyResultHandlerForConfig as RootCompiledRpcUnaryRouteBodyResultHandlerForConfig,
   type CompiledRpcUnaryRouteTransportBodyResultHandlerFor as RootCompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   type CompiledRpcUnaryRouteTransportBodyResultHandlerForConfig as RootCompiledRpcUnaryRouteTransportBodyResultHandlerForConfig,
+  type CompiledRouteUnaryRpcRequestHandlerForConfig as RootCompiledRouteUnaryRpcRequestHandlerForConfig,
   type CompiledRuntime as RootCompiledRuntime,
   type CompiledRuntimeState as RootCompiledRuntimeState,
   type CompiledSerializedEnvelope as RootCompiledSerializedEnvelope,
@@ -2026,10 +2028,12 @@ import type {
   CompiledRpcTransportBodyResultHandler,
   CompiledRpcTransportBodyResultHandlerFor,
   CompiledRpcTransportBodyResultHandlerForConfig,
+  CompiledRouteStreamRpcRequestHandlerForConfig,
   CompiledRpcUnaryRouteBodyResultHandlerFor,
   CompiledRpcUnaryRouteBodyResultHandlerForConfig,
   CompiledRpcUnaryRouteTransportBodyResultHandlerFor,
   CompiledRpcUnaryRouteTransportBodyResultHandlerForConfig,
+  CompiledRouteUnaryRpcRequestHandlerForConfig,
   CompiledRuntime,
   CompiledRuntimeState,
   CompiledSerializedEnvelope,
@@ -3268,6 +3272,56 @@ routeKindScopedStreamConfigFactoryRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamConfigFactoryRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamConfigFromFactory
 > = requestTypedProcedureRequest;
+const routeKindScopedUnaryCompiledForConfig: CompiledRouteUnaryRpcRequestHandlerForConfig<
+  typeof routeKindScopedUnaryConfig
+> = async () => new Response();
+const rootRouteKindScopedUnaryCompiledForConfig: RootCompiledRouteUnaryRpcRequestHandlerForConfig<
+  typeof routeKindScopedUnaryConfig
+> = routeKindScopedUnaryCompiledForConfig;
+routeKindScopedUnaryCompiledForConfig(requestTypedProcedureRequest);
+rootRouteKindScopedUnaryCompiledForConfig(requestTypedProcedureRequest);
+routeKindScopedUnaryCompiledForConfig(
+  // @ts-expect-error route-unary compiled config handlers preserve unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryCompiledForConfigFactory =
+  createCompiledRouteUnaryRpcHandlerFor()(
+    {} as CompiledDispatch<
+      JoorConfigContext<typeof routeKindScopedUnaryConfig>
+    >,
+    routeKindScopedUnaryConfig
+  );
+routeKindScopedUnaryCompiledForConfigFactory(requestTypedProcedureRequest);
+routeKindScopedUnaryCompiledForConfigFactory(
+  // @ts-expect-error route-unary compiled config handler factories preserve unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamCompiledForConfig: CompiledRouteStreamRpcRequestHandlerForConfig<
+  typeof routeKindScopedStreamConfig
+> = async () => new Response();
+const rootRouteKindScopedStreamCompiledForConfig: RootCompiledRouteStreamRpcRequestHandlerForConfig<
+  typeof routeKindScopedStreamConfig
+> = routeKindScopedStreamCompiledForConfig;
+routeKindScopedStreamCompiledForConfig(requestTypedStreamProcedureRequest);
+rootRouteKindScopedStreamCompiledForConfig(requestTypedStreamProcedureRequest);
+routeKindScopedStreamCompiledForConfig(
+  // @ts-expect-error route-stream compiled config handlers preserve stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamCompiledForConfigFactory =
+  createCompiledRouteStreamRpcHandlerFor()(
+    {} as CompiledDispatch<
+      JoorConfigContext<typeof routeKindScopedStreamConfig>
+    >,
+    routeKindScopedStreamConfig
+  );
+routeKindScopedStreamCompiledForConfigFactory(
+  requestTypedStreamProcedureRequest
+);
+routeKindScopedStreamCompiledForConfigFactory(
+  // @ts-expect-error route-stream compiled config handler factories preserve stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryManifestBodyHandler: JoorManifestRouteUnaryBodyHandler<
   typeof routeKindScopedManifest
 > = (request) => {
