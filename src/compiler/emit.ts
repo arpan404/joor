@@ -130,6 +130,10 @@ const emitProfileDispatcher = async (
     'createCompiledRpcHandlerFor',
     'createCompiledRouteStreamRpcHandlerFor',
     'createCompiledRouteUnaryRpcHandlerFor',
+    'createCompiledRouteStreamRpcBodyResultHandler',
+    'createCompiledRouteUnaryRpcBodyResultHandler',
+    'createCompiledRouteStreamRpcTransportBodyResultHandler',
+    'createCompiledRouteUnaryRpcTransportBodyResultHandler',
     'createCompiledRpcTransportBodyResultHandler',
     ...(usesRateLimit ? ['compiledRateLimitFailureStatic'] : []),
     ...(usesValidationDetails ? ['compiledValidationDetails'] : []),
@@ -1135,7 +1139,7 @@ export const nativeTransport: NativeTransportHandler = createCompiledRpcTranspor
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = createCompiledRpcTransportBodyResultHandler(
+export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = createCompiledRouteUnaryRpcTransportBodyResultHandler(
   ${routeUnaryDispatchName},
   ${configValue},
   ${routeUnaryUnaryDispatchName},
@@ -1145,7 +1149,7 @@ export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = creat
 ) as NativeRouteUnaryTransportHandler;
 export const nativeUnaryRouteTransport: NativeUnaryRouteTransportHandler =
   nativeRouteUnaryTransport;
-export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler = createCompiledRpcTransportBodyResultHandler(
+export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler = createCompiledRouteStreamRpcTransportBodyResultHandler(
   ${routeStreamDispatchName},
   ${configValue},
   ${routeStreamUnaryDispatchName},
@@ -1168,14 +1172,14 @@ export const nativeBody: NativeBodyHandler = createCompiledRpcBodyResultHandler(
   ${configValue},
   nativeUnaryDispatch
 ) as NativeBodyHandler;
-export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler = createCompiledRpcBodyResultHandler(
+export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler = createCompiledRouteUnaryRpcBodyResultHandler(
   ${routeUnaryDispatchName},
   ${configValue},
   ${routeUnaryUnaryDispatchName}
 ) as NativeRouteUnaryBodyHandler;
 export const nativeUnaryRouteBody: NativeUnaryRouteBodyHandler =
   nativeRouteUnaryBody;
-export const nativeRouteStreamBody: NativeRouteStreamBodyHandler = createCompiledRpcBodyResultHandler(
+export const nativeRouteStreamBody: NativeRouteStreamBodyHandler = createCompiledRouteStreamRpcBodyResultHandler(
   ${routeStreamDispatchName},
   ${configValue},
   ${routeStreamUnaryDispatchName}

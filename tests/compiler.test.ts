@@ -661,16 +661,16 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'const routeStreamUnaryDispatch: NativeUnaryDispatch ='
       );
       expect(dispatcherSource).toContain(
-        'createCompiledRpcTransportBodyResultHandler(\n  routeUnaryDispatch'
+        'createCompiledRouteUnaryRpcTransportBodyResultHandler(\n  routeUnaryDispatch'
       );
       expect(dispatcherSource).toContain(
-        'createCompiledRpcTransportBodyResultHandler(\n  routeStreamDispatch'
+        'createCompiledRouteStreamRpcTransportBodyResultHandler(\n  routeStreamDispatch'
       );
       expect(dispatcherSource).toContain(
-        'createCompiledRpcBodyResultHandler(\n  routeUnaryDispatch'
+        'createCompiledRouteUnaryRpcBodyResultHandler(\n  routeUnaryDispatch'
       );
       expect(dispatcherSource).toContain(
-        'createCompiledRpcBodyResultHandler(\n  routeStreamDispatch'
+        'createCompiledRouteStreamRpcBodyResultHandler(\n  routeStreamDispatch'
       );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
@@ -1126,6 +1126,18 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(dispatcher).toContain(
         'CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRouteStreamRequiredRuntimeRequest>'
+      );
+      expect(dispatcher).toContain(
+        'nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = createCompiledRouteUnaryRpcTransportBodyResultHandler'
+      );
+      expect(dispatcher).toContain(
+        'nativeRouteStreamTransport: NativeRouteStreamTransportHandler = createCompiledRouteStreamRpcTransportBodyResultHandler'
+      );
+      expect(dispatcher).toContain(
+        'nativeRouteUnaryBody: NativeRouteUnaryBodyHandler = createCompiledRouteUnaryRpcBodyResultHandler'
+      );
+      expect(dispatcher).toContain(
+        'nativeRouteStreamBody: NativeRouteStreamBodyHandler = createCompiledRouteStreamRpcBodyResultHandler'
       );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
