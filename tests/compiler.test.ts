@@ -2191,6 +2191,14 @@ import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamV
 import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, edge } from './netlify.js';
 import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest } from './aws-lambda.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as BunStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as BunUnaryRouteRequiredRuntimeRequest } from './bun.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as CloudflareStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as CloudflareUnaryRouteRequiredRuntimeRequest } from './cloudflare.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as DenoStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as DenoUnaryRouteRequiredRuntimeRequest } from './deno.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NetlifyStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NetlifyUnaryRouteRequiredRuntimeRequest } from './netlify.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NextStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NextUnaryRouteRequiredRuntimeRequest } from './next.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NodeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NodeUnaryRouteRequiredRuntimeRequest } from './node.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as VercelStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as VercelUnaryRouteRequiredRuntimeRequest } from './vercel.js';
 import type { AppRequest } from '${procedureImport}';
 import type { AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1 } from 'joor/runtime/aws-lambda';
 
@@ -2230,6 +2238,54 @@ runtimeRouteStreamRequiredRequest.url.toUpperCase();
 const runtimeStreamRouteRequiredRequest: RuntimeStreamRouteRequiredRuntimeRequest =
   runtimeRouteStreamRequiredRequest;
 runtimeStreamRouteRequiredRequest.url.toUpperCase();
+const awsLambdaUnaryRouteRequiredRequest: AwsLambdaUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+awsLambdaUnaryRouteRequiredRequest.requestId.toUpperCase();
+const awsLambdaStreamRouteRequiredRequest: AwsLambdaStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+awsLambdaStreamRouteRequiredRequest.url.toUpperCase();
+const bunUnaryRouteRequiredRequest: BunUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+bunUnaryRouteRequiredRequest.requestId.toUpperCase();
+const bunStreamRouteRequiredRequest: BunStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+bunStreamRouteRequiredRequest.url.toUpperCase();
+const cloudflareUnaryRouteRequiredRequest: CloudflareUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+cloudflareUnaryRouteRequiredRequest.requestId.toUpperCase();
+const cloudflareStreamRouteRequiredRequest: CloudflareStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+cloudflareStreamRouteRequiredRequest.url.toUpperCase();
+const denoUnaryRouteRequiredRequest: DenoUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+denoUnaryRouteRequiredRequest.requestId.toUpperCase();
+const denoStreamRouteRequiredRequest: DenoStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+denoStreamRouteRequiredRequest.url.toUpperCase();
+const netlifyUnaryRouteRequiredRequest: NetlifyUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+netlifyUnaryRouteRequiredRequest.requestId.toUpperCase();
+const netlifyStreamRouteRequiredRequest: NetlifyStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+netlifyStreamRouteRequiredRequest.url.toUpperCase();
+const nextUnaryRouteRequiredRequest: NextUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+nextUnaryRouteRequiredRequest.requestId.toUpperCase();
+const nextStreamRouteRequiredRequest: NextStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+nextStreamRouteRequiredRequest.url.toUpperCase();
+const nodeUnaryRouteRequiredRequest: NodeUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+nodeUnaryRouteRequiredRequest.requestId.toUpperCase();
+const nodeStreamRouteRequiredRequest: NodeStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+nodeStreamRouteRequiredRequest.url.toUpperCase();
+const vercelUnaryRouteRequiredRequest: VercelUnaryRouteRequiredRuntimeRequest =
+  appRequest;
+vercelUnaryRouteRequiredRequest.requestId.toUpperCase();
+const vercelStreamRouteRequiredRequest: VercelStreamRouteRequiredRuntimeRequest =
+  plainRequest;
+vercelStreamRouteRequiredRequest.url.toUpperCase();
 const nativeHandlerOptions: NativeHandlerOptions = {};
 const nativeHandlerOptionsRequest: NativeHandlerOptionsRequest<
   typeof nativeHandlerOptions

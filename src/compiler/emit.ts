@@ -1665,8 +1665,8 @@ ${nodeFastCases}
     ? 'DenoCompiledRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
     : 'DenoRouteStreamTransportBodyResultHandlerFor<NativeManifest>';
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
-    ? "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './deno-dispatcher.ts';"
-    : "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeTransport, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './deno-dispatcher.ts';";
+    ? "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './deno-dispatcher.ts';"
+    : "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeTransport, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
     ? `return createDenoCompiledTransportRequestHandlerFor<TRequest>()(
     nativeRuntime,
@@ -1731,9 +1731,10 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 export const createCloudflareFetch: typeof createFetch = createFetch;
 export const createCloudflareFetchFor: typeof createFetchFor = createFetchFor;
 export const createRouteUnaryCloudflareFetch: typeof createRouteUnaryFetch =
@@ -1843,9 +1844,10 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor };
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 export const GET = fetch;
 export const POST = fetch;
 export const OPTIONS = fetch;
@@ -1960,9 +1962,10 @@ export default handlers;
   await writeFile(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 export const createVercelFetch: typeof createFetch = createFetch;
 export const createVercelFetchFor: typeof createFetchFor = createFetchFor;
 export const createRouteUnaryVercelFetch: typeof createRouteUnaryFetch =
@@ -2057,9 +2060,10 @@ export default vercel;
   await writeFile(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 export const createNetlifyFetch: typeof createFetch = createFetch;
 export const createNetlifyFetchFor: typeof createFetchFor = createFetchFor;
 export const createRouteUnaryNetlifyFetch: typeof createRouteUnaryFetch =
@@ -2162,7 +2166,9 @@ export default edge;
     `${outDir}/aws-lambda.ts`,
     `import { Buffer } from 'node:buffer';
 import type { AwsLambdaHandler, AwsLambdaHttpApiHandler, AwsLambdaHttpEventV2, AwsLambdaHttpResponseV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler, AwsLambdaRestApiResponseV1 } from 'joor/runtime/aws-lambda';
-import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
+
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 
 export type NativeAwsLambdaRequestFactory<
   TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
@@ -2566,8 +2572,10 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeTransportResult, type NativeUnaryRouteRequiredRuntimeRequest } from '${dispatcherImport}';
 ${nodeFastImports}
+
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 
 interface JsonObject {
   [key: string]: JsonValue;
@@ -3266,8 +3274,10 @@ export default handler;
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeTransportResult, type NativeUnaryRouteRequiredRuntimeRequest } from '${dispatcherImport}';
 ${bunFastImports}
+
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 
 interface JsonObject {
   [key: string]: JsonValue;
@@ -3902,6 +3912,8 @@ export default fetch;
     `${denoTransportImport}
 import { createRpcRequestPreflight } from 'joor';
 ${denoDispatcherImport}
+
+export type { NativeRequiredRuntimeRequest, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest };
 
 const configuredPath = ${configuredPath};
 const configuredCors = ${configuredCors};
