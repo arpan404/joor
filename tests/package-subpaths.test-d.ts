@@ -1940,6 +1940,18 @@ export type PackageSubpathSurface = [
   Compiled.CompiledExecutionState,
   Compiled.CompiledRpcRequestHandler,
   Compiled.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
+  Compiled.CompiledRouteUnaryRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledUnaryRouteRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRouteStreamRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledStreamRouteRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
   Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
   Compiled.CompiledRpcRouteStreamBodyResultHandlerForConfig<
@@ -1968,6 +1980,18 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Root.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRouteUnaryRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledUnaryRouteRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRouteStreamRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledStreamRouteRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
   Root.CompiledCachedProcedureHeaders,
