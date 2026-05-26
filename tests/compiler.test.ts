@@ -231,7 +231,9 @@ const invokeGeneratedNodeHandler = async (
       return outgoing;
     },
     write(chunk: string | Uint8Array) {
-      chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : Buffer.from(chunk));
+      chunks.push(
+        typeof chunk === 'string' ? Buffer.from(chunk) : Buffer.from(chunk)
+      );
       return true;
     },
     writeHead(nextStatusCode: number, nextHeaders?: Record<string, string>) {
@@ -952,12 +954,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const createRouteUnaryFetchFor');
-      await expect(readFile(join(outDir, 'fetch.ts'), 'utf8')).resolves.toContain(
-        'export const createRouteUnaryFetch'
-      );
-      await expect(readFile(join(outDir, 'fetch.ts'), 'utf8')).resolves.toContain(
-        'export const createRouteStreamFetch'
-      );
+      await expect(
+        readFile(join(outDir, 'fetch.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryFetch');
+      await expect(
+        readFile(join(outDir, 'fetch.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteStreamFetch');
       await expect(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
       ).resolves.toContain('export const createRouteUnaryWorker');
@@ -1120,10 +1122,10 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
       );
       expect(dispatcher).toContain(
-        'CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>'
+        'CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest, NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(dispatcher).toContain(
-        'CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>'
+        'CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRouteStreamRequiredRuntimeRequest>'
       );
       expect(dispatcher).toContain('headers?: Record<string, string>');
       expect(dispatcher).not.toContain('headers?: Record<string, JsonValue>');
@@ -1720,18 +1722,14 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       for (const response of [createdHttpResponse, namedHttpResponse]) {
         expect(response.statusCode).toBe(200);
         expect(response.headers?.['content-type']).toBe('application/json');
-        expect(response.headers?.['cache-control']).toBe(
-          'private, max-age=60'
-        );
+        expect(response.headers?.['cache-control']).toBe('private, max-age=60');
         const payload = JSON.parse(response.body ?? '{}');
         expect(payload.ok).toBe(true);
         expect(payload.data).toEqual({ id: userId, name: 'Ada' });
       }
 
       const routeUnaryResponse =
-        await awsLambda.createRouteUnaryAwsLambdaHandlerFor()()(
-          httpUserEvent
-        );
+        await awsLambda.createRouteUnaryAwsLambdaHandlerFor()()(httpUserEvent);
       expect(routeUnaryResponse.statusCode).toBe(200);
       expect(JSON.parse(routeUnaryResponse.body ?? '{}').data).toEqual({
         id: userId,
@@ -1816,13 +1814,15 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         [{ id: 'post-cloudflare', title: 'Hello' }]
       );
       await expectGeneratedJsonData(
-        await cloudflare.createRouteUnaryWorkerFor().fetch(
-          createGeneratedRpcRequest(
-            'users.get',
-            { id: userId },
-            { authorization: 'Bearer test' }
-          )
-        ),
+        await cloudflare
+          .createRouteUnaryWorkerFor()
+          .fetch(
+            createGeneratedRpcRequest(
+              'users.get',
+              { id: userId },
+              { authorization: 'Bearer test' }
+            )
+          ),
         { id: userId, name: 'Ada' }
       );
       await expectGeneratedJsonData(
@@ -1831,13 +1831,15 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         ),
         [{ id: 'post-next-post', title: 'Hello' }]
       );
-      const nextStreamResponse = await next.createRouteStreamHandlersFor().POST(
-        createGeneratedRpcRequest(
-          'users.watch',
-          { userId: 'next-stream' },
-          { accept: 'text/event-stream' }
-        )
-      );
+      const nextStreamResponse = await next
+        .createRouteStreamHandlersFor()
+        .POST(
+          createGeneratedRpcRequest(
+            'users.watch',
+            { userId: 'next-stream' },
+            { accept: 'text/event-stream' }
+          )
+        );
       expect(nextStreamResponse.status).toBe(200);
       expect(nextStreamResponse.headers.get('content-type')).toContain(
         'text/event-stream'
@@ -1852,13 +1854,15 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         [{ id: 'post-vercel', title: 'Hello' }]
       );
       await expectGeneratedJsonData(
-        await vercel.createRouteUnaryVercelFor().fetch(
-          createGeneratedRpcRequest(
-            'users.get',
-            { id: userId },
-            { authorization: 'Bearer test' }
-          )
-        ),
+        await vercel
+          .createRouteUnaryVercelFor()
+          .fetch(
+            createGeneratedRpcRequest(
+              'users.get',
+              { id: userId },
+              { authorization: 'Bearer test' }
+            )
+          ),
         { id: userId, name: 'Ada' }
       );
       const netlifyEdgeResult = await netlify.edge(
@@ -1995,9 +1999,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(bunStreamResponse.headers.get('content-type')).toContain(
         'text/event-stream'
       );
-      expect(await bunStreamResponse.text()).toContain(
-        '"userId":"bun-stream"'
-      );
+      expect(await bunStreamResponse.text()).toContain('"userId":"bun-stream"');
       await expectGeneratedJsonError(
         await bun.createRouteUnaryFetch()(
           createGeneratedRpcRequest('users.watch', { userId: 'wrong-kind' })
@@ -2144,8 +2146,8 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
-import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest } from './dispatcher.safe.js';
+import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
@@ -2163,8 +2165,23 @@ const plainRequest = new Request('https://example.com/rpc');
 
 const requiredRequest: NativeRequiredRuntimeRequest = appRequest;
 requiredRequest.requestId.toUpperCase();
+const routeUnaryRequiredRequest: NativeRouteUnaryRequiredRuntimeRequest =
+  appRequest;
+routeUnaryRequiredRequest.requestId.toUpperCase();
+// @ts-expect-error generated route-unary required request rejects broad Request values.
+const _wrongRouteUnaryRequiredRequest: NativeRouteUnaryRequiredRuntimeRequest =
+  plainRequest;
+const routeStreamRequiredRequest: NativeRouteStreamRequiredRuntimeRequest =
+  plainRequest;
+routeStreamRequiredRequest.url.toUpperCase();
 const runtimeRequiredRequest: RuntimeRequiredRuntimeRequest = appRequest;
 runtimeRequiredRequest.requestId.toUpperCase();
+const runtimeRouteUnaryRequiredRequest: RuntimeRouteUnaryRequiredRuntimeRequest =
+  appRequest;
+runtimeRouteUnaryRequiredRequest.requestId.toUpperCase();
+const runtimeRouteStreamRequiredRequest: RuntimeRouteStreamRequiredRuntimeRequest =
+  plainRequest;
+runtimeRouteStreamRequiredRequest.url.toUpperCase();
 const nativeHandlerOptions: NativeHandlerOptions = {};
 const nativeHandlerOptionsRequest: NativeHandlerOptionsRequest<
   typeof nativeHandlerOptions
@@ -2224,6 +2241,8 @@ createRouteStreamFetchFor()(appRequest);
 createStreamRouteFetchFor()(appRequest);
 // @ts-expect-error generated route-first native fetch factories default to the manifest request subtype.
 createRouteUnaryFetchFor()(plainRequest);
+createRouteStreamFetchFor()(plainRequest);
+createStreamRouteFetchFor()(plainRequest);
 // @ts-expect-error generated native fetch handler type parameters must satisfy the manifest request subtype.
 const broadNativeHandler: NativeFetchHandler<Request> = fetch;
 broadNativeHandler;
@@ -2242,8 +2261,8 @@ createRuntimeRouteUnaryFetchFor()(appRequest);
 createRuntimeFetch()(plainRequest);
 // @ts-expect-error generated route-first fetch target creators default to the manifest request subtype.
 createRuntimeRouteUnaryFetch()(plainRequest);
-// @ts-expect-error generated route-first stream fetch target creators default to the manifest request subtype.
 createRuntimeRouteStreamFetch()(plainRequest);
+createRuntimeStreamRouteFetch()(plainRequest);
 // @ts-expect-error generated fetch target factories default to the manifest request subtype.
 createRuntimeFetchFor()(plainRequest);
 
