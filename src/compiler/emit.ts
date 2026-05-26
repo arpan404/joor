@@ -7,7 +7,7 @@ import {
   type CompiledProcedureMode,
   emitCompiledProcedureSource,
 } from './codegen.js';
-import type { CompilerManifest } from './manifest.js';
+import type { CompilerManifest, LoadedProcedure } from './manifest.js';
 import { createOpenApiDocument } from './openapi.js';
 
 export interface EmitOptions {
@@ -788,10 +788,19 @@ export type NativeTransportRequest = ContextRequestSource;`;
   const compiledDispatchType = 'NativeDispatch';
   const nativeDispatchBodyType = 'NativeProtocolRequest';
   const compiledFixedUnaryDispatchType = 'NativeUnaryDispatch';
+  type NativeRouteKind = 'unary' | 'stream';
+  const routeKindMatches = (
+    entry: LoadedProcedure,
+    routeKind?: NativeRouteKind
+  ): boolean =>
+    routeKind === undefined ||
+    (routeKind === 'stream') === (entry.procedure.stream !== undefined);
   const dispatchCaseForMode = (
-    mode: 'body' | 'serialized' | 'response'
+    mode: 'body' | 'serialized' | 'response',
+    routeKind?: NativeRouteKind
   ): string =>
     manifest.procedures
+      .filter((entry) => routeKindMatches(entry, routeKind))
       .map((entry) => {
         const serialize =
           mode === 'response' ? "'response'" : mode === 'serialized';
@@ -802,6 +811,24 @@ export type NativeTransportRequest = ContextRequestSource;`;
       return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
       })
       .join('\n');
+  const dispatchForMode = (
+    name: string,
+    mode: 'body' | 'serialized' | 'response',
+    routeKind: NativeRouteKind
+  ): string => `const ${name}: ${compiledDispatchType} = (
+  rpcRequest,
+  request,
+  services,
+  runtime,
+  state,
+  _serialize
+) => {
+  switch (rpcRequest.id) {
+${dispatchCaseForMode(mode, routeKind)}
+    default:
+      return compiledNotFound(rpcRequest, request);
+  }
+};`;
   const dispatchBody = hasBodyMode
     ? `const dispatchBody: ${compiledDispatchType} = (
   rpcRequest,
@@ -850,8 +877,48 @@ ${dispatchCaseForMode('response')}
   }
 };`
     : '';
-  const unaryCases = (mode: 'body' | 'serialized' | 'response'): string =>
+  const transportMode: 'body' | 'serialized' | 'response' = hasSerializedMode
+    ? 'serialized'
+    : hasBodyMode
+      ? 'body'
+      : 'response';
+  const responseMode: 'body' | 'serialized' | 'response' = hasResponseMode
+    ? 'response'
+    : transportMode;
+  const routeUnaryDispatchName = 'routeUnaryDispatch';
+  const routeStreamDispatchName = 'routeStreamDispatch';
+  const routeUnaryResponseDispatchName =
+    responseMode === transportMode
+      ? routeUnaryDispatchName
+      : 'routeUnaryResponseDispatch';
+  const routeStreamResponseDispatchName =
+    responseMode === transportMode
+      ? routeStreamDispatchName
+      : 'routeStreamResponseDispatch';
+  const routeUnaryDispatch = dispatchForMode(
+    routeUnaryDispatchName,
+    transportMode,
+    'unary'
+  );
+  const routeStreamDispatch = dispatchForMode(
+    routeStreamDispatchName,
+    transportMode,
+    'stream'
+  );
+  const routeUnaryResponseDispatch =
+    responseMode === transportMode
+      ? ''
+      : dispatchForMode(routeUnaryResponseDispatchName, responseMode, 'unary');
+  const routeStreamResponseDispatch =
+    responseMode === transportMode
+      ? ''
+      : dispatchForMode(routeStreamResponseDispatchName, responseMode, 'stream');
+  const unaryCases = (
+    mode: 'body' | 'serialized' | 'response',
+    routeKind?: NativeRouteKind
+  ): string =>
     manifest.procedures
+      .filter((entry) => routeKindMatches(entry, routeKind))
       .map((entry) => {
         const serialize =
           mode === 'response' ? "'response'" : mode === 'serialized';
@@ -862,6 +929,31 @@ ${dispatchCaseForMode('response')}
       return ${entry.exportName}_execute_${mode}(rpcRequest, request, services, runtime, state);`;
       })
       .join('\n');
+  const unaryDispatchForMode = (
+    name: string,
+    mode: 'body' | 'serialized' | 'response',
+    routeKind: NativeRouteKind
+  ): string => `const ${name}: ${compiledFixedUnaryDispatchType} = (
+  body,
+  request,
+  services,
+  runtime,
+  state
+) => {
+  const traceIdValue = body['traceId'];
+  if (
+    typeof body['id'] !== 'string' ||
+    (traceIdValue !== undefined && typeof traceIdValue !== 'string')
+  ) {
+    return undefined;
+  }
+  const rpcRequest = body as ${nativeDispatchBodyType};
+  switch (rpcRequest.id) {
+${unaryCases(mode, routeKind)}
+    default:
+      return compiledNotFound(rpcRequest, request);
+  }
+};`;
   const bodyUnaryDispatch = hasBodyMode
     ? `const bodyUnaryDispatch: ${compiledFixedUnaryDispatchType} = (
   body,
@@ -931,6 +1023,42 @@ ${unaryCases('response')}
   }
 };`
     : '';
+  const routeUnaryUnaryDispatchName = 'routeUnaryUnaryDispatch';
+  const routeStreamUnaryDispatchName = 'routeStreamUnaryDispatch';
+  const routeUnaryResponseUnaryDispatchName =
+    responseMode === transportMode
+      ? routeUnaryUnaryDispatchName
+      : 'routeUnaryResponseUnaryDispatch';
+  const routeStreamResponseUnaryDispatchName =
+    responseMode === transportMode
+      ? routeStreamUnaryDispatchName
+      : 'routeStreamResponseUnaryDispatch';
+  const routeUnaryUnaryDispatch = unaryDispatchForMode(
+    routeUnaryUnaryDispatchName,
+    transportMode,
+    'unary'
+  );
+  const routeStreamUnaryDispatch = unaryDispatchForMode(
+    routeStreamUnaryDispatchName,
+    transportMode,
+    'stream'
+  );
+  const routeUnaryResponseUnaryDispatch =
+    responseMode === transportMode
+      ? ''
+      : unaryDispatchForMode(
+          routeUnaryResponseUnaryDispatchName,
+          responseMode,
+          'unary'
+        );
+  const routeStreamResponseUnaryDispatch =
+    responseMode === transportMode
+      ? ''
+      : unaryDispatchForMode(
+          routeStreamResponseUnaryDispatchName,
+          responseMode,
+          'stream'
+        );
   const transportDispatchName = hasSerializedMode
     ? 'dispatchSerialized'
     : hasBodyMode
@@ -966,10 +1094,18 @@ ${executors}
 ${dispatchBody}
 ${dispatchSerialized}
 ${dispatchResponse}
+${routeUnaryDispatch}
+${routeStreamDispatch}
+${routeUnaryResponseDispatch}
+${routeStreamResponseDispatch}
 
 ${bodyUnaryDispatch}
 ${serializedUnaryDispatch}
 ${responseUnaryDispatch}
+${routeUnaryUnaryDispatch}
+${routeStreamUnaryDispatch}
+${routeUnaryResponseUnaryDispatch}
+${routeStreamResponseUnaryDispatch}
 
 const dispatch: ${compiledDispatchType} = ${transportDispatchName};
 export const nativeUnaryDispatch: NativeUnaryDispatch = ${nativeUnaryDispatchName};
@@ -983,12 +1119,24 @@ export const nativeTransport: NativeTransportHandler = createCompiledRpcTranspor
   ${transportModeLiteral},
   nativeRuntime
 ) as NativeTransportHandler;
-export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler =
-  nativeTransport as NativeRouteUnaryTransportHandler;
+export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = createCompiledRpcTransportBodyResultHandler(
+  ${routeUnaryDispatchName},
+  ${configValue},
+  ${routeUnaryUnaryDispatchName},
+  false,
+  ${transportModeLiteral},
+  nativeRuntime
+) as NativeRouteUnaryTransportHandler;
 export const nativeUnaryRouteTransport: NativeUnaryRouteTransportHandler =
   nativeRouteUnaryTransport;
-export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler =
-  nativeTransport as NativeRouteStreamTransportHandler;
+export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler = createCompiledRpcTransportBodyResultHandler(
+  ${routeStreamDispatchName},
+  ${configValue},
+  ${routeStreamUnaryDispatchName},
+  false,
+  ${transportModeLiteral},
+  nativeRuntime
+) as NativeRouteStreamTransportHandler;
 export const nativeStreamRouteTransport: NativeStreamRouteTransportHandler =
   nativeRouteStreamTransport;
 export const nativeResponseTransport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
@@ -1004,12 +1152,18 @@ export const nativeBody: NativeBodyHandler = createCompiledRpcBodyResultHandler(
   ${configValue},
   nativeUnaryDispatch
 ) as NativeBodyHandler;
-export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler =
-  nativeBody as NativeRouteUnaryBodyHandler;
+export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler = createCompiledRpcBodyResultHandler(
+  ${routeUnaryDispatchName},
+  ${configValue},
+  ${routeUnaryUnaryDispatchName}
+) as NativeRouteUnaryBodyHandler;
 export const nativeUnaryRouteBody: NativeUnaryRouteBodyHandler =
   nativeRouteUnaryBody;
-export const nativeRouteStreamBody: NativeRouteStreamBodyHandler =
-  nativeBody as NativeRouteStreamBodyHandler;
+export const nativeRouteStreamBody: NativeRouteStreamBodyHandler = createCompiledRpcBodyResultHandler(
+  ${routeStreamDispatchName},
+  ${configValue},
+  ${routeStreamUnaryDispatchName}
+) as NativeRouteStreamBodyHandler;
 export const nativeStreamRouteBody: NativeStreamRouteBodyHandler =
   nativeRouteStreamBody;
 export const transport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
@@ -1023,11 +1177,11 @@ export const transport: NativeTransportHandler = createCompiledRpcTransportBodyR
 export const createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
   createCompiledRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
 export const createRouteUnaryFetchFor: typeof createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
-  createCompiledRouteUnaryRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
+  createCompiledRouteUnaryRpcHandlerFor<TRequest>()(${routeUnaryResponseDispatchName}, ${configValue}, ${routeUnaryResponseUnaryDispatchName});
 export const createUnaryRouteFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createRouteStreamFetchFor: typeof createFetchFor = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
-  createCompiledRouteStreamRpcHandlerFor<TRequest>()(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
+  createCompiledRouteStreamRpcHandlerFor<TRequest>()(${routeStreamResponseDispatchName}, ${configValue}, ${routeStreamResponseUnaryDispatchName});
 export const createStreamRouteFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const fetch: NativeFetchHandler = createCompiledRpcHandler(${responseDispatchName}, ${configValue}, nativeResponseUnaryDispatch);
@@ -1510,7 +1664,7 @@ ${nodeFastCases}
     ? `return createRouteUnaryDenoCompiledTransportRequestHandlerFor<TRequest>()<NativeManifest>(
     nativeRuntime,
     nativeRouteUnaryTransport as ${denoRouteUnaryTransportHandlerType},
-    nativeUnaryDispatch,
+    () => undefined,
     bodyLimit,
     createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`
@@ -1523,7 +1677,7 @@ ${nodeFastCases}
     ? `return createRouteStreamDenoCompiledTransportRequestHandlerFor<TRequest>()<NativeManifest>(
     nativeRuntime,
     nativeRouteStreamTransport as ${denoRouteStreamTransportHandlerType},
-    nativeUnaryDispatch,
+    () => undefined,
     bodyLimit,
     createRpcRequestPreflight(cors === undefined ? { path } : { path, cors })
   );`
@@ -2839,7 +2993,10 @@ export interface NodeNativeServer {
 }
 
 const createHandlerFromTransport =
-  <TBody extends NativeBody>(transport: NodeNativeTransportHandler<TBody>) =>
+  <TBody extends NativeBody>(
+    transport: NodeNativeTransportHandler<TBody>,
+    unaryDispatch = nativeUnaryDispatch
+  ) =>
   <
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
@@ -2880,19 +3037,21 @@ const createHandlerFromTransport =
     if (isJsonObject(body)) {
       const handled = await fastContextlessUnary(body, incoming, outgoing, cors);
       if (handled) return;
-      request ??= new IncomingRequestSource(incoming, hostname);
-      const services =
-        nativeRuntime.services ?? (await nativeRuntime.resolveServices());
-      const result = await nativeUnaryDispatch(
-        body,
-        request,
-        services,
-        nativeRuntime.runtime,
-        compiledUncachedExecutionState
-      );
-      if (result !== undefined) {
-        await writeResult(outgoing, result as NativeTransportResult, cors);
-        return;
+      if (unaryDispatch !== undefined) {
+        request ??= new IncomingRequestSource(incoming, hostname);
+        const services =
+          nativeRuntime.services ?? (await nativeRuntime.resolveServices());
+        const result = await unaryDispatch(
+          body,
+          request,
+          services,
+          nativeRuntime.runtime,
+          compiledUncachedExecutionState
+        );
+        if (result !== undefined) {
+          await writeResult(outgoing, result as NativeTransportResult, cors);
+          return;
+        }
       }
     }
     request ??= new IncomingRequestSource(incoming, hostname);
@@ -2910,7 +3069,10 @@ export const createHandler = createHandlerFromTransport<NativeBody>(
 export const handler: NodeNativeHandler = createHandler();
 export const createNodeHandler: typeof createHandler = createHandler;
 export const createRouteUnaryHandler: typeof createHandler =
-  createHandlerFromTransport<NativeRouteUnaryBody>(nativeRouteUnaryTransport);
+  createHandlerFromTransport<NativeRouteUnaryBody>(
+    nativeRouteUnaryTransport,
+    () => undefined
+  );
 export const createUnaryRouteHandler: typeof createRouteUnaryHandler =
   createRouteUnaryHandler;
 export const createRouteUnaryNodeHandler: typeof createRouteUnaryHandler =
@@ -2918,7 +3080,10 @@ export const createRouteUnaryNodeHandler: typeof createRouteUnaryHandler =
 export const createUnaryRouteNodeHandler: typeof createRouteUnaryNodeHandler =
   createRouteUnaryNodeHandler;
 export const createRouteStreamHandler: typeof createHandler =
-  createHandlerFromTransport<NativeRouteStreamBody>(nativeRouteStreamTransport);
+  createHandlerFromTransport<NativeRouteStreamBody>(
+    nativeRouteStreamTransport,
+    () => undefined
+  );
 export const createStreamRouteHandler: typeof createRouteStreamHandler =
   createRouteStreamHandler;
 export const createRouteStreamNodeHandler: typeof createRouteStreamHandler =
@@ -3450,7 +3615,10 @@ export interface BunNativeServer {
 }
 
 const createFetchFromTransportFor =
-  <TBody extends NativeBody>(transport: BunNativeTransportHandler<TBody>) =>
+  <TBody extends NativeBody>(
+    transport: BunNativeTransportHandler<TBody>,
+    unaryDispatch = nativeUnaryDispatch
+  ) =>
   <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
   (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
@@ -3480,8 +3648,8 @@ const createFetchFromTransportFor =
     const source = new FetchRequestSource(request);
     const services =
       nativeRuntime.services ?? (await nativeRuntime.resolveServices());
-    if (isJsonObject(body)) {
-      const result = await nativeUnaryDispatch(
+    if (unaryDispatch !== undefined && isJsonObject(body)) {
+      const result = await unaryDispatch(
         body,
         source,
         services,
@@ -3503,7 +3671,10 @@ export const createFetchFor = createFetchFromTransportFor<NativeBody>(
 );
 export const createBunFetchFor: typeof createFetchFor = createFetchFor;
 export const createRouteUnaryFetchFor: typeof createFetchFor =
-  createFetchFromTransportFor<NativeRouteUnaryBody>(nativeRouteUnaryTransport);
+  createFetchFromTransportFor<NativeRouteUnaryBody>(
+    nativeRouteUnaryTransport,
+    () => undefined
+  );
 export const createUnaryRouteFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createRouteUnaryBunFetchFor: typeof createRouteUnaryFetchFor =
@@ -3511,7 +3682,10 @@ export const createRouteUnaryBunFetchFor: typeof createRouteUnaryFetchFor =
 export const createUnaryRouteBunFetchFor: typeof createRouteUnaryBunFetchFor =
   createRouteUnaryBunFetchFor;
 export const createRouteStreamFetchFor: typeof createFetchFor =
-  createFetchFromTransportFor<NativeRouteStreamBody>(nativeRouteStreamTransport);
+  createFetchFromTransportFor<NativeRouteStreamBody>(
+    nativeRouteStreamTransport,
+    () => undefined
+  );
 export const createStreamRouteFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createRouteStreamBunFetchFor: typeof createRouteStreamFetchFor =

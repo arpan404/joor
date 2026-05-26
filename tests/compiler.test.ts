@@ -82,6 +82,7 @@ type GeneratedNetlifyModule = {
 };
 
 type GeneratedNativeFetchModule = {
+  readonly createRouteStreamFetch: (options?: object) => GeneratedFetchHandler;
   readonly createRouteStreamFetchFor: () => (
     options?: object
   ) => GeneratedFetchHandler;
@@ -159,6 +160,19 @@ const expectGeneratedJsonData = async (
   expect(payload.data).toEqual(data);
 };
 
+const expectGeneratedJsonError = async (
+  response: Response,
+  code: string
+): Promise<void> => {
+  expect(response.status).toBe(200);
+  const payload = JSON.parse(await response.text()) as {
+    readonly error?: { readonly code?: string };
+    readonly ok?: boolean;
+  };
+  expect(payload.ok).toBe(false);
+  expect(payload.error?.code).toBe(code);
+};
+
 const createGeneratedNodeIncoming = (
   id: string,
   input: unknown,
@@ -226,6 +240,20 @@ const expectGeneratedNodeJsonData = (
   };
   expect(payload.ok).toBe(true);
   expect(payload.data).toEqual(data);
+};
+
+const expectGeneratedNodeJsonError = (
+  response: CapturedNodeResponse,
+  code: string
+): void => {
+  expect(response.statusCode).toBe(200);
+  expect(response.headers['content-type']).toBe('application/json');
+  const payload = JSON.parse(response.body) as {
+    readonly error?: { readonly code?: string };
+    readonly ok?: boolean;
+  };
+  expect(payload.ok).toBe(false);
+  expect(payload.error?.code).toBe(code);
 };
 
 describe('compiler', () => {
@@ -594,6 +622,34 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain('export const nativeBody: NativeBodyHandler =');
+      const dispatcherSource = await readFile(
+        join(outDir, 'dispatcher.safe.ts'),
+        'utf8'
+      );
+      expect(dispatcherSource).toContain(
+        'const routeUnaryDispatch: NativeDispatch ='
+      );
+      expect(dispatcherSource).toContain(
+        'const routeStreamDispatch: NativeDispatch ='
+      );
+      expect(dispatcherSource).toContain(
+        'const routeUnaryUnaryDispatch: NativeUnaryDispatch ='
+      );
+      expect(dispatcherSource).toContain(
+        'const routeStreamUnaryDispatch: NativeUnaryDispatch ='
+      );
+      expect(dispatcherSource).toContain(
+        'createCompiledRpcTransportBodyResultHandler(\n  routeUnaryDispatch'
+      );
+      expect(dispatcherSource).toContain(
+        'createCompiledRpcTransportBodyResultHandler(\n  routeStreamDispatch'
+      );
+      expect(dispatcherSource).toContain(
+        'createCompiledRpcBodyResultHandler(\n  routeUnaryDispatch'
+      );
+      expect(dispatcherSource).toContain(
+        'createCompiledRpcBodyResultHandler(\n  routeStreamDispatch'
+      );
       await expect(
         readFile(join(outDir, 'dispatcher.safe.ts'), 'utf8')
       ).resolves.toContain(
@@ -1855,6 +1911,26 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(streamResponse.body).toContain('"userId":"node-stream"');
       expect(streamResponse.body).toContain('event: done');
+      expectGeneratedNodeJsonError(
+        await invokeGeneratedNodeHandler(
+          node.createRouteUnaryHandler(),
+          createGeneratedNodeIncoming('users.watch', {
+            userId: 'wrong-kind',
+          })
+        ),
+        'NOT_FOUND'
+      );
+      expectGeneratedNodeJsonError(
+        await invokeGeneratedNodeHandler(
+          node.createRouteStreamHandler(),
+          createGeneratedNodeIncoming(
+            'users.get',
+            { id: userId },
+            { accept: 'text/event-stream', authorization: 'Bearer test' }
+          )
+        ),
+        'NOT_FOUND'
+      );
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
@@ -1900,6 +1976,22 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(await bunStreamResponse.text()).toContain(
         '"userId":"bun-stream"'
       );
+      await expectGeneratedJsonError(
+        await bun.createRouteUnaryFetch()(
+          createGeneratedRpcRequest('users.watch', { userId: 'wrong-kind' })
+        ),
+        'NOT_FOUND'
+      );
+      await expectGeneratedJsonError(
+        await bun.createRouteStreamFetch()(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { accept: 'text/event-stream', authorization: 'Bearer test' }
+          )
+        ),
+        'NOT_FOUND'
+      );
 
       await expectGeneratedJsonData(
         await deno.default(
@@ -1930,6 +2022,22 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(await denoStreamResponse.text()).toContain(
         '"userId":"deno-stream"'
+      );
+      await expectGeneratedJsonError(
+        await deno.createRouteUnaryFetch()(
+          createGeneratedRpcRequest('users.watch', { userId: 'wrong-kind' })
+        ),
+        'NOT_FOUND'
+      );
+      await expectGeneratedJsonError(
+        await deno.createRouteStreamFetch()(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { accept: 'text/event-stream', authorization: 'Bearer test' }
+          )
+        ),
+        'NOT_FOUND'
       );
     } finally {
       await rm(outDir, { recursive: true, force: true });
