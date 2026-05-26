@@ -3271,6 +3271,38 @@ createRouteStreamExpressHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamExpressHandlerOptions
 );
+const routeKindScopedUnaryKoaHandlerOptions: KoaRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryKoaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryKoaHandlerOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryKoaRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Koa options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryKoaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryKoaHandlerOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamKoaHandlerOptions: KoaRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamKoaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamKoaHandlerOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamKoaRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Koa options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamKoaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamKoaHandlerOptions
+> = requestTypedProcedureRequest;
+createRouteUnaryKoaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryKoaHandlerOptions
+);
+createRouteStreamKoaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamKoaHandlerOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]

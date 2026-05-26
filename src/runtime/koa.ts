@@ -8,7 +8,13 @@ import type {
   RpcManifestBody,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamHandlerOptionsArgsFor,
+  RpcManifestRouteStreamHandlerOptionsFor,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryHandlerOptionsArgsFor,
+  RpcManifestRouteUnaryHandlerOptionsFor,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from '../rpc/dispatcher.js';
 import {
   createNodeRpcRequestHandler,
@@ -43,10 +49,7 @@ export type KoaNext = () => unknown | Promise<unknown>;
 export type KoaMiddleware<
   TContext extends KoaContextLike = KoaContext,
   TNext extends KoaNext = KoaNext,
-> = (
-  context: TContext,
-  next: TNext
-) => void | Promise<void>;
+> = (context: TContext, next: TNext) => void | Promise<void>;
 
 export interface KoaHandlerOptions<
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -73,8 +76,10 @@ export type KoaRouteUnaryHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = KoaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = KoaHandlerOptions<TPlugins, TBody, TRequest> &
+  RpcManifestRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaUnaryRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -82,7 +87,8 @@ export type KoaUnaryRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = KoaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaRouteStreamHandlerOptionsFor<
@@ -91,8 +97,10 @@ export type KoaRouteStreamHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = KoaHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = KoaHandlerOptions<TPlugins, TBody, TRequest> &
+  RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaStreamRouteHandlerOptionsFor<
   TManifest extends JoorManifest,
@@ -100,7 +108,8 @@ export type KoaStreamRouteHandlerOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = KoaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaHandlerOptionsArgs<
@@ -125,8 +134,16 @@ export type KoaRouteUnaryHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = KoaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsArgsFor<
+  TManifest,
+  TPlugins,
+  KoaHandlerOptions<TPlugins, TBody, TRequest>,
+  TBody,
+  KoaHandlerOptions<TPlugins, TBody, TRequest>,
+  TRequest
+>;
 
 export type KoaUnaryRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -134,7 +151,8 @@ export type KoaUnaryRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = KoaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaRouteStreamHandlerOptionsArgs<
@@ -143,8 +161,16 @@ export type KoaRouteStreamHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = KoaHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsArgsFor<
+  TManifest,
+  TPlugins,
+  KoaHandlerOptions<TPlugins, TBody, TRequest>,
+  TBody,
+  KoaHandlerOptions<TPlugins, TBody, TRequest>,
+  TRequest
+>;
 
 export type KoaStreamRouteHandlerOptionsArgs<
   TManifest extends JoorManifest,
@@ -152,7 +178,8 @@ export type KoaStreamRouteHandlerOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = KoaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 type KoaNodeHandlerFactory<
@@ -175,11 +202,11 @@ const createKoaHandlerWithOptions = <
 >(
   manifest: TManifest,
   options: KoaHandlerOptions = {},
-  createHandler: KoaNodeHandlerFactory<TManifest, TBody> = ((
+  createHandler: KoaNodeHandlerFactory<TManifest, TBody> = (
     handlerManifest,
     handlerOptions,
     hostname
-  ) => createNodeRpcRequestHandler(handlerManifest, handlerOptions, hostname))
+  ) => createNodeRpcRequestHandler(handlerManifest, handlerOptions, hostname)
 ): KoaMiddleware => {
   const handler = createHandler(
     manifest,
@@ -229,7 +256,8 @@ export function createKoaHandler<TManifest extends JoorManifest>(
 export function createRouteUnaryKoaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: KoaRouteUnaryHandlerOptionsArgs<
@@ -255,7 +283,8 @@ export const createUnaryRouteKoaHandler: typeof createRouteUnaryKoaHandler =
 export function createRouteStreamKoaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: KoaRouteStreamHandlerOptionsArgs<
@@ -286,7 +315,8 @@ export const createKoaHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+    THookRequest extends Request =
+      RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: KoaHandlerOptionsArgs<
@@ -309,7 +339,8 @@ export const createRouteUnaryKoaHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+    THookRequest extends Request =
+      RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: KoaRouteUnaryHandlerOptionsArgs<
