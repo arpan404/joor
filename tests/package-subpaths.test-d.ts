@@ -144,6 +144,22 @@ import {
   defineUnaryRouteConfigFor as defineRootUnaryRouteConfigFor,
   defineManifest,
   defineProcedure,
+  createManifestRouteStreamProtocolRequest as createRootManifestRouteStreamProtocolRequest,
+  createManifestRouteStreamRequest as createRootManifestRouteStreamRequest,
+  createManifestRouteUnaryProtocolRequest as createRootManifestRouteUnaryProtocolRequest,
+  createManifestRouteUnaryRequest as createRootManifestRouteUnaryRequest,
+  createManifestStreamRouteProtocolRequest as createRootManifestStreamRouteProtocolRequest,
+  createManifestStreamRouteRequest as createRootManifestStreamRouteRequest,
+  createManifestUnaryRouteProtocolRequest as createRootManifestUnaryRouteProtocolRequest,
+  createManifestUnaryRouteRequest as createRootManifestUnaryRouteRequest,
+  createRouteStreamProtocolRequest as createRootRouteStreamProtocolRequest,
+  createRouteStreamRequest as createRootRouteStreamRequest,
+  createRouteUnaryProtocolRequest as createRootRouteUnaryProtocolRequest,
+  createRouteUnaryRequest as createRootRouteUnaryRequest,
+  createStreamRouteProtocolRequest as createRootStreamRouteProtocolRequest,
+  createStreamRouteRequest as createRootStreamRouteRequest,
+  createUnaryRouteProtocolRequest as createRootUnaryRouteProtocolRequest,
+  createUnaryRouteRequest as createRootUnaryRouteRequest,
   errorStatus,
   createRpcBodyHandlerFor as createRootRpcBodyHandlerFor,
   createRpcBodyResultHandlerFor as createRootRpcBodyResultHandlerFor,
@@ -287,6 +303,20 @@ import { ok } from 'joor/procedure';
 import {
   createManifestRouteStreamProtocolRequest,
   createManifestRouteStreamRequest,
+  createManifestRouteUnaryProtocolRequest,
+  createManifestRouteUnaryRequest,
+  createManifestStreamRouteProtocolRequest,
+  createManifestStreamRouteRequest,
+  createManifestUnaryRouteProtocolRequest,
+  createManifestUnaryRouteRequest,
+  createRouteStreamProtocolRequest,
+  createRouteStreamRequest,
+  createRouteUnaryProtocolRequest,
+  createRouteUnaryRequest,
+  createStreamRouteProtocolRequest,
+  createStreamRouteRequest,
+  createUnaryRouteProtocolRequest,
+  createUnaryRouteRequest,
   createRpcBodyHandlerFor,
   createRpcBodyResultHandlerFor,
   createRpcHandlerFor,
@@ -794,6 +824,150 @@ const typedPackageSubpathStream: AsyncIterable<
 typedPackageSubpathClient.call('users.get', { id: '1' });
 typedPackageSubpathUnaryClient.batch([typedPackageSubpathRequest] as const);
 typedPackageSubpathStreamClient.stream('users.watch', { userId: '1' });
+const packageSubpathRouteUnaryProtocolRequest = createRouteUnaryProtocolRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathUnaryRouteProtocolRequest = createUnaryRouteProtocolRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathRouteStreamProtocolRequest =
+  createRouteStreamProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.watch', { userId: '1' });
+const packageSubpathStreamRouteProtocolRequest =
+  createStreamRouteProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.watch', { userId: '1' });
+const packageSubpathRouteUnaryRequest = createRouteUnaryRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathUnaryRouteRequest = createUnaryRouteRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathRouteStreamBuilderRequest = createRouteStreamRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.watch', { userId: '1' });
+const packageSubpathStreamRouteRequest = createStreamRouteRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.watch', { userId: '1' });
+const packageSubpathManifestRouteUnaryProtocolRequest =
+  createManifestRouteUnaryProtocolRequest(packageSubpathManifest, 'users.get', {
+    id: '1',
+  });
+const packageSubpathManifestUnaryRouteProtocolRequest =
+  createManifestUnaryRouteProtocolRequest(packageSubpathManifest, 'users.get', {
+    id: '1',
+  });
+const packageSubpathManifestStreamRouteProtocolRequest =
+  createManifestStreamRouteProtocolRequest(
+    packageSubpathManifest,
+    'users.watch',
+    { userId: '1' }
+  );
+const packageSubpathManifestRouteUnaryRequest = createManifestRouteUnaryRequest(
+  packageSubpathManifest,
+  'users.get',
+  {
+    id: '1',
+  }
+);
+const packageSubpathManifestUnaryRouteRequest = createManifestUnaryRouteRequest(
+  packageSubpathManifest,
+  'users.get',
+  {
+    id: '1',
+  }
+);
+const packageSubpathManifestStreamRouteRequest =
+  createManifestStreamRouteRequest(packageSubpathManifest, 'users.watch', {
+    userId: '1',
+  });
+const packageSubpathRootRouteUnaryProtocolRequest =
+  createRootRouteUnaryProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.get', { id: '1' });
+const packageSubpathRootUnaryRouteProtocolRequest =
+  createRootUnaryRouteProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.get', { id: '1' });
+const packageSubpathRootRouteStreamProtocolRequest =
+  createRootRouteStreamProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.watch', { userId: '1' });
+const packageSubpathRootStreamRouteProtocolRequest =
+  createRootStreamRouteProtocolRequest<
+    Manifest.JoorManifestRoutes<PackageSubpathManifest>
+  >('users.watch', { userId: '1' });
+const packageSubpathRootRouteUnaryRequest = createRootRouteUnaryRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathRootUnaryRouteRequest = createRootUnaryRouteRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.get', { id: '1' });
+const packageSubpathRootRouteStreamRequest = createRootRouteStreamRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.watch', { userId: '1' });
+const packageSubpathRootStreamRouteRequest = createRootStreamRouteRequest<
+  Manifest.JoorManifestRoutes<PackageSubpathManifest>
+>('users.watch', { userId: '1' });
+const packageSubpathRootManifestRouteUnaryProtocolRequest =
+  createRootManifestRouteUnaryProtocolRequest(
+    packageSubpathManifest,
+    'users.get',
+    { id: '1' }
+  );
+const packageSubpathRootManifestUnaryRouteProtocolRequest =
+  createRootManifestUnaryRouteProtocolRequest(
+    packageSubpathManifest,
+    'users.get',
+    { id: '1' }
+  );
+const packageSubpathRootManifestStreamRouteProtocolRequest =
+  createRootManifestStreamRouteProtocolRequest(
+    packageSubpathManifest,
+    'users.watch',
+    { userId: '1' }
+  );
+const packageSubpathRootManifestRouteUnaryRequest =
+  createRootManifestRouteUnaryRequest(packageSubpathManifest, 'users.get', {
+    id: '1',
+  });
+const packageSubpathRootManifestUnaryRouteRequest =
+  createRootManifestUnaryRouteRequest(packageSubpathManifest, 'users.get', {
+    id: '1',
+  });
+const packageSubpathRootManifestStreamRouteRequest =
+  createRootManifestStreamRouteRequest(packageSubpathManifest, 'users.watch', {
+    userId: '1',
+  });
+packageSubpathRouteUnaryProtocolRequest.input.id.toUpperCase();
+packageSubpathUnaryRouteProtocolRequest.input.id.toUpperCase();
+packageSubpathRouteStreamProtocolRequest.input.userId.toUpperCase();
+packageSubpathStreamRouteProtocolRequest.input.userId.toUpperCase();
+packageSubpathRouteUnaryRequest.input.id.toUpperCase();
+packageSubpathUnaryRouteRequest.input.id.toUpperCase();
+packageSubpathRouteStreamBuilderRequest.input.userId.toUpperCase();
+packageSubpathStreamRouteRequest.input.userId.toUpperCase();
+packageSubpathManifestRouteUnaryProtocolRequest.input.id.toUpperCase();
+packageSubpathManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+packageSubpathManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
+packageSubpathManifestRouteUnaryRequest.input.id.toUpperCase();
+packageSubpathManifestUnaryRouteRequest.input.id.toUpperCase();
+packageSubpathManifestStreamRouteRequest.input.userId.toUpperCase();
+packageSubpathRootRouteUnaryProtocolRequest.input.id.toUpperCase();
+packageSubpathRootUnaryRouteProtocolRequest.input.id.toUpperCase();
+packageSubpathRootRouteStreamProtocolRequest.input.userId.toUpperCase();
+packageSubpathRootStreamRouteProtocolRequest.input.userId.toUpperCase();
+packageSubpathRootRouteUnaryRequest.input.id.toUpperCase();
+packageSubpathRootUnaryRouteRequest.input.id.toUpperCase();
+packageSubpathRootRouteStreamRequest.input.userId.toUpperCase();
+packageSubpathRootStreamRouteRequest.input.userId.toUpperCase();
+packageSubpathRootManifestRouteUnaryProtocolRequest.input.id.toUpperCase();
+packageSubpathRootManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+packageSubpathRootManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
+packageSubpathRootManifestRouteUnaryRequest.input.id.toUpperCase();
+packageSubpathRootManifestUnaryRouteRequest.input.id.toUpperCase();
+packageSubpathRootManifestStreamRouteRequest.input.userId.toUpperCase();
 typedPackageSubpathStream[Symbol.asyncIterator]();
 const packageSubpathStreamRequest = createManifestRouteStreamProtocolRequest(
   packageSubpathManifest,
