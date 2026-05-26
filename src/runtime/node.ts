@@ -1183,8 +1183,7 @@ export const createNodeRpcRequestHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    TRequest extends Request =
-      RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: NodeRpcRequestHandlerOptionsArgs<
@@ -1211,7 +1210,7 @@ export const createRouteUnaryNodeRpcRequestHandlerFor =
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
     TRequest extends Request =
-      RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+      RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
@@ -1244,7 +1243,8 @@ export const createRouteStreamNodeRpcRequestHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+    TRequest extends Request =
+      RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: NodeRouteStreamRpcRequestHandlerOptionsArgs<

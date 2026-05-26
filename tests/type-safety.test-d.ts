@@ -3721,6 +3721,38 @@ createRouteStreamNodeRpcRequestHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamNodeRpcOptions
 );
+createNodeRpcRequestHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
+createRouteUnaryNodeRpcRequestHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      // @ts-expect-error route-unary Node RPC factories default hooks to unary-only request requirements.
+      request.streamRequestId;
+      return undefined;
+    },
+  },
+});
+createRouteStreamNodeRpcRequestHandlerFor()(routeKindScopedManifest, {
+  plugins: [auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.streamRequestId.toUpperCase();
+      // @ts-expect-error route-stream Node RPC factories default hooks to stream-only request requirements.
+      request.requestId;
+      return undefined;
+    },
+  },
+});
 const routeKindScopedUnaryNodeListenOptions: NodeRouteUnaryListenOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
