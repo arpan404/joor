@@ -7,6 +7,7 @@ import {
   createClient,
   createManifestRouteRequest,
   createManifestRouteProtocolRequest,
+  createManifestRouteStreamRequest,
   createManifestRouteStreamProtocolRequest,
   createManifestRouteUnaryProtocolRequest,
   createJoorHandler,
@@ -130,6 +131,64 @@ describe('client', () => {
     expect(Object.isFrozen(manifestRouteRequest)).toBe(true);
     expect(Object.isFrozen(manifestRouteRequest.headers)).toBe(true);
     expect(Object.isFrozen(headers)).toBe(false);
+  });
+
+  it('validates manifest-aware route request ids and route kinds at runtime', () => {
+    const streamProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const manifest = {
+      procedures: { protected: getUser, stream: streamProcedure },
+    };
+
+    const createAnyProtocolRequest =
+      createManifestRouteProtocolRequest as unknown as (
+        routeManifest: typeof manifest,
+        id: string,
+        input: unknown
+      ) => unknown;
+    const createUnaryProtocolRequest =
+      createManifestRouteUnaryProtocolRequest as unknown as (
+        routeManifest: typeof manifest,
+        id: string,
+        input: unknown
+      ) => unknown;
+    const createStreamProtocolRequest =
+      createManifestRouteStreamProtocolRequest as unknown as (
+        routeManifest: typeof manifest,
+        id: string,
+        input: unknown
+      ) => unknown;
+    const createUnaryRequest = createManifestRouteRequest as unknown as (
+      routeManifest: typeof manifest,
+      id: string,
+      input: unknown
+    ) => unknown;
+    const createStreamRequest = createManifestRouteStreamRequest as unknown as (
+      routeManifest: typeof manifest,
+      id: string,
+      input: unknown
+    ) => unknown;
+
+    expect(() =>
+      createAnyProtocolRequest(manifest, 'missing', {})
+    ).toThrowError('Unknown RPC route "missing"');
+    expect(() =>
+      createUnaryProtocolRequest(manifest, 'stream', { ok: true })
+    ).toThrowError('RPC route "stream" is a stream route, expected unary');
+    expect(() =>
+      createStreamProtocolRequest(manifest, 'protected', {})
+    ).toThrowError('RPC route "protected" is a unary route, expected stream');
+    expect(() =>
+      createUnaryRequest(manifest, 'stream', { ok: true })
+    ).toThrowError('RPC route "stream" is a stream route, expected unary');
+    expect(() =>
+      createStreamRequest(manifest, 'protected', {})
+    ).toThrowError('RPC route "protected" is a unary route, expected stream');
   });
 
   it('forwards typed trace ids through calls, requests, batches, and streams', async () => {

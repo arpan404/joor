@@ -1085,6 +1085,26 @@ const createProtocolRequestObject = <TId extends string>(
     ...(options?.traceId === undefined ? {} : { traceId: options.traceId }),
   }) as RpcRequest<TId>;
 
+type ManifestRouteRequestKind = 'any' | 'unary' | 'stream';
+
+const assertManifestRouteRequestKind = (
+  manifest: JoorManifest,
+  id: string,
+  kind: ManifestRouteRequestKind
+): void => {
+  const procedure = manifest.procedures[id];
+  if (procedure === undefined) {
+    throw new TypeError(`Unknown RPC route "${id}"`);
+  }
+  if (kind === 'any') return;
+  const actual = procedure.stream === undefined ? 'unary' : 'stream';
+  if (actual !== kind) {
+    throw new TypeError(
+      `RPC route "${id}" is a ${actual} route, expected ${kind}`
+    );
+  }
+};
+
 export function createRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
@@ -1151,11 +1171,12 @@ export function createManifestRouteProtocolRequest<
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteProtocolRequest<TManifest, TId>;
 export function createManifestRouteProtocolRequest(
-  _manifest: JoorManifest,
+  manifest: JoorManifest,
   id: string,
   input: unknown,
   options?: RpcProtocolRequestOptions
 ): RpcRequest {
+  assertManifestRouteRequestKind(manifest, id, 'any');
   return createProtocolRequestObject(id, input, options);
 }
 
@@ -1171,11 +1192,12 @@ export function createManifestRouteUnaryProtocolRequest<
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
 export function createManifestRouteUnaryProtocolRequest(
-  _manifest: JoorManifest,
+  manifest: JoorManifest,
   id: string,
   input: unknown,
   options?: RpcProtocolRequestOptions
 ): RpcRequest {
+  assertManifestRouteRequestKind(manifest, id, 'unary');
   return createProtocolRequestObject(id, input, options);
 }
 
@@ -1193,11 +1215,12 @@ export function createManifestRouteStreamProtocolRequest<
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
 export function createManifestRouteStreamProtocolRequest(
-  _manifest: JoorManifest,
+  manifest: JoorManifest,
   id: string,
   input: unknown,
   options?: RpcProtocolRequestOptions
 ): RpcRequest {
+  assertManifestRouteRequestKind(manifest, id, 'stream');
   return createProtocolRequestObject(id, input, options);
 }
 
@@ -1234,11 +1257,12 @@ export function createManifestRouteStreamRequest<
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteStreamRequest<TManifest, TId>;
 export function createManifestRouteStreamRequest(
-  _manifest: JoorManifest,
+  manifest: JoorManifest,
   id: string,
   input: unknown,
   options?: RpcProtocolRequestOptions
 ): RpcRequest {
+  assertManifestRouteRequestKind(manifest, id, 'stream');
   return createProtocolRequestObject(id, input, options);
 }
 
@@ -2500,11 +2524,12 @@ export function createManifestRouteRequest<
   >
 ): RpcManifestRouteRequest<TManifest, TId>;
 export function createManifestRouteRequest(
-  _manifest: JoorManifest,
+  manifest: JoorManifest,
   id: string,
   input: unknown,
   ...options: [(ClientTraceOptions & { headers?: object })?]
 ): PendingRpcRequest {
+  assertManifestRouteRequestKind(manifest, id, 'unary');
   return Object.freeze({
     id,
     input: input as JsonValue,
