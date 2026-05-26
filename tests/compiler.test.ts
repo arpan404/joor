@@ -711,6 +711,50 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain(
         'export const createRouteUnaryNetlifyEdgeFunctionFor'
       );
+      const generatedCloudflareSource = await readFile(
+        join(outDir, 'cloudflare.ts'),
+        'utf8'
+      );
+      expect(generatedCloudflareSource).toContain('createWorkerFromFetchFor');
+      expect(generatedCloudflareSource).toContain(
+        'createWorkerFromFetchFor(createRouteUnaryFetchFor)'
+      );
+      expect(generatedCloudflareSource).toContain(
+        'createWorkerFromFetchFor(createRouteStreamFetchFor)'
+      );
+      const generatedNextSource = await readFile(
+        join(outDir, 'next.ts'),
+        'utf8'
+      );
+      expect(generatedNextSource).toContain('createHandlersFromFetchFor');
+      expect(generatedNextSource).toContain(
+        'createHandlersFromFetchFor(createRouteUnaryFetchFor)'
+      );
+      expect(generatedNextSource).toContain(
+        'createHandlersFromFetchFor(createRouteStreamFetchFor)'
+      );
+      const generatedVercelSource = await readFile(
+        join(outDir, 'vercel.ts'),
+        'utf8'
+      );
+      expect(generatedVercelSource).toContain('createVercelFromFetchFor');
+      expect(generatedVercelSource).toContain(
+        'createVercelFromFetchFor(createRouteUnaryFetchFor)'
+      );
+      expect(generatedVercelSource).toContain(
+        'createVercelFromFetchFor(createRouteStreamFetchFor)'
+      );
+      const generatedNetlifySource = await readFile(
+        join(outDir, 'netlify.ts'),
+        'utf8'
+      );
+      expect(generatedNetlifySource).toContain('createEdgeFromFetchFor');
+      expect(generatedNetlifySource).toContain(
+        'createEdgeFromFetchFor(createRouteUnaryFetchFor)'
+      );
+      expect(generatedNetlifySource).toContain(
+        'createEdgeFromFetchFor(createRouteStreamFetchFor)'
+      );
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
