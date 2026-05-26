@@ -1,7 +1,13 @@
 import type { AddressInfo } from 'node:net';
 import express from 'express';
 import { describe, expect, it } from 'vitest';
-import { createExpressHandler, defineProcedure, t } from '../src/index.js';
+import {
+  createExpressHandler,
+  createRouteStreamExpressHandler,
+  createRouteUnaryExpressHandlerFor,
+  defineProcedure,
+  t,
+} from '../src/index.js';
 
 describe('express runtime', () => {
   it('adapts mounted Express requests to the Node runtime', async () => {
@@ -100,6 +106,109 @@ describe('express runtime', () => {
         'https://app.example'
       );
       expect(body.ok).toBe(true);
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
+  it('adapts route-specific unary Express handlers through the typed Node runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ id: t.string(), tenantId: t.string() }),
+      headers: t.object({ 'x-tenant-id': t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok({
+          id: input.id,
+          tenantId: ctx.headers['x-tenant-id'],
+        });
+      },
+    });
+    const app = express();
+    app.use(
+      '/api/rpc',
+      createRouteUnaryExpressHandlerFor()(
+        { procedures: { 'users.get': procedure } },
+        { path: '/api/rpc' }
+      )
+    );
+    const server = await new Promise<ReturnType<typeof app.listen>>(
+      (resolve) => {
+        const listening = app.listen(0, '127.0.0.1', () => {
+          resolve(listening);
+        });
+      }
+    );
+    try {
+      const address = server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-tenant-id': 'tenant-1',
+        },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body.data).toEqual({ id: '1', tenantId: 'tenant-1' });
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
+  it('adapts route-specific stream Express handlers through the typed Node runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ userId: t.string() }),
+      stream: t.object({ userId: t.string(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { userId: input.userId, event: 'updated' };
+      },
+    });
+    const app = express();
+    app.use(
+      '/api/rpc',
+      createRouteStreamExpressHandler(
+        { procedures: { 'users.watch': procedure } },
+        { path: '/api/rpc' }
+      )
+    );
+    const server = await new Promise<ReturnType<typeof app.listen>>(
+      (resolve) => {
+        const listening = app.listen(0, '127.0.0.1', () => {
+          resolve(listening);
+        });
+      }
+    );
+    try {
+      const address = server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
+      });
+      const body = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(body).toContain('event: data');
+      expect(body).toContain('"event":"updated"');
+      expect(body).toContain('event: done');
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => {

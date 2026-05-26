@@ -10,7 +10,12 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import { createNodeRpcRequestHandler } from './node.js';
+import {
+  createNodeRpcRequestHandler,
+  createRouteStreamNodeRpcRequestHandler,
+  createRouteUnaryNodeRpcRequestHandler,
+  type NodeRpcRequestHandler,
+} from './node.js';
 
 export interface ExpressRequest extends IncomingMessage {
   originalUrl?: string;
@@ -161,14 +166,33 @@ export type ExpressStreamRouteHandlerOptionsArgs<
   TRequest
 >;
 
+type ExpressNodeHandlerFactory<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = (
+  manifest: TManifest,
+  options: HandlerOptionsFor<
+    TManifest,
+    readonly JoorPlugin<object>[],
+    TBody,
+    Request
+  >,
+  hostname: string
+) => NodeRpcRequestHandler;
+
 const createExpressHandlerWithOptions = <
   TManifest extends JoorManifest,
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
-  options: ExpressHandlerOptions = {}
+  options: ExpressHandlerOptions = {},
+  createHandler: ExpressNodeHandlerFactory<TManifest, TBody> = ((
+    handlerManifest,
+    handlerOptions,
+    hostname
+  ) => createNodeRpcRequestHandler(handlerManifest, handlerOptions, hostname))
 ): ExpressRequestHandler => {
-  const handler = createNodeRpcRequestHandler(
+  const handler = createHandler(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -232,7 +256,7 @@ export function createRouteUnaryExpressHandler<TManifest extends JoorManifest>(
   return createExpressHandlerWithOptions<
     TManifest,
     RpcManifestRouteUnaryBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteUnaryNodeRpcRequestHandler);
 }
 
 export const createUnaryRouteExpressHandler: typeof createRouteUnaryExpressHandler =
@@ -258,7 +282,7 @@ export function createRouteStreamExpressHandler<TManifest extends JoorManifest>(
   return createExpressHandlerWithOptions<
     TManifest,
     RpcManifestRouteStreamBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteStreamNodeRpcRequestHandler);
 }
 
 export const createStreamRouteExpressHandler: typeof createRouteStreamExpressHandler =
@@ -312,7 +336,8 @@ export const createRouteUnaryExpressHandlerFor =
       RpcManifestRouteUnaryBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as ExpressHandlerOptions
+      (args[0] ?? {}) as ExpressHandlerOptions,
+      createRouteUnaryNodeRpcRequestHandler
     ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;
 
 export const createUnaryRouteExpressHandlerFor: typeof createRouteUnaryExpressHandlerFor =
@@ -342,7 +367,8 @@ export const createRouteStreamExpressHandlerFor =
       RpcManifestRouteStreamBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as ExpressHandlerOptions
+      (args[0] ?? {}) as ExpressHandlerOptions,
+      createRouteStreamNodeRpcRequestHandler
     ) as unknown as ExpressRequestHandler<TRequest, TResponse, TNext>;
 
 export const createStreamRouteExpressHandlerFor: typeof createRouteStreamExpressHandlerFor =
