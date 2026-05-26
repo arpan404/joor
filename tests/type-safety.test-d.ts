@@ -22021,6 +22021,12 @@ const expressRouteStreamHandlerOptions: ExpressRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = expressHandlerOptions;
+const requestTypedExpressRouteStreamHandlerOptions: ExpressRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = { ...requestTypedNextRouteStreamHandlersOptions, hostname: '127.0.0.1' };
 const expressStreamRouteHandlerOptions: ExpressStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22033,6 +22039,12 @@ const runtimeSubpathExpressRouteStreamHandlerOptions: RuntimeSubpathExpressRoute
   typeof manifest,
   readonly [typeof usersPlugin]
 > = expressStreamRouteHandlerOptions;
+const requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions: RuntimeSubpathExpressRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedExpressRouteStreamHandlerOptions;
 const runtimeSubpathExpressUnaryRouteHandlerOptions: RuntimeSubpathExpressUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22122,6 +22134,12 @@ const expressRouteStreamHandlerOptionsArgs: ExpressRouteStreamHandlerOptionsArgs
   typeof manifest,
   readonly [typeof usersPlugin]
 > = expressHandlerOptionsArgs;
+const requestTypedExpressRouteStreamHandlerOptionsArgs: ExpressRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedExpressRouteStreamHandlerOptions];
 const expressStreamRouteHandlerOptionsArgs: ExpressStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22150,6 +22168,14 @@ exactExpressHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 requestTypedExpressRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
+);
+requestTypedExpressRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
 );
 expressStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathExpressRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
@@ -22186,6 +22212,10 @@ const unaryRouteExpressHandler: ExpressRequestHandler =
   createUnaryRouteExpressHandler(manifest, expressUnaryRouteHandlerOptions);
 const routeStreamExpressHandler: ExpressRequestHandler =
   createRouteStreamExpressHandler(manifest, expressRouteStreamHandlerOptions);
+createRouteStreamExpressHandler(
+  manifest,
+  requestTypedExpressRouteStreamHandlerOptions
+);
 const streamRouteExpressHandler: ExpressRequestHandler =
   createStreamRouteExpressHandler(manifest, expressStreamRouteHandlerOptions);
 createExpressHandler(manifest, requestTypedExpressHandlerOptions);
@@ -22209,6 +22239,10 @@ const runtimeSubpathRouteStreamExpressHandler: RuntimeSubpathExpressRequestHandl
     manifest,
     runtimeSubpathExpressRouteStreamHandlerOptions
   );
+createRuntimeSubpathRouteStreamExpressHandler(
+  manifest,
+  requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions
+);
 const runtimeSubpathStreamRouteExpressHandler: RuntimeSubpathExpressRequestHandler =
   createRuntimeSubpathStreamRouteExpressHandler(
     manifest,
@@ -22259,10 +22293,23 @@ const typedRouteUnaryExpressHandler: ExpressRequestHandler<
   ExpressAppResponse,
   ExpressAppNext
 >()(manifest, expressRouteUnaryHandlerOptions);
+const typedRouteStreamExpressHandler: ExpressRequestHandler<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+> = createRouteStreamExpressHandlerFor<
+  ExpressAppRequest,
+  ExpressAppResponse,
+  ExpressAppNext
+>()(manifest, requestTypedExpressRouteStreamHandlerOptions);
 createUnaryRouteExpressHandlerFor()(manifest, expressUnaryRouteHandlerOptions);
 createRouteStreamExpressHandlerFor()(
   manifest,
   expressRouteStreamHandlerOptions
+);
+createRouteStreamExpressHandlerFor()(
+  manifest,
+  requestTypedExpressRouteStreamHandlerOptions
 );
 createStreamRouteExpressHandlerFor()(
   manifest,
@@ -22291,6 +22338,15 @@ const runtimeSubpathTypedRouteUnaryExpressHandler: RuntimeSubpathExpressRequestH
   RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
   ExpressAppNext
 >()(manifest, runtimeSubpathExpressRouteUnaryHandlerOptions);
+const runtimeSubpathTypedRouteStreamExpressHandler: RuntimeSubpathExpressRequestHandler<
+  RuntimeSubpathExpressRequest & ExpressAppRequest,
+  RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
+  ExpressAppNext
+> = createRuntimeSubpathRouteStreamExpressHandlerFor<
+  RuntimeSubpathExpressRequest & ExpressAppRequest,
+  RuntimeSubpathExpressResponse<ExpressAppRequest> & ExpressAppResponse,
+  ExpressAppNext
+>()(manifest, requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions);
 createRuntimeSubpathUnaryRouteExpressHandlerFor()(
   manifest,
   runtimeSubpathExpressUnaryRouteHandlerOptions
@@ -22298,6 +22354,10 @@ createRuntimeSubpathUnaryRouteExpressHandlerFor()(
 createRuntimeSubpathRouteStreamExpressHandlerFor()(
   manifest,
   runtimeSubpathExpressRouteStreamHandlerOptions
+);
+createRuntimeSubpathRouteStreamExpressHandlerFor()(
+  manifest,
+  requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions
 );
 createRuntimeSubpathStreamRouteExpressHandlerFor()(
   manifest,
@@ -22339,6 +22399,11 @@ typedRouteUnaryExpressHandler(
   expressAppResponse,
   expressNext
 );
+typedRouteStreamExpressHandler(
+  expressAppRequest,
+  expressAppResponse,
+  expressNext
+);
 runtimeSubpathTypedExpressHandler(
   expressAppRequest,
   expressAppResponse,
@@ -22349,11 +22414,31 @@ runtimeSubpathTypedRouteUnaryExpressHandler(
   expressAppResponse,
   expressNext
 );
+runtimeSubpathTypedRouteStreamExpressHandler(
+  expressAppRequest,
+  expressAppResponse,
+  expressNext
+);
+requestTypedExpressRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Express options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathExpressRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Express options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 // @ts-expect-error typed Express handlers preserve the response's request type.
 createExpressHandlerFor<ExpressAppRequest, ExpressMismatchedResponse>();
 createRouteUnaryExpressHandlerFor<
   ExpressAppRequest,
   // @ts-expect-error route-unary typed Express handlers preserve the response's request type.
+  ExpressMismatchedResponse
+>();
+createRouteStreamExpressHandlerFor<
+  ExpressAppRequest,
+  // @ts-expect-error route-stream typed Express handlers preserve the response's request type.
   ExpressMismatchedResponse
 >();
 // @ts-expect-error service-dependent manifests require matching Express adapter plugins.
