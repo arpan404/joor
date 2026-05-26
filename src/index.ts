@@ -498,7 +498,23 @@ export {
   createUnaryRouteVercelFunctionFor,
 } from './runtime/vercel.js';
 export {
+  compiledAuthenticate,
+  compiledAuthenticateUncached,
+  compiledCreateContext,
+  compiledCreateJsonHeaderRecord,
   compiledCreateProcedureCacheKey,
+  compiledEmptyObject,
+  compiledFailure,
+  compiledHasInvalidHeaderValue,
+  compiledHeaderObject,
+  compiledJsonOkResponseInit,
+  compiledNotFound,
+  compiledRateLimitFailureStatic,
+  compiledReadCache,
+  compiledTraceId,
+  compiledUncachedExecutionState,
+  compiledValidationDetails,
+  compiledWriteCache,
   createCompiledRouteStreamRpcHandler,
   createCompiledRouteStreamRpcHandlerFor,
   createCompiledRouteStreamRpcBodyResultHandler,
@@ -520,6 +536,7 @@ export {
   createCompiledUnaryRouteRpcHandlerFor,
   createCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcTransportBodyResultHandler,
+  executeCompiledProcedure,
 } from './runtime/compiled.js';
 export { t } from './schema/builder.js';
 export { isJsonObject, parseJson } from './schema/json.js';

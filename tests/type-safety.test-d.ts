@@ -367,7 +367,23 @@ import {
   createUnaryRouteRpcBodyResultHandler,
   createUnaryRouteRpcBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler,
+  compiledAuthenticate as rootCompiledAuthenticate,
+  compiledAuthenticateUncached as rootCompiledAuthenticateUncached,
+  compiledCreateContext as rootCompiledCreateContext,
+  compiledCreateJsonHeaderRecord as rootCompiledCreateJsonHeaderRecord,
   compiledCreateProcedureCacheKey as rootCompiledCreateProcedureCacheKey,
+  compiledEmptyObject as rootCompiledEmptyObject,
+  compiledFailure as rootCompiledFailure,
+  compiledHasInvalidHeaderValue as rootCompiledHasInvalidHeaderValue,
+  compiledHeaderObject as rootCompiledHeaderObject,
+  compiledJsonOkResponseInit as rootCompiledJsonOkResponseInit,
+  compiledNotFound as rootCompiledNotFound,
+  compiledRateLimitFailureStatic as rootCompiledRateLimitFailureStatic,
+  compiledReadCache as rootCompiledReadCache,
+  compiledTraceId as rootCompiledTraceId,
+  compiledUncachedExecutionState as rootCompiledUncachedExecutionState,
+  compiledValidationDetails as rootCompiledValidationDetails,
+  compiledWriteCache as rootCompiledWriteCache,
   createCompiledRpcHandler as createRootCompiledRpcHandler,
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
   createCompiledRpcBodyResultHandler as createRootCompiledRpcBodyResultHandler,
@@ -385,6 +401,7 @@ import {
   createCompiledStreamRouteRpcTransportBodyResultHandler as createRootCompiledStreamRouteRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler as createRootCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcTransportBodyResultHandler as createRootCompiledUnaryRouteRpcTransportBodyResultHandler,
+  executeCompiledProcedure as rootExecuteCompiledProcedure,
   defineHandlerOptions,
   defineRouteStreamHandlerOptions,
   defineRouteUnaryHandlerOptions,
@@ -1905,12 +1922,23 @@ import {
   type DenoCompiledUnaryRouteTransportRequestHandler,
 } from '../src/runtime/deno-compiled-transport.js';
 import {
+  compiledCreateContext,
+  compiledCreateJsonHeaderRecord,
   compiledCreateProcedureCacheKey,
+  compiledEmptyObject,
+  compiledFailure,
+  compiledHasInvalidHeaderValue,
+  compiledHeaderObject,
+  compiledJsonOkResponseInit,
   compiledNotFound,
   compiledRateLimitFailureStatic,
+  compiledReadCache,
+  compiledTraceId,
   compiledUncachedExecutionState,
   compiledAuthenticate,
   compiledAuthenticateUncached,
+  compiledValidationDetails,
+  compiledWriteCache,
   createCompiledRouteStreamRpcBodyResultHandler,
   createCompiledRouteStreamRpcTransportBodyResultHandler,
   createCompiledRouteUnaryRpcBodyResultHandler,
@@ -4622,6 +4650,10 @@ const executeCompiledProcedureServices: Parameters<
   typeof executeCompiledProcedure<typeof procedure>
 >[4] = procedureServices;
 executeCompiledProcedureServices.users.findById('1');
+const rootExecuteCompiledProcedureServices: Parameters<
+  typeof rootExecuteCompiledProcedure<typeof procedure>
+>[4] = procedureServices;
+rootExecuteCompiledProcedureServices.users.findById('1');
 // @ts-expect-error compiled procedure execution requires selected procedure services.
 const _missingExecuteCompiledProcedureServices: Parameters<
   typeof executeCompiledProcedure<typeof procedure>
@@ -4637,6 +4669,12 @@ const compiledNotFoundResult = compiledNotFound(
 );
 const compiledNotFoundId: 'users.get' = compiledNotFoundResult.id;
 compiledNotFoundId.toUpperCase();
+const rootCompiledNotFoundResult = rootCompiledNotFound(
+  compiledRouteRequest,
+  {} as Parameters<typeof rootCompiledNotFound>[1]
+);
+const rootCompiledNotFoundId: 'users.get' = rootCompiledNotFoundResult.id;
+rootCompiledNotFoundId.toUpperCase();
 // @ts-expect-error compiled framework failures preserve the route id literal.
 const _wrongCompiledNotFoundId: 'users.list' = compiledNotFoundResult.id;
 const compiledRateLimitResult = compiledRateLimitFailureStatic(
@@ -4653,6 +4691,20 @@ const compiledRateLimitId: 'users.get' = (
   {} as NonNullable<typeof compiledRateLimitResult>
 ).id;
 compiledRateLimitId.toUpperCase();
+const rootCompiledRateLimitResult = rootCompiledRateLimitFailureStatic(
+  'users.get',
+  1,
+  '1m',
+  60_000,
+  compiledRouteRequest,
+  {} as Parameters<typeof rootCompiledRateLimitFailureStatic>[5],
+  'trace-1',
+  {} as Parameters<typeof rootCompiledRateLimitFailureStatic>[7]
+);
+const rootCompiledRateLimitId: 'users.get' = (
+  {} as NonNullable<typeof rootCompiledRateLimitResult>
+).id;
+rootCompiledRateLimitId.toUpperCase();
 // @ts-expect-error compiled static rate-limit failures preserve the route id literal.
 const _wrongCompiledRateLimitId: 'users.list' = (
   {} as NonNullable<typeof compiledRateLimitResult>
@@ -4670,6 +4722,38 @@ compiledExecuteProcedureId.toUpperCase();
 // @ts-expect-error compiled execution results preserve the route id literal.
 const _wrongCompiledExecuteProcedureId: 'users.list' =
   compiledExecuteProcedureEnvelope.id;
+const rootCompiledHelpers: [
+  typeof compiledAuthenticate,
+  typeof compiledAuthenticateUncached,
+  typeof compiledCreateContext,
+  typeof compiledCreateJsonHeaderRecord,
+  typeof compiledEmptyObject,
+  typeof compiledFailure,
+  typeof compiledHasInvalidHeaderValue,
+  typeof compiledHeaderObject,
+  typeof compiledJsonOkResponseInit,
+  typeof compiledReadCache,
+  typeof compiledTraceId,
+  typeof compiledUncachedExecutionState,
+  typeof compiledValidationDetails,
+  typeof compiledWriteCache,
+] = [
+  rootCompiledAuthenticate,
+  rootCompiledAuthenticateUncached,
+  rootCompiledCreateContext,
+  rootCompiledCreateJsonHeaderRecord,
+  rootCompiledEmptyObject,
+  rootCompiledFailure,
+  rootCompiledHasInvalidHeaderValue,
+  rootCompiledHeaderObject,
+  rootCompiledJsonOkResponseInit,
+  rootCompiledReadCache,
+  rootCompiledTraceId,
+  rootCompiledUncachedExecutionState,
+  rootCompiledValidationDetails,
+  rootCompiledWriteCache,
+];
+rootCompiledHelpers.length.toFixed();
 
 // @ts-expect-error id is required and must be a string.
 const _invalidInput: ProcedureInput<typeof procedure> = { id: 1 };
