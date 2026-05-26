@@ -3216,6 +3216,116 @@ export function createRouteStreamRpcHandler<TManifest extends RpcManifest>(
 export const createStreamRouteRpcHandler: typeof createRouteStreamRpcHandler =
   createRouteStreamRpcHandler;
 
+export function createRouteUnaryRpcHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => RpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryRpcHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+) => RpcRequestHandler<TRequest>;
+export function createRouteUnaryRpcHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteUnaryBody<TManifest>,
+      TRequest
+    >
+  ): RpcRequestHandler<TRequest> =>
+    createRouteUnaryRpcHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteUnaryBody<TManifest>,
+        TRequest
+      >
+    ) as RpcRequestHandler<TRequest>;
+}
+
+export const createUnaryRouteRpcHandlerFor: typeof createRouteUnaryRpcHandlerFor =
+  createRouteUnaryRpcHandlerFor;
+
+export function createRouteStreamRpcHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    RpcManifestRequiredRuntimeRequest<TManifest>
+  >
+) => RpcRequestHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
+export function createRouteStreamRpcHandlerFor<
+  TRequest extends Request,
+>(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+) => RpcRequestHandler<TRequest>;
+export function createRouteStreamRpcHandlerFor<
+  TRequest extends Request = Request,
+>() {
+  return <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsArgs<
+      TManifest,
+      TPlugins,
+      RpcManifestRouteStreamBody<TManifest>,
+      TRequest
+    >
+  ): RpcRequestHandler<TRequest> =>
+    createRouteStreamRpcHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<
+        TManifest,
+        TPlugins,
+        RpcManifestRouteStreamBody<TManifest>,
+        TRequest
+      >
+    ) as RpcRequestHandler<TRequest>;
+}
+
+export const createStreamRouteRpcHandlerFor: typeof createRouteStreamRpcHandlerFor =
+  createRouteStreamRpcHandlerFor;
+
 export function createRpcHandlerFor(): <
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],

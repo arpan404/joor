@@ -8,8 +8,10 @@ import {
   createFetchRequestSource,
   createJoorHandler,
   createRouteStreamJoorHandler,
+  createRouteStreamRpcHandlerFor,
   createRouteStreamRpcBodyResultHandler,
   createRouteUnaryJoorHandler,
+  createRouteUnaryRpcHandlerFor,
   createRouteUnaryRpcBodyResultHandler,
   createPlugin,
   createRpcHandler,
@@ -791,6 +793,8 @@ describe('dispatcher', () => {
     )(request, { id: 'ping', input: { ok: true } });
     const routeUnaryFetch = createRouteUnaryJoorHandler(routeManifest);
     const routeStreamFetch = createRouteStreamJoorHandler(routeManifest);
+    const routeUnaryRpcFetch = createRouteUnaryRpcHandlerFor()(routeManifest);
+    const routeStreamRpcFetch = createRouteStreamRpcHandlerFor()(routeManifest);
     const routeUnaryResponse = await routeUnaryFetch(
       new Request('http://localhost/rpc', {
         method: 'POST',
@@ -799,6 +803,23 @@ describe('dispatcher', () => {
       })
     );
     const routeStreamResponse = await routeStreamFetch(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      })
+    );
+    const routeUnaryRpcResponse = await routeUnaryRpcFetch(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      })
+    );
+    const routeStreamRpcResponse = await routeStreamRpcFetch(
       new Request('http://localhost/rpc', {
         method: 'POST',
         headers: {
@@ -823,6 +844,12 @@ describe('dispatcher', () => {
     });
     expect(routeStreamResponse.status).toBe(200);
     expect(await routeStreamResponse.json()).toMatchObject({
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(await routeUnaryRpcResponse.json()).toMatchObject({
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(await routeStreamRpcResponse.json()).toMatchObject({
       error: { code: 'NOT_FOUND', status: 404 },
     });
     expect(unaryCalls).toBe(0);
