@@ -11,6 +11,8 @@ import type {
 import type { JoorPlugin } from '../context/plugin.js';
 import {
   createJoorHandlerFor,
+  createRouteStreamJoorHandlerFor,
+  createRouteUnaryJoorHandlerFor,
   type JoorFetchHandler,
 } from './fetch.js';
 
@@ -222,6 +224,17 @@ export type NextStreamRouteHandlerOptionsArgs<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = NextRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+type NextFetchHandlerFactory<
+  TRequest extends Request,
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = (
+  manifest: TManifest,
+  options: HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>
+) => JoorFetchHandler<TRequest>;
+
 const createRouteHandlers = <
   TContext,
   TRequest extends Request,
@@ -231,9 +244,16 @@ const createRouteHandlers = <
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
-  options?: HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>
+  options?: HandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>,
+  createFetch: NextFetchHandlerFactory<
+    TRequest,
+    TManifest,
+    TPlugins,
+    TBody
+  > = (handlerManifest, handlerOptions) =>
+    createJoorHandlerFor<TRequest>()(handlerManifest, handlerOptions)
 ): NextRouteHandlers<TContext, TRequest> => {
-  const fetch = createJoorHandlerFor<TRequest>()(
+  const fetch = createFetch(
     manifest,
     (options ?? {}) as HandlerOptionsFor<
       TManifest,
@@ -309,7 +329,12 @@ export function createRouteUnaryNextRouteHandlers<
           RpcManifestRouteUnaryBody<TManifest>,
           Request
         >
-      | undefined
+      | undefined,
+    (handlerManifest, handlerOptions) =>
+      createRouteUnaryJoorHandlerFor<Request>()(
+        handlerManifest,
+        handlerOptions
+      )
   );
 }
 
@@ -354,7 +379,12 @@ export function createRouteStreamNextRouteHandlers<
           RpcManifestRouteStreamBody<TManifest>,
           Request
         >
-      | undefined
+      | undefined,
+    (handlerManifest, handlerOptions) =>
+      createRouteStreamJoorHandlerFor<Request>()(
+        handlerManifest,
+        handlerOptions
+      )
   );
 }
 
@@ -492,7 +522,12 @@ export function createRouteUnaryNextRouteHandlersFor<
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
         TRequest
-      >
+      >,
+      (handlerManifest, handlerOptions) =>
+        createRouteUnaryJoorHandlerFor<TRequest>()(
+          handlerManifest,
+          handlerOptions
+        )
     );
 }
 
@@ -564,7 +599,12 @@ export function createRouteStreamNextRouteHandlersFor<
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,
         TRequest
-      >
+      >,
+      (handlerManifest, handlerOptions) =>
+        createRouteStreamJoorHandlerFor<TRequest>()(
+          handlerManifest,
+          handlerOptions
+        )
     );
 }
 

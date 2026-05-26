@@ -4,8 +4,11 @@ import config from './fixtures/basic-app/joor.config.js';
 import {
   createNextRouteHandlers,
   createNextRouteHandlersFor,
+  createRouteStreamNextRouteHandlers,
+  createRouteUnaryNextRouteHandlersFor,
   type NextRouteContext,
 } from '../src/runtime/next.js';
+import { defineProcedure, t } from '../src/index.js';
 
 describe('next runtime', () => {
   it('creates app router handlers for Next.js api routes', async () => {
@@ -85,5 +88,72 @@ describe('next runtime', () => {
     expect(request.requestId).toBe('req_1');
     expect(body.ok).toBe(true);
     expect(body.data.name).toBe('Ada');
+  });
+
+  it('creates route-specific unary Next.js handlers through the typed fetch runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ id: t.string(), tenantId: t.string() }),
+      headers: t.object({ 'x-tenant-id': t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok({
+          id: input.id,
+          tenantId: ctx.headers['x-tenant-id'],
+        });
+      },
+    });
+    const handlers = createRouteUnaryNextRouteHandlersFor()(
+      { procedures: { 'users.get': procedure } },
+      { path: '/api/rpc' }
+    );
+
+    const response = await handlers.POST(
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-tenant-id': 'tenant-1',
+        },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      })
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body.data).toEqual({ id: '1', tenantId: 'tenant-1' });
+  });
+
+  it('creates route-specific stream Next.js handlers through the typed fetch runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ userId: t.string() }),
+      stream: t.object({ userId: t.string(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { userId: input.userId, event: 'updated' };
+      },
+    });
+    const handlers = createRouteStreamNextRouteHandlers(
+      { procedures: { 'users.watch': procedure } },
+      { path: '/api/rpc' }
+    );
+
+    const response = await handlers.POST(
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
+      })
+    );
+    const body = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-type')).toContain(
+      'text/event-stream'
+    );
+    expect(body).toContain('event: data');
+    expect(body).toContain('"event":"updated"');
+    expect(body).toContain('event: done');
   });
 });
