@@ -3329,6 +3329,38 @@ routeKindScopedStreamHonoHandler({
     raw: requestTypedProcedureRequest,
   },
 });
+const routeKindScopedUnaryFastifyHandlerOptions: FastifyRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryFastifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryFastifyHandlerOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryFastifyRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Fastify options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryFastifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryFastifyHandlerOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamFastifyHandlerOptions: FastifyRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamFastifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamFastifyHandlerOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamFastifyRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Fastify options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamFastifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamFastifyHandlerOptions
+> = requestTypedProcedureRequest;
+createRouteUnaryFastifyHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryFastifyHandlerOptions
+);
+createRouteStreamFastifyHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamFastifyHandlerOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
