@@ -690,7 +690,12 @@ export function createDenoRpcRequestHandler<TManifest extends JoorManifest>(
 ): DenoRpcRequestHandler {
   const handler = createRpcBodyResultHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >,
     false
   );
   return createDenoTransportRequestHandler(
@@ -718,18 +723,28 @@ export function createRouteUnaryDenoRpcRequestHandler<
 ): DenoRpcRequestHandler<TRequest>;
 export function createRouteUnaryDenoRpcRequestHandler<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): DenoRpcRequestHandler {
-  return createDenoRpcRequestHandler(
+>(manifest: TManifest, options?: HandlerOptions): DenoRpcRequestHandler {
+  const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
       Request
-    >
+    >,
+    false
+  );
+  const routeHandler = ((request, body) =>
+    handler(
+      request.toRequest(),
+      body as unknown as RpcManifestRouteUnaryBody<TManifest>
+    )) as DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+  return createRouteUnaryDenoTransportRequestHandler(
+    routeHandler,
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -751,18 +766,28 @@ export function createRouteStreamDenoRpcRequestHandler<
 ): DenoRpcRequestHandler<TRequest>;
 export function createRouteStreamDenoRpcRequestHandler<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): DenoRpcRequestHandler {
-  return createDenoRpcRequestHandler(
+>(manifest: TManifest, options?: HandlerOptions): DenoRpcRequestHandler {
+  const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
       Request
-    >
+    >,
+    false
+  );
+  const routeHandler = ((request, body) =>
+    handler(
+      request.toRequest(),
+      body as unknown as RpcManifestRouteStreamBody<TManifest>
+    )) as DenoRouteStreamTransportBodyResultHandlerFor<TManifest>;
+  return createRouteStreamDenoTransportRequestHandler(
+    routeHandler,
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -947,6 +972,29 @@ export function createRouteStreamDenoRpcRequestHandlerFor<
 export const createStreamRouteDenoRpcRequestHandlerFor: typeof createRouteStreamDenoRpcRequestHandlerFor =
   createRouteStreamDenoRpcRequestHandlerFor;
 
+const serveDenoWithHandler = (
+  handler: DenoRpcRequestHandler,
+  options: DenoServeOptions = {}
+): DenoServer => {
+  const denoGlobal = globalThis as typeof globalThis & {
+    Deno?: {
+      serve(options: {
+        port: number;
+        hostname: string;
+        handler(request: Request): Response | Promise<Response>;
+      }): DenoServer;
+    };
+  };
+  if (denoGlobal.Deno === undefined) {
+    throw new Error('Deno runtime is not available');
+  }
+  return denoGlobal.Deno.serve({
+    port: options.port ?? 3000,
+    hostname: options.hostname ?? '0.0.0.0',
+    handler,
+  });
+};
+
 export function serveDeno<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -964,7 +1012,7 @@ export function serveDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
 ): DenoServer {
-  const fetch = createDenoRpcRequestHandler(
+  const handler = createDenoRpcRequestHandler(
     manifest,
     options as unknown as DenoServeOptionsFor<
       TManifest,
@@ -973,23 +1021,7 @@ export function serveDeno<TManifest extends JoorManifest>(
       Request
     >
   );
-  const denoGlobal = globalThis as typeof globalThis & {
-    Deno?: {
-      serve(options: {
-        port: number;
-        hostname: string;
-        handler(request: Request): Response | Promise<Response>;
-      }): DenoServer;
-    };
-  };
-  if (denoGlobal.Deno === undefined) {
-    throw new Error('Deno runtime is not available');
-  }
-  return denoGlobal.Deno.serve({
-    port: options.port ?? 3000,
-    hostname: options.hostname ?? '0.0.0.0',
-    handler: fetch,
-  });
+  return serveDenoWithHandler(handler, options);
 }
 
 export function serveRouteUnaryDeno<
@@ -1009,7 +1041,7 @@ export function serveRouteUnaryDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
 ): DenoServer {
-  return serveDeno(
+  const handler = createRouteUnaryDenoRpcRequestHandler(
     manifest,
     options as unknown as DenoRouteUnaryServeOptionsFor<
       TManifest,
@@ -1018,6 +1050,7 @@ export function serveRouteUnaryDeno<TManifest extends JoorManifest>(
       Request
     >
   );
+  return serveDenoWithHandler(handler, options);
 }
 
 export const serveUnaryRouteDeno: typeof serveRouteUnaryDeno =
@@ -1044,7 +1077,7 @@ export function serveRouteStreamDeno<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: DenoServeOptions = {}
 ): DenoServer {
-  return serveDeno(
+  const handler = createRouteStreamDenoRpcRequestHandler(
     manifest,
     options as unknown as DenoRouteStreamServeOptionsFor<
       TManifest,
@@ -1053,6 +1086,7 @@ export function serveRouteStreamDeno<TManifest extends JoorManifest>(
       Request
     >
   );
+  return serveDenoWithHandler(handler, options);
 }
 
 export const serveStreamRouteDeno: typeof serveRouteStreamDeno =

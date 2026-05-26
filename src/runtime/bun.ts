@@ -1005,14 +1005,27 @@ export function createRouteUnaryBunRpcRequestHandler<
 export function createRouteUnaryBunRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
-  return createBunRpcRequestHandler(
+  const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
       Request
-    >
+    >,
+    false
+  );
+  const routeHandler = ((request, body) =>
+    handler(
+      request.toRequest(),
+      body as unknown as RpcManifestRouteUnaryBody<TManifest>
+    )) as BunRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+  return createRouteUnaryBunTransportRequestHandler(
+    routeHandler,
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -1035,14 +1048,27 @@ export function createRouteStreamBunRpcRequestHandler<
 export function createRouteStreamBunRpcRequestHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): BunRpcRequestHandler {
-  return createBunRpcRequestHandler(
+  const handler = createRpcBodyResultHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
       Request
-    >
+    >,
+    false
+  );
+  const routeHandler = ((request, body) =>
+    handler(
+      request.toRequest(),
+      body as unknown as RpcManifestRouteStreamBody<TManifest>
+    )) as BunRouteStreamTransportBodyResultHandlerFor<TManifest>;
+  return createRouteStreamBunTransportRequestHandler(
+    routeHandler,
+    options?.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES,
+    createRpcRequestPreflight(options),
+    createCorsHeaderRecord(options?.cors),
+    options?.onError as ((error: Error, request: Request) => void) | undefined
   );
 }
 
@@ -1227,6 +1253,29 @@ export function createRouteStreamBunRpcRequestHandlerFor<
 export const createStreamRouteBunRpcRequestHandlerFor: typeof createRouteStreamBunRpcRequestHandlerFor =
   createRouteStreamBunRpcRequestHandlerFor;
 
+const serveBunWithFetch = (
+  fetch: BunRpcRequestHandler,
+  options: BunServeOptions = {}
+): BunServer => {
+  const bunGlobal = globalThis as typeof globalThis & {
+    Bun?: {
+      serve(options: {
+        port: number;
+        hostname: string;
+        fetch(request: Request): Response | Promise<Response>;
+      }): BunServer;
+    };
+  };
+  if (bunGlobal.Bun === undefined) {
+    throw new Error('Bun runtime is not available');
+  }
+  return bunGlobal.Bun.serve({
+    port: options.port ?? 3000,
+    hostname: options.hostname ?? '0.0.0.0',
+    fetch,
+  });
+};
+
 export function serveBun<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1253,23 +1302,7 @@ export function serveBun<TManifest extends JoorManifest>(
       Request
     >
   );
-  const bunGlobal = globalThis as typeof globalThis & {
-    Bun?: {
-      serve(options: {
-        port: number;
-        hostname: string;
-        fetch(request: Request): Response | Promise<Response>;
-      }): BunServer;
-    };
-  };
-  if (bunGlobal.Bun === undefined) {
-    throw new Error('Bun runtime is not available');
-  }
-  return bunGlobal.Bun.serve({
-    port: options.port ?? 3000,
-    hostname: options.hostname ?? '0.0.0.0',
-    fetch,
-  });
+  return serveBunWithFetch(fetch, options);
 }
 
 export function serveRouteUnaryBun<
@@ -1289,7 +1322,7 @@ export function serveRouteUnaryBun<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: BunServeOptions = {}
 ): BunServer {
-  return serveBun(
+  const fetch = createRouteUnaryBunRpcRequestHandler(
     manifest,
     options as unknown as BunRouteUnaryServeOptionsFor<
       TManifest,
@@ -1298,6 +1331,7 @@ export function serveRouteUnaryBun<TManifest extends JoorManifest>(
       Request
     >
   );
+  return serveBunWithFetch(fetch, options);
 }
 
 export const serveUnaryRouteBun: typeof serveRouteUnaryBun = serveRouteUnaryBun;
@@ -1321,7 +1355,7 @@ export function serveRouteStreamBun<TManifest extends JoorManifest>(
   manifest: TManifest,
   options: BunServeOptions = {}
 ): BunServer {
-  return serveBun(
+  const fetch = createRouteStreamBunRpcRequestHandler(
     manifest,
     options as unknown as BunRouteStreamServeOptionsFor<
       TManifest,
@@ -1330,6 +1364,7 @@ export function serveRouteStreamBun<TManifest extends JoorManifest>(
       Request
     >
   );
+  return serveBunWithFetch(fetch, options);
 }
 
 export const serveStreamRouteBun: typeof serveRouteStreamBun =

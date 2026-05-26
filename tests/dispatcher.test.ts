@@ -26,12 +26,20 @@ import {
 } from '../src/runtime/compiled.js';
 import {
   createBunRpcRequestHandler,
+  createRouteStreamBunRpcRequestHandler,
+  createRouteUnaryBunRpcRequestHandler,
   createBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath,
 } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
 import {
+  createRouteStreamDenoRpcRequestHandler as createStandaloneRouteStreamDenoRpcRequestHandler,
+  createRouteUnaryDenoRpcRequestHandler as createStandaloneRouteUnaryDenoRpcRequestHandler,
+} from '../src/runtime/deno-transport.js';
+import {
   createDenoRpcRequestHandler,
+  createRouteStreamDenoRpcRequestHandler,
+  createRouteUnaryDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
 } from '../src/runtime/deno.js';
 import {
@@ -934,6 +942,75 @@ describe('dispatcher', () => {
         'POST, OPTIONS'
       );
       expect((await response.json()).ok).toBe(true);
+    }
+  });
+
+  it('dispatches route-specific Bun and Deno RPC request handlers', async () => {
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    const options = { cors: { origin: 'https://route.example' } };
+    const unaryRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const streamRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      });
+    const unaryHandlers = [
+      createRouteUnaryBunRpcRequestHandler(routeManifest, options),
+      createRouteUnaryDenoRpcRequestHandler(routeManifest, options),
+      createStandaloneRouteUnaryDenoRpcRequestHandler(routeManifest, options),
+    ];
+    const streamHandlers = [
+      createRouteStreamBunRpcRequestHandler(routeManifest, options),
+      createRouteStreamDenoRpcRequestHandler(routeManifest, options),
+      createStandaloneRouteStreamDenoRpcRequestHandler(routeManifest, options),
+    ];
+
+    for (const handler of unaryHandlers) {
+      const response = await handler(unaryRequest());
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://route.example'
+      );
+      expect(body).toMatchObject({ ok: true, id: 'ping', data: { ok: true } });
+    }
+
+    for (const handler of streamHandlers) {
+      const response = await handler(streamRequest());
+      const text = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://route.example'
+      );
+      expect(text).toContain('"ok":true');
     }
   });
 
