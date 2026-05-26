@@ -939,8 +939,10 @@ import {
   type JoorManifestRouteUnaryRequiredRuntimeRequest,
   type JoorManifestRouteUnaryRequiredServices,
   type JoorManifestRouteStreamBody,
+  type JoorManifestRouteStreamBodyHandler,
   type JoorManifestRouteStreamBodyResult,
   type JoorManifestRouteStreamBodyResultFor,
+  type JoorManifestRouteStreamBodyResultHandler,
   type JoorManifestRouteStreamEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
@@ -950,8 +952,10 @@ import {
   type JoorManifestRouteStreamRequestUnion,
   type JoorManifestRouteStreamTransportClient,
   type JoorManifestRouteUnaryBody,
+  type JoorManifestRouteUnaryBodyHandler,
   type JoorManifestRouteUnaryBodyResult,
   type JoorManifestRouteUnaryBodyResultFor,
+  type JoorManifestRouteUnaryBodyResultHandler,
   type JoorManifestRouteUnaryProtocolBatchRequest,
   type JoorManifestRouteUnaryProtocolBatchClientHeaders,
   type JoorManifestRouteUnaryProtocolBatchOptions,
@@ -1540,6 +1544,8 @@ import {
 } from '../src/config.js';
 import {
   defineConfigFor as definePackageConfigSubpathFor,
+  defineStreamRouteConfigFor as definePackageConfigSubpathStreamRouteConfigFor,
+  defineUnaryRouteConfigFor as definePackageConfigSubpathUnaryRouteConfigFor,
   type DefineConfigFor as PackageConfigSubpathDefineConfigFor,
   type DefineStreamRouteConfigFor as PackageConfigSubpathDefineStreamRouteConfigFor,
   type DefineUnaryRouteConfigFor as PackageConfigSubpathDefineUnaryRouteConfigFor,
@@ -3120,6 +3126,173 @@ const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamHandlerOptions
 > = requestTypedStreamProcedureRequest;
 routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+const routeKindScopedUnaryConfig: JoorRouteUnaryConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+};
+const routeKindScopedUnaryConfigRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryConfig
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryConfigRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary config defaults to unary-only request requirements.
+const _wrongRouteKindScopedUnaryConfigRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryConfig
+> = requestTypedStreamProcedureRequest;
+const _wrongRouteKindScopedUnaryConfig: JoorRouteUnaryConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  // @ts-expect-error route-unary config requires unary services, not stream-only plugins.
+  plugins: [auditPlugin] as const,
+};
+const routeKindScopedUnaryRouteConfig: JoorUnaryRouteConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryConfig;
+const routeKindScopedUnaryConfigFactory: DefineRouteUnaryConfigFor<
+  typeof routeKindScopedManifest
+> = defineRouteUnaryConfigFor(routeKindScopedManifest);
+const routeKindScopedUnaryConfigFromFactory = routeKindScopedUnaryConfigFactory(
+  routeKindScopedUnaryConfig
+);
+const routeKindScopedUnaryConfigFactoryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryConfigFromFactory
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryConfigFactoryRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary config factories preserve unary-only request requirements.
+const _wrongRouteKindScopedUnaryConfigFactoryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryConfigFromFactory
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamConfig: JoorRouteStreamConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  plugins: [auditPlugin] as const,
+};
+const routeKindScopedStreamConfigRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamConfig
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamConfigRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream config defaults to stream-only request requirements.
+const _wrongRouteKindScopedStreamConfigRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamConfig
+> = requestTypedProcedureRequest;
+const _wrongRouteKindScopedStreamConfig: JoorRouteStreamConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  // @ts-expect-error route-stream config requires stream services, not unary-only plugins.
+  plugins: [usersPlugin] as const,
+};
+const routeKindScopedStreamRouteConfig: JoorStreamRouteConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamConfig;
+const routeKindScopedStreamConfigFactory: DefineRouteStreamConfigFor<
+  typeof routeKindScopedManifest
+> = defineRouteStreamConfigFor(routeKindScopedManifest);
+const routeKindScopedStreamConfigFromFactory =
+  routeKindScopedStreamConfigFactory(routeKindScopedStreamConfig);
+const routeKindScopedStreamConfigFactoryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamConfigFromFactory
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamConfigFactoryRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream config factories preserve stream-only request requirements.
+const _wrongRouteKindScopedStreamConfigFactoryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamConfigFromFactory
+> = requestTypedProcedureRequest;
+const routeKindScopedUnaryManifestBodyHandler: JoorManifestRouteUnaryBodyHandler<
+  typeof routeKindScopedManifest
+> = (request) => {
+  request.requestId.toUpperCase();
+  return new Response();
+};
+routeKindScopedUnaryManifestBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryManifestBodyHandler(
+  // @ts-expect-error route-unary manifest body handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedUnaryRouteManifestBodyHandler: JoorManifestUnaryRouteBodyHandler<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryManifestBodyHandler;
+routeKindScopedUnaryRouteManifestBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+const routeKindScopedStreamManifestBodyHandler: JoorManifestRouteStreamBodyHandler<
+  typeof routeKindScopedManifest
+> = (request) => {
+  request.streamRequestId.toUpperCase();
+  return new Response();
+};
+routeKindScopedStreamManifestBodyHandler(requestTypedStreamProcedureRequest, {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedStreamManifestBodyHandler(
+  // @ts-expect-error route-stream manifest body handlers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
+const routeKindScopedStreamRouteManifestBodyHandler: JoorManifestStreamRouteBodyHandler<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamManifestBodyHandler;
+routeKindScopedStreamRouteManifestBodyHandler(
+  requestTypedStreamProcedureRequest,
+  {
+    id: 'request.watch',
+    input: { id: '1' },
+  }
+);
+const routeKindScopedUnaryManifestBodyResultHandler: JoorManifestRouteUnaryBodyResultHandler<
+  typeof routeKindScopedManifest
+> = ((
+  request: JoorManifestRouteUnaryRequiredRuntimeRequest<
+    typeof routeKindScopedManifest
+  >,
+  _body: JoorManifestRouteUnaryBody<typeof routeKindScopedManifest>
+) => {
+  request.requestId.toUpperCase();
+  return new Response();
+}) as JoorManifestRouteUnaryBodyResultHandler<typeof routeKindScopedManifest>;
+routeKindScopedUnaryManifestBodyResultHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryManifestBodyResultHandler(
+  // @ts-expect-error route-unary manifest body result handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedStreamManifestBodyResultHandler: JoorManifestRouteStreamBodyResultHandler<
+  typeof routeKindScopedManifest
+> = ((
+  request: JoorManifestRouteStreamRequiredRuntimeRequest<
+    typeof routeKindScopedManifest
+  >,
+  _body: JoorManifestRouteStreamBody<typeof routeKindScopedManifest>
+) => {
+  request.streamRequestId.toUpperCase();
+  return new Response();
+}) as JoorManifestRouteStreamBodyResultHandler<typeof routeKindScopedManifest>;
+routeKindScopedStreamManifestBodyResultHandler(
+  requestTypedStreamProcedureRequest,
+  {
+    id: 'request.watch',
+    input: { id: '1' },
+  }
+);
+routeKindScopedStreamManifestBodyResultHandler(
+  // @ts-expect-error route-stream manifest body result handlers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
 const routeKindScopedUnaryCompiledBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
   typeof routeKindScopedManifest
 > = (request, body) => {
@@ -7082,13 +7255,13 @@ const manifestStreamRouteConfigShape: JoorStreamRouteConfigFor<
 > = manifestRouteStreamConfigShape;
 const manifestRouteUnaryConfigFactory: DefineRouteUnaryConfigFor<
   typeof manifest
-> = defineConfigFor(manifest);
+> = defineRouteUnaryConfigFor(manifest);
 const manifestUnaryRouteConfigFactory: DefineUnaryRouteConfigFor<
   typeof manifest
 > = manifestRouteUnaryConfigFactory;
 const manifestRouteStreamConfigFactory: DefineRouteStreamConfigFor<
   typeof manifest
-> = defineConfigFor(manifest);
+> = defineRouteStreamConfigFor(manifest);
 const manifestStreamRouteConfigFactory: DefineStreamRouteConfigFor<
   typeof manifest
 > = manifestRouteStreamConfigFactory;
@@ -7150,10 +7323,10 @@ const contextSubpathManifestAwareConfigFactory: ContextSubpathDefineConfigFor<
 > = defineContextSubpathConfigFor(manifest);
 const contextSubpathUnaryRouteConfigFactory: ContextSubpathDefineUnaryRouteConfigFor<
   typeof manifest
-> = defineContextSubpathConfigFor(manifest);
+> = defineContextSubpathUnaryRouteConfigFor(manifest);
 const contextSubpathStreamRouteConfigFactory: ContextSubpathDefineStreamRouteConfigFor<
   typeof manifest
-> = defineContextSubpathConfigFor(manifest);
+> = defineContextSubpathStreamRouteConfigFor(manifest);
 contextSubpathManifestAwareConfigFactory({ plugins: [usersPlugin] as const });
 contextSubpathUnaryRouteConfigFactory(contextSubpathUnaryRouteConfigShape);
 contextSubpathStreamRouteConfigFactory(contextSubpathStreamRouteConfigShape);
@@ -7178,10 +7351,10 @@ const configSubpathManifestAwareConfigFactory: ConfigSubpathDefineConfigFor<
 > = defineConfigSubpathFor(manifest);
 const configSubpathUnaryRouteConfigFactory: ConfigSubpathDefineUnaryRouteConfigFor<
   typeof manifest
-> = defineConfigSubpathFor(manifest);
+> = defineConfigSubpathUnaryRouteConfigFor(manifest);
 const configSubpathStreamRouteConfigFactory: ConfigSubpathDefineStreamRouteConfigFor<
   typeof manifest
-> = defineConfigSubpathFor(manifest);
+> = defineConfigSubpathStreamRouteConfigFor(manifest);
 configSubpathManifestAwareConfigFactory({ plugins: [usersPlugin] as const });
 configSubpathUnaryRouteConfigFactory(configSubpathUnaryRouteConfigShape);
 configSubpathStreamRouteConfigFactory(configSubpathStreamRouteConfigShape);
@@ -7217,10 +7390,10 @@ const packageConfigSubpathManifestAwareConfigFactory: PackageConfigSubpathDefine
 > = definePackageConfigSubpathFor(manifest);
 const packageConfigSubpathUnaryRouteConfigFactory: PackageConfigSubpathDefineUnaryRouteConfigFor<
   typeof manifest
-> = definePackageConfigSubpathFor(manifest);
+> = definePackageConfigSubpathUnaryRouteConfigFor(manifest);
 const packageConfigSubpathStreamRouteConfigFactory: PackageConfigSubpathDefineStreamRouteConfigFor<
   typeof manifest
-> = definePackageConfigSubpathFor(manifest);
+> = definePackageConfigSubpathStreamRouteConfigFor(manifest);
 packageConfigSubpathManifestAwareConfigFactory({
   plugins: [usersPlugin] as const,
 });
