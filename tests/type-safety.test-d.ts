@@ -3459,6 +3459,102 @@ routeKindScopedStreamNodeListenRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamNodeListenRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamNodeListenOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedUnaryAwsLambdaOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryAwsLambdaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryAwsLambdaRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary AWS Lambda options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryAwsLambdaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamAwsLambdaOptions: AwsLambdaRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamAwsLambdaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamAwsLambdaRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream AWS Lambda options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamAwsLambdaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaOptions
+> = requestTypedProcedureRequest;
+const routeKindScopedUnaryAwsLambdaHttpApiOptions: AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryAwsLambdaHttpApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaHttpApiOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryAwsLambdaHttpApiRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary AWS Lambda HTTP API options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryAwsLambdaHttpApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaHttpApiOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamAwsLambdaHttpApiOptions: AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamAwsLambdaHttpApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaHttpApiOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamAwsLambdaHttpApiRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream AWS Lambda HTTP API options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamAwsLambdaHttpApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaHttpApiOptions
+> = requestTypedProcedureRequest;
+const routeKindScopedUnaryAwsLambdaRestApiOptions: AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryAwsLambdaRestApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaRestApiOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryAwsLambdaRestApiRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary AWS Lambda REST API options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryAwsLambdaRestApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryAwsLambdaRestApiOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamAwsLambdaRestApiOptions: AwsLambdaRestApiRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamAwsLambdaRestApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaRestApiOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamAwsLambdaRestApiRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream AWS Lambda REST API options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamAwsLambdaRestApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamAwsLambdaRestApiOptions
+> = requestTypedProcedureRequest;
+createRouteUnaryAwsLambdaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaOptions
+);
+createRouteStreamAwsLambdaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaOptions
+);
+createRouteUnaryAwsLambdaHttpApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaHttpApiOptions
+);
+createRouteStreamAwsLambdaHttpApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaHttpApiOptions
+);
+createRouteUnaryAwsLambdaRestApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaRestApiOptions
+);
+createRouteStreamAwsLambdaRestApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaRestApiOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
