@@ -834,6 +834,7 @@ import {
   type RpcManifestStreamRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestStreamRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestStreamRouteMiddlewareFor,
+  type RpcManifestRouteStreamHandlerOptionsFor,
   type RpcManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor,
   type RpcManifestUnaryRouteHandlerOptionsArgs,
@@ -842,6 +843,7 @@ import {
   type RpcManifestUnaryRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestUnaryRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestUnaryRouteMiddlewareFor,
+  type RpcManifestRouteUnaryHandlerOptionsFor,
   type JoorConfig,
   type JoorConfigFor,
   type JoorConfigContext,
@@ -932,6 +934,10 @@ import {
   type JoorManifestRequiredServices,
   type JoorManifestRouteRuntimeRequest,
   type JoorManifestRouteServices,
+  type JoorManifestRouteStreamRequiredRuntimeRequest,
+  type JoorManifestRouteStreamRequiredServices,
+  type JoorManifestRouteUnaryRequiredRuntimeRequest,
+  type JoorManifestRouteUnaryRequiredServices,
   type JoorManifestRouteStreamBody,
   type JoorManifestRouteStreamBodyResult,
   type JoorManifestRouteStreamBodyResultFor,
@@ -965,6 +971,8 @@ import {
   type JoorManifestStreamRouteProtocolRequest,
   type JoorManifestStreamRouteProtocolRequestUnion,
   type JoorManifestStreamRouteId,
+  type JoorManifestStreamRouteRequiredRuntimeRequest,
+  type JoorManifestStreamRouteRequiredServices,
   type JoorManifestStreamRouteTransportClient,
   type JoorManifestTransportClient,
   type JoorManifestUnaryRouteClientArgs,
@@ -983,6 +991,8 @@ import {
   type JoorManifestUnaryRouteHeaders,
   type JoorManifestUnaryRouteInput,
   type JoorManifestUnaryRouteOutput,
+  type JoorManifestUnaryRouteRequiredRuntimeRequest,
+  type JoorManifestUnaryRouteRequiredServices,
   type JoorManifestUnaryRouteBatchClientHeaders,
   type JoorManifestUnaryRouteBatchOptions,
   type JoorManifestUnaryRouteBatchOptionsTuple,
@@ -1222,6 +1232,10 @@ import {
   type RpcManifestRequiredServices,
   type RpcManifestRouteRuntimeRequest,
   type RpcManifestRouteServices,
+  type RpcManifestRouteStreamRequiredRuntimeRequest,
+  type RpcManifestRouteStreamRequiredServices,
+  type RpcManifestRouteUnaryRequiredRuntimeRequest,
+  type RpcManifestRouteUnaryRequiredServices,
   type RpcManifestRoutes,
   type RpcManifestRouteStreamBody,
   type RpcManifestRouteStreamBodyHandler,
@@ -2814,6 +2828,18 @@ const usersPlugin = createPlugin({
 usersPlugin.name = 'accounts';
 // @ts-expect-error plugin setup functions are readonly.
 usersPlugin.setup = () => ({});
+const auditPlugin = createPlugin({
+  name: 'audit',
+  setup() {
+    return {
+      audit: {
+        record(id: string) {
+          id.toUpperCase();
+        },
+      },
+    };
+  },
+});
 
 const config = defineConfig({ plugins: [usersPlugin] as const });
 // @ts-expect-error configs expose readonly plugin lists.
@@ -2823,6 +2849,7 @@ type ConfigRequest = JoorConfigRequest<typeof config>;
 const configRequest: ConfigRequest = new Request('https://example.com/rpc');
 configRequest.url.toUpperCase();
 type RootPluginServices = PluginServices<readonly [typeof usersPlugin]>;
+type AuditPluginServices = PluginServices<readonly [typeof auditPlugin]>;
 const rootPluginServices: RootPluginServices = {
   users: {
     findById(id) {
@@ -2830,7 +2857,15 @@ const rootPluginServices: RootPluginServices = {
     },
   },
 };
+const auditPluginServices: AuditPluginServices = {
+  audit: {
+    record(id) {
+      id.toUpperCase();
+    },
+  },
+};
 rootPluginServices.users.findById('1').name.toUpperCase();
+auditPluginServices.audit.record('1');
 type RootUnionToIntersection = UnionToIntersection<
   { readonly user: string } | { readonly org: string }
 >;
@@ -2897,6 +2932,10 @@ interface ProcedureAppRequest extends Request {
   readonly requestId: string;
 }
 
+interface StreamProcedureRequest extends Request {
+  readonly streamRequestId: string;
+}
+
 const procedure = defineProcedure.withContext<Services>()({
   input: t.object({ id: t.string() }),
   headers: t.object({
@@ -2937,12 +2976,30 @@ const requestTypedProcedure = defineProcedure.withContext<
     return { id: input.id };
   },
 });
+const requestTypedStreamProcedure = defineProcedure.withContext<
+  AuditPluginServices,
+  StreamProcedureRequest
+>()({
+  input: t.object({ id: t.string() }),
+  stream: t.object({ id: t.string() }),
+  async *handler(ctx, input) {
+    ctx.request.streamRequestId.toUpperCase();
+    ctx.services.audit.record(input.id);
+    yield { id: input.id };
+  },
+});
 const requestTypedProcedureRequest: ProcedureRequest<
   typeof requestTypedProcedure
 > = Object.assign(new Request('https://example.com/rpc'), {
   requestId: 'req_1',
 }) as ProcedureAppRequest;
 requestTypedProcedureRequest.requestId.toUpperCase();
+const requestTypedStreamProcedureRequest: ProcedureRequest<
+  typeof requestTypedStreamProcedure
+> = Object.assign(new Request('https://example.com/rpc'), {
+  streamRequestId: 'stream_req_1',
+}) as StreamProcedureRequest;
+requestTypedStreamProcedureRequest.streamRequestId.toUpperCase();
 // @ts-expect-error request-typed procedures are not assignable to plain request procedures.
 const _wrongRequestTypedProcedure: Procedure<
   typeof requestTypedProcedure.input,
@@ -2981,6 +3038,102 @@ const requestTypedJoorManifestRouteRequest: JoorManifestRouteRuntimeRequest<
   'request.get'
 > = requestTypedManifestRouteRequest;
 requestTypedJoorManifestRouteRequest.requestId.toUpperCase();
+const routeKindScopedManifest = defineManifest({
+  procedures: {
+    'request.get': requestTypedProcedure,
+    'request.watch': requestTypedStreamProcedure,
+  },
+});
+const routeKindScopedUnaryServices: RpcManifestRouteUnaryRequiredServices<
+  typeof routeKindScopedManifest
+> = rootPluginServices;
+routeKindScopedUnaryServices.users.findById('1').name.toUpperCase();
+// @ts-expect-error unary route required services exclude stream-only services.
+routeKindScopedUnaryServices.audit.record('1');
+const routeKindScopedStreamServices: RpcManifestRouteStreamRequiredServices<
+  typeof routeKindScopedManifest
+> = auditPluginServices;
+routeKindScopedStreamServices.audit.record('1');
+// @ts-expect-error stream route required services exclude unary-only services.
+routeKindScopedStreamServices.users.findById('1');
+const routeKindScopedJoorUnaryServices: JoorManifestRouteUnaryRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryServices;
+const routeKindScopedJoorStreamServices: JoorManifestRouteStreamRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamServices;
+const routeKindScopedJoorUnaryRouteServices: JoorManifestUnaryRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedJoorUnaryServices;
+const routeKindScopedJoorStreamRouteServices: JoorManifestStreamRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedJoorStreamServices;
+routeKindScopedJoorUnaryRouteServices.users.findById('1').name.toUpperCase();
+routeKindScopedJoorStreamRouteServices.audit.record('1');
+const routeKindScopedUnaryRequest: RpcManifestRouteUnaryRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryRequest.requestId.toUpperCase();
+const routeKindScopedStreamRequest: RpcManifestRouteStreamRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamRequest.streamRequestId.toUpperCase();
+// @ts-expect-error unary route request requirements exclude stream-only request types.
+const _wrongRouteKindScopedUnaryRequest: RpcManifestRouteUnaryRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedStreamProcedureRequest;
+// @ts-expect-error stream route request requirements exclude unary-only request types.
+const _wrongRouteKindScopedStreamRequest: RpcManifestRouteStreamRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedProcedureRequest;
+const routeKindScopedJoorUnaryRequest: JoorManifestRouteUnaryRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryRequest;
+const routeKindScopedJoorStreamRequest: JoorManifestRouteStreamRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamRequest;
+const routeKindScopedJoorUnaryRouteRequest: JoorManifestUnaryRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedJoorUnaryRequest;
+const routeKindScopedJoorStreamRouteRequest: JoorManifestStreamRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedJoorStreamRequest;
+routeKindScopedJoorUnaryRouteRequest.requestId.toUpperCase();
+routeKindScopedJoorStreamRouteRequest.streamRequestId.toUpperCase();
+const routeKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  plugins: [usersPlugin] as const,
+};
+const routeKindScopedUnaryHandlerRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryHandlerOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryHandlerRequest.requestId.toUpperCase();
+const routeKindScopedStreamHandlerOptions: RpcManifestRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  plugins: [auditPlugin] as const,
+};
+const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamHandlerOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  // @ts-expect-error unary route handler options require unary services, not stream-only plugins.
+  plugins: [auditPlugin] as const,
+};
+const _wrongRouteKindScopedStreamHandlerOptions: RpcManifestRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  // @ts-expect-error stream route handler options require stream services, not unary-only plugins.
+  plugins: [usersPlugin] as const,
+};
 const requestTypedManifestHandlerOptions: HandlerOptionsFor<
   typeof requestTypedManifest,
   readonly [typeof usersPlugin],
@@ -10428,10 +10581,10 @@ const definedHandlerOptionsFactory: DefineHandlerOptions<typeof manifest> =
   defineHandlerOptions(manifest);
 const definedRouteUnaryHandlerOptionsFactory: DefineRouteUnaryHandlerOptions<
   typeof manifest
-> = defineHandlerOptions(manifest);
+> = defineRouteUnaryHandlerOptions(manifest);
 const definedRouteStreamHandlerOptionsFactory: DefineRouteStreamHandlerOptions<
   typeof manifest
-> = defineHandlerOptions(manifest);
+> = defineRouteStreamHandlerOptions(manifest);
 const definedUnaryRouteHandlerOptionsFactory: DefineUnaryRouteHandlerOptions<
   typeof manifest
 > = definedRouteUnaryHandlerOptionsFactory;
@@ -10553,10 +10706,10 @@ const rpcSubpathDefinedHandlerOptionsFactory: RpcSubpathDefineHandlerOptions<
 > = defineRpcSubpathHandlerOptions(manifest);
 const rpcSubpathDefinedRouteUnaryHandlerOptionsFactory: RpcSubpathDefineRouteUnaryHandlerOptions<
   typeof manifest
-> = defineRpcSubpathHandlerOptions(manifest);
+> = defineRpcSubpathRouteUnaryHandlerOptions(manifest);
 const rpcSubpathDefinedRouteStreamHandlerOptionsFactory: RpcSubpathDefineRouteStreamHandlerOptions<
   typeof manifest
-> = defineRpcSubpathHandlerOptions(manifest);
+> = defineRpcSubpathRouteStreamHandlerOptions(manifest);
 const rpcSubpathDefinedUnaryRouteHandlerOptionsFactory: RpcSubpathDefineUnaryRouteHandlerOptions<
   typeof manifest
 > = rpcSubpathDefinedRouteUnaryHandlerOptionsFactory;

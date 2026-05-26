@@ -135,9 +135,13 @@ import type {
   RpcManifestRequiredServices,
   RpcManifestRouteRuntimeRequest,
   RpcManifestRouteServices,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
+  RpcManifestRouteStreamRequiredServices,
   RpcManifestRouteStreamBodyHandler,
   RpcManifestRouteStreamBodyResultHandler,
   RpcManifestRouteStreamTransportBodyResultHandler,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcManifestRouteUnaryRequiredServices,
   RpcManifestRouteUnaryBodyHandler,
   RpcManifestRouteUnaryBodyResultHandler,
   RpcManifestRouteUnaryTransportBodyResultHandler,
@@ -361,6 +365,48 @@ export type JoorManifestRequiredServices<TManifest> =
         }[JoorManifestRouteId<TManifest>]
       >;
 
+type JoorManifestServiceContribution<TServices> = [TServices] extends [
+  Record<string, never>,
+]
+  ? never
+  : TServices;
+
+type JoorManifestRouteUnaryServiceContributions<TManifest> = {
+  [TId in JoorManifestRouteUnaryId<TManifest>]: JoorManifestServiceContribution<
+    JoorManifestRouteServices<TManifest, TId>
+  >;
+}[JoorManifestRouteUnaryId<TManifest>];
+
+export type JoorManifestRouteUnaryRequiredServices<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRouteUnaryRequiredServices<TManifest>
+    : [JoorManifestRouteUnaryServiceContributions<TManifest>] extends [never]
+      ? Record<string, never>
+      : UnionToIntersection<
+          JoorManifestRouteUnaryServiceContributions<TManifest>
+        >;
+
+export type JoorManifestUnaryRouteRequiredServices<TManifest> =
+  JoorManifestRouteUnaryRequiredServices<TManifest>;
+
+type JoorManifestRouteStreamServiceContributions<TManifest> = {
+  [TId in JoorManifestRouteStreamId<TManifest>]: JoorManifestServiceContribution<
+    JoorManifestRouteServices<TManifest, TId>
+  >;
+}[JoorManifestRouteStreamId<TManifest>];
+
+export type JoorManifestRouteStreamRequiredServices<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRouteStreamRequiredServices<TManifest>
+    : [JoorManifestRouteStreamServiceContributions<TManifest>] extends [never]
+      ? Record<string, never>
+      : UnionToIntersection<
+          JoorManifestRouteStreamServiceContributions<TManifest>
+        >;
+
+export type JoorManifestStreamRouteRequiredServices<TManifest> =
+  JoorManifestRouteStreamRequiredServices<TManifest>;
+
 type JoorManifestRequestContribution<TRequest> = [Request] extends [TRequest]
   ? never
   : TRequest;
@@ -378,6 +424,44 @@ export type JoorManifestRequiredRuntimeRequest<TManifest> =
       ? Request
       : UnionToIntersection<JoorManifestRequestContributions<TManifest>> &
           Request;
+
+type JoorManifestRouteUnaryRequestContributions<TManifest> = {
+  [TId in JoorManifestRouteUnaryId<TManifest>]: JoorManifestRequestContribution<
+    JoorManifestRouteRuntimeRequest<TManifest, TId>
+  >;
+}[JoorManifestRouteUnaryId<TManifest>];
+
+export type JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
+    : [JoorManifestRouteUnaryRequestContributions<TManifest>] extends [never]
+      ? Request
+      : UnionToIntersection<
+          JoorManifestRouteUnaryRequestContributions<TManifest>
+        > &
+          Request;
+
+export type JoorManifestUnaryRouteRequiredRuntimeRequest<TManifest> =
+  JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest>;
+
+type JoorManifestRouteStreamRequestContributions<TManifest> = {
+  [TId in JoorManifestRouteStreamId<TManifest>]: JoorManifestRequestContribution<
+    JoorManifestRouteRuntimeRequest<TManifest, TId>
+  >;
+}[JoorManifestRouteStreamId<TManifest>];
+
+export type JoorManifestRouteStreamRequiredRuntimeRequest<TManifest> =
+  TManifest extends JoorManifest
+    ? RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
+    : [JoorManifestRouteStreamRequestContributions<TManifest>] extends [never]
+      ? Request
+      : UnionToIntersection<
+          JoorManifestRouteStreamRequestContributions<TManifest>
+        > &
+          Request;
+
+export type JoorManifestStreamRouteRequiredRuntimeRequest<TManifest> =
+  JoorManifestRouteStreamRequiredRuntimeRequest<TManifest>;
 
 export type JoorManifestRouteInput<
   TManifest,
