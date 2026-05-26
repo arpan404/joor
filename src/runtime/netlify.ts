@@ -6,7 +6,13 @@ import type {
   RpcManifestBody,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamHandlerOptionsArgs,
+  RpcManifestRouteStreamHandlerOptionsFor,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryHandlerOptionsArgs,
+  RpcManifestRouteUnaryHandlerOptionsFor,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -29,10 +35,7 @@ export type NetlifyEdgeResult = Response | URL | undefined;
 export type NetlifyEdgeFetchHandler<
   TContext = unknown,
   TRequest extends Request = Request,
-> = (
-  request: TRequest,
-  context: TContext
-) => MaybePromise<NetlifyEdgeResult>;
+> = (request: TRequest, context: TContext) => MaybePromise<NetlifyEdgeResult>;
 
 export type NetlifyFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -48,8 +51,14 @@ export type NetlifyRouteUnaryFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = NetlifyFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type NetlifyUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -57,7 +66,8 @@ export type NetlifyUnaryRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type NetlifyRouteStreamFetchOptionsFor<
@@ -66,8 +76,14 @@ export type NetlifyRouteStreamFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = NetlifyFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type NetlifyStreamRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -75,7 +91,8 @@ export type NetlifyStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type NetlifyFetchOptionsArgs<
@@ -92,8 +109,14 @@ export type NetlifyRouteUnaryFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = NetlifyFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type NetlifyUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -101,7 +124,8 @@ export type NetlifyUnaryRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type NetlifyRouteStreamFetchOptionsArgs<
@@ -110,8 +134,14 @@ export type NetlifyRouteStreamFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = NetlifyFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type NetlifyStreamRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -119,7 +149,8 @@ export type NetlifyStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export function createNetlifyFetch<
@@ -141,14 +172,20 @@ export function createNetlifyFetch<TManifest extends JoorManifest>(
 ): NetlifyFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >
   );
 }
 
 export function createRouteUnaryNetlifyFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: NetlifyRouteUnaryFetchOptionsArgs<
@@ -164,7 +201,7 @@ export function createRouteUnaryNetlifyFetch<TManifest extends JoorManifest>(
 ): NetlifyFetchHandler {
   return createRouteUnaryJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
@@ -179,7 +216,8 @@ export const createUnaryRouteNetlifyFetch: typeof createRouteUnaryNetlifyFetch =
 export function createRouteStreamNetlifyFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: NetlifyRouteStreamFetchOptionsArgs<
@@ -195,7 +233,7 @@ export function createRouteStreamNetlifyFetch<TManifest extends JoorManifest>(
 ): NetlifyFetchHandler {
   return createRouteStreamJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
@@ -264,12 +302,12 @@ export function createRouteUnaryNetlifyFetchFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
   >
-) => NetlifyFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
-export function createRouteUnaryNetlifyFetchFor<
-  TRequest extends Request,
->(): <
+) => NetlifyFetchHandler<
+  RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteUnaryNetlifyFetchFor<TRequest extends Request>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -298,7 +336,7 @@ export function createRouteUnaryNetlifyFetchFor<
   ): NetlifyFetchHandler<TRequest> =>
     createRouteUnaryJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
@@ -319,12 +357,12 @@ export function createRouteStreamNetlifyFetchFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
   >
-) => NetlifyFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
-export function createRouteStreamNetlifyFetchFor<
-  TRequest extends Request,
->(): <
+) => NetlifyFetchHandler<
+  RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteStreamNetlifyFetchFor<TRequest extends Request>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -353,7 +391,7 @@ export function createRouteStreamNetlifyFetchFor<
   ): NetlifyFetchHandler<TRequest> =>
     createRouteStreamJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,
@@ -384,7 +422,12 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
 ): NetlifyEdgeFetchHandler {
   const fetch = createNetlifyFetch(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >
   );
   return (request) => fetch(request);
 }
@@ -392,7 +435,8 @@ export function createNetlifyEdgeFunction<TManifest extends JoorManifest>(
 export function createRouteUnaryNetlifyEdgeFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: NetlifyRouteUnaryFetchOptionsArgs<
@@ -404,13 +448,10 @@ export function createRouteUnaryNetlifyEdgeFunction<
 ): NetlifyEdgeFetchHandler<unknown, TRequest>;
 export function createRouteUnaryNetlifyEdgeFunction<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): NetlifyEdgeFetchHandler {
+>(manifest: TManifest, options?: HandlerOptions): NetlifyEdgeFetchHandler {
   const fetch = createRouteUnaryNetlifyFetch(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
@@ -426,7 +467,8 @@ export const createUnaryRouteNetlifyEdgeFunction: typeof createRouteUnaryNetlify
 export function createRouteStreamNetlifyEdgeFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: NetlifyRouteStreamFetchOptionsArgs<
@@ -438,13 +480,10 @@ export function createRouteStreamNetlifyEdgeFunction<
 ): NetlifyEdgeFetchHandler<unknown, TRequest>;
 export function createRouteStreamNetlifyEdgeFunction<
   TManifest extends JoorManifest,
->(
-  manifest: TManifest,
-  options?: HandlerOptions
-): NetlifyEdgeFetchHandler {
+>(manifest: TManifest, options?: HandlerOptions): NetlifyEdgeFetchHandler {
   const fetch = createRouteStreamNetlifyFetch(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
@@ -516,9 +555,7 @@ export function createNetlifyEdgeFunctionFor<
   };
 }
 
-export function createRouteUnaryNetlifyEdgeFunctionFor<
-  TContext = unknown,
->(): <
+export function createRouteUnaryNetlifyEdgeFunctionFor<TContext = unknown>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -527,11 +564,11 @@ export function createRouteUnaryNetlifyEdgeFunctionFor<
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
   >
 ) => NetlifyEdgeFetchHandler<
   TContext,
-  RpcManifestRequiredRuntimeRequest<TManifest>
+  RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
 >;
 export function createRouteUnaryNetlifyEdgeFunctionFor<
   TContext = unknown,
@@ -566,7 +603,7 @@ export function createRouteUnaryNetlifyEdgeFunctionFor<
   ): NetlifyEdgeFetchHandler<TContext, TRequest> => {
     const fetch = createRouteUnaryJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
@@ -580,9 +617,7 @@ export function createRouteUnaryNetlifyEdgeFunctionFor<
 export const createUnaryRouteNetlifyEdgeFunctionFor: typeof createRouteUnaryNetlifyEdgeFunctionFor =
   createRouteUnaryNetlifyEdgeFunctionFor;
 
-export function createRouteStreamNetlifyEdgeFunctionFor<
-  TContext = unknown,
->(): <
+export function createRouteStreamNetlifyEdgeFunctionFor<TContext = unknown>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -591,11 +626,11 @@ export function createRouteStreamNetlifyEdgeFunctionFor<
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
   >
 ) => NetlifyEdgeFetchHandler<
   TContext,
-  RpcManifestRequiredRuntimeRequest<TManifest>
+  RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
 >;
 export function createRouteStreamNetlifyEdgeFunctionFor<
   TContext = unknown,
@@ -630,7 +665,7 @@ export function createRouteStreamNetlifyEdgeFunctionFor<
   ): NetlifyEdgeFetchHandler<TContext, TRequest> => {
     const fetch = createRouteStreamJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,

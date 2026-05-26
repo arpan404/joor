@@ -3196,6 +3196,29 @@ routeKindScopedStreamNextHandler.POST(
   // @ts-expect-error route-stream Next handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryNetlifyFetch = createRouteUnaryNetlifyFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryNetlifyFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryNetlifyFetch(
+  // @ts-expect-error route-unary Netlify fetch helpers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamNetlifyEdgeFunction =
+  createRouteStreamNetlifyEdgeFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamNetlifyEdgeFunction(
+  requestTypedStreamProcedureRequest,
+  {}
+);
+routeKindScopedStreamNetlifyEdgeFunction(
+  // @ts-expect-error route-stream Netlify Edge Function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  {}
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
