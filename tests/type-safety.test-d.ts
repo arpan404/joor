@@ -22479,6 +22479,12 @@ const elysiaRouteStreamHandlerOptions: ElysiaRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = elysiaHandlerOptions;
+const requestTypedElysiaRouteStreamHandlerOptions: ElysiaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const elysiaStreamRouteHandlerOptions: ElysiaStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22497,6 +22503,12 @@ const runtimeSubpathElysiaRouteStreamHandlerOptions: RuntimeSubpathElysiaRouteSt
   typeof manifest,
   readonly [typeof usersPlugin]
 > = elysiaStreamRouteHandlerOptions;
+const requestTypedRuntimeSubpathElysiaRouteStreamHandlerOptions: RuntimeSubpathElysiaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedElysiaRouteStreamHandlerOptions;
 const runtimeSubpathElysiaUnaryRouteHandlerOptions: RuntimeSubpathElysiaUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22532,6 +22544,12 @@ const elysiaRouteStreamHandlerOptionsArgs: ElysiaRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = elysiaHandlerOptionsArgs;
+const requestTypedElysiaRouteStreamHandlerOptionsArgs: ElysiaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedElysiaRouteStreamHandlerOptions];
 const elysiaStreamRouteHandlerOptionsArgs: ElysiaStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22568,6 +22586,10 @@ runtimeSubpathElysiaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 );
 runtimeSubpathElysiaRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedElysiaRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathElysiaUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
@@ -22619,6 +22641,12 @@ const runtimeSubpathRouteStreamElysiaHandler: RuntimeSubpathElysiaHandler =
     manifest,
     runtimeSubpathElysiaRouteStreamHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamElysiaHandler: RuntimeSubpathElysiaHandler<
+  RuntimeSubpathElysiaContext<HookAppRequest>
+> = createRuntimeSubpathRouteStreamElysiaHandler(
+  manifest,
+  requestTypedRuntimeSubpathElysiaRouteStreamHandlerOptions
+);
 const runtimeSubpathStreamRouteElysiaHandler: RuntimeSubpathElysiaHandler =
   createRuntimeSubpathStreamRouteElysiaHandler(
     manifest,
@@ -22651,6 +22679,11 @@ const routeUnaryHookTypedElysiaHandler =
     manifest,
     requestTypedElysiaRouteUnaryHandlerOptions
   );
+const routeStreamHookTypedElysiaHandler =
+  createRouteStreamElysiaHandlerFor<ElysiaHookContext>()(
+    manifest,
+    requestTypedElysiaRouteStreamHandlerOptions
+  );
 createUnaryRouteElysiaHandlerFor()(manifest, elysiaUnaryRouteHandlerOptions);
 createRouteStreamElysiaHandlerFor()(manifest, elysiaRouteStreamHandlerOptions);
 createStreamRouteElysiaHandlerFor()(manifest, elysiaStreamRouteHandlerOptions);
@@ -22662,6 +22695,12 @@ const directHookTypedRouteUnaryElysiaHandler: ElysiaHandler<
 > = createRouteUnaryElysiaHandler(
   manifest,
   requestTypedElysiaRouteUnaryHandlerOptions
+);
+const directHookTypedRouteStreamElysiaHandler: ElysiaHandler<
+  ElysiaContext<HookAppRequest>
+> = createRouteStreamElysiaHandler(
+  manifest,
+  requestTypedElysiaRouteStreamHandlerOptions
 );
 const createRuntimeSubpathTypedElysiaHandler =
   createRuntimeSubpathElysiaHandlerFor<
@@ -22683,6 +22722,11 @@ const runtimeSubpathRouteUnaryTypedElysiaHandler: RuntimeSubpathElysiaHandler<
   manifest,
   requestTypedElysiaRouteUnaryHandlerOptions
 );
+const runtimeSubpathRouteStreamTypedElysiaHandler: RuntimeSubpathElysiaHandler<
+  RuntimeSubpathElysiaContext<HookAppRequest> & ElysiaHookContext
+> = createRuntimeSubpathRouteStreamElysiaHandlerFor<
+  RuntimeSubpathElysiaContext<HookAppRequest> & ElysiaHookContext
+>()(manifest, requestTypedRuntimeSubpathElysiaRouteStreamHandlerOptions);
 createRuntimeSubpathUnaryRouteElysiaHandlerFor()(
   manifest,
   runtimeSubpathElysiaUnaryRouteHandlerOptions
@@ -22720,22 +22764,34 @@ runtimeSubpathRouteUnaryElysiaHandler(elysiaContext);
 runtimeSubpathUnaryRouteElysiaHandler(elysiaContext);
 runtimeSubpathRouteStreamElysiaHandler(elysiaContext);
 runtimeSubpathStreamRouteElysiaHandler(elysiaContext);
+directRuntimeSubpathHookTypedRouteStreamElysiaHandler(elysiaHookContext);
 runtimeSubpathSyncElysiaHandler(elysiaContext);
 typedElysiaHandler(elysiaAppContext);
 runtimeSubpathTypedElysiaHandler(elysiaAppContext);
 hookTypedElysiaHandler(elysiaHookContext);
 routeUnaryHookTypedElysiaHandler(elysiaHookContext);
+routeStreamHookTypedElysiaHandler(elysiaHookContext);
 directHookTypedElysiaHandler(elysiaHookContext);
 directHookTypedRouteUnaryElysiaHandler(elysiaHookContext);
+directHookTypedRouteStreamElysiaHandler(elysiaHookContext);
 runtimeSubpathRouteUnaryTypedElysiaHandler(elysiaHookContext);
+runtimeSubpathRouteStreamTypedElysiaHandler(elysiaHookContext);
 // @ts-expect-error direct typed Elysia handlers infer custom hook request context types.
 directHookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error direct typed route-unary Elysia handlers infer custom hook request context types.
 directHookTypedRouteUnaryElysiaHandler(elysiaContext);
+// @ts-expect-error direct typed route-stream Elysia handlers infer custom hook request context types.
+directHookTypedRouteStreamElysiaHandler(elysiaContext);
 // @ts-expect-error typed Elysia handlers preserve hook request context types.
 hookTypedElysiaHandler(elysiaContext);
 // @ts-expect-error route-unary Elysia handlers preserve hook request context types.
 routeUnaryHookTypedElysiaHandler(elysiaContext);
+// @ts-expect-error route-stream Elysia handlers preserve hook request context types.
+routeStreamHookTypedElysiaHandler(elysiaContext);
+// @ts-expect-error runtime-subpath route-stream Elysia handlers preserve hook request context types.
+runtimeSubpathRouteStreamTypedElysiaHandler(elysiaContext);
+// @ts-expect-error direct runtime-subpath route-stream Elysia handlers infer custom hook request context types.
+directRuntimeSubpathHookTypedRouteStreamElysiaHandler(elysiaContext);
 // @ts-expect-error service-dependent manifests require matching Elysia adapter plugins.
 createElysiaHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching route-unary Elysia adapter plugins.
