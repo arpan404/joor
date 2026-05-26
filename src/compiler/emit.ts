@@ -1916,6 +1916,260 @@ export default edge;
 `
   );
 
+  await writeFile(
+    `${outDir}/aws-lambda.ts`,
+    `import { Buffer } from 'node:buffer';
+import type { AwsLambdaHandler, AwsLambdaHttpApiHandler, AwsLambdaHttpEventV2, AwsLambdaHttpResponseV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler, AwsLambdaRestApiResponseV1 } from 'joor/runtime/aws-lambda';
+import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+
+const eventHeader = (
+  event: Pick<AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1, 'headers'>,
+  name: string
+): string | undefined => {
+  const wanted = name.toLowerCase();
+  for (const [key, value] of Object.entries(event.headers ?? {})) {
+    if (key.toLowerCase() === wanted) return value;
+  }
+  return undefined;
+};
+
+const queryString = (
+  single?: Readonly<Record<string, string | undefined>> | null,
+  multi?: Readonly<Record<string, readonly (string | undefined)[] | undefined>> | null
+): string => {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(single ?? {})) {
+    if (value !== undefined) params.append(key, value);
+  }
+  for (const [key, values] of Object.entries(multi ?? {})) {
+    if (values === undefined) continue;
+    params.delete(key);
+    for (const value of values) {
+      if (value !== undefined) params.append(key, value);
+    }
+  }
+  return params.toString();
+};
+
+const eventBody = (
+  event: Pick<AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1, 'body' | 'isBase64Encoded'>
+): BodyInit | undefined => {
+  if (event.body === undefined || event.body === null) return undefined;
+  return event.isBase64Encoded ? Buffer.from(event.body, 'base64') : event.body;
+};
+
+const eventHeaders = (event: AwsLambdaHttpEventV2): Headers => {
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(event.headers ?? {})) {
+    if (value !== undefined) headers.set(key, value);
+  }
+  if (event.cookies !== undefined && !headers.has('cookie')) {
+    headers.set('cookie', event.cookies.join('; '));
+  }
+  return headers;
+};
+
+const restApiEventHeaders = (event: AwsLambdaRestApiEventV1): Headers => {
+  const headers = new Headers();
+  for (const [key, value] of Object.entries(event.headers ?? {})) {
+    if (value !== undefined) headers.set(key, value);
+  }
+  for (const [key, values] of Object.entries(event.multiValueHeaders ?? {})) {
+    if (values === undefined) continue;
+    const normalizedValues = values.filter(
+      (value): value is string => value !== undefined
+    );
+    if (normalizedValues.length === 0) continue;
+    headers.set(
+      key,
+      key.toLowerCase() === 'cookie'
+        ? normalizedValues.join('; ')
+        : normalizedValues.join(', ')
+    );
+  }
+  return headers;
+};
+
+export const createAwsLambdaRequest = (event: AwsLambdaHttpEventV2): Request => {
+  const protocol = eventHeader(event, 'x-forwarded-proto') ?? 'https';
+  const host =
+    eventHeader(event, 'host') ??
+    event.requestContext?.domainName ??
+    'localhost';
+  const path = event.rawPath ?? '/';
+  const query = event.rawQueryString;
+  const body = eventBody(event);
+  return new Request(
+    \`\${protocol}://\${host}\${path}\${query === undefined || query === '' ? '' : \`?\${query}\`}\`,
+    {
+      method: event.requestContext?.http?.method ?? 'GET',
+      headers: eventHeaders(event),
+      ...(body === undefined ? {} : { body }),
+    }
+  );
+};
+
+export const createAwsLambdaRestApiRequest = (
+  event: AwsLambdaRestApiEventV1
+): Request => {
+  const protocol = eventHeader(event, 'x-forwarded-proto') ?? 'https';
+  const host =
+    eventHeader(event, 'host') ??
+    event.requestContext?.domainName ??
+    'localhost';
+  const path = event.path ?? event.requestContext?.path ?? '/';
+  const query = queryString(
+    event.queryStringParameters,
+    event.multiValueQueryStringParameters
+  );
+  const body = eventBody(event);
+  return new Request(
+    \`\${protocol}://\${host}\${path}\${query === '' ? '' : \`?\${query}\`}\`,
+    {
+      method: event.httpMethod ?? 'GET',
+      headers: restApiEventHeaders(event),
+      ...(body === undefined ? {} : { body }),
+    }
+  );
+};
+
+const getSetCookies = (headers: Headers): string[] => {
+  const withSetCookie = headers as Headers & {
+    getSetCookie?: () => string[];
+  };
+  return withSetCookie.getSetCookie?.() ?? [];
+};
+
+const responseHeaders = (response: Response): Record<string, string> => {
+  const headers: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    if (key !== 'set-cookie') headers[key] = value;
+  });
+  return headers;
+};
+
+export const createAwsLambdaResponse = async (
+  response: Response
+): Promise<AwsLambdaHttpResponseV2> => {
+  const cookies = getSetCookies(response.headers);
+  return {
+    statusCode: response.status,
+    headers: responseHeaders(response),
+    ...(cookies.length === 0 ? {} : { cookies }),
+    body: await response.text(),
+    isBase64Encoded: false,
+  };
+};
+
+export const createAwsLambdaRestApiResponse = async (
+  response: Response
+): Promise<AwsLambdaRestApiResponseV1> => {
+  const cookies = getSetCookies(response.headers);
+  return {
+    statusCode: response.status,
+    headers: responseHeaders(response),
+    ...(cookies.length === 0
+      ? {}
+      : { multiValueHeaders: { 'set-cookie': cookies } }),
+    body: await response.text(),
+    isBase64Encoded: false,
+  };
+};
+
+const createHttpApiHandlerFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2>(): AwsLambdaHttpApiHandler<TEvent> => {
+    const handler = fetchFactory<NativeRequiredRuntimeRequest>();
+    return async (event) =>
+      createAwsLambdaResponse(
+        await handler(createAwsLambdaRequest(event) as NativeRequiredRuntimeRequest)
+      );
+  };
+
+const createRestApiHandlerFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1>(): AwsLambdaRestApiHandler<TEvent> => {
+    const handler = fetchFactory<NativeRequiredRuntimeRequest>();
+    return async (event) =>
+      createAwsLambdaRestApiResponse(
+        await handler(createAwsLambdaRestApiRequest(event) as NativeRequiredRuntimeRequest)
+      );
+  };
+
+export const createAwsLambdaHandler = createHttpApiHandlerFromFetch(createFetch);
+export const createAwsLambdaHandlerFor: typeof createAwsLambdaHandler =
+  createAwsLambdaHandler;
+export const createAwsLambdaHttpApiHandler: typeof createAwsLambdaHandler =
+  createAwsLambdaHandler;
+export const createAwsLambdaHttpApiHandlerFor: typeof createAwsLambdaHttpApiHandler =
+  createAwsLambdaHttpApiHandler;
+export const handler: AwsLambdaHttpApiHandler = createAwsLambdaHandler();
+export const httpApiHandler: AwsLambdaHttpApiHandler = handler;
+
+export const createRouteUnaryAwsLambdaHandler =
+  createHttpApiHandlerFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteAwsLambdaHandler: typeof createRouteUnaryAwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler;
+export const createRouteUnaryAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler;
+export const createUnaryRouteAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler;
+export const createRouteUnaryAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHandler =
+  createRouteUnaryAwsLambdaHandler;
+export const createUnaryRouteAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHttpApiHandler =
+  createRouteUnaryAwsLambdaHttpApiHandler;
+export const createRouteUnaryAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandler =
+  createRouteUnaryAwsLambdaHttpApiHandler;
+export const createUnaryRouteAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandler =
+  createRouteUnaryAwsLambdaHttpApiHandler;
+
+export const createRouteStreamAwsLambdaHandler =
+  createHttpApiHandlerFromFetch(createRouteStreamFetch);
+export const createStreamRouteAwsLambdaHandler: typeof createRouteStreamAwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler;
+export const createRouteStreamAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler;
+export const createStreamRouteAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler;
+export const createRouteStreamAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler;
+export const createStreamRouteAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler;
+export const createRouteStreamAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler;
+export const createStreamRouteAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler;
+
+export const createAwsLambdaRestApiHandler =
+  createRestApiHandlerFromFetch(createFetch);
+export const createAwsLambdaRestApiHandlerFor: typeof createAwsLambdaRestApiHandler =
+  createAwsLambdaRestApiHandler;
+export const restApiHandler: AwsLambdaRestApiHandler =
+  createAwsLambdaRestApiHandler();
+
+export const createRouteUnaryAwsLambdaRestApiHandler =
+  createRestApiHandlerFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteAwsLambdaRestApiHandler: typeof createRouteUnaryAwsLambdaRestApiHandler =
+  createRouteUnaryAwsLambdaRestApiHandler;
+export const createRouteUnaryAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandler =
+  createRouteUnaryAwsLambdaRestApiHandler;
+export const createUnaryRouteAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandler =
+  createRouteUnaryAwsLambdaRestApiHandler;
+
+export const createRouteStreamAwsLambdaRestApiHandler =
+  createRestApiHandlerFromFetch(createRouteStreamFetch);
+export const createStreamRouteAwsLambdaRestApiHandler: typeof createRouteStreamAwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler;
+export const createRouteStreamAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler;
+export const createStreamRouteAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler;
+
+export { createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch };
+export default handler;
+`
+  );
+
   const nodeFile = `${outDir}/node.ts`;
   await writeFile(
     nodeFile,

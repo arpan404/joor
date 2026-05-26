@@ -726,6 +726,14 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain(
         'export const createRouteUnaryNetlifyEdgeFunctionFor'
       );
+      await expect(
+        readFile(join(outDir, 'aws-lambda.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryAwsLambdaHandler');
+      await expect(
+        readFile(join(outDir, 'aws-lambda.ts'), 'utf8')
+      ).resolves.toContain(
+        'export const createRouteStreamAwsLambdaRestApiHandler'
+      );
       const generatedCloudflareSource = await readFile(
         join(outDir, 'cloudflare.ts'),
         'utf8'
@@ -781,6 +789,16 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedNetlifySource).toContain(
         'createEdgeFromFetchFor(createRouteStreamFetchFor)'
+      );
+      const generatedAwsLambdaSource = await readFile(
+        join(outDir, 'aws-lambda.ts'),
+        'utf8'
+      );
+      expect(generatedAwsLambdaSource).toContain(
+        'createHttpApiHandlerFromFetch(createRouteUnaryFetch)'
+      );
+      expect(generatedAwsLambdaSource).toContain(
+        'createRestApiHandlerFromFetch(createRouteStreamFetch)'
       );
       const generatedNativeBunSource = await readFile(
         join(outDir, 'bun.ts'),
@@ -1486,6 +1504,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
+import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaRestApiHandler, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
@@ -1493,6 +1512,7 @@ import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStream
 import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
 import type { AppRequest } from '${procedureImport}';
+import type { AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1 } from 'joor/runtime/aws-lambda';
 
 const appRequest = Object.assign(new Request('https://example.com/rpc'), {
   requestId: 'req_1',
@@ -1654,6 +1674,32 @@ netlifyEdge(plainRequest, {});
 // @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.
 edge(plainRequest, {});
 
+const awsLambdaEvent: AwsLambdaHttpEventV2 = {
+  rawPath: '/rpc',
+  rawQueryString: '',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ id: 'request.get', input: { id: '1' } }),
+  requestContext: { http: { method: 'POST' } },
+};
+const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
+  path: '/rpc',
+  httpMethod: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ id: 'request.get', input: { id: '1' } }),
+};
+createAwsLambdaRequest(awsLambdaEvent).headers.get('content-type');
+createAwsLambdaRestApiRequest(awsLambdaRestApiEvent).headers.get('content-type');
+createAwsLambdaResponse(new Response('{}'));
+createAwsLambdaHandler()(awsLambdaEvent);
+createAwsLambdaHandlerFor()(awsLambdaEvent);
+awsLambdaHandler(awsLambdaEvent);
+createRouteUnaryAwsLambdaHandler()(awsLambdaEvent);
+createRouteStreamAwsLambdaHandler()(awsLambdaEvent);
+createAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+awsLambdaRestApiHandler(awsLambdaRestApiEvent);
+createRouteUnaryAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+createRouteStreamAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+
 const bunHandler: BunNativeFetchHandler = bunFetch;
 bunHandler(appRequest);
 createBunFetch()(appRequest);
@@ -1716,6 +1762,7 @@ createDenoFetch()(plainRequest);
               procedureFile,
               join(outDir, 'dispatcher.safe.ts'),
               join(outDir, 'fetch.ts'),
+              join(outDir, 'aws-lambda.ts'),
               join(outDir, 'cloudflare.ts'),
               join(outDir, 'next.ts'),
               join(outDir, 'vercel.ts'),
