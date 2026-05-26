@@ -20943,6 +20943,12 @@ const netlifyRouteStreamFetchOptions: NetlifyRouteStreamFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedNetlifyRouteStreamFetchOptions: NetlifyRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const netlifyStreamRouteFetchOptions: NetlifyStreamRouteFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -20984,6 +20990,12 @@ const runtimeSubpathNetlifyRouteStreamFetchOptions: RuntimeSubpathNetlifyRouteSt
   typeof manifest,
   readonly [typeof usersPlugin]
 > = netlifyRouteStreamFetchOptions;
+const requestTypedRuntimeSubpathNetlifyRouteStreamFetchOptions: RuntimeSubpathNetlifyRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNetlifyRouteStreamFetchOptions;
 const exactRuntimeSubpathNetlifyFetchOptions: RuntimeSubpathNetlifyFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -21017,6 +21029,10 @@ requestTypedNetlifyRouteUnaryFetchOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedNetlifyRouteStreamFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 const netlifyFetchOptionsArgs: NetlifyFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -21043,6 +21059,12 @@ const netlifyRouteStreamFetchOptionsArgs: NetlifyRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [netlifyRouteStreamFetchOptions];
+const requestTypedNetlifyRouteStreamFetchOptionsArgs: NetlifyRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedNetlifyRouteStreamFetchOptions];
 const netlifyStreamRouteFetchOptionsArgs: NetlifyStreamRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -21084,6 +21106,10 @@ requestTypedNetlifyRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedNetlifyRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathNetlifyRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
@@ -21107,6 +21133,11 @@ const routeStreamNetlifyFetch = createRouteStreamNetlifyFetch(
   manifest,
   netlifyRouteStreamFetchOptions
 );
+const directHookTypedRouteStreamNetlifyFetch: NetlifyFetchHandler<HookAppRequest> =
+  createRouteStreamNetlifyFetch(
+    manifest,
+    requestTypedNetlifyRouteStreamFetchOptions
+  );
 const streamRouteNetlifyFetch = createStreamRouteNetlifyFetch(
   manifest,
   netlifyStreamRouteFetchOptions
@@ -21126,6 +21157,11 @@ const runtimeSubpathRouteStreamNetlifyFetch =
     manifest,
     runtimeSubpathNetlifyRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamNetlifyFetch: RuntimeSubpathNetlifyFetchHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamNetlifyFetch(
+    manifest,
+    requestTypedRuntimeSubpathNetlifyRouteStreamFetchOptions
+  );
 const runtimeSubpathStreamRouteNetlifyFetch =
   createRuntimeSubpathStreamRouteNetlifyFetch(
     manifest,
@@ -21138,6 +21174,11 @@ const typedRouteUnaryNetlifyFetch =
   );
 createUnaryRouteNetlifyFetchFor()(manifest, netlifyUnaryRouteFetchOptions);
 createRouteStreamNetlifyFetchFor()(manifest, netlifyRouteStreamFetchOptions);
+const routeStreamHookTypedNetlifyFetch =
+  createRouteStreamNetlifyFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedNetlifyRouteStreamFetchOptions
+  );
 createStreamRouteNetlifyFetchFor()(manifest, netlifyStreamRouteFetchOptions);
 createRuntimeSubpathRouteUnaryNetlifyFetchFor<HookAppRequest>()(
   manifest,
@@ -21151,6 +21192,11 @@ createRuntimeSubpathRouteStreamNetlifyFetchFor()(
   manifest,
   runtimeSubpathNetlifyRouteStreamFetchOptions
 );
+const runtimeSubpathRouteStreamHookTypedNetlifyFetch =
+  createRuntimeSubpathRouteStreamNetlifyFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathNetlifyRouteStreamFetchOptions
+  );
 createRuntimeSubpathStreamRouteNetlifyFetchFor()(
   manifest,
   runtimeSubpathNetlifyStreamRouteFetchOptions
@@ -21166,6 +21212,13 @@ const unaryRouteNetlifyEdgeFunction = createUnaryRouteNetlifyEdgeFunction(
 const routeStreamNetlifyEdgeFunction = createRouteStreamNetlifyEdgeFunction(
   manifest,
   netlifyRouteStreamFetchOptions
+);
+const directHookTypedRouteStreamNetlifyEdgeFunction: NetlifyEdgeFetchHandler<
+  unknown,
+  HookAppRequest
+> = createRouteStreamNetlifyEdgeFunction(
+  manifest,
+  requestTypedNetlifyRouteStreamFetchOptions
 );
 const streamRouteNetlifyEdgeFunction = createStreamRouteNetlifyEdgeFunction(
   manifest,
@@ -21186,6 +21239,13 @@ const runtimeSubpathRouteStreamNetlifyEdgeFunction =
     manifest,
     runtimeSubpathNetlifyRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamNetlifyEdgeFunction: RuntimeSubpathNetlifyEdgeFetchHandler<
+  unknown,
+  HookAppRequest
+> = createRuntimeSubpathRouteStreamNetlifyEdgeFunction(
+  manifest,
+  requestTypedRuntimeSubpathNetlifyRouteStreamFetchOptions
+);
 const runtimeSubpathStreamRouteNetlifyEdgeFunction =
   createRuntimeSubpathStreamRouteNetlifyEdgeFunction(
     manifest,
@@ -21204,6 +21264,11 @@ createRouteStreamNetlifyEdgeFunctionFor()(
   manifest,
   netlifyRouteStreamFetchOptions
 );
+const routeStreamHookTypedNetlifyEdgeFunction =
+  createRouteStreamNetlifyEdgeFunctionFor<
+    NetlifyContextForTypes,
+    HookAppRequest
+  >()(manifest, requestTypedNetlifyRouteStreamFetchOptions);
 createStreamRouteNetlifyEdgeFunctionFor()(
   manifest,
   netlifyStreamRouteFetchOptions
@@ -21220,6 +21285,11 @@ createRuntimeSubpathRouteStreamNetlifyEdgeFunctionFor()(
   manifest,
   runtimeSubpathNetlifyRouteStreamFetchOptions
 );
+const runtimeSubpathRouteStreamHookTypedNetlifyEdgeFunction =
+  createRuntimeSubpathRouteStreamNetlifyEdgeFunctionFor<
+    NetlifyContextForTypes,
+    HookAppRequest
+  >()(manifest, requestTypedRuntimeSubpathNetlifyRouteStreamFetchOptions);
 createRuntimeSubpathStreamRouteNetlifyEdgeFunctionFor()(
   manifest,
   runtimeSubpathNetlifyStreamRouteFetchOptions
@@ -21230,10 +21300,14 @@ defaultNetlifyFetch(new Request('https://example.com/rpc'));
 routeUnaryNetlifyFetch(new Request('https://example.com/rpc'));
 unaryRouteNetlifyFetch(new Request('https://example.com/rpc'));
 routeStreamNetlifyFetch(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamNetlifyFetch(hookAppRequest);
 streamRouteNetlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryNetlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteNetlifyFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamNetlifyFetch(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamNetlifyFetch(hookAppRequest);
+routeStreamHookTypedNetlifyFetch(hookAppRequest);
+runtimeSubpathRouteStreamHookTypedNetlifyFetch(hookAppRequest);
 runtimeSubpathStreamRouteNetlifyFetch(new Request('https://example.com/rpc'));
 typedAppNetlifyFetch(appFetchRequest);
 runtimeSubpathTypedAppNetlifyFetch(appFetchRequest);
@@ -21246,6 +21320,7 @@ defaultNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 routeUnaryNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 unaryRouteNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 routeStreamNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
+directHookTypedRouteStreamNetlifyEdgeFunction(hookAppRequest, {});
 streamRouteNetlifyEdgeFunction(new Request('https://example.com/rpc'), {});
 runtimeSubpathRouteUnaryNetlifyEdgeFunction(
   new Request('https://example.com/rpc'),
@@ -21259,6 +21334,23 @@ runtimeSubpathRouteStreamNetlifyEdgeFunction(
   new Request('https://example.com/rpc'),
   {}
 );
+directRuntimeSubpathHookTypedRouteStreamNetlifyEdgeFunction(hookAppRequest, {});
+routeStreamHookTypedNetlifyEdgeFunction(hookAppRequest, {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
+runtimeSubpathRouteStreamHookTypedNetlifyEdgeFunction(hookAppRequest, {
+  cookies: {
+    get: (name) => name,
+  },
+  geo: {
+    city: 'San Francisco',
+  },
+});
 runtimeSubpathStreamRouteNetlifyEdgeFunction(
   new Request('https://example.com/rpc'),
   {}
@@ -21312,6 +21404,22 @@ typedRouteUnaryNetlifyFetch(
   // @ts-expect-error route-unary Netlify fetch factories preserve custom request types.
   new Request('https://example.com/rpc')
 );
+routeStreamHookTypedNetlifyFetch(
+  // @ts-expect-error route-stream Netlify fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamHookTypedNetlifyFetch(
+  // @ts-expect-error runtime-subpath route-stream Netlify fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamNetlifyFetch(
+  // @ts-expect-error direct route-stream Netlify fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamNetlifyFetch(
+  // @ts-expect-error direct runtime-subpath route-stream Netlify fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Netlify edge factories infer custom hook request types.
 directHookTypedNetlifyEdgeFunction(new Request('https://example.com/rpc'), {
   cookies: {
@@ -21332,6 +21440,40 @@ typedRouteUnaryNetlifyEdgeFunction(
       city: 'San Francisco',
     },
   }
+);
+routeStreamHookTypedNetlifyEdgeFunction(
+  // @ts-expect-error route-stream Netlify edge factories preserve custom request types.
+  new Request('https://example.com/rpc'),
+  {
+    cookies: {
+      get: (name) => name,
+    },
+    geo: {
+      city: 'San Francisco',
+    },
+  }
+);
+runtimeSubpathRouteStreamHookTypedNetlifyEdgeFunction(
+  // @ts-expect-error runtime-subpath route-stream Netlify edge factories preserve custom request types.
+  new Request('https://example.com/rpc'),
+  {
+    cookies: {
+      get: (name) => name,
+    },
+    geo: {
+      city: 'San Francisco',
+    },
+  }
+);
+directHookTypedRouteStreamNetlifyEdgeFunction(
+  // @ts-expect-error direct route-stream Netlify edge factories infer custom hook request types.
+  new Request('https://example.com/rpc'),
+  {}
+);
+directRuntimeSubpathHookTypedRouteStreamNetlifyEdgeFunction(
+  // @ts-expect-error direct runtime-subpath route-stream Netlify edge factories infer custom hook request types.
+  new Request('https://example.com/rpc'),
+  {}
 );
 // @ts-expect-error service-dependent manifests require matching Netlify adapter plugins.
 createNetlifyFetch(manifest);
