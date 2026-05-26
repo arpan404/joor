@@ -7,6 +7,10 @@ import {
   createAuthPolicy,
   createFetchRequestSource,
   createJoorHandler,
+  createRouteStreamJoorHandler,
+  createRouteStreamRpcBodyResultHandler,
+  createRouteUnaryJoorHandler,
+  createRouteUnaryRpcBodyResultHandler,
   createPlugin,
   createRpcHandler,
   createRpcRequestPreflight,
@@ -744,6 +748,85 @@ describe('dispatcher', () => {
       'https://compiled-route.example'
     );
     expect(streamText).toContain('"ok":true');
+  });
+
+  it('rejects wrong route kinds before executing route-specific handlers', async () => {
+    let unaryCalls = 0;
+    let streamCalls = 0;
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        unaryCalls += 1;
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        streamCalls += 1;
+        yield input;
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    const request = new Request('http://localhost/rpc', {
+      method: 'POST',
+      headers: {
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+    });
+    const routeUnaryResult = await (
+      createRouteUnaryRpcBodyResultHandler(routeManifest) as unknown as (
+        request: Request,
+        body: unknown
+      ) => Promise<{ error: { code: string; status: number } }>
+    )(request, { id: 'watch', input: { ok: true } });
+    const routeStreamResult = await (
+      createRouteStreamRpcBodyResultHandler(routeManifest) as unknown as (
+        request: Request,
+        body: unknown
+      ) => Promise<{ error: { code: string; status: number } }>
+    )(request, { id: 'ping', input: { ok: true } });
+    const routeUnaryFetch = createRouteUnaryJoorHandler(routeManifest);
+    const routeStreamFetch = createRouteStreamJoorHandler(routeManifest);
+    const routeUnaryResponse = await routeUnaryFetch(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      })
+    );
+    const routeStreamResponse = await routeStreamFetch(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      })
+    );
+
+    expect(routeUnaryResult.error).toMatchObject({
+      code: 'NOT_FOUND',
+      status: 404,
+    });
+    expect(routeStreamResult.error).toMatchObject({
+      code: 'NOT_FOUND',
+      status: 404,
+    });
+    expect(routeUnaryResponse.status).toBe(200);
+    expect(await routeUnaryResponse.json()).toMatchObject({
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(routeStreamResponse.status).toBe(200);
+    expect(await routeStreamResponse.json()).toMatchObject({
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(unaryCalls).toBe(0);
+    expect(streamCalls).toBe(0);
   });
 
   it('validates compiled procedure response headers', async () => {

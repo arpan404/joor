@@ -1257,6 +1257,8 @@ interface PreparedProcedure {
   };
 }
 
+type RpcHandlerRouteKind = 'unary' | 'stream';
+
 interface RuntimeOptions {
   cors: Record<string, string>;
   cacheMaxEntries: number;
@@ -2549,12 +2551,19 @@ export const createRpcRequestPreflight = (
 };
 
 const prepareProcedures = (
-  manifest: RpcManifest
+  manifest: RpcManifest,
+  routeKind?: RpcHandlerRouteKind
 ): Record<string, PreparedProcedure> => {
   const procedures: Record<string, PreparedProcedure> = Object.create(
     null
   ) as Record<string, PreparedProcedure>;
   for (const [id, procedure] of Object.entries(manifest.procedures)) {
+    if (
+      routeKind !== undefined &&
+      (routeKind === 'stream') !== (procedure.stream !== undefined)
+    ) {
+      continue;
+    }
     const headerKeys =
       procedure.headers?.kind === 'object'
         ? Object.keys(procedure.headers.shape)
@@ -3085,10 +3094,23 @@ export function createRpcHandler<
 ): RpcRequestHandler<TRequest>;
 export function createRpcHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
-  options: HandlerOptions = {}
+  options: HandlerOptions = {},
+  routeKind?: RpcHandlerRouteKind
 ): RpcRequestHandler {
   const handlerOptions = freezeHandlerOptions(options);
-  const handleParsed = createRpcBodyHandler(
+  const handleParsed = (
+    createRpcBodyHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind?: RpcHandlerRouteKind
+    ) => RpcBodyHandler<TManifest, Request>
+  )(
     manifest,
     handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
@@ -3096,7 +3118,8 @@ export function createRpcHandler<TManifest extends RpcManifest>(
       RpcManifestBody<TManifest>,
       Request
     >,
-    false
+    false,
+    routeKind
   );
   const preflight = createRpcRequestPreflight(handlerOptions);
   const bodyLimit = normalizeMaxBodyBytes(
@@ -3134,6 +3157,64 @@ export function createRpcHandler<TManifest extends RpcManifest>(
     return handleParsed(request, body as RpcManifestBody<TManifest>);
   };
 }
+
+export function createRouteUnaryRpcHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteUnaryBody<TManifest>,
+    TRequest
+  >
+): RpcRequestHandler<TRequest>;
+export function createRouteUnaryRpcHandler<TManifest extends RpcManifest>(
+  manifest: TManifest,
+  options: HandlerOptions = {}
+): RpcRequestHandler {
+  return (
+    createRpcHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptions,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcRequestHandler
+  )(manifest, options, 'unary');
+}
+
+export const createUnaryRouteRpcHandler: typeof createRouteUnaryRpcHandler =
+  createRouteUnaryRpcHandler;
+
+export function createRouteStreamRpcHandler<
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsArgs<
+    TManifest,
+    TPlugins,
+    RpcManifestRouteStreamBody<TManifest>,
+    TRequest
+  >
+): RpcRequestHandler<TRequest>;
+export function createRouteStreamRpcHandler<TManifest extends RpcManifest>(
+  manifest: TManifest,
+  options: HandlerOptions = {}
+): RpcRequestHandler {
+  return (
+    createRpcHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptions,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcRequestHandler
+  )(manifest, options, 'stream');
+}
+
+export const createStreamRouteRpcHandler: typeof createRouteStreamRpcHandler =
+  createRouteStreamRpcHandler;
 
 export function createRpcHandlerFor(): <
   TManifest extends RpcManifest,
@@ -3199,10 +3280,23 @@ export function createRpcBodyHandler<
 export function createRpcBodyHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
-  preflight = true
+  preflight = true,
+  routeKind?: RpcHandlerRouteKind
 ): RpcBodyHandler<TManifest, Request> {
   const handlerOptions = freezeHandlerOptions(options);
-  const handleResult = createRpcBodyResultHandler(
+  const handleResult = (
+    createRpcBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind?: RpcHandlerRouteKind
+    ) => RpcBodyResultHandler<TManifest, Request>
+  )(
     manifest,
     handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
@@ -3210,7 +3304,8 @@ export function createRpcBodyHandler<TManifest extends RpcManifest>(
       RpcManifestBody<TManifest>,
       Request
     >,
-    preflight
+    preflight,
+    routeKind
   );
   const extraHeaders = optionalCorsHeaders(handlerOptions);
   return async (
@@ -3291,7 +3386,19 @@ export function createRouteUnaryRpcBodyHandler<TManifest extends RpcManifest>(
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteUnaryBodyHandler<TManifest, Request> {
-  return createRpcBodyHandler(
+  return (
+    createRpcBodyHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteUnaryBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteUnaryBodyHandler<TManifest, Request>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -3299,8 +3406,9 @@ export function createRouteUnaryRpcBodyHandler<TManifest extends RpcManifest>(
       RpcManifestRouteUnaryBody<TManifest>,
       Request
     >,
-    preflight
-  ) as RpcManifestRouteUnaryBodyHandler<TManifest, Request>;
+    preflight,
+    'unary'
+  );
 }
 
 export const createUnaryRouteRpcBodyHandler: typeof createRouteUnaryRpcBodyHandler =
@@ -3383,7 +3491,19 @@ export function createRouteStreamRpcBodyHandler<TManifest extends RpcManifest>(
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteStreamBodyHandler<TManifest, Request> {
-  return createRpcBodyHandler(
+  return (
+    createRpcBodyHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteStreamBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteStreamBodyHandler<TManifest, Request>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -3391,8 +3511,9 @@ export function createRouteStreamRpcBodyHandler<TManifest extends RpcManifest>(
       RpcManifestRouteStreamBody<TManifest>,
       Request
     >,
-    preflight
-  ) as RpcManifestRouteStreamBodyHandler<TManifest, Request>;
+    preflight,
+    'stream'
+  );
 }
 
 export const createStreamRouteRpcBodyHandler: typeof createRouteStreamRpcBodyHandler =
@@ -3473,10 +3594,23 @@ export function createRpcBodyResultHandler<
 export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
   manifest: TManifest,
   options: HandlerOptions = {},
-  preflight = true
+  preflight = true,
+  routeKind?: RpcHandlerRouteKind
 ): RpcBodyResultHandler<TManifest, Request> {
   const handlerOptions = freezeHandlerOptions(options);
-  const handleTransport = createRpcTransportBodyResultHandler(
+  const handleTransport = (
+    createRpcTransportBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind?: RpcHandlerRouteKind
+    ) => RpcTransportBodyResultHandler<TManifest>
+  )(
     manifest,
     handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
@@ -3484,7 +3618,8 @@ export function createRpcBodyResultHandler<TManifest extends RpcManifest>(
       RpcManifestBody<TManifest>,
       Request
     >,
-    preflight
+    preflight,
+    routeKind
   );
   return (<const TBody extends RpcManifestBody<TManifest>>(
     request: Request,
@@ -3569,7 +3704,19 @@ export function createRouteUnaryRpcBodyResultHandler<
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteUnaryBodyResultHandler<TManifest, Request> {
-  return createRpcBodyResultHandler(
+  return (
+    createRpcBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteUnaryBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteUnaryBodyResultHandler<TManifest, Request>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -3577,8 +3724,9 @@ export function createRouteUnaryRpcBodyResultHandler<
       RpcManifestRouteUnaryBody<TManifest>,
       Request
     >,
-    preflight
-  ) as RpcManifestRouteUnaryBodyResultHandler<TManifest, Request>;
+    preflight,
+    'unary'
+  );
 }
 
 export const createUnaryRouteRpcBodyResultHandler: typeof createRouteUnaryRpcBodyResultHandler =
@@ -3663,7 +3811,19 @@ export function createRouteStreamRpcBodyResultHandler<
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteStreamBodyResultHandler<TManifest, Request> {
-  return createRpcBodyResultHandler(
+  return (
+    createRpcBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteStreamBody<TManifest>,
+        Request
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteStreamBodyResultHandler<TManifest, Request>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
@@ -3671,8 +3831,9 @@ export function createRouteStreamRpcBodyResultHandler<
       RpcManifestRouteStreamBody<TManifest>,
       Request
     >,
-    preflight
-  ) as RpcManifestRouteStreamBodyResultHandler<TManifest, Request>;
+    preflight,
+    'stream'
+  );
 }
 
 export const createStreamRouteRpcBodyResultHandler: typeof createRouteStreamRpcBodyResultHandler =
@@ -3749,10 +3910,11 @@ export function createRpcTransportBodyResultHandler<
 >(
   manifest: TManifest,
   options: HandlerOptions = {},
-  preflight = true
+  preflight = true,
+  routeKind?: RpcHandlerRouteKind
 ): RpcTransportBodyResultHandler<TManifest> {
   const handlerOptions = freezeHandlerOptions(options);
-  const procedures = prepareProcedures(manifest);
+  const procedures = prepareProcedures(manifest, routeKind);
   const requestPreflight = preflight
     ? createRpcRequestPreflight(handlerOptions)
     : undefined;
@@ -4000,15 +4162,27 @@ export function createRouteUnaryRpcTransportBodyResultHandler<
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteUnaryTransportBodyResultHandler<TManifest> {
-  return createRpcTransportBodyResultHandler(
+  return (
+    createRpcTransportBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteUnaryBody<TManifest>
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteUnaryTransportBodyResultHandler<TManifest>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>
     >,
-    preflight
-  ) as RpcManifestRouteUnaryTransportBodyResultHandler<TManifest>;
+    preflight,
+    'unary'
+  );
 }
 
 export const createUnaryRouteRpcTransportBodyResultHandler: typeof createRouteUnaryRpcTransportBodyResultHandler =
@@ -4031,15 +4205,27 @@ export function createRouteStreamRpcTransportBodyResultHandler<
   options: HandlerOptions = {},
   preflight = true
 ): RpcManifestRouteStreamTransportBodyResultHandler<TManifest> {
-  return createRpcTransportBodyResultHandler(
+  return (
+    createRpcTransportBodyResultHandler as unknown as (
+      manifest: TManifest,
+      options: HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestRouteStreamBody<TManifest>
+      >,
+      preflight: boolean,
+      routeKind: RpcHandlerRouteKind
+    ) => RpcManifestRouteStreamTransportBodyResultHandler<TManifest>
+  )(
     manifest,
     options as unknown as HandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>
     >,
-    preflight
-  ) as RpcManifestRouteStreamTransportBodyResultHandler<TManifest>;
+    preflight,
+    'stream'
+  );
 }
 
 export const createStreamRouteRpcTransportBodyResultHandler: typeof createRouteStreamRpcTransportBodyResultHandler =

@@ -1,5 +1,7 @@
 import {
   createRpcHandler,
+  createRouteStreamRpcHandler,
+  createRouteUnaryRpcHandler,
   type HandlerOptions,
   type HandlerOptionsFor,
   type HandlerOptionsArgs,
@@ -143,7 +145,7 @@ export function createRouteUnaryJoorHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): JoorFetchHandler {
-  return createRpcHandler(
+  return createRouteUnaryRpcHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
@@ -174,7 +176,7 @@ export function createRouteStreamJoorHandler<TManifest extends JoorManifest>(
   manifest: TManifest,
   options?: HandlerOptions
 ): JoorFetchHandler {
-  return createRpcHandler(
+  return createRouteStreamRpcHandler(
     manifest,
     (options ?? {}) as unknown as HandlerOptionsFor<
       TManifest,
