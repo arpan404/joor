@@ -1926,6 +1926,16 @@ export type PackageSubpathSurface = [
   Rpc.StreamEvent<Root.JsonObject, 'users.get'>,
   Schema.Infer<typeof packageSubpathOutputSchema>,
   Runtime.JoorFetchHandler,
+  Runtime.JoorUnaryRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Runtime.JoorStreamRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
   AwsLambda.AwsLambdaHandler,
   AwsLambda.AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
     PackageSubpathManifest,
@@ -2052,7 +2062,17 @@ export type PackageSubpathSurface = [
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >,
+  FetchRuntime.JoorStreamRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
   FetchRuntime.JoorRouteUnaryHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  FetchRuntime.JoorUnaryRouteHandlerOptionsFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathBody
@@ -2064,6 +2084,16 @@ export type PackageSubpathSurface = [
   Netlify.NetlifyFetchHandler,
   Root.NetlifyEdgeFetchHandler,
   Root.NetlifyEdgeResult,
+  Root.JoorStreamRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Root.JoorUnaryRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
   Next.NextRouteContext,
   Next.NextHandler,
   Next.NextRouteParamValue,
