@@ -3555,6 +3555,106 @@ createRouteStreamAwsLambdaRestApiHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamAwsLambdaRestApiOptions
 );
+const routeKindScopedUnaryBunFetch = createRouteUnaryBunFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryBunFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryBunFetch(
+  // @ts-expect-error route-unary Bun fetch helpers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamBunFetch = createRouteStreamBunFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamBunFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamBunFetch(
+  // @ts-expect-error route-stream Bun fetch helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryBunRpcOptions: BunRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryBunRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryBunRpcOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryBunRpcRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Bun RPC options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryBunRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryBunRpcOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamBunRpcOptions: BunRouteStreamRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamBunRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamBunRpcOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamBunRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Bun RPC options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamBunRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamBunRpcOptions
+> = requestTypedProcedureRequest;
+const routeKindScopedUnaryBunRpcHandler =
+  createRouteUnaryBunRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryBunRpcOptions
+  );
+routeKindScopedUnaryBunRpcHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryBunRpcHandler(
+  // @ts-expect-error route-unary Bun RPC handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamBunRpcHandler =
+  createRouteStreamBunRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamBunRpcOptions
+  );
+routeKindScopedStreamBunRpcHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamBunRpcHandler(
+  // @ts-expect-error route-stream Bun RPC handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryBunServeOptions: BunRouteUnaryServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  ...routeKindScopedUnaryHandlerOptions,
+  port: 0,
+};
+const routeKindScopedUnaryBunServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryBunServeOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryBunServeRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Bun serve options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryBunServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryBunServeOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamBunServeOptions: BunRouteStreamServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  ...routeKindScopedStreamHandlerOptions,
+  port: 0,
+};
+const routeKindScopedStreamBunServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamBunServeOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamBunServeRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Bun serve options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamBunServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamBunServeOptions
+> = requestTypedProcedureRequest;
+serveRouteUnaryBun(
+  routeKindScopedManifest,
+  routeKindScopedUnaryBunServeOptions
+);
+serveRouteStreamBun(
+  routeKindScopedManifest,
+  routeKindScopedStreamBunServeOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
