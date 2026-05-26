@@ -53,7 +53,9 @@ import type {
   RpcManifestBodyResultFor,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -302,7 +304,8 @@ export type CompiledRpcBodyResultHandlerFor<
 
 export type CompiledRpcRouteUnaryBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = <const TBody extends RpcManifestRouteUnaryBody<TManifest>>(
   request: TRequest,
   body: TBody
@@ -310,12 +313,14 @@ export type CompiledRpcRouteUnaryBodyResultHandlerFor<
 
 export type CompiledRpcUnaryRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest, TRequest>;
 
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
   request: TRequest,
   body: TBody
@@ -323,7 +328,8 @@ export type CompiledRpcRouteStreamBodyResultHandlerFor<
 
 export type CompiledRpcStreamRouteBodyResultHandlerFor<
   TManifest extends JoorManifest,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest, TRequest>;
 
 type CompiledHookBody<TConfig> = TConfig extends {

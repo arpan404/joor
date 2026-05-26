@@ -3120,6 +3120,42 @@ const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamHandlerOptions
 > = requestTypedStreamProcedureRequest;
 routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+const routeKindScopedUnaryCompiledBodyHandler: CompiledRpcRouteUnaryBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (request, body) => {
+  request.requestId.toUpperCase();
+  return new Response() as unknown as CompiledRouteUnaryBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedUnaryCompiledBodyHandler(requestTypedProcedureRequest, {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryCompiledBodyHandler(
+  // @ts-expect-error compiled route-unary body handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest,
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedStreamCompiledBodyHandler: CompiledRpcRouteStreamBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (request, body) => {
+  request.streamRequestId.toUpperCase();
+  return new Response() as unknown as CompiledRouteStreamBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedStreamCompiledBodyHandler(requestTypedStreamProcedureRequest, {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedStreamCompiledBodyHandler(
+  // @ts-expect-error compiled route-stream body handlers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
 const routeKindScopedUnaryJoorHandler = createRouteUnaryJoorHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
