@@ -363,6 +363,10 @@ export type RpcManifestRouteUnaryRequiredServices<
   ? Record<string, never>
   : UnionToIntersection<RpcManifestRouteUnaryServiceContributions<TManifest>>;
 
+export type RpcManifestUnaryRouteRequiredServices<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryRequiredServices<TManifest>;
+
 type RpcManifestRouteStreamServiceContributions<TManifest extends RpcManifest> =
   {
     [TId in RpcManifestRouteStreamId<TManifest>]: RpcManifestServiceContribution<
@@ -375,6 +379,10 @@ export type RpcManifestRouteStreamRequiredServices<
 > = [RpcManifestRouteStreamServiceContributions<TManifest>] extends [never]
   ? Record<string, never>
   : UnionToIntersection<RpcManifestRouteStreamServiceContributions<TManifest>>;
+
+export type RpcManifestStreamRouteRequiredServices<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteStreamRequiredServices<TManifest>;
 
 type RpcManifestRequestContribution<TRequest> = [Request] extends [TRequest]
   ? never
@@ -406,6 +414,10 @@ export type RpcManifestRouteUnaryRequiredRuntimeRequest<
   : UnionToIntersection<RpcManifestRouteUnaryRequestContributions<TManifest>> &
       Request;
 
+export type RpcManifestUnaryRouteRequiredRuntimeRequest<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>;
+
 type RpcManifestRouteStreamRequestContributions<TManifest extends RpcManifest> =
   {
     [TId in RpcManifestRouteStreamId<TManifest>]: RpcManifestRequestContribution<
@@ -419,6 +431,10 @@ export type RpcManifestRouteStreamRequiredRuntimeRequest<
   ? Request
   : UnionToIntersection<RpcManifestRouteStreamRequestContributions<TManifest>> &
       Request;
+
+export type RpcManifestStreamRouteRequiredRuntimeRequest<
+  TManifest extends RpcManifest,
+> = RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>;
 
 export type RpcManifestProcedureFrameworkError<TProcedure> = RpcError<
   Exclude<RpcFrameworkErrorCode, ProcedureErrorCode<TProcedure>>,

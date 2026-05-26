@@ -844,6 +844,8 @@ import {
   type RpcManifestStreamRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestStreamRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestStreamRouteMiddlewareFor,
+  type RpcManifestStreamRouteRequiredRuntimeRequest,
+  type RpcManifestStreamRouteRequiredServices,
   type RpcManifestRouteStreamHandlerOptionsFor,
   type RpcManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor,
@@ -853,6 +855,8 @@ import {
   type RpcManifestUnaryRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestUnaryRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestUnaryRouteMiddlewareFor,
+  type RpcManifestUnaryRouteRequiredRuntimeRequest,
+  type RpcManifestUnaryRouteRequiredServices,
   type RpcManifestRouteUnaryHandlerOptionsFor,
   type JoorConfig,
   type JoorConfigFor,
@@ -1669,6 +1673,8 @@ import {
   type RpcManifestStreamRouteHandlerOptionsWithPreflightArgs as RpcSubpathManifestStreamRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestStreamRouteHandlerOptionsWithTrailingArgs as RpcSubpathManifestStreamRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestStreamRouteMiddlewareFor as RpcSubpathManifestStreamRouteMiddlewareFor,
+  type RpcManifestStreamRouteRequiredRuntimeRequest as RpcSubpathManifestStreamRouteRequiredRuntimeRequest,
+  type RpcManifestStreamRouteRequiredServices as RpcSubpathManifestStreamRouteRequiredServices,
   type RpcManifestUnaryRouteHandlerHookContextFor as RpcSubpathManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor as RpcSubpathManifestUnaryRouteHandlerHooksFor,
   type RpcManifestUnaryRouteHandlerOptionsArgs as RpcSubpathManifestUnaryRouteHandlerOptionsArgs,
@@ -1677,6 +1683,8 @@ import {
   type RpcManifestUnaryRouteHandlerOptionsWithPreflightArgs as RpcSubpathManifestUnaryRouteHandlerOptionsWithPreflightArgs,
   type RpcManifestUnaryRouteHandlerOptionsWithTrailingArgs as RpcSubpathManifestUnaryRouteHandlerOptionsWithTrailingArgs,
   type RpcManifestUnaryRouteMiddlewareFor as RpcSubpathManifestUnaryRouteMiddlewareFor,
+  type RpcManifestUnaryRouteRequiredRuntimeRequest as RpcSubpathManifestUnaryRouteRequiredRuntimeRequest,
+  type RpcManifestUnaryRouteRequiredServices as RpcSubpathManifestUnaryRouteRequiredServices,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
@@ -3065,13 +3073,31 @@ const routeKindScopedManifest = defineManifest({
 const routeKindScopedUnaryServices: RpcManifestRouteUnaryRequiredServices<
   typeof routeKindScopedManifest
 > = rootPluginServices;
+const routeKindScopedUnaryRouteServices: RpcManifestUnaryRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryServices;
+const rpcSubpathRouteKindScopedUnaryRouteServices: RpcSubpathManifestUnaryRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryRouteServices;
 routeKindScopedUnaryServices.users.findById('1').name.toUpperCase();
+routeKindScopedUnaryRouteServices.users.findById('1').name.toUpperCase();
+rpcSubpathRouteKindScopedUnaryRouteServices.users
+  .findById('1')
+  .name.toUpperCase();
 // @ts-expect-error unary route required services exclude stream-only services.
 routeKindScopedUnaryServices.audit.record('1');
 const routeKindScopedStreamServices: RpcManifestRouteStreamRequiredServices<
   typeof routeKindScopedManifest
 > = auditPluginServices;
+const routeKindScopedStreamRouteServices: RpcManifestStreamRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamServices;
+const rpcSubpathRouteKindScopedStreamRouteServices: RpcSubpathManifestStreamRouteRequiredServices<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamRouteServices;
 routeKindScopedStreamServices.audit.record('1');
+routeKindScopedStreamRouteServices.audit.record('1');
+rpcSubpathRouteKindScopedStreamRouteServices.audit.record('1');
 // @ts-expect-error stream route required services exclude unary-only services.
 routeKindScopedStreamServices.users.findById('1');
 const routeKindScopedJoorUnaryServices: JoorManifestRouteUnaryRequiredServices<
@@ -3091,17 +3117,41 @@ routeKindScopedJoorStreamRouteServices.audit.record('1');
 const routeKindScopedUnaryRequest: RpcManifestRouteUnaryRequiredRuntimeRequest<
   typeof routeKindScopedManifest
 > = requestTypedProcedureRequest;
+const routeKindScopedUnaryRouteRequest: RpcManifestUnaryRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryRequest;
+const rpcSubpathRouteKindScopedUnaryRouteRequest: RpcSubpathManifestUnaryRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedUnaryRouteRequest;
 routeKindScopedUnaryRequest.requestId.toUpperCase();
+routeKindScopedUnaryRouteRequest.requestId.toUpperCase();
+rpcSubpathRouteKindScopedUnaryRouteRequest.requestId.toUpperCase();
 const routeKindScopedStreamRequest: RpcManifestRouteStreamRequiredRuntimeRequest<
   typeof routeKindScopedManifest
 > = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamRouteRequest: RpcManifestStreamRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamRequest;
+const rpcSubpathRouteKindScopedStreamRouteRequest: RpcSubpathManifestStreamRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamRouteRequest;
 routeKindScopedStreamRequest.streamRequestId.toUpperCase();
+routeKindScopedStreamRouteRequest.streamRequestId.toUpperCase();
+rpcSubpathRouteKindScopedStreamRouteRequest.streamRequestId.toUpperCase();
 // @ts-expect-error unary route request requirements exclude stream-only request types.
 const _wrongRouteKindScopedUnaryRequest: RpcManifestRouteUnaryRequiredRuntimeRequest<
   typeof routeKindScopedManifest
 > = requestTypedStreamProcedureRequest;
+// @ts-expect-error unary route request aliases exclude stream-only request types.
+const _wrongRouteKindScopedUnaryRouteRequest: RpcManifestUnaryRouteRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedStreamProcedureRequest;
 // @ts-expect-error stream route request requirements exclude unary-only request types.
 const _wrongRouteKindScopedStreamRequest: RpcManifestRouteStreamRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = requestTypedProcedureRequest;
+// @ts-expect-error stream route request aliases exclude unary-only request types.
+const _wrongRouteKindScopedStreamRouteRequest: RpcManifestStreamRouteRequiredRuntimeRequest<
   typeof routeKindScopedManifest
 > = requestTypedProcedureRequest;
 const routeKindScopedJoorUnaryRequest: JoorManifestRouteUnaryRequiredRuntimeRequest<
