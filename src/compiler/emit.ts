@@ -1941,6 +1941,13 @@ export type NativeAwsLambdaHandlerOptionsArgs<
   ? [options?: NativeAwsLambdaHandlerOptions<TEvent, TRequest>]
   : [options: NativeAwsLambdaHandlerOptions<TEvent, TRequest>];
 
+export type NativeAwsLambdaHandlerFactory<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = (
+  ...args: NativeAwsLambdaHandlerOptionsArgs<TEvent, TRequest>
+) => AwsLambdaHttpApiHandler<TEvent>;
+
 export type NativeAwsLambdaRestApiRequestFactory<
   TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
   TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
@@ -1959,6 +1966,13 @@ export type NativeAwsLambdaRestApiHandlerOptionsArgs<
 > = Request extends TRequest
   ? [options?: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>]
   : [options: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>];
+
+export type NativeAwsLambdaRestApiHandlerFactory<
+  TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = (
+  ...args: NativeAwsLambdaRestApiHandlerOptionsArgs<TEvent, TRequest>
+) => AwsLambdaRestApiHandler<TEvent>;
 
 const eventHeader = (
   event: Pick<AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1, 'headers'>,
@@ -2158,13 +2172,31 @@ const createRestApiHandlerFromFetch =
       createAwsLambdaRestApiResponse(await handler(createRequest(event)));
   };
 
+const createHttpApiHandlerFactoryFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): NativeAwsLambdaHandlerFactory<TEvent, TRequest> =>
+    (...args) =>
+      createHttpApiHandlerFromFetch(fetchFactory)<TEvent, TRequest>(...args);
+
+const createRestApiHandlerFactoryFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): NativeAwsLambdaRestApiHandlerFactory<TEvent, TRequest> =>
+    (...args) =>
+      createRestApiHandlerFromFetch(fetchFactory)<TEvent, TRequest>(...args);
+
 export const createAwsLambdaHandler = createHttpApiHandlerFromFetch(createFetch);
-export const createAwsLambdaHandlerFor: typeof createAwsLambdaHandler =
-  createAwsLambdaHandler;
+export const createAwsLambdaHandlerFor =
+  createHttpApiHandlerFactoryFromFetch(createFetch);
 export const createAwsLambdaHttpApiHandler: typeof createAwsLambdaHandler =
   createAwsLambdaHandler;
-export const createAwsLambdaHttpApiHandlerFor: typeof createAwsLambdaHttpApiHandler =
-  createAwsLambdaHttpApiHandler;
+export const createAwsLambdaHttpApiHandlerFor: typeof createAwsLambdaHandlerFor =
+  createAwsLambdaHandlerFor;
 const defaultAwsLambdaHandler: AwsLambdaHttpApiHandler = async (event) => {
   const fetch = createFetch<NativeRequiredRuntimeRequest>();
   return createAwsLambdaResponse(
@@ -2180,40 +2212,40 @@ export const createRouteUnaryAwsLambdaHandler =
   createHttpApiHandlerFromFetch(createRouteUnaryFetch);
 export const createUnaryRouteAwsLambdaHandler: typeof createRouteUnaryAwsLambdaHandler =
   createRouteUnaryAwsLambdaHandler;
-export const createRouteUnaryAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandler =
-  createRouteUnaryAwsLambdaHandler;
-export const createUnaryRouteAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandler =
-  createRouteUnaryAwsLambdaHandler;
+export const createRouteUnaryAwsLambdaHandlerFor =
+  createHttpApiHandlerFactoryFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandlerFor =
+  createRouteUnaryAwsLambdaHandlerFor;
 export const createRouteUnaryAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHandler =
   createRouteUnaryAwsLambdaHandler;
 export const createUnaryRouteAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHttpApiHandler =
   createRouteUnaryAwsLambdaHttpApiHandler;
-export const createRouteUnaryAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandler =
-  createRouteUnaryAwsLambdaHttpApiHandler;
-export const createUnaryRouteAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandler =
-  createRouteUnaryAwsLambdaHttpApiHandler;
+export const createRouteUnaryAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHandlerFor =
+  createRouteUnaryAwsLambdaHandlerFor;
+export const createUnaryRouteAwsLambdaHttpApiHandlerFor: typeof createRouteUnaryAwsLambdaHttpApiHandlerFor =
+  createRouteUnaryAwsLambdaHttpApiHandlerFor;
 
 export const createRouteStreamAwsLambdaHandler =
   createHttpApiHandlerFromFetch(createRouteStreamFetch);
 export const createStreamRouteAwsLambdaHandler: typeof createRouteStreamAwsLambdaHandler =
   createRouteStreamAwsLambdaHandler;
-export const createRouteStreamAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandler =
-  createRouteStreamAwsLambdaHandler;
-export const createStreamRouteAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandler =
-  createRouteStreamAwsLambdaHandler;
+export const createRouteStreamAwsLambdaHandlerFor =
+  createHttpApiHandlerFactoryFromFetch(createRouteStreamFetch);
+export const createStreamRouteAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandlerFor =
+  createRouteStreamAwsLambdaHandlerFor;
 export const createRouteStreamAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHandler =
   createRouteStreamAwsLambdaHandler;
 export const createStreamRouteAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHttpApiHandler =
   createRouteStreamAwsLambdaHttpApiHandler;
-export const createRouteStreamAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandler =
-  createRouteStreamAwsLambdaHttpApiHandler;
-export const createStreamRouteAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandler =
-  createRouteStreamAwsLambdaHttpApiHandler;
+export const createRouteStreamAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHandlerFor =
+  createRouteStreamAwsLambdaHandlerFor;
+export const createStreamRouteAwsLambdaHttpApiHandlerFor: typeof createRouteStreamAwsLambdaHttpApiHandlerFor =
+  createRouteStreamAwsLambdaHttpApiHandlerFor;
 
 export const createAwsLambdaRestApiHandler =
   createRestApiHandlerFromFetch(createFetch);
-export const createAwsLambdaRestApiHandlerFor: typeof createAwsLambdaRestApiHandler =
-  createAwsLambdaRestApiHandler;
+export const createAwsLambdaRestApiHandlerFor =
+  createRestApiHandlerFactoryFromFetch(createFetch);
 const defaultAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = async (event) => {
   const fetch = createFetch<NativeRequiredRuntimeRequest>();
   return createAwsLambdaRestApiResponse(
@@ -2230,19 +2262,19 @@ export const createRouteUnaryAwsLambdaRestApiHandler =
   createRestApiHandlerFromFetch(createRouteUnaryFetch);
 export const createUnaryRouteAwsLambdaRestApiHandler: typeof createRouteUnaryAwsLambdaRestApiHandler =
   createRouteUnaryAwsLambdaRestApiHandler;
-export const createRouteUnaryAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandler =
-  createRouteUnaryAwsLambdaRestApiHandler;
-export const createUnaryRouteAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandler =
-  createRouteUnaryAwsLambdaRestApiHandler;
+export const createRouteUnaryAwsLambdaRestApiHandlerFor =
+  createRestApiHandlerFactoryFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandlerFor =
+  createRouteUnaryAwsLambdaRestApiHandlerFor;
 
 export const createRouteStreamAwsLambdaRestApiHandler =
   createRestApiHandlerFromFetch(createRouteStreamFetch);
 export const createStreamRouteAwsLambdaRestApiHandler: typeof createRouteStreamAwsLambdaRestApiHandler =
   createRouteStreamAwsLambdaRestApiHandler;
-export const createRouteStreamAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandler =
-  createRouteStreamAwsLambdaRestApiHandler;
-export const createStreamRouteAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandler =
-  createRouteStreamAwsLambdaRestApiHandler;
+export const createRouteStreamAwsLambdaRestApiHandlerFor =
+  createRestApiHandlerFactoryFromFetch(createRouteStreamFetch);
+export const createStreamRouteAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandlerFor =
+  createRouteStreamAwsLambdaRestApiHandlerFor;
 
 export { createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch };
 export default handler;

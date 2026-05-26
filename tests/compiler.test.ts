@@ -1504,7 +1504,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
-import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaRestApiHandler, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
+import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
@@ -1709,14 +1709,34 @@ createAwsLambdaRequest(awsLambdaEvent).headers.get('content-type');
 createAwsLambdaRestApiRequest(awsLambdaRestApiEvent).headers.get('content-type');
 createAwsLambdaResponse(new Response('{}'));
 createAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
-createAwsLambdaHandlerFor(awsLambdaOptions)(awsLambdaEvent);
+const awsLambdaFactory: NativeAwsLambdaHandlerFactory<
+  AwsLambdaHttpEventV2,
+  AppRequest
+> = createAwsLambdaHandlerFor();
+awsLambdaFactory(awsLambdaOptions)(awsLambdaEvent);
+createAwsLambdaHttpApiHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
+createRouteUnaryAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
+createRouteStreamAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
 // @ts-expect-error generated AWS handlers require request adapters when manifests require custom requests.
 createAwsLambdaHandler()(awsLambdaEvent);
+// @ts-expect-error generated AWS handler factories require request adapters when manifests require custom requests.
+createAwsLambdaHandlerFor()()(awsLambdaEvent);
 // @ts-expect-error generated default AWS handlers are unavailable when manifests require custom requests.
 awsLambdaHandler(awsLambdaEvent);
 createRouteUnaryAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
 createRouteStreamAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
 createAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(awsLambdaRestApiEvent);
+const awsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory<
+  AwsLambdaRestApiEventV1,
+  AppRequest
+> = createAwsLambdaRestApiHandlerFor();
+awsLambdaRestApiFactory(awsLambdaRestApiOptions)(awsLambdaRestApiEvent);
+createRouteUnaryAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
+createRouteStreamAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
 // @ts-expect-error generated default AWS REST handlers are unavailable when manifests require custom requests.
 awsLambdaRestApiHandler(awsLambdaRestApiEvent);
 createRouteUnaryAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
@@ -1727,6 +1747,8 @@ createRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
 );
 // @ts-expect-error generated AWS REST handlers require request adapters when manifests require custom requests.
 createAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+// @ts-expect-error generated AWS REST handler factories require request adapters when manifests require custom requests.
+createAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
 
 const bunHandler: BunNativeFetchHandler = bunFetch;
 bunHandler(appRequest);
