@@ -2189,8 +2189,8 @@ import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorke
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
 import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, edge } from './netlify.js';
-import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
-import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
+import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetch as createRouteUnaryBunFetch, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, createStreamRouteFetch as createStreamRouteBunFetch, createStreamRouteFetchFor as createStreamRouteBunFetchFor, createUnaryRouteFetch as createUnaryRouteBunFetch, createUnaryRouteFetchFor as createUnaryRouteBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler, type BunNativeRouteStreamFetchHandler, type BunNativeRouteUnaryFetchHandler, type BunNativeStreamRouteFetchHandler, type BunNativeUnaryRouteFetchHandler } from './bun.js';
+import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createRouteUnaryFetch as createRouteUnaryDenoFetch, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, createStreamRouteFetch as createStreamRouteDenoFetch, createStreamRouteFetchFor as createStreamRouteDenoFetchFor, createUnaryRouteFetch as createUnaryRouteDenoFetch, createUnaryRouteFetchFor as createUnaryRouteDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler, type DenoNativeRouteStreamFetchHandler, type DenoNativeRouteUnaryFetchHandler, type DenoNativeStreamRouteFetchHandler, type DenoNativeUnaryRouteFetchHandler } from './deno.js';
 import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as AwsLambdaStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as AwsLambdaUnaryRouteRequiredServices } from './aws-lambda.js';
 import type { NativeStreamRouteRequiredRuntimeRequest as BunStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as BunStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as BunUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as BunUnaryRouteRequiredServices } from './bun.js';
 import type { NativeStreamRouteRequiredRuntimeRequest as CloudflareStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as CloudflareStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as CloudflareUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as CloudflareUnaryRouteRequiredServices } from './cloudflare.js';
@@ -2589,25 +2589,72 @@ createAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
 createAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
 
 const bunHandler: BunNativeFetchHandler = bunFetch;
+const bunRouteUnaryHandler: BunNativeRouteUnaryFetchHandler =
+  createRouteUnaryBunFetch();
+const bunUnaryRouteHandler: BunNativeUnaryRouteFetchHandler =
+  createUnaryRouteBunFetch();
+const bunRouteStreamHandler: BunNativeRouteStreamFetchHandler =
+  createRouteStreamBunFetch();
+const bunStreamRouteHandler: BunNativeStreamRouteFetchHandler =
+  createStreamRouteBunFetch();
 bunHandler(appRequest);
+bunRouteUnaryHandler(appRequest);
+bunUnaryRouteHandler(appRequest);
+bunRouteStreamHandler(appRequest);
+bunStreamRouteHandler(appRequest);
 createBunFetch()(appRequest);
 createBunFetchFor()(undefined)(appRequest);
 createRouteUnaryBunFetchFor()(undefined)(appRequest);
+createUnaryRouteBunFetchFor()(undefined)(appRequest);
 createRouteStreamBunFetchFor()(undefined)(appRequest);
+createStreamRouteBunFetchFor()(undefined)(appRequest);
 // @ts-expect-error generated Bun fetch defaults reject broad Request values.
 bunHandler(plainRequest);
+// @ts-expect-error generated Bun route-unary fetch aliases reject broad Request values.
+bunRouteUnaryHandler(plainRequest);
+// @ts-expect-error generated Bun unary-route fetch aliases reject broad Request values.
+bunUnaryRouteHandler(plainRequest);
+bunRouteStreamHandler(plainRequest);
+bunStreamRouteHandler(plainRequest);
 // @ts-expect-error generated Bun fetch factories default to the manifest request subtype.
 createBunFetch()(plainRequest);
+// @ts-expect-error generated Bun route-specific unary fetch factories default to the manifest request subtype.
+createUnaryRouteBunFetchFor()(undefined)(plainRequest);
+createStreamRouteBunFetchFor()(undefined)(plainRequest);
 
 const denoHandler: DenoNativeFetchHandler = denoFetch;
+const denoRouteUnaryHandler: DenoNativeRouteUnaryFetchHandler =
+  createRouteUnaryDenoFetch();
+const denoUnaryRouteHandler: DenoNativeUnaryRouteFetchHandler =
+  createUnaryRouteDenoFetch();
+const denoRouteStreamHandler: DenoNativeRouteStreamFetchHandler =
+  createRouteStreamDenoFetch();
+const denoStreamRouteHandler: DenoNativeStreamRouteFetchHandler =
+  createStreamRouteDenoFetch();
 denoHandler(appRequest);
+denoRouteUnaryHandler(appRequest);
+denoUnaryRouteHandler(appRequest);
+denoRouteStreamHandler(appRequest);
+denoStreamRouteHandler(appRequest);
 createDenoFetch()(appRequest);
 createDenoFetchFor()(undefined)(appRequest);
 createRouteUnaryDenoFetchFor()(undefined)(appRequest);
+createUnaryRouteDenoFetchFor()(undefined)(appRequest);
+createRouteStreamDenoFetchFor()(undefined)(appRequest);
+createStreamRouteDenoFetchFor()(undefined)(appRequest);
 // @ts-expect-error generated Deno fetch defaults reject broad Request values.
 denoHandler(plainRequest);
+// @ts-expect-error generated Deno route-unary fetch aliases reject broad Request values.
+denoRouteUnaryHandler(plainRequest);
+// @ts-expect-error generated Deno unary-route fetch aliases reject broad Request values.
+denoUnaryRouteHandler(plainRequest);
+denoRouteStreamHandler(plainRequest);
+denoStreamRouteHandler(plainRequest);
 // @ts-expect-error generated Deno fetch factories default to the manifest request subtype.
 createDenoFetch()(plainRequest);
+// @ts-expect-error generated Deno route-specific unary fetch factories default to the manifest request subtype.
+createUnaryRouteDenoFetchFor()(undefined)(plainRequest);
+createStreamRouteDenoFetchFor()(undefined)(plainRequest);
 `
       );
       const tsconfigFile = join(outDir, 'tsconfig.request-runtime.json');
