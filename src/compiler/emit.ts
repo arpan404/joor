@@ -2969,6 +2969,7 @@ export const listenNodeRouteStream: typeof listenRouteStream =
   listenRouteStream;
 export const listenNodeStreamRoute: typeof listenRouteStream =
   listenRouteStream;
+export default handler;
 `
   );
 
@@ -3585,6 +3586,7 @@ export const serveRouteStreamBun: typeof serveRouteStream = serveRouteStream;
 export const serveStreamRouteBun: typeof serveRouteStream = serveRouteStream;
 export const serveBunRouteStream: typeof serveRouteStream = serveRouteStream;
 export const serveBunStreamRoute: typeof serveRouteStream = serveRouteStream;
+export default fetch;
 `
   );
 
@@ -3749,6 +3751,7 @@ export const serveRouteStreamDeno: typeof serveRouteStream = serveRouteStream;
 export const serveStreamRouteDeno: typeof serveRouteStream = serveRouteStream;
 export const serveDenoRouteStream: typeof serveRouteStream = serveRouteStream;
 export const serveDenoStreamRoute: typeof serveRouteStream = serveRouteStream;
+export default fetch;
 `
   );
 };
