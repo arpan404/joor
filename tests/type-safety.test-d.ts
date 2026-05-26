@@ -3177,6 +3177,25 @@ routeKindScopedStreamCloudflareWorker.fetch(
   // @ts-expect-error route-stream Cloudflare Worker helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlersFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryNextRouteHandlers.GET(requestTypedProcedureRequest);
+routeKindScopedUnaryNextRouteHandlers.GET(
+  // @ts-expect-error route-unary Next handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamNextHandler = createRouteStreamNextHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamNextHandler.POST(requestTypedStreamProcedureRequest);
+routeKindScopedStreamNextHandler.POST(
+  // @ts-expect-error route-stream Next handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
