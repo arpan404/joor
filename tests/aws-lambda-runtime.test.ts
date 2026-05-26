@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import {
   createAwsLambdaHandler,
   createAwsLambdaRestApiHandler,
+  createRouteStreamAwsLambdaRestApiHandler,
+  createRouteUnaryAwsLambdaHandlerFor,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -80,6 +82,40 @@ describe('aws lambda runtime', () => {
     );
   });
 
+  it('adapts route-specific HTTP API handlers through unary fetch runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ id: t.string(), header: t.string() }),
+      handler(ctx, input) {
+        return ctx.ok({
+          id: input.id,
+          header: ctx.rawHeaders.get('x-route') ?? '',
+        });
+      },
+    });
+    const handler = createRouteUnaryAwsLambdaHandlerFor()(
+      { procedures: { 'users.get': procedure } },
+      { path: '/api/rpc' }
+    );
+
+    const response = await handler({
+      rawPath: '/api/rpc',
+      headers: {
+        host: 'api.example',
+        'content-type': 'application/json',
+        'x-route': 'unary',
+      },
+      body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      requestContext: {
+        http: { method: 'POST' },
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    const payload = JSON.parse(response.body ?? '{}');
+    expect(payload.data).toEqual({ id: '1', header: 'unary' });
+  });
+
   it('adapts API Gateway REST API v1 events to the fetch runtime', async () => {
     const procedure = defineProcedure({
       input: t.object({ ok: t.boolean() }),
@@ -135,5 +171,36 @@ describe('aws lambda runtime', () => {
       cookie: 'sid=123; theme=light',
       query: ['one', 'two'],
     });
+  });
+
+  it('adapts route-specific REST API handlers through stream fetch runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ userId: t.string() }),
+      stream: t.object({ userId: t.string(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { userId: input.userId, event: 'updated' };
+      },
+    });
+    const handler = createRouteStreamAwsLambdaRestApiHandler(
+      { procedures: { 'users.watch': procedure } },
+      { path: '/api/rpc' }
+    );
+
+    const response = await handler({
+      path: '/api/rpc',
+      httpMethod: 'POST',
+      headers: {
+        host: 'rest.example',
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers?.['content-type']).toContain('text/event-stream');
+    expect(response.body).toContain('event: data');
+    expect(response.body).toContain('"event":"updated"');
+    expect(response.body).toContain('event: done');
   });
 });

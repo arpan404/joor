@@ -10,7 +10,11 @@ import type {
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
 } from '../rpc/dispatcher.js';
-import { createJoorHandler } from './fetch.js';
+import {
+  createJoorHandler,
+  createRouteStreamJoorHandler,
+  createRouteUnaryJoorHandler,
+} from './fetch.js';
 
 export interface AwsLambdaHttpEventV2 {
   readonly version?: string;
@@ -587,6 +591,34 @@ const createFetch = <
     >
   );
 
+const createRouteUnaryFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+) =>
+  createRouteUnaryJoorHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteUnaryBody<TManifest>,
+      Request
+    >
+  );
+
+const createRouteStreamFetch = <TManifest extends JoorManifest>(
+  manifest: TManifest,
+  options?: HandlerOptions
+) =>
+  createRouteStreamJoorHandler(
+    manifest,
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestRouteStreamBody<TManifest>,
+      Request
+    >
+  );
+
 export function createAwsLambdaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -624,10 +656,7 @@ export function createRouteUnaryAwsLambdaHandler<
 export function createRouteUnaryAwsLambdaHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteUnaryFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
@@ -650,10 +679,7 @@ export function createRouteStreamAwsLambdaHandler<
 export function createRouteStreamAwsLambdaHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteStreamFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
@@ -694,7 +720,7 @@ export const createRouteUnaryAwsLambdaHandlerFor =
       TRequest
     >
   ): AwsLambdaHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    const fetch = createRouteUnaryFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
@@ -719,7 +745,7 @@ export const createRouteStreamAwsLambdaHandlerFor =
       TRequest
     >
   ): AwsLambdaHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    const fetch = createRouteStreamFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
@@ -766,10 +792,7 @@ export function createRouteUnaryAwsLambdaHttpApiHandler<
 export function createRouteUnaryAwsLambdaHttpApiHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaHttpApiHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteUnaryFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
@@ -792,10 +815,7 @@ export function createRouteStreamAwsLambdaHttpApiHandler<
 export function createRouteStreamAwsLambdaHttpApiHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaHttpApiHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteStreamFetch(manifest, options);
   return async (event) => responseToLambda(await fetch(eventToRequest(event)));
 }
 
@@ -836,7 +856,7 @@ export const createRouteUnaryAwsLambdaHttpApiHandlerFor =
       TRequest
     >
   ): AwsLambdaHttpApiHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    const fetch = createRouteUnaryFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
@@ -861,7 +881,7 @@ export const createRouteStreamAwsLambdaHttpApiHandlerFor =
       TRequest
     >
   ): AwsLambdaHttpApiHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    const fetch = createRouteStreamFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
@@ -909,10 +929,7 @@ export function createRouteUnaryAwsLambdaRestApiHandler<
 export function createRouteUnaryAwsLambdaRestApiHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaRestApiHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteUnaryFetch(manifest, options);
   return async (event) =>
     responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
 }
@@ -936,10 +953,7 @@ export function createRouteStreamAwsLambdaRestApiHandler<
 export function createRouteStreamAwsLambdaRestApiHandler<
   TManifest extends JoorManifest,
 >(manifest: TManifest, options?: HandlerOptions): AwsLambdaRestApiHandler {
-  const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
-    manifest,
-    options
-  );
+  const fetch = createRouteStreamFetch(manifest, options);
   return async (event) =>
     responseToRestApiLambda(await fetch(restApiEventToRequest(event)));
 }
@@ -982,7 +996,7 @@ export const createRouteUnaryAwsLambdaRestApiHandlerFor =
       TRequest
     >
   ): AwsLambdaRestApiHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteUnaryBody<TManifest>>(
+    const fetch = createRouteUnaryFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
@@ -1008,7 +1022,7 @@ export const createRouteStreamAwsLambdaRestApiHandlerFor =
       TRequest
     >
   ): AwsLambdaRestApiHandler<TEvent> => {
-    const fetch = createFetch<TManifest, RpcManifestRouteStreamBody<TManifest>>(
+    const fetch = createRouteStreamFetch(
       manifest,
       (args[0] ?? {}) as HandlerOptions
     );
