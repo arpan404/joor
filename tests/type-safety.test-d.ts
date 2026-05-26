@@ -3120,6 +3120,24 @@ const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamHandlerOptions
 > = requestTypedStreamProcedureRequest;
 routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+const routeKindScopedUnaryJoorHandler = createRouteUnaryJoorHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryJoorHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryJoorHandler(
+  // @ts-expect-error route-unary Joor handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamJoorHandler = createRouteStreamJoorHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamJoorHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamJoorHandler(
+  // @ts-expect-error route-stream Joor handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
