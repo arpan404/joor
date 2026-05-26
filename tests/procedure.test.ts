@@ -24,6 +24,56 @@ describe('procedure', () => {
     expect(procedure.meta).toEqual({});
   });
 
+  it('freezes procedure definitions and copied metadata', () => {
+    const tags = ['users'];
+    const auth = ['admin'];
+    const cacheKey = ['id'];
+    const errors = {
+      BAD_REQUEST: t.object({ reason: t.string() }),
+    };
+    const originalError = errors.BAD_REQUEST;
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ ok: t.boolean() }),
+      errors,
+      meta: {
+        kind: 'query',
+        tags,
+        auth,
+        cache: { ttl: '1m', key: cacheKey },
+        rateLimit: { limit: 10, window: '1m' },
+      },
+      async handler(ctx) {
+        return ctx.ok({ ok: true });
+      },
+    });
+
+    tags.push('mutated');
+    auth.push('mutated');
+    cacheKey.push('mutated');
+    (errors as Record<string, unknown>)['BAD_REQUEST'] = t.object({
+      mutated: t.boolean(),
+    });
+
+    expect(Object.isFrozen(defineProcedure)).toBe(true);
+    expect(Object.isFrozen(defineProcedure.withContext<object>())).toBe(true);
+    expect(Object.isFrozen(procedure)).toBe(true);
+    expect(Object.isFrozen(procedure.errors)).toBe(true);
+    expect(Object.isFrozen(procedure.meta)).toBe(true);
+    expect(Object.isFrozen(procedure.meta.tags)).toBe(true);
+    expect(Object.isFrozen(procedure.meta.auth)).toBe(true);
+    expect(Object.isFrozen(procedure.meta.cache)).toBe(true);
+    expect(Object.isFrozen(procedure.meta.cache?.key)).toBe(true);
+    expect(Object.isFrozen(procedure.meta.rateLimit)).toBe(true);
+    expect(procedure.meta.tags).toEqual(['users']);
+    expect(procedure.meta.auth).toEqual(['admin']);
+    expect(procedure.meta.cache?.key).toEqual(['id']);
+    expect(procedure.errors['BAD_REQUEST']).toBe(originalError);
+    expect(() => {
+      (procedure as { stream?: unknown }).stream = t.string();
+    }).toThrow(TypeError);
+  });
+
   it('allows raw success returns', () => {
     const procedure = defineProcedure({
       input: t.object({ id: t.string() }),

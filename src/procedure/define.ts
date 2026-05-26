@@ -22,6 +22,30 @@ import type {
   ProcedureRuntimeValue,
 } from './types.js';
 
+const freezeProcedureMeta = (meta: ProcedureMeta | undefined): ProcedureMeta =>
+  Object.freeze({
+    ...(meta ?? {}),
+    ...(meta?.tags === undefined
+      ? {}
+      : { tags: Object.freeze([...meta.tags]) }),
+    ...(meta?.auth === undefined
+      ? {}
+      : { auth: Object.freeze([...meta.auth]) }),
+    ...(meta?.cache === undefined
+      ? {}
+      : {
+          cache: Object.freeze({
+            ...meta.cache,
+            ...(meta.cache.key === undefined
+              ? {}
+              : { key: Object.freeze([...meta.cache.key]) }),
+          }),
+        }),
+    ...(meta?.rateLimit === undefined
+      ? {}
+      : { rateLimit: Object.freeze({ ...meta.rateLimit }) }),
+  });
+
 type ProcedureConfigResult<
   TOutput extends JsonValue,
   TErrors extends ErrorSchemas,
@@ -287,7 +311,7 @@ const createDefineProcedure = <
             _ctx: JoorContext<object, object, object, object>,
             input: JsonValue
           ): ProcedureRuntimeValue => contextlessHandler(input);
-    return {
+    return Object.freeze({
       input: config.input,
       ...(headers === undefined ? {} : { headers }),
       ...(responseHeaders === undefined ? {} : { responseHeaders }),
@@ -303,22 +327,24 @@ const createDefineProcedure = <
           }),
       ...('output' in config ? { output: config.output } : {}),
       ...('stream' in config ? { stream: config.stream } : {}),
-      errors: config.errors ?? {},
-      meta: config.meta ?? {},
+      errors: Object.freeze({ ...(config.errors ?? {}) }),
+      meta: freezeProcedureMeta(config.meta),
       ...(contextlessHandler === undefined
         ? {}
         : { context: 'none' as const, contextlessHandler }),
       handler,
-    };
+    }) as Procedure;
   };
-  return Object.assign(define, {
-    withContext<
-      TNextServices extends object,
-      TNextRequest extends Request = Request,
-    >() {
-      return createDefineProcedure<TNextServices, TNextRequest>();
-    },
-  }) as DefineProcedure<TServices, TRequest>;
+  return Object.freeze(
+    Object.assign(define, {
+      withContext<
+        TNextServices extends object,
+        TNextRequest extends Request = Request,
+      >() {
+        return createDefineProcedure<TNextServices, TNextRequest>();
+      },
+    })
+  ) as DefineProcedure<TServices, TRequest>;
 };
 
 export const defineProcedure = createDefineProcedure<
