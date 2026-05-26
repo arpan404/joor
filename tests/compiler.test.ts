@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { promisify } from 'node:util';
 import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
@@ -10,6 +10,12 @@ import { emitArtifacts } from '../src/compiler/emit.js';
 import { loadProcedures } from '../src/compiler/load.js';
 import { scanProcedureFiles } from '../src/compiler/scan.js';
 import { defineProcedure, t } from '../src/index.js';
+import type {
+  AwsLambdaHandler,
+  AwsLambdaHttpEventV2,
+  AwsLambdaRestApiEventV1,
+  AwsLambdaRestApiHandler,
+} from '../src/runtime/aws-lambda.js';
 
 const execFileAsync = promisify(execFile);
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
@@ -22,6 +28,15 @@ const contextlessFixtureConfig = new URL(
   './fixtures/contextless-app/joor.config.ts',
   import.meta.url
 ).pathname;
+
+type GeneratedAwsLambdaModule = {
+  readonly createAwsLambdaHandler: () => AwsLambdaHandler;
+  readonly createAwsLambdaRestApiHandler: () => AwsLambdaRestApiHandler;
+  readonly createRouteStreamAwsLambdaRestApiHandlerFor: () => () => AwsLambdaRestApiHandler;
+  readonly createRouteUnaryAwsLambdaHandlerFor: () => () => AwsLambdaHandler;
+  readonly handler: AwsLambdaHandler;
+  readonly restApiHandler: AwsLambdaRestApiHandler;
+};
 
 const toRelativeModuleSpecifier = (fromDir: string, toFile: string): string => {
   const specifier = relative(fromDir, toFile).replaceAll('\\', '/');
@@ -1419,6 +1434,102 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain(
         'defineProcedure.withContext<JoorConfigContext<typeof config>>()'
       );
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('dispatches generated AWS Lambda handlers through compiled runtime', async () => {
+    const outDir = await mkdtemp(join(repoRoot, '.tmp-joor-aws-lambda-'));
+    try {
+      await build({ config: fixtureConfig, outDir });
+      const awsLambda = (await import(
+        /* @vite-ignore */ pathToFileURL(join(outDir, 'aws-lambda.ts')).href
+      )) as GeneratedAwsLambdaModule;
+      const userId = '550e8400-e29b-41d4-a716-446655440000';
+      const httpUserEvent: AwsLambdaHttpEventV2 = {
+        rawPath: '/rpc',
+        rawQueryString: '',
+        headers: {
+          authorization: 'Bearer test',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'users.get',
+          input: { id: userId },
+        }),
+        requestContext: {
+          http: { method: 'POST' },
+        },
+      };
+
+      const createdHttpResponse =
+        await awsLambda.createAwsLambdaHandler()(httpUserEvent);
+      const namedHttpResponse = await awsLambda.handler(httpUserEvent);
+      for (const response of [createdHttpResponse, namedHttpResponse]) {
+        expect(response.statusCode).toBe(200);
+        expect(response.headers?.['content-type']).toBe('application/json');
+        expect(response.headers?.['cache-control']).toBe(
+          'private, max-age=60'
+        );
+        const payload = JSON.parse(response.body ?? '{}');
+        expect(payload.ok).toBe(true);
+        expect(payload.data).toEqual({ id: userId, name: 'Ada' });
+      }
+
+      const routeUnaryResponse =
+        await awsLambda.createRouteUnaryAwsLambdaHandlerFor()()(
+          httpUserEvent
+        );
+      expect(routeUnaryResponse.statusCode).toBe(200);
+      expect(JSON.parse(routeUnaryResponse.body ?? '{}').data).toEqual({
+        id: userId,
+        name: 'Ada',
+      });
+
+      const restPostsEvent: AwsLambdaRestApiEventV1 = {
+        path: '/rpc',
+        httpMethod: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'posts.list',
+          input: { userId: 'ada' },
+        }),
+      };
+      const createdRestResponse =
+        await awsLambda.createAwsLambdaRestApiHandler()(restPostsEvent);
+      const namedRestResponse = await awsLambda.restApiHandler(restPostsEvent);
+      for (const response of [createdRestResponse, namedRestResponse]) {
+        expect(response.statusCode).toBe(200);
+        const payload = JSON.parse(response.body ?? '{}');
+        expect(payload.ok).toBe(true);
+        expect(payload.data).toEqual([{ id: 'post-ada', title: 'Hello' }]);
+      }
+
+      const restStreamEvent: AwsLambdaRestApiEventV1 = {
+        path: '/rpc',
+        httpMethod: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'users.watch',
+          input: { userId: 'ada' },
+        }),
+      };
+      const routeStreamRestResponse =
+        await awsLambda.createRouteStreamAwsLambdaRestApiHandlerFor()()(
+          restStreamEvent
+        );
+      expect(routeStreamRestResponse.statusCode).toBe(200);
+      expect(routeStreamRestResponse.headers?.['content-type']).toContain(
+        'text/event-stream'
+      );
+      expect(routeStreamRestResponse.body).toContain('"type":"user.updated"');
+      expect(routeStreamRestResponse.body).toContain('event: done');
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
