@@ -3157,6 +3157,26 @@ routeKindScopedStreamVercelFunction.fetch(
   // @ts-expect-error route-stream Vercel function helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryCloudflareFetch =
+  createRouteUnaryCloudflareFetchFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryCloudflareFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryCloudflareFetch(
+  // @ts-expect-error route-unary Cloudflare fetch helpers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamCloudflareWorker =
+  createRouteStreamCloudflareWorkerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamCloudflareWorker.fetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamCloudflareWorker.fetch(
+  // @ts-expect-error route-stream Cloudflare Worker helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
