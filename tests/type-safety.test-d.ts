@@ -3397,6 +3397,68 @@ createRouteStreamFastifyHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamFastifyHandlerOptions
 );
+const routeKindScopedUnaryNodeRpcOptions: NodeRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryNodeRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryNodeRpcOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryNodeRpcRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Node RPC options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryNodeRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryNodeRpcOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamNodeRpcOptions: NodeRouteStreamRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamNodeRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamNodeRpcOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamNodeRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Node RPC options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamNodeRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamNodeRpcOptions
+> = requestTypedProcedureRequest;
+createRouteUnaryNodeRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeRpcOptions
+);
+createRouteStreamNodeRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeRpcOptions
+);
+const routeKindScopedUnaryNodeListenOptions: NodeRouteUnaryListenOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  ...routeKindScopedUnaryHandlerOptions,
+  port: 0,
+};
+const routeKindScopedUnaryNodeListenRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryNodeListenOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryNodeListenRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Node listen options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryNodeListenRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryNodeListenOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamNodeListenOptions: NodeRouteStreamListenOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  ...routeKindScopedStreamHandlerOptions,
+  port: 0,
+};
+const routeKindScopedStreamNodeListenRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamNodeListenOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamNodeListenRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Node listen options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamNodeListenRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamNodeListenOptions
+> = requestTypedProcedureRequest;
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
