@@ -1661,8 +1661,8 @@ ${nodeFastCases}
     ? 'DenoCompiledRouteStreamTransportBodyResultHandlerFor<NativeManifest>'
     : 'DenoRouteStreamTransportBodyResultHandlerFor<NativeManifest>';
   const denoDispatcherImport = denoUseCompiledUnaryFastPath
-    ? "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeManifest, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';"
-    : "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeTransport, type NativeManifest, type NativeRequiredRuntimeRequest } from './deno-dispatcher.ts';";
+    ? "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './deno-dispatcher.ts';"
+    : "import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeTransport, type NativeManifest, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './deno-dispatcher.ts';";
   const denoCreateFetchReturn = denoUseCompiledUnaryFastPath
     ? `return createDenoCompiledTransportRequestHandlerFor<TRequest>()(
     nativeRuntime,
@@ -1727,7 +1727,7 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
 export const createCloudflareFetch: typeof createFetch = createFetch;
@@ -1748,12 +1748,17 @@ export const createRouteStreamCloudflareFetchFor: typeof createRouteStreamFetchF
   createRouteStreamFetchFor;
 export const createStreamRouteCloudflareFetchFor: typeof createRouteStreamCloudflareFetchFor =
   createRouteStreamCloudflareFetchFor;
+type NativeGeneratedFetchFactory<TRequired extends Request> = <
+  TRequest extends TRequired = TRequired,
+>() => (request: TRequest) => Response | Promise<Response>;
 const createWorkerFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEnv = never,
     TContext = never,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): CloudflareWorker<TEnv, TContext, TRequest> => ({
     fetch: fetchFactory<TRequest>() as CloudflareWorker<
       TEnv,
@@ -1762,11 +1767,13 @@ const createWorkerFromFetch =
     >['fetch'],
   });
 const createWorkerFromFetchFor =
-  (fetchFactory: typeof createFetchFor) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEnv = never,
     TContext = never,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): CloudflareWorker<TEnv, TContext, TRequest> => ({
     fetch: fetchFactory<TRequest>() as CloudflareWorker<
       TEnv,
@@ -1774,41 +1781,51 @@ const createWorkerFromFetchFor =
       TRequest
     >['fetch'],
   });
-export const createWorkerFor = createWorkerFromFetchFor(createFetchFor);
+export const createWorkerFor =
+  createWorkerFromFetchFor<NativeRequiredRuntimeRequest>(createFetchFor);
 export const worker: CloudflareWorker<
   never,
   never,
   NativeRequiredRuntimeRequest
 > = { fetch };
-export const createWorker = createWorkerFromFetch(createFetch);
+export const createWorker =
+  createWorkerFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createCloudflareWorker: typeof createWorker = createWorker;
 export const createCloudflareWorkerFor: typeof createWorkerFor = createWorkerFor;
-export const createRouteUnaryWorker: typeof createWorker =
-  createWorkerFromFetch(createRouteUnaryFetch);
+export const createRouteUnaryWorker =
+  createWorkerFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteWorker: typeof createRouteUnaryWorker =
   createRouteUnaryWorker;
 export const createRouteUnaryCloudflareWorker: typeof createRouteUnaryWorker =
   createRouteUnaryWorker;
 export const createUnaryRouteCloudflareWorker: typeof createRouteUnaryCloudflareWorker =
   createRouteUnaryCloudflareWorker;
-export const createRouteUnaryWorkerFor: typeof createWorkerFor =
-  createWorkerFromFetchFor(createRouteUnaryFetchFor);
+export const createRouteUnaryWorkerFor =
+  createWorkerFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetchFor
+  );
 export const createUnaryRouteWorkerFor: typeof createRouteUnaryWorkerFor =
   createRouteUnaryWorkerFor;
 export const createRouteUnaryCloudflareWorkerFor: typeof createRouteUnaryWorkerFor =
   createRouteUnaryWorkerFor;
 export const createUnaryRouteCloudflareWorkerFor: typeof createRouteUnaryCloudflareWorkerFor =
   createRouteUnaryCloudflareWorkerFor;
-export const createRouteStreamWorker: typeof createWorker =
-  createWorkerFromFetch(createRouteStreamFetch);
+export const createRouteStreamWorker =
+  createWorkerFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteWorker: typeof createRouteStreamWorker =
   createRouteStreamWorker;
 export const createRouteStreamCloudflareWorker: typeof createRouteStreamWorker =
   createRouteStreamWorker;
 export const createStreamRouteCloudflareWorker: typeof createRouteStreamCloudflareWorker =
   createRouteStreamCloudflareWorker;
-export const createRouteStreamWorkerFor: typeof createWorkerFor =
-  createWorkerFromFetchFor(createRouteStreamFetchFor);
+export const createRouteStreamWorkerFor =
+  createWorkerFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetchFor
+  );
 export const createStreamRouteWorkerFor: typeof createRouteStreamWorkerFor =
   createRouteStreamWorkerFor;
 export const createRouteStreamCloudflareWorkerFor: typeof createRouteStreamWorkerFor =
@@ -1822,17 +1839,22 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor };
 export const GET = fetch;
 export const POST = fetch;
 export const OPTIONS = fetch;
+type NativeGeneratedFetchFactory<TRequired extends Request> = <
+  TRequest extends TRequired = TRequired,
+>() => (request: TRequest) => Response | Promise<Response>;
 const createHandlersFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TContext = never,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NextRouteHandlers<TContext, TRequest> => {
     const handler = fetchFactory<TRequest>();
     return {
@@ -1842,10 +1864,12 @@ const createHandlersFromFetch =
     } as NextRouteHandlers<TContext, TRequest>;
   };
 const createHandlersFromFetchFor =
-  (fetchFactory: typeof createFetchFor) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TContext = never,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NextRouteHandlers<TContext, TRequest> => {
     const handler = fetchFactory<TRequest>();
     return {
@@ -1854,12 +1878,14 @@ const createHandlersFromFetchFor =
       OPTIONS: handler,
     } as NextRouteHandlers<TContext, TRequest>;
   };
-export const createHandlersFor = createHandlersFromFetchFor(createFetchFor);
+export const createHandlersFor =
+  createHandlersFromFetchFor<NativeRequiredRuntimeRequest>(createFetchFor);
 export const handlers: NextRouteHandlers<
   never,
   NativeRequiredRuntimeRequest
 > = { GET, POST, OPTIONS };
-export const createHandlers = createHandlersFromFetch(createFetch);
+export const createHandlers =
+  createHandlersFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createNextRouteHandlers: typeof createHandlers = createHandlers;
 export const createNextHandler: typeof createNextRouteHandlers =
   createNextRouteHandlers;
@@ -1867,8 +1893,10 @@ export const createNextRouteHandlersFor: typeof createHandlersFor =
   createHandlersFor;
 export const createNextHandlerFor: typeof createNextRouteHandlersFor =
   createNextRouteHandlersFor;
-export const createRouteUnaryHandlers: typeof createHandlers =
-  createHandlersFromFetch(createRouteUnaryFetch);
+export const createRouteUnaryHandlers =
+  createHandlersFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteHandlers: typeof createRouteUnaryHandlers =
   createRouteUnaryHandlers;
 export const createRouteUnaryNextRouteHandlers: typeof createRouteUnaryHandlers =
@@ -1879,8 +1907,10 @@ export const createRouteUnaryNextHandler: typeof createRouteUnaryNextRouteHandle
   createRouteUnaryNextRouteHandlers;
 export const createUnaryRouteNextHandler: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
-export const createRouteUnaryHandlersFor: typeof createHandlersFor =
-  createHandlersFromFetchFor(createRouteUnaryFetchFor);
+export const createRouteUnaryHandlersFor =
+  createHandlersFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetchFor
+  );
 export const createUnaryRouteHandlersFor: typeof createRouteUnaryHandlersFor =
   createRouteUnaryHandlersFor;
 export const createRouteUnaryNextRouteHandlersFor: typeof createRouteUnaryHandlersFor =
@@ -1891,8 +1921,10 @@ export const createRouteUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHan
   createRouteUnaryNextRouteHandlersFor;
 export const createUnaryRouteNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
-export const createRouteStreamHandlers: typeof createHandlers =
-  createHandlersFromFetch(createRouteStreamFetch);
+export const createRouteStreamHandlers =
+  createHandlersFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteHandlers: typeof createRouteStreamHandlers =
   createRouteStreamHandlers;
 export const createRouteStreamNextRouteHandlers: typeof createRouteStreamHandlers =
@@ -1903,8 +1935,10 @@ export const createRouteStreamNextHandler: typeof createRouteStreamNextRouteHand
   createRouteStreamNextRouteHandlers;
 export const createStreamRouteNextHandler: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
-export const createRouteStreamHandlersFor: typeof createHandlersFor =
-  createHandlersFromFetchFor(createRouteStreamFetchFor);
+export const createRouteStreamHandlersFor =
+  createHandlersFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetchFor
+  );
 export const createStreamRouteHandlersFor: typeof createRouteStreamHandlersFor =
   createRouteStreamHandlersFor;
 export const createRouteStreamNextRouteHandlersFor: typeof createRouteStreamHandlersFor =
@@ -1922,7 +1956,7 @@ export default handlers;
   await writeFile(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
 export const createVercelFetch: typeof createFetch = createFetch;
@@ -1943,52 +1977,69 @@ export const createRouteStreamVercelFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createStreamRouteVercelFetchFor: typeof createRouteStreamVercelFetchFor =
   createRouteStreamVercelFetchFor;
+type NativeGeneratedFetchFactory<TRequired extends Request> = <
+  TRequest extends TRequired = TRequired,
+>() => (request: TRequest) => Response | Promise<Response>;
 const createVercelFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): VercelFunction<TRequest> => ({
     fetch: fetchFactory<TRequest>(),
   });
 const createVercelFromFetchFor =
-  (fetchFactory: typeof createFetchFor) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): VercelFunction<TRequest> => ({
     fetch: fetchFactory<TRequest>(),
   });
-export const createVercelFor = createVercelFromFetchFor(createFetchFor);
+export const createVercelFor =
+  createVercelFromFetchFor<NativeRequiredRuntimeRequest>(createFetchFor);
 export const vercel: VercelFunction<NativeRequiredRuntimeRequest> = { fetch };
-export const createVercel = createVercelFromFetch(createFetch);
+export const createVercel =
+  createVercelFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createVercelFunction: typeof createVercel = createVercel;
 export const createVercelFunctionFor: typeof createVercelFor =
   createVercelFor;
-export const createRouteUnaryVercel: typeof createVercel =
-  createVercelFromFetch(createRouteUnaryFetch);
+export const createRouteUnaryVercel =
+  createVercelFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteVercel: typeof createRouteUnaryVercel =
   createRouteUnaryVercel;
 export const createRouteUnaryVercelFunction: typeof createRouteUnaryVercel =
   createRouteUnaryVercel;
 export const createUnaryRouteVercelFunction: typeof createRouteUnaryVercelFunction =
   createRouteUnaryVercelFunction;
-export const createRouteUnaryVercelFor: typeof createVercelFor =
-  createVercelFromFetchFor(createRouteUnaryFetchFor);
+export const createRouteUnaryVercelFor =
+  createVercelFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetchFor
+  );
 export const createUnaryRouteVercelFor: typeof createRouteUnaryVercelFor =
   createRouteUnaryVercelFor;
 export const createRouteUnaryVercelFunctionFor: typeof createRouteUnaryVercelFor =
   createRouteUnaryVercelFor;
 export const createUnaryRouteVercelFunctionFor: typeof createRouteUnaryVercelFunctionFor =
   createRouteUnaryVercelFunctionFor;
-export const createRouteStreamVercel: typeof createVercel =
-  createVercelFromFetch(createRouteStreamFetch);
+export const createRouteStreamVercel =
+  createVercelFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteVercel: typeof createRouteStreamVercel =
   createRouteStreamVercel;
 export const createRouteStreamVercelFunction: typeof createRouteStreamVercel =
   createRouteStreamVercel;
 export const createStreamRouteVercelFunction: typeof createRouteStreamVercelFunction =
   createRouteStreamVercelFunction;
-export const createRouteStreamVercelFor: typeof createVercelFor =
-  createVercelFromFetchFor(createRouteStreamFetchFor);
+export const createRouteStreamVercelFor =
+  createVercelFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetchFor
+  );
 export const createStreamRouteVercelFor: typeof createRouteStreamVercelFor =
   createRouteStreamVercelFor;
 export const createRouteStreamVercelFunctionFor: typeof createRouteStreamVercelFor =
@@ -2002,7 +2053,7 @@ export default vercel;
   await writeFile(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 
 export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
 export const createNetlifyFetch: typeof createFetch = createFetch;
@@ -2023,59 +2074,76 @@ export const createRouteStreamNetlifyFetchFor: typeof createRouteStreamFetchFor 
   createRouteStreamFetchFor;
 export const createStreamRouteNetlifyFetchFor: typeof createRouteStreamNetlifyFetchFor =
   createRouteStreamNetlifyFetchFor;
+type NativeGeneratedFetchFactory<TRequired extends Request> = <
+  TRequest extends TRequired = TRequired,
+>() => (request: TRequest) => Response | Promise<Response>;
 const createEdgeFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TContext = unknown,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NetlifyEdgeFetchHandler<TContext, TRequest> => {
     const handler = fetchFactory<TRequest>();
     return (request) => handler(request);
   };
 const createEdgeFromFetchFor =
-  (fetchFactory: typeof createFetchFor) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TContext = unknown,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NetlifyEdgeFetchHandler<TContext, TRequest> => {
     const handler = fetchFactory<TRequest>();
     return (request) => handler(request);
   };
-export const createEdgeFor = createEdgeFromFetchFor(createFetchFor);
+export const createEdgeFor =
+  createEdgeFromFetchFor<NativeRequiredRuntimeRequest>(createFetchFor);
 export const edge: NetlifyEdgeFetchHandler<
   unknown,
   NativeRequiredRuntimeRequest
 > = (request) => fetch(request);
-export const createEdge = createEdgeFromFetch(createFetch);
+export const createEdge =
+  createEdgeFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createNetlifyEdgeFunction: typeof createEdge = createEdge;
 export const createNetlifyEdgeFunctionFor: typeof createEdgeFor =
   createEdgeFor;
-export const createRouteUnaryEdge: typeof createEdge =
-  createEdgeFromFetch(createRouteUnaryFetch);
+export const createRouteUnaryEdge =
+  createEdgeFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteEdge: typeof createRouteUnaryEdge =
   createRouteUnaryEdge;
 export const createRouteUnaryNetlifyEdgeFunction: typeof createRouteUnaryEdge =
   createRouteUnaryEdge;
 export const createUnaryRouteNetlifyEdgeFunction: typeof createRouteUnaryNetlifyEdgeFunction =
   createRouteUnaryNetlifyEdgeFunction;
-export const createRouteUnaryEdgeFor: typeof createEdgeFor =
-  createEdgeFromFetchFor(createRouteUnaryFetchFor);
+export const createRouteUnaryEdgeFor =
+  createEdgeFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetchFor
+  );
 export const createUnaryRouteEdgeFor: typeof createRouteUnaryEdgeFor =
   createRouteUnaryEdgeFor;
 export const createRouteUnaryNetlifyEdgeFunctionFor: typeof createRouteUnaryEdgeFor =
   createRouteUnaryEdgeFor;
 export const createUnaryRouteNetlifyEdgeFunctionFor: typeof createRouteUnaryNetlifyEdgeFunctionFor =
   createRouteUnaryNetlifyEdgeFunctionFor;
-export const createRouteStreamEdge: typeof createEdge =
-  createEdgeFromFetch(createRouteStreamFetch);
+export const createRouteStreamEdge =
+  createEdgeFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteEdge: typeof createRouteStreamEdge =
   createRouteStreamEdge;
 export const createRouteStreamNetlifyEdgeFunction: typeof createRouteStreamEdge =
   createRouteStreamEdge;
 export const createStreamRouteNetlifyEdgeFunction: typeof createRouteStreamNetlifyEdgeFunction =
   createRouteStreamNetlifyEdgeFunction;
-export const createRouteStreamEdgeFor: typeof createEdgeFor =
-  createEdgeFromFetchFor(createRouteStreamFetchFor);
+export const createRouteStreamEdgeFor =
+  createEdgeFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetchFor
+  );
 export const createStreamRouteEdgeFor: typeof createRouteStreamEdgeFor =
   createRouteStreamEdgeFor;
 export const createRouteStreamNetlifyEdgeFunctionFor: typeof createRouteStreamEdgeFor =
@@ -2090,56 +2158,56 @@ export default edge;
     `${outDir}/aws-lambda.ts`,
     `import { Buffer } from 'node:buffer';
 import type { AwsLambdaHandler, AwsLambdaHttpApiHandler, AwsLambdaHttpEventV2, AwsLambdaHttpResponseV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler, AwsLambdaRestApiResponseV1 } from 'joor/runtime/aws-lambda';
-import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
 
 export type NativeAwsLambdaRequestFactory<
   TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = (event: TEvent) => TRequest;
 
 export type NativeAwsLambdaHandlerOptions<
   TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = Request extends TRequest
   ? { readonly createRequest?: NativeAwsLambdaRequestFactory<TEvent, TRequest> }
   : { readonly createRequest: NativeAwsLambdaRequestFactory<TEvent, TRequest> };
 
 export type NativeAwsLambdaHandlerOptionsArgs<
   TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = Request extends TRequest
   ? [options?: NativeAwsLambdaHandlerOptions<TEvent, TRequest>]
   : [options: NativeAwsLambdaHandlerOptions<TEvent, TRequest>];
 
 export type NativeAwsLambdaHandlerFactory<
   TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = (
   ...args: NativeAwsLambdaHandlerOptionsArgs<TEvent, TRequest>
 ) => AwsLambdaHttpApiHandler<TEvent>;
 
 export type NativeAwsLambdaRestApiRequestFactory<
   TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = (event: TEvent) => TRequest;
 
 export type NativeAwsLambdaRestApiHandlerOptions<
   TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = Request extends TRequest
   ? { readonly createRequest?: NativeAwsLambdaRestApiRequestFactory<TEvent, TRequest> }
   : { readonly createRequest: NativeAwsLambdaRestApiRequestFactory<TEvent, TRequest> };
 
 export type NativeAwsLambdaRestApiHandlerOptionsArgs<
   TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = Request extends TRequest
   ? [options?: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>]
   : [options: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>];
 
 export type NativeAwsLambdaRestApiHandlerFactory<
   TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  TRequest extends Request = NativeRequiredRuntimeRequest,
 > = (
   ...args: NativeAwsLambdaRestApiHandlerOptionsArgs<TEvent, TRequest>
 ) => AwsLambdaRestApiHandler<TEvent>;
@@ -2298,11 +2366,19 @@ export const createAwsLambdaRestApiResponse = async (
   };
 };
 
+type NativeGeneratedFetchFactory<TRequired extends Request> = <
+  TRequest extends TRequired = TRequired,
+>(
+  options?: object
+) => (request: TRequest) => Response | Promise<Response>;
+
 const createHttpApiHandlerFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(
     ...args: NativeAwsLambdaHandlerOptionsArgs<TEvent, TRequest>
   ): AwsLambdaHttpApiHandler<TEvent> => {
@@ -2321,10 +2397,12 @@ const createHttpApiHandlerFromFetch =
   };
 
 const createRestApiHandlerFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(
     ...args: NativeAwsLambdaRestApiHandlerOptionsArgs<TEvent, TRequest>
   ): AwsLambdaRestApiHandler<TEvent> => {
@@ -2343,26 +2421,33 @@ const createRestApiHandlerFromFetch =
   };
 
 const createHttpApiHandlerFactoryFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NativeAwsLambdaHandlerFactory<TEvent, TRequest> =>
     (...args) =>
       createHttpApiHandlerFromFetch(fetchFactory)<TEvent, TRequest>(...args);
 
 const createRestApiHandlerFactoryFromFetch =
-  (fetchFactory: typeof createFetch) =>
+  <TRequired extends Request>(
+    fetchFactory: NativeGeneratedFetchFactory<TRequired>
+  ) =>
   <
     TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
-    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+    TRequest extends TRequired = TRequired,
   >(): NativeAwsLambdaRestApiHandlerFactory<TEvent, TRequest> =>
     (...args) =>
       createRestApiHandlerFromFetch(fetchFactory)<TEvent, TRequest>(...args);
 
-export const createAwsLambdaHandler = createHttpApiHandlerFromFetch(createFetch);
+export const createAwsLambdaHandler =
+  createHttpApiHandlerFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createAwsLambdaHandlerFor =
-  createHttpApiHandlerFactoryFromFetch(createFetch);
+  createHttpApiHandlerFactoryFromFetch<NativeRequiredRuntimeRequest>(
+    createFetch
+  );
 export const createAwsLambdaHttpApiHandler: typeof createAwsLambdaHandler =
   createAwsLambdaHandler;
 export const createAwsLambdaHttpApiHandlerFor: typeof createAwsLambdaHandlerFor =
@@ -2379,11 +2464,15 @@ export const handler = defaultAwsLambdaHandler as Request extends NativeRequired
 export const httpApiHandler: typeof handler = handler;
 
 export const createRouteUnaryAwsLambdaHandler =
-  createHttpApiHandlerFromFetch(createRouteUnaryFetch);
+  createHttpApiHandlerFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteAwsLambdaHandler: typeof createRouteUnaryAwsLambdaHandler =
   createRouteUnaryAwsLambdaHandler;
 export const createRouteUnaryAwsLambdaHandlerFor =
-  createHttpApiHandlerFactoryFromFetch(createRouteUnaryFetch);
+  createHttpApiHandlerFactoryFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteAwsLambdaHandlerFor: typeof createRouteUnaryAwsLambdaHandlerFor =
   createRouteUnaryAwsLambdaHandlerFor;
 export const createRouteUnaryAwsLambdaHttpApiHandler: typeof createRouteUnaryAwsLambdaHandler =
@@ -2396,11 +2485,15 @@ export const createUnaryRouteAwsLambdaHttpApiHandlerFor: typeof createRouteUnary
   createRouteUnaryAwsLambdaHttpApiHandlerFor;
 
 export const createRouteStreamAwsLambdaHandler =
-  createHttpApiHandlerFromFetch(createRouteStreamFetch);
+  createHttpApiHandlerFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteAwsLambdaHandler: typeof createRouteStreamAwsLambdaHandler =
   createRouteStreamAwsLambdaHandler;
 export const createRouteStreamAwsLambdaHandlerFor =
-  createHttpApiHandlerFactoryFromFetch(createRouteStreamFetch);
+  createHttpApiHandlerFactoryFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteAwsLambdaHandlerFor: typeof createRouteStreamAwsLambdaHandlerFor =
   createRouteStreamAwsLambdaHandlerFor;
 export const createRouteStreamAwsLambdaHttpApiHandler: typeof createRouteStreamAwsLambdaHandler =
@@ -2413,9 +2506,11 @@ export const createStreamRouteAwsLambdaHttpApiHandlerFor: typeof createRouteStre
   createRouteStreamAwsLambdaHttpApiHandlerFor;
 
 export const createAwsLambdaRestApiHandler =
-  createRestApiHandlerFromFetch(createFetch);
+  createRestApiHandlerFromFetch<NativeRequiredRuntimeRequest>(createFetch);
 export const createAwsLambdaRestApiHandlerFor =
-  createRestApiHandlerFactoryFromFetch(createFetch);
+  createRestApiHandlerFactoryFromFetch<NativeRequiredRuntimeRequest>(
+    createFetch
+  );
 const defaultAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = async (event) => {
   const fetch = createFetch<NativeRequiredRuntimeRequest>();
   return createAwsLambdaRestApiResponse(
@@ -2429,20 +2524,28 @@ export const restApiHandler = defaultAwsLambdaRestApiHandler as Request extends 
   : never;
 
 export const createRouteUnaryAwsLambdaRestApiHandler =
-  createRestApiHandlerFromFetch(createRouteUnaryFetch);
+  createRestApiHandlerFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteAwsLambdaRestApiHandler: typeof createRouteUnaryAwsLambdaRestApiHandler =
   createRouteUnaryAwsLambdaRestApiHandler;
 export const createRouteUnaryAwsLambdaRestApiHandlerFor =
-  createRestApiHandlerFactoryFromFetch(createRouteUnaryFetch);
+  createRestApiHandlerFactoryFromFetch<NativeRouteUnaryRequiredRuntimeRequest>(
+    createRouteUnaryFetch
+  );
 export const createUnaryRouteAwsLambdaRestApiHandlerFor: typeof createRouteUnaryAwsLambdaRestApiHandlerFor =
   createRouteUnaryAwsLambdaRestApiHandlerFor;
 
 export const createRouteStreamAwsLambdaRestApiHandler =
-  createRestApiHandlerFromFetch(createRouteStreamFetch);
+  createRestApiHandlerFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteAwsLambdaRestApiHandler: typeof createRouteStreamAwsLambdaRestApiHandler =
   createRouteStreamAwsLambdaRestApiHandler;
 export const createRouteStreamAwsLambdaRestApiHandlerFor =
-  createRestApiHandlerFactoryFromFetch(createRouteStreamFetch);
+  createRestApiHandlerFactoryFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
+    createRouteStreamFetch
+  );
 export const createStreamRouteAwsLambdaRestApiHandlerFor: typeof createRouteStreamAwsLambdaRestApiHandlerFor =
   createRouteStreamAwsLambdaRestApiHandlerFor;
 
@@ -2459,7 +2562,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteUnaryBody, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
 ${nodeFastImports}
 
 interface JsonObject {
@@ -3159,7 +3262,7 @@ export default handler;
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
-import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteUnaryBody, type NativeTransportResult } from '${dispatcherImport}';
+import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeTransportResult } from '${dispatcherImport}';
 ${bunFastImports}
 
 interface JsonObject {
@@ -3608,13 +3711,13 @@ export interface NativeCorsOptions {
 export type BunNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
   request: TRequest
 ) => Response | Promise<Response>;
-export type BunNativeRouteUnaryFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
-  BunNativeFetchHandler<TRequest>;
-export type BunNativeUnaryRouteFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+export type BunNativeRouteUnaryFetchHandler<TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest> =
+  (request: TRequest) => Response | Promise<Response>;
+export type BunNativeUnaryRouteFetchHandler<TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest> =
   BunNativeRouteUnaryFetchHandler<TRequest>;
-export type BunNativeRouteStreamFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
-  BunNativeFetchHandler<TRequest>;
-export type BunNativeStreamRouteFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+export type BunNativeRouteStreamFetchHandler<TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest> =
+  (request: TRequest) => Response | Promise<Response>;
+export type BunNativeStreamRouteFetchHandler<TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest> =
   BunNativeRouteStreamFetchHandler<TRequest>;
 type BunNativeTransportHandler<TBody extends NativeBody = NativeBody> = (
   request: FetchRequestSource,
@@ -3631,12 +3734,17 @@ export interface BunNativeServer {
 }
 
 const createFetchFromTransportFor =
-  <TBody extends NativeBody>(
+  <
+    TBody extends NativeBody,
+    TRequiredRequest extends Request = NativeRequiredRuntimeRequest,
+  >(
     transport: BunNativeTransportHandler<TBody>,
     unaryDispatch = nativeUnaryDispatch
   ) =>
-  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
-  (options: BunNativeOptions = {}): BunNativeFetchHandler<TRequest> => {
+  <TRequest extends TRequiredRequest = TRequiredRequest>() =>
+  (options: BunNativeOptions = {}): ((
+    request: TRequest
+  ) => Response | Promise<Response>) => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsHeaders(options.cors);
   const bodyLimit = normalizeMaxBodyBytes(
@@ -3686,8 +3794,10 @@ export const createFetchFor = createFetchFromTransportFor<NativeBody>(
   nativeTransport
 );
 export const createBunFetchFor: typeof createFetchFor = createFetchFor;
-export const createRouteUnaryFetchFor: typeof createFetchFor =
-  createFetchFromTransportFor<NativeRouteUnaryBody>(
+export const createRouteUnaryFetchFor = createFetchFromTransportFor<
+  NativeRouteUnaryBody,
+  NativeRouteUnaryRequiredRuntimeRequest
+>(
     nativeRouteUnaryTransport,
     () => undefined
   );
@@ -3697,8 +3807,10 @@ export const createRouteUnaryBunFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteBunFetchFor: typeof createRouteUnaryBunFetchFor =
   createRouteUnaryBunFetchFor;
-export const createRouteStreamFetchFor: typeof createFetchFor =
-  createFetchFromTransportFor<NativeRouteStreamBody>(
+export const createRouteStreamFetchFor = createFetchFromTransportFor<
+  NativeRouteStreamBody,
+  NativeRouteStreamRequiredRuntimeRequest
+>(
     nativeRouteStreamTransport,
     () => undefined
   );
@@ -3713,7 +3825,7 @@ export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = Nati
   options: BunNativeOptions = {}
 ): BunNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 export const createBunFetch: typeof createFetch = createFetch;
-export const createRouteUnaryFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+export const createRouteUnaryFetch = <TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest>(
   options: BunNativeOptions = {}
 ): BunNativeRouteUnaryFetchHandler<TRequest> =>
   createRouteUnaryFetchFor<TRequest>()(options);
@@ -3723,7 +3835,7 @@ export const createRouteUnaryBunFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createUnaryRouteBunFetch: typeof createRouteUnaryBunFetch =
   createRouteUnaryBunFetch;
-export const createRouteStreamFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+export const createRouteStreamFetch = <TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest>(
   options: BunNativeOptions = {}
 ): BunNativeRouteStreamFetchHandler<TRequest> =>
   createRouteStreamFetchFor<TRequest>()(options);
@@ -3817,13 +3929,13 @@ export interface DenoNativeOptions {
 export type DenoNativeFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> = (
   request: TRequest
 ) => Response | Promise<Response>;
-export type DenoNativeRouteUnaryFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
-  DenoNativeFetchHandler<TRequest>;
-export type DenoNativeUnaryRouteFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+export type DenoNativeRouteUnaryFetchHandler<TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest> =
+  (request: TRequest) => Response | Promise<Response>;
+export type DenoNativeUnaryRouteFetchHandler<TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest> =
   DenoNativeRouteUnaryFetchHandler<TRequest>;
-export type DenoNativeRouteStreamFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
-  DenoNativeFetchHandler<TRequest>;
-export type DenoNativeStreamRouteFetchHandler<TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest> =
+export type DenoNativeRouteStreamFetchHandler<TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest> =
+  (request: TRequest) => Response | Promise<Response>;
+export type DenoNativeStreamRouteFetchHandler<TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest> =
   DenoNativeRouteStreamFetchHandler<TRequest>;
 
 export interface DenoNativeServer {
@@ -3844,7 +3956,7 @@ export const createFetchFor =
 };
 export const createDenoFetchFor: typeof createFetchFor = createFetchFor;
 export const createRouteUnaryFetchFor =
-  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
+  <TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest>() =>
   (options: DenoNativeOptions = {}): DenoNativeRouteUnaryFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsOptions(options.cors);
@@ -3859,7 +3971,7 @@ export const createRouteUnaryDenoFetchFor: typeof createRouteUnaryFetchFor =
 export const createUnaryRouteDenoFetchFor: typeof createRouteUnaryDenoFetchFor =
   createRouteUnaryDenoFetchFor;
 export const createRouteStreamFetchFor =
-  <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>() =>
+  <TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest>() =>
   (options: DenoNativeOptions = {}): DenoNativeRouteStreamFetchHandler<TRequest> => {
   const path = options.path ?? configuredPath;
   const cors = resolveCorsOptions(options.cors);
@@ -3878,7 +3990,7 @@ export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = Nati
   options: DenoNativeOptions = {}
 ): DenoNativeFetchHandler<TRequest> => createFetchFor<TRequest>()(options);
 export const createDenoFetch: typeof createFetch = createFetch;
-export const createRouteUnaryFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+export const createRouteUnaryFetch = <TRequest extends NativeRouteUnaryRequiredRuntimeRequest = NativeRouteUnaryRequiredRuntimeRequest>(
   options: DenoNativeOptions = {}
 ): DenoNativeRouteUnaryFetchHandler<TRequest> =>
   createRouteUnaryFetchFor<TRequest>()(options);
@@ -3888,7 +4000,7 @@ export const createRouteUnaryDenoFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createUnaryRouteDenoFetch: typeof createRouteUnaryDenoFetch =
   createRouteUnaryDenoFetch;
-export const createRouteStreamFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(
+export const createRouteStreamFetch = <TRequest extends NativeRouteStreamRequiredRuntimeRequest = NativeRouteStreamRequiredRuntimeRequest>(
   options: DenoNativeOptions = {}
 ): DenoNativeRouteStreamFetchHandler<TRequest> =>
   createRouteStreamFetchFor<TRequest>()(options);

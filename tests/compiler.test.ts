@@ -1003,13 +1003,13 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedCloudflareSource).toContain('createWorkerFromFetchFor');
       expect(generatedCloudflareSource).toContain(
-        'createWorkerFromFetch(createRouteUnaryFetch)'
+        'createWorkerFromFetch<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedCloudflareSource).toContain(
-        'createWorkerFromFetchFor(createRouteUnaryFetchFor)'
+        'createWorkerFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedCloudflareSource).toContain(
-        'createWorkerFromFetchFor(createRouteStreamFetchFor)'
+        'createWorkerFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>'
       );
       const generatedNextSource = await readFile(
         join(outDir, 'next.ts'),
@@ -1017,13 +1017,13 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedNextSource).toContain('createHandlersFromFetchFor');
       expect(generatedNextSource).toContain(
-        'createHandlersFromFetch(createRouteUnaryFetch)'
+        'createHandlersFromFetch<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedNextSource).toContain(
-        'createHandlersFromFetchFor(createRouteUnaryFetchFor)'
+        'createHandlersFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedNextSource).toContain(
-        'createHandlersFromFetchFor(createRouteStreamFetchFor)'
+        'createHandlersFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>'
       );
       const generatedVercelSource = await readFile(
         join(outDir, 'vercel.ts'),
@@ -1031,13 +1031,13 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedVercelSource).toContain('createVercelFromFetchFor');
       expect(generatedVercelSource).toContain(
-        'createVercelFromFetch(createRouteUnaryFetch)'
+        'createVercelFromFetch<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedVercelSource).toContain(
-        'createVercelFromFetchFor(createRouteUnaryFetchFor)'
+        'createVercelFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedVercelSource).toContain(
-        'createVercelFromFetchFor(createRouteStreamFetchFor)'
+        'createVercelFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>'
       );
       const generatedNetlifySource = await readFile(
         join(outDir, 'netlify.ts'),
@@ -1045,23 +1045,23 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedNetlifySource).toContain('createEdgeFromFetchFor');
       expect(generatedNetlifySource).toContain(
-        'createEdgeFromFetch(createRouteUnaryFetch)'
+        'createEdgeFromFetch<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedNetlifySource).toContain(
-        'createEdgeFromFetchFor(createRouteUnaryFetchFor)'
+        'createEdgeFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedNetlifySource).toContain(
-        'createEdgeFromFetchFor(createRouteStreamFetchFor)'
+        'createEdgeFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>'
       );
       const generatedAwsLambdaSource = await readFile(
         join(outDir, 'aws-lambda.ts'),
         'utf8'
       );
       expect(generatedAwsLambdaSource).toContain(
-        'createHttpApiHandlerFromFetch(createRouteUnaryFetch)'
+        'createHttpApiHandlerFromFetch<NativeRouteUnaryRequiredRuntimeRequest>'
       );
       expect(generatedAwsLambdaSource).toContain(
-        'createRestApiHandlerFromFetch(createRouteStreamFetch)'
+        'createRestApiHandlerFromFetch<NativeRouteStreamRequiredRuntimeRequest>'
       );
       const generatedNativeBunSource = await readFile(
         join(outDir, 'bun.ts'),
