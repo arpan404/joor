@@ -3303,6 +3303,32 @@ createRouteStreamKoaHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamKoaHandlerOptions
 );
+const routeKindScopedUnaryHonoHandler = createRouteUnaryHonoHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryHonoHandler({
+  req: { raw: requestTypedProcedureRequest },
+});
+routeKindScopedUnaryHonoHandler({
+  req: {
+    // @ts-expect-error route-unary Hono handlers default to unary-only request requirements.
+    raw: requestTypedStreamProcedureRequest,
+  },
+});
+const routeKindScopedStreamHonoHandler = createRouteStreamHonoHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamHonoHandler({
+  req: { raw: requestTypedStreamProcedureRequest },
+});
+routeKindScopedStreamHonoHandler({
+  req: {
+    // @ts-expect-error route-stream Hono handlers default to stream-only request requirements.
+    raw: requestTypedProcedureRequest,
+  },
+});
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
