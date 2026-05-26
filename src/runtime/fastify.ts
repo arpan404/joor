@@ -20,6 +20,8 @@ import type {
 import {
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  createRouteStreamRpcTransportBodyResultHandler,
+  createRouteUnaryRpcTransportBodyResultHandler,
 } from '../rpc/dispatcher.js';
 import {
   BodySizeLimitError,
@@ -33,6 +35,7 @@ import {
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
   type TransportBodyResult,
+  type TransportBodyResultFor,
 } from './response.js';
 
 export interface FastifyRequest<
@@ -200,6 +203,30 @@ export type FastifyStreamRouteHandlerOptionsArgs<
     RpcManifestRouteStreamBody<TManifest>,
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+type MaybePromise<TValue> = TValue | Promise<TValue>;
+
+type FastifyTransportBodyResultHandler<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = <const TRequestBody extends TBody>(
+  request: ContextRequestSource,
+  body: TRequestBody
+) => MaybePromise<TransportBodyResultFor<TManifest, TRequestBody>>;
+
+type FastifyTransportBodyResultHandlerFactory<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
+> = (
+  manifest: TManifest,
+  options: HandlerOptionsFor<
+    TManifest,
+    readonly JoorPlugin<object>[],
+    TBody,
+    Request
+  >,
+  preflight: boolean
+) => FastifyTransportBodyResultHandler<TManifest, TBody>;
 
 const neverAbortedSignal = new AbortController().signal;
 
@@ -434,10 +461,20 @@ const createFastifyHandlerWithOptions = <
   TBody extends RpcManifestBody<TManifest> = RpcManifestBody<TManifest>,
 >(
   manifest: TManifest,
-  options: FastifyHandlerOptions = {}
+  options: FastifyHandlerOptions = {},
+  createHandler: FastifyTransportBodyResultHandlerFactory<TManifest, TBody> = ((
+    handlerManifest,
+    handlerOptions,
+    preflight
+  ) =>
+    createRpcTransportBodyResultHandler(
+      handlerManifest,
+      handlerOptions,
+      preflight
+    ))
 ): FastifyHandler => {
   const handlerOptions = snapshotFastifyOptions(options);
-  const handler = createRpcTransportBodyResultHandler(
+  const handler = createHandler(
     manifest,
     handlerOptions as unknown as HandlerOptionsFor<
       TManifest,
@@ -525,7 +562,7 @@ export function createRouteUnaryFastifyHandler<TManifest extends JoorManifest>(
   return createFastifyHandlerWithOptions<
     TManifest,
     RpcManifestRouteUnaryBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteUnaryRpcTransportBodyResultHandler);
 }
 
 export const createUnaryRouteFastifyHandler: typeof createRouteUnaryFastifyHandler =
@@ -551,7 +588,7 @@ export function createRouteStreamFastifyHandler<TManifest extends JoorManifest>(
   return createFastifyHandlerWithOptions<
     TManifest,
     RpcManifestRouteStreamBody<TManifest>
-  >(manifest, options);
+  >(manifest, options, createRouteStreamRpcTransportBodyResultHandler);
 }
 
 export const createStreamRouteFastifyHandler: typeof createRouteStreamFastifyHandler =
@@ -605,7 +642,8 @@ export const createRouteUnaryFastifyHandlerFor =
       RpcManifestRouteUnaryBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as FastifyHandlerOptions
+      (args[0] ?? {}) as FastifyHandlerOptions,
+      createRouteUnaryRpcTransportBodyResultHandler
     ) as unknown as FastifyHandler<TRequest, TReply>;
 
 export const createUnaryRouteFastifyHandlerFor: typeof createRouteUnaryFastifyHandlerFor =
@@ -635,7 +673,8 @@ export const createRouteStreamFastifyHandlerFor =
       RpcManifestRouteStreamBody<TManifest>
     >(
       manifest,
-      (args[0] ?? {}) as FastifyHandlerOptions
+      (args[0] ?? {}) as FastifyHandlerOptions,
+      createRouteStreamRpcTransportBodyResultHandler
     ) as unknown as FastifyHandler<TRequest, TReply>;
 
 export const createStreamRouteFastifyHandlerFor: typeof createRouteStreamFastifyHandlerFor =

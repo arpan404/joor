@@ -1,7 +1,13 @@
 import type { AddressInfo } from 'node:net';
 import fastify from 'fastify';
 import { describe, expect, it } from 'vitest';
-import { createFastifyHandler, defineProcedure, t } from '../src/index.js';
+import {
+  createFastifyHandler,
+  createRouteStreamFastifyHandler,
+  createRouteUnaryFastifyHandlerFor,
+  defineProcedure,
+  t,
+} from '../src/index.js';
 
 describe('fastify runtime', () => {
   it('adapts parsed Fastify requests to the transport runtime', async () => {
@@ -137,6 +143,87 @@ describe('fastify runtime', () => {
         'https://app.example'
       );
       expect(body.ok).toBe(true);
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('adapts route-specific unary Fastify handlers through the typed transport runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ id: t.string() }),
+      output: t.object({ id: t.string(), tenantId: t.string() }),
+      headers: t.object({ 'x-tenant-id': t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok({
+          id: input.id,
+          tenantId: ctx.headers['x-tenant-id'],
+        });
+      },
+    });
+    const app = fastify();
+    app.post(
+      '/api/rpc',
+      createRouteUnaryFastifyHandlerFor()(
+        { procedures: { 'users.get': procedure } },
+        { path: '/api/rpc' }
+      )
+    );
+    await app.listen({ port: 0, host: '127.0.0.1' });
+    try {
+      const address = app.server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-tenant-id': 'tenant-1',
+        },
+        body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+      });
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(body.data).toEqual({ id: '1', tenantId: 'tenant-1' });
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('adapts route-specific stream Fastify handlers through the typed transport runtime', async () => {
+    const procedure = defineProcedure({
+      input: t.object({ userId: t.string() }),
+      stream: t.object({ userId: t.string(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { userId: input.userId, event: 'updated' };
+      },
+    });
+    const app = fastify();
+    app.post(
+      '/api/rpc',
+      createRouteStreamFastifyHandler(
+        { procedures: { 'users.watch': procedure } },
+        { path: '/api/rpc' }
+      )
+    );
+    await app.listen({ port: 0, host: '127.0.0.1' });
+    try {
+      const address = app.server.address() as AddressInfo;
+      const response = await fetch(`http://127.0.0.1:${address.port}/api/rpc`, {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
+      });
+      const body = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(body).toContain('event: data');
+      expect(body).toContain('"event":"updated"');
+      expect(body).toContain('event: done');
     } finally {
       await app.close();
     }
