@@ -22835,6 +22835,12 @@ const fastifyRouteStreamHandlerOptions: FastifyRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = fastifyHandlerOptions;
+const requestTypedFastifyRouteStreamHandlerOptions: FastifyRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = { ...requestTypedNextRouteStreamHandlersOptions, hostname: 'app' };
 const fastifyStreamRouteHandlerOptions: FastifyStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22847,6 +22853,12 @@ const runtimeSubpathFastifyRouteStreamHandlerOptions: RuntimeSubpathFastifyRoute
   typeof manifest,
   readonly [typeof usersPlugin]
 > = fastifyStreamRouteHandlerOptions;
+const requestTypedRuntimeSubpathFastifyRouteStreamHandlerOptions: RuntimeSubpathFastifyRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedFastifyRouteStreamHandlerOptions;
 const runtimeSubpathFastifyUnaryRouteHandlerOptions: RuntimeSubpathFastifyUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22929,6 +22941,12 @@ const fastifyRouteStreamHandlerOptionsArgs: FastifyRouteStreamHandlerOptionsArgs
   typeof manifest,
   readonly [typeof usersPlugin]
 > = fastifyHandlerOptionsArgs;
+const requestTypedFastifyRouteStreamHandlerOptionsArgs: FastifyRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedFastifyRouteStreamHandlerOptions];
 const fastifyStreamRouteHandlerOptionsArgs: FastifyStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -22957,6 +22975,14 @@ exactFastifyHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 requestTypedFastifyRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
+);
+requestTypedFastifyRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathFastifyRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
 );
 fastifyStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathFastifyRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
@@ -22997,6 +23023,10 @@ const unaryRouteFastifyHandler: FastifyHandler = createUnaryRouteFastifyHandler(
 );
 const routeStreamFastifyHandler: FastifyHandler =
   createRouteStreamFastifyHandler(manifest, fastifyRouteStreamHandlerOptions);
+createRouteStreamFastifyHandler(
+  manifest,
+  requestTypedFastifyRouteStreamHandlerOptions
+);
 const streamRouteFastifyHandler: FastifyHandler =
   createStreamRouteFastifyHandler(manifest, fastifyStreamRouteHandlerOptions);
 createFastifyHandler(manifest, requestTypedFastifyHandlerOptions);
@@ -23021,6 +23051,10 @@ const runtimeSubpathRouteStreamFastifyHandler: RuntimeSubpathFastifyHandler =
     manifest,
     runtimeSubpathFastifyRouteStreamHandlerOptions
   );
+createRuntimeSubpathRouteStreamFastifyHandler(
+  manifest,
+  requestTypedRuntimeSubpathFastifyRouteStreamHandlerOptions
+);
 const runtimeSubpathStreamRouteFastifyHandler: RuntimeSubpathFastifyHandler =
   createRuntimeSubpathStreamRouteFastifyHandler(
     manifest,
@@ -23070,6 +23104,13 @@ const typedRouteUnaryFastifyHandler: FastifyHandler<
   manifest,
   fastifyRouteUnaryHandlerOptions
 );
+const typedRouteStreamFastifyHandler: FastifyHandler<
+  FastifyAppRequest,
+  FastifyAppReply
+> = createRouteStreamFastifyHandlerFor<FastifyAppRequest, FastifyAppReply>()(
+  manifest,
+  requestTypedFastifyRouteStreamHandlerOptions
+);
 createUnaryRouteFastifyHandlerFor()(manifest, fastifyUnaryRouteHandlerOptions);
 createRouteStreamFastifyHandlerFor()(
   manifest,
@@ -23102,6 +23143,15 @@ const runtimeSubpathTypedRouteUnaryFastifyHandler: RuntimeSubpathFastifyHandler<
     FastifyAppRequest,
   RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
 >()(manifest, runtimeSubpathFastifyRouteUnaryHandlerOptions);
+const runtimeSubpathTypedRouteStreamFastifyHandler: RuntimeSubpathFastifyHandler<
+  RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+    FastifyAppRequest,
+  RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
+> = createRuntimeSubpathRouteStreamFastifyHandlerFor<
+  RuntimeSubpathFastifyRequest<FastifyAppBody, FastifyAppIncoming> &
+    FastifyAppRequest,
+  RuntimeSubpathFastifyReply<FastifyAppIncoming> & FastifyAppReply
+>()(manifest, requestTypedRuntimeSubpathFastifyRouteStreamHandlerOptions);
 createRuntimeSubpathUnaryRouteFastifyHandlerFor()(
   manifest,
   runtimeSubpathFastifyUnaryRouteHandlerOptions
@@ -23138,13 +23188,33 @@ runtimeSubpathStreamRouteFastifyHandler(fastifyRequest, fastifyReply);
 runtimeSubpathSyncFastifyHandler(fastifyRequest, fastifyReply);
 typedFastifyHandler(fastifyAppRequest, fastifyAppReply);
 typedRouteUnaryFastifyHandler(fastifyAppRequest, fastifyAppReply);
+typedRouteStreamFastifyHandler(fastifyAppRequest, fastifyAppReply);
 runtimeSubpathTypedFastifyHandler(fastifyAppRequest, fastifyAppReply);
 runtimeSubpathTypedRouteUnaryFastifyHandler(fastifyAppRequest, fastifyAppReply);
+runtimeSubpathTypedRouteStreamFastifyHandler(
+  fastifyAppRequest,
+  fastifyAppReply
+);
+requestTypedFastifyRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Fastify options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathFastifyRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Fastify options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 // @ts-expect-error typed Fastify handlers preserve the reply's incoming message type.
 createFastifyHandlerFor<FastifyAppRequest, FastifyMismatchedReply>();
 createRouteUnaryFastifyHandlerFor<
   FastifyAppRequest,
   // @ts-expect-error route-unary typed Fastify handlers preserve the reply's incoming message type.
+  FastifyMismatchedReply
+>();
+createRouteStreamFastifyHandlerFor<
+  FastifyAppRequest,
+  // @ts-expect-error route-stream typed Fastify handlers preserve the reply's incoming message type.
   FastifyMismatchedReply
 >();
 // @ts-expect-error service-dependent manifests require matching Fastify adapter plugins.
