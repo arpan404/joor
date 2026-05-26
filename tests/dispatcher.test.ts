@@ -28,7 +28,9 @@ import {
 } from '../src/runtime/compiled.js';
 import {
   createBunRpcRequestHandler,
+  createRouteStreamBunFetch,
   createRouteStreamBunRpcRequestHandler,
+  createRouteUnaryBunFetchFor,
   createRouteUnaryBunRpcRequestHandler,
   createBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath,
@@ -40,7 +42,9 @@ import {
 } from '../src/runtime/deno-transport.js';
 import {
   createDenoRpcRequestHandler,
+  createRouteStreamDenoFetch,
   createRouteStreamDenoRpcRequestHandler,
+  createRouteUnaryDenoFetchFor,
   createRouteUnaryDenoRpcRequestHandler,
   createDenoTransportRequestHandler,
 } from '../src/runtime/deno.js';
@@ -1084,6 +1088,89 @@ describe('dispatcher', () => {
         'https://route.example'
       );
       expect(text).toContain('"ok":true');
+    }
+  });
+
+  it('dispatches route-specific Bun and Deno fetch handlers', async () => {
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean(), tenantId: t.string() }),
+      headers: t.object({ 'x-tenant-id': t.string() }),
+      async handler(ctx, input) {
+        return ctx.ok({
+          ok: input.ok,
+          tenantId: ctx.headers['x-tenant-id'],
+        });
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { ok: input.ok, event: 'updated' };
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    const options = {
+      path: '/api/rpc',
+      cors: { origin: 'https://fetch-route.example' },
+    };
+    const unaryRequest = (): Request =>
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-tenant-id': 'tenant-1',
+        },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const streamRequest = (): Request =>
+      new Request('http://localhost/api/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      });
+    const unaryHandlers = [
+      createRouteUnaryBunFetchFor()(routeManifest, options),
+      createRouteUnaryDenoFetchFor()(routeManifest, options),
+    ];
+    const streamHandlers = [
+      createRouteStreamBunFetch(routeManifest, options),
+      createRouteStreamDenoFetch(routeManifest, options),
+    ];
+
+    for (const handler of unaryHandlers) {
+      const response = await handler(unaryRequest());
+      const body = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://fetch-route.example'
+      );
+      expect(body).toMatchObject({
+        ok: true,
+        id: 'ping',
+        data: { ok: true, tenantId: 'tenant-1' },
+      });
+    }
+
+    for (const handler of streamHandlers) {
+      const response = await handler(streamRequest());
+      const text = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(response.headers.get('access-control-allow-origin')).toBe(
+        'https://fetch-route.example'
+      );
+      expect(text).toContain('event: data');
+      expect(text).toContain('"event":"updated"');
+      expect(text).toContain('event: done');
     }
   });
 
