@@ -3456,7 +3456,7 @@ export function createRouteUnaryRpcHandlerFor(): <
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<
+  ...args: RpcManifestRouteUnaryHandlerOptionsArgs<
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
@@ -3509,7 +3509,7 @@ export function createRouteStreamRpcHandlerFor(): <
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
   manifest: TManifest,
-  ...args: HandlerOptionsArgs<
+  ...args: RpcManifestRouteStreamHandlerOptionsArgs<
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,

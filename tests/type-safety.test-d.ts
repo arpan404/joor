@@ -347,21 +347,29 @@ import {
   createRpcHandlerFor,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  createRouteStreamRpcHandler,
+  createRouteStreamRpcHandlerFor,
   createRouteStreamRpcBodyHandler,
   createRouteStreamRpcBodyHandlerFor,
   createRouteStreamRpcBodyResultHandler,
   createRouteStreamRpcBodyResultHandlerFor,
   createRouteStreamRpcTransportBodyResultHandler,
+  createRouteUnaryRpcHandler,
+  createRouteUnaryRpcHandlerFor,
   createRouteUnaryRpcBodyHandler,
   createRouteUnaryRpcBodyHandlerFor,
   createRouteUnaryRpcBodyResultHandler,
   createRouteUnaryRpcBodyResultHandlerFor,
   createRouteUnaryRpcTransportBodyResultHandler,
+  createStreamRouteRpcHandler,
+  createStreamRouteRpcHandlerFor,
   createStreamRouteRpcBodyHandler,
   createStreamRouteRpcBodyHandlerFor,
   createStreamRouteRpcBodyResultHandler,
   createStreamRouteRpcBodyResultHandlerFor,
   createStreamRouteRpcTransportBodyResultHandler,
+  createUnaryRouteRpcHandler,
+  createUnaryRouteRpcHandlerFor,
   createUnaryRouteRpcBodyHandler,
   createUnaryRouteRpcBodyHandlerFor,
   createUnaryRouteRpcBodyResultHandler,
@@ -3126,6 +3134,63 @@ const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamHandlerOptions
 > = requestTypedStreamProcedureRequest;
 routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+const routeKindScopedUnaryRpcHandler = createRouteUnaryRpcHandler(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRpcHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryRpcHandler(
+  // @ts-expect-error route-unary RPC handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRpcHandlerFor = createRouteUnaryRpcHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRpcHandlerFor(requestTypedProcedureRequest);
+routeKindScopedUnaryRpcHandlerFor(
+  // @ts-expect-error route-unary RPC handler factories default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRouteRpcHandler = createUnaryRouteRpcHandler(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteRpcHandler(requestTypedProcedureRequest);
+const routeKindScopedUnaryRouteRpcHandlerFor = createUnaryRouteRpcHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteRpcHandlerFor(requestTypedProcedureRequest);
+const routeKindScopedStreamRpcHandler = createRouteStreamRpcHandler(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRpcHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRpcHandler(
+  // @ts-expect-error route-stream RPC handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRpcHandlerFor = createRouteStreamRpcHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRpcHandlerFor(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRpcHandlerFor(
+  // @ts-expect-error route-stream RPC handler factories default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRouteRpcHandler = createStreamRouteRpcHandler(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteRpcHandler(requestTypedStreamProcedureRequest);
+const routeKindScopedStreamRouteRpcHandlerFor =
+  createStreamRouteRpcHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteRpcHandlerFor(requestTypedStreamProcedureRequest);
 const routeKindScopedUnaryConfig: JoorRouteUnaryConfigFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
