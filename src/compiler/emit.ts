@@ -1710,7 +1710,7 @@ ${nodeFastCases}
   const fetchFile = `${outDir}/fetch.ts`;
   await writeFile(
     fetchFile,
-    `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRouteStreamFetchHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryFetchHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteFetchHandler, type NativeUnaryRouteFetchHandler } from '${dispatcherImport}';
+    `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRouteStreamFetchHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryFetchHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteFetchHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteFetchHandler, type NativeUnaryRouteRequiredRuntimeRequest } from '${dispatcherImport}';
 
 export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch };
 export const createFetch = <TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest>(): NativeFetchHandler<TRequest> =>
@@ -1723,7 +1723,7 @@ export const createRouteStreamFetch = <TRequest extends NativeRouteStreamRequire
   createRouteStreamFetchFor<TRequest>();
 export const createStreamRouteFetch: typeof createRouteStreamFetch =
   createRouteStreamFetch;
-export type { NativeFetchHandler, NativeRequiredRuntimeRequest, NativeRouteStreamFetchHandler, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryFetchHandler, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteFetchHandler, NativeUnaryRouteFetchHandler };
+export type { NativeFetchHandler, NativeRequiredRuntimeRequest, NativeRouteStreamFetchHandler, NativeRouteStreamRequiredRuntimeRequest, NativeRouteUnaryFetchHandler, NativeRouteUnaryRequiredRuntimeRequest, NativeStreamRouteFetchHandler, NativeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteFetchHandler, NativeUnaryRouteRequiredRuntimeRequest };
 export default fetch;
 `
   );

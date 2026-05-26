@@ -2182,8 +2182,8 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest } from './dispatcher.safe.js';
-import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest } from './fetch.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './dispatcher.safe.js';
+import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
@@ -2204,20 +2204,32 @@ requiredRequest.requestId.toUpperCase();
 const routeUnaryRequiredRequest: NativeRouteUnaryRequiredRuntimeRequest =
   appRequest;
 routeUnaryRequiredRequest.requestId.toUpperCase();
+const unaryRouteRequiredRequest: NativeUnaryRouteRequiredRuntimeRequest =
+  routeUnaryRequiredRequest;
+unaryRouteRequiredRequest.requestId.toUpperCase();
 // @ts-expect-error generated route-unary required request rejects broad Request values.
 const _wrongRouteUnaryRequiredRequest: NativeRouteUnaryRequiredRuntimeRequest =
   plainRequest;
 const routeStreamRequiredRequest: NativeRouteStreamRequiredRuntimeRequest =
   plainRequest;
 routeStreamRequiredRequest.url.toUpperCase();
+const streamRouteRequiredRequest: NativeStreamRouteRequiredRuntimeRequest =
+  routeStreamRequiredRequest;
+streamRouteRequiredRequest.url.toUpperCase();
 const runtimeRequiredRequest: RuntimeRequiredRuntimeRequest = appRequest;
 runtimeRequiredRequest.requestId.toUpperCase();
 const runtimeRouteUnaryRequiredRequest: RuntimeRouteUnaryRequiredRuntimeRequest =
   appRequest;
 runtimeRouteUnaryRequiredRequest.requestId.toUpperCase();
+const runtimeUnaryRouteRequiredRequest: RuntimeUnaryRouteRequiredRuntimeRequest =
+  runtimeRouteUnaryRequiredRequest;
+runtimeUnaryRouteRequiredRequest.requestId.toUpperCase();
 const runtimeRouteStreamRequiredRequest: RuntimeRouteStreamRequiredRuntimeRequest =
   plainRequest;
 runtimeRouteStreamRequiredRequest.url.toUpperCase();
+const runtimeStreamRouteRequiredRequest: RuntimeStreamRouteRequiredRuntimeRequest =
+  runtimeRouteStreamRequiredRequest;
+runtimeStreamRouteRequiredRequest.url.toUpperCase();
 const nativeHandlerOptions: NativeHandlerOptions = {};
 const nativeHandlerOptionsRequest: NativeHandlerOptionsRequest<
   typeof nativeHandlerOptions
