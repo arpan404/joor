@@ -38,6 +38,48 @@ type GeneratedAwsLambdaModule = {
   readonly restApiHandler: AwsLambdaRestApiHandler;
 };
 
+type GeneratedFetchHandler = (request: Request) => Response | Promise<Response>;
+
+type GeneratedCloudflareModule = {
+  readonly createRouteUnaryWorkerFor: () => {
+    readonly fetch: GeneratedFetchHandler;
+  };
+  readonly worker: {
+    readonly fetch: GeneratedFetchHandler;
+  };
+};
+
+type GeneratedNextModule = {
+  readonly POST: GeneratedFetchHandler;
+  readonly createRouteStreamHandlersFor: () => {
+    readonly POST: GeneratedFetchHandler;
+  };
+  readonly handlers: {
+    readonly POST: GeneratedFetchHandler;
+  };
+};
+
+type GeneratedVercelModule = {
+  readonly createRouteUnaryVercelFor: () => {
+    readonly fetch: GeneratedFetchHandler;
+  };
+  readonly vercel: {
+    readonly fetch: GeneratedFetchHandler;
+  };
+};
+
+type GeneratedNetlifyEdgeResult = Response | URL | undefined;
+
+type GeneratedNetlifyEdgeFunction = (
+  request: Request,
+  context: unknown
+) => GeneratedNetlifyEdgeResult | Promise<GeneratedNetlifyEdgeResult>;
+
+type GeneratedNetlifyModule = {
+  readonly createRouteStreamNetlifyEdgeFunctionFor: () => GeneratedNetlifyEdgeFunction;
+  readonly edge: GeneratedNetlifyEdgeFunction;
+};
+
 const toRelativeModuleSpecifier = (fromDir: string, toFile: string): string => {
   const specifier = relative(fromDir, toFile).replaceAll('\\', '/');
   return specifier.startsWith('.') ? specifier : `./${specifier}`;
@@ -60,6 +102,33 @@ const expectRouteFirstAliasesPrimary = (source: string) => {
       new RegExp(`=\\s*${legacyPrefix}`)
     );
   }
+};
+
+const createGeneratedRpcRequest = (
+  id: string,
+  input: unknown,
+  headers: HeadersInit = {}
+): Request =>
+  new Request('https://example.test/rpc', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      ...headers,
+    },
+    body: JSON.stringify({ id, input }),
+  });
+
+const expectGeneratedJsonData = async (
+  response: Response,
+  data: unknown
+): Promise<void> => {
+  expect(response.status).toBe(200);
+  const payload = JSON.parse(await response.text()) as {
+    readonly data?: unknown;
+    readonly ok?: boolean;
+  };
+  expect(payload.ok).toBe(true);
+  expect(payload.data).toEqual(data);
 };
 
 describe('compiler', () => {
@@ -1530,6 +1599,112 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(routeStreamRestResponse.body).toContain('"type":"user.updated"');
       expect(routeStreamRestResponse.body).toContain('event: done');
+    } finally {
+      await rm(outDir, { recursive: true, force: true });
+    }
+  });
+
+  it('dispatches generated edge platform handlers through compiled runtime', async () => {
+    const outDir = await mkdtemp(join(repoRoot, '.tmp-joor-edge-runtime-'));
+    try {
+      await build({ config: fixtureConfig, outDir });
+      const [cloudflare, next, vercel, netlify] = (await Promise.all([
+        import(
+          /* @vite-ignore */ pathToFileURL(join(outDir, 'cloudflare.ts')).href
+        ),
+        import(/* @vite-ignore */ pathToFileURL(join(outDir, 'next.ts')).href),
+        import(
+          /* @vite-ignore */ pathToFileURL(join(outDir, 'vercel.ts')).href
+        ),
+        import(
+          /* @vite-ignore */ pathToFileURL(join(outDir, 'netlify.ts')).href
+        ),
+      ])) as [
+        GeneratedCloudflareModule,
+        GeneratedNextModule,
+        GeneratedVercelModule,
+        GeneratedNetlifyModule,
+      ];
+      const userId = '550e8400-e29b-41d4-a716-446655440000';
+
+      await expectGeneratedJsonData(
+        await cloudflare.worker.fetch(
+          createGeneratedRpcRequest('posts.list', { userId: 'cloudflare' })
+        ),
+        [{ id: 'post-cloudflare', title: 'Hello' }]
+      );
+      await expectGeneratedJsonData(
+        await cloudflare.createRouteUnaryWorkerFor().fetch(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { authorization: 'Bearer test' }
+          )
+        ),
+        { id: userId, name: 'Ada' }
+      );
+      await expectGeneratedJsonData(
+        await next.POST(
+          createGeneratedRpcRequest('posts.list', { userId: 'next-post' })
+        ),
+        [{ id: 'post-next-post', title: 'Hello' }]
+      );
+      const nextStreamResponse = await next.createRouteStreamHandlersFor().POST(
+        createGeneratedRpcRequest(
+          'users.watch',
+          { userId: 'next-stream' },
+          { accept: 'text/event-stream' }
+        )
+      );
+      expect(nextStreamResponse.status).toBe(200);
+      expect(nextStreamResponse.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(await nextStreamResponse.text()).toContain(
+        '"userId":"next-stream"'
+      );
+      await expectGeneratedJsonData(
+        await vercel.vercel.fetch(
+          createGeneratedRpcRequest('posts.list', { userId: 'vercel' })
+        ),
+        [{ id: 'post-vercel', title: 'Hello' }]
+      );
+      await expectGeneratedJsonData(
+        await vercel.createRouteUnaryVercelFor().fetch(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { authorization: 'Bearer test' }
+          )
+        ),
+        { id: userId, name: 'Ada' }
+      );
+      const netlifyEdgeResult = await netlify.edge(
+        createGeneratedRpcRequest('posts.list', { userId: 'netlify' }),
+        {}
+      );
+      expect(netlifyEdgeResult).toBeInstanceOf(Response);
+      await expectGeneratedJsonData(netlifyEdgeResult as Response, [
+        { id: 'post-netlify', title: 'Hello' },
+      ]);
+      const netlifyStreamResult =
+        await netlify.createRouteStreamNetlifyEdgeFunctionFor()(
+          createGeneratedRpcRequest(
+            'users.watch',
+            { userId: 'netlify-stream' },
+            { accept: 'text/event-stream' }
+          ),
+          {}
+        );
+      expect(netlifyStreamResult).toBeInstanceOf(Response);
+      const netlifyStreamResponse = netlifyStreamResult as Response;
+      expect(netlifyStreamResponse.status).toBe(200);
+      expect(netlifyStreamResponse.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(await netlifyStreamResponse.text()).toContain(
+        '"userId":"netlify-stream"'
+      );
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
