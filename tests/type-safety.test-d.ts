@@ -3239,6 +3239,38 @@ routeKindScopedStreamElysiaHandler({
   // @ts-expect-error route-stream Elysia handlers default to stream-only request requirements.
   request: requestTypedProcedureRequest,
 });
+const routeKindScopedUnaryExpressHandlerOptions: ExpressRouteUnaryHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryExpressRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryExpressHandlerOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryExpressRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Express options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryExpressRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryExpressHandlerOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamExpressHandlerOptions: ExpressRouteStreamHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamExpressRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamExpressHandlerOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamExpressRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Express options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamExpressRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamExpressHandlerOptions
+> = requestTypedProcedureRequest;
+createRouteUnaryExpressHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryExpressHandlerOptions
+);
+createRouteStreamExpressHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamExpressHandlerOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
