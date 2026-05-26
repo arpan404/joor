@@ -6,7 +6,13 @@ import type {
   RpcManifestBody,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamHandlerOptionsArgs,
+  RpcManifestRouteStreamHandlerOptionsFor,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryHandlerOptionsArgs,
+  RpcManifestRouteUnaryHandlerOptionsFor,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -40,8 +46,14 @@ export type VercelRouteUnaryFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = VercelFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type VercelUnaryRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -49,7 +61,8 @@ export type VercelUnaryRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = VercelRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type VercelRouteStreamFetchOptionsFor<
@@ -58,8 +71,14 @@ export type VercelRouteStreamFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = VercelFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type VercelStreamRouteFetchOptionsFor<
   TManifest extends JoorManifest,
@@ -67,7 +86,8 @@ export type VercelStreamRouteFetchOptionsFor<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = VercelRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type VercelFetchOptionsArgs<
@@ -84,8 +104,14 @@ export type VercelRouteUnaryFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = VercelFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type VercelUnaryRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -93,7 +119,8 @@ export type VercelUnaryRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = VercelRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type VercelRouteStreamFetchOptionsArgs<
@@ -102,8 +129,14 @@ export type VercelRouteStreamFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = VercelFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
 
 export type VercelStreamRouteFetchOptionsArgs<
   TManifest extends JoorManifest,
@@ -111,7 +144,8 @@ export type VercelStreamRouteFetchOptionsArgs<
     readonly JoorPlugin<object>[],
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = VercelRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export function createVercelFetch<
@@ -133,14 +167,20 @@ export function createVercelFetch<TManifest extends JoorManifest>(
 ): VercelFetchHandler {
   return createJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+    (options ?? {}) as unknown as HandlerOptionsFor<
+      TManifest,
+      readonly JoorPlugin<object>[],
+      RpcManifestBody<TManifest>,
+      Request
+    >
   );
 }
 
 export function createRouteUnaryVercelFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: VercelRouteUnaryFetchOptionsArgs<
@@ -156,7 +196,7 @@ export function createRouteUnaryVercelFetch<TManifest extends JoorManifest>(
 ): VercelFetchHandler {
   return createRouteUnaryJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteUnaryBody<TManifest>,
@@ -171,7 +211,8 @@ export const createUnaryRouteVercelFetch: typeof createRouteUnaryVercelFetch =
 export function createRouteStreamVercelFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: VercelRouteStreamFetchOptionsArgs<
@@ -187,7 +228,7 @@ export function createRouteStreamVercelFetch<TManifest extends JoorManifest>(
 ): VercelFetchHandler {
   return createRouteStreamJoorHandler(
     manifest,
-    (options ?? {}) as unknown as HandlerOptionsFor<
+    (options ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
       TManifest,
       readonly JoorPlugin<object>[],
       RpcManifestRouteStreamBody<TManifest>,
@@ -256,12 +297,10 @@ export function createRouteUnaryVercelFetchFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
   >
-) => VercelFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
-export function createRouteUnaryVercelFetchFor<
-  TRequest extends Request,
->(): <
+) => VercelFetchHandler<RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryVercelFetchFor<TRequest extends Request>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -290,7 +329,7 @@ export function createRouteUnaryVercelFetchFor<
   ): VercelFetchHandler<TRequest> =>
     createRouteUnaryJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
@@ -311,12 +350,12 @@ export function createRouteStreamVercelFetchFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
   >
-) => VercelFetchHandler<RpcManifestRequiredRuntimeRequest<TManifest>>;
-export function createRouteStreamVercelFetchFor<
-  TRequest extends Request,
->(): <
+) => VercelFetchHandler<
+  RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
+>;
+export function createRouteStreamVercelFetchFor<TRequest extends Request>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -345,7 +384,7 @@ export function createRouteStreamVercelFetchFor<
   ): VercelFetchHandler<TRequest> =>
     createRouteStreamJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,
@@ -377,7 +416,12 @@ export function createVercelFunction<TManifest extends JoorManifest>(
   return {
     fetch: createVercelFetch(
       manifest,
-      (options ?? {}) as unknown as HandlerOptionsFor<TManifest, readonly JoorPlugin<object>[], RpcManifestBody<TManifest>, Request>
+      (options ?? {}) as unknown as HandlerOptionsFor<
+        TManifest,
+        readonly JoorPlugin<object>[],
+        RpcManifestBody<TManifest>,
+        Request
+      >
     ),
   };
 }
@@ -385,7 +429,8 @@ export function createVercelFunction<TManifest extends JoorManifest>(
 export function createRouteUnaryVercelFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: VercelRouteUnaryFetchOptionsArgs<
@@ -402,7 +447,7 @@ export function createRouteUnaryVercelFunction<TManifest extends JoorManifest>(
   return {
     fetch: createRouteUnaryVercelFetch(
       manifest,
-      (options ?? {}) as unknown as HandlerOptionsFor<
+      (options ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         readonly JoorPlugin<object>[],
         RpcManifestRouteUnaryBody<TManifest>,
@@ -418,7 +463,8 @@ export const createUnaryRouteVercelFunction: typeof createRouteUnaryVercelFuncti
 export function createRouteStreamVercelFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
   manifest: TManifest,
   ...args: VercelRouteStreamFetchOptionsArgs<
@@ -435,7 +481,7 @@ export function createRouteStreamVercelFunction<TManifest extends JoorManifest>(
   return {
     fetch: createRouteStreamVercelFetch(
       manifest,
-      (options ?? {}) as unknown as HandlerOptionsFor<
+      (options ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         readonly JoorPlugin<object>[],
         RpcManifestRouteStreamBody<TManifest>,
@@ -506,12 +552,10 @@ export function createRouteUnaryVercelFunctionFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteUnaryBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>
   >
-) => VercelFunction<RpcManifestRequiredRuntimeRequest<TManifest>>;
-export function createRouteUnaryVercelFunctionFor<
-  TRequest extends Request,
->(): <
+) => VercelFunction<RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>>;
+export function createRouteUnaryVercelFunctionFor<TRequest extends Request>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
 >(
@@ -540,7 +584,7 @@ export function createRouteUnaryVercelFunctionFor<
   ): VercelFunction<TRequest> => ({
     fetch: createRouteUnaryJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteUnaryHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteUnaryBody<TManifest>,
@@ -562,9 +606,9 @@ export function createRouteStreamVercelFunctionFor(): <
     TManifest,
     TPlugins,
     RpcManifestRouteStreamBody<TManifest>,
-    RpcManifestRequiredRuntimeRequest<TManifest>
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>
   >
-) => VercelFunction<RpcManifestRequiredRuntimeRequest<TManifest>>;
+) => VercelFunction<RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>>;
 export function createRouteStreamVercelFunctionFor<
   TRequest extends Request,
 >(): <
@@ -596,7 +640,7 @@ export function createRouteStreamVercelFunctionFor<
   ): VercelFunction<TRequest> => ({
     fetch: createRouteStreamJoorHandlerFor<TRequest>()(
       manifest,
-      (args[0] ?? {}) as HandlerOptionsFor<
+      (args[0] ?? {}) as RpcManifestRouteStreamHandlerOptionsFor<
         TManifest,
         TPlugins,
         RpcManifestRouteStreamBody<TManifest>,

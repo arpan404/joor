@@ -3138,6 +3138,25 @@ routeKindScopedStreamJoorHandler(
   // @ts-expect-error route-stream Joor handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryVercelFetch = createRouteUnaryVercelFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryVercelFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryVercelFetch(
+  // @ts-expect-error route-unary Vercel fetch helpers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamVercelFunction =
+  createRouteStreamVercelFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamVercelFunction.fetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamVercelFunction.fetch(
+  // @ts-expect-error route-stream Vercel function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
