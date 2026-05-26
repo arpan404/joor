@@ -960,6 +960,12 @@ const packageSubpathRootManifestUnaryRouteProtocolRequest =
     'users.get',
     { id: '1' }
   );
+const packageSubpathRootManifestRouteStreamProtocolRequest =
+  createRootManifestRouteStreamProtocolRequest(
+    packageSubpathManifest,
+    'users.watch',
+    { userId: '1' }
+  );
 const packageSubpathRootManifestStreamRouteProtocolRequest =
   createRootManifestStreamRouteProtocolRequest(
     packageSubpathManifest,
@@ -973,6 +979,10 @@ const packageSubpathRootManifestRouteUnaryRequest =
 const packageSubpathRootManifestUnaryRouteRequest =
   createRootManifestUnaryRouteRequest(packageSubpathManifest, 'users.get', {
     id: '1',
+  });
+const packageSubpathRootManifestRouteStreamRequest =
+  createRootManifestRouteStreamRequest(packageSubpathManifest, 'users.watch', {
+    userId: '1',
   });
 const packageSubpathRootManifestStreamRouteRequest =
   createRootManifestStreamRouteRequest(packageSubpathManifest, 'users.watch', {
@@ -1010,9 +1020,11 @@ packageSubpathClientRouteStreamRequest.input.userId.toUpperCase();
 packageSubpathClientStreamRouteRequest.input.userId.toUpperCase();
 packageSubpathRootManifestRouteUnaryProtocolRequest.input.id.toUpperCase();
 packageSubpathRootManifestUnaryRouteProtocolRequest.input.id.toUpperCase();
+packageSubpathRootManifestRouteStreamProtocolRequest.input.userId.toUpperCase();
 packageSubpathRootManifestStreamRouteProtocolRequest.input.userId.toUpperCase();
 packageSubpathRootManifestRouteUnaryRequest.input.id.toUpperCase();
 packageSubpathRootManifestUnaryRouteRequest.input.id.toUpperCase();
+packageSubpathRootManifestRouteStreamRequest.input.userId.toUpperCase();
 packageSubpathRootManifestStreamRouteRequest.input.userId.toUpperCase();
 typedPackageSubpathStream[Symbol.asyncIterator]();
 const packageSubpathStreamRequest = createManifestRouteStreamProtocolRequest(

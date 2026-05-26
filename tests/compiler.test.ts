@@ -2182,8 +2182,8 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest } from './dispatcher.safe.js';
-import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest } from './fetch.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './dispatcher.safe.js';
+import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRequiredServices as RuntimeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices as RuntimeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices as RuntimeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices as RuntimeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices as RuntimeUnaryRouteRequiredServices } from './fetch.js';
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
@@ -2191,14 +2191,14 @@ import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamV
 import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, edge } from './netlify.js';
 import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest } from './aws-lambda.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as BunStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as BunUnaryRouteRequiredRuntimeRequest } from './bun.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as CloudflareStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as CloudflareUnaryRouteRequiredRuntimeRequest } from './cloudflare.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as DenoStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as DenoUnaryRouteRequiredRuntimeRequest } from './deno.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as NetlifyStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NetlifyUnaryRouteRequiredRuntimeRequest } from './netlify.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as NextStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NextUnaryRouteRequiredRuntimeRequest } from './next.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as NodeStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as NodeUnaryRouteRequiredRuntimeRequest } from './node.js';
-import type { NativeStreamRouteRequiredRuntimeRequest as VercelStreamRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredRuntimeRequest as VercelUnaryRouteRequiredRuntimeRequest } from './vercel.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as AwsLambdaStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as AwsLambdaUnaryRouteRequiredServices } from './aws-lambda.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as BunStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as BunStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as BunUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as BunUnaryRouteRequiredServices } from './bun.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as CloudflareStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as CloudflareStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as CloudflareUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as CloudflareUnaryRouteRequiredServices } from './cloudflare.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as DenoStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as DenoStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as DenoUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as DenoUnaryRouteRequiredServices } from './deno.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NetlifyStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as NetlifyStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as NetlifyUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as NetlifyUnaryRouteRequiredServices } from './netlify.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NextStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as NextStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as NextUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as NextUnaryRouteRequiredServices } from './next.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as NodeStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as NodeStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as NodeUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as NodeUnaryRouteRequiredServices } from './node.js';
+import type { NativeStreamRouteRequiredRuntimeRequest as VercelStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as VercelStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as VercelUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as VercelUnaryRouteRequiredServices } from './vercel.js';
 import type { AppRequest } from '${procedureImport}';
 import type { AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1 } from 'joor/runtime/aws-lambda';
 
@@ -2206,9 +2206,82 @@ const appRequest = Object.assign(new Request('https://example.com/rpc'), {
   requestId: 'req_1',
 }) as AppRequest;
 const plainRequest = new Request('https://example.com/rpc');
+const appServices = {};
 
 const requiredRequest: NativeRequiredRuntimeRequest = appRequest;
 requiredRequest.requestId.toUpperCase();
+const requiredServices: NativeRequiredServices = appServices;
+const routeUnaryRequiredServices: NativeRouteUnaryRequiredServices =
+  appServices;
+const unaryRouteRequiredServices: NativeUnaryRouteRequiredServices =
+  routeUnaryRequiredServices;
+const routeStreamRequiredServices: NativeRouteStreamRequiredServices =
+  appServices;
+const streamRouteRequiredServices: NativeStreamRouteRequiredServices =
+  routeStreamRequiredServices;
+const runtimeRequiredServices: RuntimeRequiredServices = appServices;
+const runtimeRouteUnaryRequiredServices: RuntimeRouteUnaryRequiredServices =
+  appServices;
+const runtimeUnaryRouteRequiredServices: RuntimeUnaryRouteRequiredServices =
+  runtimeRouteUnaryRequiredServices;
+const runtimeRouteStreamRequiredServices: RuntimeRouteStreamRequiredServices =
+  appServices;
+const runtimeStreamRouteRequiredServices: RuntimeStreamRouteRequiredServices =
+  runtimeRouteStreamRequiredServices;
+const awsLambdaUnaryRouteRequiredServices: AwsLambdaUnaryRouteRequiredServices =
+  appServices;
+const awsLambdaStreamRouteRequiredServices: AwsLambdaStreamRouteRequiredServices =
+  appServices;
+const bunUnaryRouteRequiredServices: BunUnaryRouteRequiredServices =
+  appServices;
+const bunStreamRouteRequiredServices: BunStreamRouteRequiredServices =
+  appServices;
+const cloudflareUnaryRouteRequiredServices: CloudflareUnaryRouteRequiredServices =
+  appServices;
+const cloudflareStreamRouteRequiredServices: CloudflareStreamRouteRequiredServices =
+  appServices;
+const denoUnaryRouteRequiredServices: DenoUnaryRouteRequiredServices =
+  appServices;
+const denoStreamRouteRequiredServices: DenoStreamRouteRequiredServices =
+  appServices;
+const netlifyUnaryRouteRequiredServices: NetlifyUnaryRouteRequiredServices =
+  appServices;
+const netlifyStreamRouteRequiredServices: NetlifyStreamRouteRequiredServices =
+  appServices;
+const nextUnaryRouteRequiredServices: NextUnaryRouteRequiredServices =
+  appServices;
+const nextStreamRouteRequiredServices: NextStreamRouteRequiredServices =
+  appServices;
+const nodeUnaryRouteRequiredServices: NodeUnaryRouteRequiredServices =
+  appServices;
+const nodeStreamRouteRequiredServices: NodeStreamRouteRequiredServices =
+  appServices;
+const vercelUnaryRouteRequiredServices: VercelUnaryRouteRequiredServices =
+  appServices;
+const vercelStreamRouteRequiredServices: VercelStreamRouteRequiredServices =
+  appServices;
+requiredServices;
+unaryRouteRequiredServices;
+streamRouteRequiredServices;
+runtimeRequiredServices;
+runtimeUnaryRouteRequiredServices;
+runtimeStreamRouteRequiredServices;
+awsLambdaUnaryRouteRequiredServices;
+awsLambdaStreamRouteRequiredServices;
+bunUnaryRouteRequiredServices;
+bunStreamRouteRequiredServices;
+cloudflareUnaryRouteRequiredServices;
+cloudflareStreamRouteRequiredServices;
+denoUnaryRouteRequiredServices;
+denoStreamRouteRequiredServices;
+netlifyUnaryRouteRequiredServices;
+netlifyStreamRouteRequiredServices;
+nextUnaryRouteRequiredServices;
+nextStreamRouteRequiredServices;
+nodeUnaryRouteRequiredServices;
+nodeStreamRouteRequiredServices;
+vercelUnaryRouteRequiredServices;
+vercelStreamRouteRequiredServices;
 const routeUnaryRequiredRequest: NativeRouteUnaryRequiredRuntimeRequest =
   appRequest;
 routeUnaryRequiredRequest.requestId.toUpperCase();
