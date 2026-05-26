@@ -124,6 +124,7 @@ Generated output:
   next.ts
   vercel.ts
   netlify.ts
+  aws-lambda.ts
   node.ts
   bun.ts
   deno.ts
@@ -153,6 +154,9 @@ export { default } from './.joor/vercel.js';
 
 // Netlify Edge Functions
 export { default } from './.joor/netlify.js';
+
+// AWS Lambda HTTP API
+export { default as handler } from './.joor/aws-lambda.js';
 ```
 
 Use the generated typed client:
@@ -219,7 +223,7 @@ Route-specific adapter factories narrow the accepted RPC body shape when a deplo
 Low-level RPC helpers expose the same pattern through `createRpcHandlerFor<Request>()`, `createRpcBodyHandlerFor<Request>()`, and `createRpcBodyResultHandlerFor<Request>()`.
 Low-level transport helpers keep the route-specific contract too: Bun, Deno, and Node expose `createRouteUnary*TransportRequestHandler*`/`createUnaryRoute*TransportRequestHandler*` for unary-only transport bodies and `createRouteStream*TransportRequestHandler*`/`createStreamRoute*TransportRequestHandler*` for streaming-only transport bodies, including typed `For` and path-scoped variants for custom `Request`, `IncomingMessage`, or `ServerResponse` subtypes.
 Compiled runtime helpers mirror the same request typing with `createCompiledRpcHandlerFor<Request>()`, `createCompiledRouteUnaryRpcHandlerFor<Request>()`, `createCompiledRouteStreamRpcHandlerFor<Request>()`, `createDenoCompiledTransportRequestHandlerFor<Request>()`, `createRouteUnaryDenoCompiledTransportRequestHandlerFor<Request>()`, and `createRouteStreamDenoCompiledTransportRequestHandlerFor<Request>()`.
-Generated native dispatcher, Bun, Deno, Node, Cloudflare, Next.js, Vercel, and Netlify entrypoints also export typed factory helpers such as `createFetchFor<Request>()`, `createRouteUnaryFetchFor<Request>()`, `.joor/node`'s `createHandler<Incoming, Outgoing>()`, `.joor/cloudflare`'s `createRouteUnaryWorkerFor<Env, Context, Request>()`, and `.joor/next`'s `createRouteStreamHandlersFor<Context, Request>()` so generated handlers can preserve extended request types while keeping route-first naming available in generated code.
+Generated native dispatcher, Bun, Deno, Node, AWS Lambda, Cloudflare, Next.js, Vercel, and Netlify entrypoints also export typed factory helpers such as `createFetchFor<Request>()`, `createRouteUnaryFetchFor<Request>()`, `.joor/node`'s `createHandler<Incoming, Outgoing>()`, `.joor/aws-lambda`'s `createRouteUnaryAwsLambdaHandler({ createRequest })`, `.joor/cloudflare`'s `createRouteUnaryWorkerFor<Env, Context, Request>()`, and `.joor/next`'s `createRouteStreamHandlersFor<Context, Request>()` so generated handlers can preserve extended request types while keeping route-first naming available in generated code.
 Clients can also keep custom request types by pairing `ClientFetch<Request>()` with a matching `createRequest` factory, so the client transport never widens a typed fetch back to a plain `Request`.
 
 ## Next.js API Routes

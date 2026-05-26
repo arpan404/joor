@@ -1922,6 +1922,44 @@ export default edge;
 import type { AwsLambdaHandler, AwsLambdaHttpApiHandler, AwsLambdaHttpEventV2, AwsLambdaHttpResponseV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler, AwsLambdaRestApiResponseV1 } from 'joor/runtime/aws-lambda';
 import { createFetch, createRouteStreamFetch, createRouteUnaryFetch, createStreamRouteFetch, createUnaryRouteFetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
+export type NativeAwsLambdaRequestFactory<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = (event: TEvent) => TRequest;
+
+export type NativeAwsLambdaHandlerOptions<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = Request extends TRequest
+  ? { readonly createRequest?: NativeAwsLambdaRequestFactory<TEvent, TRequest> }
+  : { readonly createRequest: NativeAwsLambdaRequestFactory<TEvent, TRequest> };
+
+export type NativeAwsLambdaHandlerOptionsArgs<
+  TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = Request extends TRequest
+  ? [options?: NativeAwsLambdaHandlerOptions<TEvent, TRequest>]
+  : [options: NativeAwsLambdaHandlerOptions<TEvent, TRequest>];
+
+export type NativeAwsLambdaRestApiRequestFactory<
+  TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = (event: TEvent) => TRequest;
+
+export type NativeAwsLambdaRestApiHandlerOptions<
+  TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = Request extends TRequest
+  ? { readonly createRequest?: NativeAwsLambdaRestApiRequestFactory<TEvent, TRequest> }
+  : { readonly createRequest: NativeAwsLambdaRestApiRequestFactory<TEvent, TRequest> };
+
+export type NativeAwsLambdaRestApiHandlerOptionsArgs<
+  TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+  TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+> = Request extends TRequest
+  ? [options?: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>]
+  : [options: NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>];
+
 const eventHeader = (
   event: Pick<AwsLambdaHttpEventV2 | AwsLambdaRestApiEventV1, 'headers'>,
   name: string
@@ -2078,22 +2116,46 @@ export const createAwsLambdaRestApiResponse = async (
 
 const createHttpApiHandlerFromFetch =
   (fetchFactory: typeof createFetch) =>
-  <TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2>(): AwsLambdaHttpApiHandler<TEvent> => {
-    const handler = fetchFactory<NativeRequiredRuntimeRequest>();
+  <
+    TEvent extends AwsLambdaHttpEventV2 = AwsLambdaHttpEventV2,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(
+    ...args: NativeAwsLambdaHandlerOptionsArgs<TEvent, TRequest>
+  ): AwsLambdaHttpApiHandler<TEvent> => {
+    const options = args[0] as
+      | NativeAwsLambdaHandlerOptions<TEvent, TRequest>
+      | undefined;
+    const createRequest =
+      options?.createRequest ??
+      (createAwsLambdaRequest as unknown as NativeAwsLambdaRequestFactory<
+        TEvent,
+        TRequest
+      >);
+    const handler = fetchFactory<TRequest>();
     return async (event) =>
-      createAwsLambdaResponse(
-        await handler(createAwsLambdaRequest(event) as NativeRequiredRuntimeRequest)
-      );
+      createAwsLambdaResponse(await handler(createRequest(event)));
   };
 
 const createRestApiHandlerFromFetch =
   (fetchFactory: typeof createFetch) =>
-  <TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1>(): AwsLambdaRestApiHandler<TEvent> => {
-    const handler = fetchFactory<NativeRequiredRuntimeRequest>();
+  <
+    TEvent extends AwsLambdaRestApiEventV1 = AwsLambdaRestApiEventV1,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(
+    ...args: NativeAwsLambdaRestApiHandlerOptionsArgs<TEvent, TRequest>
+  ): AwsLambdaRestApiHandler<TEvent> => {
+    const options = args[0] as
+      | NativeAwsLambdaRestApiHandlerOptions<TEvent, TRequest>
+      | undefined;
+    const createRequest =
+      options?.createRequest ??
+      (createAwsLambdaRestApiRequest as unknown as NativeAwsLambdaRestApiRequestFactory<
+        TEvent,
+        TRequest
+      >);
+    const handler = fetchFactory<TRequest>();
     return async (event) =>
-      createAwsLambdaRestApiResponse(
-        await handler(createAwsLambdaRestApiRequest(event) as NativeRequiredRuntimeRequest)
-      );
+      createAwsLambdaRestApiResponse(await handler(createRequest(event)));
   };
 
 export const createAwsLambdaHandler = createHttpApiHandlerFromFetch(createFetch);
@@ -2103,8 +2165,16 @@ export const createAwsLambdaHttpApiHandler: typeof createAwsLambdaHandler =
   createAwsLambdaHandler;
 export const createAwsLambdaHttpApiHandlerFor: typeof createAwsLambdaHttpApiHandler =
   createAwsLambdaHttpApiHandler;
-export const handler: AwsLambdaHttpApiHandler = createAwsLambdaHandler();
-export const httpApiHandler: AwsLambdaHttpApiHandler = handler;
+const defaultAwsLambdaHandler: AwsLambdaHttpApiHandler = async (event) => {
+  const fetch = createFetch<NativeRequiredRuntimeRequest>();
+  return createAwsLambdaResponse(
+    await fetch(createAwsLambdaRequest(event) as NativeRequiredRuntimeRequest)
+  );
+};
+export const handler = defaultAwsLambdaHandler as Request extends NativeRequiredRuntimeRequest
+  ? AwsLambdaHttpApiHandler
+  : never;
+export const httpApiHandler: typeof handler = handler;
 
 export const createRouteUnaryAwsLambdaHandler =
   createHttpApiHandlerFromFetch(createRouteUnaryFetch);
@@ -2144,8 +2214,17 @@ export const createAwsLambdaRestApiHandler =
   createRestApiHandlerFromFetch(createFetch);
 export const createAwsLambdaRestApiHandlerFor: typeof createAwsLambdaRestApiHandler =
   createAwsLambdaRestApiHandler;
-export const restApiHandler: AwsLambdaRestApiHandler =
-  createAwsLambdaRestApiHandler();
+const defaultAwsLambdaRestApiHandler: AwsLambdaRestApiHandler = async (event) => {
+  const fetch = createFetch<NativeRequiredRuntimeRequest>();
+  return createAwsLambdaRestApiResponse(
+    await fetch(
+      createAwsLambdaRestApiRequest(event) as NativeRequiredRuntimeRequest
+    )
+  );
+};
+export const restApiHandler = defaultAwsLambdaRestApiHandler as Request extends NativeRequiredRuntimeRequest
+  ? AwsLambdaRestApiHandler
+  : never;
 
 export const createRouteUnaryAwsLambdaRestApiHandler =
   createRestApiHandlerFromFetch(createRouteUnaryFetch);
