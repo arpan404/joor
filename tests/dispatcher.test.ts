@@ -30,10 +30,14 @@ import {
   createBunRpcRequestHandler,
   createRouteStreamBunFetch,
   createRouteStreamBunRpcRequestHandler,
+  createRouteStreamBunTransportRequestHandlerWithPath,
   createRouteUnaryBunFetchFor,
   createRouteUnaryBunRpcRequestHandler,
+  createRouteUnaryBunTransportRequestHandlerWithPathFor,
   createBunTransportRequestHandler,
   createBunTransportRequestHandlerWithPath,
+  type BunRouteStreamTransportBodyResultHandlerFor,
+  type BunRouteUnaryTransportBodyResultHandlerFor,
 } from '../src/runtime/bun.js';
 import { createDenoCompiledTransportRequestHandler } from '../src/runtime/deno-compiled-transport.js';
 import {
@@ -44,14 +48,22 @@ import {
   createDenoRpcRequestHandler,
   createRouteStreamDenoFetch,
   createRouteStreamDenoRpcRequestHandler,
+  createRouteStreamDenoTransportRequestHandlerWithPath,
   createRouteUnaryDenoFetchFor,
   createRouteUnaryDenoRpcRequestHandler,
+  createRouteUnaryDenoTransportRequestHandlerWithPathFor,
   createDenoTransportRequestHandler,
+  type DenoRouteStreamTransportBodyResultHandlerFor,
+  type DenoRouteUnaryTransportBodyResultHandlerFor,
 } from '../src/runtime/deno.js';
 import {
   createNodeRpcRequestHandler,
   createNodeTransportRequestHandler,
   createNodeTransportRequestHandlerWithPath,
+  createRouteStreamNodeTransportRequestHandlerWithPath,
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor,
+  type NodeRouteStreamTransportBodyResultHandlerFor,
+  type NodeRouteUnaryTransportBodyResultHandlerFor,
 } from '../src/runtime/node.js';
 
 const manifest = {
@@ -976,6 +988,179 @@ describe('dispatcher', () => {
         traceId: 'trace-node-transport',
         data: { ok: true },
       });
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        server.close((error) => {
+          if (error) reject(error);
+          else resolve();
+        });
+      });
+    }
+  });
+
+  it('handles path-scoped route-specific transport requests', async () => {
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean(), event: t.string() }),
+      async *handler(_ctx, input) {
+        yield { ok: input.ok, event: 'updated' };
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    type RouteManifest = typeof routeManifest;
+    const unaryTransport = (async (_request: unknown, body: unknown) => {
+      const item = Array.isArray(body) ? body[0] : body;
+      const requestBody = item as { id: string; input: { ok: boolean } };
+      return {
+        ok: true,
+        id: requestBody.id,
+        traceId: 'trace-route-transport',
+        data: { ok: requestBody.input.ok },
+      };
+    }) as unknown as BunRouteUnaryTransportBodyResultHandlerFor<RouteManifest> &
+      DenoRouteUnaryTransportBodyResultHandlerFor<RouteManifest> &
+      NodeRouteUnaryTransportBodyResultHandlerFor<RouteManifest>;
+    const streamTransport = (async () =>
+      new Response(
+        'event: data\ndata: {"ok":true,"event":"updated"}\n\nevent: done\ndata: {}\n\n',
+        { headers: { 'content-type': 'text/event-stream' } }
+      )) as unknown as BunRouteStreamTransportBodyResultHandlerFor<RouteManifest> &
+      DenoRouteStreamTransportBodyResultHandlerFor<RouteManifest> &
+      NodeRouteStreamTransportBodyResultHandlerFor<RouteManifest>;
+    const unaryRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const streamRequest = (): Request =>
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      });
+    const wrongPathRequest = (): Request =>
+      new Request('http://localhost/not-rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+    const bunUnary =
+      createRouteUnaryBunTransportRequestHandlerWithPathFor()<RouteManifest>(
+        unaryTransport,
+        '/rpc'
+      );
+    const denoUnary =
+      createRouteUnaryDenoTransportRequestHandlerWithPathFor()<RouteManifest>(
+        unaryTransport,
+        '/rpc'
+      );
+    const bunStream = createRouteStreamBunTransportRequestHandlerWithPath<
+      RouteManifest
+    >(streamTransport, '/rpc');
+    const denoStream = createRouteStreamDenoTransportRequestHandlerWithPath<
+      RouteManifest
+    >(streamTransport, '/rpc');
+
+    for (const handler of [bunUnary, denoUnary]) {
+      const wrongPath = await handler(wrongPathRequest());
+      const response = await handler(unaryRequest());
+      const body = await response.json();
+
+      expect(wrongPath.status).toBe(404);
+      expect(response.status).toBe(200);
+      expect(body).toMatchObject({
+        ok: true,
+        id: 'ping',
+        traceId: 'trace-route-transport',
+        data: { ok: true },
+      });
+    }
+
+    for (const handler of [bunStream, denoStream]) {
+      const wrongPath = await handler(wrongPathRequest());
+      const response = await handler(streamRequest());
+      const body = await response.text();
+
+      expect(wrongPath.status).toBe(404);
+      expect(response.status).toBe(200);
+      expect(response.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(body).toContain('event: data');
+      expect(body).toContain('"event":"updated"');
+      expect(body).toContain('event: done');
+    }
+
+    const nodeUnary =
+      createRouteUnaryNodeTransportRequestHandlerWithPathFor()<RouteManifest>(
+        unaryTransport,
+        '/rpc',
+        '127.0.0.1'
+      );
+    const nodeStream = createRouteStreamNodeTransportRequestHandlerWithPath<
+      RouteManifest
+    >(streamTransport, '/rpc', '127.0.0.1');
+    const server = createServer((incoming, outgoing) => {
+      const handler = incoming.headers.accept?.includes('text/event-stream')
+        ? nodeStream
+        : nodeUnary;
+      void handler(incoming, outgoing);
+    });
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', resolve);
+    });
+
+    try {
+      const address = server.address();
+      if (address === null || typeof address === 'string') {
+        throw new Error('Expected Node test server to listen on a TCP port');
+      }
+      const base = `http://127.0.0.1:${address.port}`;
+      const wrongPath = await fetch(`${base}/not-rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+      const unaryResponse = await fetch(`${base}/rpc`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      });
+      const unaryBody = await unaryResponse.json();
+      const streamResponse = await fetch(`${base}/rpc`, {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      });
+      const streamBody = await streamResponse.text();
+
+      expect(wrongPath.status).toBe(404);
+      expect(unaryResponse.status).toBe(200);
+      expect(unaryBody).toMatchObject({
+        ok: true,
+        id: 'ping',
+        traceId: 'trace-route-transport',
+        data: { ok: true },
+      });
+      expect(streamResponse.status).toBe(200);
+      expect(streamResponse.headers.get('content-type')).toContain(
+        'text/event-stream'
+      );
+      expect(streamBody).toContain('"event":"updated"');
     } finally {
       await new Promise<void>((resolve, reject) => {
         server.close((error) => {
