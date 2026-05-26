@@ -24031,6 +24031,11 @@ createRouteUnaryNodeRpcRequestHandlerFor<
   // @ts-expect-error route-unary typed Node handlers preserve the response's incoming message type.
   NodeMismatchedResponse
 >();
+createRouteStreamNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  // @ts-expect-error route-stream typed Node handlers preserve the response's incoming message type.
+  NodeMismatchedResponse
+>();
 // @ts-expect-error service-dependent manifests require matching Node adapter plugins.
 createNodeRpcRequestHandler(manifest);
 // @ts-expect-error service-dependent manifests require matching route-unary Node adapter plugins.
@@ -24112,6 +24117,12 @@ const nodeRouteStreamRpcRequestHandlerOptions: NodeRouteStreamRpcRequestHandlerO
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedNodeRouteStreamRpcRequestHandlerOptions: NodeRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const nodeStreamRouteRpcRequestHandlerOptions: NodeStreamRouteRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -24181,6 +24192,12 @@ const runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions: RuntimeSubpathNodeR
   typeof manifest,
   readonly [typeof usersPlugin]
 > = nodeRouteStreamRpcRequestHandlerOptions;
+const requestTypedRuntimeSubpathNodeRouteStreamRpcRequestHandlerOptions: RuntimeSubpathNodeRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNodeRouteStreamRpcRequestHandlerOptions;
 const nodeRpcRequestHandlerOptionsArgs: NodeRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -24211,6 +24228,12 @@ const nodeRouteStreamRpcRequestHandlerOptionsArgs: NodeRouteStreamRpcRequestHand
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [nodeRouteStreamRpcRequestHandlerOptions, 'localhost'];
+const requestTypedNodeRouteStreamRpcRequestHandlerOptionsArgs: NodeRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedNodeRouteStreamRpcRequestHandlerOptions, '127.0.0.1'];
 const nodeStreamRouteRpcRequestHandlerOptionsArgs: NodeStreamRouteRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -24368,6 +24391,10 @@ requestTypedNodeRouteUnaryRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedNodeRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -24387,6 +24414,10 @@ runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
 runtimeSubpathRequestTypedNodeRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
+);
+requestTypedRuntimeSubpathNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathRequestTypedNodeRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   // @ts-expect-error request-typed Node handler options reject broader requests.
@@ -24461,6 +24492,11 @@ const routeStreamNodeRpcRequestHandler: NodeRpcRequestHandler =
     manifest,
     nodeRouteStreamRpcRequestHandlerOptions
   );
+createRouteStreamNodeRpcRequestHandler(
+  manifest,
+  requestTypedNodeRouteStreamRpcRequestHandlerOptions,
+  '127.0.0.1'
+);
 const streamRouteNodeRpcRequestHandler: NodeRpcRequestHandler =
   createStreamRouteNodeRpcRequestHandler(
     manifest,
@@ -24474,6 +24510,13 @@ const typedRouteUnaryNodeRpcRequestHandler: NodeRpcRequestHandler<
   requestTypedNodeRouteUnaryRpcRequestHandlerOptions,
   '127.0.0.1'
 );
+const typedRouteStreamNodeRpcRequestHandler: NodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRouteStreamNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  NodeAppResponse
+>()(manifest, requestTypedNodeRouteStreamRpcRequestHandlerOptions, '127.0.0.1');
 createUnaryRouteNodeRpcRequestHandlerFor()(
   manifest,
   nodeUnaryRouteRpcRequestHandlerOptions
@@ -24501,6 +24544,11 @@ const runtimeSubpathRouteStreamNodeRpcRequestHandler: RuntimeSubpathNodeRpcReque
     manifest,
     runtimeSubpathNodeRouteStreamRpcRequestHandlerOptions
   );
+createRuntimeSubpathRouteStreamNodeRpcRequestHandler(
+  manifest,
+  requestTypedRuntimeSubpathNodeRouteStreamRpcRequestHandlerOptions,
+  '127.0.0.1'
+);
 const runtimeSubpathStreamRouteNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler =
   createRuntimeSubpathStreamRouteNodeRpcRequestHandler(
     manifest,
@@ -24513,6 +24561,17 @@ const runtimeSubpathTypedRouteUnaryNodeRpcRequestHandler: RuntimeSubpathNodeRpcR
   NodeAppRequest,
   NodeAppResponse
 >()(manifest, requestTypedNodeRouteUnaryRpcRequestHandlerOptions, '127.0.0.1');
+const runtimeSubpathTypedRouteStreamNodeRpcRequestHandler: RuntimeSubpathNodeRpcRequestHandler<
+  NodeAppRequest,
+  NodeAppResponse
+> = createRuntimeSubpathRouteStreamNodeRpcRequestHandlerFor<
+  NodeAppRequest,
+  NodeAppResponse
+>()(
+  manifest,
+  requestTypedRuntimeSubpathNodeRouteStreamRpcRequestHandlerOptions,
+  '127.0.0.1'
+);
 createRuntimeSubpathUnaryRouteNodeRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathNodeUnaryRouteRpcRequestHandlerOptions
@@ -24526,9 +24585,24 @@ createRuntimeSubpathStreamRouteNodeRpcRequestHandlerFor()(
   runtimeSubpathNodeStreamRouteRpcRequestHandlerOptions
 );
 typedRouteUnaryNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
+typedRouteStreamNodeRpcRequestHandler(nodeAppRequest, nodeAppResponse);
 runtimeSubpathTypedRouteUnaryNodeRpcRequestHandler(
   nodeAppRequest,
   nodeAppResponse
+);
+runtimeSubpathTypedRouteStreamNodeRpcRequestHandler(
+  nodeAppRequest,
+  nodeAppResponse
+);
+requestTypedNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Node handler options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathNodeRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Node handler options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
 );
 routeUnaryNodeRpcRequestHandler(
   {} as Parameters<NodeRpcRequestHandler>[0],
