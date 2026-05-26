@@ -699,6 +699,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       await expect(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryWorker');
+      await expect(
+        readFile(join(outDir, 'cloudflare.ts'), 'utf8')
       ).resolves.toContain('export const createWorkerFor =');
       await expect(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
@@ -708,10 +711,16 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       ).resolves.toContain('export const createVercelFor =');
       await expect(
         readFile(join(outDir, 'vercel.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteStreamVercelFunction');
+      await expect(
+        readFile(join(outDir, 'vercel.ts'), 'utf8')
       ).resolves.toContain('export const createRouteStreamVercelFunctionFor');
       await expect(
         readFile(join(outDir, 'netlify.ts'), 'utf8')
       ).resolves.toContain('export const createEdgeFor =');
+      await expect(
+        readFile(join(outDir, 'netlify.ts'), 'utf8')
+      ).resolves.toContain('export const createRouteUnaryNetlifyEdgeFunction');
       await expect(
         readFile(join(outDir, 'netlify.ts'), 'utf8')
       ).resolves.toContain(
@@ -722,6 +731,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'utf8'
       );
       expect(generatedCloudflareSource).toContain('createWorkerFromFetchFor');
+      expect(generatedCloudflareSource).toContain(
+        'createWorkerFromFetch(createRouteUnaryFetch)'
+      );
       expect(generatedCloudflareSource).toContain(
         'createWorkerFromFetchFor(createRouteUnaryFetchFor)'
       );
@@ -734,6 +746,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedNextSource).toContain('createHandlersFromFetchFor');
       expect(generatedNextSource).toContain(
+        'createHandlersFromFetch(createRouteUnaryFetch)'
+      );
+      expect(generatedNextSource).toContain(
         'createHandlersFromFetchFor(createRouteUnaryFetchFor)'
       );
       expect(generatedNextSource).toContain(
@@ -745,6 +760,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(generatedVercelSource).toContain('createVercelFromFetchFor');
       expect(generatedVercelSource).toContain(
+        'createVercelFromFetch(createRouteUnaryFetch)'
+      );
+      expect(generatedVercelSource).toContain(
         'createVercelFromFetchFor(createRouteUnaryFetchFor)'
       );
       expect(generatedVercelSource).toContain(
@@ -755,6 +773,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'utf8'
       );
       expect(generatedNetlifySource).toContain('createEdgeFromFetchFor');
+      expect(generatedNetlifySource).toContain(
+        'createEdgeFromFetch(createRouteUnaryFetch)'
+      );
       expect(generatedNetlifySource).toContain(
         'createEdgeFromFetchFor(createRouteUnaryFetchFor)'
       );
@@ -1465,10 +1486,10 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRouteUnaryBodyHandler } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest } from './fetch.js';
-import { createRouteStreamWorkerFor, createRouteUnaryWorkerFor, createWorkerFor, worker } from './cloudflare.js';
-import { createHandlersFor, createRouteStreamHandlersFor, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
-import { createRouteStreamVercelFor, createRouteUnaryVercelFor, createVercelFor, vercel } from './vercel.js';
-import { createEdgeFor, createRouteStreamEdgeFor, createRouteUnaryEdgeFor, edge } from './netlify.js';
+import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
+import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
+import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
+import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, edge } from './netlify.js';
 import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler } from './deno.js';
 import type { AppRequest } from '${procedureImport}';
@@ -1567,8 +1588,14 @@ createRuntimeFetchFor()(plainRequest);
 const cloudflareWorker = createWorkerFor();
 cloudflareWorker.fetch(appRequest);
 worker.fetch(appRequest);
+createWorker().fetch(appRequest);
+createCloudflareWorker().fetch(appRequest);
+createRouteUnaryWorker().fetch(appRequest);
+createRouteStreamWorker().fetch(appRequest);
 createRouteUnaryWorkerFor().fetch(appRequest);
 createRouteStreamWorkerFor().fetch(appRequest);
+// @ts-expect-error generated direct Cloudflare workers default to the manifest request subtype.
+createRouteUnaryWorker().fetch(plainRequest);
 // @ts-expect-error generated Cloudflare workers default to the manifest request subtype.
 cloudflareWorker.fetch(plainRequest);
 // @ts-expect-error generated named Cloudflare workers preserve the manifest request subtype.
@@ -1578,8 +1605,14 @@ const nextHandlers = createHandlersFor();
 nextHandlers.GET(appRequest);
 handlers.POST(appRequest);
 GET(appRequest);
+createHandlers().GET(appRequest);
+createNextRouteHandlers().POST(appRequest);
+createRouteUnaryHandlers().POST(appRequest);
+createRouteStreamHandlers().GET(appRequest);
 createRouteUnaryHandlersFor().POST(appRequest);
 createRouteStreamHandlersFor().GET(appRequest);
+// @ts-expect-error generated direct Next handlers default to the manifest request subtype.
+createRouteUnaryHandlers().POST(plainRequest);
 // @ts-expect-error generated Next handlers default to the manifest request subtype.
 nextHandlers.GET(plainRequest);
 // @ts-expect-error generated named Next handlers preserve the manifest request subtype.
@@ -1588,8 +1621,16 @@ handlers.POST(plainRequest);
 const vercelFunction = createVercelFor();
 vercelFunction.fetch(appRequest);
 vercel.fetch(appRequest);
+createVercel().fetch(appRequest);
+createVercelFunction().fetch(appRequest);
+createRouteUnaryVercel().fetch(appRequest);
+createRouteUnaryVercelFunction().fetch(appRequest);
+createRouteStreamVercel().fetch(appRequest);
+createRouteStreamVercelFunction().fetch(appRequest);
 createRouteUnaryVercelFor().fetch(appRequest);
 createRouteStreamVercelFor().fetch(appRequest);
+// @ts-expect-error generated direct Vercel functions default to the manifest request subtype.
+createRouteUnaryVercel().fetch(plainRequest);
 // @ts-expect-error generated Vercel functions default to the manifest request subtype.
 vercelFunction.fetch(plainRequest);
 // @ts-expect-error generated named Vercel functions preserve the manifest request subtype.
@@ -1598,8 +1639,16 @@ vercel.fetch(plainRequest);
 const netlifyEdge = createEdgeFor();
 netlifyEdge(appRequest, {});
 edge(appRequest, {});
+createEdge()(appRequest, {});
+createNetlifyEdgeFunction()(appRequest, {});
+createRouteUnaryEdge()(appRequest, {});
+createRouteUnaryNetlifyEdgeFunction()(appRequest, {});
+createRouteStreamEdge()(appRequest, {});
+createRouteStreamNetlifyEdgeFunction()(appRequest, {});
 createRouteUnaryEdgeFor()(appRequest, {});
 createRouteStreamEdgeFor()(appRequest, {});
+// @ts-expect-error generated direct Netlify edge functions default to the manifest request subtype.
+createRouteUnaryEdge()(plainRequest, {});
 // @ts-expect-error generated Netlify edge functions default to the manifest request subtype.
 netlifyEdge(plainRequest, {});
 // @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.

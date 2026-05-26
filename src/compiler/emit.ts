@@ -1557,18 +1557,40 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
-export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export const createCloudflareFetch: typeof createFetch = createFetch;
 export const createCloudflareFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryCloudflareFetch: typeof createRouteUnaryFetch =
+  createRouteUnaryFetch;
+export const createUnaryRouteCloudflareFetch: typeof createRouteUnaryCloudflareFetch =
+  createRouteUnaryCloudflareFetch;
 export const createRouteUnaryCloudflareFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteCloudflareFetchFor: typeof createRouteUnaryCloudflareFetchFor =
   createRouteUnaryCloudflareFetchFor;
+export const createRouteStreamCloudflareFetch: typeof createRouteStreamFetch =
+  createRouteStreamFetch;
+export const createStreamRouteCloudflareFetch: typeof createRouteStreamCloudflareFetch =
+  createRouteStreamCloudflareFetch;
 export const createRouteStreamCloudflareFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createStreamRouteCloudflareFetchFor: typeof createRouteStreamCloudflareFetchFor =
   createRouteStreamCloudflareFetchFor;
+const createWorkerFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TEnv = never,
+    TContext = never,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): CloudflareWorker<TEnv, TContext, TRequest> => ({
+    fetch: fetchFactory<TRequest>() as CloudflareWorker<
+      TEnv,
+      TContext,
+      TRequest
+    >['fetch'],
+  });
 const createWorkerFromFetchFor =
   (fetchFactory: typeof createFetchFor) =>
   <
@@ -1588,7 +1610,17 @@ export const worker: CloudflareWorker<
   never,
   NativeRequiredRuntimeRequest
 > = { fetch };
+export const createWorker = createWorkerFromFetch(createFetch);
+export const createCloudflareWorker: typeof createWorker = createWorker;
 export const createCloudflareWorkerFor: typeof createWorkerFor = createWorkerFor;
+export const createRouteUnaryWorker: typeof createWorker =
+  createWorkerFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteWorker: typeof createRouteUnaryWorker =
+  createRouteUnaryWorker;
+export const createRouteUnaryCloudflareWorker: typeof createRouteUnaryWorker =
+  createRouteUnaryWorker;
+export const createUnaryRouteCloudflareWorker: typeof createRouteUnaryCloudflareWorker =
+  createRouteUnaryCloudflareWorker;
 export const createRouteUnaryWorkerFor: typeof createWorkerFor =
   createWorkerFromFetchFor(createRouteUnaryFetchFor);
 export const createUnaryRouteWorkerFor: typeof createRouteUnaryWorkerFor =
@@ -1597,6 +1629,14 @@ export const createRouteUnaryCloudflareWorkerFor: typeof createRouteUnaryWorkerF
   createRouteUnaryWorkerFor;
 export const createUnaryRouteCloudflareWorkerFor: typeof createRouteUnaryCloudflareWorkerFor =
   createRouteUnaryCloudflareWorkerFor;
+export const createRouteStreamWorker: typeof createWorker =
+  createWorkerFromFetch(createRouteStreamFetch);
+export const createStreamRouteWorker: typeof createRouteStreamWorker =
+  createRouteStreamWorker;
+export const createRouteStreamCloudflareWorker: typeof createRouteStreamWorker =
+  createRouteStreamWorker;
+export const createStreamRouteCloudflareWorker: typeof createRouteStreamCloudflareWorker =
+  createRouteStreamCloudflareWorker;
 export const createRouteStreamWorkerFor: typeof createWorkerFor =
   createWorkerFromFetchFor(createRouteStreamFetchFor);
 export const createStreamRouteWorkerFor: typeof createRouteStreamWorkerFor =
@@ -1612,12 +1652,25 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
-export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor };
 export const GET = fetch;
 export const POST = fetch;
 export const OPTIONS = fetch;
+const createHandlersFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TContext = never,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): NextRouteHandlers<TContext, TRequest> => {
+    const handler = fetchFactory<TRequest>();
+    return {
+      GET: handler,
+      POST: handler,
+      OPTIONS: handler,
+    } as NextRouteHandlers<TContext, TRequest>;
+  };
 const createHandlersFromFetchFor =
   (fetchFactory: typeof createFetchFor) =>
   <
@@ -1636,10 +1689,26 @@ export const handlers: NextRouteHandlers<
   never,
   NativeRequiredRuntimeRequest
 > = { GET, POST, OPTIONS };
+export const createHandlers = createHandlersFromFetch(createFetch);
+export const createNextRouteHandlers: typeof createHandlers = createHandlers;
+export const createNextHandler: typeof createNextRouteHandlers =
+  createNextRouteHandlers;
 export const createNextRouteHandlersFor: typeof createHandlersFor =
   createHandlersFor;
 export const createNextHandlerFor: typeof createNextRouteHandlersFor =
   createNextRouteHandlersFor;
+export const createRouteUnaryHandlers: typeof createHandlers =
+  createHandlersFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteHandlers: typeof createRouteUnaryHandlers =
+  createRouteUnaryHandlers;
+export const createRouteUnaryNextRouteHandlers: typeof createRouteUnaryHandlers =
+  createRouteUnaryHandlers;
+export const createUnaryRouteNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createRouteUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createUnaryRouteNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
 export const createRouteUnaryHandlersFor: typeof createHandlersFor =
   createHandlersFromFetchFor(createRouteUnaryFetchFor);
 export const createUnaryRouteHandlersFor: typeof createRouteUnaryHandlersFor =
@@ -1652,6 +1721,18 @@ export const createRouteUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHan
   createRouteUnaryNextRouteHandlersFor;
 export const createUnaryRouteNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
+export const createRouteStreamHandlers: typeof createHandlers =
+  createHandlersFromFetch(createRouteStreamFetch);
+export const createStreamRouteHandlers: typeof createRouteStreamHandlers =
+  createRouteStreamHandlers;
+export const createRouteStreamNextRouteHandlers: typeof createRouteStreamHandlers =
+  createRouteStreamHandlers;
+export const createStreamRouteNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createRouteStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createStreamRouteNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
 export const createRouteStreamHandlersFor: typeof createHandlersFor =
   createHandlersFromFetchFor(createRouteStreamFetchFor);
 export const createStreamRouteHandlersFor: typeof createRouteStreamHandlersFor =
@@ -1671,18 +1752,34 @@ export default handlers;
   await writeFile(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
-import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
-export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export const createVercelFetch: typeof createFetch = createFetch;
 export const createVercelFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryVercelFetch: typeof createRouteUnaryFetch =
+  createRouteUnaryFetch;
+export const createUnaryRouteVercelFetch: typeof createRouteUnaryVercelFetch =
+  createRouteUnaryVercelFetch;
 export const createRouteUnaryVercelFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteVercelFetchFor: typeof createRouteUnaryVercelFetchFor =
   createRouteUnaryVercelFetchFor;
+export const createRouteStreamVercelFetch: typeof createRouteStreamFetch =
+  createRouteStreamFetch;
+export const createStreamRouteVercelFetch: typeof createRouteStreamVercelFetch =
+  createRouteStreamVercelFetch;
 export const createRouteStreamVercelFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createStreamRouteVercelFetchFor: typeof createRouteStreamVercelFetchFor =
   createRouteStreamVercelFetchFor;
+const createVercelFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): VercelFunction<TRequest> => ({
+    fetch: fetchFactory<TRequest>(),
+  });
 const createVercelFromFetchFor =
   (fetchFactory: typeof createFetchFor) =>
   <
@@ -1692,8 +1789,18 @@ const createVercelFromFetchFor =
   });
 export const createVercelFor = createVercelFromFetchFor(createFetchFor);
 export const vercel: VercelFunction<NativeRequiredRuntimeRequest> = { fetch };
+export const createVercel = createVercelFromFetch(createFetch);
+export const createVercelFunction: typeof createVercel = createVercel;
 export const createVercelFunctionFor: typeof createVercelFor =
   createVercelFor;
+export const createRouteUnaryVercel: typeof createVercel =
+  createVercelFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteVercel: typeof createRouteUnaryVercel =
+  createRouteUnaryVercel;
+export const createRouteUnaryVercelFunction: typeof createRouteUnaryVercel =
+  createRouteUnaryVercel;
+export const createUnaryRouteVercelFunction: typeof createRouteUnaryVercelFunction =
+  createRouteUnaryVercelFunction;
 export const createRouteUnaryVercelFor: typeof createVercelFor =
   createVercelFromFetchFor(createRouteUnaryFetchFor);
 export const createUnaryRouteVercelFor: typeof createRouteUnaryVercelFor =
@@ -1702,6 +1809,14 @@ export const createRouteUnaryVercelFunctionFor: typeof createRouteUnaryVercelFor
   createRouteUnaryVercelFor;
 export const createUnaryRouteVercelFunctionFor: typeof createRouteUnaryVercelFunctionFor =
   createRouteUnaryVercelFunctionFor;
+export const createRouteStreamVercel: typeof createVercel =
+  createVercelFromFetch(createRouteStreamFetch);
+export const createStreamRouteVercel: typeof createRouteStreamVercel =
+  createRouteStreamVercel;
+export const createRouteStreamVercelFunction: typeof createRouteStreamVercel =
+  createRouteStreamVercel;
+export const createStreamRouteVercelFunction: typeof createRouteStreamVercelFunction =
+  createRouteStreamVercelFunction;
 export const createRouteStreamVercelFor: typeof createVercelFor =
   createVercelFromFetchFor(createRouteStreamFetchFor);
 export const createStreamRouteVercelFor: typeof createRouteStreamVercelFor =
@@ -1717,18 +1832,36 @@ export default vercel;
   await writeFile(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
-import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest } from './fetch.js';
 
-export { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export const createNetlifyFetch: typeof createFetch = createFetch;
 export const createNetlifyFetchFor: typeof createFetchFor = createFetchFor;
+export const createRouteUnaryNetlifyFetch: typeof createRouteUnaryFetch =
+  createRouteUnaryFetch;
+export const createUnaryRouteNetlifyFetch: typeof createRouteUnaryNetlifyFetch =
+  createRouteUnaryNetlifyFetch;
 export const createRouteUnaryNetlifyFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteNetlifyFetchFor: typeof createRouteUnaryNetlifyFetchFor =
   createRouteUnaryNetlifyFetchFor;
+export const createRouteStreamNetlifyFetch: typeof createRouteStreamFetch =
+  createRouteStreamFetch;
+export const createStreamRouteNetlifyFetch: typeof createRouteStreamNetlifyFetch =
+  createRouteStreamNetlifyFetch;
 export const createRouteStreamNetlifyFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createStreamRouteNetlifyFetchFor: typeof createRouteStreamNetlifyFetchFor =
   createRouteStreamNetlifyFetchFor;
+const createEdgeFromFetch =
+  (fetchFactory: typeof createFetch) =>
+  <
+    TContext = unknown,
+    TRequest extends NativeRequiredRuntimeRequest = NativeRequiredRuntimeRequest,
+  >(): NetlifyEdgeFetchHandler<TContext, TRequest> => {
+    const handler = fetchFactory<TRequest>();
+    return (request) => handler(request);
+  };
 const createEdgeFromFetchFor =
   (fetchFactory: typeof createFetchFor) =>
   <
@@ -1743,8 +1876,18 @@ export const edge: NetlifyEdgeFetchHandler<
   unknown,
   NativeRequiredRuntimeRequest
 > = (request) => fetch(request);
+export const createEdge = createEdgeFromFetch(createFetch);
+export const createNetlifyEdgeFunction: typeof createEdge = createEdge;
 export const createNetlifyEdgeFunctionFor: typeof createEdgeFor =
   createEdgeFor;
+export const createRouteUnaryEdge: typeof createEdge =
+  createEdgeFromFetch(createRouteUnaryFetch);
+export const createUnaryRouteEdge: typeof createRouteUnaryEdge =
+  createRouteUnaryEdge;
+export const createRouteUnaryNetlifyEdgeFunction: typeof createRouteUnaryEdge =
+  createRouteUnaryEdge;
+export const createUnaryRouteNetlifyEdgeFunction: typeof createRouteUnaryNetlifyEdgeFunction =
+  createRouteUnaryNetlifyEdgeFunction;
 export const createRouteUnaryEdgeFor: typeof createEdgeFor =
   createEdgeFromFetchFor(createRouteUnaryFetchFor);
 export const createUnaryRouteEdgeFor: typeof createRouteUnaryEdgeFor =
@@ -1753,6 +1896,14 @@ export const createRouteUnaryNetlifyEdgeFunctionFor: typeof createRouteUnaryEdge
   createRouteUnaryEdgeFor;
 export const createUnaryRouteNetlifyEdgeFunctionFor: typeof createRouteUnaryNetlifyEdgeFunctionFor =
   createRouteUnaryNetlifyEdgeFunctionFor;
+export const createRouteStreamEdge: typeof createEdge =
+  createEdgeFromFetch(createRouteStreamFetch);
+export const createStreamRouteEdge: typeof createRouteStreamEdge =
+  createRouteStreamEdge;
+export const createRouteStreamNetlifyEdgeFunction: typeof createRouteStreamEdge =
+  createRouteStreamEdge;
+export const createStreamRouteNetlifyEdgeFunction: typeof createRouteStreamNetlifyEdgeFunction =
+  createRouteStreamNetlifyEdgeFunction;
 export const createRouteStreamEdgeFor: typeof createEdgeFor =
   createEdgeFromFetchFor(createRouteStreamFetchFor);
 export const createStreamRouteEdgeFor: typeof createRouteStreamEdgeFor =
