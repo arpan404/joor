@@ -21,6 +21,8 @@ import {
   compiledUncachedExecutionState,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandler,
+  createCompiledRouteStreamRpcHandler,
+  createCompiledRouteUnaryRpcHandler,
   createCompiledRuntimeState,
   executeCompiledProcedure,
 } from '../src/runtime/compiled.js';
@@ -649,6 +651,77 @@ describe('dispatcher', () => {
     expect((await response.json()).ok).toBe(true);
     expect(wrongPath.status).toBe(404);
     expect(events).toEqual(['original']);
+  });
+
+  it('dispatches route-specific compiled RPC handlers', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const unaryHandler = createCompiledRouteUnaryRpcHandler(
+      async (rpcRequest) => ({
+        ok: true,
+        id: rpcRequest.id,
+        traceId: 'trace-compiled-route-unary',
+        data: rpcRequest.input,
+      }),
+      { cors: { origin: 'https://compiled-route.example' } }
+    );
+    const streamHandler = createCompiledRouteStreamRpcHandler(
+      (rpcRequest, request, services, runtime, state, serialize) =>
+        executeCompiledProcedure(
+          rpcRequest.id,
+          streamingProcedure,
+          rpcRequest,
+          request,
+          services,
+          runtime,
+          state,
+          serialize
+        ),
+      { cors: { origin: 'https://compiled-route.example' } }
+    );
+
+    const unaryResponse = await unaryHandler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: 'compiled.unary', input: { ok: true } }),
+      })
+    );
+    const unaryBody = await unaryResponse.json();
+    const streamResponse = await streamHandler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'compiled.stream', input: { ok: true } }),
+      })
+    );
+    const streamText = await streamResponse.text();
+
+    expect(unaryResponse.status).toBe(200);
+    expect(unaryResponse.headers.get('access-control-allow-origin')).toBe(
+      'https://compiled-route.example'
+    );
+    expect(unaryBody).toMatchObject({
+      ok: true,
+      id: 'compiled.unary',
+      data: { ok: true },
+    });
+    expect(streamResponse.status).toBe(200);
+    expect(streamResponse.headers.get('content-type')).toContain(
+      'text/event-stream'
+    );
+    expect(streamResponse.headers.get('access-control-allow-origin')).toBe(
+      'https://compiled-route.example'
+    );
+    expect(streamText).toContain('"ok":true');
   });
 
   it('validates compiled procedure response headers', async () => {

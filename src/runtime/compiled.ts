@@ -200,11 +200,7 @@ export type CompiledStreamRouteRpcRequestHandler<
 > = CompiledRouteStreamRpcRequestHandler<TRequest>;
 
 type MaybePromise<TValue> = TValue | Promise<TValue>;
-type AnyJoorConfig = JoorConfig<
-  readonly JoorPlugin<object>[],
-  unknown,
-  never
->;
+type AnyJoorConfig = JoorConfig<readonly JoorPlugin<object>[], unknown, never>;
 
 type FreezableCompiledConfig = {
   readonly plugins?: readonly JoorPlugin<object>[];
@@ -299,9 +295,7 @@ export type CompiledRpcBodyResultHandler<
 export type CompiledRpcBodyResultHandlerFor<
   TManifest extends JoorManifest,
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
-> = <
-  const TBody extends RpcManifestBody<TManifest>,
->(
+> = <const TBody extends RpcManifestBody<TManifest>>(
   request: TRequest,
   body: TBody
 ) => MaybePromise<CompiledTransportBodyResultFor<TManifest, TBody>>;
@@ -359,12 +353,11 @@ type CompiledConfigManifest<TConfig> =
       : never
     : never;
 
-type CompiledConfigBody<TConfig> =
-  [HandlerOptionsBody<TConfig>] extends [never]
-    ? JsonValue
-    : HandlerOptionsBody<TConfig> extends JsonValue
-      ? HandlerOptionsBody<TConfig>
-      : JsonValue;
+type CompiledConfigBody<TConfig> = [HandlerOptionsBody<TConfig>] extends [never]
+  ? JsonValue
+  : HandlerOptionsBody<TConfig> extends JsonValue
+    ? HandlerOptionsBody<TConfig>
+    : JsonValue;
 
 export type CompiledRpcTransportBodyResultHandlerForConfig<TConfig> = [
   CompiledConfigManifest<TConfig>,
@@ -452,16 +445,14 @@ type IsDefaultRequest<TRequest extends Request> = [Request] extends [TRequest]
   ? true
   : false;
 
-type CompiledConfigAcceptsRequest<
-  TConfig,
-  TRequest extends Request,
-> = IsDefaultRequest<CompiledHookRequest<TConfig>> extends true
-  ? unknown
-  : TRequest extends CompiledHookRequest<TConfig>
+type CompiledConfigAcceptsRequest<TConfig, TRequest extends Request> =
+  IsDefaultRequest<CompiledHookRequest<TConfig>> extends true
     ? unknown
-    : {
-        readonly __joorRequestTypeMismatch: CompiledHookRequest<TConfig>;
-      };
+    : TRequest extends CompiledHookRequest<TConfig>
+      ? unknown
+      : {
+          readonly __joorRequestTypeMismatch: CompiledHookRequest<TConfig>;
+        };
 
 export type CompiledUnaryDispatch<TServices extends object = object> = (
   body: JsonObject,
@@ -485,10 +476,7 @@ export type CompiledFixedUnaryDispatch<
 
 export type CompiledDispatch<
   TServices extends object = object,
-  TResult extends
-    | RpcEnvelope
-    | Response
-    | CompiledSerializedEnvelope =
+  TResult extends RpcEnvelope | Response | CompiledSerializedEnvelope =
     | RpcEnvelope
     | Response
     | CompiledSerializedEnvelope,
@@ -503,10 +491,7 @@ export type CompiledDispatch<
 
 export type CompiledFixedDispatch<
   TServices extends object = object,
-  TResult extends
-    | RpcEnvelope
-    | Response
-    | CompiledSerializedEnvelope =
+  TResult extends RpcEnvelope | Response | CompiledSerializedEnvelope =
     | RpcEnvelope
     | Response
     | CompiledSerializedEnvelope,
@@ -519,8 +504,10 @@ export type CompiledFixedDispatch<
 ) => MaybePromise<TResult>;
 
 const rateLimitWindows = new Map<string, RateLimitWindow>();
-const compiledProcedureSuccessCache =
-  new Map<string, CompiledCachedProcedureSuccess>();
+const compiledProcedureSuccessCache = new Map<
+  string,
+  CompiledCachedProcedureSuccess
+>();
 let traceCounter = 0;
 
 const traceId = (request: ContextRequestSource, requested?: string): string => {
@@ -596,9 +583,10 @@ const compiledCorsHeaders = (
   config: Pick<JoorConfig, 'cors'>
 ): Record<string, string> | undefined => {
   if (config.cors === undefined) return undefined;
-  return Object.freeze(
-    createCorsHeaderRecord(config.cors) ?? {}
-  ) as Record<string, string>;
+  return Object.freeze(createCorsHeaderRecord(config.cors) ?? {}) as Record<
+    string,
+    string
+  >;
 };
 
 const failure = <TId extends string>(
@@ -662,9 +650,8 @@ const isProcedureResult = (
   'kind' in value &&
   (value.kind === 'success' || value.kind === 'error');
 
-const isAsyncIterable = (
-  value: unknown
-): value is AsyncIterable<JsonValue> => Symbol.asyncIterator in Object(value);
+const isAsyncIterable = (value: unknown): value is AsyncIterable<JsonValue> =>
+  Symbol.asyncIterator in Object(value);
 
 export const compiledAuthenticate = (
   policy: ProcedureRuntime['auth'],
@@ -811,7 +798,8 @@ const streamResponse = async <
     trace,
     runtime
   );
-  if (limited !== undefined) return rpcEnvelopeToResponse(limited, runtime.cors);
+  if (limited !== undefined)
+    return rpcEnvelopeToResponse(limited, runtime.cors);
   const headers = headerObject(request, procedure);
   const ctx = createRuntimeContext(
     request,
@@ -1244,7 +1232,8 @@ export const createCompiledRpcTransportBodyResultHandler = <
     createCompiledRuntimeState(handlerConfig)) as CompiledRuntimeState<
     JoorConfigContext<TConfig>
   >;
-  const extraHeaders = compiled.runtime.cors ?? compiledCorsHeaders(handlerConfig);
+  const extraHeaders =
+    compiled.runtime.cors ?? compiledCorsHeaders(handlerConfig);
   const hooks = handlerConfig.hooks as
     | HandlerHooks<
         JoorConfigContext<TConfig>,
@@ -1252,7 +1241,8 @@ export const createCompiledRpcTransportBodyResultHandler = <
         CompiledHookRequest<TConfig>
       >
     | undefined;
-  const middleware = (handlerConfig.middleware ?? []) as readonly JoorMiddleware<
+  const middleware = (handlerConfig.middleware ??
+    []) as readonly JoorMiddleware<
     JoorConfigContext<TConfig>,
     CompiledHookBody<TConfig>,
     CompiledHookRequest<TConfig>
@@ -1297,11 +1287,7 @@ export const createCompiledRpcTransportBodyResultHandler = <
       const result = await item.afterResponse?.(next, hookRequest, context);
       if (result instanceof Response) next = result;
     }
-    const hookResult = await hooks?.afterResponse?.(
-      next,
-      hookRequest,
-      context
-    );
+    const hookResult = await hooks?.afterResponse?.(next, hookRequest, context);
     return hookResult instanceof Response ? hookResult : next;
   };
   const execute = async (
@@ -1496,66 +1482,84 @@ export const createCompiledRouteStreamRpcBodyResultHandler = <
 export const createCompiledStreamRouteRpcBodyResultHandler: typeof createCompiledRouteStreamRpcBodyResultHandler =
   createCompiledRouteStreamRpcBodyResultHandler;
 
-export const createCompiledRpcHandler = <
+type CompiledRpcHandlerTransportFactory = <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig,
-  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
-): CompiledRpcRequestHandlerForConfig<TConfig> => {
-  const handlerConfig = freezeCompiledConfig((config ?? {}) as TConfig);
-  const bodyLimit = normalizeMaxBodyBytes(
-    handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
-  );
-  const extraHeaders = compiledCorsHeaders(handlerConfig);
-  const handleTransport = createCompiledRpcTransportBodyResultHandler(
-    dispatch,
-    handlerConfig,
-    unaryDispatch,
-    false,
-    'response'
-  ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
-  return (async (
-    request: CompiledHookRequest<TConfig>
-  ): Promise<Response> => {
-    const source = createFetchRequestSource(request);
-    const early = requestPreflight(
-      source,
-      handlerConfig.path ?? '/rpc',
-      extraHeaders
-    );
-    if (early !== undefined) return early;
-    let body: JsonValue;
-    try {
-      body = await readJsonRequestBodyWithLimit(request, bodyLimit);
-    } catch (error) {
-      const payloadTooLarge =
-        error instanceof Error && isBodySizeLimitError(error);
-      const status = payloadTooLarge ? 413 : 400;
-      return new Response(
-        JSON.stringify(
-          failure(
-            '',
-            traceId(source),
-            payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
-            payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
-            status
-          )
-        ),
-        { status, headers: createJsonHeaderRecord(extraHeaders) }
-      );
-    }
-    const result = await handleTransport(source, body);
-    return transportResultToResponse(result, extraHeaders);
-  }) as CompiledRpcRequestHandlerForConfig<TConfig>;
-};
+  unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>,
+  preflight?: boolean,
+  serializationMode?: CompiledSerializationMode,
+  runtimeState?: CompiledRuntimeState<JoorConfigContext<TConfig>>
+) => unknown;
 
+const createCompiledRpcHandlerFromTransport =
+  (transportFactory: CompiledRpcHandlerTransportFactory) =>
+  <const TConfig extends AnyJoorConfig = Record<string, never>>(
+    dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
+    config?: TConfig,
+    unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
+  ): CompiledRpcRequestHandlerForConfig<TConfig> => {
+    const handlerConfig = freezeCompiledConfig((config ?? {}) as TConfig);
+    const bodyLimit = normalizeMaxBodyBytes(
+      handlerConfig.maxBodyBytes ?? DEFAULT_MAX_BODY_BYTES
+    );
+    const extraHeaders = compiledCorsHeaders(handlerConfig);
+    const handleTransport = transportFactory(
+      dispatch,
+      handlerConfig,
+      unaryDispatch,
+      false,
+      'response'
+    ) as CompiledRpcTransportBodyResultHandler<JsonValue>;
+    return (async (
+      request: CompiledHookRequest<TConfig>
+    ): Promise<Response> => {
+      const source = createFetchRequestSource(request);
+      const early = requestPreflight(
+        source,
+        handlerConfig.path ?? '/rpc',
+        extraHeaders
+      );
+      if (early !== undefined) return early;
+      let body: JsonValue;
+      try {
+        body = await readJsonRequestBodyWithLimit(request, bodyLimit);
+      } catch (error) {
+        const payloadTooLarge =
+          error instanceof Error && isBodySizeLimitError(error);
+        const status = payloadTooLarge ? 413 : 400;
+        return new Response(
+          JSON.stringify(
+            failure(
+              '',
+              traceId(source),
+              payloadTooLarge ? 'PAYLOAD_TOO_LARGE' : 'PARSE_ERROR',
+              payloadTooLarge ? 'Request body too large' : 'Invalid JSON body',
+              status
+            )
+          ),
+          { status, headers: createJsonHeaderRecord(extraHeaders) }
+        );
+      }
+      const result = await handleTransport(source, body);
+      return transportResultToResponse(result, extraHeaders);
+    }) as CompiledRpcRequestHandlerForConfig<TConfig>;
+  };
+
+export const createCompiledRpcHandler = createCompiledRpcHandlerFromTransport(
+  createCompiledRpcTransportBodyResultHandler
+);
 export const createCompiledRouteUnaryRpcHandler: typeof createCompiledRpcHandler =
-  createCompiledRpcHandler;
+  createCompiledRpcHandlerFromTransport(
+    createCompiledRouteUnaryRpcTransportBodyResultHandler
+  );
 export const createCompiledUnaryRouteRpcHandler: typeof createCompiledRouteUnaryRpcHandler =
   createCompiledRouteUnaryRpcHandler;
 export const createCompiledRouteStreamRpcHandler: typeof createCompiledRpcHandler =
-  createCompiledRpcHandler;
+  createCompiledRpcHandlerFromTransport(
+    createCompiledRouteStreamRpcTransportBodyResultHandler
+  );
 export const createCompiledStreamRouteRpcHandler: typeof createCompiledRouteStreamRpcHandler =
   createCompiledRouteStreamRpcHandler;
 
@@ -1566,9 +1570,9 @@ export function createCompiledRpcHandlerFor(): <
   config?: TConfig,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
 ) => CompiledRpcRequestHandlerForConfig<TConfig>;
-export function createCompiledRpcHandlerFor<
-  TRequest extends Request,
->(): <const TConfig extends AnyJoorConfig = Record<string, never>>(
+export function createCompiledRpcHandlerFor<TRequest extends Request>(): <
+  const TConfig extends AnyJoorConfig = Record<string, never>,
+>(
   dispatch: CompiledDispatch<JoorConfigContext<TConfig>>,
   config?: TConfig & CompiledConfigAcceptsRequest<TConfig, TRequest>,
   unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
