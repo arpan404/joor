@@ -1,5 +1,12 @@
 import { execFile } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { Readable } from 'node:stream';
@@ -89,6 +96,19 @@ type GeneratedNativeFetchModule = {
   readonly createRouteUnaryFetch: (options?: object) => GeneratedFetchHandler;
   readonly default: GeneratedFetchHandler;
   readonly fetch: GeneratedFetchHandler;
+};
+
+type GeneratedClientRuntime = {
+  readonly users: {
+    readonly get: unknown;
+    readonly watch: unknown;
+  };
+  readonly batch: unknown;
+};
+
+type GeneratedClientRuntimeModule = {
+  readonly client: GeneratedClientRuntime;
+  readonly createClient: () => GeneratedClientRuntime;
 };
 
 type GeneratedNodeHandler = (
@@ -1404,6 +1424,8 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain(
         'Object.assign(call, { call, request, protocolRequest })'
       );
+      expect(clientSource).toContain('const freezeClientTree = <T>(');
+      expect(clientSource).toContain('return freezeClientTree({');
       expect(clientSource).not.toContain('ProcedureInput');
       expect(clientSource).toContain('export type RouteProcedure');
       expect(clientSource).toContain('export type UnaryRouteProcedure');
@@ -5325,6 +5347,19 @@ invalidNativeBatch;
           [output.stdout, output.stderr].filter(Boolean).join('\n')
         );
       }
+
+      const linkedPackageDir = join(outDir, 'node_modules', 'joor');
+      await mkdir(join(outDir, 'node_modules'), { recursive: true });
+      await symlink(repoRoot, linkedPackageDir, 'dir');
+      const clientModule = (await import(
+        /* @vite-ignore */ pathToFileURL(join(outDir, 'client.ts')).href
+      )) as GeneratedClientRuntimeModule;
+      const generatedRuntimeClient = clientModule.createClient();
+      expect(Object.isFrozen(generatedRuntimeClient)).toBe(true);
+      expect(Object.isFrozen(generatedRuntimeClient.users)).toBe(true);
+      expect(Object.isFrozen(generatedRuntimeClient.users.get)).toBe(true);
+      expect(Object.isFrozen(generatedRuntimeClient.users.watch)).toBe(true);
+      expect(Object.isFrozen(clientModule.client)).toBe(true);
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

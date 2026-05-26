@@ -4187,6 +4187,19 @@ export type RouteStreamClientArgs<TId extends RouteStreamId = RouteStreamId> = J
 export type StreamRouteClientArgs<TId extends RouteStreamId = RouteStreamId> = RouteStreamClientArgs<TId>;
 export type ClientArgs<TId extends RouteId = RouteId> = RouteClientArgs<TId>;
 export type ProtocolRequestOptions = RpcProtocolRequestOptions;
+const freezeClientTree = <T>(value: T, seen = new WeakSet<object>()): T => {
+  if ((typeof value !== 'object' && typeof value !== 'function') || value === null) {
+    return value;
+  }
+  const objectValue = value as object;
+  if (seen.has(objectValue)) return value;
+  seen.add(objectValue);
+  for (const child of Object.values(value as Record<string, unknown>)) {
+    freezeClientTree(child, seen);
+  }
+  Object.freeze(objectValue);
+  return value;
+};
 type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
   (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
   readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;
@@ -4438,10 +4451,10 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
   };
   const batch: BatchFunction = (requests, ...options) =>
     transport.batch(requests, ...options);
-  return {
+  return freezeClientTree({
 ${clientBody}
     batch,
-  };
+  }) as GeneratedClient;
 }
 
 export const client: GeneratedClient = createClient();
