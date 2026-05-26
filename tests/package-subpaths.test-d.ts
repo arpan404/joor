@@ -2032,6 +2032,128 @@ type PackageSubpathRootRouteStreamHandlerOptionsWithPreflightArgs =
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >;
+type PackageSubpathRpcRouteCoreSurface = [
+  Rpc.RpcManifestRouteUnaryRequiredRuntimeRequest<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteRequiredRuntimeRequest<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamRequiredRuntimeRequest<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteRequiredRuntimeRequest<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryRequiredServices<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteRequiredServices<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamRequiredServices<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteRequiredServices<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestUnaryRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestRouteStreamHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestStreamRouteHandlerOptionsFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestRouteUnaryHandlerOptionsArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestUnaryRouteHandlerOptionsArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestRouteStreamHandlerOptionsArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestStreamRouteHandlerOptionsArgs<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestRouteUnaryHandlerHookContextFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestUnaryRouteHandlerHookContextFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestRouteStreamHandlerHookContextFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestStreamRouteHandlerHookContextFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestRouteUnaryHandlerHooksFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestUnaryRouteHandlerHooksFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestRouteStreamHandlerHooksFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestStreamRouteHandlerHooksFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestRouteUnaryMiddlewareFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestUnaryRouteMiddlewareFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Rpc.RpcManifestRouteStreamMiddlewareFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestStreamRouteMiddlewareFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Rpc.RpcManifestRouteUnaryBodyHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteBodyHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamBodyHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteBodyHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryTransportBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteTransportBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamTransportBodyResultHandler<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteTransportBodyResultHandler<PackageSubpathManifest>,
+];
 type PackageSubpathClientProtocolRequest =
   Client.RpcManifestRouteUnaryProtocolRequest<
     PackageSubpathManifest,
@@ -2350,6 +2472,7 @@ export type PackageSubpathSurface = [
   PackageSubpathRpcRouteStreamHandlerOptionsArgsFor,
   PackageSubpathRpcRouteStreamHandlerOptionsWithTrailingArgs,
   PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs,
+  PackageSubpathRpcRouteCoreSurface,
   PackageSubpathRootRouteUnaryHandlerOptionsArgsFor,
   PackageSubpathRootRouteUnaryHandlerOptionsWithTrailingArgs,
   PackageSubpathRootRouteUnaryHandlerOptionsWithPreflightArgs,
