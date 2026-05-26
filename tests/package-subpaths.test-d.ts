@@ -2211,6 +2211,138 @@ type PackageSubpathClientRouteDetailSurface = [
   Client.RpcManifestUnaryRouteTransportClient<PackageSubpathManifest>,
   Client.RpcManifestStreamRouteTransportClient<PackageSubpathManifest>,
 ];
+type PackageSubpathStandaloneDenoRouteSurface = [
+  Runtime.StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteUnaryServeOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteServeOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamServeOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteServeOptionsFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteUnaryServeOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteServeOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamServeOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteServeOptionsArgs<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteUnaryTransportRequestHandler,
+  Runtime.StandaloneDenoUnaryRouteTransportRequestHandler,
+  Runtime.StandaloneDenoRouteStreamTransportRequestHandler,
+  Runtime.StandaloneDenoStreamRouteTransportRequestHandler,
+  Runtime.StandaloneDenoRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoRouteStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.StandaloneDenoStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteRpcRequestHandlerOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryServeOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteServeOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamServeOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteServeOptionsFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryServeOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteServeOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamServeOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteServeOptionsArgs<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryTransportRequestHandler,
+  Root.StandaloneDenoUnaryRouteTransportRequestHandler,
+  Root.StandaloneDenoRouteStreamTransportRequestHandler,
+  Root.StandaloneDenoStreamRouteTransportRequestHandler,
+  Root.StandaloneDenoRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.StandaloneDenoUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.StandaloneDenoRouteStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.StandaloneDenoStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+];
+type PackageSubpathRouteConfigSurface = [
+  Root.JoorRouteUnaryConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Root.JoorUnaryRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Root.JoorRouteStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Root.JoorStreamRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Root.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
+  Root.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Root.DefineRouteStreamConfigFor<PackageSubpathManifest>,
+  Root.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+  Config.JoorRouteUnaryConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Config.JoorUnaryRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Config.JoorRouteStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Config.JoorStreamRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Config.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
+  Config.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Config.DefineRouteStreamConfigFor<PackageSubpathManifest>,
+  Config.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+  Context.JoorRouteUnaryConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Context.JoorUnaryRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Context.JoorRouteStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Context.JoorStreamRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
+  Context.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
+  Context.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Context.DefineRouteStreamConfigFor<PackageSubpathManifest>,
+  Context.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+];
 type PackageSubpathRpcRouteCoreSurface = [
   Rpc.RpcManifestRouteUnaryRequiredRuntimeRequest<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteRequiredRuntimeRequest<PackageSubpathManifest>,
@@ -3257,6 +3389,8 @@ export type PackageSubpathSurface = [
   PackageSubpathRpcRouteStreamHandlerOptionsWithTrailingArgs,
   PackageSubpathRpcRouteStreamHandlerOptionsWithPreflightArgs,
   PackageSubpathClientRouteDetailSurface,
+  PackageSubpathStandaloneDenoRouteSurface,
+  PackageSubpathRouteConfigSurface,
   PackageSubpathRpcRouteCoreSurface,
   PackageSubpathRpcRouteDetailSurface,
   PackageSubpathManifestRouteDetailSurface,
