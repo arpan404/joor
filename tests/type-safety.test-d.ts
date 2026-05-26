@@ -21545,6 +21545,12 @@ const vercelRouteStreamFetchOptions: VercelRouteStreamFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedVercelRouteStreamFetchOptions: VercelRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedNextRouteStreamHandlersOptions;
 const vercelStreamRouteFetchOptions: VercelStreamRouteFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -21586,6 +21592,12 @@ const runtimeSubpathVercelRouteStreamFetchOptions: RuntimeSubpathVercelRouteStre
   typeof manifest,
   readonly [typeof usersPlugin]
 > = vercelRouteStreamFetchOptions;
+const requestTypedRuntimeSubpathVercelRouteStreamFetchOptions: RuntimeSubpathVercelRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedVercelRouteStreamFetchOptions;
 const exactRuntimeSubpathVercelFetchOptions: RuntimeSubpathVercelFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -21619,6 +21631,10 @@ requestTypedVercelRouteUnaryFetchOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedVercelRouteStreamFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 const vercelFetchOptionsArgs: VercelFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -21641,6 +21657,12 @@ const vercelRouteStreamFetchOptionsArgs: VercelRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [vercelRouteStreamFetchOptions];
+const requestTypedVercelRouteStreamFetchOptionsArgs: VercelRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedVercelRouteStreamFetchOptions];
 const vercelStreamRouteFetchOptionsArgs: VercelStreamRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -21682,6 +21704,10 @@ requestTypedVercelRouteUnaryFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedVercelRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathVercelRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
@@ -21702,6 +21728,11 @@ const routeStreamVercelFetch = createRouteStreamVercelFetch(
   manifest,
   vercelRouteStreamFetchOptions
 );
+const directHookTypedRouteStreamVercelFetch: VercelFetchHandler<HookAppRequest> =
+  createRouteStreamVercelFetch(
+    manifest,
+    requestTypedVercelRouteStreamFetchOptions
+  );
 const streamRouteVercelFetch = createStreamRouteVercelFetch(
   manifest,
   vercelStreamRouteFetchOptions
@@ -21721,6 +21752,11 @@ const runtimeSubpathRouteStreamVercelFetch =
     manifest,
     runtimeSubpathVercelRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamVercelFetch: RuntimeSubpathVercelFetchHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamVercelFetch(
+    manifest,
+    requestTypedRuntimeSubpathVercelRouteStreamFetchOptions
+  );
 const runtimeSubpathStreamRouteVercelFetch =
   createRuntimeSubpathStreamRouteVercelFetch(
     manifest,
@@ -21733,6 +21769,11 @@ const typedRouteUnaryVercelFetch =
   );
 createUnaryRouteVercelFetchFor()(manifest, vercelUnaryRouteFetchOptions);
 createRouteStreamVercelFetchFor()(manifest, vercelRouteStreamFetchOptions);
+const routeStreamHookTypedVercelFetch =
+  createRouteStreamVercelFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedVercelRouteStreamFetchOptions
+  );
 createStreamRouteVercelFetchFor()(manifest, vercelStreamRouteFetchOptions);
 createRuntimeSubpathRouteUnaryVercelFetchFor<HookAppRequest>()(
   manifest,
@@ -21746,6 +21787,11 @@ createRuntimeSubpathRouteStreamVercelFetchFor()(
   manifest,
   runtimeSubpathVercelRouteStreamFetchOptions
 );
+const runtimeSubpathRouteStreamHookTypedVercelFetch =
+  createRuntimeSubpathRouteStreamVercelFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathVercelRouteStreamFetchOptions
+  );
 createRuntimeSubpathStreamRouteVercelFetchFor()(
   manifest,
   runtimeSubpathVercelStreamRouteFetchOptions
@@ -21762,6 +21808,11 @@ const routeStreamVercelFunction = createRouteStreamVercelFunction(
   manifest,
   vercelRouteStreamFetchOptions
 );
+const directHookTypedRouteStreamVercelFunction: VercelFunction<HookAppRequest> =
+  createRouteStreamVercelFunction(
+    manifest,
+    requestTypedVercelRouteStreamFetchOptions
+  );
 const streamRouteVercelFunction = createStreamRouteVercelFunction(
   manifest,
   vercelStreamRouteFetchOptions
@@ -21781,6 +21832,11 @@ const runtimeSubpathRouteStreamVercelFunction =
     manifest,
     runtimeSubpathVercelRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamVercelFunction: RuntimeSubpathVercelFunction<HookAppRequest> =
+  createRuntimeSubpathRouteStreamVercelFunction(
+    manifest,
+    requestTypedRuntimeSubpathVercelRouteStreamFetchOptions
+  );
 const runtimeSubpathStreamRouteVercelFunction =
   createRuntimeSubpathStreamRouteVercelFunction(
     manifest,
@@ -21793,6 +21849,11 @@ const typedRouteUnaryVercelFunction =
   );
 createUnaryRouteVercelFunctionFor()(manifest, vercelUnaryRouteFetchOptions);
 createRouteStreamVercelFunctionFor()(manifest, vercelRouteStreamFetchOptions);
+const routeStreamHookTypedVercelFunction =
+  createRouteStreamVercelFunctionFor<HookAppRequest>()(
+    manifest,
+    requestTypedVercelRouteStreamFetchOptions
+  );
 createStreamRouteVercelFunctionFor()(manifest, vercelStreamRouteFetchOptions);
 createRuntimeSubpathRouteUnaryVercelFunctionFor<HookAppRequest>()(
   manifest,
@@ -21806,6 +21867,11 @@ createRuntimeSubpathRouteStreamVercelFunctionFor()(
   manifest,
   runtimeSubpathVercelRouteStreamFetchOptions
 );
+const runtimeSubpathRouteStreamHookTypedVercelFunction =
+  createRuntimeSubpathRouteStreamVercelFunctionFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathVercelRouteStreamFetchOptions
+  );
 createRuntimeSubpathStreamRouteVercelFunctionFor()(
   manifest,
   runtimeSubpathVercelStreamRouteFetchOptions
@@ -21816,10 +21882,14 @@ defaultVercelFetch(new Request('https://example.com/rpc'));
 routeUnaryVercelFetch(new Request('https://example.com/rpc'));
 unaryRouteVercelFetch(new Request('https://example.com/rpc'));
 routeStreamVercelFetch(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamVercelFetch(hookAppRequest);
 streamRouteVercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryVercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteVercelFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamVercelFetch(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamVercelFetch(hookAppRequest);
+routeStreamHookTypedVercelFetch(hookAppRequest);
+runtimeSubpathRouteStreamHookTypedVercelFetch(hookAppRequest);
 runtimeSubpathStreamRouteVercelFetch(new Request('https://example.com/rpc'));
 typedAppVercelFetch(appFetchRequest);
 runtimeSubpathTypedAppVercelFetch(appFetchRequest);
@@ -21832,6 +21902,7 @@ defaultVercelFunction.fetch(new Request('https://example.com/rpc'));
 routeUnaryVercelFunction.fetch(new Request('https://example.com/rpc'));
 unaryRouteVercelFunction.fetch(new Request('https://example.com/rpc'));
 routeStreamVercelFunction.fetch(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamVercelFunction.fetch(hookAppRequest);
 streamRouteVercelFunction.fetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryVercelFunction.fetch(
   new Request('https://example.com/rpc')
@@ -21842,6 +21913,9 @@ runtimeSubpathUnaryRouteVercelFunction.fetch(
 runtimeSubpathRouteStreamVercelFunction.fetch(
   new Request('https://example.com/rpc')
 );
+directRuntimeSubpathHookTypedRouteStreamVercelFunction.fetch(hookAppRequest);
+routeStreamHookTypedVercelFunction.fetch(hookAppRequest);
+runtimeSubpathRouteStreamHookTypedVercelFunction.fetch(hookAppRequest);
 runtimeSubpathStreamRouteVercelFunction.fetch(
   new Request('https://example.com/rpc')
 );
@@ -21862,10 +21936,42 @@ typedRouteUnaryVercelFetch(
   // @ts-expect-error route-unary Vercel fetch factories preserve custom request types.
   new Request('https://example.com/rpc')
 );
+routeStreamHookTypedVercelFetch(
+  // @ts-expect-error route-stream Vercel fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamHookTypedVercelFetch(
+  // @ts-expect-error runtime-subpath route-stream Vercel fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamVercelFetch(
+  // @ts-expect-error direct route-stream Vercel fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamVercelFetch(
+  // @ts-expect-error direct runtime-subpath route-stream Vercel fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
 // @ts-expect-error direct typed Vercel functions infer custom hook request types.
 directHookTypedVercelFunction.fetch(new Request('https://example.com/rpc'));
 typedRouteUnaryVercelFunction.fetch(
   // @ts-expect-error route-unary Vercel function factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+routeStreamHookTypedVercelFunction.fetch(
+  // @ts-expect-error route-stream Vercel function factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+runtimeSubpathRouteStreamHookTypedVercelFunction.fetch(
+  // @ts-expect-error runtime-subpath route-stream Vercel function factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamVercelFunction.fetch(
+  // @ts-expect-error direct route-stream Vercel functions infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamVercelFunction.fetch(
+  // @ts-expect-error direct runtime-subpath route-stream Vercel functions infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 // @ts-expect-error service-dependent manifests require matching Vercel adapter plugins.
