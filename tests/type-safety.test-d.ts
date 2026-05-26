@@ -23190,6 +23190,12 @@ const koaRouteStreamHandlerOptions: KoaRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = koaHandlerOptions;
+const requestTypedKoaRouteStreamHandlerOptions: KoaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = { ...requestTypedNextRouteStreamHandlersOptions, hostname: 'app' };
 const koaStreamRouteHandlerOptions: KoaStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -23202,6 +23208,12 @@ const runtimeSubpathKoaRouteStreamHandlerOptions: RuntimeSubpathKoaRouteStreamHa
   typeof manifest,
   readonly [typeof usersPlugin]
 > = koaStreamRouteHandlerOptions;
+const requestTypedRuntimeSubpathKoaRouteStreamHandlerOptions: RuntimeSubpathKoaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedKoaRouteStreamHandlerOptions;
 const runtimeSubpathKoaUnaryRouteHandlerOptions: RuntimeSubpathKoaUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -23284,6 +23296,12 @@ const koaRouteStreamHandlerOptionsArgs: KoaRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = koaHandlerOptionsArgs;
+const requestTypedKoaRouteStreamHandlerOptionsArgs: KoaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedKoaRouteStreamHandlerOptions];
 const koaStreamRouteHandlerOptionsArgs: KoaStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -23312,6 +23330,14 @@ exactKoaHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
 requestTypedKoaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
+);
+requestTypedKoaRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathKoaRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
 );
 koaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathKoaRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
@@ -23354,6 +23380,7 @@ const routeStreamKoaMiddleware: KoaMiddleware = createRouteStreamKoaHandler(
   manifest,
   koaRouteStreamHandlerOptions
 );
+createRouteStreamKoaHandler(manifest, requestTypedKoaRouteStreamHandlerOptions);
 const streamRouteKoaMiddleware: KoaMiddleware = createStreamRouteKoaHandler(
   manifest,
   koaStreamRouteHandlerOptions
@@ -23377,6 +23404,10 @@ const runtimeSubpathRouteStreamKoaMiddleware: RuntimeSubpathKoaMiddleware =
     manifest,
     runtimeSubpathKoaRouteStreamHandlerOptions
   );
+createRuntimeSubpathRouteStreamKoaHandler(
+  manifest,
+  requestTypedRuntimeSubpathKoaRouteStreamHandlerOptions
+);
 const runtimeSubpathStreamRouteKoaMiddleware: RuntimeSubpathKoaMiddleware =
   createRuntimeSubpathStreamRouteKoaHandler(
     manifest,
@@ -23416,6 +23447,11 @@ const typedRouteUnaryKoaMiddleware: KoaMiddleware<KoaAppContext, KoaAppNext> =
     manifest,
     koaRouteUnaryHandlerOptions
   );
+const typedRouteStreamKoaMiddleware: KoaMiddleware<KoaAppContext, KoaAppNext> =
+  createRouteStreamKoaHandlerFor<KoaAppContext, KoaAppNext>()(
+    manifest,
+    requestTypedKoaRouteStreamHandlerOptions
+  );
 createUnaryRouteKoaHandlerFor()(manifest, koaUnaryRouteHandlerOptions);
 createRouteStreamKoaHandlerFor()(manifest, koaRouteStreamHandlerOptions);
 createStreamRouteKoaHandlerFor()(manifest, koaStreamRouteHandlerOptions);
@@ -23437,6 +23473,13 @@ const runtimeSubpathTypedRouteUnaryKoaMiddleware: RuntimeSubpathKoaMiddleware<
   RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
   RuntimeSubpathKoaNext & KoaAppNext
 >()(manifest, runtimeSubpathKoaRouteUnaryHandlerOptions);
+const runtimeSubpathTypedRouteStreamKoaMiddleware: RuntimeSubpathKoaMiddleware<
+  RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
+  RuntimeSubpathKoaNext & KoaAppNext
+> = createRuntimeSubpathRouteStreamKoaHandlerFor<
+  RuntimeSubpathKoaContext<KoaAppRequest, KoaAppResponse> & KoaAppContext,
+  RuntimeSubpathKoaNext & KoaAppNext
+>()(manifest, requestTypedRuntimeSubpathKoaRouteStreamHandlerOptions);
 createRuntimeSubpathUnaryRouteKoaHandlerFor()(
   manifest,
   runtimeSubpathKoaUnaryRouteHandlerOptions
@@ -23470,13 +23513,28 @@ runtimeSubpathStreamRouteKoaMiddleware(koaContext, koaNext);
 runtimeSubpathSyncKoaMiddleware(koaContext, syncKoaNext);
 typedKoaMiddleware(koaAppContext, koaAppNext);
 typedRouteUnaryKoaMiddleware(koaAppContext, koaAppNext);
+typedRouteStreamKoaMiddleware(koaAppContext, koaAppNext);
 runtimeSubpathTypedKoaMiddleware(koaAppContext, koaAppNext);
 runtimeSubpathTypedRouteUnaryKoaMiddleware(koaAppContext, koaAppNext);
+runtimeSubpathTypedRouteStreamKoaMiddleware(koaAppContext, koaAppNext);
+requestTypedKoaRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Koa options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathKoaRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Koa options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const _koaMismatchedContext =
   // @ts-expect-error typed Koa contexts preserve the response's request type.
   {} as KoaContext<KoaAppRequest, KoaMismatchedResponse>;
 const _koaRouteUnaryMismatchedContext =
   // @ts-expect-error route-unary typed Koa contexts preserve the response's request type.
+  {} as KoaContext<KoaAppRequest, KoaMismatchedResponse>;
+const _koaRouteStreamMismatchedContext =
+  // @ts-expect-error route-stream typed Koa contexts preserve the response's request type.
   {} as KoaContext<KoaAppRequest, KoaMismatchedResponse>;
 // @ts-expect-error service-dependent manifests require matching Koa adapter plugins.
 createKoaHandler(manifest);
