@@ -1862,6 +1862,7 @@ import type { NativeProtocolBatchClientHeaders, NativeProtocolBatchOptions, Nati
 import type { NativeConfig, NativeConfigBody, NativeConfigFor, NativeConfigManifest, NativeConfigRequest, NativeConfigServices, NativeDefineConfig, NativeDefineHandlerOptions, NativeDefineRouteStreamConfig, NativeDefineRouteStreamHandlerOptions, NativeDefineRouteUnaryConfig, NativeDefineRouteUnaryHandlerOptions, NativeDefineStreamRouteConfig, NativeDefineStreamRouteHandlerOptions, NativeDefineUnaryRouteConfig, NativeDefineUnaryRouteHandlerOptions, NativeHandlerHookContext, NativeHandlerHooks, NativeHandlerOptionServices, NativeHandlerOptions, NativeHandlerOptionsArgs, NativeHandlerOptionsArgsFor, NativeHandlerOptionsBody, NativeHandlerOptionsFor, NativeHandlerOptionsManifest, NativeHandlerOptionsRequest, NativeHandlerOptionsServices, NativeHandlerOptionsWithPreflightArgs, NativeHandlerOptionsWithTrailingArgs, NativeMiddleware, NativeRouteStreamConfig, NativeRouteStreamConfigFor, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeRouteUnaryConfig, NativeRouteUnaryConfigFor, NativeRouteUnaryHandlerHookContext, NativeRouteUnaryHandlerHooks, NativeRouteUnaryHandlerOptions, NativeRouteUnaryHandlerOptionsArgs, NativeRouteUnaryHandlerOptionsArgsFor, NativeRouteUnaryHandlerOptionsFor, NativeRouteUnaryHandlerOptionsWithPreflightArgs, NativeRouteUnaryHandlerOptionsWithTrailingArgs, NativeRouteUnaryMiddleware, NativeStreamRouteConfig, NativeStreamRouteConfigFor, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware, NativeUnaryRouteConfig, NativeUnaryRouteConfigFor, NativeUnaryRouteHandlerHookContext, NativeUnaryRouteHandlerHooks, NativeUnaryRouteHandlerOptions, NativeUnaryRouteHandlerOptionsArgs, NativeUnaryRouteHandlerOptionsArgsFor, NativeUnaryRouteHandlerOptionsFor, NativeUnaryRouteHandlerOptionsWithPreflightArgs, NativeUnaryRouteHandlerOptionsWithTrailingArgs, NativeUnaryRouteMiddleware } from './dispatcher.safe.js';
 import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
 import { createPlugin } from 'joor';
+import awsLambdaHandler, { createAwsLambdaHandlerFor as createGeneratedAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor as createGeneratedAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest as createGeneratedAwsLambdaRequest, createAwsLambdaRestApiHandlerFor as createGeneratedAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest as createGeneratedAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandlerFor as createGeneratedRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandlerFor as createGeneratedRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandlerFor as createGeneratedRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandlerFor as createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor, handler as namedAwsLambdaHandler, restApiHandler as namedAwsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaRestApiHandlerFactory } from './aws-lambda.js';
 import { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, serve as serveBunNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
 import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
 import { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, serve as serveDenoNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
@@ -1870,6 +1871,7 @@ import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedN
 import { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
 import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import type { AwsLambdaHandler, AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler } from 'joor/runtime/aws-lambda';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
 import type { NetlifyEdgeFetchHandler, NetlifyEdgeResult } from 'joor/runtime/netlify';
 import type { NextRouteHandlers } from 'joor/runtime/next';
@@ -1893,6 +1895,49 @@ class GeneratedRequest extends Request {
   readonly runtimeTag = 'generated';
 }
 const generatedRequest = new GeneratedRequest('https://example.com/rpc');
+const generatedAwsLambdaEvent: AwsLambdaHttpEventV2 = {
+  rawPath: '/rpc',
+  rawQueryString: '',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+  requestContext: { http: { method: 'POST' } },
+};
+const generatedAwsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
+  path: '/rpc',
+  httpMethod: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+};
+interface GeneratedAwsLambdaEvent extends AwsLambdaHttpEventV2 {
+  readonly runtimeTag: 'lambda';
+}
+const generatedTypedAwsLambdaEvent: GeneratedAwsLambdaEvent = {
+  ...generatedAwsLambdaEvent,
+  runtimeTag: 'lambda',
+};
+interface GeneratedAwsLambdaRestApiEvent extends AwsLambdaRestApiEventV1 {
+  readonly runtimeTag: 'rest-lambda';
+}
+const generatedTypedAwsLambdaRestApiEvent: GeneratedAwsLambdaRestApiEvent = {
+  ...generatedAwsLambdaRestApiEvent,
+  runtimeTag: 'rest-lambda',
+};
+const generatedAwsLambdaHandler: AwsLambdaHandler = awsLambdaHandler;
+const generatedNamedAwsLambdaHandler: AwsLambdaHandler = namedAwsLambdaHandler;
+const generatedTypedAwsLambdaHandler: AwsLambdaHandler<GeneratedAwsLambdaEvent> =
+  createGeneratedAwsLambdaHandlerFor<GeneratedAwsLambdaEvent>()();
+const generatedRouteUnaryAwsLambdaFactory: NativeAwsLambdaHandlerFactory =
+  createGeneratedRouteUnaryAwsLambdaHandlerFor();
+const generatedRouteStreamAwsLambdaFactory: NativeAwsLambdaHandlerFactory =
+  createGeneratedRouteStreamAwsLambdaHandlerFor();
+const generatedAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  namedAwsLambdaRestApiHandler;
+const generatedTypedAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<GeneratedAwsLambdaRestApiEvent> =
+  createGeneratedAwsLambdaRestApiHandlerFor<GeneratedAwsLambdaRestApiEvent>()();
+const generatedRouteUnaryAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory =
+  createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor();
+const generatedRouteStreamAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory =
+  createGeneratedRouteStreamAwsLambdaRestApiHandlerFor();
 const generatedCloudflareWorker: CloudflareWorker = cloudflareWorker;
 const generatedCloudflareFetch: NativeFetchHandler = cloudflareFetch;
 const generatedDefaultNativeFetch: NativeFetchHandler = createNativeFetchFor();
@@ -1927,6 +1972,24 @@ const generatedTypedNetlifyEdge: NetlifyEdgeFetchHandler<
 const generatedNamedNetlifyEdge: NetlifyEdgeFetchHandler = namedNetlifyEdge;
 const generatedNetlifyEdgeResult: NetlifyEdgeResult | Promise<NetlifyEdgeResult> =
   generatedNamedNetlifyEdge(new Request('https://example.com/rpc'), {});
+createGeneratedAwsLambdaRequest(generatedAwsLambdaEvent).headers.get(
+  'content-type'
+);
+createGeneratedAwsLambdaRestApiRequest(
+  generatedAwsLambdaRestApiEvent
+).headers.get('content-type');
+generatedAwsLambdaHandler(generatedAwsLambdaEvent);
+generatedNamedAwsLambdaHandler(generatedAwsLambdaEvent);
+generatedTypedAwsLambdaHandler(generatedTypedAwsLambdaEvent);
+createGeneratedAwsLambdaHandlerFor()()(generatedAwsLambdaEvent);
+createGeneratedAwsLambdaHttpApiHandlerFor()()(generatedAwsLambdaEvent);
+generatedRouteUnaryAwsLambdaFactory()(generatedAwsLambdaEvent);
+generatedRouteStreamAwsLambdaFactory()(generatedAwsLambdaEvent);
+generatedAwsLambdaRestApiHandler(generatedAwsLambdaRestApiEvent);
+generatedTypedAwsLambdaRestApiHandler(generatedTypedAwsLambdaRestApiEvent);
+createGeneratedAwsLambdaRestApiHandlerFor()()(generatedAwsLambdaRestApiEvent);
+generatedRouteUnaryAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
+generatedRouteStreamAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
 generatedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedCloudflareFetch(new Request('https://example.com/rpc'));
 generatedDefaultNativeFetch(new Request('https://example.com/rpc'));
@@ -4604,6 +4667,7 @@ invalidNativeBatch;
             },
             include: [
               usageFile,
+              join(outDir, 'aws-lambda.ts'),
               join(outDir, 'client.ts'),
               join(outDir, 'dispatcher.safe.ts'),
               join(outDir, 'dispatcher.streaming.ts'),
