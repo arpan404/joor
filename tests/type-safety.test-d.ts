@@ -3655,6 +3655,106 @@ serveRouteStreamBun(
   routeKindScopedManifest,
   routeKindScopedStreamBunServeOptions
 );
+const routeKindScopedUnaryDenoFetch = createRouteUnaryDenoFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryDenoFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryDenoFetch(
+  // @ts-expect-error route-unary Deno fetch helpers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamDenoFetch = createRouteStreamDenoFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamDenoFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamDenoFetch(
+  // @ts-expect-error route-stream Deno fetch helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryDenoRpcOptions: DenoRouteUnaryRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedUnaryHandlerOptions;
+const routeKindScopedUnaryDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryDenoRpcOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryDenoRpcRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Deno RPC options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryDenoRpcOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamDenoRpcOptions: DenoRouteStreamRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedStreamHandlerOptions;
+const routeKindScopedStreamDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamDenoRpcOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamDenoRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Deno RPC options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamDenoRpcOptions
+> = requestTypedProcedureRequest;
+const routeKindScopedUnaryDenoRpcHandler =
+  createRouteUnaryDenoRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryDenoRpcOptions
+  );
+routeKindScopedUnaryDenoRpcHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryDenoRpcHandler(
+  // @ts-expect-error route-unary Deno RPC handlers default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamDenoRpcHandler =
+  createRouteStreamDenoRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamDenoRpcOptions
+  );
+routeKindScopedStreamDenoRpcHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamDenoRpcHandler(
+  // @ts-expect-error route-stream Deno RPC handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryDenoServeOptions: DenoRouteUnaryServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = {
+  ...routeKindScopedUnaryHandlerOptions,
+  port: 0,
+};
+const routeKindScopedUnaryDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryDenoServeOptions
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryDenoServeRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Deno serve options default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedUnaryDenoServeOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedStreamDenoServeOptions: DenoRouteStreamServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = {
+  ...routeKindScopedStreamHandlerOptions,
+  port: 0,
+};
+const routeKindScopedStreamDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamDenoServeOptions
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamDenoServeRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Deno serve options default to stream-only request requirements.
+const _wrongRouteKindScopedStreamDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStreamDenoServeOptions
+> = requestTypedProcedureRequest;
+serveRouteUnaryDeno(
+  routeKindScopedManifest,
+  routeKindScopedUnaryDenoServeOptions
+);
+serveStreamRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamDenoServeOptions
+);
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof auditPlugin]
