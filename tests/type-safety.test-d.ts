@@ -152,6 +152,8 @@ import {
   createUnaryRouteDenoFetchFor,
   createUnaryRouteDenoRpcRequestHandler,
   createUnaryRouteDenoRpcRequestHandlerFor,
+  createUnaryRouteDenoTransportRequestHandlerFor,
+  createUnaryRouteDenoTransportRequestHandlerWithPathFor,
   createStandaloneRouteUnaryDenoTransportRequestHandler as createRootStandaloneRouteUnaryDenoTransportRequestHandler,
   createStandaloneRouteUnaryDenoTransportRequestHandlerFor as createRootStandaloneRouteUnaryDenoTransportRequestHandlerFor,
   createStandaloneRouteStreamDenoRpcRequestHandler as createRootStandaloneRouteStreamDenoRpcRequestHandler,
@@ -3718,6 +3720,28 @@ createRouteStreamNodeTransportRequestHandlerFor()(
   // @ts-expect-error route-stream Node transport factories reject unary transport handlers.
   routeKindScopedUnaryNodeTransportHandler
 );
+const routeKindScopedUnaryRouteNodeTransportRequestHandler =
+  createUnaryRouteNodeTransportRequestHandlerFor()(
+    routeKindScopedUnaryNodeTransportHandler
+  );
+const typedRouteKindScopedUnaryRouteNodeTransportRequestHandler: NodeRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteNodeTransportRequestHandler;
+typedRouteKindScopedUnaryRouteNodeTransportRequestHandler;
+createUnaryRouteNodeTransportRequestHandlerFor()(
+  // @ts-expect-error unary-route Node transport factories reject stream transport handlers.
+  routeKindScopedStreamNodeTransportHandler
+);
+const routeKindScopedStreamRouteNodeTransportRequestHandler =
+  createStreamRouteNodeTransportRequestHandlerFor()(
+    routeKindScopedStreamNodeTransportHandler
+  );
+const typedRouteKindScopedStreamRouteNodeTransportRequestHandler: NodeRouteStreamTransportRequestHandler =
+  routeKindScopedStreamRouteNodeTransportRequestHandler;
+typedRouteKindScopedStreamRouteNodeTransportRequestHandler;
+createStreamRouteNodeTransportRequestHandlerFor()(
+  // @ts-expect-error stream-route Node transport factories reject unary transport handlers.
+  routeKindScopedUnaryNodeTransportHandler
+);
 createNodeTransportRequestHandlerFor()(routeKindScopedNodeTransportHandler);
 const routeKindScopedUnaryNodeTransportRequestHandlerWithPath =
   createRouteUnaryNodeTransportRequestHandlerWithPathFor()(
@@ -3742,6 +3766,32 @@ const typedRouteKindScopedStreamNodeTransportRequestHandlerWithPath: NodeRouteSt
 typedRouteKindScopedStreamNodeTransportRequestHandlerWithPath;
 createRouteStreamNodeTransportRequestHandlerWithPathFor()(
   // @ts-expect-error route-stream Node transport WithPath factories reject unary transport handlers.
+  routeKindScopedUnaryNodeTransportHandler,
+  '/rpc'
+);
+const routeKindScopedUnaryRouteNodeTransportRequestHandlerWithPath =
+  createUnaryRouteNodeTransportRequestHandlerWithPathFor()(
+    routeKindScopedUnaryNodeTransportHandler,
+    '/rpc'
+  );
+const typedRouteKindScopedUnaryRouteNodeTransportRequestHandlerWithPath: NodeRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteNodeTransportRequestHandlerWithPath;
+typedRouteKindScopedUnaryRouteNodeTransportRequestHandlerWithPath;
+createUnaryRouteNodeTransportRequestHandlerWithPathFor()(
+  // @ts-expect-error unary-route Node transport WithPath factories reject stream transport handlers.
+  routeKindScopedStreamNodeTransportHandler,
+  '/rpc'
+);
+const routeKindScopedStreamRouteNodeTransportRequestHandlerWithPath =
+  createStreamRouteNodeTransportRequestHandlerWithPathFor()(
+    routeKindScopedStreamNodeTransportHandler,
+    '/rpc'
+  );
+const typedRouteKindScopedStreamRouteNodeTransportRequestHandlerWithPath: NodeRouteStreamTransportRequestHandler =
+  routeKindScopedStreamRouteNodeTransportRequestHandlerWithPath;
+typedRouteKindScopedStreamRouteNodeTransportRequestHandlerWithPath;
+createStreamRouteNodeTransportRequestHandlerWithPathFor()(
+  // @ts-expect-error stream-route Node transport WithPath factories reject unary transport handlers.
   routeKindScopedUnaryNodeTransportHandler,
   '/rpc'
 );
@@ -3818,6 +3868,32 @@ createRouteStreamBunTransportRequestHandlerFor()(
   // @ts-expect-error route-stream Bun transport factories reject unary transport handlers.
   routeKindScopedUnaryBunTransportHandler
 );
+const routeKindScopedUnaryRouteBunTransportRequestHandler =
+  createUnaryRouteBunTransportRequestHandlerFor()(
+    routeKindScopedUnaryBunTransportHandler
+  );
+const typedRouteKindScopedUnaryRouteBunTransportRequestHandler: BunRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteBunTransportRequestHandler;
+typedRouteKindScopedUnaryRouteBunTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createUnaryRouteBunTransportRequestHandlerFor()(
+  // @ts-expect-error unary-route Bun transport factories reject stream transport handlers.
+  routeKindScopedStreamBunTransportHandler
+);
+const routeKindScopedStreamRouteBunTransportRequestHandler =
+  createStreamRouteBunTransportRequestHandlerFor()(
+    routeKindScopedStreamBunTransportHandler
+  );
+const typedRouteKindScopedStreamRouteBunTransportRequestHandler: BunRouteStreamTransportRequestHandler =
+  routeKindScopedStreamRouteBunTransportRequestHandler;
+typedRouteKindScopedStreamRouteBunTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createStreamRouteBunTransportRequestHandlerFor()(
+  // @ts-expect-error stream-route Bun transport factories reject unary transport handlers.
+  routeKindScopedUnaryBunTransportHandler
+);
 createBunTransportRequestHandlerFor()(routeKindScopedBunTransportHandler);
 const routeKindScopedUnaryBunTransportRequestHandlerWithPath =
   createRouteUnaryBunTransportRequestHandlerWithPathFor()(
@@ -3846,6 +3922,36 @@ typedRouteKindScopedStreamBunTransportRequestHandlerWithPath(
 );
 createRouteStreamBunTransportRequestHandlerWithPathFor()(
   // @ts-expect-error route-stream Bun transport WithPath factories reject unary transport handlers.
+  routeKindScopedUnaryBunTransportHandler,
+  '/rpc'
+);
+const routeKindScopedUnaryRouteBunTransportRequestHandlerWithPath =
+  createUnaryRouteBunTransportRequestHandlerWithPathFor()(
+    routeKindScopedUnaryBunTransportHandler,
+    '/rpc'
+  );
+const typedRouteKindScopedUnaryRouteBunTransportRequestHandlerWithPath: BunRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteBunTransportRequestHandlerWithPath;
+typedRouteKindScopedUnaryRouteBunTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+createUnaryRouteBunTransportRequestHandlerWithPathFor()(
+  // @ts-expect-error unary-route Bun transport WithPath factories reject stream transport handlers.
+  routeKindScopedStreamBunTransportHandler,
+  '/rpc'
+);
+const routeKindScopedStreamRouteBunTransportRequestHandlerWithPath =
+  createStreamRouteBunTransportRequestHandlerWithPathFor()(
+    routeKindScopedStreamBunTransportHandler,
+    '/rpc'
+  );
+const typedRouteKindScopedStreamRouteBunTransportRequestHandlerWithPath: BunRouteStreamTransportRequestHandler =
+  routeKindScopedStreamRouteBunTransportRequestHandlerWithPath;
+typedRouteKindScopedStreamRouteBunTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+createStreamRouteBunTransportRequestHandlerWithPathFor()(
+  // @ts-expect-error stream-route Bun transport WithPath factories reject unary transport handlers.
   routeKindScopedUnaryBunTransportHandler,
   '/rpc'
 );
@@ -3922,6 +4028,19 @@ createStreamRouteDenoTransportRequestHandlerFor()(
   // @ts-expect-error route-stream Deno transport factories reject unary transport handlers.
   routeKindScopedUnaryDenoTransportHandler
 );
+const routeKindScopedUnaryRouteDenoTransportRequestHandler =
+  createUnaryRouteDenoTransportRequestHandlerFor()(
+    routeKindScopedUnaryDenoTransportHandler
+  );
+const typedRouteKindScopedUnaryRouteDenoTransportRequestHandler: DenoRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteDenoTransportRequestHandler;
+typedRouteKindScopedUnaryRouteDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createUnaryRouteDenoTransportRequestHandlerFor()(
+  // @ts-expect-error unary-route Deno transport factories reject stream transport handlers.
+  routeKindScopedStreamDenoTransportHandler
+);
 createDenoTransportRequestHandlerFor()(routeKindScopedDenoTransportHandler);
 const routeKindScopedUnaryDenoTransportRequestHandlerWithPath =
   createRouteUnaryDenoTransportRequestHandlerWithPathFor()(
@@ -3966,6 +4085,21 @@ typedRouteKindScopedRouteStreamDenoTransportRequestHandlerWithPath(
 createRouteStreamDenoTransportRequestHandlerWithPathFor()(
   // @ts-expect-error route-stream Deno transport WithPath route aliases reject unary transport handlers.
   routeKindScopedUnaryDenoTransportHandler,
+  '/rpc'
+);
+const routeKindScopedUnaryRouteDenoTransportRequestHandlerWithPath =
+  createUnaryRouteDenoTransportRequestHandlerWithPathFor()(
+    routeKindScopedUnaryDenoTransportHandler,
+    '/rpc'
+  );
+const typedRouteKindScopedUnaryRouteDenoTransportRequestHandlerWithPath: DenoRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryRouteDenoTransportRequestHandlerWithPath;
+typedRouteKindScopedUnaryRouteDenoTransportRequestHandlerWithPath(
+  new Request('https://example.com/rpc')
+);
+createUnaryRouteDenoTransportRequestHandlerWithPathFor()(
+  // @ts-expect-error unary-route Deno transport WithPath factories reject stream transport handlers.
+  routeKindScopedStreamDenoTransportHandler,
   '/rpc'
 );
 createDenoTransportRequestHandlerWithPathFor()(
@@ -5237,6 +5371,14 @@ createRouteStreamNodeRpcRequestHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamNodeRpcOptions
 );
+createUnaryRouteNodeRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeRpcOptions
+);
+createStreamRouteNodeRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeRpcOptions
+);
 createNodeRpcRequestHandlerFor()(routeKindScopedManifest, {
   ...routeKindScopedNodeRpcOptions,
   hooks: {
@@ -5573,6 +5715,24 @@ routeKindScopedStreamBunFetch(
   // @ts-expect-error route-stream Bun fetch helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryRouteBunFetch = createUnaryRouteBunFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteBunFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteBunFetch(
+  // @ts-expect-error unary-route Bun fetch aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteBunFetch = createStreamRouteBunFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteBunFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteBunFetch(
+  // @ts-expect-error stream-route Bun fetch aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryBunRpcOptions: BunRouteUnaryRpcRequestHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -5615,6 +5775,26 @@ const routeKindScopedStreamBunRpcHandler =
 routeKindScopedStreamBunRpcHandler(requestTypedStreamProcedureRequest);
 routeKindScopedStreamBunRpcHandler(
   // @ts-expect-error route-stream Bun RPC handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryRouteBunRpcHandler =
+  createUnaryRouteBunRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryBunRpcOptions
+  );
+routeKindScopedUnaryRouteBunRpcHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteBunRpcHandler(
+  // @ts-expect-error unary-route Bun RPC aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteBunRpcHandler =
+  createStreamRouteBunRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamBunRpcOptions
+  );
+routeKindScopedStreamRouteBunRpcHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteBunRpcHandler(
+  // @ts-expect-error stream-route Bun RPC aliases default to stream-only request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedBunFetchOptions: BunFetchOptionsFor<
@@ -5771,6 +5951,24 @@ routeKindScopedStreamDenoFetch(
   // @ts-expect-error route-stream Deno fetch helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryRouteDenoFetch = createUnaryRouteDenoFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteDenoFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteDenoFetch(
+  // @ts-expect-error unary-route Deno fetch aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteDenoFetch = createStreamRouteDenoFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteDenoFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteDenoFetch(
+  // @ts-expect-error stream-route Deno fetch aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryDenoRpcOptions: DenoRouteUnaryRpcRequestHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -5813,6 +6011,26 @@ const routeKindScopedStreamDenoRpcHandler =
 routeKindScopedStreamDenoRpcHandler(requestTypedStreamProcedureRequest);
 routeKindScopedStreamDenoRpcHandler(
   // @ts-expect-error route-stream Deno RPC handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedUnaryRouteDenoRpcHandler =
+  createUnaryRouteDenoRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryDenoRpcOptions
+  );
+routeKindScopedUnaryRouteDenoRpcHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteDenoRpcHandler(
+  // @ts-expect-error unary-route Deno RPC aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteDenoRpcHandler =
+  createStreamRouteDenoRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamDenoRpcOptions
+  );
+routeKindScopedStreamRouteDenoRpcHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteDenoRpcHandler(
+  // @ts-expect-error stream-route Deno RPC aliases default to stream-only request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedDenoFetchOptions: DenoFetchOptionsFor<
