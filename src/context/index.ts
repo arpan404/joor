@@ -4,7 +4,9 @@ export {
   defineConfigFor,
   defineRouteStreamConfigFor,
   defineRouteUnaryConfigFor,
+  defineStreamConfigFor,
   defineStreamRouteConfigFor,
+  defineUnaryConfigFor,
   defineUnaryRouteConfigFor,
 } from '../config.js';
 export {
@@ -29,8 +31,10 @@ export type {
 } from '../auth/policy.js';
 export type {
   DefineConfigFor,
+  DefineStreamConfigFor,
   DefineRouteStreamConfigFor,
   DefineRouteUnaryConfigFor,
+  DefineUnaryConfigFor,
   DefineStreamRouteConfigFor,
   DefineUnaryRouteConfigFor,
   HandlerOptionsBody,
@@ -47,7 +51,9 @@ export type {
   JoorConfigServices,
   JoorRouteStreamConfigFor,
   JoorRouteUnaryConfigFor,
+  JoorStreamConfigFor,
   JoorStreamRouteConfigFor,
+  JoorUnaryConfigFor,
   JoorUnaryRouteConfigFor,
 } from '../config.js';
 export type { ContextRequestSource, JoorContext } from './context.js';

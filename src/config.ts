@@ -76,6 +76,16 @@ export type JoorUnaryRouteConfigFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type JoorUnaryConfigFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type JoorRouteStreamConfigFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -95,6 +105,16 @@ export type JoorRouteStreamConfigFor<
 };
 
 export type JoorStreamRouteConfigFor<
+  TManifest extends RpcManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type JoorStreamConfigFor<
   TManifest extends RpcManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -204,6 +224,9 @@ export type DefineRouteUnaryConfigFor<TManifest extends RpcManifest> = <
 export type DefineUnaryRouteConfigFor<TManifest extends RpcManifest> =
   DefineRouteUnaryConfigFor<TManifest>;
 
+export type DefineUnaryConfigFor<TManifest extends RpcManifest> =
+  DefineRouteUnaryConfigFor<TManifest>;
+
 export type DefineRouteStreamConfigFor<TManifest extends RpcManifest> = <
   const TPlugins extends readonly JoorPlugin<object>[],
   const TBody extends RpcManifestRouteStreamBody<TManifest> =
@@ -215,6 +238,9 @@ export type DefineRouteStreamConfigFor<TManifest extends RpcManifest> = <
 ) => JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DefineStreamRouteConfigFor<TManifest extends RpcManifest> =
+  DefineRouteStreamConfigFor<TManifest>;
+
+export type DefineStreamConfigFor<TManifest extends RpcManifest> =
   DefineRouteStreamConfigFor<TManifest>;
 
 export function defineConfigFor<TManifest extends RpcManifest>(
@@ -245,6 +271,9 @@ export function defineRouteUnaryConfigFor<TManifest extends RpcManifest>(
 export const defineUnaryRouteConfigFor: typeof defineRouteUnaryConfigFor =
   defineRouteUnaryConfigFor;
 
+export const defineUnaryConfigFor: typeof defineRouteUnaryConfigFor =
+  defineRouteUnaryConfigFor;
+
 export function defineRouteStreamConfigFor<TManifest extends RpcManifest>(
   manifest: TManifest
 ): DefineRouteStreamConfigFor<TManifest>;
@@ -259,4 +288,7 @@ export function defineRouteStreamConfigFor<TManifest extends RpcManifest>(
 }
 
 export const defineStreamRouteConfigFor: typeof defineRouteStreamConfigFor =
+  defineRouteStreamConfigFor;
+
+export const defineStreamConfigFor: typeof defineRouteStreamConfigFor =
   defineRouteStreamConfigFor;

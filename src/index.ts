@@ -11,7 +11,9 @@ export {
   defineConfigFor,
   defineRouteStreamConfigFor,
   defineRouteUnaryConfigFor,
+  defineStreamConfigFor,
   defineStreamRouteConfigFor,
+  defineUnaryConfigFor,
   defineUnaryRouteConfigFor,
 } from './config.js';
 export { defineManifest } from './manifest.js';
@@ -630,8 +632,10 @@ export type {
 } from './context/plugin.js';
 export type {
   DefineConfigFor,
+  DefineStreamConfigFor,
   DefineRouteStreamConfigFor,
   DefineRouteUnaryConfigFor,
+  DefineUnaryConfigFor,
   DefineStreamRouteConfigFor,
   DefineUnaryRouteConfigFor,
   JoorConfig,
@@ -643,7 +647,9 @@ export type {
   JoorConfigServices,
   JoorRouteStreamConfigFor,
   JoorRouteUnaryConfigFor,
+  JoorStreamConfigFor,
   JoorStreamRouteConfigFor,
+  JoorUnaryConfigFor,
   JoorUnaryRouteConfigFor,
 } from './config.js';
 export type {

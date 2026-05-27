@@ -152,7 +152,9 @@ import {
   createUnaryRouteNodeTransportRequestHandlerWithPathFor as createRootUnaryRouteNodeTransportRequestHandlerWithPathFor,
   defineRouteStreamConfigFor as defineRootRouteStreamConfigFor,
   defineRouteUnaryConfigFor as defineRootRouteUnaryConfigFor,
+  defineStreamConfigFor as defineRootStreamConfigFor,
   defineStreamRouteConfigFor as defineRootStreamRouteConfigFor,
+  defineUnaryConfigFor as defineRootUnaryConfigFor,
   defineUnaryRouteConfigFor as defineRootUnaryRouteConfigFor,
   defineManifest,
   defineProcedure,
@@ -393,14 +395,18 @@ import {
   defineConfigFor,
   defineRouteStreamConfigFor,
   defineRouteUnaryConfigFor,
+  defineStreamConfigFor,
   defineStreamRouteConfigFor,
+  defineUnaryConfigFor,
   defineUnaryRouteConfigFor,
 } from 'joor/config';
 import {
   createRuntimeContext,
   defineRouteStreamConfigFor as defineContextRouteStreamConfigFor,
   defineRouteUnaryConfigFor as defineContextRouteUnaryConfigFor,
+  defineStreamConfigFor as defineContextStreamConfigFor,
   defineStreamRouteConfigFor as defineContextStreamRouteConfigFor,
+  defineUnaryConfigFor as defineContextUnaryConfigFor,
   defineUnaryRouteConfigFor as defineContextUnaryRouteConfigFor,
   type UnionToIntersection as ContextUnionToIntersection,
 } from 'joor/context';
@@ -2513,15 +2519,21 @@ const packageSubpathValues = [
   createRootUnaryRouteNodeTransportRequestHandlerWithPathFor,
   defineContextRouteStreamConfigFor,
   defineContextRouteUnaryConfigFor,
+  defineContextStreamConfigFor,
   defineContextStreamRouteConfigFor,
+  defineContextUnaryConfigFor,
   defineContextUnaryRouteConfigFor,
   defineRouteStreamConfigFor,
   defineRouteUnaryConfigFor,
   defineRootRouteStreamConfigFor,
   defineRootRouteUnaryConfigFor,
+  defineRootStreamConfigFor,
   defineRootStreamRouteConfigFor,
+  defineRootUnaryConfigFor,
   defineRootUnaryRouteConfigFor,
+  defineStreamConfigFor,
   defineStreamRouteConfigFor,
+  defineUnaryConfigFor,
   defineUnaryRouteConfigFor,
   createRootNetlifyEdgeFunction,
   createRootNetlifyEdgeFunctionFor,
@@ -3390,6 +3402,11 @@ type PackageSubpathRouteConfigSurface = [
     PackageSubpathPlugins,
     PackageSubpathBody
   >,
+  Root.JoorUnaryConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
   Root.JoorRouteStreamConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
@@ -3400,16 +3417,28 @@ type PackageSubpathRouteConfigSurface = [
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >,
+  Root.JoorStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
   Root.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
   Root.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Root.DefineUnaryConfigFor<PackageSubpathManifest>,
   Root.DefineRouteStreamConfigFor<PackageSubpathManifest>,
   Root.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+  Root.DefineStreamConfigFor<PackageSubpathManifest>,
   Config.JoorRouteUnaryConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathBody
   >,
   Config.JoorUnaryRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Config.JoorUnaryConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathBody
@@ -3424,16 +3453,28 @@ type PackageSubpathRouteConfigSurface = [
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >,
+  Config.JoorStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
   Config.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
   Config.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Config.DefineUnaryConfigFor<PackageSubpathManifest>,
   Config.DefineRouteStreamConfigFor<PackageSubpathManifest>,
   Config.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+  Config.DefineStreamConfigFor<PackageSubpathManifest>,
   Context.JoorRouteUnaryConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathBody
   >,
   Context.JoorUnaryRouteConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathBody
+  >,
+  Context.JoorUnaryConfigFor<
     PackageSubpathManifest,
     PackageSubpathPlugins,
     PackageSubpathBody
@@ -3448,10 +3489,17 @@ type PackageSubpathRouteConfigSurface = [
     PackageSubpathPlugins,
     PackageSubpathStreamBody
   >,
+  Context.JoorStreamConfigFor<
+    PackageSubpathManifest,
+    PackageSubpathPlugins,
+    PackageSubpathStreamBody
+  >,
   Context.DefineRouteUnaryConfigFor<PackageSubpathManifest>,
   Context.DefineUnaryRouteConfigFor<PackageSubpathManifest>,
+  Context.DefineUnaryConfigFor<PackageSubpathManifest>,
   Context.DefineRouteStreamConfigFor<PackageSubpathManifest>,
   Context.DefineStreamRouteConfigFor<PackageSubpathManifest>,
+  Context.DefineStreamConfigFor<PackageSubpathManifest>,
 ];
 type PackageSubpathRpcRouteCoreSurface = [
   Rpc.RpcManifestRouteUnaryClientOptions<PackageSubpathManifest>,
