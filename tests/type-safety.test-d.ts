@@ -5307,6 +5307,48 @@ routeKindScopedElysiaHandler({
   // @ts-expect-error full Elysia handlers default to all route request requirements.
   request: requestTypedStreamProcedureRequest,
 });
+const routeKindScopedRouteUnaryElysiaHandlerOptionsArgs: ElysiaRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedRouteUnaryElysiaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryElysiaHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryElysiaHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Elysia option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryElysiaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryElysiaHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteElysiaHandlerOptionsArgs: ElysiaUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryElysiaHandlerOptionsArgs;
+const routeKindScopedRouteStreamElysiaHandlerOptionsArgs: ElysiaRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedRouteStreamElysiaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamElysiaHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamElysiaHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Elysia option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamElysiaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamElysiaHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteElysiaHandlerOptionsArgs: ElysiaStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamElysiaHandlerOptionsArgs;
+routeKindScopedUnaryRouteElysiaHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteElysiaHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 const routeKindScopedUnaryExpressHandlerOptions: ExpressRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -5331,6 +5373,48 @@ routeKindScopedStreamExpressRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamExpressRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamExpressHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedRouteUnaryExpressHandlerOptionsArgs: ExpressRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryExpressHandlerOptions];
+const routeKindScopedRouteUnaryExpressHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryExpressHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryExpressHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Express option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryExpressHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryExpressHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteExpressHandlerOptionsArgs: ExpressUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryExpressHandlerOptionsArgs;
+const routeKindScopedRouteStreamExpressHandlerOptionsArgs: ExpressRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamExpressHandlerOptions];
+const routeKindScopedRouteStreamExpressHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamExpressHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamExpressHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Express option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamExpressHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamExpressHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteExpressHandlerOptionsArgs: ExpressStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamExpressHandlerOptionsArgs;
+routeKindScopedUnaryRouteExpressHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteExpressHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 const routeKindScopedExpressHandlerOptions: ExpressHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin, typeof auditPlugin]
@@ -5422,6 +5506,48 @@ routeKindScopedStreamKoaRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamKoaRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamKoaHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedRouteUnaryKoaHandlerOptionsArgs: KoaRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryKoaHandlerOptions];
+const routeKindScopedRouteUnaryKoaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryKoaHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryKoaHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Koa option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryKoaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryKoaHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteKoaHandlerOptionsArgs: KoaUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryKoaHandlerOptionsArgs;
+const routeKindScopedRouteStreamKoaHandlerOptionsArgs: KoaRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamKoaHandlerOptions];
+const routeKindScopedRouteStreamKoaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamKoaHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamKoaHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Koa option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamKoaHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamKoaHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteKoaHandlerOptionsArgs: KoaStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamKoaHandlerOptionsArgs;
+routeKindScopedUnaryRouteKoaHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteKoaHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 const routeKindScopedKoaHandlerOptions: KoaHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin, typeof auditPlugin]
@@ -5588,6 +5714,48 @@ routeKindScopedHonoHandler({
     raw: requestTypedStreamProcedureRequest,
   },
 });
+const routeKindScopedRouteUnaryHonoHandlerOptionsArgs: HonoRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedRouteUnaryHonoHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryHonoHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryHonoHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Hono option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryHonoHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryHonoHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteHonoHandlerOptionsArgs: HonoUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryHonoHandlerOptionsArgs;
+const routeKindScopedRouteStreamHonoHandlerOptionsArgs: HonoRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedRouteStreamHonoHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamHonoHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamHonoHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Hono option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamHonoHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamHonoHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteHonoHandlerOptionsArgs: HonoStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamHonoHandlerOptionsArgs;
+routeKindScopedUnaryRouteHonoHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteHonoHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 const routeKindScopedUnaryFastifyHandlerOptions: FastifyRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -5612,6 +5780,48 @@ routeKindScopedStreamFastifyRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamFastifyRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamFastifyHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedRouteUnaryFastifyHandlerOptionsArgs: FastifyRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryFastifyHandlerOptions];
+const routeKindScopedRouteUnaryFastifyHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryFastifyHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryFastifyHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Fastify option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryFastifyHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryFastifyHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteFastifyHandlerOptionsArgs: FastifyUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryFastifyHandlerOptionsArgs;
+const routeKindScopedRouteStreamFastifyHandlerOptionsArgs: FastifyRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamFastifyHandlerOptions];
+const routeKindScopedRouteStreamFastifyHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamFastifyHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamFastifyHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Fastify option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamFastifyHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamFastifyHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteFastifyHandlerOptionsArgs: FastifyStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamFastifyHandlerOptionsArgs;
+routeKindScopedUnaryRouteFastifyHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteFastifyHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 const routeKindScopedFastifyHandlerOptions: FastifyHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin, typeof auditPlugin]
