@@ -49,6 +49,9 @@ type GeneratedAwsLambdaModule = {
 type GeneratedFetchHandler = (request: Request) => Response | Promise<Response>;
 
 type GeneratedCloudflareModule = {
+  readonly createRouteStreamWorkerFor: () => {
+    readonly fetch: GeneratedFetchHandler;
+  };
   readonly createRouteUnaryWorkerFor: () => {
     readonly fetch: GeneratedFetchHandler;
   };
@@ -59,6 +62,9 @@ type GeneratedCloudflareModule = {
 
 type GeneratedNextModule = {
   readonly POST: GeneratedFetchHandler;
+  readonly createRouteUnaryHandlersFor: () => {
+    readonly POST: GeneratedFetchHandler;
+  };
   readonly createRouteStreamHandlersFor: () => {
     readonly POST: GeneratedFetchHandler;
   };
@@ -68,6 +74,9 @@ type GeneratedNextModule = {
 };
 
 type GeneratedVercelModule = {
+  readonly createRouteStreamVercelFor: () => {
+    readonly fetch: GeneratedFetchHandler;
+  };
   readonly createRouteUnaryVercelFor: () => {
     readonly fetch: GeneratedFetchHandler;
   };
@@ -84,6 +93,7 @@ type GeneratedNetlifyEdgeFunction = (
 ) => GeneratedNetlifyEdgeResult | Promise<GeneratedNetlifyEdgeResult>;
 
 type GeneratedNetlifyModule = {
+  readonly createRouteUnaryNetlifyEdgeFunctionFor: () => GeneratedNetlifyEdgeFunction;
   readonly createRouteStreamNetlifyEdgeFunctionFor: () => GeneratedNetlifyEdgeFunction;
   readonly edge: GeneratedNetlifyEdgeFunction;
 };
@@ -1883,6 +1893,40 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(routeStreamRestResponse.body).toContain('"type":"user.updated"');
       expect(routeStreamRestResponse.body).toContain('event: done');
+
+      const wrongRouteUnaryResponse =
+        await awsLambda.createRouteUnaryAwsLambdaHandlerFor()()({
+          ...httpUserEvent,
+          body: JSON.stringify({
+            id: 'users.watch',
+            input: { userId: 'wrong-kind' },
+          }),
+        });
+      expect(wrongRouteUnaryResponse.statusCode).toBe(200);
+      expect(JSON.parse(wrongRouteUnaryResponse.body ?? '{}')).toMatchObject({
+        ok: false,
+        id: 'users.watch',
+        error: { code: 'NOT_FOUND' },
+      });
+
+      const wrongRouteStreamResponse =
+        await awsLambda.createRouteStreamAwsLambdaRestApiHandlerFor()()({
+          ...restStreamEvent,
+          headers: {
+            ...restStreamEvent.headers,
+            authorization: 'Bearer test',
+          },
+          body: JSON.stringify({
+            id: 'users.get',
+            input: { id: userId },
+          }),
+        });
+      expect(wrongRouteStreamResponse.statusCode).toBe(200);
+      expect(JSON.parse(wrongRouteStreamResponse.body ?? '{}')).toMatchObject({
+        ok: false,
+        id: 'users.get',
+        error: { code: 'NOT_FOUND' },
+      });
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
@@ -1929,6 +1973,26 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
           ),
         { id: userId, name: 'Ada' }
       );
+      await expectGeneratedJsonError(
+        await cloudflare.createRouteUnaryWorkerFor().fetch(
+          createGeneratedRpcRequest('users.watch', {
+            userId: 'wrong-kind',
+          })
+        ),
+        'NOT_FOUND'
+      );
+      await expectGeneratedJsonError(
+        await cloudflare
+          .createRouteStreamWorkerFor()
+          .fetch(
+            createGeneratedRpcRequest(
+              'users.get',
+              { id: userId },
+              { accept: 'text/event-stream', authorization: 'Bearer test' }
+            )
+          ),
+        'NOT_FOUND'
+      );
       await expectGeneratedJsonData(
         await next.POST(
           createGeneratedRpcRequest('posts.list', { userId: 'next-post' })
@@ -1951,6 +2015,26 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(await nextStreamResponse.text()).toContain(
         '"userId":"next-stream"'
       );
+      await expectGeneratedJsonError(
+        await next.createRouteUnaryHandlersFor().POST(
+          createGeneratedRpcRequest('users.watch', {
+            userId: 'wrong-kind',
+          })
+        ),
+        'NOT_FOUND'
+      );
+      await expectGeneratedJsonError(
+        await next
+          .createRouteStreamHandlersFor()
+          .POST(
+            createGeneratedRpcRequest(
+              'users.get',
+              { id: userId },
+              { accept: 'text/event-stream', authorization: 'Bearer test' }
+            )
+          ),
+        'NOT_FOUND'
+      );
       await expectGeneratedJsonData(
         await vercel.vercel.fetch(
           createGeneratedRpcRequest('posts.list', { userId: 'vercel' })
@@ -1968,6 +2052,26 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
             )
           ),
         { id: userId, name: 'Ada' }
+      );
+      await expectGeneratedJsonError(
+        await vercel.createRouteUnaryVercelFor().fetch(
+          createGeneratedRpcRequest('users.watch', {
+            userId: 'wrong-kind',
+          })
+        ),
+        'NOT_FOUND'
+      );
+      await expectGeneratedJsonError(
+        await vercel
+          .createRouteStreamVercelFor()
+          .fetch(
+            createGeneratedRpcRequest(
+              'users.get',
+              { id: userId },
+              { accept: 'text/event-stream', authorization: 'Bearer test' }
+            )
+          ),
+        'NOT_FOUND'
       );
       const netlifyEdgeResult = await netlify.edge(
         createGeneratedRpcRequest('posts.list', { userId: 'netlify' }),
@@ -1994,6 +2098,33 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(await netlifyStreamResponse.text()).toContain(
         '"userId":"netlify-stream"'
+      );
+      const wrongNetlifyUnaryResult =
+        await netlify.createRouteUnaryNetlifyEdgeFunctionFor()(
+          createGeneratedRpcRequest('users.watch', {
+            userId: 'wrong-kind',
+          }),
+          {}
+        );
+      expect(wrongNetlifyUnaryResult).toBeInstanceOf(Response);
+      await expectGeneratedJsonError(
+        wrongNetlifyUnaryResult as Response,
+        'NOT_FOUND'
+      );
+
+      const wrongNetlifyStreamResult =
+        await netlify.createRouteStreamNetlifyEdgeFunctionFor()(
+          createGeneratedRpcRequest(
+            'users.get',
+            { id: userId },
+            { accept: 'text/event-stream', authorization: 'Bearer test' }
+          ),
+          {}
+        );
+      expect(wrongNetlifyStreamResult).toBeInstanceOf(Response);
+      await expectGeneratedJsonError(
+        wrongNetlifyStreamResult as Response,
+        'NOT_FOUND'
       );
     } finally {
       await rm(outDir, { recursive: true, force: true });
