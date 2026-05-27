@@ -4104,14 +4104,31 @@ const emitClient = async (
     }
     node.procedures.push(entry.id);
   }
-  const renderNode = (node: ClientTree, depth: number): string => {
+  type ClientRouteKind = 'all' | 'stream' | 'unary';
+  const includesRouteKind = (
+    entry: LoadedProcedure,
+    kind: ClientRouteKind
+  ): boolean =>
+    kind === 'all'
+      ? true
+      : kind === 'unary'
+        ? entry.procedure.stream === undefined
+        : entry.procedure.stream !== undefined;
+  const renderNode = (
+    node: ClientTree,
+    depth: number,
+    kind: ClientRouteKind = 'all'
+  ): string => {
     const indent = '  '.repeat(depth);
     const childBlocks = [...node.children.entries()]
-      .map(
-        ([name, child]) => `${indent}${JSON.stringify(name)}: {
-${renderNode(child, depth + 1)}
-${indent}},`
-      )
+      .map(([name, child]) => {
+        const childBody = renderNode(child, depth + 1, kind);
+        if (childBody.length === 0) return '';
+        return `${indent}${JSON.stringify(name)}: {
+${childBody}
+${indent}},`;
+      })
+      .filter(Boolean)
       .join('\n');
     const procedureBlocks = node.procedures
       .map((id) => {
@@ -4119,6 +4136,7 @@ ${indent}},`
         if (name === undefined) return '';
         const entry = entryById.get(id);
         if (entry === undefined) return '';
+        if (!includesRouteKind(entry, kind)) return '';
         const methods =
           entry.procedure.stream === undefined
             ? `routeUnary(${JSON.stringify(id)})`
@@ -4128,14 +4146,21 @@ ${indent}},`
       .join('\n');
     return [childBlocks, procedureBlocks].filter(Boolean).join('\n');
   };
-  const renderTypeNode = (node: ClientTree, depth: number): string => {
+  const renderTypeNode = (
+    node: ClientTree,
+    depth: number,
+    kind: ClientRouteKind = 'all'
+  ): string => {
     const indent = '  '.repeat(depth);
     const childBlocks = [...node.children.entries()]
-      .map(
-        ([name, child]) => `${indent}readonly ${JSON.stringify(name)}: {
-${renderTypeNode(child, depth + 1)}
-${indent}};`
-      )
+      .map(([name, child]) => {
+        const childBody = renderTypeNode(child, depth + 1, kind);
+        if (childBody.length === 0) return '';
+        return `${indent}readonly ${JSON.stringify(name)}: {
+${childBody}
+${indent}};`;
+      })
+      .filter(Boolean)
       .join('\n');
     const procedureBlocks = node.procedures
       .map((id) => {
@@ -4143,6 +4168,7 @@ ${indent}};`
         if (name === undefined) return '';
         const entry = entryById.get(id);
         if (entry === undefined) return '';
+        if (!includesRouteKind(entry, kind)) return '';
         const typeName =
           entry.procedure.stream === undefined
             ? 'RouteUnaryFunction'
@@ -4154,6 +4180,10 @@ ${indent}};`
   };
   const clientBody = renderNode(tree, 2);
   const clientTypeBody = renderTypeNode(tree, 1);
+  const routeUnaryClientBody = renderNode(tree, 2, 'unary');
+  const routeUnaryClientTypeBody = renderTypeNode(tree, 1, 'unary');
+  const routeStreamClientBody = renderNode(tree, 2, 'stream');
+  const routeStreamClientTypeBody = renderTypeNode(tree, 1, 'stream');
   const defaultUrl = config?.path ?? '/rpc';
   await writeFile(
     `${outDir}/client.ts`,
@@ -4637,6 +4667,19 @@ ${clientTypeBody}
   readonly batch: BatchFunction;
 };
 export type Client = GeneratedClient;
+export type GeneratedRouteUnaryClient = {
+${routeUnaryClientTypeBody}
+  readonly batch: BatchFunction;
+};
+export type GeneratedUnaryRouteClient = GeneratedRouteUnaryClient;
+export type RouteUnaryClient = GeneratedRouteUnaryClient;
+export type UnaryRouteClient = GeneratedRouteUnaryClient;
+export type GeneratedRouteStreamClient = {
+${routeStreamClientTypeBody}
+};
+export type GeneratedStreamRouteClient = GeneratedRouteStreamClient;
+export type RouteStreamClient = GeneratedRouteStreamClient;
+export type StreamRouteClient = GeneratedRouteStreamClient;
 
 export function createClient(): GeneratedClient;
 export function createClient<TRequest extends Request>(
@@ -4678,6 +4721,77 @@ ${clientBody}
 }
 
 export const client: GeneratedClient = createClient();
+
+export function createRouteUnaryClient(): GeneratedRouteUnaryClient;
+export function createRouteUnaryClient<TRequest extends Request>(
+  options: GeneratedRouteUnaryClientOptions<TRequest>
+): GeneratedRouteUnaryClient;
+export function createRouteUnaryClient<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>(
+  options?: GeneratedRouteUnaryClientOptions<TRequest>
+): GeneratedRouteUnaryClient {
+  const transport =
+    options === undefined
+      ? createRouteUnaryTransport()
+      : createRouteUnaryTransport(options);
+  const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
+    const routeTransport = transport as unknown as RouteUnaryTransport<TId>;
+    const call = (...args: ClientArgs<TId>) =>
+      routeTransport.call(id, ...args);
+    const request = (...args: ClientArgs<TId>) =>
+      routeTransport.request(id, ...args);
+    const protocolRequest = (
+      input: RouteUnaryInput<TId>,
+      options?: ProtocolRequestOptions
+    ) => createRouteUnaryProtocolRequest(id, input, options);
+    return Object.assign(call, { call, request, protocolRequest });
+  };
+  const batch: BatchFunction = (requests, ...options) =>
+    transport.batch(requests, ...options);
+  return freezeClientTree({
+${routeUnaryClientBody}
+    batch,
+  }) as GeneratedRouteUnaryClient;
+}
+
+export const createUnaryRouteClient: typeof createRouteUnaryClient =
+  createRouteUnaryClient;
+
+export const routeUnaryClient: GeneratedRouteUnaryClient =
+  createRouteUnaryClient();
+export const unaryRouteClient: GeneratedUnaryRouteClient = routeUnaryClient;
+
+export function createRouteStreamClient(): GeneratedRouteStreamClient;
+export function createRouteStreamClient<TRequest extends Request>(
+  options: GeneratedRouteStreamClientOptions<TRequest>
+): GeneratedRouteStreamClient;
+export function createRouteStreamClient<TRequest extends Request = RouteStreamRequiredRuntimeRequest>(
+  options?: GeneratedRouteStreamClientOptions<TRequest>
+): GeneratedRouteStreamClient {
+  const transport =
+    options === undefined
+      ? createRouteStreamTransport()
+      : createRouteStreamTransport(options);
+  const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
+    const routeTransport = transport as unknown as RouteStreamTransport<TId>;
+    const stream = (...args: ClientArgs<TId>) =>
+      routeTransport.stream(id, ...args);
+    const protocolRequest = (
+      input: RouteStreamInput<TId>,
+      options?: ProtocolRequestOptions
+    ) => createRouteStreamProtocolRequest(id, input, options);
+    return Object.assign(stream, { stream, protocolRequest });
+  };
+  return freezeClientTree({
+${routeStreamClientBody}
+  }) as GeneratedRouteStreamClient;
+}
+
+export const createStreamRouteClient: typeof createRouteStreamClient =
+  createRouteStreamClient;
+
+export const routeStreamClient: GeneratedRouteStreamClient =
+  createRouteStreamClient();
+export const streamRouteClient: GeneratedStreamRouteClient = routeStreamClient;
 `
   );
 };
