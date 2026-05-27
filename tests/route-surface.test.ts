@@ -66,7 +66,7 @@ const collectExportedSymbols = (
   }
 
   for (const match of source.matchAll(
-    /\bexport\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"][^'"]+['"]/g
+    /\bexport\s+(?:type\s+)?\{([^}]*)\}(?:\s+from\s+['"][^'"]+['"])?/g
   )) {
     const specifiers = match[1];
     if (specifiers === undefined) continue;
