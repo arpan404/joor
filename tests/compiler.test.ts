@@ -1651,10 +1651,19 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export function createTransport<TRequest extends Request = RequiredRuntimeRequest>'
       );
       expect(clientSource).toContain(
+        'options?: ClientOptions<TRequest>\n): TransportClient'
+      );
+      expect(clientSource).toContain(
         'export function createRouteUnaryTransport<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>'
       );
       expect(clientSource).toContain(
+        'options?: RouteUnaryClientOptions<TRequest>\n): RouteUnaryTransportClient'
+      );
+      expect(clientSource).toContain(
         'export function createRouteStreamTransport<TRequest extends Request = RouteStreamRequiredRuntimeRequest>'
+      );
+      expect(clientSource).toContain(
+        'options?: RouteStreamClientOptions<TRequest>\n): RouteStreamTransportClient'
       );
       expect(clientSource).toContain(
         'export const routeUnaryTransport: RouteUnaryTransportClient'
@@ -1665,6 +1674,23 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain(
         'export function createClient<TRequest extends Request = RequiredRuntimeRequest>'
       );
+      expect(clientSource).toContain('export function createClient(): Client;');
+      expect(clientSource).toContain(
+        'options?: ClientOptions<TRequest>\n): Client'
+      );
+      expect(clientSource).toContain(
+        'export function createRouteUnaryClient(): RouteUnaryClient;'
+      );
+      expect(clientSource).toContain(
+        'options?: RouteUnaryClientOptions<TRequest>\n): RouteUnaryClient'
+      );
+      expect(clientSource).toContain(
+        'export function createRouteStreamClient(): RouteStreamClient;'
+      );
+      expect(clientSource).toContain(
+        'options?: RouteStreamClientOptions<TRequest>\n): RouteStreamClient'
+      );
+      expect(clientSource).toContain('export const client: Client = createClient();');
       expect(clientSource).toContain(
         'createManifestRouteProtocolRequest as createTransportRouteProtocolRequest'
       );
@@ -2456,7 +2482,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
 
       expect(clientSource).toContain('const defaultUrl = "/api/rpc"');
       expect(clientSource).toContain(
-        'export const client: GeneratedClient = createClient()'
+        'export const client: Client = createClient()'
       );
     } finally {
       await rm(outDir, { recursive: true, force: true });

@@ -4609,12 +4609,12 @@ const defaultUrl = ${JSON.stringify(defaultUrl)};
 
 export function createTransport(): TransportClient;
 export function createTransport<TRequest extends Request>(
-  options: GeneratedClientOptions<TRequest>
+  options: ClientOptions<TRequest>
 ): TransportClient;
 export function createTransport<TRequest extends Request = RequiredRuntimeRequest>(
-  options?: GeneratedClientOptions<TRequest>
+  options?: ClientOptions<TRequest>
 ): TransportClient {
-  const resolved = options ?? ({} as GeneratedClientOptions<Request>);
+  const resolved = options ?? ({} as ClientOptions<Request>);
   return createTransportClient(manifest, {
     ...(resolved as Omit<JoorManifestClientOptions<Manifest, TRequest>, 'url'>),
     url: resolved.url ?? defaultUrl,
@@ -4623,12 +4623,12 @@ export function createTransport<TRequest extends Request = RequiredRuntimeReques
 
 export function createRouteUnaryTransport(): RouteUnaryTransportClient;
 export function createRouteUnaryTransport<TRequest extends Request>(
-  options: GeneratedRouteUnaryClientOptions<TRequest>
+  options: RouteUnaryClientOptions<TRequest>
 ): RouteUnaryTransportClient;
 export function createRouteUnaryTransport<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>(
-  options?: GeneratedRouteUnaryClientOptions<TRequest>
+  options?: RouteUnaryClientOptions<TRequest>
 ): RouteUnaryTransportClient {
-  const resolved = options ?? ({} as GeneratedRouteUnaryClientOptions<Request>);
+  const resolved = options ?? ({} as RouteUnaryClientOptions<Request>);
   const client = createTransportClient(manifest, {
     ...(resolved as Omit<JoorManifestRouteUnaryClientOptions<Manifest, TRequest>, 'url'>),
     url: resolved.url ?? defaultUrl,
@@ -4645,12 +4645,12 @@ export const createUnaryRouteTransport: typeof createRouteUnaryTransport =
 
 export function createRouteStreamTransport(): RouteStreamTransportClient;
 export function createRouteStreamTransport<TRequest extends Request>(
-  options: GeneratedRouteStreamClientOptions<TRequest>
+  options: RouteStreamClientOptions<TRequest>
 ): RouteStreamTransportClient;
 export function createRouteStreamTransport<TRequest extends Request = RouteStreamRequiredRuntimeRequest>(
-  options?: GeneratedRouteStreamClientOptions<TRequest>
+  options?: RouteStreamClientOptions<TRequest>
 ): RouteStreamTransportClient {
-  const resolved = options ?? ({} as GeneratedRouteStreamClientOptions<Request>);
+  const resolved = options ?? ({} as RouteStreamClientOptions<Request>);
   const client = createTransportClient(manifest, {
     ...(resolved as Omit<JoorManifestRouteStreamClientOptions<Manifest, TRequest>, 'url'>),
     url: resolved.url ?? defaultUrl,
@@ -4691,13 +4691,13 @@ export type GeneratedStreamRouteClient = GeneratedRouteStreamClient;
 export type RouteStreamClient = GeneratedRouteStreamClient;
 export type StreamRouteClient = GeneratedRouteStreamClient;
 
-export function createClient(): GeneratedClient;
+export function createClient(): Client;
 export function createClient<TRequest extends Request>(
-  options: GeneratedClientOptions<TRequest>
-): GeneratedClient;
+  options: ClientOptions<TRequest>
+): Client;
 export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
-  options?: GeneratedClientOptions<TRequest>
-): GeneratedClient {
+  options?: ClientOptions<TRequest>
+): Client {
   const transport =
     options === undefined ? createTransport() : createTransport(options);
   const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
@@ -4727,18 +4727,18 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
   return freezeClientTree({
 ${clientBody}
     batch,
-  }) as GeneratedClient;
+  }) as Client;
 }
 
-export const client: GeneratedClient = createClient();
+export const client: Client = createClient();
 
-export function createRouteUnaryClient(): GeneratedRouteUnaryClient;
+export function createRouteUnaryClient(): RouteUnaryClient;
 export function createRouteUnaryClient<TRequest extends Request>(
-  options: GeneratedRouteUnaryClientOptions<TRequest>
-): GeneratedRouteUnaryClient;
+  options: RouteUnaryClientOptions<TRequest>
+): RouteUnaryClient;
 export function createRouteUnaryClient<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>(
-  options?: GeneratedRouteUnaryClientOptions<TRequest>
-): GeneratedRouteUnaryClient {
+  options?: RouteUnaryClientOptions<TRequest>
+): RouteUnaryClient {
   const transport =
     options === undefined
       ? createRouteUnaryTransport()
@@ -4760,23 +4760,22 @@ export function createRouteUnaryClient<TRequest extends Request = RouteUnaryRequ
   return freezeClientTree({
 ${routeUnaryClientBody}
     batch,
-  }) as GeneratedRouteUnaryClient;
+  }) as RouteUnaryClient;
 }
 
 export const createUnaryRouteClient: typeof createRouteUnaryClient =
   createRouteUnaryClient;
 
-export const routeUnaryClient: GeneratedRouteUnaryClient =
-  createRouteUnaryClient();
+export const routeUnaryClient: RouteUnaryClient = createRouteUnaryClient();
 export const unaryRouteClient: GeneratedUnaryRouteClient = routeUnaryClient;
 
-export function createRouteStreamClient(): GeneratedRouteStreamClient;
+export function createRouteStreamClient(): RouteStreamClient;
 export function createRouteStreamClient<TRequest extends Request>(
-  options: GeneratedRouteStreamClientOptions<TRequest>
-): GeneratedRouteStreamClient;
+  options: RouteStreamClientOptions<TRequest>
+): RouteStreamClient;
 export function createRouteStreamClient<TRequest extends Request = RouteStreamRequiredRuntimeRequest>(
-  options?: GeneratedRouteStreamClientOptions<TRequest>
-): GeneratedRouteStreamClient {
+  options?: RouteStreamClientOptions<TRequest>
+): RouteStreamClient {
   const transport =
     options === undefined
       ? createRouteStreamTransport()
@@ -4793,14 +4792,13 @@ export function createRouteStreamClient<TRequest extends Request = RouteStreamRe
   };
   return freezeClientTree({
 ${routeStreamClientBody}
-  }) as GeneratedRouteStreamClient;
+  }) as RouteStreamClient;
 }
 
 export const createStreamRouteClient: typeof createRouteStreamClient =
   createRouteStreamClient;
 
-export const routeStreamClient: GeneratedRouteStreamClient =
-  createRouteStreamClient();
+export const routeStreamClient: RouteStreamClient = createRouteStreamClient();
 export const streamRouteClient: GeneratedStreamRouteClient = routeStreamClient;
 `
   );
