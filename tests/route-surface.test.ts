@@ -122,6 +122,24 @@ const collectImportedSourceNamesByModule = (
   return imports;
 };
 
+const collectNamespaceImportsByModule = (
+  source: string
+): ReadonlyMap<string, string> => {
+  const imports = new Map<string, string>();
+
+  for (const match of source.matchAll(
+    /\bimport\s+type\s+\*\s+as\s+([A-Za-z_][A-Za-z0-9_]*)\s+from\s+['"]([^'"]+)['"]/g
+  )) {
+    const alias = match[1];
+    const moduleSpecifier = match[2];
+    if (alias !== undefined && moduleSpecifier !== undefined) {
+      imports.set(moduleSpecifier, alias);
+    }
+  }
+
+  return imports;
+};
+
 const collectStarExportFiles = (file: string, source: string): string[] => {
   const files: string[] = [];
   for (const match of source.matchAll(
@@ -239,6 +257,18 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
 const publicRouteValueExports = async (): Promise<readonly ExportedSymbol[]> =>
   (await publicRouteExports()).filter(({ kind }) => kind === 'value');
 
+const publicRuntimeRouteTypeExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteExports()).filter(({ file, kind }) => {
+    const relativeFile = relative(srcRoot, file);
+    return (
+      kind === 'type' &&
+      relativeFile.startsWith('runtime/') &&
+      relativeFile !== 'runtime/index.ts'
+    );
+  });
+
 const publicRouteTypedFactoryExports = async (): Promise<
   readonly ExportedSymbol[]
 > =>
@@ -294,6 +324,9 @@ const packageImportSpecifier = (packageSubpath: string): string =>
   packageSubpath === '.'
     ? 'joor'
     : `joor/${packageSubpath.replace(/^\.\//, '')}`;
+
+const namespaceReferencePattern = (alias: string, name: string): RegExp =>
+  new RegExp(`\\b${alias}\\s*\\.\\s*${name}\\b`);
 
 const generatedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
@@ -470,6 +503,35 @@ describe('route public surface', () => {
         const moduleSpecifier = packageImportSpecifier(packageSubpath);
         if (importedNames.get(moduleSpecifier)?.has(name)) return [];
         return [`${relative(repoRoot, file)}: ${name} from ${moduleSpecifier}`];
+      })
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps runtime route type namespace smoke coverage tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const namespaceImports =
+      collectNamespaceImportsByModule(packageSubpathSource);
+    const missing = (await publicRuntimeRouteTypeExports())
+      .flatMap(({ file, name }) => {
+        const packageSubpath = packageSubpathForRouteFile(file);
+        if (packageSubpath === undefined) {
+          return [`${relative(repoRoot, file)}: ${name} <no package path>`];
+        }
+        const moduleSpecifier = packageImportSpecifier(packageSubpath);
+        const alias = namespaceImports.get(moduleSpecifier);
+        if (alias === undefined) {
+          return [
+            `${relative(repoRoot, file)}: ${name} missing namespace import from ${moduleSpecifier}`,
+          ];
+        }
+        if (namespaceReferencePattern(alias, name).test(packageSubpathSource)) {
+          return [];
+        }
+        return [
+          `${relative(repoRoot, file)}: ${alias}.${name} from ${moduleSpecifier}`,
+        ];
       })
       .sort();
 
