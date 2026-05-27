@@ -332,6 +332,8 @@ const emitProfileDispatcher = async (
     "import type { DefineHandlerOptions, DefineRouteStreamHandlerOptions, DefineRouteUnaryHandlerOptions, HandlerHookContextFor, HandlerHooksFor, HandlerOptionServices, HandlerOptionsArgs, HandlerOptionsArgsFor, HandlerOptionsBody, HandlerOptionsFor, HandlerOptionsManifest, HandlerOptionsRequest, HandlerOptionsServices, HandlerOptionsWithPreflightArgs, HandlerOptionsWithTrailingArgs, JoorMiddlewareFor, RpcManifestRouteStreamHandlerHookContextFor, RpcManifestRouteStreamHandlerHooksFor, RpcManifestRouteStreamHandlerOptionsArgs, RpcManifestRouteStreamHandlerOptionsArgsFor, RpcManifestRouteStreamHandlerOptionsFor, RpcManifestRouteStreamHandlerOptionsWithPreflightArgs, RpcManifestRouteStreamHandlerOptionsWithTrailingArgs, RpcManifestRouteStreamMiddlewareFor, RpcManifestRouteUnaryHandlerHookContextFor, RpcManifestRouteUnaryHandlerHooksFor, RpcManifestRouteUnaryHandlerOptionsArgs, RpcManifestRouteUnaryHandlerOptionsArgsFor, RpcManifestRouteUnaryHandlerOptionsFor, RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs, RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs, RpcManifestRouteUnaryMiddlewareFor } from 'joor';\n";
   const handlerValueImport =
     "import { defineHandlerOptions, defineRouteStreamHandlerOptions, defineRouteUnaryHandlerOptions, defineStreamRouteHandlerOptions, defineUnaryRouteHandlerOptions } from 'joor';\n";
+  const clientValueImport =
+    "import { createManifestRouteProtocolRequest as createNativeManifestRouteProtocolRequest, createManifestRouteStreamProtocolRequest as createNativeManifestRouteStreamProtocolRequest, createManifestRouteStreamRequest as createNativeManifestRouteStreamRequest, createManifestRouteUnaryProtocolRequest as createNativeManifestRouteUnaryProtocolRequest, type RpcProtocolRequestOptions } from 'joor';\n";
   const nativeServicesType =
     configPath === undefined
       ? 'Record<string, never>'
@@ -341,11 +343,20 @@ const emitProfileDispatcher = async (
       (entry) => `    ${JSON.stringify(entry.id)}: typeof ${entry.exportName};`
     )
     .join('\n');
+  const nativeManifestProcedureEntries = manifest.procedures
+    .map((entry) => `    ${JSON.stringify(entry.id)}: ${entry.exportName},`)
+    .join('\n');
   const nativeManifestTypes = `export type NativeManifest = {
   readonly procedures: {
 ${nativeManifestEntries}
   };
 };
+
+export const nativeManifest: NativeManifest = Object.freeze({
+  procedures: Object.freeze({
+${nativeManifestProcedureEntries}
+  }),
+});
 
 export type NativeServices = ${nativeServicesType};
 export type NativeRuntimeState = CompiledRuntimeState<NativeServices>;
@@ -501,6 +512,101 @@ export type NativeStreamProtocolRequest<TId extends NativeRouteStreamId = Native
   NativeStreamRouteRequest<TId>;
 export type NativeStreamProtocolRequestUnion =
   NativeRouteStreamProtocolRequestUnion;
+export type NativeProtocolRequestOptions = RpcProtocolRequestOptions;
+export type NativeRouteProtocolRequestBuilder = <TId extends NativeRouteId>(
+  id: TId,
+  input: NativeRouteInput<TId>,
+  options?: NativeProtocolRequestOptions
+) => NativeRouteProtocolRequest<TId>;
+export type NativeProtocolRequestBuilder = NativeRouteProtocolRequestBuilder;
+export type NativeRouteUnaryProtocolRequestBuilder = <TId extends NativeRouteUnaryId>(
+  id: TId,
+  input: NativeRouteUnaryInput<TId>,
+  options?: NativeProtocolRequestOptions
+) => NativeRouteUnaryProtocolRequest<TId>;
+export type NativeUnaryRouteProtocolRequestBuilder =
+  NativeRouteUnaryProtocolRequestBuilder;
+export type NativeUnaryProtocolRequestBuilder =
+  NativeRouteUnaryProtocolRequestBuilder;
+export type NativeRouteStreamProtocolRequestBuilder = <TId extends NativeRouteStreamId>(
+  id: TId,
+  input: NativeRouteStreamInput<TId>,
+  options?: NativeProtocolRequestOptions
+) => NativeRouteStreamProtocolRequest<TId>;
+export type NativeStreamRouteProtocolRequestBuilder =
+  NativeRouteStreamProtocolRequestBuilder;
+export type NativeStreamProtocolRequestBuilder =
+  NativeRouteStreamProtocolRequestBuilder;
+export type NativeRouteStreamRequestBuilder = <TId extends NativeRouteStreamId>(
+  id: TId,
+  input: NativeRouteStreamInput<TId>,
+  options?: NativeProtocolRequestOptions
+) => NativeRouteStreamRequest<TId>;
+export type NativeStreamRouteRequestBuilder = NativeRouteStreamRequestBuilder;
+export const createNativeRouteProtocolRequest: NativeRouteProtocolRequestBuilder = <
+  TId extends NativeRouteId,
+>(
+  id: TId,
+  input: NativeRouteInput<TId>,
+  options?: NativeProtocolRequestOptions
+): NativeRouteProtocolRequest<TId> =>
+  createNativeManifestRouteProtocolRequest(
+    nativeManifest,
+    id,
+    input,
+    options
+  ) as NativeRouteProtocolRequest<TId>;
+export const createNativeProtocolRequest: NativeProtocolRequestBuilder =
+  createNativeRouteProtocolRequest;
+export const createNativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequestBuilder = <
+  TId extends NativeRouteUnaryId,
+>(
+  id: TId,
+  input: NativeRouteUnaryInput<TId>,
+  options?: NativeProtocolRequestOptions
+): NativeRouteUnaryProtocolRequest<TId> =>
+  createNativeManifestRouteUnaryProtocolRequest(
+    nativeManifest,
+    id,
+    input,
+    options
+  ) as NativeRouteUnaryProtocolRequest<TId>;
+export const createNativeUnaryRouteProtocolRequest: NativeUnaryRouteProtocolRequestBuilder =
+  createNativeRouteUnaryProtocolRequest;
+export const createNativeUnaryProtocolRequest: NativeUnaryProtocolRequestBuilder =
+  createNativeRouteUnaryProtocolRequest;
+export const createNativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRequestBuilder = <
+  TId extends NativeRouteStreamId,
+>(
+  id: TId,
+  input: NativeRouteStreamInput<TId>,
+  options?: NativeProtocolRequestOptions
+): NativeRouteStreamProtocolRequest<TId> =>
+  createNativeManifestRouteStreamProtocolRequest(
+    nativeManifest,
+    id,
+    input,
+    options
+  ) as NativeRouteStreamProtocolRequest<TId>;
+export const createNativeStreamRouteProtocolRequest: NativeStreamRouteProtocolRequestBuilder =
+  createNativeRouteStreamProtocolRequest;
+export const createNativeStreamProtocolRequest: NativeStreamProtocolRequestBuilder =
+  createNativeRouteStreamProtocolRequest;
+export const createNativeRouteStreamRequest: NativeRouteStreamRequestBuilder = <
+  TId extends NativeRouteStreamId,
+>(
+  id: TId,
+  input: NativeRouteStreamInput<TId>,
+  options?: NativeProtocolRequestOptions
+): NativeRouteStreamRequest<TId> =>
+  createNativeManifestRouteStreamRequest(
+    nativeManifest,
+    id,
+    input,
+    options
+  ) as NativeRouteStreamRequest<TId>;
+export const createNativeStreamRouteRequest: NativeStreamRouteRequestBuilder =
+  createNativeRouteStreamRequest;
 export type NativeRouteBatchRequestUnion = NativeRouteUnaryRequestUnion;
 export type NativeRouteUnaryBatchRequestUnion = NativeRouteBatchRequestUnion;
 export type NativeUnaryRouteBatchRequestUnion =
@@ -1106,7 +1212,7 @@ ${unaryCases('response')}
     `import {
   ${compiledImports.join(',\n  ')},
 } from 'joor/runtime/compiled';
-${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${contextTypeImport}${configTypeImport}${configValueImport}${handlerTypeImport}${handlerValueImport}${configImport}${imports}
+${schemaTypeImport}${procedureTypeImport}${manifestTypeImport}${contextTypeImport}${configTypeImport}${configValueImport}${handlerTypeImport}${handlerValueImport}${clientValueImport}${configImport}${imports}
 
 ${nativeManifestTypes}
 
