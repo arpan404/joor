@@ -1900,9 +1900,9 @@ export default fetch;
   await writeFile(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
 
-export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch };
 export type { NativeRequiredRuntimeRequest, NativeRequiredServices, NativeRouteStreamRequiredRuntimeRequest, NativeRouteStreamRequiredServices, NativeRouteUnaryRequiredRuntimeRequest, NativeRouteUnaryRequiredServices, NativeStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices };
 export const createCloudflareFetch: typeof createFetch = createFetch;
 export const createCloudflareFetchFor: typeof createFetchFor = createFetchFor;
@@ -1910,17 +1910,25 @@ export const createRouteUnaryCloudflareFetch: typeof createRouteUnaryFetch =
   createRouteUnaryFetch;
 export const createUnaryRouteCloudflareFetch: typeof createRouteUnaryCloudflareFetch =
   createRouteUnaryCloudflareFetch;
+export const createUnaryCloudflareFetch: typeof createRouteUnaryCloudflareFetch =
+  createRouteUnaryCloudflareFetch;
 export const createRouteUnaryCloudflareFetchFor: typeof createRouteUnaryFetchFor =
   createRouteUnaryFetchFor;
 export const createUnaryRouteCloudflareFetchFor: typeof createRouteUnaryCloudflareFetchFor =
+  createRouteUnaryCloudflareFetchFor;
+export const createUnaryCloudflareFetchFor: typeof createRouteUnaryCloudflareFetchFor =
   createRouteUnaryCloudflareFetchFor;
 export const createRouteStreamCloudflareFetch: typeof createRouteStreamFetch =
   createRouteStreamFetch;
 export const createStreamRouteCloudflareFetch: typeof createRouteStreamCloudflareFetch =
   createRouteStreamCloudflareFetch;
+export const createStreamCloudflareFetch: typeof createRouteStreamCloudflareFetch =
+  createRouteStreamCloudflareFetch;
 export const createRouteStreamCloudflareFetchFor: typeof createRouteStreamFetchFor =
   createRouteStreamFetchFor;
 export const createStreamRouteCloudflareFetchFor: typeof createRouteStreamCloudflareFetchFor =
+  createRouteStreamCloudflareFetchFor;
+export const createStreamCloudflareFetchFor: typeof createRouteStreamCloudflareFetchFor =
   createRouteStreamCloudflareFetchFor;
 type NativeGeneratedFetchFactory<TRequired extends Request> = <
   TRequest extends TRequired = TRequired,
@@ -1972,9 +1980,13 @@ export const createRouteUnaryWorker =
   );
 export const createUnaryRouteWorker: typeof createRouteUnaryWorker =
   createRouteUnaryWorker;
+export const createUnaryWorker: typeof createRouteUnaryWorker =
+  createRouteUnaryWorker;
 export const createRouteUnaryCloudflareWorker: typeof createRouteUnaryWorker =
   createRouteUnaryWorker;
 export const createUnaryRouteCloudflareWorker: typeof createRouteUnaryCloudflareWorker =
+  createRouteUnaryCloudflareWorker;
+export const createUnaryCloudflareWorker: typeof createRouteUnaryCloudflareWorker =
   createRouteUnaryCloudflareWorker;
 export const createRouteUnaryWorkerFor =
   createWorkerFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
@@ -1982,9 +1994,13 @@ export const createRouteUnaryWorkerFor =
   );
 export const createUnaryRouteWorkerFor: typeof createRouteUnaryWorkerFor =
   createRouteUnaryWorkerFor;
+export const createUnaryWorkerFor: typeof createRouteUnaryWorkerFor =
+  createRouteUnaryWorkerFor;
 export const createRouteUnaryCloudflareWorkerFor: typeof createRouteUnaryWorkerFor =
   createRouteUnaryWorkerFor;
 export const createUnaryRouteCloudflareWorkerFor: typeof createRouteUnaryCloudflareWorkerFor =
+  createRouteUnaryCloudflareWorkerFor;
+export const createUnaryCloudflareWorkerFor: typeof createRouteUnaryCloudflareWorkerFor =
   createRouteUnaryCloudflareWorkerFor;
 export const createRouteStreamWorker =
   createWorkerFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
@@ -1992,9 +2008,13 @@ export const createRouteStreamWorker =
   );
 export const createStreamRouteWorker: typeof createRouteStreamWorker =
   createRouteStreamWorker;
+export const createStreamWorker: typeof createRouteStreamWorker =
+  createRouteStreamWorker;
 export const createRouteStreamCloudflareWorker: typeof createRouteStreamWorker =
   createRouteStreamWorker;
 export const createStreamRouteCloudflareWorker: typeof createRouteStreamCloudflareWorker =
+  createRouteStreamCloudflareWorker;
+export const createStreamCloudflareWorker: typeof createRouteStreamCloudflareWorker =
   createRouteStreamCloudflareWorker;
 export const createRouteStreamWorkerFor =
   createWorkerFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
@@ -2002,9 +2022,13 @@ export const createRouteStreamWorkerFor =
   );
 export const createStreamRouteWorkerFor: typeof createRouteStreamWorkerFor =
   createRouteStreamWorkerFor;
+export const createStreamWorkerFor: typeof createRouteStreamWorkerFor =
+  createRouteStreamWorkerFor;
 export const createRouteStreamCloudflareWorkerFor: typeof createRouteStreamWorkerFor =
   createRouteStreamWorkerFor;
 export const createStreamRouteCloudflareWorkerFor: typeof createRouteStreamCloudflareWorkerFor =
+  createRouteStreamCloudflareWorkerFor;
+export const createStreamCloudflareWorkerFor: typeof createRouteStreamCloudflareWorkerFor =
   createRouteStreamCloudflareWorkerFor;
 export default worker;
 `

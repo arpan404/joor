@@ -1075,6 +1075,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         readFile(join(outDir, 'cloudflare.ts'), 'utf8')
       ).resolves.toContain('export const createRouteUnaryCloudflareWorkerFor');
       await expect(
+        readFile(join(outDir, 'cloudflare.ts'), 'utf8')
+      ).resolves.toContain('export const createUnaryCloudflareWorkerFor');
+      await expect(
         readFile(join(outDir, 'vercel.ts'), 'utf8')
       ).resolves.toContain('export const createVercelFor =');
       await expect(
@@ -2668,7 +2671,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, defineNativeConfig, defineNativeHandlerOptions, defineNativeRouteUnaryConfig, defineNativeRouteUnaryHandlerOptions, defineNativeUnaryRouteConfig, defineNativeUnaryRouteHandlerOptions, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeConfig, type NativeConfigRequest, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryConfig, type NativeRouteUnaryHandlerOptions, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteConfig, type NativeUnaryRouteHandlerOptions, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRequiredServices as RuntimeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices as RuntimeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices as RuntimeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices as RuntimeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices as RuntimeUnaryRouteRequiredServices } from './fetch.js';
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaHttpApiHandler, createRouteStreamAwsLambdaHttpApiHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaHttpApiHandler, createRouteUnaryAwsLambdaHttpApiHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHttpApiHandler, createStreamRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaHandler, createUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaHttpApiHandler, createUnaryRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaRestApiHandler, createUnaryRouteAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
-import { createCloudflareFetch, createCloudflareFetchFor, createCloudflareWorker, createRouteStreamCloudflareFetch, createRouteStreamCloudflareFetchFor, createRouteStreamCloudflareWorker, createRouteStreamCloudflareWorkerFor, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryCloudflareFetch, createRouteUnaryCloudflareFetchFor, createRouteUnaryCloudflareWorker, createRouteUnaryCloudflareWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createStreamRouteCloudflareFetch, createStreamRouteCloudflareFetchFor, createStreamRouteCloudflareWorker, createStreamRouteCloudflareWorkerFor, createStreamRouteWorker, createStreamRouteWorkerFor, createUnaryRouteCloudflareFetch, createUnaryRouteCloudflareFetchFor, createUnaryRouteCloudflareWorker, createUnaryRouteCloudflareWorkerFor, createUnaryRouteWorker, createUnaryRouteWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
+import { createCloudflareFetch, createCloudflareFetchFor, createCloudflareWorker, createRouteStreamCloudflareFetch, createRouteStreamCloudflareFetchFor, createRouteStreamCloudflareWorker, createRouteStreamCloudflareWorkerFor, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryCloudflareFetch, createRouteUnaryCloudflareFetchFor, createRouteUnaryCloudflareWorker, createRouteUnaryCloudflareWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createStreamCloudflareFetch, createStreamCloudflareFetchFor, createStreamCloudflareWorker, createStreamCloudflareWorkerFor, createStreamRouteCloudflareFetch, createStreamRouteCloudflareFetchFor, createStreamRouteCloudflareWorker, createStreamRouteCloudflareWorkerFor, createStreamRouteWorker, createStreamRouteWorkerFor, createStreamWorker, createStreamWorkerFor, createUnaryCloudflareFetch, createUnaryCloudflareFetchFor, createUnaryCloudflareWorker, createUnaryCloudflareWorkerFor, createUnaryRouteCloudflareFetch, createUnaryRouteCloudflareFetchFor, createUnaryRouteCloudflareWorker, createUnaryRouteCloudflareWorkerFor, createUnaryRouteWorker, createUnaryRouteWorkerFor, createUnaryWorker, createUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteStreamNextHandler, createRouteStreamNextHandlerFor, createRouteStreamNextRouteHandlers, createRouteStreamNextRouteHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, createRouteUnaryNextHandler, createRouteUnaryNextHandlerFor, createRouteUnaryNextRouteHandlers, createRouteUnaryNextRouteHandlersFor, createStreamRouteHandlers, createStreamRouteHandlersFor, createStreamRouteNextHandler, createStreamRouteNextHandlerFor, createStreamRouteNextRouteHandlers, createStreamRouteNextRouteHandlersFor, createUnaryRouteHandlers, createUnaryRouteHandlersFor, createUnaryRouteNextHandler, createUnaryRouteNextHandlerFor, createUnaryRouteNextRouteHandlers, createUnaryRouteNextRouteHandlersFor, handlers, GET } from './next.js';
 import { createRouteStreamVercel, createRouteStreamVercelFetch, createRouteStreamVercelFetchFor, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteStreamVercelFunctionFor, createRouteUnaryVercel, createRouteUnaryVercelFetch, createRouteUnaryVercelFetchFor, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createRouteUnaryVercelFunctionFor, createStreamRouteVercel, createStreamRouteVercelFetch, createStreamRouteVercelFetchFor, createStreamRouteVercelFor, createStreamRouteVercelFunction, createStreamRouteVercelFunctionFor, createUnaryRouteVercel, createUnaryRouteVercelFetch, createUnaryRouteVercelFetchFor, createUnaryRouteVercelFor, createUnaryRouteVercelFunction, createUnaryRouteVercelFunctionFor, createVercel, createVercelFetch, createVercelFetchFor, createVercelFor, createVercelFunction, vercel } from './vercel.js';
 import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createNetlifyFetch, createNetlifyFetchFor, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteStreamNetlifyEdgeFunctionFor, createRouteStreamNetlifyFetch, createRouteStreamNetlifyFetchFor, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, createRouteUnaryNetlifyEdgeFunctionFor, createRouteUnaryNetlifyFetch, createRouteUnaryNetlifyFetchFor, createStreamRouteEdge, createStreamRouteEdgeFor, createStreamRouteNetlifyEdgeFunction, createStreamRouteNetlifyEdgeFunctionFor, createStreamRouteNetlifyFetch, createStreamRouteNetlifyFetchFor, createUnaryRouteEdge, createUnaryRouteEdgeFor, createUnaryRouteNetlifyEdgeFunction, createUnaryRouteNetlifyEdgeFunctionFor, createUnaryRouteNetlifyFetch, createUnaryRouteNetlifyFetchFor, edge } from './netlify.js';
@@ -3042,12 +3045,16 @@ createCloudflareFetch()(appRequest);
 createCloudflareFetchFor()(appRequest);
 createRouteUnaryCloudflareFetch()(appRequest);
 createUnaryRouteCloudflareFetch()(appRequest);
+createUnaryCloudflareFetch()(appRequest);
 createRouteUnaryCloudflareFetchFor()(appRequest);
 createUnaryRouteCloudflareFetchFor()(appRequest);
+createUnaryCloudflareFetchFor()(appRequest);
 createRouteStreamCloudflareFetch()(appRequest);
 createStreamRouteCloudflareFetch()(appRequest);
+createStreamCloudflareFetch()(appRequest);
 createRouteStreamCloudflareFetchFor()(appRequest);
 createStreamRouteCloudflareFetchFor()(appRequest);
+createStreamCloudflareFetchFor()(appRequest);
 // @ts-expect-error generated Cloudflare fetch aliases preserve the manifest request subtype.
 createCloudflareFetch()(plainRequest);
 // @ts-expect-error generated Cloudflare fetch factories preserve the manifest request subtype.
@@ -3056,10 +3063,14 @@ createCloudflareFetchFor()(plainRequest);
 createRouteUnaryCloudflareFetch()(plainRequest);
 // @ts-expect-error generated unary-route Cloudflare fetch aliases preserve the manifest request subtype.
 createUnaryRouteCloudflareFetch()(plainRequest);
+// @ts-expect-error generated concise unary Cloudflare fetch aliases preserve the manifest request subtype.
+createUnaryCloudflareFetch()(plainRequest);
 // @ts-expect-error generated route-unary Cloudflare fetch factories preserve the manifest request subtype.
 createRouteUnaryCloudflareFetchFor()(plainRequest);
 // @ts-expect-error generated unary-route Cloudflare fetch factories preserve the manifest request subtype.
 createUnaryRouteCloudflareFetchFor()(plainRequest);
+// @ts-expect-error generated concise unary Cloudflare fetch factories preserve the manifest request subtype.
+createUnaryCloudflareFetchFor()(plainRequest);
 
 const cloudflareWorker = createWorkerFor();
 cloudflareWorker.fetch(appRequest);
@@ -3068,32 +3079,46 @@ createWorker().fetch(appRequest);
 createCloudflareWorker().fetch(appRequest);
 createRouteUnaryWorker().fetch(appRequest);
 createUnaryRouteWorker().fetch(appRequest);
+createUnaryWorker().fetch(appRequest);
 createRouteUnaryCloudflareWorker().fetch(appRequest);
 createUnaryRouteCloudflareWorker().fetch(appRequest);
+createUnaryCloudflareWorker().fetch(appRequest);
 createRouteStreamWorker().fetch(appRequest);
 createStreamRouteWorker().fetch(appRequest);
+createStreamWorker().fetch(appRequest);
 createRouteStreamCloudflareWorker().fetch(appRequest);
 createStreamRouteCloudflareWorker().fetch(appRequest);
+createStreamCloudflareWorker().fetch(appRequest);
 createRouteUnaryWorkerFor().fetch(appRequest);
 createUnaryRouteWorkerFor().fetch(appRequest);
+createUnaryWorkerFor().fetch(appRequest);
 createRouteUnaryCloudflareWorkerFor().fetch(appRequest);
 createUnaryRouteCloudflareWorkerFor().fetch(appRequest);
+createUnaryCloudflareWorkerFor().fetch(appRequest);
 createRouteStreamWorkerFor().fetch(appRequest);
 createStreamRouteWorkerFor().fetch(appRequest);
+createStreamWorkerFor().fetch(appRequest);
 createRouteStreamCloudflareWorkerFor().fetch(appRequest);
 createStreamRouteCloudflareWorkerFor().fetch(appRequest);
+createStreamCloudflareWorkerFor().fetch(appRequest);
 // @ts-expect-error generated direct Cloudflare workers default to the manifest request subtype.
 createRouteUnaryWorker().fetch(plainRequest);
 // @ts-expect-error generated unary-route Cloudflare worker aliases preserve the manifest request subtype.
 createUnaryRouteWorker().fetch(plainRequest);
+// @ts-expect-error generated concise Cloudflare worker aliases preserve the manifest request subtype.
+createUnaryWorker().fetch(plainRequest);
 // @ts-expect-error generated route-unary Cloudflare worker aliases preserve the manifest request subtype.
 createRouteUnaryCloudflareWorker().fetch(plainRequest);
 // @ts-expect-error generated unary-route Cloudflare worker framework aliases preserve the manifest request subtype.
 createUnaryRouteCloudflareWorker().fetch(plainRequest);
+// @ts-expect-error generated concise unary Cloudflare worker framework aliases preserve the manifest request subtype.
+createUnaryCloudflareWorker().fetch(plainRequest);
 // @ts-expect-error generated route-unary Cloudflare worker factories preserve the manifest request subtype.
 createRouteUnaryCloudflareWorkerFor().fetch(plainRequest);
 // @ts-expect-error generated unary-route Cloudflare worker factory aliases preserve the manifest request subtype.
 createUnaryRouteCloudflareWorkerFor().fetch(plainRequest);
+// @ts-expect-error generated concise unary Cloudflare worker factory aliases preserve the manifest request subtype.
+createUnaryCloudflareWorkerFor().fetch(plainRequest);
 // @ts-expect-error generated Cloudflare workers default to the manifest request subtype.
 cloudflareWorker.fetch(plainRequest);
 // @ts-expect-error generated named Cloudflare workers preserve the manifest request subtype.
