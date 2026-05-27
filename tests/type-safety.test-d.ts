@@ -2206,6 +2206,7 @@ import {
   createCompiledRouteUnaryRpcHandler as createRuntimeSubpathCompiledRouteUnaryRpcHandler,
   createCompiledRouteUnaryRpcHandlerFor as createRuntimeSubpathCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRuntimeSubpathCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createCompiledRouteStreamRpcBodyResultHandler as createRuntimeSubpathCompiledRouteStreamRpcBodyResultHandler,
   createCompiledRouteStreamRpcHandler as createRuntimeSubpathCompiledRouteStreamRpcHandler,
   createCompiledRouteStreamRpcHandlerFor as createRuntimeSubpathCompiledRouteStreamRpcHandlerFor,
   createCompiledRpcHandlerFor as createRuntimeSubpathCompiledRpcHandlerFor,
@@ -2216,6 +2217,7 @@ import {
   type CompiledRouteUnaryRpcRequestHandler as RuntimeSubpathCompiledRouteUnaryRpcRequestHandler,
   type CompiledRpcRouteUnaryBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcRouteUnaryBodyResultHandlerForConfig,
   type CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcRouteUnaryTransportBodyResultHandlerForConfig,
+  type CompiledRpcRouteStreamBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcRouteStreamBodyResultHandlerForConfig,
   type CompiledRpcStreamRouteBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcStreamRouteBodyResultHandlerForConfig,
   type CompiledRpcStreamRouteTransportBodyResultHandlerForConfig as RuntimeSubpathCompiledRpcStreamRouteTransportBodyResultHandlerForConfig,
   createDenoRpcRequestHandlerFor as createRuntimeSubpathDenoRpcRequestHandlerFor,
@@ -3506,6 +3508,30 @@ routeKindScopedStreamCompiledBodyHandler(requestTypedStreamProcedureRequest, {
 });
 routeKindScopedStreamCompiledBodyHandler(
   // @ts-expect-error compiled route-stream body handlers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
+const routeKindScopedStreamRouteCompiledBodyHandler: CompiledRpcStreamRouteBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamCompiledBodyHandler;
+routeKindScopedStreamRouteCompiledBodyHandler(
+  requestTypedStreamProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
+routeKindScopedStreamRouteCompiledBodyHandler(
+  // @ts-expect-error compiled stream-route body aliases default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
+const rootRouteKindScopedStreamCompiledBodyHandler: RootCompiledRpcRouteStreamBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = routeKindScopedStreamCompiledBodyHandler;
+rootRouteKindScopedStreamCompiledBodyHandler(
+  requestTypedStreamProcedureRequest,
+  { id: 'request.watch', input: { id: '1' } }
+);
+rootRouteKindScopedStreamCompiledBodyHandler(
+  // @ts-expect-error root compiled route-stream body handlers default to stream-only request requirements.
   requestTypedProcedureRequest,
   { id: 'request.watch', input: { id: '1' } }
 );
@@ -18002,6 +18028,66 @@ requestTypedConfigCompiledRouteUnaryBodyHandler(
   // @ts-expect-error config-aware route-specific compiled body handlers preserve custom request types.
   new Request('https://example.com/rpc'),
   manifestRouteUnaryBody
+);
+const requestTypedConfigCompiledRouteStreamBodyHandler: CompiledRpcRouteStreamBodyResultHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = createCompiledRouteStreamRpcBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+requestTypedConfigCompiledRouteStreamBodyHandler(
+  hookAppRequest,
+  manifestRouteStreamBody
+);
+requestTypedConfigCompiledRouteStreamBodyHandler(
+  // @ts-expect-error config-aware route-stream compiled body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
+);
+const requestTypedConfigCompiledStreamRouteBodyHandler: CompiledRpcStreamRouteBodyResultHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = requestTypedConfigCompiledRouteStreamBodyHandler;
+requestTypedConfigCompiledStreamRouteBodyHandler(
+  hookAppRequest,
+  manifestStreamRouteBody
+);
+requestTypedConfigCompiledStreamRouteBodyHandler(
+  // @ts-expect-error config-aware stream-route compiled body aliases preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteBody
+);
+const rootRequestTypedConfigCompiledRouteStreamBodyHandler: RootCompiledRpcRouteStreamBodyResultHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = createRootCompiledRouteStreamRpcBodyResultHandler(
+  _rootServiceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _rootServiceTypedCompiledUnaryDispatch
+);
+rootRequestTypedConfigCompiledRouteStreamBodyHandler(
+  hookAppRequest,
+  manifestRouteStreamBody
+);
+rootRequestTypedConfigCompiledRouteStreamBodyHandler(
+  // @ts-expect-error root config-aware route-stream compiled body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
+);
+const runtimeSubpathRequestTypedConfigCompiledRouteStreamBodyHandler: RuntimeSubpathCompiledRpcRouteStreamBodyResultHandlerForConfig<
+  typeof exactManifestAwareConfig
+> = createRuntimeSubpathCompiledRouteStreamRpcBodyResultHandler(
+  _serviceTypedCompiledDispatch,
+  exactManifestAwareConfig,
+  _serviceTypedCompiledUnaryDispatch
+);
+runtimeSubpathRequestTypedConfigCompiledRouteStreamBodyHandler(
+  hookAppRequest,
+  manifestRouteStreamBody
+);
+runtimeSubpathRequestTypedConfigCompiledRouteStreamBodyHandler(
+  // @ts-expect-error runtime subpath config-aware route-stream compiled body handlers preserve custom request types.
+  new Request('https://example.com/rpc'),
+  manifestRouteStreamBody
 );
 const requestTypedConfigWithoutHooksCompiledBodyHandler: CompiledRpcBodyResultHandlerForConfig<
   typeof requestTypedConfigWithoutHooks
