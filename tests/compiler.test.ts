@@ -2838,6 +2838,7 @@ export default defineProcedure.withContext<Record<string, never>, StreamAppReque
       await writeFile(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createStreamRouteFetchFor, fetch, nativeBody, nativeRouteStreamBody, nativeRouteStreamTransport, nativeStreamRouteBody, nativeStreamRouteTransport, type NativeBodyHandler, type NativeFetchHandler, type NativeRouteStreamBodyHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamTransportHandler, type NativeStreamRouteBodyHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteTransportHandler } from './dispatcher.safe.js';
+import type { NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware } from './dispatcher.safe.js';
 import { createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteStreamFetchFor as createRuntimeRouteStreamFetchFor, createStreamRouteFetch as createRuntimeStreamRouteFetch, createStreamRouteFetchFor as createRuntimeStreamRouteFetchFor, fetch as runtimeFetch, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest } from './fetch.js';
 import { createRouteStreamWorker, createRouteStreamWorkerFor, worker } from './cloudflare.js';
 import { createRouteStreamHandlers, createRouteStreamHandlersFor, handlers } from './next.js';
@@ -2898,6 +2899,133 @@ const nativeStreamRouteTransportHandler: NativeStreamRouteTransportHandler =
   nativeStreamRouteTransport;
 nativeRouteStreamTransportHandler;
 nativeStreamRouteTransportHandler;
+
+const routeStreamHookContext: NativeRouteStreamHandlerHookContext<
+  readonly [],
+  typeof streamBody
+> = {
+  services: {},
+  body: streamBody,
+};
+const streamRouteHookContext: NativeStreamRouteHandlerHookContext<
+  readonly [],
+  typeof streamBody
+> = routeStreamHookContext;
+const routeStreamHooks: NativeRouteStreamHandlerHooks<
+  readonly [],
+  typeof streamBody
+> = {
+  beforeRequest(request, context) {
+    request.streamRequestId.toUpperCase();
+    context.body?.input.id.toUpperCase();
+    return undefined;
+  },
+};
+const streamRouteHooks: NativeStreamRouteHandlerHooks<
+  readonly [],
+  typeof streamBody
+> = routeStreamHooks;
+routeStreamHooks.beforeRequest?.(streamRequest, routeStreamHookContext);
+streamRouteHooks.beforeRequest?.(streamRequest, streamRouteHookContext);
+routeStreamHooks.beforeRequest?.(
+  // @ts-expect-error generated route-stream hooks default to the stream request subtype.
+  plainRequest,
+  routeStreamHookContext
+);
+const routeStreamMiddleware: NativeRouteStreamMiddleware<
+  readonly [],
+  typeof streamBody
+> = {
+  name: 'route-stream-audit',
+  ...routeStreamHooks,
+};
+const streamRouteMiddleware: NativeStreamRouteMiddleware<
+  readonly [],
+  typeof streamBody
+> = routeStreamMiddleware;
+routeStreamMiddleware.beforeRequest?.(streamRequest, routeStreamHookContext);
+streamRouteMiddleware.beforeRequest?.(streamRequest, streamRouteHookContext);
+routeStreamMiddleware.beforeRequest?.(
+  // @ts-expect-error generated route-stream middleware defaults to the stream request subtype.
+  plainRequest,
+  routeStreamHookContext
+);
+const routeStreamOptions: NativeRouteStreamHandlerOptions<
+  readonly [],
+  typeof streamBody
+> = {
+  hooks: routeStreamHooks,
+  middleware: [routeStreamMiddleware],
+};
+const streamRouteOptions: NativeStreamRouteHandlerOptions<
+  readonly [],
+  typeof streamBody
+> = routeStreamOptions;
+routeStreamOptions.hooks?.beforeRequest?.(streamRequest, routeStreamHookContext);
+streamRouteOptions.hooks?.beforeRequest?.(streamRequest, streamRouteHookContext);
+routeStreamOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error generated route-stream options default hooks to the stream request subtype.
+  plainRequest,
+  routeStreamHookContext
+);
+const routeStreamOptionsArgs: NativeRouteStreamHandlerOptionsArgs<
+  readonly [],
+  typeof streamBody
+> = [routeStreamOptions];
+const streamRouteOptionsArgs: NativeStreamRouteHandlerOptionsArgs<
+  readonly [],
+  typeof streamBody
+> = routeStreamOptionsArgs;
+const routeStreamOptionsArgsFor: NativeRouteStreamHandlerOptionsArgsFor<
+  readonly [],
+  typeof streamBody
+> = routeStreamOptionsArgs;
+const streamRouteOptionsArgsFor: NativeStreamRouteHandlerOptionsArgsFor<
+  readonly [],
+  typeof streamBody
+> = streamRouteOptionsArgs;
+const routeStreamOptionsWithTrailingArgs: NativeRouteStreamHandlerOptionsWithTrailingArgs<
+  [preflight?: boolean],
+  readonly [],
+  typeof streamBody
+> = [routeStreamOptions, true];
+const streamRouteOptionsWithTrailingArgs: NativeStreamRouteHandlerOptionsWithTrailingArgs<
+  [preflight?: boolean],
+  readonly [],
+  typeof streamBody
+> = routeStreamOptionsWithTrailingArgs;
+const routeStreamOptionsWithPreflightArgs: NativeRouteStreamHandlerOptionsWithPreflightArgs<
+  readonly [],
+  typeof streamBody
+> = routeStreamOptionsWithTrailingArgs;
+const streamRouteOptionsWithPreflightArgs: NativeStreamRouteHandlerOptionsWithPreflightArgs<
+  readonly [],
+  typeof streamBody
+> = streamRouteOptionsWithTrailingArgs;
+routeStreamOptionsArgs[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  routeStreamHookContext
+);
+streamRouteOptionsArgs[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  streamRouteHookContext
+);
+routeStreamOptionsArgsFor[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  routeStreamHookContext
+);
+streamRouteOptionsArgsFor[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  streamRouteHookContext
+);
+routeStreamOptionsWithPreflightArgs[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  routeStreamHookContext
+);
+streamRouteOptionsWithPreflightArgs[0]?.hooks?.beforeRequest?.(
+  streamRequest,
+  streamRouteHookContext
+);
 
 createFetchFor()(streamRequest);
 createRouteStreamFetchFor()(streamRequest);
