@@ -378,6 +378,29 @@ const generatedExportSets = async (): Promise<
 const routeExportNames = (names: ReadonlySet<string>): readonly string[] =>
   [...names].filter((name) => routeNamePattern.test(name)).sort();
 
+const generatedPlatformEntrypoints = [
+  'aws-lambda.ts',
+  'bun.ts',
+  'cloudflare.ts',
+  'deno.ts',
+  'fetch.ts',
+  'netlify.ts',
+  'next.ts',
+  'node.ts',
+  'vercel.ts',
+] as const;
+
+const generatedRouteRequirementAliases = [
+  'NativeRouteStreamRequiredRuntimeRequest',
+  'NativeRouteStreamRequiredServices',
+  'NativeRouteUnaryRequiredRuntimeRequest',
+  'NativeRouteUnaryRequiredServices',
+  'NativeStreamRouteRequiredRuntimeRequest',
+  'NativeStreamRouteRequiredServices',
+  'NativeUnaryRouteRequiredRuntimeRequest',
+  'NativeUnaryRouteRequiredServices',
+] as const;
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -442,6 +465,22 @@ describe('route public surface', () => {
           );
 
     expect([...missing, ...mismatched].sort()).toEqual([]);
+  });
+
+  it('keeps generated platform route requirement aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const exportsByBasename = new Map(
+      [...exportSets].map(([file, names]) => [basename(file), names])
+    );
+    const missing = generatedPlatformEntrypoints.flatMap((entrypoint) => {
+      const exports = exportsByBasename.get(entrypoint);
+      if (exports === undefined) return [`${entrypoint}: <missing>`];
+      return generatedRouteRequirementAliases.flatMap((name) =>
+        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+      );
+    });
+
+    expect(missing).toEqual([]);
   });
 
   it('keeps root route re-exports in sync with source modules', async () => {
