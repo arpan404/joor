@@ -330,6 +330,10 @@ import {
   createVercelFunctionFor,
   createClient as createRootClient,
   createManifestClient as createRootManifestClient,
+  createManifestRouteStreamClient as createRootManifestRouteStreamClient,
+  createManifestRouteUnaryClient as createRootManifestRouteUnaryClient,
+  createManifestStreamRouteClient as createRootManifestStreamRouteClient,
+  createManifestUnaryRouteClient as createRootManifestUnaryRouteClient,
   createManifestRouteProtocolRequest,
   createManifestRouteRequest,
   createManifestRouteStreamProtocolRequest,
@@ -338,6 +342,10 @@ import {
   createManifestStreamRouteProtocolRequest,
   createManifestStreamRouteRequest,
   createManifestUnaryRouteProtocolRequest,
+  createRouteStreamClient as createRootRouteStreamClient,
+  createRouteUnaryClient as createRootRouteUnaryClient,
+  createStreamRouteClient as createRootStreamRouteClient,
+  createUnaryRouteClient as createRootUnaryRouteClient,
   createManifestRouteUnaryRequest,
   createManifestUnaryRouteRequest,
   createRouteProtocolRequest,
@@ -1430,10 +1438,14 @@ import {
   type RpcUnaryProtocolRequestUnion,
   type RouteRpcTransportClient,
   type RpcManifestClientOptions,
+  type RpcManifestRouteStreamClientOptions,
   type RpcManifestRouteStreamTransportClient,
+  type RpcManifestRouteUnaryClientOptions,
   type RpcManifestRouteUnaryTransportClient,
+  type RpcManifestStreamRouteClientOptions,
   type RpcManifestStreamRouteTransportClient,
   type RpcManifestTransportClient,
+  type RpcManifestUnaryRouteClientOptions,
   type RpcManifestUnaryRouteTransportClient,
   type RpcSuccess,
   type RpcStreamProcedure,
@@ -1538,7 +1550,18 @@ import {
   type AuthPolicyResultLike as AuthSubpathPolicyResultLike,
   type AuthPolicyServices as AuthSubpathPolicyServices,
 } from '../src/auth/index.js';
-import { createClient, createManifestClient } from '../src/rpc/client.js';
+import {
+  createClient,
+  createManifestClient,
+  createManifestRouteStreamClient,
+  createManifestRouteUnaryClient,
+  createManifestStreamRouteClient,
+  createManifestUnaryRouteClient,
+  createRouteStreamClient,
+  createRouteUnaryClient,
+  createStreamRouteClient,
+  createUnaryRouteClient,
+} from '../src/rpc/client.js';
 import {
   createAuthPolicy as createContextSubpathAuthPolicy,
   createPlugin as createContextSubpathPlugin,
@@ -10991,6 +11014,49 @@ explicitManifestClient.call(
 );
 explicitManifestClient.stream('users.watch', { userId: '1' });
 
+const manifestRouteUnaryClientOptions: RpcManifestRouteUnaryClientOptions<
+  typeof manifest
+> = { url: '/rpc' };
+const manifestUnaryRouteClientOptions: RpcManifestUnaryRouteClientOptions<
+  typeof manifest
+> = manifestRouteUnaryClientOptions;
+const manifestRouteStreamClientOptions: RpcManifestRouteStreamClientOptions<
+  typeof manifest
+> = { url: '/rpc' };
+const manifestStreamRouteClientOptions: RpcManifestStreamRouteClientOptions<
+  typeof manifest
+> = manifestRouteStreamClientOptions;
+const explicitManifestRouteUnaryClient = createManifestRouteUnaryClient(
+  manifest,
+  manifestRouteUnaryClientOptions
+);
+const explicitManifestUnaryRouteClient = createManifestUnaryRouteClient(
+  manifest,
+  manifestUnaryRouteClientOptions
+);
+const explicitManifestRouteStreamClient = createManifestRouteStreamClient(
+  manifest,
+  manifestRouteStreamClientOptions
+);
+const explicitManifestStreamRouteClient = createManifestStreamRouteClient(
+  manifest,
+  manifestStreamRouteClientOptions
+);
+explicitManifestRouteUnaryClient.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+explicitManifestUnaryRouteClient.call('users.authenticated', { ok: true });
+explicitManifestRouteStreamClient.stream('users.watch', { userId: '1' });
+explicitManifestStreamRouteClient.stream('users.watch', { userId: '1' });
+// @ts-expect-error manifest route-unary clients reject stream routes.
+explicitManifestRouteUnaryClient.call('users.watch', { userId: '1' });
+// @ts-expect-error manifest route-unary clients do not expose stream commands.
+explicitManifestRouteUnaryClient.stream('users.watch', { userId: '1' });
+// @ts-expect-error manifest route-stream clients do not expose unary calls.
+explicitManifestRouteStreamClient.call('users.get', { id: '1' });
+
 // @ts-expect-error explicit manifest clients reject unknown route ids.
 explicitManifestClient.call('users.missing', { id: '1' });
 
@@ -10998,12 +11064,44 @@ explicitManifestClient.call('users.missing', { id: '1' });
 explicitManifestClient.call('users.watch', { userId: '1' });
 
 const rootManifestClient = createRootClient({ url: '/rpc', manifest });
+const rootRouteUnaryClient = createRootRouteUnaryClient({
+  url: '/rpc',
+  manifest,
+});
+const rootUnaryRouteClient = createRootUnaryRouteClient({
+  url: '/rpc',
+  manifest,
+});
+const rootRouteStreamClient = createRootRouteStreamClient({
+  url: '/rpc',
+  manifest,
+});
+const rootStreamRouteClient = createRootStreamRouteClient({
+  url: '/rpc',
+  manifest,
+});
+const rootManifestRouteUnaryClient = createRootManifestRouteUnaryClient(
+  manifest,
+  manifestRouteUnaryClientOptions
+);
+const rootManifestUnaryRouteClient = createRootManifestUnaryRouteClient(
+  manifest,
+  manifestUnaryRouteClientOptions
+);
+const rootManifestRouteStreamClient = createRootManifestRouteStreamClient(
+  manifest,
+  manifestRouteStreamClientOptions
+);
+const rootManifestStreamRouteClient = createRootManifestStreamRouteClient(
+  manifest,
+  manifestStreamRouteClientOptions
+);
 const rootManifestClientShape: RpcManifestTransportClient<typeof manifest> =
   rootManifestClient;
 rootManifestClientShape.call('users.authenticated', { ok: true });
 const rootManifestRouteUnaryClientShape: RpcManifestRouteUnaryTransportClient<
   typeof manifest
-> = rootManifestClient;
+> = rootRouteUnaryClient;
 rootManifestRouteUnaryClientShape.call('users.authenticated', { ok: true });
 rootManifestRouteUnaryClientShape.batch([
   rootManifestRouteUnaryClientShape.request('users.authenticated', {
@@ -11012,19 +11110,23 @@ rootManifestRouteUnaryClientShape.batch([
 ] as const);
 const rootManifestUnaryClientShape: RpcManifestUnaryRouteTransportClient<
   typeof manifest
-> = rootManifestRouteUnaryClientShape;
+> = rootUnaryRouteClient;
 rootManifestUnaryClientShape.call('users.authenticated', { ok: true });
 rootManifestUnaryClientShape.batch([
   rootManifestUnaryClientShape.request('users.authenticated', { ok: true }),
 ] as const);
 const rootManifestRouteStreamClientShape: RpcManifestRouteStreamTransportClient<
   typeof manifest
-> = rootManifestClient;
+> = rootRouteStreamClient;
 rootManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
 const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
   typeof manifest
-> = rootManifestRouteStreamClientShape;
+> = rootStreamRouteClient;
 rootManifestStreamClientShape.stream('users.watch', { userId: '1' });
+rootManifestRouteUnaryClient.call('users.authenticated', { ok: true });
+rootManifestUnaryRouteClient.call('users.authenticated', { ok: true });
+rootManifestRouteStreamClient.stream('users.watch', { userId: '1' });
+rootManifestStreamRouteClient.stream('users.watch', { userId: '1' });
 const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
   typeof manifest
 > = rootManifestClient;
@@ -30309,10 +30411,16 @@ const _wrongRouteBody: RpcRouteBody<Routes> = [
 ];
 
 const routeClient = createClient<Routes>({ url: '/rpc' });
+const routeUnaryClient = createRouteUnaryClient<Routes>({ url: '/rpc' });
+const unaryRouteClient = createUnaryRouteClient<Routes>({ url: '/rpc' });
+const routeStreamClient = createRouteStreamClient<Routes>({ url: '/rpc' });
+const streamRouteClient = createStreamRouteClient<Routes>({ url: '/rpc' });
 const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
 const routeUnaryClientShape: RpcRouteUnaryTransportClient<Routes> = routeClient;
+const createdRouteUnaryClientShape: RpcRouteUnaryTransportClient<Routes> =
+  routeUnaryClient;
 const unaryRouteClientShape: RpcUnaryRouteTransportClient<Routes> =
-  routeUnaryClientShape;
+  unaryRouteClient;
 unaryRouteClientShape.call(
   'users.get',
   { id: '1' },
@@ -30329,9 +30437,21 @@ unaryRouteClientShape.batch([
 unaryRouteClientShape.call = routeClient.call;
 const routeStreamClientShape: RpcRouteStreamTransportClient<Routes> =
   routeClient;
+const createdRouteStreamClientShape: RpcRouteStreamTransportClient<Routes> =
+  routeStreamClient;
 const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
-  routeStreamClientShape;
+  streamRouteClient;
 streamRouteClientShape.stream('users.watch', { userId: '1' });
+createdRouteUnaryClientShape.call(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+createdRouteStreamClientShape.stream('users.watch', { userId: '1' });
+// @ts-expect-error route-unary clients do not expose stream commands.
+routeUnaryClient.stream('users.watch', { userId: '1' });
+// @ts-expect-error route-stream clients do not expose unary calls.
+routeStreamClient.call('users.get', { id: '1' });
 // @ts-expect-error route stream client commands are readonly.
 streamRouteClientShape.stream = routeClient.stream;
 const routeRequestOptions: RpcRouteRequestOptions<Routes, 'users.get'> = {

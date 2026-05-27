@@ -307,12 +307,20 @@ import {
 import { createAuthPolicy } from 'joor/auth';
 import {
   createManifestClient,
+  createManifestRouteStreamClient,
+  createManifestRouteUnaryClient,
+  createManifestStreamRouteClient,
+  createManifestUnaryRouteClient,
+  createRouteStreamClient,
   createRouteStreamProtocolRequest as createClientRouteStreamProtocolRequest,
   createRouteStreamRequest as createClientRouteStreamRequest,
+  createRouteUnaryClient,
   createRouteUnaryProtocolRequest as createClientRouteUnaryProtocolRequest,
   createRouteUnaryRequest as createClientRouteUnaryRequest,
+  createStreamRouteClient,
   createStreamRouteProtocolRequest as createClientStreamRouteProtocolRequest,
   createStreamRouteRequest as createClientStreamRouteRequest,
+  createUnaryRouteClient,
   createUnaryRouteProtocolRequest as createClientUnaryRouteProtocolRequest,
   createUnaryRouteRequest as createClientUnaryRouteRequest,
 } from 'joor/client';
@@ -987,6 +995,58 @@ const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClien
   packageSubpathClient;
 const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
   packageSubpathClient;
+const packageSubpathRouteUnaryClientOptions: Client.RpcManifestRouteUnaryClientOptions<PackageSubpathManifest> =
+  { url: 'https://example.com/rpc' };
+const packageSubpathUnaryRouteClientOptions: Client.RpcManifestUnaryRouteClientOptions<PackageSubpathManifest> =
+  packageSubpathRouteUnaryClientOptions;
+const packageSubpathRouteStreamClientOptions: Client.RpcManifestRouteStreamClientOptions<PackageSubpathManifest> =
+  { url: 'https://example.com/rpc' };
+const packageSubpathStreamRouteClientOptions: Client.RpcManifestStreamRouteClientOptions<PackageSubpathManifest> =
+  packageSubpathRouteStreamClientOptions;
+const packageSubpathRouteUnaryClient = createManifestRouteUnaryClient(
+  packageSubpathManifest,
+  packageSubpathRouteUnaryClientOptions
+);
+const packageSubpathUnaryRouteClient = createManifestUnaryRouteClient(
+  packageSubpathManifest,
+  packageSubpathUnaryRouteClientOptions
+);
+const packageSubpathRouteStreamClient = createManifestRouteStreamClient(
+  packageSubpathManifest,
+  packageSubpathRouteStreamClientOptions
+);
+const packageSubpathStreamRouteClient = createManifestStreamRouteClient(
+  packageSubpathManifest,
+  packageSubpathStreamRouteClientOptions
+);
+const typedPackageSubpathCreatedUnaryClient: Client.RpcManifestRouteUnaryTransportClient<PackageSubpathManifest> =
+  packageSubpathRouteUnaryClient;
+const typedPackageSubpathCreatedStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
+  packageSubpathRouteStreamClient;
+typedPackageSubpathCreatedUnaryClient.call('users.get', { id: '1' });
+packageSubpathUnaryRouteClient.call('users.get', { id: '1' });
+typedPackageSubpathCreatedStreamClient.stream('users.watch', { userId: '1' });
+packageSubpathStreamRouteClient.stream('users.watch', { userId: '1' });
+const packageSubpathRouteMapUnaryClient =
+  createRouteUnaryClient<PackageSubpathRoutes>({
+    url: 'https://example.com/rpc',
+  });
+const packageSubpathUnaryRouteMapClient =
+  createUnaryRouteClient<PackageSubpathRoutes>({
+    url: 'https://example.com/rpc',
+  });
+const packageSubpathRouteMapStreamClient =
+  createRouteStreamClient<PackageSubpathRoutes>({
+    url: 'https://example.com/rpc',
+  });
+const packageSubpathStreamRouteMapClient =
+  createStreamRouteClient<PackageSubpathRoutes>({
+    url: 'https://example.com/rpc',
+  });
+packageSubpathRouteMapUnaryClient.call('users.get', { id: '1' });
+packageSubpathUnaryRouteMapClient.call('users.get', { id: '1' });
+packageSubpathRouteMapStreamClient.stream('users.watch', { userId: '1' });
+packageSubpathStreamRouteMapClient.stream('users.watch', { userId: '1' });
 const packageSubpathRequest = packageSubpathClient.request('users.get', {
   id: '1',
 });
@@ -2896,6 +2956,10 @@ type PackageSubpathRouteConfigSurface = [
   Context.DefineStreamRouteConfigFor<PackageSubpathManifest>,
 ];
 type PackageSubpathRpcRouteCoreSurface = [
+  Rpc.RpcManifestRouteUnaryClientOptions<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteClientOptions<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamClientOptions<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteClientOptions<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryTransportClient<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteTransportClient<PackageSubpathManifest>,
   Rpc.RpcManifestRouteStreamTransportClient<PackageSubpathManifest>,

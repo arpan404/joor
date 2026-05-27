@@ -22,7 +22,11 @@ import type {
   RpcRequest,
   RpcResponseHeaderValues,
 } from './protocol.js';
-import type { RpcManifestRequiredRuntimeRequest } from './dispatcher.js';
+import type {
+  RpcManifestRequiredRuntimeRequest,
+  RpcManifestRouteStreamRequiredRuntimeRequest,
+  RpcManifestRouteUnaryRequiredRuntimeRequest,
+} from './dispatcher.js';
 
 type IsExactRequest<TRequest extends Request> = [Request] extends [TRequest]
   ? [TRequest] extends [Request]
@@ -2716,6 +2720,30 @@ export type RpcManifestClientOptions<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
 
+export type RpcManifestRouteUnaryClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
+
+export type RpcManifestUnaryRouteClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryClientOptions<TManifest, TRequest>;
+
+export type RpcManifestRouteStreamClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
+
+export type RpcManifestStreamRouteClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamClientOptions<TManifest, TRequest>;
+
 const appendStringHeaders = (
   output: Headers,
   values: object | undefined
@@ -3061,3 +3089,99 @@ export const createManifestClient = <
     ...(options as ClientOptions<TManifest, TRequest>),
     manifest,
   });
+
+export function createRouteUnaryClient<
+  const TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+>(
+  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
+): RpcManifestRouteUnaryTransportClient<TManifest>;
+export function createRouteUnaryClient<
+  TRoutes extends RpcRouteMap,
+  TRequest extends Request = Request,
+>(
+  options: ClientOptions<undefined, TRequest>
+): RpcRouteUnaryTransportClient<TRoutes>;
+export function createRouteUnaryClient<TRequest extends Request = Request>(
+  options: ClientOptions<JoorManifest | undefined, TRequest>
+):
+  | RpcManifestRouteUnaryTransportClient<JoorManifest>
+  | RpcRouteUnaryTransportClient<RpcRouteMap> {
+  if (options.manifest !== undefined) {
+    return createClient<JoorManifest, TRequest>({
+      ...(options as ClientOptions<JoorManifest, TRequest>),
+      manifest: options.manifest,
+    }) as RpcManifestRouteUnaryTransportClient<JoorManifest>;
+  }
+  return createClient<RpcRouteMap, TRequest>(
+    options as ClientOptions<undefined, TRequest>
+  ) as RpcRouteUnaryTransportClient<RpcRouteMap>;
+}
+
+export const createUnaryRouteClient: typeof createRouteUnaryClient =
+  createRouteUnaryClient;
+
+export const createManifestRouteUnaryClient = <
+  const TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  options: RpcManifestRouteUnaryClientOptions<TManifest, TRequest>
+): RpcManifestRouteUnaryTransportClient<TManifest> =>
+  createRouteUnaryClient<TManifest, TRequest>({
+    ...(options as ClientOptions<TManifest, TRequest>),
+    manifest,
+  });
+
+export const createManifestUnaryRouteClient: typeof createManifestRouteUnaryClient =
+  createManifestRouteUnaryClient;
+
+export function createRouteStreamClient<
+  const TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+>(
+  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
+): RpcManifestRouteStreamTransportClient<TManifest>;
+export function createRouteStreamClient<
+  TRoutes extends RpcRouteMap,
+  TRequest extends Request = Request,
+>(
+  options: ClientOptions<undefined, TRequest>
+): RpcRouteStreamTransportClient<TRoutes>;
+export function createRouteStreamClient<TRequest extends Request = Request>(
+  options: ClientOptions<JoorManifest | undefined, TRequest>
+):
+  | RpcManifestRouteStreamTransportClient<JoorManifest>
+  | RpcRouteStreamTransportClient<RpcRouteMap> {
+  if (options.manifest !== undefined) {
+    return createClient<JoorManifest, TRequest>({
+      ...(options as ClientOptions<JoorManifest, TRequest>),
+      manifest: options.manifest,
+    }) as RpcManifestRouteStreamTransportClient<JoorManifest>;
+  }
+  return createClient<RpcRouteMap, TRequest>(
+    options as ClientOptions<undefined, TRequest>
+  ) as RpcRouteStreamTransportClient<RpcRouteMap>;
+}
+
+export const createStreamRouteClient: typeof createRouteStreamClient =
+  createRouteStreamClient;
+
+export const createManifestRouteStreamClient = <
+  const TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+>(
+  manifest: TManifest,
+  options: RpcManifestRouteStreamClientOptions<TManifest, TRequest>
+): RpcManifestRouteStreamTransportClient<TManifest> =>
+  createRouteStreamClient<TManifest, TRequest>({
+    ...(options as ClientOptions<TManifest, TRequest>),
+    manifest,
+  });
+
+export const createManifestStreamRouteClient: typeof createManifestRouteStreamClient =
+  createManifestRouteStreamClient;
