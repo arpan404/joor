@@ -160,6 +160,16 @@ export type BunUnaryRouteFetchOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = BunRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type BunUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type BunRouteStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -176,6 +186,16 @@ export type BunRouteStreamFetchOptionsFor<
 >;
 
 export type BunStreamRouteFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type BunStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -286,6 +306,16 @@ export type BunUnaryRouteFetchOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = BunRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type BunUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type BunRouteStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -302,6 +332,16 @@ export type BunRouteStreamFetchOptionsArgs<
 >;
 
 export type BunStreamRouteFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type BunStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -618,6 +658,9 @@ export function createRouteUnaryBunFetch<TManifest extends JoorManifest>(
 export const createUnaryRouteBunFetch: typeof createRouteUnaryBunFetch =
   createRouteUnaryBunFetch;
 
+export const createUnaryBunFetch: typeof createRouteUnaryBunFetch =
+  createRouteUnaryBunFetch;
+
 export function createRouteStreamBunFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -648,6 +691,9 @@ export function createRouteStreamBunFetch<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteBunFetch: typeof createRouteStreamBunFetch =
+  createRouteStreamBunFetch;
+
+export const createStreamBunFetch: typeof createRouteStreamBunFetch =
   createRouteStreamBunFetch;
 
 export function createBunFetchFor(): <
@@ -751,6 +797,9 @@ export function createRouteUnaryBunFetchFor<
 export const createUnaryRouteBunFetchFor: typeof createRouteUnaryBunFetchFor =
   createRouteUnaryBunFetchFor;
 
+export const createUnaryBunFetchFor: typeof createRouteUnaryBunFetchFor =
+  createRouteUnaryBunFetchFor;
+
 export function createRouteStreamBunFetchFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -802,6 +851,9 @@ export function createRouteStreamBunFetchFor<
 }
 
 export const createStreamRouteBunFetchFor: typeof createRouteStreamBunFetchFor =
+  createRouteStreamBunFetchFor;
+
+export const createStreamBunFetchFor: typeof createRouteStreamBunFetchFor =
   createRouteStreamBunFetchFor;
 
 export const createBunTransportRequestHandler = <

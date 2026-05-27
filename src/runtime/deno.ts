@@ -159,6 +159,16 @@ export type DenoUnaryRouteFetchOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = DenoRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type DenoUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type DenoRouteStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -175,6 +185,16 @@ export type DenoRouteStreamFetchOptionsFor<
 >;
 
 export type DenoStreamRouteFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type DenoStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -285,6 +305,16 @@ export type DenoUnaryRouteFetchOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = DenoRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type DenoUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type DenoRouteStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -301,6 +331,16 @@ export type DenoRouteStreamFetchOptionsArgs<
 >;
 
 export type DenoStreamRouteFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type DenoStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -668,6 +708,9 @@ export function createRouteUnaryDenoFetch<TManifest extends JoorManifest>(
 export const createUnaryRouteDenoFetch: typeof createRouteUnaryDenoFetch =
   createRouteUnaryDenoFetch;
 
+export const createUnaryDenoFetch: typeof createRouteUnaryDenoFetch =
+  createRouteUnaryDenoFetch;
+
 export function createRouteStreamDenoFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -698,6 +741,9 @@ export function createRouteStreamDenoFetch<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteDenoFetch: typeof createRouteStreamDenoFetch =
+  createRouteStreamDenoFetch;
+
+export const createStreamDenoFetch: typeof createRouteStreamDenoFetch =
   createRouteStreamDenoFetch;
 
 export function createDenoFetchFor(): <
@@ -801,6 +847,9 @@ export function createRouteUnaryDenoFetchFor<
 export const createUnaryRouteDenoFetchFor: typeof createRouteUnaryDenoFetchFor =
   createRouteUnaryDenoFetchFor;
 
+export const createUnaryDenoFetchFor: typeof createRouteUnaryDenoFetchFor =
+  createRouteUnaryDenoFetchFor;
+
 export function createRouteStreamDenoFetchFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -852,6 +901,9 @@ export function createRouteStreamDenoFetchFor<
 }
 
 export const createStreamRouteDenoFetchFor: typeof createRouteStreamDenoFetchFor =
+  createRouteStreamDenoFetchFor;
+
+export const createStreamDenoFetchFor: typeof createRouteStreamDenoFetchFor =
   createRouteStreamDenoFetchFor;
 
 export const createDenoTransportRequestHandler = <
