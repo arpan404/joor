@@ -223,9 +223,7 @@ describe('route public surface', () => {
       .filter(({ file, name }) => {
         if (file === rootIndex) return false;
         return (
-          rootReExports.has(file) &&
-          !rootReExports.get(file)?.has(name) &&
-          !rootExportNames.has(name)
+          !rootReExports.get(file)?.has(name) && !rootExportNames.has(name)
         );
       })
       .map(({ file, name }) => `${relative(repoRoot, file)}: ${name}`)
