@@ -40,8 +40,10 @@ const contextlessFixtureConfig = new URL(
 type GeneratedAwsLambdaModule = {
   readonly createAwsLambdaHandler: () => AwsLambdaHandler;
   readonly createAwsLambdaRestApiHandler: () => AwsLambdaRestApiHandler;
+  readonly createRouteStreamAwsLambdaHandlerFor: () => () => AwsLambdaHandler;
   readonly createRouteStreamAwsLambdaRestApiHandlerFor: () => () => AwsLambdaRestApiHandler;
   readonly createRouteUnaryAwsLambdaHandlerFor: () => () => AwsLambdaHandler;
+  readonly createRouteUnaryAwsLambdaRestApiHandlerFor: () => () => AwsLambdaRestApiHandler;
   readonly handler: AwsLambdaHandler;
   readonly restApiHandler: AwsLambdaRestApiHandler;
 };
@@ -1850,6 +1852,30 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         name: 'Ada',
       });
 
+      const httpStreamEvent: AwsLambdaHttpEventV2 = {
+        ...httpUserEvent,
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'users.watch',
+          input: { userId: 'lambda-http-stream' },
+        }),
+      };
+      const routeStreamHttpResponse =
+        await awsLambda.createRouteStreamAwsLambdaHandlerFor()()(
+          httpStreamEvent
+        );
+      expect(routeStreamHttpResponse.statusCode).toBe(200);
+      expect(routeStreamHttpResponse.headers?.['content-type']).toContain(
+        'text/event-stream'
+      );
+      expect(routeStreamHttpResponse.body).toContain(
+        '"userId":"lambda-http-stream"'
+      );
+      expect(routeStreamHttpResponse.body).toContain('event: done');
+
       const restPostsEvent: AwsLambdaRestApiEventV1 = {
         path: '/rpc',
         httpMethod: 'POST',
@@ -1870,6 +1896,27 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         expect(payload.ok).toBe(true);
         expect(payload.data).toEqual([{ id: 'post-ada', title: 'Hello' }]);
       }
+
+      const restUserEvent: AwsLambdaRestApiEventV1 = {
+        ...restPostsEvent,
+        headers: {
+          authorization: 'Bearer test',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: 'users.get',
+          input: { id: userId },
+        }),
+      };
+      const routeUnaryRestResponse =
+        await awsLambda.createRouteUnaryAwsLambdaRestApiHandlerFor()()(
+          restUserEvent
+        );
+      expect(routeUnaryRestResponse.statusCode).toBe(200);
+      expect(JSON.parse(routeUnaryRestResponse.body ?? '{}').data).toEqual({
+        id: userId,
+        name: 'Ada',
+      });
 
       const restStreamEvent: AwsLambdaRestApiEventV1 = {
         path: '/rpc',
@@ -1908,6 +1955,23 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         id: 'users.watch',
         error: { code: 'NOT_FOUND' },
       });
+      const wrongRouteUnaryRestResponse =
+        await awsLambda.createRouteUnaryAwsLambdaRestApiHandlerFor()()({
+          ...restUserEvent,
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            id: 'users.watch',
+            input: { userId: 'wrong-kind' },
+          }),
+        });
+      expect(wrongRouteUnaryRestResponse.statusCode).toBe(200);
+      expect(
+        JSON.parse(wrongRouteUnaryRestResponse.body ?? '{}')
+      ).toMatchObject({
+        ok: false,
+        id: 'users.watch',
+        error: { code: 'NOT_FOUND' },
+      });
 
       const wrongRouteStreamResponse =
         await awsLambda.createRouteStreamAwsLambdaRestApiHandlerFor()()({
@@ -1923,6 +1987,27 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         });
       expect(wrongRouteStreamResponse.statusCode).toBe(200);
       expect(JSON.parse(wrongRouteStreamResponse.body ?? '{}')).toMatchObject({
+        ok: false,
+        id: 'users.get',
+        error: { code: 'NOT_FOUND' },
+      });
+      const wrongRouteStreamHttpResponse =
+        await awsLambda.createRouteStreamAwsLambdaHandlerFor()()({
+          ...httpStreamEvent,
+          headers: {
+            accept: 'text/event-stream',
+            authorization: 'Bearer test',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: 'users.get',
+            input: { id: userId },
+          }),
+        });
+      expect(wrongRouteStreamHttpResponse.statusCode).toBe(200);
+      expect(
+        JSON.parse(wrongRouteStreamHttpResponse.body ?? '{}')
+      ).toMatchObject({
         ok: false,
         id: 'users.get',
         error: { code: 'NOT_FOUND' },
