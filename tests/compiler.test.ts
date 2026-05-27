@@ -3754,6 +3754,9 @@ class GeneratedRequest extends Request {
   readonly runtimeTag = 'generated';
 }
 const generatedRequest = new GeneratedRequest('https://example.com/rpc');
+type NativeOptionsArg<TArgs extends readonly unknown[]> = NonNullable<
+  TArgs[0]
+>;
 const generatedAwsLambdaEvent: AwsLambdaHttpEventV2 = {
   rawPath: '/rpc',
   rawQueryString: '',
@@ -5830,6 +5833,14 @@ const nativeRouteStreamHandlerOptionsFor: NativeRouteStreamHandlerOptionsFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteStreamBody
 > = nativeRouteStreamHandlerOptions;
+const nativeRequestTypedRouteStreamHandlerOptionsFor: NativeRouteStreamHandlerOptionsFor<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody,
+  GeneratedRequest
+> = {
+  plugins: [nativeUsersPlugin] as const,
+  hooks: nativeRequestTypedRouteStreamHandlerHooks,
+};
 const nativeHandlerOptionsArgs: NativeHandlerOptionsArgs<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -5848,6 +5859,14 @@ const nativeRequestTypedRouteUnaryHandlerOptionsArgs: NativeRouteUnaryHandlerOpt
   typeof nativeRouteUnaryBody,
   GeneratedRequest
 > = [nativeRequestTypedRouteUnaryHandlerOptionsFor];
+const nativeRequestTypedRouteUnaryHandlerOptionsArgsRequest: NativeHandlerOptionsRequest<
+  NativeOptionsArg<typeof nativeRequestTypedRouteUnaryHandlerOptionsArgs>
+> = generatedRequest;
+nativeRequestTypedRouteUnaryHandlerOptionsArgsRequest.runtimeTag.toUpperCase();
+// @ts-expect-error generated native route-unary option args preserve explicit custom request types.
+const _wrongNativeRequestTypedRouteUnaryHandlerOptionsArgsRequest: NativeHandlerOptionsRequest<
+  NativeOptionsArg<typeof nativeRequestTypedRouteUnaryHandlerOptionsArgs>
+> = new Request('https://example.com/rpc');
 const nativeUnaryRouteHandlerOptionsArgs: NativeUnaryRouteHandlerOptionsArgs<
   readonly [typeof nativeUsersPlugin],
   typeof nativeUnaryRouteBody
@@ -5872,6 +5891,24 @@ const nativeRouteStreamHandlerOptionsArgs: NativeRouteStreamHandlerOptionsArgs<
   readonly [typeof nativeUsersPlugin],
   typeof nativeRouteStreamBody
 > = nativeStreamRouteHandlerOptionsArgs;
+const nativeRequestTypedRouteStreamHandlerOptionsArgs: NativeRouteStreamHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeRouteStreamBody,
+  GeneratedRequest
+> = [nativeRequestTypedRouteStreamHandlerOptionsFor];
+const nativeRequestTypedRouteStreamHandlerOptionsArgsRequest: NativeHandlerOptionsRequest<
+  NativeOptionsArg<typeof nativeRequestTypedRouteStreamHandlerOptionsArgs>
+> = generatedRequest;
+nativeRequestTypedRouteStreamHandlerOptionsArgsRequest.runtimeTag.toUpperCase();
+// @ts-expect-error generated native route-stream option args preserve explicit custom request types.
+const _wrongNativeRequestTypedRouteStreamHandlerOptionsArgsRequest: NativeHandlerOptionsRequest<
+  NativeOptionsArg<typeof nativeRequestTypedRouteStreamHandlerOptionsArgs>
+> = new Request('https://example.com/rpc');
+const nativeRequestTypedStreamRouteHandlerOptionsArgs: NativeStreamRouteHandlerOptionsArgs<
+  readonly [typeof nativeUsersPlugin],
+  typeof nativeStreamRouteBody,
+  GeneratedRequest
+> = nativeRequestTypedRouteStreamHandlerOptionsArgs;
 const nativeStreamRouteHandlerOptionsArgsFor: NativeStreamRouteHandlerOptionsArgsFor<
   readonly [typeof nativeUsersPlugin],
   typeof nativeStreamRouteBody
