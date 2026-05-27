@@ -15,6 +15,7 @@ const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
 
 type ExportedSymbol = {
   readonly file: string;
+  readonly kind: 'type' | 'value';
   readonly name: string;
 };
 
@@ -59,24 +60,66 @@ const collectExportedSymbols = (
   const symbols: ExportedSymbol[] = [];
 
   for (const match of source.matchAll(
-    /\bexport\s+(?:declare\s+)?(?:const|function|type|interface|class)\s+([A-Za-z_][A-Za-z0-9_]*)/g
+    /\bexport\s+(?:declare\s+)?(const|function|type|interface|class)\s+([A-Za-z_][A-Za-z0-9_]*)/g
   )) {
-    const name = match[1];
-    if (name !== undefined) symbols.push({ file, name });
+    const declarationKind = match[1];
+    const name = match[2];
+    if (name !== undefined) {
+      symbols.push({
+        file,
+        kind:
+          declarationKind === 'type' || declarationKind === 'interface'
+            ? 'type'
+            : 'value',
+        name,
+      });
+    }
   }
 
   for (const match of source.matchAll(
-    /\bexport\s+(?:type\s+)?\{([^}]*)\}(?:\s+from\s+['"][^'"]+['"])?/g
+    /\bexport\s+(type\s+)?\{([^}]*)\}(?:\s+from\s+['"][^'"]+['"])?/g
   )) {
-    const specifiers = match[1];
+    const typeOnlyExport = match[1] !== undefined;
+    const specifiers = match[2];
     if (specifiers === undefined) continue;
     for (const specifier of specifiers.split(',')) {
       const name = exportedName(specifier);
-      if (name.length > 0) symbols.push({ file, name });
+      if (name.length > 0) {
+        symbols.push({
+          file,
+          kind:
+            typeOnlyExport || specifier.trim().startsWith('type ')
+              ? 'type'
+              : 'value',
+          name,
+        });
+      }
     }
   }
 
   return symbols;
+};
+
+const collectImportedSourceNamesByModule = (
+  source: string
+): ReadonlyMap<string, ReadonlySet<string>> => {
+  const imports = new Map<string, Set<string>>();
+
+  for (const match of source.matchAll(
+    /\bimport\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]/g
+  )) {
+    const specifiers = match[1];
+    const moduleSpecifier = match[2];
+    if (specifiers === undefined || moduleSpecifier === undefined) continue;
+    const names = imports.get(moduleSpecifier) ?? new Set<string>();
+    for (const specifier of specifiers.split(',')) {
+      const name = sourceName(specifier).trim();
+      if (name.length > 0) names.add(name);
+    }
+    imports.set(moduleSpecifier, names);
+  }
+
+  return imports;
 };
 
 const collectStarExportFiles = (file: string, source: string): string[] => {
@@ -193,6 +236,19 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
   return symbols.flat().filter(({ name }) => routeNamePattern.test(name));
 };
 
+const publicRouteValueExports = async (): Promise<readonly ExportedSymbol[]> =>
+  (await publicRouteExports()).filter(({ kind }) => kind === 'value');
+
+const publicRouteTypedFactoryExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteValueExports()).filter(
+    ({ file, name }) =>
+      file !== rootIndex &&
+      relative(srcRoot, file) !== 'runtime/index.ts' &&
+      name.endsWith('For')
+  );
+
 const packageSubpathForSourceFile = (file: string): string | undefined => {
   const relativeFile = relative(srcRoot, file);
   if (relativeFile === 'index.ts') return '.';
@@ -233,6 +289,11 @@ const packageSubpathForRouteFile = (file: string): string | undefined => {
   const barrel = barrelIndexForSourceFile(file);
   return barrel === undefined ? undefined : packageSubpathForSourceFile(barrel);
 };
+
+const packageImportSpecifier = (packageSubpath: string): string =>
+  packageSubpath === '.'
+    ? 'joor'
+    : `joor/${packageSubpath.replace(/^\.\//, '')}`;
 
 const generatedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
@@ -391,6 +452,25 @@ describe('route public surface', () => {
     const missing = (await publicRouteExports())
       .filter(({ name }) => !packageSubpathTokens.has(name))
       .map(({ file, name }) => `${relative(repoRoot, file)}: ${name}`)
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps package-subpath route factory imports tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const importedNames =
+      collectImportedSourceNamesByModule(packageSubpathSource);
+    const missing = (await publicRouteTypedFactoryExports())
+      .flatMap(({ file, name }) => {
+        const packageSubpath = packageSubpathForRouteFile(file);
+        if (packageSubpath === undefined) {
+          return [`${relative(repoRoot, file)}: ${name} <no package path>`];
+        }
+        const moduleSpecifier = packageImportSpecifier(packageSubpath);
+        if (importedNames.get(moduleSpecifier)?.has(name)) return [];
+        return [`${relative(repoRoot, file)}: ${name} from ${moduleSpecifier}`];
+      })
       .sort();
 
     expect(missing).toEqual([]);
