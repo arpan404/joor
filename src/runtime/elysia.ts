@@ -72,6 +72,16 @@ export type ElysiaUnaryRouteHandlerOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type ElysiaUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = ElysiaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type ElysiaRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -88,6 +98,16 @@ export type ElysiaRouteStreamHandlerOptionsFor<
 >;
 
 export type ElysiaStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = ElysiaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type ElysiaStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -130,6 +150,16 @@ export type ElysiaUnaryRouteHandlerOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = ElysiaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type ElysiaUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = ElysiaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type ElysiaRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -146,6 +176,16 @@ export type ElysiaRouteStreamHandlerOptionsArgs<
 >;
 
 export type ElysiaStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = ElysiaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type ElysiaStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -217,6 +257,9 @@ export function createRouteUnaryElysiaHandler<TManifest extends JoorManifest>(
 export const createUnaryRouteElysiaHandler: typeof createRouteUnaryElysiaHandler =
   createRouteUnaryElysiaHandler;
 
+export const createUnaryElysiaHandler: typeof createRouteUnaryElysiaHandler =
+  createRouteUnaryElysiaHandler;
+
 export function createRouteStreamElysiaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -248,6 +291,9 @@ export function createRouteStreamElysiaHandler<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteElysiaHandler: typeof createRouteStreamElysiaHandler =
+  createRouteStreamElysiaHandler;
+
+export const createStreamElysiaHandler: typeof createRouteStreamElysiaHandler =
   createRouteStreamElysiaHandler;
 
 export function createElysiaHandlerFor(): <
@@ -363,6 +409,9 @@ export function createRouteUnaryElysiaHandlerFor<
 export const createUnaryRouteElysiaHandlerFor: typeof createRouteUnaryElysiaHandlerFor =
   createRouteUnaryElysiaHandlerFor;
 
+export const createUnaryElysiaHandlerFor: typeof createRouteUnaryElysiaHandlerFor =
+  createRouteUnaryElysiaHandlerFor;
+
 export function createRouteStreamElysiaHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -423,4 +472,7 @@ export function createRouteStreamElysiaHandlerFor<
 }
 
 export const createStreamRouteElysiaHandlerFor: typeof createRouteStreamElysiaHandlerFor =
+  createRouteStreamElysiaHandlerFor;
+
+export const createStreamElysiaHandlerFor: typeof createRouteStreamElysiaHandlerFor =
   createRouteStreamElysiaHandlerFor;

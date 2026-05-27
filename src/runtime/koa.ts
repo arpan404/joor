@@ -91,6 +91,16 @@ export type KoaUnaryRouteHandlerOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = KoaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type KoaUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = KoaRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type KoaRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -103,6 +113,16 @@ export type KoaRouteStreamHandlerOptionsFor<
   RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type KoaStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = KoaRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type KoaStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -155,6 +175,16 @@ export type KoaUnaryRouteHandlerOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = KoaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type KoaUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = KoaRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type KoaRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -173,6 +203,16 @@ export type KoaRouteStreamHandlerOptionsArgs<
 >;
 
 export type KoaStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = KoaRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type KoaStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -280,6 +320,9 @@ export function createRouteUnaryKoaHandler<TManifest extends JoorManifest>(
 export const createUnaryRouteKoaHandler: typeof createRouteUnaryKoaHandler =
   createRouteUnaryKoaHandler;
 
+export const createUnaryKoaHandler: typeof createRouteUnaryKoaHandler =
+  createRouteUnaryKoaHandler;
+
 export function createRouteStreamKoaHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -305,6 +348,9 @@ export function createRouteStreamKoaHandler<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteKoaHandler: typeof createRouteStreamKoaHandler =
+  createRouteStreamKoaHandler;
+
+export const createStreamKoaHandler: typeof createRouteStreamKoaHandler =
   createRouteStreamKoaHandler;
 
 export const createKoaHandlerFor =
@@ -361,6 +407,9 @@ export const createRouteUnaryKoaHandlerFor =
 export const createUnaryRouteKoaHandlerFor: typeof createRouteUnaryKoaHandlerFor =
   createRouteUnaryKoaHandlerFor;
 
+export const createUnaryKoaHandlerFor: typeof createRouteUnaryKoaHandlerFor =
+  createRouteUnaryKoaHandlerFor;
+
 export const createRouteStreamKoaHandlerFor =
   <
     TContext extends KoaContextLike = KoaContext,
@@ -390,4 +439,7 @@ export const createRouteStreamKoaHandlerFor =
     ) as KoaMiddleware<TContext, TNext>;
 
 export const createStreamRouteKoaHandlerFor: typeof createRouteStreamKoaHandlerFor =
+  createRouteStreamKoaHandlerFor;
+
+export const createStreamKoaHandlerFor: typeof createRouteStreamKoaHandlerFor =
   createRouteStreamKoaHandlerFor;

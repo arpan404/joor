@@ -140,6 +140,16 @@ export type FastifyUnaryRouteHandlerOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type FastifyUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = FastifyRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type FastifyRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -152,6 +162,16 @@ export type FastifyRouteStreamHandlerOptionsFor<
   RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type FastifyStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = FastifyRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type FastifyStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -204,6 +224,16 @@ export type FastifyUnaryRouteHandlerOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = FastifyRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type FastifyUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = FastifyRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type FastifyRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -222,6 +252,16 @@ export type FastifyRouteStreamHandlerOptionsArgs<
 >;
 
 export type FastifyStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = FastifyRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type FastifyStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -599,6 +639,9 @@ export function createRouteUnaryFastifyHandler<TManifest extends JoorManifest>(
 export const createUnaryRouteFastifyHandler: typeof createRouteUnaryFastifyHandler =
   createRouteUnaryFastifyHandler;
 
+export const createUnaryFastifyHandler: typeof createRouteUnaryFastifyHandler =
+  createRouteUnaryFastifyHandler;
+
 export function createRouteStreamFastifyHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -624,6 +667,9 @@ export function createRouteStreamFastifyHandler<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteFastifyHandler: typeof createRouteStreamFastifyHandler =
+  createRouteStreamFastifyHandler;
+
+export const createStreamFastifyHandler: typeof createRouteStreamFastifyHandler =
   createRouteStreamFastifyHandler;
 
 export const createFastifyHandlerFor =
@@ -682,6 +728,9 @@ export const createRouteUnaryFastifyHandlerFor =
 export const createUnaryRouteFastifyHandlerFor: typeof createRouteUnaryFastifyHandlerFor =
   createRouteUnaryFastifyHandlerFor;
 
+export const createUnaryFastifyHandlerFor: typeof createRouteUnaryFastifyHandlerFor =
+  createRouteUnaryFastifyHandlerFor;
+
 export const createRouteStreamFastifyHandlerFor =
   <
     TRequest extends FastifyRequestLike = FastifyRequest,
@@ -712,4 +761,7 @@ export const createRouteStreamFastifyHandlerFor =
     ) as unknown as FastifyHandler<TRequest, TReply>;
 
 export const createStreamRouteFastifyHandlerFor: typeof createRouteStreamFastifyHandlerFor =
+  createRouteStreamFastifyHandlerFor;
+
+export const createStreamFastifyHandlerFor: typeof createRouteStreamFastifyHandlerFor =
   createRouteStreamFastifyHandlerFor;

@@ -77,6 +77,16 @@ export type HonoUnaryRouteHandlerOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = HonoRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type HonoUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = HonoRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type HonoRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -93,6 +103,16 @@ export type HonoRouteStreamHandlerOptionsFor<
 >;
 
 export type HonoStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = HonoRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type HonoStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -135,6 +155,16 @@ export type HonoUnaryRouteHandlerOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = HonoRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type HonoUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = HonoRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type HonoRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -151,6 +181,16 @@ export type HonoRouteStreamHandlerOptionsArgs<
 >;
 
 export type HonoStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = HonoRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type HonoStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -222,6 +262,9 @@ export function createRouteUnaryHonoHandler<TManifest extends JoorManifest>(
 export const createUnaryRouteHonoHandler: typeof createRouteUnaryHonoHandler =
   createRouteUnaryHonoHandler;
 
+export const createUnaryHonoHandler: typeof createRouteUnaryHonoHandler =
+  createRouteUnaryHonoHandler;
+
 export function createRouteStreamHonoHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -253,6 +296,9 @@ export function createRouteStreamHonoHandler<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteHonoHandler: typeof createRouteStreamHonoHandler =
+  createRouteStreamHonoHandler;
+
+export const createStreamHonoHandler: typeof createRouteStreamHonoHandler =
   createRouteStreamHonoHandler;
 
 export function createHonoHandlerFor(): <
@@ -366,6 +412,9 @@ export function createRouteUnaryHonoHandlerFor<
 export const createUnaryRouteHonoHandlerFor: typeof createRouteUnaryHonoHandlerFor =
   createRouteUnaryHonoHandlerFor;
 
+export const createUnaryHonoHandlerFor: typeof createRouteUnaryHonoHandlerFor =
+  createRouteUnaryHonoHandlerFor;
+
 export function createRouteStreamHonoHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -425,4 +474,7 @@ export function createRouteStreamHonoHandlerFor<
 }
 
 export const createStreamRouteHonoHandlerFor: typeof createRouteStreamHonoHandlerFor =
+  createRouteStreamHonoHandlerFor;
+
+export const createStreamHonoHandlerFor: typeof createRouteStreamHonoHandlerFor =
   createRouteStreamHonoHandlerFor;
