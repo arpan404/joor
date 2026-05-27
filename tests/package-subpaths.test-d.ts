@@ -1003,6 +1003,14 @@ const packageSubpathRouteStreamClientOptions: Client.RpcManifestRouteStreamClien
   { url: 'https://example.com/rpc' };
 const packageSubpathStreamRouteClientOptions: Client.RpcManifestStreamRouteClientOptions<PackageSubpathManifest> =
   packageSubpathRouteStreamClientOptions;
+const packageSubpathRouteMapUnaryClientOptions: Client.RpcRouteUnaryClientOptions =
+  { url: 'https://example.com/rpc' };
+const packageSubpathUnaryRouteMapClientOptions: Client.RpcUnaryRouteClientOptions =
+  packageSubpathRouteMapUnaryClientOptions;
+const packageSubpathRouteMapStreamClientOptions: Client.RpcRouteStreamClientOptions =
+  { url: 'https://example.com/rpc' };
+const packageSubpathStreamRouteMapClientOptions: Client.RpcStreamRouteClientOptions =
+  packageSubpathRouteMapStreamClientOptions;
 const packageSubpathRouteUnaryClient = createManifestRouteUnaryClient(
   packageSubpathManifest,
   packageSubpathRouteUnaryClientOptions
@@ -1028,21 +1036,21 @@ packageSubpathUnaryRouteClient.call('users.get', { id: '1' });
 typedPackageSubpathCreatedStreamClient.stream('users.watch', { userId: '1' });
 packageSubpathStreamRouteClient.stream('users.watch', { userId: '1' });
 const packageSubpathRouteMapUnaryClient =
-  createRouteUnaryClient<PackageSubpathRoutes>({
-    url: 'https://example.com/rpc',
-  });
+  createRouteUnaryClient<PackageSubpathRoutes>(
+    packageSubpathRouteMapUnaryClientOptions
+  );
 const packageSubpathUnaryRouteMapClient =
-  createUnaryRouteClient<PackageSubpathRoutes>({
-    url: 'https://example.com/rpc',
-  });
+  createUnaryRouteClient<PackageSubpathRoutes>(
+    packageSubpathUnaryRouteMapClientOptions
+  );
 const packageSubpathRouteMapStreamClient =
-  createRouteStreamClient<PackageSubpathRoutes>({
-    url: 'https://example.com/rpc',
-  });
+  createRouteStreamClient<PackageSubpathRoutes>(
+    packageSubpathRouteMapStreamClientOptions
+  );
 const packageSubpathStreamRouteMapClient =
-  createStreamRouteClient<PackageSubpathRoutes>({
-    url: 'https://example.com/rpc',
-  });
+  createStreamRouteClient<PackageSubpathRoutes>(
+    packageSubpathStreamRouteMapClientOptions
+  );
 packageSubpathRouteMapUnaryClient.call('users.get', { id: '1' });
 packageSubpathUnaryRouteMapClient.call('users.get', { id: '1' });
 packageSubpathRouteMapStreamClient.stream('users.watch', { userId: '1' });
@@ -3290,6 +3298,10 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcUnaryRouteTransportClient<PackageSubpathRoutes>,
   Rpc.RpcRouteStreamTransportClient<PackageSubpathRoutes>,
   Rpc.RpcStreamRouteTransportClient<PackageSubpathRoutes>,
+  Rpc.RpcRouteUnaryClientOptions,
+  Rpc.RpcUnaryRouteClientOptions,
+  Rpc.RpcRouteStreamClientOptions,
+  Rpc.RpcStreamRouteClientOptions,
   Rpc.RpcManifestRouteUnaryHeaders<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteHeaders<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestRouteStreamHeaders<PackageSubpathManifest, 'users.watch'>,

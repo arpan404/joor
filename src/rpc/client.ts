@@ -2720,6 +2720,20 @@ export type RpcManifestClientOptions<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
 
+export type RpcRouteUnaryClientOptions<
+  TRequest extends Request = Request,
+> = ClientOptions<undefined, TRequest>;
+
+export type RpcUnaryRouteClientOptions<TRequest extends Request = Request> =
+  RpcRouteUnaryClientOptions<TRequest>;
+
+export type RpcRouteStreamClientOptions<
+  TRequest extends Request = Request,
+> = ClientOptions<undefined, TRequest>;
+
+export type RpcStreamRouteClientOptions<TRequest extends Request = Request> =
+  RpcRouteStreamClientOptions<TRequest>;
+
 export type RpcManifestRouteUnaryClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request =
@@ -3101,7 +3115,7 @@ export function createRouteUnaryClient<
   TRoutes extends RpcRouteMap,
   TRequest extends Request = Request,
 >(
-  options: ClientOptions<undefined, TRequest>
+  options: RpcRouteUnaryClientOptions<TRequest>
 ): RpcRouteUnaryTransportClient<TRoutes>;
 export function createRouteUnaryClient<TRequest extends Request = Request>(
   options: ClientOptions<JoorManifest | undefined, TRequest>
@@ -3156,7 +3170,7 @@ export function createRouteStreamClient<
   TRoutes extends RpcRouteMap,
   TRequest extends Request = Request,
 >(
-  options: ClientOptions<undefined, TRequest>
+  options: RpcRouteStreamClientOptions<TRequest>
 ): RpcRouteStreamTransportClient<TRoutes>;
 export function createRouteStreamClient<TRequest extends Request = Request>(
   options: ClientOptions<JoorManifest | undefined, TRequest>
