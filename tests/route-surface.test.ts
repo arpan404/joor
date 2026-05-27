@@ -14,6 +14,7 @@ const manifestFile = join(srcRoot, 'manifest.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const rpcClient = join(srcRoot, 'rpc/client.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
+const rpcIndex = join(srcRoot, 'rpc/index.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -297,6 +298,13 @@ const publicRpcDispatcherRouteTypeExports = async (): Promise<
 > =>
   (await publicRouteExports()).filter(
     ({ file, kind }) => kind === 'type' && file === rpcDispatcher
+  );
+
+const publicRpcIndexRouteTypeExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteExports()).filter(
+    ({ file, kind }) => kind === 'type' && file === rpcIndex
   );
 
 const publicRouteTypedFactoryExports = async (): Promise<
@@ -612,6 +620,16 @@ describe('route public surface', () => {
     const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
     const missing = missingCanonicalNamespaceReferences(
       await publicRpcDispatcherRouteTypeExports(),
+      packageSubpathSource
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps RPC barrel route type namespace smoke coverage tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const missing = missingCanonicalNamespaceReferences(
+      await publicRpcIndexRouteTypeExports(),
       packageSubpathSource
     );
 
