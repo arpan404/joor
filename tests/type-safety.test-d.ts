@@ -876,6 +876,8 @@ import {
   type RpcManifestStreamRouteMiddlewareFor,
   type RpcManifestStreamRouteRequiredRuntimeRequest,
   type RpcManifestStreamRouteRequiredServices,
+  type RpcManifestRouteStreamHandlerOptionsArgs,
+  type RpcManifestRouteStreamHandlerOptionsArgsFor,
   type RpcManifestRouteStreamHandlerOptionsFor,
   type RpcManifestUnaryRouteHandlerHookContextFor,
   type RpcManifestUnaryRouteHandlerHooksFor,
@@ -887,6 +889,8 @@ import {
   type RpcManifestUnaryRouteMiddlewareFor,
   type RpcManifestUnaryRouteRequiredRuntimeRequest,
   type RpcManifestUnaryRouteRequiredServices,
+  type RpcManifestRouteUnaryHandlerOptionsArgs,
+  type RpcManifestRouteUnaryHandlerOptionsArgsFor,
   type RpcManifestRouteUnaryHandlerOptionsFor,
   type JoorConfig,
   type JoorConfigFor,
@@ -3241,6 +3245,133 @@ const routeKindScopedStreamHandlerRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamHandlerOptions
 > = requestTypedStreamProcedureRequest;
 routeKindScopedStreamHandlerRequest.streamRequestId.toUpperCase();
+type RouteKindScopedOptionsArg<TArgs extends readonly unknown[]> = NonNullable<
+  TArgs[0]
+>;
+const routeKindScopedRouteUnaryHandlerOptionsArgs: RpcManifestRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedRouteUnaryHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryHandlerOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary handler option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryHandlerOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteHandlerOptionsArgs: RpcManifestUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryHandlerOptionsArgs;
+const routeKindScopedUnaryRouteHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedUnaryRouteHandlerOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedUnaryRouteHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error unary-route handler option args default to unary-only request requirements.
+const _wrongRouteKindScopedUnaryRouteHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedUnaryRouteHandlerOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedRouteUnaryHandlerOptionsArgsFor: RpcManifestRouteUnaryHandlerOptionsArgsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin],
+  typeof routeKindScopedUnaryHandlerOptions
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedRouteUnaryHandlerOptionsArgsForRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryHandlerOptionsArgsFor
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryHandlerOptionsArgsForRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary handler option args factories default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryHandlerOptionsArgsForRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryHandlerOptionsArgsFor
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedRouteStreamHandlerOptionsArgs: RpcManifestRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedRouteStreamHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamHandlerOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream handler option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamHandlerOptionsArgs>
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteHandlerOptionsArgs: RpcManifestStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamHandlerOptionsArgs;
+const routeKindScopedStreamRouteHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedStreamRouteHandlerOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+routeKindScopedStreamRouteHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error stream-route handler option args default to stream-only request requirements.
+const _wrongRouteKindScopedStreamRouteHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedStreamRouteHandlerOptionsArgs>
+> = requestTypedProcedureRequest;
+const routeKindScopedRouteStreamHandlerOptionsArgsFor: RpcManifestRouteStreamHandlerOptionsArgsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin],
+  typeof routeKindScopedStreamHandlerOptions
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedRouteStreamHandlerOptionsArgsForRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamHandlerOptionsArgsFor
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamHandlerOptionsArgsForRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream handler option args factories default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamHandlerOptionsArgsForRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamHandlerOptionsArgsFor
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedJoorRouteUnaryHandlerOptionsArgs: JoorRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedJoorRouteUnaryHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedJoorRouteUnaryHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedJoorRouteUnaryHandlerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Joor handler option args default to unary-only request requirements.
+const _wrongRouteKindScopedJoorRouteUnaryHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedJoorRouteUnaryHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedJoorUnaryRouteHandlerOptionsArgs: JoorUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedJoorRouteUnaryHandlerOptionsArgs;
+const routeKindScopedJoorRouteStreamHandlerOptionsArgs: JoorRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedJoorRouteStreamHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedJoorRouteStreamHandlerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedJoorRouteStreamHandlerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Joor handler option args default to stream-only request requirements.
+const _wrongRouteKindScopedJoorRouteStreamHandlerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedJoorRouteStreamHandlerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedJoorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedJoorRouteStreamHandlerOptionsArgs;
+routeKindScopedJoorUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+routeKindScopedJoorStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const routeKindScopedUnaryRpcHandler = createRouteUnaryRpcHandler(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
