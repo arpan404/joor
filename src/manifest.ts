@@ -8,9 +8,13 @@ import type {
 } from './procedure/types.js';
 import type {
   RpcManifestClientOptions,
+  RpcManifestRouteStreamClientOptions,
   RpcManifestRouteStreamTransportClient,
+  RpcManifestRouteUnaryClientOptions,
   RpcManifestRouteUnaryTransportClient,
+  RpcManifestStreamRouteClientOptions,
   RpcManifestTransportClient,
+  RpcManifestUnaryRouteClientOptions,
   RpcProtocolBatchRequest,
   RpcProtocolBatchResults,
   RpcProtocolBatchRequestUnion,
@@ -248,6 +252,30 @@ export type JoorManifestClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request = JoorManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestClientOptions<TManifest, TRequest>;
+
+export type JoorManifestRouteUnaryClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryClientOptions<TManifest, TRequest>;
+
+export type JoorManifestUnaryRouteClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestUnaryRouteClientOptions<TManifest, TRequest>;
+
+export type JoorManifestRouteStreamClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    JoorManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamClientOptions<TManifest, TRequest>;
+
+export type JoorManifestStreamRouteClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    JoorManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestStreamRouteClientOptions<TManifest, TRequest>;
 
 export type JoorManifestRouteId<TManifest> = RpcRouteId<
   JoorManifestRoutes<TManifest>

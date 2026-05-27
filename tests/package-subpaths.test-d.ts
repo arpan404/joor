@@ -3528,6 +3528,10 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestStreamRouteEvent<PackageSubpathManifest, 'users.watch'>,
 ];
 type PackageSubpathManifestRouteDetailSurface = [
+  Manifest.JoorManifestRouteUnaryClientOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteClientOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestRouteStreamClientOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamRouteClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamTransportClient<PackageSubpathManifest>,

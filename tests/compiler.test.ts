@@ -1603,6 +1603,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'JoorManifestClientOptions<Manifest, TRequest>'
       );
       expect(clientSource).toContain(
+        'JoorManifestRouteUnaryClientOptions<Manifest, TRequest>'
+      );
+      expect(clientSource).toContain(
+        'JoorManifestRouteStreamClientOptions<Manifest, TRequest>'
+      );
+      expect(clientSource).toContain(
         'export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest>'
       );
       expect(clientSource).toContain(

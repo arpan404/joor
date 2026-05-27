@@ -599,6 +599,10 @@ export type {
 export type {
   JoorManifest,
   JoorManifestClientOptions,
+  JoorManifestRouteStreamClientOptions,
+  JoorManifestRouteUnaryClientOptions,
+  JoorManifestStreamRouteClientOptions,
+  JoorManifestUnaryRouteClientOptions,
   JoorManifestRouteBody,
   JoorManifestRouteBodyResultFor,
   JoorManifestRouteBodyResult,
