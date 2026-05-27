@@ -4552,6 +4552,8 @@ export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeReq
 > & {
   url?: string;
 };
+export type ClientOptions<TRequest extends Request = RequiredRuntimeRequest> =
+  GeneratedClientOptions<TRequest>;
 export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> = Omit<
   JoorManifestRouteUnaryClientOptions<Manifest, TRequest>,
   'url'
