@@ -2837,8 +2837,8 @@ export default defineProcedure.withContext<Record<string, never>, StreamAppReque
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, createRouteStreamFetchFor, createStreamRouteFetchFor, defineNativeRouteStreamHandlerOptions, defineNativeStreamRouteHandlerOptions, fetch, nativeBody, nativeRouteStreamBody, nativeRouteStreamTransport, nativeStreamRouteBody, nativeStreamRouteTransport, type NativeBodyHandler, type NativeFetchHandler, type NativeRouteStreamBodyHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamTransportHandler, type NativeStreamRouteBodyHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteTransportHandler } from './dispatcher.safe.js';
-import type { NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware } from './dispatcher.safe.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createStreamRouteFetchFor, defineNativeRouteStreamConfig, defineNativeRouteStreamHandlerOptions, defineNativeStreamRouteConfig, defineNativeStreamRouteHandlerOptions, fetch, nativeBody, nativeRouteStreamBody, nativeRouteStreamTransport, nativeStreamRouteBody, nativeStreamRouteTransport, type NativeBodyHandler, type NativeFetchHandler, type NativeRouteStreamBodyHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamTransportHandler, type NativeStreamRouteBodyHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteTransportHandler } from './dispatcher.safe.js';
+import type { NativeConfigRequest, NativeRouteStreamConfig, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeStreamRouteConfig, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware } from './dispatcher.safe.js';
 import { createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteStreamFetchFor as createRuntimeRouteStreamFetchFor, createStreamRouteFetch as createRuntimeStreamRouteFetch, createStreamRouteFetchFor as createRuntimeStreamRouteFetchFor, fetch as runtimeFetch, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest } from './fetch.js';
 import { createRouteStreamWorker, createRouteStreamWorkerFor, worker } from './cloudflare.js';
 import { createRouteStreamHandlers, createRouteStreamHandlersFor, handlers } from './next.js';
@@ -2987,6 +2987,44 @@ definedRouteStreamOptions.hooks?.beforeRequest?.(
 );
 definedStreamRouteOptions.hooks?.beforeRequest?.(
   // @ts-expect-error generated stream-route option definers preserve stream request requirements.
+  plainRequest,
+  streamRouteHookContext
+);
+const routeStreamConfig: NativeRouteStreamConfig<readonly [], typeof streamBody> =
+  {
+    hooks: routeStreamHooks,
+    middleware: [routeStreamMiddleware],
+    entry: 'rpc',
+    outDir: '.joor',
+  };
+const streamRouteConfig: NativeStreamRouteConfig<
+  readonly [],
+  typeof streamBody
+> = routeStreamConfig;
+const routeStreamConfigRequest: NativeConfigRequest<typeof routeStreamConfig> =
+  streamRequest;
+routeStreamConfigRequest.streamRequestId.toUpperCase();
+// @ts-expect-error generated route-stream config request aliases preserve stream request requirements.
+const _wrongRouteStreamConfigRequest: NativeConfigRequest<
+  typeof routeStreamConfig
+> = plainRequest;
+const definedRouteStreamConfig = defineNativeRouteStreamConfig(routeStreamConfig);
+const definedStreamRouteConfig = defineNativeStreamRouteConfig(streamRouteConfig);
+definedRouteStreamConfig.hooks?.beforeRequest?.(
+  streamRequest,
+  routeStreamHookContext
+);
+definedStreamRouteConfig.hooks?.beforeRequest?.(
+  streamRequest,
+  streamRouteHookContext
+);
+definedRouteStreamConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error generated route-stream config definers preserve stream request requirements.
+  plainRequest,
+  routeStreamHookContext
+);
+definedStreamRouteConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error generated stream-route config definers preserve stream request requirements.
   plainRequest,
   streamRouteHookContext
 );
