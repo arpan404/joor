@@ -401,6 +401,80 @@ const generatedRouteRequirementAliases = [
   'NativeUnaryRouteRequiredServices',
 ] as const;
 
+const generatedPlatformGenericFactoryExports = [
+  {
+    entrypoint: 'aws-lambda.ts',
+    names: [
+      'createAwsLambdaHandler',
+      'createAwsLambdaHandlerFor',
+      'createAwsLambdaHttpApiHandler',
+      'createAwsLambdaHttpApiHandlerFor',
+      'createAwsLambdaRestApiHandler',
+      'createAwsLambdaRestApiHandlerFor',
+    ],
+  },
+  {
+    entrypoint: 'bun.ts',
+    names: ['createFetchFor', 'createBunFetch', 'createBunFetchFor'],
+  },
+  {
+    entrypoint: 'cloudflare.ts',
+    names: [
+      'createFetchFor',
+      'createCloudflareFetch',
+      'createCloudflareFetchFor',
+      'createWorkerFor',
+      'createCloudflareWorker',
+      'createCloudflareWorkerFor',
+    ],
+  },
+  {
+    entrypoint: 'deno.ts',
+    names: ['createFetchFor', 'createDenoFetch', 'createDenoFetchFor'],
+  },
+  {
+    entrypoint: 'fetch.ts',
+    names: ['createFetchFor'],
+  },
+  {
+    entrypoint: 'netlify.ts',
+    names: [
+      'createFetchFor',
+      'createNetlifyFetch',
+      'createNetlifyFetchFor',
+      'createEdgeFor',
+      'createNetlifyEdgeFunction',
+      'createNetlifyEdgeFunctionFor',
+    ],
+  },
+  {
+    entrypoint: 'next.ts',
+    names: [
+      'createFetchFor',
+      'createHandlersFor',
+      'createNextRouteHandlers',
+      'createNextRouteHandlersFor',
+      'createNextHandler',
+      'createNextHandlerFor',
+    ],
+  },
+  {
+    entrypoint: 'node.ts',
+    names: ['createNodeHandler', 'createServerFor'],
+  },
+  {
+    entrypoint: 'vercel.ts',
+    names: [
+      'createFetchFor',
+      'createVercelFetch',
+      'createVercelFetchFor',
+      'createVercelFor',
+      'createVercelFunction',
+      'createVercelFunctionFor',
+    ],
+  },
+] as const;
+
 const generatedPlatformRouteFactoryExports = [
   {
     entrypoint: 'aws-lambda.ts',
@@ -675,6 +749,24 @@ describe('route public surface', () => {
         exports.has(name) ? [] : [`${entrypoint}: ${name}`]
       );
     });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated platform generic factory exports available', async () => {
+    const exportSets = await generatedExportSets();
+    const exportsByBasename = new Map(
+      [...exportSets].map(([file, names]) => [basename(file), names])
+    );
+    const missing = generatedPlatformGenericFactoryExports.flatMap(
+      ({ entrypoint, names }) => {
+        const exports = exportsByBasename.get(entrypoint);
+        if (exports === undefined) return [`${entrypoint}: <missing>`];
+        return names.flatMap((name) =>
+          exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
