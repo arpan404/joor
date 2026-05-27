@@ -144,6 +144,8 @@ import {
   defineUnaryRouteConfigFor as defineRootUnaryRouteConfigFor,
   defineManifest,
   defineProcedure,
+  createManifestRouteProtocolRequest as createRootManifestRouteProtocolRequest,
+  createManifestRouteRequest as createRootManifestRouteRequest,
   createManifestRouteStreamProtocolRequest as createRootManifestRouteStreamProtocolRequest,
   createManifestRouteStreamRequest as createRootManifestRouteStreamRequest,
   createManifestRouteUnaryProtocolRequest as createRootManifestRouteUnaryProtocolRequest,
@@ -152,6 +154,8 @@ import {
   createManifestStreamRouteRequest as createRootManifestStreamRouteRequest,
   createManifestUnaryRouteProtocolRequest as createRootManifestUnaryRouteProtocolRequest,
   createManifestUnaryRouteRequest as createRootManifestUnaryRouteRequest,
+  createRouteProtocolRequest as createRootRouteProtocolRequest,
+  createRouteRequest as createRootRouteRequest,
   createRouteStreamProtocolRequest as createRootRouteStreamProtocolRequest,
   createRouteStreamRequest as createRootRouteStreamRequest,
   createRouteUnaryProtocolRequest as createRootRouteUnaryProtocolRequest,
@@ -308,11 +312,15 @@ import { createAuthPolicy } from 'joor/auth';
 import {
   createClient,
   createManifestClient,
+  createManifestRouteProtocolRequest as createClientManifestRouteProtocolRequest,
+  createManifestRouteRequest as createClientManifestRouteRequest,
   createManifestRouteStreamClient,
   createManifestRouteUnaryClient,
   createManifestStreamRouteClient,
   createManifestUnaryRouteClient,
   createRouteStreamClient,
+  createRouteProtocolRequest as createClientRouteProtocolRequest,
+  createRouteRequest as createClientRouteRequest,
   createRouteStreamProtocolRequest as createClientRouteStreamProtocolRequest,
   createRouteStreamRequest as createClientRouteStreamRequest,
   createRouteUnaryClient,
@@ -343,6 +351,8 @@ import {
 import { build, createAiDocs, createOpenApiDocument } from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import {
+  createManifestRouteProtocolRequest,
+  createManifestRouteRequest,
   createManifestRouteStreamProtocolRequest,
   createManifestRouteStreamRequest,
   createManifestRouteUnaryProtocolRequest,
@@ -351,6 +361,8 @@ import {
   createManifestStreamRouteRequest,
   createManifestUnaryRouteProtocolRequest,
   createManifestUnaryRouteRequest,
+  createRouteProtocolRequest,
+  createRouteRequest,
   createRouteStreamProtocolRequest,
   createRouteStreamRequest,
   createRouteUnaryProtocolRequest,
@@ -996,6 +1008,84 @@ const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClien
   packageSubpathClient;
 const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
   packageSubpathClient;
+const packageSubpathRouteProtocolRequestBuilder: Client.RpcRouteProtocolRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteProtocolRequest;
+const packageSubpathProtocolRequestBuilder: Client.RpcProtocolRequestBuilder<PackageSubpathRoutes> =
+  packageSubpathRouteProtocolRequestBuilder;
+const packageSubpathRouteUnaryProtocolRequestBuilder: Client.RpcRouteUnaryProtocolRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteUnaryProtocolRequest;
+const packageSubpathUnaryRouteProtocolRequestBuilder: Client.RpcUnaryRouteProtocolRequestBuilder<PackageSubpathRoutes> =
+  createClientUnaryRouteProtocolRequest;
+const packageSubpathUnaryProtocolRequestBuilder: Client.RpcUnaryProtocolRequestBuilder<PackageSubpathRoutes> =
+  packageSubpathRouteUnaryProtocolRequestBuilder;
+const packageSubpathRouteStreamProtocolRequestBuilder: Client.RpcRouteStreamProtocolRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteStreamProtocolRequest;
+const packageSubpathStreamRouteProtocolRequestBuilder: Client.RpcStreamRouteProtocolRequestBuilder<PackageSubpathRoutes> =
+  createClientStreamRouteProtocolRequest;
+const packageSubpathStreamProtocolRequestBuilder: Client.RpcStreamProtocolRequestBuilder<PackageSubpathRoutes> =
+  packageSubpathRouteStreamProtocolRequestBuilder;
+const packageSubpathRouteStreamRequestBuilder: Client.RpcRouteStreamRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteStreamRequest;
+const packageSubpathStreamRouteRequestBuilder: Client.RpcStreamRouteRequestBuilder<PackageSubpathRoutes> =
+  createClientStreamRouteRequest;
+const packageSubpathRouteRequestBuilder: Client.RpcRouteRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteRequest;
+const packageSubpathRouteUnaryRequestBuilder: Client.RpcRouteUnaryRequestBuilder<PackageSubpathRoutes> =
+  createClientRouteUnaryRequest;
+const packageSubpathUnaryRouteRequestBuilder: Client.RpcUnaryRouteRequestBuilder<PackageSubpathRoutes> =
+  createClientUnaryRouteRequest;
+const packageSubpathRpcRouteProtocolRequestBuilder: Rpc.RpcRouteProtocolRequestBuilder<PackageSubpathRoutes> =
+  createRouteProtocolRequest;
+const packageSubpathRpcRouteRequestBuilder: Rpc.RpcRouteRequestBuilder<PackageSubpathRoutes> =
+  createRouteRequest;
+const packageSubpathRootRouteProtocolRequestBuilder: Root.RpcRouteProtocolRequestBuilder<PackageSubpathRoutes> =
+  createRootRouteProtocolRequest;
+const packageSubpathManifestRouteProtocolRequestBuilder: Client.RpcManifestRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createClientManifestRouteProtocolRequest;
+const packageSubpathRpcManifestRouteProtocolRequestBuilder: Rpc.RpcManifestRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteProtocolRequest;
+const packageSubpathRootManifestRouteProtocolRequestBuilder: Root.RpcManifestRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createRootManifestRouteProtocolRequest;
+const packageSubpathManifestProtocolRequestBuilder: Client.RpcManifestProtocolRequestBuilder<PackageSubpathManifest> =
+  packageSubpathManifestRouteProtocolRequestBuilder;
+const packageSubpathManifestRouteUnaryProtocolRequestBuilder: Client.RpcManifestRouteUnaryProtocolRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteUnaryProtocolRequest;
+const packageSubpathManifestUnaryRouteProtocolRequestBuilder: Client.RpcManifestUnaryRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createManifestUnaryRouteProtocolRequest;
+const packageSubpathManifestUnaryProtocolRequestBuilder: Client.RpcManifestUnaryProtocolRequestBuilder<PackageSubpathManifest> =
+  packageSubpathManifestRouteUnaryProtocolRequestBuilder;
+const packageSubpathManifestRouteStreamProtocolRequestBuilder: Client.RpcManifestRouteStreamProtocolRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteStreamProtocolRequest;
+const packageSubpathManifestStreamRouteProtocolRequestBuilder: Client.RpcManifestStreamRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createManifestStreamRouteProtocolRequest;
+const packageSubpathManifestStreamProtocolRequestBuilder: Client.RpcManifestStreamProtocolRequestBuilder<PackageSubpathManifest> =
+  packageSubpathManifestRouteStreamProtocolRequestBuilder;
+const packageSubpathManifestRouteStreamRequestBuilder: Client.RpcManifestRouteStreamRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteStreamRequest;
+const packageSubpathManifestStreamRouteRequestBuilder: Client.RpcManifestStreamRouteRequestBuilder<PackageSubpathManifest> =
+  createManifestStreamRouteRequest;
+const packageSubpathManifestRouteRequestBuilder: Client.RpcManifestRouteRequestBuilder<PackageSubpathManifest> =
+  createClientManifestRouteRequest;
+const packageSubpathManifestRouteUnaryRequestBuilder: Client.RpcManifestRouteUnaryRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteUnaryRequest;
+const packageSubpathManifestUnaryRouteRequestBuilder: Client.RpcManifestUnaryRouteRequestBuilder<PackageSubpathManifest> =
+  createManifestUnaryRouteRequest;
+const packageSubpathRpcManifestRouteRequestBuilder: Rpc.RpcManifestRouteRequestBuilder<PackageSubpathManifest> =
+  createManifestRouteRequest;
+const packageSubpathRootManifestRouteRequestBuilder: Root.RpcManifestRouteRequestBuilder<PackageSubpathManifest> =
+  createRootManifestRouteRequest;
+const packageSubpathJoorManifestRouteProtocolRequestBuilder: Manifest.JoorManifestRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createRootRouteProtocolRequest;
+const packageSubpathRootJoorManifestRouteProtocolRequestBuilder: Root.JoorManifestRouteProtocolRequestBuilder<PackageSubpathManifest> =
+  createRootRouteProtocolRequest;
+const packageSubpathJoorManifestRouteUnaryProtocolRequestBuilder: Manifest.JoorManifestRouteUnaryProtocolRequestBuilder<PackageSubpathManifest> =
+  createRootRouteUnaryProtocolRequest;
+const packageSubpathJoorManifestRouteStreamProtocolRequestBuilder: Manifest.JoorManifestRouteStreamProtocolRequestBuilder<PackageSubpathManifest> =
+  createRootRouteStreamProtocolRequest;
+const packageSubpathJoorManifestRouteStreamRequestBuilder: Manifest.JoorManifestRouteStreamRequestBuilder<PackageSubpathManifest> =
+  createRootRouteStreamRequest;
+const packageSubpathJoorManifestRouteRequestBuilder: Manifest.JoorManifestRouteRequestBuilder<PackageSubpathManifest> =
+  createRootRouteRequest;
 const packageSubpathClientOptionsFor: Client.RpcClientOptionsFor<PackageSubpathManifest> =
   { url: 'https://example.com/rpc', manifest: packageSubpathManifest };
 const packageSubpathManifestClientOptionsFor: Client.RpcManifestClientOptionsFor<PackageSubpathManifest> =
@@ -1411,6 +1501,45 @@ createRootCorsHeaderRecord({ origin: 'https://app.example' })?.[
 
 const packageSubpathValues = [
   build,
+  packageSubpathProtocolRequestBuilder,
+  packageSubpathRouteProtocolRequestBuilder,
+  packageSubpathRouteRequestBuilder,
+  packageSubpathRouteStreamProtocolRequestBuilder,
+  packageSubpathRouteStreamRequestBuilder,
+  packageSubpathRouteUnaryProtocolRequestBuilder,
+  packageSubpathRouteUnaryRequestBuilder,
+  packageSubpathStreamProtocolRequestBuilder,
+  packageSubpathStreamRouteProtocolRequestBuilder,
+  packageSubpathStreamRouteRequestBuilder,
+  packageSubpathUnaryProtocolRequestBuilder,
+  packageSubpathUnaryRouteProtocolRequestBuilder,
+  packageSubpathUnaryRouteRequestBuilder,
+  packageSubpathManifestProtocolRequestBuilder,
+  packageSubpathManifestRouteProtocolRequestBuilder,
+  packageSubpathManifestRouteRequestBuilder,
+  packageSubpathManifestRouteStreamProtocolRequestBuilder,
+  packageSubpathManifestRouteStreamRequestBuilder,
+  packageSubpathManifestRouteUnaryProtocolRequestBuilder,
+  packageSubpathManifestRouteUnaryRequestBuilder,
+  packageSubpathManifestStreamProtocolRequestBuilder,
+  packageSubpathManifestStreamRouteProtocolRequestBuilder,
+  packageSubpathManifestStreamRouteRequestBuilder,
+  packageSubpathManifestUnaryProtocolRequestBuilder,
+  packageSubpathManifestUnaryRouteProtocolRequestBuilder,
+  packageSubpathManifestUnaryRouteRequestBuilder,
+  packageSubpathRpcRouteProtocolRequestBuilder,
+  packageSubpathRpcRouteRequestBuilder,
+  packageSubpathRpcManifestRouteProtocolRequestBuilder,
+  packageSubpathRpcManifestRouteRequestBuilder,
+  packageSubpathRootRouteProtocolRequestBuilder,
+  packageSubpathRootManifestRouteProtocolRequestBuilder,
+  packageSubpathRootManifestRouteRequestBuilder,
+  packageSubpathJoorManifestRouteProtocolRequestBuilder,
+  packageSubpathRootJoorManifestRouteProtocolRequestBuilder,
+  packageSubpathJoorManifestRouteUnaryProtocolRequestBuilder,
+  packageSubpathJoorManifestRouteStreamProtocolRequestBuilder,
+  packageSubpathJoorManifestRouteStreamRequestBuilder,
+  packageSubpathJoorManifestRouteRequestBuilder,
   createAiDocs,
   createAwsLambdaHandler,
   createAwsLambdaHandlerFor,
@@ -3261,8 +3390,14 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcUnaryRouteResultUnion<PackageSubpathRoutes>,
   Rpc.RpcRouteUnaryProtocolRequest<PackageSubpathRoutes, 'users.get'>,
   Rpc.RpcUnaryRouteProtocolRequest<PackageSubpathRoutes, 'users.get'>,
+  Rpc.RpcRouteUnaryProtocolRequestBuilder<PackageSubpathRoutes>,
+  Rpc.RpcUnaryRouteProtocolRequestBuilder<PackageSubpathRoutes>,
   Rpc.RpcRouteStreamProtocolRequest<PackageSubpathRoutes, 'users.watch'>,
   Rpc.RpcStreamRouteProtocolRequest<PackageSubpathRoutes, 'users.watch'>,
+  Rpc.RpcRouteStreamProtocolRequestBuilder<PackageSubpathRoutes>,
+  Rpc.RpcStreamRouteProtocolRequestBuilder<PackageSubpathRoutes>,
+  Rpc.RpcRouteStreamRequestBuilder<PackageSubpathRoutes>,
+  Rpc.RpcStreamRouteRequestBuilder<PackageSubpathRoutes>,
   Rpc.RpcRouteUnaryProtocolRequestUnion<PackageSubpathRoutes>,
   Rpc.RpcUnaryRouteProtocolRequestUnion<PackageSubpathRoutes>,
   Rpc.RpcRouteStreamProtocolRequestUnion<PackageSubpathRoutes>,
@@ -3301,6 +3436,8 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcUnaryRouteProtocolBatchOptionsTuple<PackageSubpathRoutes>,
   Rpc.RpcRouteUnaryRequest<PackageSubpathRoutes, 'users.get'>,
   Rpc.RpcUnaryRouteRequest<PackageSubpathRoutes, 'users.get'>,
+  Rpc.RpcRouteUnaryRequestBuilder<PackageSubpathRoutes>,
+  Rpc.RpcUnaryRouteRequestBuilder<PackageSubpathRoutes>,
   Rpc.RpcRouteStreamRequest<PackageSubpathRoutes, 'users.watch'>,
   Rpc.RpcStreamRouteRequest<PackageSubpathRoutes, 'users.watch'>,
   Rpc.RpcRouteUnaryRequestUnion<PackageSubpathRoutes>,
@@ -3461,6 +3598,8 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestUnaryRouteResultUnion<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryProtocolRequest<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteProtocolRequest<PackageSubpathManifest, 'users.get'>,
+  Rpc.RpcManifestRouteUnaryProtocolRequestBuilder<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteProtocolRequestBuilder<PackageSubpathManifest>,
   Rpc.RpcManifestRouteStreamProtocolRequest<
     PackageSubpathManifest,
     'users.watch'
@@ -3469,6 +3608,10 @@ type PackageSubpathRpcRouteDetailSurface = [
     PackageSubpathManifest,
     'users.watch'
   >,
+  Rpc.RpcManifestRouteStreamProtocolRequestBuilder<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteProtocolRequestBuilder<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamRequestBuilder<PackageSubpathManifest>,
+  Rpc.RpcManifestStreamRouteRequestBuilder<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryProtocolRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteProtocolRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestRouteStreamProtocolRequestUnion<PackageSubpathManifest>,
@@ -3545,6 +3688,8 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestStreamRouteClientArgs<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestRouteUnaryRequest<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteRequest<PackageSubpathManifest, 'users.get'>,
+  Rpc.RpcManifestRouteUnaryRequestBuilder<PackageSubpathManifest>,
+  Rpc.RpcManifestUnaryRouteRequestBuilder<PackageSubpathManifest>,
   Rpc.RpcManifestRouteStreamRequest<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestStreamRouteRequest<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestRouteUnaryRequestUnion<PackageSubpathManifest>,
@@ -3802,6 +3947,7 @@ type PackageSubpathManifestRouteDetailSurface = [
     PackageSubpathManifest,
     'users.get'
   >,
+  Manifest.JoorManifestUnaryRouteProtocolRequestBuilder<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamProtocolRequest<
     PackageSubpathManifest,
     'users.watch'
@@ -3810,6 +3956,7 @@ type PackageSubpathManifestRouteDetailSurface = [
     PackageSubpathManifest,
     'users.watch'
   >,
+  Manifest.JoorManifestStreamRouteProtocolRequestBuilder<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryProtocolRequestUnion<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteProtocolRequestUnion<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamProtocolRequestUnion<PackageSubpathManifest>,
@@ -3860,6 +4007,8 @@ type PackageSubpathManifestRouteDetailSurface = [
   Manifest.JoorManifestUnaryRouteProtocolBatchOptionsTuple<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryRequest<PackageSubpathManifest, 'users.get'>,
   Manifest.JoorManifestUnaryRouteRequest<PackageSubpathManifest, 'users.get'>,
+  Manifest.JoorManifestRouteUnaryRequestBuilder<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryRouteRequestBuilder<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamRequest<
     PackageSubpathManifest,
     'users.watch'
@@ -3868,6 +4017,7 @@ type PackageSubpathManifestRouteDetailSurface = [
     PackageSubpathManifest,
     'users.watch'
   >,
+  Manifest.JoorManifestStreamRouteRequestBuilder<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryRequestUnion<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteRequestUnion<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamRequestUnion<PackageSubpathManifest>,

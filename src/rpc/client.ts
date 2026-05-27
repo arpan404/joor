@@ -1078,6 +1078,113 @@ export interface RpcProtocolRequestOptions {
   readonly traceId?: string;
 }
 
+export type RpcRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> = <
+  TId extends RpcRouteId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcRouteProtocolRequest<TRoutes, TId>;
+
+export type RpcProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteProtocolRequestBuilder<TRoutes>;
+
+export type RpcRouteUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  <TId extends RpcRouteUnaryId<TRoutes>>(
+    id: TId,
+    input: RpcRouteUnaryInput<TRoutes, TId>,
+    options?: RpcProtocolRequestOptions
+  ) => RpcRouteUnaryProtocolRequest<TRoutes, TId>;
+
+export type RpcUnaryRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryProtocolRequestBuilder<TRoutes>;
+
+export type RpcUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryProtocolRequestBuilder<TRoutes>;
+
+export type RpcRouteStreamProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  <TId extends RpcRouteStreamId<TRoutes>>(
+    id: TId,
+    input: RpcRouteStreamInput<TRoutes, TId>,
+    options?: RpcProtocolRequestOptions
+  ) => RpcRouteStreamProtocolRequest<TRoutes, TId>;
+
+export type RpcStreamRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamProtocolRequestBuilder<TRoutes>;
+
+export type RpcStreamProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamProtocolRequestBuilder<TRoutes>;
+
+export type RpcRouteStreamRequestBuilder<TRoutes extends RpcRouteMap> = <
+  TId extends RpcRouteStreamId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteStreamInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcRouteStreamRequest<TRoutes, TId>;
+
+export type RpcStreamRouteRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamRequestBuilder<TRoutes>;
+
+export type RpcManifestRouteProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = <TId extends RpcManifestRouteId<TManifest>>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcManifestRouteInput<TManifest, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcManifestRouteProtocolRequest<TManifest, TId>;
+
+export type RpcManifestProtocolRequestBuilder<TManifest extends JoorManifest> =
+  RpcManifestRouteProtocolRequestBuilder<TManifest>;
+
+export type RpcManifestRouteUnaryProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = <TId extends RpcManifestRouteUnaryId<TManifest>>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcManifestRouteUnaryInput<TManifest, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
+
+export type RpcManifestUnaryRouteProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryProtocolRequestBuilder<TManifest>;
+
+export type RpcManifestUnaryProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryProtocolRequestBuilder<TManifest>;
+
+export type RpcManifestRouteStreamProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = <TId extends RpcManifestRouteStreamId<TManifest>>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcManifestRouteStreamInput<TManifest, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
+
+export type RpcManifestStreamRouteProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamProtocolRequestBuilder<TManifest>;
+
+export type RpcManifestStreamProtocolRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamProtocolRequestBuilder<TManifest>;
+
+export type RpcManifestRouteStreamRequestBuilder<
+  TManifest extends JoorManifest,
+> = <TId extends RpcManifestRouteStreamId<TManifest>>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcManifestRouteStreamInput<TManifest, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcManifestRouteStreamRequest<TManifest, TId>;
+
+export type RpcManifestStreamRouteRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteStreamRequestBuilder<TManifest>;
+
 const createProtocolRequestObject = <TId extends string>(
   id: TId,
   input: unknown,
@@ -2463,6 +2570,39 @@ export type RpcManifestStreamRouteClientArgs<
   TId extends RpcManifestRouteStreamId<TManifest> =
     RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteStreamClientArgs<TManifest, TId>;
+
+export type RpcRouteRequestBuilder<TRoutes extends RpcRouteMap> = <
+  TId extends RpcRouteUnaryId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteInput<TRoutes, TId>,
+  ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+) => RpcRouteRequest<TRoutes, TId>;
+
+export type RpcRouteUnaryRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteRequestBuilder<TRoutes>;
+
+export type RpcUnaryRouteRequestBuilder<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryRequestBuilder<TRoutes>;
+
+export type RpcManifestRouteRequestBuilder<TManifest extends JoorManifest> = <
+  TId extends RpcManifestRouteUnaryId<TManifest>,
+>(
+  manifest: TManifest,
+  id: TId,
+  input: RpcManifestRouteInput<TManifest, TId>,
+  ...options: ClientRequestOptionsTuple<
+    RpcManifestRouteProcedure<TManifest, TId>
+  >
+) => RpcManifestRouteRequest<TManifest, TId>;
+
+export type RpcManifestRouteUnaryRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteRequestBuilder<TManifest>;
+
+export type RpcManifestUnaryRouteRequestBuilder<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryRequestBuilder<TManifest>;
 
 const createPendingRpcRequest = <TProcedure, TId extends string>(
   id: TId,
