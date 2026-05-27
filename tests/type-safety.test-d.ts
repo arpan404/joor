@@ -3342,6 +3342,73 @@ routeKindScopedStreamConfigFactoryRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamConfigFactoryRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamConfigFromFactory
 > = requestTypedProcedureRequest;
+const routeKindScopedConfig: JoorConfigFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedConfigRequest: JoorConfigRequest<
+  typeof routeKindScopedConfig
+> = routeKindScopedRequiredRequest;
+routeKindScopedConfigRequest.requestId.toUpperCase();
+routeKindScopedConfigRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full config defaults to all route request requirements.
+const _wrongRouteKindScopedConfigUnaryRequest: JoorConfigRequest<
+  typeof routeKindScopedConfig
+> = requestTypedProcedureRequest;
+// @ts-expect-error full config defaults to all route request requirements.
+const _wrongRouteKindScopedConfigStreamRequest: JoorConfigRequest<
+  typeof routeKindScopedConfig
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedConfigFactory: DefineConfigFor<
+  typeof routeKindScopedManifest
+> = defineConfigFor(routeKindScopedManifest);
+const routeKindScopedConfigFromFactory = routeKindScopedConfigFactory(
+  routeKindScopedConfig
+);
+const routeKindScopedConfigFactoryRequest: JoorConfigRequest<
+  typeof routeKindScopedConfigFromFactory
+> = routeKindScopedRequiredRequest;
+routeKindScopedConfigFactoryRequest.requestId.toUpperCase();
+routeKindScopedConfigFactoryRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full config factories preserve all route request requirements.
+const _wrongRouteKindScopedConfigFactoryUnaryRequest: JoorConfigRequest<
+  typeof routeKindScopedConfigFromFactory
+> = requestTypedProcedureRequest;
+// @ts-expect-error full config factories preserve all route request requirements.
+const _wrongRouteKindScopedConfigFactoryStreamRequest: JoorConfigRequest<
+  typeof routeKindScopedConfigFromFactory
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedCompiledForConfig: CompiledRpcRequestHandlerForConfig<
+  typeof routeKindScopedConfig
+> = async () => new Response();
+const rootRouteKindScopedCompiledForConfig: RootCompiledRpcRequestHandlerForConfig<
+  typeof routeKindScopedConfig
+> = routeKindScopedCompiledForConfig;
+routeKindScopedCompiledForConfig(routeKindScopedRequiredRequest);
+rootRouteKindScopedCompiledForConfig(routeKindScopedRequiredRequest);
+routeKindScopedCompiledForConfig(
+  // @ts-expect-error full compiled config handlers require all route request contributions.
+  requestTypedProcedureRequest
+);
+routeKindScopedCompiledForConfig(
+  // @ts-expect-error full compiled config handlers require all route request contributions.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedCompiledForConfigFactory = createCompiledRpcHandlerFor()(
+  {} as CompiledDispatch<JoorConfigContext<typeof routeKindScopedConfig>>,
+  routeKindScopedConfig
+);
+routeKindScopedCompiledForConfigFactory(routeKindScopedRequiredRequest);
+routeKindScopedCompiledForConfigFactory(
+  // @ts-expect-error full compiled config handler factories require all route request contributions.
+  requestTypedProcedureRequest
+);
+routeKindScopedCompiledForConfigFactory(
+  // @ts-expect-error full compiled config handler factories require all route request contributions.
+  requestTypedStreamProcedureRequest
+);
 const routeKindScopedUnaryCompiledForConfig: CompiledRouteUnaryRpcRequestHandlerForConfig<
   typeof routeKindScopedUnaryConfig
 > = async () => new Response();
