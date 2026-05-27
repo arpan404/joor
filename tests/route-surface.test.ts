@@ -495,6 +495,69 @@ const generatedDispatcherRouteBatchAliases = [
   'NativeBatchBody',
 ] as const;
 
+const generatedDispatcherRouteDefinitionAliases = [
+  'NativeRouteUnaryConfig',
+  'NativeRouteUnaryConfigFor',
+  'NativeUnaryRouteConfig',
+  'NativeUnaryRouteConfigFor',
+  'NativeRouteStreamConfig',
+  'NativeRouteStreamConfigFor',
+  'NativeStreamRouteConfig',
+  'NativeStreamRouteConfigFor',
+  'NativeDefineRouteUnaryConfig',
+  'NativeDefineUnaryRouteConfig',
+  'NativeDefineRouteStreamConfig',
+  'NativeDefineStreamRouteConfig',
+  'defineNativeRouteUnaryConfig',
+  'defineNativeUnaryRouteConfig',
+  'defineNativeRouteStreamConfig',
+  'defineNativeStreamRouteConfig',
+  'NativeRouteUnaryHandlerOptions',
+  'NativeRouteUnaryHandlerOptionsFor',
+  'NativeUnaryRouteHandlerOptions',
+  'NativeUnaryRouteHandlerOptionsFor',
+  'NativeRouteStreamHandlerOptions',
+  'NativeRouteStreamHandlerOptionsFor',
+  'NativeStreamRouteHandlerOptions',
+  'NativeStreamRouteHandlerOptionsFor',
+  'NativeRouteUnaryHandlerOptionsArgs',
+  'NativeRouteUnaryHandlerOptionsArgsFor',
+  'NativeUnaryRouteHandlerOptionsArgs',
+  'NativeUnaryRouteHandlerOptionsArgsFor',
+  'NativeRouteStreamHandlerOptionsArgs',
+  'NativeRouteStreamHandlerOptionsArgsFor',
+  'NativeStreamRouteHandlerOptionsArgs',
+  'NativeStreamRouteHandlerOptionsArgsFor',
+  'NativeRouteUnaryHandlerOptionsWithTrailingArgs',
+  'NativeUnaryRouteHandlerOptionsWithTrailingArgs',
+  'NativeRouteStreamHandlerOptionsWithTrailingArgs',
+  'NativeStreamRouteHandlerOptionsWithTrailingArgs',
+  'NativeRouteUnaryHandlerOptionsWithPreflightArgs',
+  'NativeUnaryRouteHandlerOptionsWithPreflightArgs',
+  'NativeRouteStreamHandlerOptionsWithPreflightArgs',
+  'NativeStreamRouteHandlerOptionsWithPreflightArgs',
+  'NativeDefineRouteUnaryHandlerOptions',
+  'NativeDefineUnaryRouteHandlerOptions',
+  'NativeDefineRouteStreamHandlerOptions',
+  'NativeDefineStreamRouteHandlerOptions',
+  'defineNativeRouteUnaryHandlerOptions',
+  'defineNativeUnaryRouteHandlerOptions',
+  'defineNativeRouteStreamHandlerOptions',
+  'defineNativeStreamRouteHandlerOptions',
+  'NativeRouteUnaryHandlerHookContext',
+  'NativeUnaryRouteHandlerHookContext',
+  'NativeRouteStreamHandlerHookContext',
+  'NativeStreamRouteHandlerHookContext',
+  'NativeRouteUnaryHandlerHooks',
+  'NativeUnaryRouteHandlerHooks',
+  'NativeRouteStreamHandlerHooks',
+  'NativeStreamRouteHandlerHooks',
+  'NativeRouteUnaryMiddleware',
+  'NativeUnaryRouteMiddleware',
+  'NativeRouteStreamMiddleware',
+  'NativeStreamRouteMiddleware',
+] as const;
+
 const generatedPlatformRouteHandlerTypeAliases = [
   {
     entrypoint: 'bun.ts',
@@ -957,6 +1020,34 @@ describe('route public surface', () => {
       const exports = dispatchers.get(entrypoint);
       if (exports === undefined) return [`${entrypoint}: <missing>`];
       return generatedDispatcherRouteBatchAliases.flatMap((name) =>
+        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+      );
+    });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated dispatcher route definition aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const dispatchers = new Map(
+      [...exportSets]
+        .filter(([file]) =>
+          [
+            'deno-dispatcher.safe.ts',
+            'dispatcher.safe.ts',
+            'dispatcher.streaming.ts',
+          ].includes(basename(file))
+        )
+        .map(([file, names]) => [basename(file), names])
+    );
+    const missing = [
+      'deno-dispatcher.safe.ts',
+      'dispatcher.safe.ts',
+      'dispatcher.streaming.ts',
+    ].flatMap((entrypoint) => {
+      const exports = dispatchers.get(entrypoint);
+      if (exports === undefined) return [`${entrypoint}: <missing>`];
+      return generatedDispatcherRouteDefinitionAliases.flatMap((name) =>
         exports.has(name) ? [] : [`${entrypoint}: ${name}`]
       );
     });
