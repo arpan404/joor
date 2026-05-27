@@ -4681,15 +4681,15 @@ export type GeneratedRouteUnaryClient = {
 ${routeUnaryClientTypeBody}
   readonly batch: BatchFunction;
 };
-export type GeneratedUnaryRouteClient = GeneratedRouteUnaryClient;
 export type RouteUnaryClient = GeneratedRouteUnaryClient;
-export type UnaryRouteClient = GeneratedRouteUnaryClient;
+export type GeneratedUnaryRouteClient = RouteUnaryClient;
+export type UnaryRouteClient = RouteUnaryClient;
 export type GeneratedRouteStreamClient = {
 ${routeStreamClientTypeBody}
 };
-export type GeneratedStreamRouteClient = GeneratedRouteStreamClient;
 export type RouteStreamClient = GeneratedRouteStreamClient;
-export type StreamRouteClient = GeneratedRouteStreamClient;
+export type GeneratedStreamRouteClient = RouteStreamClient;
+export type StreamRouteClient = RouteStreamClient;
 
 export function createClient(): Client;
 export function createClient<TRequest extends Request>(
@@ -4767,7 +4767,7 @@ export const createUnaryRouteClient: typeof createRouteUnaryClient =
   createRouteUnaryClient;
 
 export const routeUnaryClient: RouteUnaryClient = createRouteUnaryClient();
-export const unaryRouteClient: GeneratedUnaryRouteClient = routeUnaryClient;
+export const unaryRouteClient: UnaryRouteClient = routeUnaryClient;
 
 export function createRouteStreamClient(): RouteStreamClient;
 export function createRouteStreamClient<TRequest extends Request>(
@@ -4799,7 +4799,7 @@ export const createStreamRouteClient: typeof createRouteStreamClient =
   createRouteStreamClient;
 
 export const routeStreamClient: RouteStreamClient = createRouteStreamClient();
-export const streamRouteClient: GeneratedStreamRouteClient = routeStreamClient;
+export const streamRouteClient: StreamRouteClient = routeStreamClient;
 `
   );
 };

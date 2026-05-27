@@ -1692,6 +1692,18 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(clientSource).toContain('export const client: Client = createClient();');
       expect(clientSource).toContain(
+        'export type GeneratedUnaryRouteClient = RouteUnaryClient'
+      );
+      expect(clientSource).toContain(
+        'export type GeneratedStreamRouteClient = RouteStreamClient'
+      );
+      expect(clientSource).toContain(
+        'export const unaryRouteClient: UnaryRouteClient = routeUnaryClient;'
+      );
+      expect(clientSource).toContain(
+        'export const streamRouteClient: StreamRouteClient = routeStreamClient;'
+      );
+      expect(clientSource).toContain(
         'createManifestRouteProtocolRequest as createTransportRouteProtocolRequest'
       );
       expect(clientSource).toContain(
@@ -4058,10 +4070,12 @@ const generatedRouteUnaryClientSingletonShape: GeneratedRouteUnaryClient =
   generatedRouteUnaryClientSingleton;
 const generatedUnaryRouteClientSingletonShape: GeneratedUnaryRouteClient =
   unaryRouteClient;
+const unaryRouteClientSingletonAlias: UnaryRouteClient = unaryRouteClient;
 const generatedRouteStreamClientSingletonShape: GeneratedRouteStreamClient =
   generatedRouteStreamClientSingleton;
 const generatedStreamRouteClientSingletonShape: GeneratedStreamRouteClient =
   streamRouteClient;
+const streamRouteClientSingletonAlias: StreamRouteClient = streamRouteClient;
 // @ts-expect-error generated client route groups are readonly.
 generatedClient.users = generatedClient.users;
 // @ts-expect-error generated client route leaves are readonly.
