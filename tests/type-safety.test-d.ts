@@ -298,8 +298,14 @@ import {
   createUnaryRouteNodeTransportRequestHandlerFor,
   createUnaryRouteNodeTransportRequestHandlerWithPath,
   createUnaryRouteNodeTransportRequestHandlerWithPathFor,
+  listenNodeRouteStream,
+  listenNodeRouteUnary,
+  listenNodeStreamRoute,
+  listenNodeUnaryRoute,
   listenRouteStream,
   listenRouteUnary,
+  listenStreamRoute,
+  listenUnaryRoute,
   createRouteStreamVercelFetch,
   createRouteStreamVercelFetchFor,
   createRouteStreamVercelFunction,
@@ -436,12 +442,23 @@ import {
   readJsonRequestBody,
   readJsonRequestBodyWithLimit,
   serveBun,
+  serveBunRouteStream,
+  serveBunRouteUnary,
+  serveBunStreamRoute,
+  serveBunUnaryRoute,
   serveRouteStreamBun,
   serveRouteUnaryBun,
+  serveStreamRouteBun,
+  serveUnaryRouteBun,
   serveDeno,
+  serveDenoRouteStream,
+  serveDenoRouteUnary,
+  serveDenoStreamRoute,
+  serveDenoUnaryRoute,
   serveRouteStreamDeno,
   serveRouteUnaryDeno,
   serveStreamRouteDeno,
+  serveUnaryRouteDeno,
   serveStandaloneDeno as serveRootStandaloneDeno,
   serveStandaloneRouteStreamDeno as serveRootStandaloneRouteStreamDeno,
   serveStandaloneRouteUnaryDeno as serveRootStandaloneRouteUnaryDeno,
@@ -5035,6 +5052,38 @@ const _wrongRouteKindScopedNodeListenStreamRequest: HandlerOptionsRequest<
   typeof routeKindScopedNodeListenOptions
 > = requestTypedStreamProcedureRequest;
 listen(routeKindScopedManifest, routeKindScopedNodeListenOptions);
+listenRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeListenOptions
+);
+listenUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeListenOptions
+);
+listenNodeRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeListenOptions
+);
+listenNodeUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryNodeListenOptions
+);
+listenRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeListenOptions
+);
+listenStreamRoute(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeListenOptions
+);
+listenNodeRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeListenOptions
+);
+listenNodeStreamRoute(
+  routeKindScopedManifest,
+  routeKindScopedStreamNodeListenOptions
+);
 const routeKindScopedUnaryAwsLambdaOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -5387,6 +5436,30 @@ serveRouteStreamBun(
   routeKindScopedManifest,
   routeKindScopedStreamBunServeOptions
 );
+serveUnaryRouteBun(
+  routeKindScopedManifest,
+  routeKindScopedUnaryBunServeOptions
+);
+serveBunRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryBunServeOptions
+);
+serveBunUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryBunServeOptions
+);
+serveStreamRouteBun(
+  routeKindScopedManifest,
+  routeKindScopedStreamBunServeOptions
+);
+serveBunRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamBunServeOptions
+);
+serveBunStreamRoute(
+  routeKindScopedManifest,
+  routeKindScopedStreamBunServeOptions
+);
 serveBun(routeKindScopedManifest, routeKindScopedBunServeOptions);
 const routeKindScopedUnaryDenoFetch = createRouteUnaryDenoFetchFor()(
   routeKindScopedManifest,
@@ -5558,6 +5631,30 @@ serveRouteUnaryDeno(
   routeKindScopedUnaryDenoServeOptions
 );
 serveStreamRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamDenoServeOptions
+);
+serveUnaryRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedUnaryDenoServeOptions
+);
+serveDenoRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryDenoServeOptions
+);
+serveDenoUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryDenoServeOptions
+);
+serveRouteStreamDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamDenoServeOptions
+);
+serveDenoRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamDenoServeOptions
+);
+serveDenoStreamRoute(
   routeKindScopedManifest,
   routeKindScopedStreamDenoServeOptions
 );
