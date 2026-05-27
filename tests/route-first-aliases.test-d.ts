@@ -2,6 +2,7 @@ import { defineManifest, defineProcedure, t } from '../src/index.js';
 import type * as ConfigSubpath from '../src/config.js';
 import type * as ContextSubpath from '../src/context/index.js';
 import type * as ManifestSubpath from '../src/manifest.js';
+import type * as CompiledSubpath from '../src/runtime/compiled.js';
 import type * as Root from '../src/index.js';
 import type * as RpcSubpath from '../src/rpc/index.js';
 
@@ -39,6 +40,61 @@ type UnaryProtocolRequest = Root.RpcManifestRouteUnaryProtocolRequest<
 type UnaryBatchRequest = readonly [UnaryProtocolRequest];
 type UnaryBody = Root.RpcManifestRouteUnaryBody<AliasManifest>;
 type StreamBody = Root.RpcManifestRouteStreamBody<AliasManifest>;
+
+export type RouteFirstCompiledAliasSurface = [
+  Root.CompiledRouteUnaryTransportBodyResultFor<AliasManifest, UnaryBody>,
+  Root.CompiledUnaryRouteTransportBodyResultFor<AliasManifest, UnaryBody>,
+  Root.CompiledRouteStreamTransportBodyResultFor<AliasManifest, StreamBody>,
+  Root.CompiledStreamRouteTransportBodyResultFor<AliasManifest, StreamBody>,
+  Root.CompiledRouteUnaryBodyResultFor<AliasManifest, UnaryBody>,
+  Root.CompiledUnaryRouteBodyResultFor<AliasManifest, UnaryBody>,
+  Root.CompiledRouteStreamBodyResultFor<AliasManifest, StreamBody>,
+  Root.CompiledStreamRouteBodyResultFor<AliasManifest, StreamBody>,
+  Root.CompiledRouteUnaryRpcRequestHandler,
+  Root.CompiledUnaryRouteRpcRequestHandler,
+  Root.CompiledRouteStreamRpcRequestHandler,
+  Root.CompiledStreamRouteRpcRequestHandler,
+  Root.CompiledRpcRouteUnaryBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcUnaryRouteBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcRouteStreamBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcStreamRouteBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcRouteUnaryTransportBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcUnaryRouteTransportBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcRouteStreamTransportBodyResultHandlerFor<AliasManifest>,
+  Root.CompiledRpcStreamRouteTransportBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRouteUnaryTransportBodyResultFor<
+    AliasManifest,
+    UnaryBody
+  >,
+  CompiledSubpath.CompiledUnaryRouteTransportBodyResultFor<
+    AliasManifest,
+    UnaryBody
+  >,
+  CompiledSubpath.CompiledRouteStreamTransportBodyResultFor<
+    AliasManifest,
+    StreamBody
+  >,
+  CompiledSubpath.CompiledStreamRouteTransportBodyResultFor<
+    AliasManifest,
+    StreamBody
+  >,
+  CompiledSubpath.CompiledRouteUnaryBodyResultFor<AliasManifest, UnaryBody>,
+  CompiledSubpath.CompiledUnaryRouteBodyResultFor<AliasManifest, UnaryBody>,
+  CompiledSubpath.CompiledRouteStreamBodyResultFor<AliasManifest, StreamBody>,
+  CompiledSubpath.CompiledStreamRouteBodyResultFor<AliasManifest, StreamBody>,
+  CompiledSubpath.CompiledRouteUnaryRpcRequestHandler,
+  CompiledSubpath.CompiledUnaryRouteRpcRequestHandler,
+  CompiledSubpath.CompiledRouteStreamRpcRequestHandler,
+  CompiledSubpath.CompiledStreamRouteRpcRequestHandler,
+  CompiledSubpath.CompiledRpcRouteUnaryBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcUnaryRouteBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcRouteStreamBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcStreamRouteBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcRouteUnaryTransportBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcUnaryRouteTransportBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcRouteStreamTransportBodyResultHandlerFor<AliasManifest>,
+  CompiledSubpath.CompiledRpcStreamRouteTransportBodyResultHandlerFor<AliasManifest>,
+];
 
 export type RouteFirstConfigAliasSurface = [
   Root.DefineRouteUnaryConfigFor<AliasManifest>,
