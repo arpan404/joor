@@ -9,11 +9,17 @@ import {
   createManifestRouteProtocolRequest,
   createManifestRouteStreamRequest,
   createManifestRouteStreamProtocolRequest,
+  createManifestRouteStreamClient,
   createManifestRouteUnaryProtocolRequest,
+  createManifestRouteUnaryClient,
+  createManifestStreamRouteClient,
+  createManifestUnaryRouteClient,
   createJoorHandler,
   createRouteProtocolRequest,
   createRouteRequest,
+  createRouteStreamClient,
   createRouteStreamProtocolRequest,
+  createRouteUnaryClient,
   createRouteUnaryProtocolRequest,
   defineProcedure,
   t,
@@ -234,6 +240,47 @@ describe('client', () => {
     expect(() => client.stream('protected', {})).toThrowError(
       'RPC route "protected" is a unary route, expected stream'
     );
+  });
+
+  it('exposes narrowed route-specific client objects at runtime', () => {
+    const streamProcedure = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const manifest = {
+      procedures: { protected: getUser, stream: streamProcedure },
+    };
+    const options = {
+      url: 'http://localhost/rpc',
+      async fetch() {
+        throw new Error('Unexpected fetch');
+      },
+    };
+
+    for (const client of [
+      createRouteUnaryClient({ ...options, manifest }),
+      createManifestRouteUnaryClient(manifest, options),
+      createManifestUnaryRouteClient(manifest, options),
+    ]) {
+      expect(Object.isFrozen(client)).toBe(true);
+      expect(Object.keys(client).sort()).toEqual(['batch', 'call', 'request']);
+      expect('stream' in client).toBe(false);
+    }
+
+    for (const client of [
+      createRouteStreamClient({ ...options, manifest }),
+      createManifestRouteStreamClient(manifest, options),
+      createManifestStreamRouteClient(manifest, options),
+    ]) {
+      expect(Object.isFrozen(client)).toBe(true);
+      expect(Object.keys(client)).toEqual(['stream']);
+      expect('call' in client).toBe(false);
+      expect('request' in client).toBe(false);
+      expect('batch' in client).toBe(false);
+    }
   });
 
   it('forwards typed trace ids through calls, requests, batches, and streams', async () => {

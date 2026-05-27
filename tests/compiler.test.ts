@@ -121,6 +121,10 @@ type GeneratedClientRuntime = {
 type GeneratedClientRuntimeModule = {
   readonly client: GeneratedClientRuntime;
   readonly createClient: () => GeneratedClientRuntime;
+  readonly createRouteStreamTransport: () => object;
+  readonly createRouteUnaryTransport: () => object;
+  readonly routeStreamTransport: object;
+  readonly routeUnaryTransport: object;
 };
 
 type GeneratedNodeHandler = (
@@ -7299,6 +7303,30 @@ invalidNativeBatch;
       expect(Object.isFrozen(generatedRuntimeClient.users.get)).toBe(true);
       expect(Object.isFrozen(generatedRuntimeClient.users.watch)).toBe(true);
       expect(Object.isFrozen(clientModule.client)).toBe(true);
+      const generatedRouteUnaryTransport =
+        clientModule.createRouteUnaryTransport();
+      const generatedRouteStreamTransport =
+        clientModule.createRouteStreamTransport();
+      expect(Object.isFrozen(generatedRouteUnaryTransport)).toBe(true);
+      expect(Object.keys(generatedRouteUnaryTransport).sort()).toEqual([
+        'batch',
+        'call',
+        'request',
+      ]);
+      expect('stream' in generatedRouteUnaryTransport).toBe(false);
+      expect(Object.isFrozen(generatedRouteStreamTransport)).toBe(true);
+      expect(Object.keys(generatedRouteStreamTransport)).toEqual(['stream']);
+      expect('call' in generatedRouteStreamTransport).toBe(false);
+      expect('request' in generatedRouteStreamTransport).toBe(false);
+      expect('batch' in generatedRouteStreamTransport).toBe(false);
+      expect(Object.keys(clientModule.routeUnaryTransport).sort()).toEqual([
+        'batch',
+        'call',
+        'request',
+      ]);
+      expect(Object.keys(clientModule.routeStreamTransport)).toEqual([
+        'stream',
+      ]);
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

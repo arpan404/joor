@@ -3108,15 +3108,22 @@ export function createRouteUnaryClient<TRequest extends Request = Request>(
 ):
   | RpcManifestRouteUnaryTransportClient<JoorManifest>
   | RpcRouteUnaryTransportClient<RpcRouteMap> {
-  if (options.manifest !== undefined) {
-    return createClient<JoorManifest, TRequest>({
-      ...(options as ClientOptions<JoorManifest, TRequest>),
-      manifest: options.manifest,
-    }) as RpcManifestRouteUnaryTransportClient<JoorManifest>;
-  }
-  return createClient<RpcRouteMap, TRequest>(
-    options as ClientOptions<undefined, TRequest>
-  ) as RpcRouteUnaryTransportClient<RpcRouteMap>;
+  const client =
+    options.manifest !== undefined
+      ? createClient<JoorManifest, TRequest>({
+          ...(options as ClientOptions<JoorManifest, TRequest>),
+          manifest: options.manifest,
+        })
+      : createClient<RpcRouteMap, TRequest>(
+          options as ClientOptions<undefined, TRequest>
+        );
+  return Object.freeze({
+    call: client.call,
+    request: client.request,
+    batch: client.batch,
+  }) as
+    | RpcManifestRouteUnaryTransportClient<JoorManifest>
+    | RpcRouteUnaryTransportClient<RpcRouteMap>;
 }
 
 export const createUnaryRouteClient: typeof createRouteUnaryClient =
@@ -3156,15 +3163,20 @@ export function createRouteStreamClient<TRequest extends Request = Request>(
 ):
   | RpcManifestRouteStreamTransportClient<JoorManifest>
   | RpcRouteStreamTransportClient<RpcRouteMap> {
-  if (options.manifest !== undefined) {
-    return createClient<JoorManifest, TRequest>({
-      ...(options as ClientOptions<JoorManifest, TRequest>),
-      manifest: options.manifest,
-    }) as RpcManifestRouteStreamTransportClient<JoorManifest>;
-  }
-  return createClient<RpcRouteMap, TRequest>(
-    options as ClientOptions<undefined, TRequest>
-  ) as RpcRouteStreamTransportClient<RpcRouteMap>;
+  const client =
+    options.manifest !== undefined
+      ? createClient<JoorManifest, TRequest>({
+          ...(options as ClientOptions<JoorManifest, TRequest>),
+          manifest: options.manifest,
+        })
+      : createClient<RpcRouteMap, TRequest>(
+          options as ClientOptions<undefined, TRequest>
+        );
+  return Object.freeze({
+    stream: client.stream,
+  }) as
+    | RpcManifestRouteStreamTransportClient<JoorManifest>
+    | RpcRouteStreamTransportClient<RpcRouteMap>;
 }
 
 export const createStreamRouteClient: typeof createRouteStreamClient =

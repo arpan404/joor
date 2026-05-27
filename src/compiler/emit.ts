@@ -4589,10 +4589,15 @@ export function createRouteUnaryTransport<TRequest extends Request = RouteUnaryR
   options?: GeneratedRouteUnaryClientOptions<TRequest>
 ): RouteUnaryTransportClient {
   const resolved = options ?? ({} as GeneratedRouteUnaryClientOptions<Request>);
-  return createTransportClient(manifest, {
+  const client = createTransportClient(manifest, {
     ...(resolved as Omit<JoorManifestRouteUnaryClientOptions<Manifest, TRequest>, 'url'>),
     url: resolved.url ?? defaultUrl,
-  } as JoorManifestRouteUnaryClientOptions<Manifest, TRequest>) as RouteUnaryTransportClient;
+  } as JoorManifestRouteUnaryClientOptions<Manifest, TRequest>);
+  return Object.freeze({
+    call: client.call,
+    request: client.request,
+    batch: client.batch,
+  }) as RouteUnaryTransportClient;
 }
 
 export const createUnaryRouteTransport: typeof createRouteUnaryTransport =
@@ -4606,10 +4611,13 @@ export function createRouteStreamTransport<TRequest extends Request = RouteStrea
   options?: GeneratedRouteStreamClientOptions<TRequest>
 ): RouteStreamTransportClient {
   const resolved = options ?? ({} as GeneratedRouteStreamClientOptions<Request>);
-  return createTransportClient(manifest, {
+  const client = createTransportClient(manifest, {
     ...(resolved as Omit<JoorManifestRouteStreamClientOptions<Manifest, TRequest>, 'url'>),
     url: resolved.url ?? defaultUrl,
-  } as JoorManifestRouteStreamClientOptions<Manifest, TRequest>) as RouteStreamTransportClient;
+  } as JoorManifestRouteStreamClientOptions<Manifest, TRequest>);
+  return Object.freeze({
+    stream: client.stream,
+  }) as RouteStreamTransportClient;
 }
 
 export const createStreamRouteTransport: typeof createRouteStreamTransport =
