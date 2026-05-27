@@ -4560,6 +4560,10 @@ export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUna
 };
 export type GeneratedUnaryRouteClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
   GeneratedRouteUnaryClientOptions<TRequest>;
+export type RouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
+  GeneratedRouteUnaryClientOptions<TRequest>;
+export type UnaryRouteClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
+  RouteUnaryClientOptions<TRequest>;
 export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<
   JoorManifestRouteStreamClientOptions<Manifest, TRequest>,
   'url'
@@ -4568,6 +4572,10 @@ export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteSt
 };
 export type GeneratedStreamRouteClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
   GeneratedRouteStreamClientOptions<TRequest>;
+export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
+  GeneratedRouteStreamClientOptions<TRequest>;
+export type StreamRouteClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
+  RouteStreamClientOptions<TRequest>;
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
 type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
   readonly call: (...args: [id: TId, ...ClientArgs<TId>]) => Promise<RouteResult<TId>>;
