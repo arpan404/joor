@@ -3958,6 +3958,18 @@ export type PackageSubpathSurface = [
   Runtime.CompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledRouteUnaryTransportRequestHandler,
+  Runtime.DenoCompiledUnaryRouteTransportRequestHandler,
+  Runtime.DenoCompiledRouteStreamTransportRequestHandler,
+  Runtime.DenoCompiledStreamRouteTransportRequestHandler,
+  Runtime.DenoCompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledRouteStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -4315,6 +4327,22 @@ export type PackageSubpathSurface = [
   NodeRuntime.NodeServer,
   Root.NodeServer,
   ResponseRuntime.TransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.RouteUnaryTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
+  Runtime.UnaryRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
+  Runtime.RouteStreamTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
+  Runtime.StreamRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
   ResponseRuntime.RouteUnaryTransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathBody

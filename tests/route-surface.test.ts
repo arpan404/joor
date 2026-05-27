@@ -262,11 +262,7 @@ const publicRuntimeRouteTypeExports = async (): Promise<
 > =>
   (await publicRouteExports()).filter(({ file, kind }) => {
     const relativeFile = relative(srcRoot, file);
-    return (
-      kind === 'type' &&
-      relativeFile.startsWith('runtime/') &&
-      relativeFile !== 'runtime/index.ts'
-    );
+    return kind === 'type' && relativeFile.startsWith('runtime/');
   });
 
 const publicRouteTypedFactoryExports = async (): Promise<
