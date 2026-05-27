@@ -8,6 +8,8 @@ import { build } from '../src/compiler/build.js';
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
+const configFile = join(srcRoot, 'config.ts');
+const contextIndex = join(srcRoot, 'context/index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const packageManifest = join(repoRoot, 'package.json');
@@ -266,6 +268,14 @@ const publicRuntimeRouteTypeExports = async (): Promise<
     return kind === 'type' && relativeFile.startsWith('runtime/');
   });
 
+const publicConfigContextRouteTypeExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteExports()).filter(
+    ({ file, kind }) =>
+      kind === 'type' && (file === configFile || file === contextIndex)
+  );
+
 const publicRpcDispatcherRouteTypeExports = async (): Promise<
   readonly ExportedSymbol[]
 > =>
@@ -331,6 +341,35 @@ const packageImportSpecifier = (packageSubpath: string): string =>
 
 const namespaceReferencePattern = (alias: string, name: string): RegExp =>
   new RegExp(`\\b${alias}\\s*\\.\\s*${name}\\b`);
+
+const missingCanonicalNamespaceReferences = (
+  exports: readonly ExportedSymbol[],
+  source: string
+): readonly string[] => {
+  const namespaceImports = collectNamespaceImportsByModule(source);
+
+  return exports
+    .flatMap(({ file, name }) => {
+      const packageSubpath = packageSubpathForRouteFile(file);
+      if (packageSubpath === undefined) {
+        return [`${relative(repoRoot, file)}: ${name} <no package path>`];
+      }
+      const moduleSpecifier = packageImportSpecifier(packageSubpath);
+      const alias = namespaceImports.get(moduleSpecifier);
+      if (alias === undefined) {
+        return [
+          `${relative(repoRoot, file)}: ${name} missing namespace import from ${moduleSpecifier}`,
+        ];
+      }
+      if (namespaceReferencePattern(alias, name).test(source)) {
+        return [];
+      }
+      return [
+        `${relative(repoRoot, file)}: ${alias}.${name} from ${moduleSpecifier}`,
+      ];
+    })
+    .sort();
+};
 
 const generatedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
@@ -515,58 +554,30 @@ describe('route public surface', () => {
 
   it('keeps runtime route type namespace smoke coverage tied to canonical subpaths', async () => {
     const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const namespaceImports =
-      collectNamespaceImportsByModule(packageSubpathSource);
-    const missing = (await publicRuntimeRouteTypeExports())
-      .flatMap(({ file, name }) => {
-        const packageSubpath = packageSubpathForRouteFile(file);
-        if (packageSubpath === undefined) {
-          return [`${relative(repoRoot, file)}: ${name} <no package path>`];
-        }
-        const moduleSpecifier = packageImportSpecifier(packageSubpath);
-        const alias = namespaceImports.get(moduleSpecifier);
-        if (alias === undefined) {
-          return [
-            `${relative(repoRoot, file)}: ${name} missing namespace import from ${moduleSpecifier}`,
-          ];
-        }
-        if (namespaceReferencePattern(alias, name).test(packageSubpathSource)) {
-          return [];
-        }
-        return [
-          `${relative(repoRoot, file)}: ${alias}.${name} from ${moduleSpecifier}`,
-        ];
-      })
-      .sort();
+    const missing = missingCanonicalNamespaceReferences(
+      await publicRuntimeRouteTypeExports(),
+      packageSubpathSource
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps config and context route type namespace smoke coverage tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const missing = missingCanonicalNamespaceReferences(
+      await publicConfigContextRouteTypeExports(),
+      packageSubpathSource
+    );
 
     expect(missing).toEqual([]);
   });
 
   it('keeps RPC dispatcher route type namespace smoke coverage tied to canonical subpaths', async () => {
     const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const namespaceImports =
-      collectNamespaceImportsByModule(packageSubpathSource);
-    const missing = (await publicRpcDispatcherRouteTypeExports())
-      .flatMap(({ file, name }) => {
-        const packageSubpath = packageSubpathForRouteFile(file);
-        if (packageSubpath === undefined) {
-          return [`${relative(repoRoot, file)}: ${name} <no package path>`];
-        }
-        const moduleSpecifier = packageImportSpecifier(packageSubpath);
-        const alias = namespaceImports.get(moduleSpecifier);
-        if (alias === undefined) {
-          return [
-            `${relative(repoRoot, file)}: ${name} missing namespace import from ${moduleSpecifier}`,
-          ];
-        }
-        if (namespaceReferencePattern(alias, name).test(packageSubpathSource)) {
-          return [];
-        }
-        return [
-          `${relative(repoRoot, file)}: ${alias}.${name} from ${moduleSpecifier}`,
-        ];
-      })
-      .sort();
+    const missing = missingCanonicalNamespaceReferences(
+      await publicRpcDispatcherRouteTypeExports(),
+      packageSubpathSource
+    );
 
     expect(missing).toEqual([]);
   });
