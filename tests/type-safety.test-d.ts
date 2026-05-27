@@ -6897,6 +6897,48 @@ const routeKindScopedStandaloneDenoRpcRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedStandaloneDenoRpcRequest.requestId.toUpperCase();
 routeKindScopedStandaloneDenoRpcRequest.streamRequestId.toUpperCase();
+const routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgs: StandaloneDenoRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryStandaloneDenoRpcOptions];
+const routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary standalone Deno RPC option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryStandaloneDenoRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteStandaloneDenoRpcOptionsArgs: StandaloneDenoUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryStandaloneDenoRpcOptionsArgs;
+const routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgs: StandaloneDenoRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamStandaloneDenoRpcOptions];
+const routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream standalone Deno RPC option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamStandaloneDenoRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteStandaloneDenoRpcOptionsArgs: StandaloneDenoStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamStandaloneDenoRpcOptionsArgs;
+routeKindScopedUnaryRouteStandaloneDenoRpcOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteStandaloneDenoRpcOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full standalone Deno RPC options default to all route request requirements.
 const _wrongRouteKindScopedStandaloneDenoRpcUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedStandaloneDenoRpcOptions
@@ -6957,6 +6999,48 @@ const routeKindScopedStandaloneDenoServeRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedStandaloneDenoServeRequest.requestId.toUpperCase();
 routeKindScopedStandaloneDenoServeRequest.streamRequestId.toUpperCase();
+const routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgs: StandaloneDenoRouteUnaryServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryStandaloneDenoServeOptions];
+const routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary standalone Deno serve option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryStandaloneDenoServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteStandaloneDenoServeOptionsArgs: StandaloneDenoUnaryRouteServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryStandaloneDenoServeOptionsArgs;
+const routeKindScopedRouteStreamStandaloneDenoServeOptionsArgs: StandaloneDenoRouteStreamServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamStandaloneDenoServeOptions];
+const routeKindScopedRouteStreamStandaloneDenoServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamStandaloneDenoServeOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamStandaloneDenoServeOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream standalone Deno serve option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamStandaloneDenoServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamStandaloneDenoServeOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteStandaloneDenoServeOptionsArgs: StandaloneDenoStreamRouteServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamStandaloneDenoServeOptionsArgs;
+routeKindScopedUnaryRouteStandaloneDenoServeOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteStandaloneDenoServeOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full standalone Deno serve options default to all route request requirements.
 const _wrongRouteKindScopedStandaloneDenoServeUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedStandaloneDenoServeOptions
