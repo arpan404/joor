@@ -305,9 +305,10 @@ const emitProfileDispatcher = async (
   const schemaTypeImport = hasCompiledProcedures
     ? "import type { JsonValue } from 'joor/schema';\n"
     : '';
-  const procedureTypeImport = hasCompiledProcedures
-    ? "import type { ProcedureServices, RpcError } from 'joor/procedure';\n"
-    : '';
+  const procedureTypeImport =
+    hasCompiledProcedures || hasGenericFallback
+      ? "import type { ProcedureServices, RpcError } from 'joor/procedure';\n"
+      : '';
   const manifestTypeImport = `import type { ${manifestTypeImports.join(', ')} } from 'joor/manifest';\n`;
   const contextTypeImport =
     "import type { ContextRequestSource, JoorPlugin } from 'joor/context';\n";

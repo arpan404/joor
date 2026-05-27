@@ -2800,6 +2800,232 @@ createStreamRouteDenoFetchFor()(undefined)(plainRequest);
     }
   }, 10_000);
 
+  it('defaults generated route-stream runtimes to the stream required request type', async () => {
+    const appDir = await mkdtemp(join(tmpdir(), 'joor-stream-request-app-'));
+    try {
+      const rpcDir = join(appDir, 'rpc');
+      const routeDir = join(rpcDir, 'request');
+      const outDir = join(appDir, '.joor');
+      await mkdir(routeDir, { recursive: true });
+      const procedureFile = join(routeDir, 'watch.rpc.ts');
+      const srcImport = toRelativeModuleSpecifier(
+        routeDir,
+        join(repoRoot, 'src/index.ts')
+      );
+      await writeFile(
+        procedureFile,
+        `import { defineProcedure, t } from '${srcImport}';
+
+export interface StreamAppRequest extends Request {
+  readonly streamRequestId: string;
+}
+
+export default defineProcedure.withContext<Record<string, never>, StreamAppRequest>()({
+  input: t.object({ id: t.string() }),
+  stream: t.object({ id: t.string() }),
+  async *handler(ctx, input) {
+    ctx.request.streamRequestId.toUpperCase();
+    yield { id: input.id };
+  },
+});
+`
+      );
+
+      await build({ cwd: appDir, entry: rpcDir, outDir });
+
+      const usageFile = join(outDir, 'stream-request-runtime-usage.ts');
+      const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
+      await writeFile(
+        usageFile,
+        `import { createFetchFor, createRouteStreamFetchFor, createStreamRouteFetchFor, fetch, nativeBody, nativeRouteStreamBody, nativeRouteStreamTransport, nativeStreamRouteBody, nativeStreamRouteTransport, type NativeBodyHandler, type NativeFetchHandler, type NativeRouteStreamBodyHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamTransportHandler, type NativeStreamRouteBodyHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteTransportHandler } from './dispatcher.safe.js';
+import { createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteStreamFetchFor as createRuntimeRouteStreamFetchFor, createStreamRouteFetch as createRuntimeStreamRouteFetch, createStreamRouteFetchFor as createRuntimeStreamRouteFetchFor, fetch as runtimeFetch, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest } from './fetch.js';
+import { createRouteStreamWorker, createRouteStreamWorkerFor, worker } from './cloudflare.js';
+import { createRouteStreamHandlers, createRouteStreamHandlersFor, handlers } from './next.js';
+import { createRouteStreamVercel, createRouteStreamVercelFor, vercel } from './vercel.js';
+import { createRouteStreamEdge, createRouteStreamEdgeFor, edge } from './netlify.js';
+import { createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, type BunNativeRouteStreamFetchHandler } from './bun.js';
+import { createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, type DenoNativeRouteStreamFetchHandler } from './deno.js';
+import type { StreamAppRequest } from '${procedureImport}';
+
+const streamRequest = Object.assign(new Request('https://example.com/rpc'), {
+  streamRequestId: 'stream_req_1',
+}) as StreamAppRequest;
+const plainRequest = new Request('https://example.com/rpc');
+const streamBody = { id: 'request.watch', input: { id: '1' } } as const;
+
+const routeStreamRequiredRequest: NativeRouteStreamRequiredRuntimeRequest =
+  streamRequest;
+routeStreamRequiredRequest.streamRequestId.toUpperCase();
+const streamRouteRequiredRequest: NativeStreamRouteRequiredRuntimeRequest =
+  routeStreamRequiredRequest;
+streamRouteRequiredRequest.streamRequestId.toUpperCase();
+// @ts-expect-error generated route-stream required requests reject broad Request values.
+const _wrongRouteStreamRequiredRequest: NativeRouteStreamRequiredRuntimeRequest =
+  plainRequest;
+const runtimeRouteStreamRequiredRequest: RuntimeRouteStreamRequiredRuntimeRequest =
+  streamRequest;
+runtimeRouteStreamRequiredRequest.streamRequestId.toUpperCase();
+const runtimeStreamRouteRequiredRequest: RuntimeStreamRouteRequiredRuntimeRequest =
+  runtimeRouteStreamRequiredRequest;
+runtimeStreamRouteRequiredRequest.streamRequestId.toUpperCase();
+// @ts-expect-error generated route-stream target request aliases reject broad Request values.
+const _wrongRuntimeRouteStreamRequiredRequest: RuntimeRouteStreamRequiredRuntimeRequest =
+  plainRequest;
+
+const nativeHandler: NativeFetchHandler = fetch;
+nativeHandler(streamRequest);
+// @ts-expect-error generated native fetch defaults to the stream request subtype for stream-only manifests.
+nativeHandler(plainRequest);
+const nativeBodyHandler: NativeBodyHandler = nativeBody;
+nativeBodyHandler(streamRequest, streamBody);
+// @ts-expect-error generated native body handlers default to the stream request subtype for stream-only manifests.
+nativeBodyHandler(plainRequest, streamBody);
+const nativeRouteStreamBodyHandler: NativeRouteStreamBodyHandler =
+  nativeRouteStreamBody;
+nativeRouteStreamBodyHandler(streamRequest, streamBody);
+// @ts-expect-error generated route-stream body handlers preserve stream request requirements.
+nativeRouteStreamBodyHandler(plainRequest, streamBody);
+const nativeStreamRouteBodyHandler: NativeStreamRouteBodyHandler =
+  nativeStreamRouteBody;
+nativeStreamRouteBodyHandler(streamRequest, streamBody);
+// @ts-expect-error generated stream-route body aliases preserve stream request requirements.
+nativeStreamRouteBodyHandler(plainRequest, streamBody);
+const nativeRouteStreamTransportHandler: NativeRouteStreamTransportHandler =
+  nativeRouteStreamTransport;
+const nativeStreamRouteTransportHandler: NativeStreamRouteTransportHandler =
+  nativeStreamRouteTransport;
+nativeRouteStreamTransportHandler;
+nativeStreamRouteTransportHandler;
+
+createFetchFor()(streamRequest);
+createRouteStreamFetchFor()(streamRequest);
+createStreamRouteFetchFor()(streamRequest);
+// @ts-expect-error generated route-stream fetch factories default to the stream request subtype.
+createRouteStreamFetchFor()(plainRequest);
+// @ts-expect-error generated stream-route fetch factories default to the stream request subtype.
+createStreamRouteFetchFor()(plainRequest);
+runtimeFetch(streamRequest);
+createRuntimeRouteStreamFetch()(streamRequest);
+createRuntimeStreamRouteFetch()(streamRequest);
+createRuntimeRouteStreamFetchFor()(streamRequest);
+createRuntimeStreamRouteFetchFor()(streamRequest);
+// @ts-expect-error generated runtime route-stream fetch defaults reject broad Request values.
+createRuntimeRouteStreamFetch()(plainRequest);
+// @ts-expect-error generated runtime stream-route fetch defaults reject broad Request values.
+createRuntimeStreamRouteFetch()(plainRequest);
+
+worker.fetch(streamRequest);
+createRouteStreamWorker().fetch(streamRequest);
+createRouteStreamWorkerFor().fetch(streamRequest);
+// @ts-expect-error generated route-stream Cloudflare workers preserve stream request requirements.
+createRouteStreamWorker().fetch(plainRequest);
+handlers.POST(streamRequest);
+createRouteStreamHandlers().GET(streamRequest);
+createRouteStreamHandlersFor().POST(streamRequest);
+// @ts-expect-error generated route-stream Next handlers preserve stream request requirements.
+createRouteStreamHandlers().POST(plainRequest);
+vercel.fetch(streamRequest);
+createRouteStreamVercel().fetch(streamRequest);
+createRouteStreamVercelFor().fetch(streamRequest);
+// @ts-expect-error generated route-stream Vercel functions preserve stream request requirements.
+createRouteStreamVercel().fetch(plainRequest);
+edge(streamRequest, {});
+createRouteStreamEdge()(streamRequest, {});
+createRouteStreamEdgeFor()(streamRequest, {});
+// @ts-expect-error generated route-stream Netlify edge functions preserve stream request requirements.
+createRouteStreamEdge()(plainRequest, {});
+
+const bunRouteStreamHandler: BunNativeRouteStreamFetchHandler =
+  createRouteStreamBunFetch();
+bunRouteStreamHandler(streamRequest);
+createRouteStreamBunFetchFor()(undefined)(streamRequest);
+// @ts-expect-error generated Bun route-stream fetch defaults reject broad Request values.
+bunRouteStreamHandler(plainRequest);
+// @ts-expect-error generated Bun route-stream fetch factories reject broad Request values.
+createRouteStreamBunFetchFor()(undefined)(plainRequest);
+const denoRouteStreamHandler: DenoNativeRouteStreamFetchHandler =
+  createRouteStreamDenoFetch();
+denoRouteStreamHandler(streamRequest);
+createRouteStreamDenoFetchFor()(undefined)(streamRequest);
+// @ts-expect-error generated Deno route-stream fetch defaults reject broad Request values.
+denoRouteStreamHandler(plainRequest);
+// @ts-expect-error generated Deno route-stream fetch factories reject broad Request values.
+createRouteStreamDenoFetchFor()(undefined)(plainRequest);
+`
+      );
+      const tsconfigFile = join(outDir, 'tsconfig.stream-request-runtime.json');
+      await writeFile(
+        tsconfigFile,
+        JSON.stringify(
+          {
+            compilerOptions: {
+              target: 'ES2022',
+              module: 'ESNext',
+              lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+              moduleResolution: 'bundler',
+              allowImportingTsExtensions: true,
+              strict: true,
+              noImplicitAny: true,
+              strictNullChecks: true,
+              exactOptionalPropertyTypes: true,
+              noUncheckedIndexedAccess: true,
+              noPropertyAccessFromIndexSignature: true,
+              skipLibCheck: true,
+              verbatimModuleSyntax: true,
+              isolatedModules: true,
+              noEmit: true,
+              types: ['node'],
+              typeRoots: [join(repoRoot, 'node_modules/@types')],
+              baseUrl: repoRoot,
+              paths: {
+                joor: ['./src/index.ts'],
+                'joor/config': ['./src/config.ts'],
+                'joor/context': ['./src/context/index.ts'],
+                'joor/manifest': ['./src/manifest.ts'],
+                'joor/procedure': ['./src/procedure/index.ts'],
+                'joor/rpc': ['./src/rpc/index.ts'],
+                'joor/runtime/*': ['./src/runtime/*.ts'],
+                'joor/schema': ['./src/schema/index.ts'],
+              },
+            },
+            include: [
+              usageFile,
+              procedureFile,
+              join(outDir, 'dispatcher.safe.ts'),
+              join(outDir, 'fetch.ts'),
+              join(outDir, 'cloudflare.ts'),
+              join(outDir, 'next.ts'),
+              join(outDir, 'vercel.ts'),
+              join(outDir, 'netlify.ts'),
+              join(outDir, 'bun.ts'),
+              join(outDir, 'deno.ts'),
+            ],
+          },
+          null,
+          2
+        )
+      );
+
+      try {
+        await execFileAsync(
+          join(repoRoot, 'node_modules/.bin/tsc'),
+          ['--project', tsconfigFile],
+          {
+            cwd: repoRoot,
+            maxBuffer: 1024 * 1024 * 4,
+          }
+        );
+      } catch (error) {
+        const output = error as { stdout?: string; stderr?: string };
+        throw new Error(
+          [output.stdout, output.stderr].filter(Boolean).join('\n')
+        );
+      }
+    } finally {
+      await rm(appDir, { recursive: true, force: true });
+    }
+  }, 10_000);
+
   it('typechecks generated callable client route leaves', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
