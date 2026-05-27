@@ -6456,6 +6456,14 @@ const nativeStreamRouteBodyResultFor: NativeStreamRouteBodyResultFor<typeof nati
   nativeRouteStreamBodyResult;
 const nativeRouteStreamBodyResultFor: NativeRouteStreamBodyResultFor<typeof nativeRouteStreamBody> =
   nativeStreamRouteBodyResultFor;
+const _wrongNativeRouteUnaryBodyResultFor: NativeRouteUnaryBodyResultFor<
+  // @ts-expect-error generated native route-unary body result aliases reject stream bodies.
+  typeof nativeStreamRouteBody
+> = nativeRouteStreamBodyResult;
+const _wrongNativeRouteStreamBodyResultFor: NativeRouteStreamBodyResultFor<
+  // @ts-expect-error generated native route-stream body result aliases reject unary bodies.
+  typeof nativeRouteUnaryBody
+> = new Response();
 const nativeBodyResultFor: NativeBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
 const nativeGenericBodyResult: NativeBodyResult<typeof nativeUnaryBody> = nativeBodyResultFor;
 if (!(nativeGenericBodyResult instanceof Response) && nativeGenericBodyResult.ok) {
@@ -6491,6 +6499,14 @@ const nativeStreamRouteCompiledBodyResultFor: NativeStreamRouteCompiledBodyResul
   new Response();
 const nativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResultFor<typeof nativeRouteStreamBody> =
   nativeStreamRouteCompiledBodyResultFor;
+const _wrongNativeRouteUnaryCompiledBodyResultFor: NativeRouteUnaryCompiledBodyResultFor<
+  // @ts-expect-error generated native route-unary compiled body result aliases reject stream bodies.
+  typeof nativeStreamRouteBody
+> = nativeRouteStreamCompiledBodyResultFor;
+const _wrongNativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResultFor<
+  // @ts-expect-error generated native route-stream compiled body result aliases reject unary bodies.
+  typeof nativeRouteUnaryBody
+> = new Response();
 const nativeCompiledTransportResult: NativeCompiledTransportResult = nativeCompiledBodyResult;
 const nativeRouteEnvelope: NativeRouteEnvelope<'users.get'> = nativeBodyResult;
 const defaultNativeRouteEnvelope: NativeRouteEnvelope = nativeRouteEnvelope;
@@ -6557,6 +6573,14 @@ const nativeUnaryRouteTransportResult: NativeUnaryRouteTransportResultFor<typeof
   nativeRouteUnaryTransportResult;
 const nativeStreamRouteTransportResult: NativeStreamRouteTransportResultFor<typeof nativeStreamRouteBody> =
   nativeRouteStreamTransportResult;
+const _wrongNativeRouteUnaryTransportResult: NativeRouteUnaryTransportResultFor<
+  // @ts-expect-error generated native route-unary transport result aliases reject stream bodies.
+  typeof nativeRouteStreamBody
+> = nativeRouteStreamTransportResult;
+const _wrongNativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<
+  // @ts-expect-error generated native route-stream transport result aliases reject unary bodies.
+  typeof nativeRouteUnaryBody
+> = new Response();
 const isNativeResultArray = (
   result: NativeTransportResult
 ): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);
