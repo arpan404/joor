@@ -3723,12 +3723,12 @@ import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultF
 import { createPlugin } from 'joor';
 import awsLambdaHandler, { createAwsLambdaHandlerFor as createGeneratedAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor as createGeneratedAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest as createGeneratedAwsLambdaRequest, createAwsLambdaRestApiHandlerFor as createGeneratedAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest as createGeneratedAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandlerFor as createGeneratedRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaHttpApiHandlerFor as createGeneratedRouteStreamAwsLambdaHttpApiHandlerFor, createRouteStreamAwsLambdaRestApiHandlerFor as createGeneratedRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandlerFor as createGeneratedRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaHttpApiHandlerFor as createGeneratedRouteUnaryAwsLambdaHttpApiHandlerFor, createRouteUnaryAwsLambdaRestApiHandlerFor as createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHandlerFor as createGeneratedStreamRouteAwsLambdaHandlerFor, createStreamRouteAwsLambdaHttpApiHandlerFor as createGeneratedStreamRouteAwsLambdaHttpApiHandlerFor, createStreamRouteAwsLambdaRestApiHandlerFor as createGeneratedStreamRouteAwsLambdaRestApiHandlerFor, createUnaryRouteAwsLambdaHandlerFor as createGeneratedUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaHttpApiHandlerFor as createGeneratedUnaryRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaRestApiHandlerFor as createGeneratedUnaryRouteAwsLambdaRestApiHandlerFor, handler as namedAwsLambdaHandler, restApiHandler as namedAwsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaRestApiHandlerFactory } from './aws-lambda.js';
 import bunNativeFetchDefault, { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, listenRouteStream as listenRouteStreamBunNative, listenRouteUnary as listenRouteUnaryBunNative, listenStreamRoute as listenStreamRouteBunNative, listenUnaryRoute as listenUnaryRouteBunNative, serve as serveBunNative, serveBunRouteStream as serveBunRouteStreamNative, serveBunRouteUnary as serveBunRouteUnaryNative, serveBunStreamRoute as serveBunStreamRouteNative, serveBunUnaryRoute as serveBunUnaryRouteNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, serveStreamRouteBun as serveStreamRouteBunNative, serveUnaryRouteBun as serveUnaryRouteBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
-import cloudflareWorker, { createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
+import cloudflareWorker, { createRouteStreamCloudflareWorkerFor as createGeneratedRouteStreamCloudflareWorkerFor, createRouteUnaryCloudflareWorkerFor as createGeneratedRouteUnaryCloudflareWorkerFor, createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
 import denoNativeFetchDefault, { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, listenRouteStream as listenRouteStreamDenoNative, listenRouteUnary as listenRouteUnaryDenoNative, listenStreamRoute as listenStreamRouteDenoNative, listenUnaryRoute as listenUnaryRouteDenoNative, serve as serveDenoNative, serveDenoRouteStream as serveDenoRouteStreamNative, serveDenoRouteUnary as serveDenoRouteUnaryNative, serveDenoStreamRoute as serveDenoStreamRouteNative, serveDenoUnaryRoute as serveDenoUnaryRouteNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, serveStreamRouteDeno as serveStreamRouteDenoNative, serveUnaryRouteDeno as serveUnaryRouteDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
-import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
-import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, handlers as namedNextHandlers } from './next.js';
+import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, createRouteStreamNetlifyEdgeFunctionFor as createGeneratedRouteStreamNetlifyEdgeFor, createRouteUnaryNetlifyEdgeFunctionFor as createGeneratedRouteUnaryNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
+import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, createRouteStreamNextRouteHandlersFor as createGeneratedRouteStreamNextHandlersFor, createRouteUnaryNextRouteHandlersFor as createGeneratedRouteUnaryNextHandlersFor, handlers as namedNextHandlers } from './next.js';
 import nodeNativeHandlerDefault, { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, createStreamRouteHandler as createStreamRouteNodeNativeHandler, createStreamRouteServerFor as createStreamRouteNodeNativeServerFor, createUnaryRouteHandler as createUnaryRouteNodeNativeHandler, createUnaryRouteServerFor as createUnaryRouteNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenNodeStreamRoute as listenNodeStreamRouteNative, listenNodeUnaryRoute as listenNodeUnaryRouteNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, listenStreamRoute as listenStreamRouteNodeNative, listenUnaryRoute as listenUnaryRouteNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
-import vercelFunction, { createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
+import vercelFunction, { createRouteStreamVercelFor as createGeneratedRouteStreamVercelFor, createRouteUnaryVercelFor as createGeneratedRouteUnaryVercelFor, createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AwsLambdaHandler, AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler } from 'joor/runtime/aws-lambda';
 import type { CloudflareWorker } from 'joor/runtime/cloudflare';
@@ -3854,11 +3854,37 @@ const generatedTypedCloudflareWorker: CloudflareWorker<
   never,
   GeneratedRequest
 > = createGeneratedCloudflareWorkerFor<never, never, GeneratedRequest>();
+const generatedTypedRouteUnaryCloudflareWorker: CloudflareWorker<
+  never,
+  never,
+  GeneratedRequest
+> = createGeneratedRouteUnaryCloudflareWorkerFor<
+  never,
+  never,
+  GeneratedRequest
+>();
+const generatedTypedRouteStreamCloudflareWorker: CloudflareWorker<
+  never,
+  never,
+  GeneratedRequest
+> = createGeneratedRouteStreamCloudflareWorkerFor<
+  never,
+  never,
+  GeneratedRequest
+>();
 const generatedNamedCloudflareWorker: CloudflareWorker = namedCloudflareWorker;
 const generatedNextHandlers: NextRouteHandlers = nextHandlers;
 const generatedNamedNextHandlers: NextRouteHandlers = namedNextHandlers;
 const generatedTypedNextHandlers: NextRouteHandlers<never, GeneratedRequest> =
   createGeneratedNextHandlersFor<never, GeneratedRequest>();
+const generatedTypedRouteUnaryNextHandlers: NextRouteHandlers<
+  never,
+  GeneratedRequest
+> = createGeneratedRouteUnaryNextHandlersFor<never, GeneratedRequest>();
+const generatedTypedRouteStreamNextHandlers: NextRouteHandlers<
+  never,
+  GeneratedRequest
+> = createGeneratedRouteStreamNextHandlersFor<never, GeneratedRequest>();
 type GeneratedNextContext = { params: Promise<{ team: string }> };
 const generatedTypedNextContextHandlers: NextRouteHandlers<
   GeneratedNextContext,
@@ -3868,6 +3894,10 @@ const generatedVercelFunction: VercelFunction = vercelFunction;
 const generatedVercelFetch: NativeFetchHandler = vercelFetch;
 const generatedTypedVercelFunction: VercelFunction<GeneratedRequest> =
   createGeneratedVercelFor<GeneratedRequest>();
+const generatedTypedRouteUnaryVercelFunction: VercelFunction<GeneratedRequest> =
+  createGeneratedRouteUnaryVercelFor<GeneratedRequest>();
+const generatedTypedRouteStreamVercelFunction: VercelFunction<GeneratedRequest> =
+  createGeneratedRouteStreamVercelFor<GeneratedRequest>();
 const generatedNamedVercelFunction: VercelFunction = namedVercelFunction;
 const generatedNetlifyEdge: NetlifyEdgeFetchHandler = netlifyEdge;
 const generatedNetlifyFetch: NativeFetchHandler = netlifyFetch;
@@ -3875,6 +3905,20 @@ const generatedTypedNetlifyEdge: NetlifyEdgeFetchHandler<
   { site: string },
   GeneratedRequest
 > = createGeneratedNetlifyEdgeFor<{ site: string }, GeneratedRequest>();
+const generatedTypedRouteUnaryNetlifyEdge: NetlifyEdgeFetchHandler<
+  { site: string },
+  GeneratedRequest
+> = createGeneratedRouteUnaryNetlifyEdgeFor<
+  { site: string },
+  GeneratedRequest
+>();
+const generatedTypedRouteStreamNetlifyEdge: NetlifyEdgeFetchHandler<
+  { site: string },
+  GeneratedRequest
+> = createGeneratedRouteStreamNetlifyEdgeFor<
+  { site: string },
+  GeneratedRequest
+>();
 const generatedNamedNetlifyEdge: NetlifyEdgeFetchHandler = namedNetlifyEdge;
 const generatedNetlifyEdgeResult: NetlifyEdgeResult | Promise<NetlifyEdgeResult> =
   generatedNamedNetlifyEdge(new Request('https://example.com/rpc'), {});
@@ -3946,11 +3990,31 @@ generatedNamedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedTypedCloudflareWorker.fetch(generatedRequest);
 // @ts-expect-error generated typed Cloudflare workers preserve custom request types.
 generatedTypedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
+generatedTypedRouteUnaryCloudflareWorker.fetch(generatedRequest);
+generatedTypedRouteUnaryCloudflareWorker.fetch(
+  // @ts-expect-error generated typed route-unary Cloudflare workers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+generatedTypedRouteStreamCloudflareWorker.fetch(generatedRequest);
+generatedTypedRouteStreamCloudflareWorker.fetch(
+  // @ts-expect-error generated typed route-stream Cloudflare workers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 generatedNextHandlers.GET(new Request('https://example.com/rpc'));
 generatedNamedNextHandlers.POST(new Request('https://example.com/rpc'));
 generatedTypedNextHandlers.GET(generatedRequest);
 // @ts-expect-error generated typed Next handlers preserve custom request types.
 generatedTypedNextHandlers.GET(new Request('https://example.com/rpc'));
+generatedTypedRouteUnaryNextHandlers.POST(generatedRequest);
+generatedTypedRouteUnaryNextHandlers.POST(
+  // @ts-expect-error generated typed route-unary Next handlers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+generatedTypedRouteStreamNextHandlers.GET(generatedRequest);
+generatedTypedRouteStreamNextHandlers.GET(
+  // @ts-expect-error generated typed route-stream Next handlers preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 generatedTypedNextContextHandlers.POST(generatedRequest, {
   params: Promise.resolve({ team: 'core' }),
 });
@@ -3962,6 +4026,16 @@ generatedVercelFetch(new Request('https://example.com/rpc'));
 generatedTypedVercelFunction.fetch(generatedRequest);
 // @ts-expect-error generated typed Vercel functions preserve custom request types.
 generatedTypedVercelFunction.fetch(new Request('https://example.com/rpc'));
+generatedTypedRouteUnaryVercelFunction.fetch(generatedRequest);
+generatedTypedRouteUnaryVercelFunction.fetch(
+  // @ts-expect-error generated typed route-unary Vercel functions preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+generatedTypedRouteStreamVercelFunction.fetch(generatedRequest);
+generatedTypedRouteStreamVercelFunction.fetch(
+  // @ts-expect-error generated typed route-stream Vercel functions preserve custom request types.
+  new Request('https://example.com/rpc')
+);
 generatedNamedVercelFunction.fetch(new Request('https://example.com/rpc'));
 generatedNetlifyEdge(new Request('https://example.com/rpc'), {});
 generatedNetlifyFetch(new Request('https://example.com/rpc'));
@@ -3970,6 +4044,22 @@ generatedTypedNetlifyEdge(generatedRequest, { site: 'docs' });
 generatedTypedNetlifyEdge(new Request('https://example.com/rpc'), {
   site: 'docs',
 });
+generatedTypedRouteUnaryNetlifyEdge(generatedRequest, { site: 'docs' });
+generatedTypedRouteUnaryNetlifyEdge(
+  // @ts-expect-error generated typed route-unary Netlify edge functions preserve custom request types.
+  new Request('https://example.com/rpc'),
+  {
+    site: 'docs',
+  }
+);
+generatedTypedRouteStreamNetlifyEdge(generatedRequest, { site: 'docs' });
+generatedTypedRouteStreamNetlifyEdge(
+  // @ts-expect-error generated typed route-stream Netlify edge functions preserve custom request types.
+  new Request('https://example.com/rpc'),
+  {
+    site: 'docs',
+  }
+);
 generatedNetlifyEdgeResult;
 const generatedRouteUnaryFunction: RouteUnaryFunction<'users.get'> =
   generatedClient.users.get;
