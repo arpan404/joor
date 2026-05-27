@@ -4549,6 +4549,7 @@ export type RouteProtocolRequestBuilder = <TId extends RouteId>(
   input: RouteInput<TId>,
   options?: ProtocolRequestOptions
 ) => RouteProtocolRequest<TId>;
+export type ProtocolRequestBuilder = RouteProtocolRequestBuilder;
 export type RouteUnaryProtocolRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
   input: RouteUnaryInput<TId>,
@@ -4556,12 +4557,16 @@ export type RouteUnaryProtocolRequestBuilder = <TId extends RouteUnaryId>(
 ) => RouteUnaryProtocolRequest<TId>;
 export type UnaryRouteProtocolRequestBuilder =
   RouteUnaryProtocolRequestBuilder;
+export type UnaryProtocolRequestBuilder =
+  RouteUnaryProtocolRequestBuilder;
 export type RouteStreamProtocolRequestBuilder = <TId extends RouteStreamId>(
   id: TId,
   input: RouteStreamInput<TId>,
   options?: ProtocolRequestOptions
 ) => RouteStreamProtocolRequest<TId>;
 export type StreamRouteProtocolRequestBuilder =
+  RouteStreamProtocolRequestBuilder;
+export type StreamProtocolRequestBuilder =
   RouteStreamProtocolRequestBuilder;
 export type RouteStreamRequestBuilder = <TId extends RouteStreamId>(
   id: TId,
@@ -4573,6 +4578,8 @@ export type RouteRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
 ) => RouteRequest<TId>;
+export type RouteUnaryRequestBuilder = RouteRequestBuilder;
+export type UnaryRouteRequestBuilder = RouteUnaryRequestBuilder;
 const createManifestRouteRequest = <TId extends RouteUnaryId>(
   id: TId,
   ...args: RouteUnaryClientArgs<TId>
@@ -4607,6 +4614,8 @@ export const createRouteProtocolRequest: RouteProtocolRequestBuilder = <
     input,
     options
   ) as RouteProtocolRequest<TId>;
+export const createProtocolRequest: ProtocolRequestBuilder =
+  createRouteProtocolRequest;
 export const createRouteUnaryProtocolRequest: RouteUnaryProtocolRequestBuilder = <
   TId extends RouteUnaryId,
 >(
@@ -4622,6 +4631,8 @@ export const createRouteUnaryProtocolRequest: RouteUnaryProtocolRequestBuilder =
   ) as RouteUnaryProtocolRequest<TId>;
 export const createUnaryRouteProtocolRequest: typeof createRouteUnaryProtocolRequest =
   createRouteUnaryProtocolRequest;
+export const createUnaryProtocolRequest: UnaryProtocolRequestBuilder =
+  createRouteUnaryProtocolRequest;
 export const createRouteStreamProtocolRequest: RouteStreamProtocolRequestBuilder = <
   TId extends RouteStreamId,
 >(
@@ -4636,6 +4647,8 @@ export const createRouteStreamProtocolRequest: RouteStreamProtocolRequestBuilder
     options
   ) as RouteStreamProtocolRequest<TId>;
 export const createStreamRouteProtocolRequest: typeof createRouteStreamProtocolRequest =
+  createRouteStreamProtocolRequest;
+export const createStreamProtocolRequest: StreamProtocolRequestBuilder =
   createRouteStreamProtocolRequest;
 export const createRouteStreamRequest: RouteStreamRequestBuilder = <
   TId extends RouteStreamId,
