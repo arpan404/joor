@@ -3738,6 +3738,47 @@ routeKindScopedStreamElysiaHandler({
   // @ts-expect-error route-stream Elysia handlers default to stream-only request requirements.
   request: requestTypedProcedureRequest,
 });
+const routeKindScopedElysiaHandlerOptions: ElysiaHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedElysiaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedElysiaHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedElysiaRequest.requestId.toUpperCase();
+routeKindScopedElysiaRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Elysia options default to all route request requirements.
+const _wrongRouteKindScopedElysiaUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedElysiaHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Elysia options default to all route request requirements.
+const _wrongRouteKindScopedElysiaStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedElysiaHandlerOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedElysiaHandler = createElysiaHandlerFor()(
+  routeKindScopedManifest,
+  {
+    ...routeKindScopedElysiaHandlerOptions,
+    hooks: {
+      beforeRequest(request) {
+        request.requestId.toUpperCase();
+        request.streamRequestId.toUpperCase();
+        return undefined;
+      },
+    },
+  }
+);
+routeKindScopedElysiaHandler({ request: routeKindScopedRequiredRequest });
+routeKindScopedElysiaHandler({
+  // @ts-expect-error full Elysia handlers default to all route request requirements.
+  request: requestTypedProcedureRequest,
+});
+routeKindScopedElysiaHandler({
+  // @ts-expect-error full Elysia handlers default to all route request requirements.
+  request: requestTypedStreamProcedureRequest,
+});
 const routeKindScopedUnaryExpressHandlerOptions: ExpressRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -3890,6 +3931,53 @@ routeKindScopedStreamHonoHandler({
   req: {
     // @ts-expect-error route-stream Hono handlers default to stream-only request requirements.
     raw: requestTypedProcedureRequest,
+  },
+});
+const routeKindScopedHonoHandlerOptions: HonoHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedHonoRequest: HandlerOptionsRequest<
+  typeof routeKindScopedHonoHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedHonoRequest.requestId.toUpperCase();
+routeKindScopedHonoRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Hono options default to all route request requirements.
+const _wrongRouteKindScopedHonoUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedHonoHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Hono options default to all route request requirements.
+const _wrongRouteKindScopedHonoStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedHonoHandlerOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedHonoHandler = createHonoHandlerFor()(
+  routeKindScopedManifest,
+  {
+    ...routeKindScopedHonoHandlerOptions,
+    hooks: {
+      beforeRequest(request) {
+        request.requestId.toUpperCase();
+        request.streamRequestId.toUpperCase();
+        return undefined;
+      },
+    },
+  }
+);
+routeKindScopedHonoHandler({
+  req: { raw: routeKindScopedRequiredRequest },
+});
+routeKindScopedHonoHandler({
+  req: {
+    // @ts-expect-error full Hono handlers default to all route request requirements.
+    raw: requestTypedProcedureRequest,
+  },
+});
+routeKindScopedHonoHandler({
+  req: {
+    // @ts-expect-error full Hono handlers default to all route request requirements.
+    raw: requestTypedStreamProcedureRequest,
   },
 });
 const routeKindScopedUnaryFastifyHandlerOptions: FastifyRouteUnaryHandlerOptionsFor<
