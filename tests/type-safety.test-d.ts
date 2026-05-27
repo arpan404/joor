@@ -3609,6 +3609,225 @@ rootRouteKindScopedStreamCompiledBodyHandler(
   requestTypedProcedureRequest,
   { id: 'request.watch', input: { id: '1' } }
 );
+const routeKindScopedUnaryNodeTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as NodeRouteUnaryTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedUnaryNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryNodeTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-unary Node transport body handlers reject stream route bodies.
+  { id: 'request.watch', input: { id: '1' } }
+);
+const routeKindScopedStreamNodeTransportHandler: NodeRouteStreamTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as NodeRouteStreamTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedStreamNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedStreamNodeTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-stream Node transport body handlers reject unary route bodies.
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedNodeTransportHandler: NodeTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) =>
+  ({}) as NodeTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+routeKindScopedNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedNodeTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedNodeTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error full Node transport body handlers reject bodies outside the manifest.
+  { id: 'request.missing', input: { id: '1' } }
+);
+const routeKindScopedUnaryNodeTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandlerFor()(
+    routeKindScopedUnaryNodeTransportHandler
+  );
+const typedRouteKindScopedUnaryNodeTransportRequestHandler: NodeRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryNodeTransportRequestHandler;
+typedRouteKindScopedUnaryNodeTransportRequestHandler;
+createRouteUnaryNodeTransportRequestHandlerFor()(
+  // @ts-expect-error route-unary Node transport factories reject stream transport handlers.
+  routeKindScopedStreamNodeTransportHandler
+);
+const routeKindScopedStreamNodeTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandlerFor()(
+    routeKindScopedStreamNodeTransportHandler
+  );
+const typedRouteKindScopedStreamNodeTransportRequestHandler: NodeRouteStreamTransportRequestHandler =
+  routeKindScopedStreamNodeTransportRequestHandler;
+typedRouteKindScopedStreamNodeTransportRequestHandler;
+createRouteStreamNodeTransportRequestHandlerFor()(
+  // @ts-expect-error route-stream Node transport factories reject unary transport handlers.
+  routeKindScopedUnaryNodeTransportHandler
+);
+createNodeTransportRequestHandlerFor()(routeKindScopedNodeTransportHandler);
+const routeKindScopedUnaryBunTransportHandler: BunRouteUnaryTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as BunRouteUnaryTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedUnaryBunTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryBunTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-unary Bun transport body handlers reject stream route bodies.
+  { id: 'request.watch', input: { id: '1' } }
+);
+const routeKindScopedStreamBunTransportHandler: BunRouteStreamTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as BunRouteStreamTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedStreamBunTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedStreamBunTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-stream Bun transport body handlers reject unary route bodies.
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedBunTransportHandler: BunTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) =>
+  ({}) as BunTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+const routeKindScopedUnaryBunTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandlerFor()(
+    routeKindScopedUnaryBunTransportHandler
+  );
+const typedRouteKindScopedUnaryBunTransportRequestHandler: BunRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryBunTransportRequestHandler;
+typedRouteKindScopedUnaryBunTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createRouteUnaryBunTransportRequestHandlerFor()(
+  // @ts-expect-error route-unary Bun transport factories reject stream transport handlers.
+  routeKindScopedStreamBunTransportHandler
+);
+const routeKindScopedStreamBunTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandlerFor()(
+    routeKindScopedStreamBunTransportHandler
+  );
+const typedRouteKindScopedStreamBunTransportRequestHandler: BunRouteStreamTransportRequestHandler =
+  routeKindScopedStreamBunTransportRequestHandler;
+typedRouteKindScopedStreamBunTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createRouteStreamBunTransportRequestHandlerFor()(
+  // @ts-expect-error route-stream Bun transport factories reject unary transport handlers.
+  routeKindScopedUnaryBunTransportHandler
+);
+createBunTransportRequestHandlerFor()(routeKindScopedBunTransportHandler);
+const routeKindScopedUnaryDenoTransportHandler: DenoRouteUnaryTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as DenoRouteUnaryTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedUnaryDenoTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.get',
+  input: { id: '1' },
+});
+routeKindScopedUnaryDenoTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-unary Deno transport body handlers reject stream route bodies.
+  { id: 'request.watch', input: { id: '1' } }
+);
+const routeKindScopedStreamDenoTransportHandler: DenoRouteStreamTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) => {
+  body.valueOf();
+  return {} as DenoRouteStreamTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+};
+routeKindScopedStreamDenoTransportHandler(createFetchRequestSourceForTypes(), {
+  id: 'request.watch',
+  input: { id: '1' },
+});
+routeKindScopedStreamDenoTransportHandler(
+  createFetchRequestSourceForTypes(),
+  // @ts-expect-error route-stream Deno transport body handlers reject unary route bodies.
+  { id: 'request.get', input: { id: '1' } }
+);
+const routeKindScopedDenoTransportHandler: DenoTransportBodyResultHandlerFor<
+  typeof routeKindScopedManifest
+> = (_source, body) =>
+  ({}) as DenoTransportBodyResultFor<
+    typeof routeKindScopedManifest,
+    typeof body
+  >;
+const routeKindScopedUnaryDenoTransportRequestHandler =
+  createRouteUnaryDenoTransportRequestHandlerFor()(
+    routeKindScopedUnaryDenoTransportHandler
+  );
+const typedRouteKindScopedUnaryDenoTransportRequestHandler: DenoRouteUnaryTransportRequestHandler =
+  routeKindScopedUnaryDenoTransportRequestHandler;
+typedRouteKindScopedUnaryDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createRouteUnaryDenoTransportRequestHandlerFor()(
+  // @ts-expect-error route-unary Deno transport factories reject stream transport handlers.
+  routeKindScopedStreamDenoTransportHandler
+);
+const routeKindScopedStreamDenoTransportRequestHandler =
+  createStreamRouteDenoTransportRequestHandlerFor()(
+    routeKindScopedStreamDenoTransportHandler
+  );
+const typedRouteKindScopedStreamDenoTransportRequestHandler: DenoStreamRouteTransportRequestHandler =
+  routeKindScopedStreamDenoTransportRequestHandler;
+typedRouteKindScopedStreamDenoTransportRequestHandler(
+  new Request('https://example.com/rpc')
+);
+createStreamRouteDenoTransportRequestHandlerFor()(
+  // @ts-expect-error route-stream Deno transport factories reject unary transport handlers.
+  routeKindScopedUnaryDenoTransportHandler
+);
+createDenoTransportRequestHandlerFor()(routeKindScopedDenoTransportHandler);
 const routeKindScopedUnaryJoorHandler = createRouteUnaryJoorHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
