@@ -447,6 +447,14 @@ const generatedClientRouteBatchAliases = [
 ] as const;
 
 const generatedClientRouteTransportExports = [
+  'GeneratedRouteUnaryClient',
+  'GeneratedUnaryRouteClient',
+  'RouteUnaryClient',
+  'UnaryRouteClient',
+  'GeneratedRouteStreamClient',
+  'GeneratedStreamRouteClient',
+  'RouteStreamClient',
+  'StreamRouteClient',
   'GeneratedRouteUnaryClientOptions',
   'GeneratedUnaryRouteClientOptions',
   'GeneratedRouteStreamClientOptions',
@@ -455,10 +463,18 @@ const generatedClientRouteTransportExports = [
   'UnaryRouteTransportClient',
   'RouteStreamTransportClient',
   'StreamRouteTransportClient',
+  'createRouteUnaryClient',
+  'createUnaryRouteClient',
+  'createRouteStreamClient',
+  'createStreamRouteClient',
   'createRouteUnaryTransport',
   'createUnaryRouteTransport',
   'createRouteStreamTransport',
   'createStreamRouteTransport',
+  'routeUnaryClient',
+  'unaryRouteClient',
+  'routeStreamClient',
+  'streamRouteClient',
   'routeUnaryTransport',
   'unaryRouteTransport',
   'routeStreamTransport',
@@ -1018,7 +1034,7 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
-  it('keeps generated client route transport exports available', async () => {
+  it('keeps generated client route-specific exports available', async () => {
     const exportSets = await generatedExportSets();
     const exports = [...exportSets].find(
       ([file]) => basename(file) === 'client.ts'
