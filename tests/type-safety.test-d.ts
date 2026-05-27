@@ -3840,6 +3840,16 @@ createRouteStreamFastifyHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamFastifyHandlerOptions
 );
+createFastifyHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
 createRouteUnaryFastifyHandlerFor()(routeKindScopedManifest, {
   plugins: [usersPlugin] as const,
   hooks: {
