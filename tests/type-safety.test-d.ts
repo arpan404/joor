@@ -435,6 +435,7 @@ import {
   serveRouteStreamBun,
   serveRouteUnaryBun,
   serveDeno,
+  serveRouteStreamDeno,
   serveRouteUnaryDeno,
   serveStreamRouteDeno,
   serveStandaloneDeno as serveRootStandaloneDeno,
@@ -2180,6 +2181,7 @@ import {
   createRouteStreamDenoFetchFor as createRuntimeSubpathRouteStreamDenoFetchFor,
   createRouteStreamDenoRpcRequestHandler as createRuntimeSubpathRouteStreamDenoRpcRequestHandler,
   createRouteStreamDenoRpcRequestHandlerFor as createRuntimeSubpathRouteStreamDenoRpcRequestHandlerFor,
+  serveRouteStreamDeno as serveRuntimeSubpathRouteStreamDeno,
   createRouteUnaryDenoFetch as createRuntimeSubpathRouteUnaryDenoFetch,
   createRouteUnaryDenoFetchFor as createRuntimeSubpathRouteUnaryDenoFetchFor,
   createRouteUnaryDenoRpcRequestHandler as createRuntimeSubpathRouteUnaryDenoRpcRequestHandler,
@@ -13977,12 +13979,34 @@ const requestTypedDenoRouteUnaryFetchOptions: DenoRouteUnaryFetchOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedDenoRouteStreamFetchOptions: DenoRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const requestTypedDenoRouteUnaryRpcRequestHandlerOptions: DenoRouteUnaryRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedDenoRouteStreamRpcRequestHandlerOptions: DenoRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedDenoRouteStreamFetchOptions;
 const denoFetchOptionsArgs: DenoFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13995,6 +14019,12 @@ const denoRouteStreamFetchOptionsArgs: DenoRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [denoStreamRouteFetchOptions];
+const requestTypedDenoRouteStreamFetchOptionsArgs: DenoRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedDenoRouteStreamFetchOptions];
 const denoUnaryRouteFetchOptionsArgs: DenoUnaryRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14015,6 +14045,12 @@ const denoRouteStreamRpcRequestHandlerOptionsArgs: DenoRouteStreamRpcRequestHand
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [denoStreamRouteRpcRequestHandlerOptions];
+const requestTypedDenoRouteStreamRpcRequestHandlerOptionsArgs: DenoRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedDenoRouteStreamRpcRequestHandlerOptions];
 const denoUnaryRouteRpcRequestHandlerOptionsArgs: DenoUnaryRouteRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14031,6 +14067,15 @@ const denoRouteStreamServeOptions: DenoRouteStreamServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedDenoRouteStreamServeOptions: DenoRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  ...requestTypedDenoRouteStreamFetchOptions,
+  port: 3030,
+};
 const denoUnaryRouteServeOptions: DenoUnaryRouteServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14047,6 +14092,12 @@ const runtimeSubpathDenoRouteStreamServeOptions: RuntimeSubpathDenoRouteStreamSe
   typeof manifest,
   readonly [typeof usersPlugin]
 > = denoStreamRouteServeOptions;
+const requestTypedRuntimeSubpathDenoRouteStreamServeOptions: RuntimeSubpathDenoRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedDenoRouteStreamServeOptions;
 const runtimeSubpathDenoUnaryRouteServeOptions: RuntimeSubpathDenoUnaryRouteServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14067,6 +14118,12 @@ const runtimeSubpathDenoRouteStreamFetchOptions: RuntimeSubpathDenoRouteStreamFe
   typeof manifest,
   readonly [typeof usersPlugin]
 > = denoStreamRouteFetchOptions;
+const requestTypedRuntimeSubpathDenoRouteStreamFetchOptions: RuntimeSubpathDenoRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedDenoRouteStreamFetchOptions;
 const runtimeSubpathDenoUnaryRouteFetchOptions: RuntimeSubpathDenoUnaryRouteFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14087,6 +14144,12 @@ const runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions: RuntimeSubpathDenoR
   typeof manifest,
   readonly [typeof usersPlugin]
 > = denoStreamRouteRpcRequestHandlerOptions;
+const requestTypedRuntimeSubpathDenoRouteStreamRpcRequestHandlerOptions: RuntimeSubpathDenoRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedDenoRouteStreamRpcRequestHandlerOptions;
 const runtimeSubpathDenoUnaryRouteRpcRequestHandlerOptions: RuntimeSubpathDenoUnaryRouteRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14107,6 +14170,12 @@ const denoRouteStreamServeOptionsArgs: DenoRouteStreamServeOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [denoStreamRouteServeOptions];
+const requestTypedDenoRouteStreamServeOptionsArgs: DenoRouteStreamServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedDenoRouteStreamServeOptions];
 const denoUnaryRouteServeOptionsArgs: DenoUnaryRouteServeOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -14192,6 +14261,10 @@ runtimeSubpathDenoRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedDenoRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathDenoRpcRequestHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathDenoUnaryRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -14207,6 +14280,10 @@ runtimeSubpathDenoRouteUnaryRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeReques
 );
 runtimeSubpathDenoRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedDenoRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathDenoServeOptionsArgs[0]?.hostname?.toUpperCase();
@@ -14226,6 +14303,10 @@ runtimeSubpathDenoRouteStreamServeOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedDenoRouteStreamServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathDenoUnaryRouteServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -14240,6 +14321,10 @@ runtimeSubpathDenoRouteUnaryServeOptions.hooks?.beforeRequest?.(
 );
 runtimeSubpathDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathDenoUnaryRouteFetchOptions.hooks?.beforeRequest?.(
@@ -14258,6 +14343,10 @@ runtimeSubpathDenoRouteStreamFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathDenoRouteStreamFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathDenoUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -14274,6 +14363,10 @@ runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathDenoRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathDenoFetchOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathDenoRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const routeUnaryDenoFetch = createRouteUnaryDenoFetch(
@@ -14288,6 +14381,8 @@ const routeStreamDenoFetch = createRouteStreamDenoFetch(
   manifest,
   denoRouteStreamFetchOptions
 );
+const directHookTypedRouteStreamDenoFetch: DenoFetchHandler<HookAppRequest> =
+  createRouteStreamDenoFetch(manifest, requestTypedDenoRouteStreamFetchOptions);
 const streamRouteDenoFetch = createStreamRouteDenoFetch(
   manifest,
   denoStreamRouteFetchOptions
@@ -14307,6 +14402,11 @@ const runtimeSubpathRouteStreamDenoFetch =
     manifest,
     runtimeSubpathDenoRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamDenoFetch: RuntimeSubpathDenoFetchHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamDenoFetch(
+    manifest,
+    requestTypedRuntimeSubpathDenoRouteStreamFetchOptions
+  );
 const runtimeSubpathStreamRouteDenoFetch =
   createRuntimeSubpathStreamRouteDenoFetch(
     manifest,
@@ -14316,6 +14416,11 @@ const typedRouteUnaryDenoFetch = createRouteUnaryDenoFetchFor<HookAppRequest>()(
   manifest,
   requestTypedDenoRouteUnaryFetchOptions
 );
+const typedRouteStreamDenoFetch =
+  createRouteStreamDenoFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedDenoRouteStreamFetchOptions
+  );
 createUnaryRouteDenoFetchFor()(manifest, denoUnaryRouteFetchOptions);
 createRouteStreamDenoFetchFor()(manifest, denoRouteStreamFetchOptions);
 createStreamRouteDenoFetchFor()(manifest, denoStreamRouteFetchOptions);
@@ -14331,6 +14436,11 @@ createRuntimeSubpathRouteStreamDenoFetchFor()(
   manifest,
   runtimeSubpathDenoRouteStreamFetchOptions
 );
+const runtimeSubpathTypedRouteStreamDenoFetch =
+  createRuntimeSubpathRouteStreamDenoFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathDenoRouteStreamFetchOptions
+  );
 createRuntimeSubpathStreamRouteDenoFetchFor()(
   manifest,
   runtimeSubpathDenoStreamRouteFetchOptions
@@ -14347,6 +14457,11 @@ const routeStreamDenoRpcHandler = createRouteStreamDenoRpcRequestHandler(
   manifest,
   denoRouteStreamRpcRequestHandlerOptions
 );
+const directHookTypedRouteStreamDenoRpcHandler: DenoRpcRequestHandler<HookAppRequest> =
+  createRouteStreamDenoRpcRequestHandler(
+    manifest,
+    requestTypedDenoRouteStreamRpcRequestHandlerOptions
+  );
 const streamRouteDenoRpcHandler = createStreamRouteDenoRpcRequestHandler(
   manifest,
   denoStreamRouteRpcRequestHandlerOptions
@@ -14366,6 +14481,11 @@ const runtimeSubpathRouteStreamDenoRpcHandler =
     manifest,
     runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamDenoRpcHandler: RuntimeSubpathDenoRpcRequestHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamDenoRpcRequestHandler(
+    manifest,
+    requestTypedRuntimeSubpathDenoRouteStreamRpcRequestHandlerOptions
+  );
 const runtimeSubpathStreamRouteDenoRpcHandler =
   createRuntimeSubpathStreamRouteDenoRpcRequestHandler(
     manifest,
@@ -14375,6 +14495,11 @@ const typedRouteUnaryDenoRpcHandler =
   createRouteUnaryDenoRpcRequestHandlerFor<HookAppRequest>()(
     manifest,
     requestTypedDenoRouteUnaryRpcRequestHandlerOptions
+  );
+const typedRouteStreamDenoRpcHandler =
+  createRouteStreamDenoRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedDenoRouteStreamRpcRequestHandlerOptions
   );
 createUnaryRouteDenoRpcRequestHandlerFor()(
   manifest,
@@ -14400,6 +14525,11 @@ createRuntimeSubpathRouteStreamDenoRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathDenoRouteStreamRpcRequestHandlerOptions
 );
+const runtimeSubpathTypedRouteStreamDenoRpcHandler =
+  createRuntimeSubpathRouteStreamDenoRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathDenoRouteStreamRpcRequestHandlerOptions
+  );
 createRuntimeSubpathStreamRouteDenoRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathDenoStreamRouteRpcRequestHandlerOptions
@@ -14407,19 +14537,27 @@ createRuntimeSubpathStreamRouteDenoRpcRequestHandlerFor()(
 routeUnaryDenoFetch(new Request('https://example.com/rpc'));
 unaryRouteDenoFetch(new Request('https://example.com/rpc'));
 routeStreamDenoFetch(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamDenoFetch(hookAppRequest);
 streamRouteDenoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryDenoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteDenoFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamDenoFetch(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamDenoFetch(hookAppRequest);
+typedRouteStreamDenoFetch(hookAppRequest);
+runtimeSubpathTypedRouteStreamDenoFetch(hookAppRequest);
 runtimeSubpathStreamRouteDenoFetch(new Request('https://example.com/rpc'));
 typedRouteUnaryDenoFetch(hookAppRequest);
 routeUnaryDenoRpcHandler(new Request('https://example.com/rpc'));
 unaryRouteDenoRpcHandler(new Request('https://example.com/rpc'));
 routeStreamDenoRpcHandler(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamDenoRpcHandler(hookAppRequest);
 streamRouteDenoRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryDenoRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteDenoRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamDenoRpcHandler(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamDenoRpcHandler(hookAppRequest);
+typedRouteStreamDenoRpcHandler(hookAppRequest);
+runtimeSubpathTypedRouteStreamDenoRpcHandler(hookAppRequest);
 runtimeSubpathStreamRouteDenoRpcHandler(new Request('https://example.com/rpc'));
 typedRouteUnaryDenoRpcHandler(hookAppRequest);
 typedRouteUnaryDenoFetch(
@@ -14428,6 +14566,30 @@ typedRouteUnaryDenoFetch(
 );
 typedRouteUnaryDenoRpcHandler(
   // @ts-expect-error route-unary Deno RPC factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+typedRouteStreamDenoFetch(
+  // @ts-expect-error route-stream Deno fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamDenoFetch(
+  // @ts-expect-error direct route-stream Deno fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamDenoFetch(
+  // @ts-expect-error direct runtime-subpath route-stream Deno fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+typedRouteStreamDenoRpcHandler(
+  // @ts-expect-error route-stream Deno RPC factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamDenoRpcHandler(
+  // @ts-expect-error direct route-stream Deno RPC factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamDenoRpcHandler(
+  // @ts-expect-error direct runtime-subpath route-stream Deno RPC factories infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 const exactDenoServeOptions: DenoServeOptionsFor<
@@ -14501,18 +14663,42 @@ requestTypedDenoServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Deno serve options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathDenoRouteStreamServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Deno serve options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const denoServer: DenoServer = serveDeno(manifest, typedDenoServeOptions);
 serveDeno(manifest, requestTypedDenoServeOptions);
 const routeUnaryDenoServer: DenoServer = serveRouteUnaryDeno(
   manifest,
   denoRouteUnaryServeOptions
 );
+const routeStreamDenoServer: DenoServer = serveRouteStreamDeno(
+  manifest,
+  denoRouteStreamServeOptions
+);
+serveRouteStreamDeno(manifest, requestTypedDenoRouteStreamServeOptions);
 const streamRouteDenoServer: DenoServer = serveStreamRouteDeno(
   manifest,
   denoStreamRouteServeOptions
 );
+serveRuntimeSubpathRouteStreamDeno(
+  manifest,
+  requestTypedRuntimeSubpathDenoRouteStreamServeOptions
+);
 denoServer.shutdown().then(() => undefined);
 routeUnaryDenoServer.shutdown().then(() => undefined);
+routeStreamDenoServer.shutdown().then(() => undefined);
 streamRouteDenoServer.shutdown().then(() => undefined);
 denoServer.finished.then(() => undefined);
 // @ts-expect-error Deno server shutdown methods are readonly.
