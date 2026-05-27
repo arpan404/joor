@@ -1,12 +1,15 @@
-import { readdir, readFile } from 'node:fs/promises';
+import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { build } from '../src/compiler/build.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
+const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
 
 type ExportedSymbol = {
   readonly file: string;
@@ -110,9 +113,50 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
   return symbols.flat().filter(({ name }) => routeNamePattern.test(name));
 };
 
+const generatedExportSets = async (): Promise<
+  Map<string, ReadonlySet<string>>
+> => {
+  const outDir = await mkdtemp(join(tmpdir(), 'joor-route-surface-'));
+  try {
+    await build({ entry: fixture, outDir });
+    const files = await collectTypeScriptFiles(outDir);
+    const entries = await Promise.all(
+      files.map(
+        async (file): Promise<readonly [string, ReadonlySet<string>]> => {
+          const source = await readFile(file, 'utf8');
+          const names = collectExportedSymbols(file, source).map(
+            ({ name }) => name
+          );
+          return [file, new Set(names)];
+        }
+      )
+    );
+
+    return new Map(entries);
+  } finally {
+    await rm(outDir, { force: true, recursive: true });
+  }
+};
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
+    const missing = [...exportSets]
+      .flatMap(([file, names]) =>
+        [...names].flatMap((name) => {
+          const twin = routeTwinName(name);
+          return twin !== undefined && !names.has(twin)
+            ? [`${relative(repoRoot, file)}: ${name} is missing ${twin}`]
+            : [];
+        })
+      )
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated route-first and noun-first aliases paired', async () => {
+    const exportSets = await generatedExportSets();
     const missing = [...exportSets]
       .flatMap(([file, names]) =>
         [...names].flatMap((name) => {
