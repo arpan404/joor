@@ -2843,9 +2843,11 @@ import { createRouteStreamWorker, createRouteStreamWorkerFor, worker } from './c
 import { createRouteStreamHandlers, createRouteStreamHandlersFor, handlers } from './next.js';
 import { createRouteStreamVercel, createRouteStreamVercelFor, vercel } from './vercel.js';
 import { createRouteStreamEdge, createRouteStreamEdgeFor, edge } from './netlify.js';
+import { createAwsLambdaRequest, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, type BunNativeRouteStreamFetchHandler } from './bun.js';
 import { createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, type DenoNativeRouteStreamFetchHandler } from './deno.js';
 import type { StreamAppRequest } from '${procedureImport}';
+import type { AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1 } from 'joor/runtime/aws-lambda';
 
 const streamRequest = Object.assign(new Request('https://example.com/rpc'), {
   streamRequestId: 'stream_req_1',
@@ -2935,6 +2937,56 @@ createRouteStreamEdgeFor()(streamRequest, {});
 // @ts-expect-error generated route-stream Netlify edge functions preserve stream request requirements.
 createRouteStreamEdge()(plainRequest, {});
 
+const awsLambdaEvent: AwsLambdaHttpEventV2 = {
+  rawPath: '/rpc',
+  rawQueryString: '',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify(streamBody),
+  requestContext: { http: { method: 'POST' } },
+};
+const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
+  path: '/rpc',
+  httpMethod: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify(streamBody),
+};
+const createAwsLambdaStreamRequest = (
+  event: AwsLambdaHttpEventV2
+): StreamAppRequest =>
+  Object.assign(createAwsLambdaRequest(event), {
+    streamRequestId: 'stream_req_aws',
+  }) as StreamAppRequest;
+const createAwsLambdaRestApiStreamRequest = (
+  event: AwsLambdaRestApiEventV1
+): StreamAppRequest =>
+  Object.assign(createAwsLambdaRestApiRequest(event), {
+    streamRequestId: 'stream_req_rest_aws',
+  }) as StreamAppRequest;
+const awsLambdaOptions: NativeAwsLambdaHandlerOptions<
+  AwsLambdaHttpEventV2,
+  StreamAppRequest
+> = { createRequest: createAwsLambdaStreamRequest };
+const awsLambdaRestApiOptions: NativeAwsLambdaRestApiHandlerOptions<
+  AwsLambdaRestApiEventV1,
+  StreamAppRequest
+> = { createRequest: createAwsLambdaRestApiStreamRequest };
+createRouteStreamAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
+createRouteStreamAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
+createRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
+createRouteStreamAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
+// @ts-expect-error generated route-stream AWS handlers require request adapters for custom stream requests.
+createRouteStreamAwsLambdaHandler()(awsLambdaEvent);
+// @ts-expect-error generated route-stream AWS handler factories require request adapters for custom stream requests.
+createRouteStreamAwsLambdaHandlerFor()()(awsLambdaEvent);
+// @ts-expect-error generated route-stream AWS REST handlers require request adapters for custom stream requests.
+createRouteStreamAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+// @ts-expect-error generated route-stream AWS REST handler factories require request adapters for custom stream requests.
+createRouteStreamAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
+
 const bunRouteStreamHandler: BunNativeRouteStreamFetchHandler =
   createRouteStreamBunFetch();
 bunRouteStreamHandler(streamRequest);
@@ -2997,6 +3049,7 @@ createRouteStreamDenoFetchFor()(undefined)(plainRequest);
               join(outDir, 'next.ts'),
               join(outDir, 'vercel.ts'),
               join(outDir, 'netlify.ts'),
+              join(outDir, 'aws-lambda.ts'),
               join(outDir, 'bun.ts'),
               join(outDir, 'deno.ts'),
             ],
