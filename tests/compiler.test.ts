@@ -1630,22 +1630,22 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'JoorManifestRouteStreamClientOptions<Manifest, TRequest>'
       );
       expect(clientSource).toContain(
-        'export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest>'
+        'export type ClientOptions<TRequest extends Request = RequiredRuntimeRequest> = Omit<'
       );
       expect(clientSource).toContain(
-        'export type ClientOptions<TRequest extends Request = RequiredRuntimeRequest>'
+        'export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest> =\n  ClientOptions<TRequest>'
       );
       expect(clientSource).toContain(
-        'export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>'
+        'export type RouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> = Omit<'
       );
       expect(clientSource).toContain(
-        'export type RouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>'
+        'export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =\n  RouteUnaryClientOptions<TRequest>'
       );
       expect(clientSource).toContain(
-        'export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest>'
+        'export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<'
       );
       expect(clientSource).toContain(
-        'export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest>'
+        'export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =\n  RouteStreamClientOptions<TRequest>'
       );
       expect(clientSource).toContain(
         'export function createTransport<TRequest extends Request = RequiredRuntimeRequest>'
@@ -1691,6 +1691,16 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'options?: RouteStreamClientOptions<TRequest>\n): RouteStreamClient'
       );
       expect(clientSource).toContain('export const client: Client = createClient();');
+      expect(clientSource).toContain('export type Client = {');
+      expect(clientSource).toContain('export type GeneratedClient = Client;');
+      expect(clientSource).toContain('export type RouteUnaryClient = {');
+      expect(clientSource).toContain(
+        'export type GeneratedRouteUnaryClient = RouteUnaryClient;'
+      );
+      expect(clientSource).toContain('export type RouteStreamClient = {');
+      expect(clientSource).toContain(
+        'export type GeneratedRouteStreamClient = RouteStreamClient;'
+      );
       expect(clientSource).toContain(
         'export type GeneratedUnaryRouteClient = RouteUnaryClient'
       );

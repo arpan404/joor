@@ -4546,36 +4546,36 @@ export const createRouteStreamRequest: RouteStreamRequestBuilder = <
   ) as RouteStreamRequest<TId>;
 export const createStreamRouteRequest: typeof createRouteStreamRequest =
   createRouteStreamRequest;
-export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest> = Omit<
+export type ClientOptions<TRequest extends Request = RequiredRuntimeRequest> = Omit<
   JoorManifestClientOptions<Manifest, TRequest>,
   'url'
 > & {
   url?: string;
 };
-export type ClientOptions<TRequest extends Request = RequiredRuntimeRequest> =
-  GeneratedClientOptions<TRequest>;
-export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> = Omit<
+export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeRequest> =
+  ClientOptions<TRequest>;
+export type RouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> = Omit<
   JoorManifestRouteUnaryClientOptions<Manifest, TRequest>,
   'url'
 > & {
   url?: string;
 };
+export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
+  RouteUnaryClientOptions<TRequest>;
 export type GeneratedUnaryRouteClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
-  GeneratedRouteUnaryClientOptions<TRequest>;
-export type RouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
-  GeneratedRouteUnaryClientOptions<TRequest>;
+  RouteUnaryClientOptions<TRequest>;
 export type UnaryRouteClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
   RouteUnaryClientOptions<TRequest>;
-export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<
+export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<
   JoorManifestRouteStreamClientOptions<Manifest, TRequest>,
   'url'
 > & {
   url?: string;
 };
+export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
+  RouteStreamClientOptions<TRequest>;
 export type GeneratedStreamRouteClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
-  GeneratedRouteStreamClientOptions<TRequest>;
-export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
-  GeneratedRouteStreamClientOptions<TRequest>;
+  RouteStreamClientOptions<TRequest>;
 export type StreamRouteClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
   RouteStreamClientOptions<TRequest>;
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
@@ -4672,22 +4672,22 @@ export const routeStreamTransport: RouteStreamTransportClient =
 export const streamRouteTransport: StreamRouteTransportClient =
   routeStreamTransport;
 
-export type GeneratedClient = {
+export type Client = {
 ${clientTypeBody}
   readonly batch: BatchFunction;
 };
-export type Client = GeneratedClient;
-export type GeneratedRouteUnaryClient = {
+export type GeneratedClient = Client;
+export type RouteUnaryClient = {
 ${routeUnaryClientTypeBody}
   readonly batch: BatchFunction;
 };
-export type RouteUnaryClient = GeneratedRouteUnaryClient;
+export type GeneratedRouteUnaryClient = RouteUnaryClient;
 export type GeneratedUnaryRouteClient = RouteUnaryClient;
 export type UnaryRouteClient = RouteUnaryClient;
-export type GeneratedRouteStreamClient = {
+export type RouteStreamClient = {
 ${routeStreamClientTypeBody}
 };
-export type RouteStreamClient = GeneratedRouteStreamClient;
+export type GeneratedRouteStreamClient = RouteStreamClient;
 export type GeneratedStreamRouteClient = RouteStreamClient;
 export type StreamRouteClient = RouteStreamClient;
 
