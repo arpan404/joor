@@ -10,6 +10,7 @@ const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const configFile = join(srcRoot, 'config.ts');
 const contextIndex = join(srcRoot, 'context/index.ts');
+const manifestFile = join(srcRoot, 'manifest.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const packageManifest = join(repoRoot, 'package.json');
@@ -274,6 +275,13 @@ const publicConfigContextRouteTypeExports = async (): Promise<
   (await publicRouteExports()).filter(
     ({ file, kind }) =>
       kind === 'type' && (file === configFile || file === contextIndex)
+  );
+
+const publicManifestRouteTypeExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteExports()).filter(
+    ({ file, kind }) => kind === 'type' && file === manifestFile
   );
 
 const publicRpcDispatcherRouteTypeExports = async (): Promise<
@@ -566,6 +574,16 @@ describe('route public surface', () => {
     const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
     const missing = missingCanonicalNamespaceReferences(
       await publicConfigContextRouteTypeExports(),
+      packageSubpathSource
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps manifest route type namespace smoke coverage tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const missing = missingCanonicalNamespaceReferences(
+      await publicManifestRouteTypeExports(),
       packageSubpathSource
     );
 
