@@ -8,13 +8,7 @@ import { build } from '../src/compiler/build.js';
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
-const configFile = join(srcRoot, 'config.ts');
-const contextIndex = join(srcRoot, 'context/index.ts');
-const manifestFile = join(srcRoot, 'manifest.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
-const rpcClient = join(srcRoot, 'rpc/client.ts');
-const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
-const rpcIndex = join(srcRoot, 'rpc/index.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -263,48 +257,9 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
 const publicRouteValueExports = async (): Promise<readonly ExportedSymbol[]> =>
   (await publicRouteExports()).filter(({ kind }) => kind === 'value');
 
-const publicRuntimeRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
-  (await publicRouteExports()).filter(({ file, kind }) => {
-    const relativeFile = relative(srcRoot, file);
-    return kind === 'type' && relativeFile.startsWith('runtime/');
-  });
-
-const publicConfigContextRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
+const publicRouteTypeExports = async (): Promise<readonly ExportedSymbol[]> =>
   (await publicRouteExports()).filter(
-    ({ file, kind }) =>
-      kind === 'type' && (file === configFile || file === contextIndex)
-  );
-
-const publicManifestRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
-  (await publicRouteExports()).filter(
-    ({ file, kind }) => kind === 'type' && file === manifestFile
-  );
-
-const publicRpcClientRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
-  (await publicRouteExports()).filter(
-    ({ file, kind }) => kind === 'type' && file === rpcClient
-  );
-
-const publicRpcDispatcherRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
-  (await publicRouteExports()).filter(
-    ({ file, kind }) => kind === 'type' && file === rpcDispatcher
-  );
-
-const publicRpcIndexRouteTypeExports = async (): Promise<
-  readonly ExportedSymbol[]
-> =>
-  (await publicRouteExports()).filter(
-    ({ file, kind }) => kind === 'type' && file === rpcIndex
+    ({ file, kind }) => kind === 'type' && file !== rootIndex
   );
 
 const publicRouteTypedFactoryExports = async (): Promise<
@@ -576,60 +531,10 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
-  it('keeps runtime route type namespace smoke coverage tied to canonical subpaths', async () => {
+  it('keeps route type namespace smoke coverage tied to canonical subpaths', async () => {
     const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
     const missing = missingCanonicalNamespaceReferences(
-      await publicRuntimeRouteTypeExports(),
-      packageSubpathSource
-    );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps config and context route type namespace smoke coverage tied to canonical subpaths', async () => {
-    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const missing = missingCanonicalNamespaceReferences(
-      await publicConfigContextRouteTypeExports(),
-      packageSubpathSource
-    );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps manifest route type namespace smoke coverage tied to canonical subpaths', async () => {
-    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const missing = missingCanonicalNamespaceReferences(
-      await publicManifestRouteTypeExports(),
-      packageSubpathSource
-    );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps RPC client route type namespace smoke coverage tied to canonical subpaths', async () => {
-    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const missing = missingCanonicalNamespaceReferences(
-      await publicRpcClientRouteTypeExports(),
-      packageSubpathSource
-    );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps RPC dispatcher route type namespace smoke coverage tied to canonical subpaths', async () => {
-    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const missing = missingCanonicalNamespaceReferences(
-      await publicRpcDispatcherRouteTypeExports(),
-      packageSubpathSource
-    );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps RPC barrel route type namespace smoke coverage tied to canonical subpaths', async () => {
-    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
-    const missing = missingCanonicalNamespaceReferences(
-      await publicRpcIndexRouteTypeExports(),
+      await publicRouteTypeExports(),
       packageSubpathSource
     );
 
