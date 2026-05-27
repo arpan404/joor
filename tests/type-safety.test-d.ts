@@ -3560,11 +3560,28 @@ routeKindScopedStreamJoorHandler(
   // @ts-expect-error route-stream Joor handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedJoorHandlerOptions: JoorHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedJoorRequest: HandlerOptionsRequest<
+  typeof routeKindScopedJoorHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedJoorRequest.requestId.toUpperCase();
+routeKindScopedJoorRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Joor options default to all route request requirements.
+const _wrongRouteKindScopedJoorUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedJoorHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Joor options default to all route request requirements.
+const _wrongRouteKindScopedJoorStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedJoorHandlerOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedJoorHandler = createJoorHandlerFor()(
   routeKindScopedManifest,
-  {
-    plugins: [usersPlugin, auditPlugin] as const,
-  }
+  routeKindScopedJoorHandlerOptions
 );
 routeKindScopedJoorHandler(routeKindScopedRequiredRequest);
 routeKindScopedJoorHandler(
@@ -3590,11 +3607,28 @@ routeKindScopedStreamVercelFunction.fetch(
   // @ts-expect-error route-stream Vercel function helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedVercelFetchOptions: VercelFetchOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedVercelRequest: HandlerOptionsRequest<
+  typeof routeKindScopedVercelFetchOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedVercelRequest.requestId.toUpperCase();
+routeKindScopedVercelRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Vercel options default to all route request requirements.
+const _wrongRouteKindScopedVercelUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedVercelFetchOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Vercel options default to all route request requirements.
+const _wrongRouteKindScopedVercelStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedVercelFetchOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedVercelFetch = createVercelFetchFor()(
   routeKindScopedManifest,
-  {
-    plugins: [usersPlugin, auditPlugin] as const,
-  }
+  routeKindScopedVercelFetchOptions
 );
 routeKindScopedVercelFetch(routeKindScopedRequiredRequest);
 routeKindScopedVercelFetch(
@@ -3603,7 +3637,7 @@ routeKindScopedVercelFetch(
 );
 const routeKindScopedVercelFunction = createVercelFunctionFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedVercelFetchOptions
 );
 routeKindScopedVercelFunction.fetch(routeKindScopedRequiredRequest);
 routeKindScopedVercelFunction.fetch(
@@ -3630,9 +3664,45 @@ routeKindScopedStreamCloudflareWorker.fetch(
   // @ts-expect-error route-stream Cloudflare Worker helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedCloudflareFetchOptions: CloudflareFetchOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedCloudflareRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareFetchOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedCloudflareRequest.requestId.toUpperCase();
+routeKindScopedCloudflareRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Cloudflare fetch options default to all route request requirements.
+const _wrongRouteKindScopedCloudflareUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareFetchOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Cloudflare fetch options default to all route request requirements.
+const _wrongRouteKindScopedCloudflareStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareFetchOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedCloudflareWorkerOptions: CloudflareWorkerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedCloudflareFetchOptions;
+const routeKindScopedCloudflareWorkerRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareWorkerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedCloudflareWorkerRequest.requestId.toUpperCase();
+routeKindScopedCloudflareWorkerRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Cloudflare Worker options default to all route request requirements.
+const _wrongRouteKindScopedCloudflareWorkerUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareWorkerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Cloudflare Worker options default to all route request requirements.
+const _wrongRouteKindScopedCloudflareWorkerStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedCloudflareWorkerOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedCloudflareFetch = createCloudflareFetchFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedCloudflareFetchOptions
 );
 routeKindScopedCloudflareFetch(routeKindScopedRequiredRequest);
 routeKindScopedCloudflareFetch(
@@ -3641,7 +3711,7 @@ routeKindScopedCloudflareFetch(
 );
 const routeKindScopedCloudflareWorker = createCloudflareWorkerFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedCloudflareWorkerOptions
 );
 routeKindScopedCloudflareWorker.fetch(routeKindScopedRequiredRequest);
 routeKindScopedCloudflareWorker.fetch(
@@ -3667,14 +3737,59 @@ routeKindScopedStreamNextHandler.POST(
   // @ts-expect-error route-stream Next handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedNextRouteHandlersOptions: NextRouteHandlersOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedNextRouteHandlersRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextRouteHandlersOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedNextRouteHandlersRequest.requestId.toUpperCase();
+routeKindScopedNextRouteHandlersRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Next route-handler options default to all route request requirements.
+const _wrongRouteKindScopedNextRouteHandlersUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextRouteHandlersOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Next route-handler options default to all route request requirements.
+const _wrongRouteKindScopedNextRouteHandlersStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextRouteHandlersOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedNextHandlerOptions: NextHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedNextRouteHandlersOptions;
+const routeKindScopedNextHandlerRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedNextHandlerRequest.requestId.toUpperCase();
+routeKindScopedNextHandlerRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Next handler options default to all route request requirements.
+const _wrongRouteKindScopedNextHandlerUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Next handler options default to all route request requirements.
+const _wrongRouteKindScopedNextHandlerStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNextHandlerOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedNextRouteHandlers = createNextRouteHandlersFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedNextRouteHandlersOptions
 );
 routeKindScopedNextRouteHandlers.POST(routeKindScopedRequiredRequest);
 routeKindScopedNextRouteHandlers.POST(
   // @ts-expect-error full Next handlers default to all route request requirements.
   requestTypedStreamProcedureRequest
+);
+const routeKindScopedNextHandler = createNextHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedNextHandlerOptions
+);
+routeKindScopedNextHandler.POST(routeKindScopedRequiredRequest);
+routeKindScopedNextHandler.POST(
+  // @ts-expect-error full Next handler helpers default to all route request requirements.
+  requestTypedProcedureRequest
 );
 const routeKindScopedUnaryNetlifyFetch = createRouteUnaryNetlifyFetchFor()(
   routeKindScopedManifest,
@@ -3699,9 +3814,28 @@ routeKindScopedStreamNetlifyEdgeFunction(
   requestTypedProcedureRequest,
   {}
 );
+const routeKindScopedNetlifyFetchOptions: NetlifyFetchOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedNetlifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNetlifyFetchOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedNetlifyRequest.requestId.toUpperCase();
+routeKindScopedNetlifyRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Netlify options default to all route request requirements.
+const _wrongRouteKindScopedNetlifyUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNetlifyFetchOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Netlify options default to all route request requirements.
+const _wrongRouteKindScopedNetlifyStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNetlifyFetchOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedNetlifyFetch = createNetlifyFetchFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedNetlifyFetchOptions
 );
 routeKindScopedNetlifyFetch(routeKindScopedRequiredRequest);
 routeKindScopedNetlifyFetch(
@@ -3710,7 +3844,7 @@ routeKindScopedNetlifyFetch(
 );
 const routeKindScopedNetlifyEdgeFunction = createNetlifyEdgeFunctionFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedNetlifyFetchOptions
 );
 routeKindScopedNetlifyEdgeFunction(routeKindScopedRequiredRequest, {});
 routeKindScopedNetlifyEdgeFunction(
