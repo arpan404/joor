@@ -3708,6 +3708,16 @@ createRouteStreamExpressHandlerFor()(routeKindScopedManifest, {
     },
   },
 });
+createExpressHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
 const routeKindScopedUnaryKoaHandlerOptions: KoaRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -3758,6 +3768,16 @@ createRouteStreamKoaHandlerFor()(routeKindScopedManifest, {
       request.streamRequestId.toUpperCase();
       // @ts-expect-error route-stream Koa factories default hooks to stream-only request requirements.
       request.requestId;
+      return undefined;
+    },
+  },
+});
+createKoaHandlerFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
       return undefined;
     },
   },

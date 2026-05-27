@@ -317,8 +317,7 @@ export const createExpressHandlerFor =
   <
     TManifest extends JoorManifest,
     const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
-    THookRequest extends Request =
-      RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+    THookRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
   >(
     manifest: TManifest,
     ...args: ExpressHandlerOptionsArgs<
