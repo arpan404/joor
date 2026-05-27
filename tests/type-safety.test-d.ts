@@ -13156,12 +13156,34 @@ const requestTypedBunRouteUnaryFetchOptions: BunRouteUnaryFetchOptionsFor<
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedBunRouteStreamFetchOptions: BunRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  path: '/rpc',
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const requestTypedBunRouteUnaryRpcRequestHandlerOptions: BunRouteUnaryRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
   typeof manifestRouteRequest,
   HookAppRequest
 > = typedRequestHandlerOptions;
+const requestTypedBunRouteStreamRpcRequestHandlerOptions: BunRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedBunRouteStreamFetchOptions;
 const bunFetchOptionsArgs: BunFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13174,6 +13196,12 @@ const bunRouteStreamFetchOptionsArgs: BunRouteStreamFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [bunRouteStreamFetchOptions];
+const requestTypedBunRouteStreamFetchOptionsArgs: BunRouteStreamFetchOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedBunRouteStreamFetchOptions];
 const bunUnaryRouteFetchOptionsArgs: BunUnaryRouteFetchOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13194,6 +13222,12 @@ const bunRouteStreamRpcRequestHandlerOptionsArgs: BunRouteStreamRpcRequestHandle
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [bunRouteStreamRpcRequestHandlerOptions];
+const requestTypedBunRouteStreamRpcRequestHandlerOptionsArgs: BunRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedBunRouteStreamRpcRequestHandlerOptions];
 const bunUnaryRouteRpcRequestHandlerOptionsArgs: BunUnaryRouteRpcRequestHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13214,6 +13248,15 @@ const bunRouteStreamServeOptions: BunRouteStreamServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedBunRouteStreamServeOptions: BunRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  ...requestTypedBunRouteStreamFetchOptions,
+  port: 3030,
+};
 const bunUnaryRouteServeOptions: BunUnaryRouteServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13230,6 +13273,12 @@ const runtimeSubpathBunRouteStreamServeOptions: RuntimeSubpathBunRouteStreamServ
   typeof manifest,
   readonly [typeof usersPlugin]
 > = bunRouteStreamServeOptions;
+const requestTypedRuntimeSubpathBunRouteStreamServeOptions: RuntimeSubpathBunRouteStreamServeOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedBunRouteStreamServeOptions;
 const runtimeSubpathBunUnaryRouteServeOptions: RuntimeSubpathBunUnaryRouteServeOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13250,6 +13299,12 @@ const runtimeSubpathBunRouteStreamFetchOptions: RuntimeSubpathBunRouteStreamFetc
   typeof manifest,
   readonly [typeof usersPlugin]
 > = bunRouteStreamFetchOptions;
+const requestTypedRuntimeSubpathBunRouteStreamFetchOptions: RuntimeSubpathBunRouteStreamFetchOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedBunRouteStreamFetchOptions;
 const runtimeSubpathBunUnaryRouteFetchOptions: RuntimeSubpathBunUnaryRouteFetchOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13270,6 +13325,12 @@ const runtimeSubpathBunRouteStreamRpcRequestHandlerOptions: RuntimeSubpathBunRou
   typeof manifest,
   readonly [typeof usersPlugin]
 > = bunRouteStreamRpcRequestHandlerOptions;
+const requestTypedRuntimeSubpathBunRouteStreamRpcRequestHandlerOptions: RuntimeSubpathBunRouteStreamRpcRequestHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedBunRouteStreamRpcRequestHandlerOptions;
 const runtimeSubpathBunUnaryRouteRpcRequestHandlerOptions: RuntimeSubpathBunUnaryRouteRpcRequestHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13290,6 +13351,12 @@ const bunRouteStreamServeOptionsArgs: BunRouteStreamServeOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [bunRouteStreamServeOptions];
+const requestTypedBunRouteStreamServeOptionsArgs: BunRouteStreamServeOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedBunRouteStreamServeOptions];
 const bunUnaryRouteServeOptionsArgs: BunUnaryRouteServeOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -13375,6 +13442,10 @@ runtimeSubpathBunRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedBunRouteStreamFetchOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathBunRpcRequestHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathBunUnaryRouteRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -13390,6 +13461,10 @@ runtimeSubpathBunRouteUnaryRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest
 );
 runtimeSubpathBunRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedBunRouteStreamRpcRequestHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathBunServeOptionsArgs[0]?.port?.toFixed();
@@ -13409,6 +13484,10 @@ runtimeSubpathBunRouteStreamServeOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedBunRouteStreamServeOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathBunUnaryRouteServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -13423,6 +13502,10 @@ runtimeSubpathBunRouteUnaryServeOptions.hooks?.beforeRequest?.(
 );
 runtimeSubpathBunRouteStreamServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathBunRouteStreamServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
   manifestStreamRouteHandlerHookContext
 );
 runtimeSubpathBunUnaryRouteFetchOptions.hooks?.beforeRequest?.(
@@ -13441,6 +13524,10 @@ runtimeSubpathBunRouteStreamFetchOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathBunRouteStreamFetchOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathBunUnaryRouteRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -13457,6 +13544,10 @@ runtimeSubpathBunRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathBunRouteStreamRpcRequestHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 runtimeSubpathBunFetchOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathBunRpcRequestHandlerOptions.plugins?.[0]?.name.toUpperCase();
 const routeUnaryBunFetch = createRouteUnaryBunFetch(
@@ -13471,6 +13562,8 @@ const routeStreamBunFetch = createRouteStreamBunFetch(
   manifest,
   bunRouteStreamFetchOptions
 );
+const directHookTypedRouteStreamBunFetch: BunFetchHandler<HookAppRequest> =
+  createRouteStreamBunFetch(manifest, requestTypedBunRouteStreamFetchOptions);
 const streamRouteBunFetch = createStreamRouteBunFetch(
   manifest,
   bunStreamRouteFetchOptions
@@ -13488,6 +13581,11 @@ const runtimeSubpathRouteStreamBunFetch =
     manifest,
     runtimeSubpathBunRouteStreamFetchOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamBunFetch: RuntimeSubpathBunFetchHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamBunFetch(
+    manifest,
+    requestTypedRuntimeSubpathBunRouteStreamFetchOptions
+  );
 const runtimeSubpathStreamRouteBunFetch =
   createRuntimeSubpathStreamRouteBunFetch(
     manifest,
@@ -13496,6 +13594,10 @@ const runtimeSubpathStreamRouteBunFetch =
 const typedRouteUnaryBunFetch = createRouteUnaryBunFetchFor<HookAppRequest>()(
   manifest,
   requestTypedBunRouteUnaryFetchOptions
+);
+const typedRouteStreamBunFetch = createRouteStreamBunFetchFor<HookAppRequest>()(
+  manifest,
+  requestTypedBunRouteStreamFetchOptions
 );
 createUnaryRouteBunFetchFor()(manifest, bunUnaryRouteFetchOptions);
 createRouteStreamBunFetchFor()(manifest, bunRouteStreamFetchOptions);
@@ -13512,6 +13614,11 @@ createRuntimeSubpathRouteStreamBunFetchFor()(
   manifest,
   runtimeSubpathBunRouteStreamFetchOptions
 );
+const runtimeSubpathTypedRouteStreamBunFetch =
+  createRuntimeSubpathRouteStreamBunFetchFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathBunRouteStreamFetchOptions
+  );
 createRuntimeSubpathStreamRouteBunFetchFor()(
   manifest,
   runtimeSubpathBunStreamRouteFetchOptions
@@ -13528,6 +13635,11 @@ const routeStreamBunRpcHandler = createRouteStreamBunRpcRequestHandler(
   manifest,
   bunRouteStreamRpcRequestHandlerOptions
 );
+const directHookTypedRouteStreamBunRpcHandler: BunRpcRequestHandler<HookAppRequest> =
+  createRouteStreamBunRpcRequestHandler(
+    manifest,
+    requestTypedBunRouteStreamRpcRequestHandlerOptions
+  );
 const streamRouteBunRpcHandler = createStreamRouteBunRpcRequestHandler(
   manifest,
   bunStreamRouteRpcRequestHandlerOptions
@@ -13547,6 +13659,11 @@ const runtimeSubpathRouteStreamBunRpcHandler =
     manifest,
     runtimeSubpathBunRouteStreamRpcRequestHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamBunRpcHandler: RuntimeSubpathBunRpcRequestHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamBunRpcRequestHandler(
+    manifest,
+    requestTypedRuntimeSubpathBunRouteStreamRpcRequestHandlerOptions
+  );
 const runtimeSubpathStreamRouteBunRpcHandler =
   createRuntimeSubpathStreamRouteBunRpcRequestHandler(
     manifest,
@@ -13556,6 +13673,11 @@ const typedRouteUnaryBunRpcHandler =
   createRouteUnaryBunRpcRequestHandlerFor<HookAppRequest>()(
     manifest,
     requestTypedBunRouteUnaryRpcRequestHandlerOptions
+  );
+const typedRouteStreamBunRpcHandler =
+  createRouteStreamBunRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedBunRouteStreamRpcRequestHandlerOptions
   );
 createUnaryRouteBunRpcRequestHandlerFor()(
   manifest,
@@ -13581,6 +13703,11 @@ createRuntimeSubpathRouteStreamBunRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathBunRouteStreamRpcRequestHandlerOptions
 );
+const runtimeSubpathTypedRouteStreamBunRpcHandler =
+  createRuntimeSubpathRouteStreamBunRpcRequestHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathBunRouteStreamRpcRequestHandlerOptions
+  );
 createRuntimeSubpathStreamRouteBunRpcRequestHandlerFor()(
   manifest,
   runtimeSubpathBunStreamRouteRpcRequestHandlerOptions
@@ -13588,19 +13715,27 @@ createRuntimeSubpathStreamRouteBunRpcRequestHandlerFor()(
 routeUnaryBunFetch(new Request('https://example.com/rpc'));
 unaryRouteBunFetch(new Request('https://example.com/rpc'));
 routeStreamBunFetch(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamBunFetch(hookAppRequest);
 streamRouteBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteBunFetch(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamBunFetch(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamBunFetch(hookAppRequest);
+typedRouteStreamBunFetch(hookAppRequest);
+runtimeSubpathTypedRouteStreamBunFetch(hookAppRequest);
 runtimeSubpathStreamRouteBunFetch(new Request('https://example.com/rpc'));
 typedRouteUnaryBunFetch(hookAppRequest);
 routeUnaryBunRpcHandler(new Request('https://example.com/rpc'));
 unaryRouteBunRpcHandler(new Request('https://example.com/rpc'));
 routeStreamBunRpcHandler(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamBunRpcHandler(hookAppRequest);
 streamRouteBunRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryBunRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteBunRpcHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamBunRpcHandler(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamBunRpcHandler(hookAppRequest);
+typedRouteStreamBunRpcHandler(hookAppRequest);
+runtimeSubpathTypedRouteStreamBunRpcHandler(hookAppRequest);
 runtimeSubpathStreamRouteBunRpcHandler(new Request('https://example.com/rpc'));
 typedRouteUnaryBunRpcHandler(hookAppRequest);
 typedRouteUnaryBunFetch(
@@ -13609,6 +13744,30 @@ typedRouteUnaryBunFetch(
 );
 typedRouteUnaryBunRpcHandler(
   // @ts-expect-error route-unary Bun RPC factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+typedRouteStreamBunFetch(
+  // @ts-expect-error route-stream Bun fetch factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamBunFetch(
+  // @ts-expect-error direct route-stream Bun fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamBunFetch(
+  // @ts-expect-error direct runtime-subpath route-stream Bun fetch factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+typedRouteStreamBunRpcHandler(
+  // @ts-expect-error route-stream Bun RPC factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamBunRpcHandler(
+  // @ts-expect-error direct route-stream Bun RPC factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamBunRpcHandler(
+  // @ts-expect-error direct runtime-subpath route-stream Bun RPC factories infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 const exactBunServeOptions: BunServeOptionsFor<
@@ -13682,6 +13841,20 @@ requestTypedBunServeOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   exactManifestHandlerHookContext
 );
+requestTypedBunRouteStreamServeOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedBunRouteStreamServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error route-stream Bun serve options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathBunRouteStreamServeOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error runtime-subpath route-stream Bun serve options preserve custom hook request types.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const bunServer: BunServer = serveBun(manifest, typedBunServeOptions);
 serveBun(manifest, requestTypedBunServeOptions);
 const routeUnaryBunServer: BunServer = serveRouteUnaryBun(
@@ -13692,6 +13865,7 @@ const routeStreamBunServer: BunServer = serveRouteStreamBun(
   manifest,
   bunRouteStreamServeOptions
 );
+serveRouteStreamBun(manifest, requestTypedBunRouteStreamServeOptions);
 const runtimeSubpathRouteUnaryBunServer: BunServer =
   serveRuntimeSubpathRouteUnaryBun(
     manifest,
@@ -13702,6 +13876,10 @@ const runtimeSubpathRouteStreamBunServer: BunServer =
     manifest,
     runtimeSubpathBunRouteStreamServeOptions
   );
+serveRuntimeSubpathRouteStreamBun(
+  manifest,
+  requestTypedRuntimeSubpathBunRouteStreamServeOptions
+);
 bunServer.stop();
 routeUnaryBunServer.stop();
 routeStreamBunServer.stop();

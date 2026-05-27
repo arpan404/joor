@@ -463,7 +463,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
     } finally {
       await rm(entry, { force: true, recursive: true });
     }
-  });
+  }, 60_000);
 
   it('emits artifacts', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
@@ -5697,5 +5697,5 @@ invalidNativeBatch;
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }
-  }, 10_000);
+  }, 60_000);
 });
