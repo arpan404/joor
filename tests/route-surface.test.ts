@@ -401,6 +401,202 @@ const generatedRouteRequirementAliases = [
   'NativeUnaryRouteRequiredServices',
 ] as const;
 
+const generatedPlatformRouteFactoryExports = [
+  {
+    entrypoint: 'aws-lambda.ts',
+    names: [
+      'createRouteUnaryAwsLambdaHandler',
+      'createRouteUnaryAwsLambdaHandlerFor',
+      'createUnaryRouteAwsLambdaHandler',
+      'createUnaryRouteAwsLambdaHandlerFor',
+      'createRouteStreamAwsLambdaHandler',
+      'createRouteStreamAwsLambdaHandlerFor',
+      'createStreamRouteAwsLambdaHandler',
+      'createStreamRouteAwsLambdaHandlerFor',
+      'createRouteUnaryAwsLambdaHttpApiHandler',
+      'createRouteUnaryAwsLambdaHttpApiHandlerFor',
+      'createUnaryRouteAwsLambdaHttpApiHandler',
+      'createUnaryRouteAwsLambdaHttpApiHandlerFor',
+      'createRouteStreamAwsLambdaHttpApiHandler',
+      'createRouteStreamAwsLambdaHttpApiHandlerFor',
+      'createStreamRouteAwsLambdaHttpApiHandler',
+      'createStreamRouteAwsLambdaHttpApiHandlerFor',
+      'createRouteUnaryAwsLambdaRestApiHandler',
+      'createRouteUnaryAwsLambdaRestApiHandlerFor',
+      'createUnaryRouteAwsLambdaRestApiHandler',
+      'createUnaryRouteAwsLambdaRestApiHandlerFor',
+      'createRouteStreamAwsLambdaRestApiHandler',
+      'createRouteStreamAwsLambdaRestApiHandlerFor',
+      'createStreamRouteAwsLambdaRestApiHandler',
+      'createStreamRouteAwsLambdaRestApiHandlerFor',
+    ],
+  },
+  {
+    entrypoint: 'bun.ts',
+    names: [
+      'createRouteUnaryBunFetch',
+      'createRouteUnaryBunFetchFor',
+      'createUnaryRouteBunFetch',
+      'createUnaryRouteBunFetchFor',
+      'createRouteStreamBunFetch',
+      'createRouteStreamBunFetchFor',
+      'createStreamRouteBunFetch',
+      'createStreamRouteBunFetchFor',
+      'serveRouteUnaryBun',
+      'serveUnaryRouteBun',
+      'serveRouteStreamBun',
+      'serveStreamRouteBun',
+      'listenRouteUnary',
+      'listenUnaryRoute',
+      'listenRouteStream',
+      'listenStreamRoute',
+    ],
+  },
+  {
+    entrypoint: 'cloudflare.ts',
+    names: [
+      'createRouteUnaryCloudflareFetch',
+      'createRouteUnaryCloudflareFetchFor',
+      'createUnaryRouteCloudflareFetch',
+      'createUnaryRouteCloudflareFetchFor',
+      'createRouteStreamCloudflareFetch',
+      'createRouteStreamCloudflareFetchFor',
+      'createStreamRouteCloudflareFetch',
+      'createStreamRouteCloudflareFetchFor',
+      'createRouteUnaryCloudflareWorker',
+      'createRouteUnaryCloudflareWorkerFor',
+      'createUnaryRouteCloudflareWorker',
+      'createUnaryRouteCloudflareWorkerFor',
+      'createRouteStreamCloudflareWorker',
+      'createRouteStreamCloudflareWorkerFor',
+      'createStreamRouteCloudflareWorker',
+      'createStreamRouteCloudflareWorkerFor',
+    ],
+  },
+  {
+    entrypoint: 'deno.ts',
+    names: [
+      'createRouteUnaryDenoFetch',
+      'createRouteUnaryDenoFetchFor',
+      'createUnaryRouteDenoFetch',
+      'createUnaryRouteDenoFetchFor',
+      'createRouteStreamDenoFetch',
+      'createRouteStreamDenoFetchFor',
+      'createStreamRouteDenoFetch',
+      'createStreamRouteDenoFetchFor',
+      'serveRouteUnaryDeno',
+      'serveUnaryRouteDeno',
+      'serveDenoRouteUnary',
+      'serveDenoUnaryRoute',
+      'serveRouteStreamDeno',
+      'serveStreamRouteDeno',
+      'serveDenoRouteStream',
+      'serveDenoStreamRoute',
+    ],
+  },
+  {
+    entrypoint: 'fetch.ts',
+    names: [
+      'createRouteUnaryFetch',
+      'createRouteUnaryFetchFor',
+      'createUnaryRouteFetch',
+      'createUnaryRouteFetchFor',
+      'createRouteStreamFetch',
+      'createRouteStreamFetchFor',
+      'createStreamRouteFetch',
+      'createStreamRouteFetchFor',
+    ],
+  },
+  {
+    entrypoint: 'netlify.ts',
+    names: [
+      'createRouteUnaryNetlifyFetch',
+      'createRouteUnaryNetlifyFetchFor',
+      'createUnaryRouteNetlifyFetch',
+      'createUnaryRouteNetlifyFetchFor',
+      'createRouteStreamNetlifyFetch',
+      'createRouteStreamNetlifyFetchFor',
+      'createStreamRouteNetlifyFetch',
+      'createStreamRouteNetlifyFetchFor',
+      'createRouteUnaryNetlifyEdgeFunction',
+      'createRouteUnaryNetlifyEdgeFunctionFor',
+      'createUnaryRouteNetlifyEdgeFunction',
+      'createUnaryRouteNetlifyEdgeFunctionFor',
+      'createRouteStreamNetlifyEdgeFunction',
+      'createRouteStreamNetlifyEdgeFunctionFor',
+      'createStreamRouteNetlifyEdgeFunction',
+      'createStreamRouteNetlifyEdgeFunctionFor',
+    ],
+  },
+  {
+    entrypoint: 'next.ts',
+    names: [
+      'createRouteUnaryNextHandler',
+      'createRouteUnaryNextHandlerFor',
+      'createUnaryRouteNextHandler',
+      'createUnaryRouteNextHandlerFor',
+      'createRouteStreamNextHandler',
+      'createRouteStreamNextHandlerFor',
+      'createStreamRouteNextHandler',
+      'createStreamRouteNextHandlerFor',
+      'createRouteUnaryNextRouteHandlers',
+      'createRouteUnaryNextRouteHandlersFor',
+      'createUnaryRouteNextRouteHandlers',
+      'createUnaryRouteNextRouteHandlersFor',
+      'createRouteStreamNextRouteHandlers',
+      'createRouteStreamNextRouteHandlersFor',
+      'createStreamRouteNextRouteHandlers',
+      'createStreamRouteNextRouteHandlersFor',
+    ],
+  },
+  {
+    entrypoint: 'node.ts',
+    names: [
+      'createRouteUnaryHandler',
+      'createRouteUnaryNodeHandler',
+      'createUnaryRouteHandler',
+      'createUnaryRouteNodeHandler',
+      'createRouteStreamHandler',
+      'createRouteStreamNodeHandler',
+      'createStreamRouteHandler',
+      'createStreamRouteNodeHandler',
+      'createRouteUnaryServerFor',
+      'createRouteUnaryNodeServerFor',
+      'createUnaryRouteServerFor',
+      'createUnaryRouteNodeServerFor',
+      'createRouteStreamServerFor',
+      'createRouteStreamNodeServerFor',
+      'createStreamRouteServerFor',
+      'createStreamRouteNodeServerFor',
+      'listenRouteUnary',
+      'listenUnaryRoute',
+      'listenRouteStream',
+      'listenStreamRoute',
+    ],
+  },
+  {
+    entrypoint: 'vercel.ts',
+    names: [
+      'createRouteUnaryVercelFetch',
+      'createRouteUnaryVercelFetchFor',
+      'createUnaryRouteVercelFetch',
+      'createUnaryRouteVercelFetchFor',
+      'createRouteStreamVercelFetch',
+      'createRouteStreamVercelFetchFor',
+      'createStreamRouteVercelFetch',
+      'createStreamRouteVercelFetchFor',
+      'createRouteUnaryVercelFunction',
+      'createRouteUnaryVercelFunctionFor',
+      'createUnaryRouteVercelFunction',
+      'createUnaryRouteVercelFunctionFor',
+      'createRouteStreamVercelFunction',
+      'createRouteStreamVercelFunctionFor',
+      'createStreamRouteVercelFunction',
+      'createStreamRouteVercelFunctionFor',
+    ],
+  },
+] as const;
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -479,6 +675,24 @@ describe('route public surface', () => {
         exports.has(name) ? [] : [`${entrypoint}: ${name}`]
       );
     });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated platform route factory exports available', async () => {
+    const exportSets = await generatedExportSets();
+    const exportsByBasename = new Map(
+      [...exportSets].map(([file, names]) => [basename(file), names])
+    );
+    const missing = generatedPlatformRouteFactoryExports.flatMap(
+      ({ entrypoint, names }) => {
+        const exports = exportsByBasename.get(entrypoint);
+        if (exports === undefined) return [`${entrypoint}: <missing>`];
+        return names.flatMap((name) =>
+          exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
