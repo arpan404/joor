@@ -19239,6 +19239,21 @@ const requestTypedAwsLambdaRouteUnaryHandlerOptions: AwsLambdaRouteUnaryHandlerO
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedAwsLambdaHandlerOptions;
+const requestTypedAwsLambdaRouteStreamHandlerOptions: AwsLambdaRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const awsLambdaUnaryRouteHandlerOptions: AwsLambdaUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19262,7 +19277,22 @@ const awsLambdaStreamRouteHandlerOptions: AwsLambdaStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRouteStreamHandlerOptions;
+const requestTypedAwsLambdaStreamRouteHandlerOptions: AwsLambdaStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRouteStreamHandlerOptions;
 awsLambdaStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedAwsLambdaStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed Lambda route-stream options reject broader requests.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const awsLambdaHttpApiRouteUnaryHandlerOptions: AwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19273,6 +19303,12 @@ const requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions: AwsLambdaHttpApiRout
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedAwsLambdaHttpApiHandlerOptions;
+const requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions: AwsLambdaHttpApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRouteStreamHandlerOptions;
 const awsLambdaHttpApiUnaryRouteHandlerOptions: AwsLambdaHttpApiUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19285,6 +19321,12 @@ const awsLambdaHttpApiStreamRouteHandlerOptions: AwsLambdaHttpApiStreamRouteHand
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiRouteStreamHandlerOptions;
+const requestTypedAwsLambdaHttpApiStreamRouteHandlerOptions: AwsLambdaHttpApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions;
 const runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptions: RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19297,14 +19339,35 @@ const runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptions: RuntimeSubpathAws
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiRouteStreamHandlerOptions;
+const runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptions: RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions;
 const runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptions: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptions;
+const runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptions: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptions;
 awsLambdaHttpApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 awsLambdaHttpApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed runtime-subpath Lambda HTTP API route-stream options reject broader requests.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const awsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRouteUnaryHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19315,6 +19378,12 @@ const requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions: AwsLambdaRestApiRout
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedAwsLambdaRestApiHandlerOptions;
+const requestTypedAwsLambdaRestApiRouteStreamHandlerOptions: AwsLambdaRestApiRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRouteStreamHandlerOptions;
 const awsLambdaRestApiUnaryRouteHandlerOptions: AwsLambdaRestApiUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19327,8 +19396,18 @@ const awsLambdaRestApiStreamRouteHandlerOptions: AwsLambdaRestApiStreamRouteHand
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiRouteStreamHandlerOptions;
+const requestTypedAwsLambdaRestApiStreamRouteHandlerOptions: AwsLambdaRestApiStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRestApiRouteStreamHandlerOptions;
 awsLambdaRestApiUnaryRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
 awsLambdaRestApiStreamRouteHandlerOptions.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaRestApiStreamRouteHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 const awsLambdaHandlerOptionsArgs: AwsLambdaHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19367,10 +19446,22 @@ const awsLambdaHttpApiRouteStreamHandlerOptionsArgs: AwsLambdaHttpApiRouteStream
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiHandlerOptionsArgs;
+const requestTypedAwsLambdaHttpApiRouteStreamHandlerOptionsArgs: AwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions];
 const awsLambdaHttpApiStreamRouteHandlerOptionsArgs: AwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+const requestTypedAwsLambdaHttpApiStreamRouteHandlerOptionsArgs: AwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiRouteStreamHandlerOptionsArgs;
 const runtimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19383,12 +19474,28 @@ const runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs: RuntimeSubpat
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+const runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaHttpApiRouteStreamHandlerOptionsArgs;
 const runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = runtimeSubpathAwsLambdaHttpApiRouteStreamHandlerOptionsArgs;
+const runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptionsArgs: RuntimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptionsArgs;
 awsLambdaHttpApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 awsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 const awsLambdaRouteUnaryHandlerOptionsArgs: AwsLambdaRouteUnaryHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -19408,10 +19515,22 @@ const awsLambdaRouteStreamHandlerOptionsArgs: AwsLambdaRouteStreamHandlerOptions
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaHandlerOptionsArgs;
+const requestTypedAwsLambdaRouteStreamHandlerOptionsArgs: AwsLambdaRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedAwsLambdaRouteStreamHandlerOptions];
 const awsLambdaStreamRouteHandlerOptionsArgs: AwsLambdaStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRouteStreamHandlerOptionsArgs;
+const requestTypedAwsLambdaStreamRouteHandlerOptionsArgs: AwsLambdaStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRouteStreamHandlerOptionsArgs;
 awsLambdaStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 const awsLambdaRestApiHandlerOptionsArgs: AwsLambdaRestApiHandlerOptionsArgs<
   typeof manifest,
@@ -19441,10 +19560,22 @@ const awsLambdaRestApiRouteStreamHandlerOptionsArgs: AwsLambdaRestApiRouteStream
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiHandlerOptionsArgs;
+const requestTypedAwsLambdaRestApiRouteStreamHandlerOptionsArgs: AwsLambdaRestApiRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedAwsLambdaRestApiRouteStreamHandlerOptions];
 const awsLambdaRestApiStreamRouteHandlerOptionsArgs: AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = awsLambdaRestApiRouteStreamHandlerOptionsArgs;
+const requestTypedAwsLambdaRestApiStreamRouteHandlerOptionsArgs: AwsLambdaRestApiStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedAwsLambdaRestApiRouteStreamHandlerOptionsArgs;
 awsLambdaHttpApiHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
@@ -19457,9 +19588,17 @@ requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeReques
 );
 runtimeSubpathAwsLambdaHttpApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathAwsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 requestTypedAwsLambdaRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
+);
+requestTypedAwsLambdaStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
 );
 awsLambdaRestApiUnaryRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 requestTypedAwsLambdaRestApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
@@ -19467,6 +19606,10 @@ requestTypedAwsLambdaRestApiRouteUnaryHandlerOptionsArgs[0]?.hooks?.beforeReques
   exactManifestHandlerHookContext
 );
 awsLambdaRestApiStreamRouteHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
+requestTypedAwsLambdaRestApiStreamRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 const awsLambdaHandler: AwsLambdaHandler = createAwsLambdaHandler(
   manifest,
   handlerOptions
@@ -19520,6 +19663,11 @@ const routeStreamAwsLambdaHandler: AwsLambdaHandler =
     manifest,
     awsLambdaRouteStreamHandlerOptions
   );
+const directHookTypedRouteStreamAwsLambdaHandler: AwsLambdaHandler =
+  createRouteStreamAwsLambdaHandler(
+    manifest,
+    requestTypedAwsLambdaRouteStreamHandlerOptions
+  );
 const streamRouteAwsLambdaHandler: AwsLambdaHandler =
   createStreamRouteAwsLambdaHandler(
     manifest,
@@ -19539,6 +19687,11 @@ const routeStreamAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createRouteStreamAwsLambdaHttpApiHandler(
     manifest,
     awsLambdaHttpApiRouteStreamHandlerOptions
+  );
+const directHookTypedRouteStreamAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
+  createRouteStreamAwsLambdaHttpApiHandler(
+    manifest,
+    requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions
   );
 const streamRouteAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler =
   createStreamRouteAwsLambdaHttpApiHandler(
@@ -19560,6 +19713,11 @@ const routeStreamAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
     manifest,
     awsLambdaRestApiRouteStreamHandlerOptions
   );
+const directHookTypedRouteStreamAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
+  createRouteStreamAwsLambdaRestApiHandler(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteStreamHandlerOptions
+  );
 const streamRouteAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
   createStreamRouteAwsLambdaRestApiHandler(
     manifest,
@@ -19579,6 +19737,11 @@ const runtimeSubpathRouteStreamAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler 
   createRuntimeSubpathRouteStreamAwsLambdaHandler(
     manifest,
     awsLambdaRouteStreamHandlerOptions
+  );
+const directRuntimeSubpathHookTypedRouteStreamAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaHandler(
+    manifest,
+    requestTypedAwsLambdaRouteStreamHandlerOptions
   );
 const runtimeSubpathStreamRouteAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler =
   createRuntimeSubpathStreamRouteAwsLambdaHandler(
@@ -19600,6 +19763,11 @@ const runtimeSubpathRouteStreamAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaH
     manifest,
     awsLambdaHttpApiRouteStreamHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandler(
+    manifest,
+    runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptions
+  );
 const runtimeSubpathStreamRouteAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler =
   createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandler(
     manifest,
@@ -19619,6 +19787,11 @@ const runtimeSubpathRouteStreamAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaR
   createRuntimeSubpathRouteStreamAwsLambdaRestApiHandler(
     manifest,
     awsLambdaRestApiRouteStreamHandlerOptions
+  );
+const directRuntimeSubpathHookTypedRouteStreamAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
+  createRuntimeSubpathRouteStreamAwsLambdaRestApiHandler(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteStreamHandlerOptions
   );
 const runtimeSubpathStreamRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler =
   createRuntimeSubpathStreamRouteAwsLambdaRestApiHandler(
@@ -19701,60 +19874,90 @@ const typedRouteUnaryAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventFor
     manifest,
     requestTypedAwsLambdaRouteUnaryHandlerOptions
   );
+const typedRouteStreamAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRouteStreamAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRouteStreamHandlerOptions
+  );
 const typedStreamRouteAwsLambdaHandler: AwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
   createStreamRouteAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
-    awsLambdaStreamRouteHandlerOptions
+    requestTypedAwsLambdaStreamRouteHandlerOptions
   );
 const typedRouteUnaryAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
   createRouteUnaryAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
     requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions
   );
+const typedRouteStreamAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRouteStreamAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaHttpApiRouteStreamHandlerOptions
+  );
 const typedStreamRouteAwsLambdaHttpApiHandler: AwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
   createStreamRouteAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
-    awsLambdaHttpApiStreamRouteHandlerOptions
+    requestTypedAwsLambdaHttpApiStreamRouteHandlerOptions
   );
 const typedRouteUnaryAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
   createRouteUnaryAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
     manifest,
     requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions
   );
+const typedRouteStreamAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRouteStreamAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteStreamHandlerOptions
+  );
 const typedStreamRouteAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
   createStreamRouteAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
     manifest,
-    awsLambdaRestApiStreamRouteHandlerOptions
+    requestTypedAwsLambdaRestApiStreamRouteHandlerOptions
   );
 const runtimeSubpathTypedRouteUnaryAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
   createRuntimeSubpathRouteUnaryAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
     requestTypedAwsLambdaRouteUnaryHandlerOptions
   );
+const runtimeSubpathTypedRouteStreamAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathRouteStreamAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRouteStreamHandlerOptions
+  );
 const runtimeSubpathTypedStreamRouteAwsLambdaHandler: RuntimeSubpathAwsLambdaHandler<AwsLambdaHttpApiEventForTypes> =
   createRuntimeSubpathStreamRouteAwsLambdaHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
-    awsLambdaStreamRouteHandlerOptions
+    requestTypedAwsLambdaStreamRouteHandlerOptions
   );
 const runtimeSubpathTypedRouteUnaryAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
   createRuntimeSubpathRouteUnaryAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
     requestTypedAwsLambdaHttpApiRouteUnaryHandlerOptions
   );
+const runtimeSubpathTypedRouteStreamAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
+  createRuntimeSubpathRouteStreamAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
+    manifest,
+    runtimeSubpathRequestTypedAwsLambdaHttpApiRouteStreamHandlerOptions
+  );
 const runtimeSubpathTypedStreamRouteAwsLambdaHttpApiHandler: RuntimeSubpathAwsLambdaHttpApiHandler<AwsLambdaHttpApiEventForTypes> =
   createRuntimeSubpathStreamRouteAwsLambdaHttpApiHandlerFor<AwsLambdaHttpApiEventForTypes>()(
     manifest,
-    awsLambdaHttpApiStreamRouteHandlerOptions
+    runtimeSubpathRequestTypedAwsLambdaHttpApiStreamRouteHandlerOptions
   );
 const runtimeSubpathTypedRouteUnaryAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
   createRuntimeSubpathRouteUnaryAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
     manifest,
     requestTypedAwsLambdaRestApiRouteUnaryHandlerOptions
   );
+const runtimeSubpathTypedRouteStreamAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
+  createRuntimeSubpathRouteStreamAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
+    manifest,
+    requestTypedAwsLambdaRestApiRouteStreamHandlerOptions
+  );
 const runtimeSubpathTypedStreamRouteAwsLambdaRestApiHandler: RuntimeSubpathAwsLambdaRestApiHandler<AwsLambdaRestApiEventForTypes> =
   createRuntimeSubpathStreamRouteAwsLambdaRestApiHandlerFor<AwsLambdaRestApiEventForTypes>()(
     manifest,
-    awsLambdaRestApiStreamRouteHandlerOptions
+    requestTypedAwsLambdaRestApiStreamRouteHandlerOptions
   );
 createUnaryRouteAwsLambdaHandlerFor()(
   manifest,
@@ -19837,12 +20040,16 @@ typedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedAwsLambdaHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 typedRouteUnaryAwsLambdaHandler(typedAwsLambdaEvent);
+typedRouteStreamAwsLambdaHandler(typedAwsLambdaEvent);
 typedStreamRouteAwsLambdaHandler(typedAwsLambdaEvent);
 typedRouteUnaryAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+typedRouteStreamAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 typedStreamRouteAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedRouteUnaryAwsLambdaHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedRouteStreamAwsLambdaHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedStreamRouteAwsLambdaHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedRouteUnaryAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
+runtimeSubpathTypedRouteStreamAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 runtimeSubpathTypedStreamRouteAwsLambdaHttpApiHandler(typedAwsLambdaEvent);
 Promise.resolve(awsLambdaRestApiHandler(awsLambdaRestApiEvent)).then(
   (response) => {
@@ -19860,8 +20067,12 @@ syncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 typedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 runtimeSubpathTypedAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 typedRouteUnaryAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
+typedRouteStreamAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 typedStreamRouteAwsLambdaRestApiHandler(typedAwsLambdaRestApiEvent);
 runtimeSubpathTypedRouteUnaryAwsLambdaRestApiHandler(
+  typedAwsLambdaRestApiEvent
+);
+runtimeSubpathTypedRouteStreamAwsLambdaRestApiHandler(
   typedAwsLambdaRestApiEvent
 );
 runtimeSubpathTypedStreamRouteAwsLambdaRestApiHandler(
@@ -19876,26 +20087,34 @@ runtimeSubpathSyncAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 routeUnaryAwsLambdaHandler(awsLambdaEvent);
 unaryRouteAwsLambdaHandler(awsLambdaEvent);
 routeStreamAwsLambdaHandler(awsLambdaEvent);
+directHookTypedRouteStreamAwsLambdaHandler(awsLambdaEvent);
 streamRouteAwsLambdaHandler(awsLambdaEvent);
 routeUnaryAwsLambdaHttpApiHandler(awsLambdaEvent);
 unaryRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
 routeStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
+directHookTypedRouteStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
 streamRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
 routeUnaryAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 unaryRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 routeStreamAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+directHookTypedRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 streamRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 runtimeSubpathRouteUnaryAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathUnaryRouteAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathRouteStreamAwsLambdaHandler(awsLambdaEvent);
+directRuntimeSubpathHookTypedRouteStreamAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathStreamRouteAwsLambdaHandler(awsLambdaEvent);
 runtimeSubpathRouteUnaryAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathUnaryRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathRouteStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
+directRuntimeSubpathHookTypedRouteStreamAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathStreamRouteAwsLambdaHttpApiHandler(awsLambdaEvent);
 runtimeSubpathRouteUnaryAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 runtimeSubpathUnaryRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 runtimeSubpathRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
+directRuntimeSubpathHookTypedRouteStreamAwsLambdaRestApiHandler(
+  awsLambdaRestApiEvent
+);
 runtimeSubpathStreamRouteAwsLambdaRestApiHandler(awsLambdaRestApiEvent);
 // @ts-expect-error service-dependent manifests require matching AWS Lambda adapter plugins.
 createAwsLambdaHandler(manifest);
