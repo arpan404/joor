@@ -401,6 +401,36 @@ const generatedRouteRequirementAliases = [
   'NativeUnaryRouteRequiredServices',
 ] as const;
 
+const generatedPlatformRouteHandlerTypeAliases = [
+  {
+    entrypoint: 'bun.ts',
+    names: [
+      'BunNativeRouteUnaryFetchHandler',
+      'BunNativeUnaryRouteFetchHandler',
+      'BunNativeRouteStreamFetchHandler',
+      'BunNativeStreamRouteFetchHandler',
+    ],
+  },
+  {
+    entrypoint: 'deno.ts',
+    names: [
+      'DenoNativeRouteUnaryFetchHandler',
+      'DenoNativeUnaryRouteFetchHandler',
+      'DenoNativeRouteStreamFetchHandler',
+      'DenoNativeStreamRouteFetchHandler',
+    ],
+  },
+  {
+    entrypoint: 'fetch.ts',
+    names: [
+      'NativeRouteUnaryFetchHandler',
+      'NativeUnaryRouteFetchHandler',
+      'NativeRouteStreamFetchHandler',
+      'NativeStreamRouteFetchHandler',
+    ],
+  },
+] as const;
+
 const generatedPlatformGenericFactoryExports = [
   {
     entrypoint: 'aws-lambda.ts',
@@ -809,6 +839,24 @@ describe('route public surface', () => {
         exports.has(name) ? [] : [`${entrypoint}: ${name}`]
       );
     });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated platform route handler type aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const exportsByBasename = new Map(
+      [...exportSets].map(([file, names]) => [basename(file), names])
+    );
+    const missing = generatedPlatformRouteHandlerTypeAliases.flatMap(
+      ({ entrypoint, names }) => {
+        const exports = exportsByBasename.get(entrypoint);
+        if (exports === undefined) return [`${entrypoint}: <missing>`];
+        return names.flatMap((name) =>
+          exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
