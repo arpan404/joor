@@ -401,6 +401,51 @@ const generatedRouteRequirementAliases = [
   'NativeUnaryRouteRequiredServices',
 ] as const;
 
+const generatedClientRouteBatchAliases = [
+  'RouteBatchRequestUnion',
+  'RouteUnaryBatchRequestUnion',
+  'UnaryRouteBatchRequestUnion',
+  'RouteBatchRequest',
+  'RouteUnaryBatchRequest',
+  'UnaryRouteBatchRequest',
+  'RouteBatchResults',
+  'RouteUnaryBatchResults',
+  'UnaryRouteBatchResults',
+  'RouteProtocolBatchRequestUnion',
+  'RouteUnaryProtocolBatchRequestUnion',
+  'UnaryRouteProtocolBatchRequestUnion',
+  'ProtocolBatchRequestUnion',
+  'RouteProtocolBatchRequest',
+  'RouteUnaryProtocolBatchRequest',
+  'UnaryRouteProtocolBatchRequest',
+  'ProtocolBatchRequest',
+  'RouteProtocolBatchResults',
+  'RouteUnaryProtocolBatchResults',
+  'UnaryRouteProtocolBatchResults',
+  'ProtocolBatchResults',
+  'RouteBatchClientHeaders',
+  'RouteUnaryBatchClientHeaders',
+  'UnaryRouteBatchClientHeaders',
+  'RouteProtocolBatchClientHeaders',
+  'ProtocolBatchClientHeaders',
+  'RouteUnaryProtocolBatchClientHeaders',
+  'UnaryRouteProtocolBatchClientHeaders',
+  'RouteBatchOptions',
+  'RouteUnaryBatchOptions',
+  'UnaryRouteBatchOptions',
+  'RouteProtocolBatchOptions',
+  'ProtocolBatchOptions',
+  'RouteUnaryProtocolBatchOptions',
+  'UnaryRouteProtocolBatchOptions',
+  'RouteBatchOptionsTuple',
+  'RouteUnaryBatchOptionsTuple',
+  'UnaryRouteBatchOptionsTuple',
+  'RouteProtocolBatchOptionsTuple',
+  'ProtocolBatchOptionsTuple',
+  'RouteUnaryProtocolBatchOptionsTuple',
+  'UnaryRouteProtocolBatchOptionsTuple',
+] as const;
+
 const generatedPlatformRouteHandlerTypeAliases = [
   {
     entrypoint: 'bun.ts',
@@ -825,6 +870,21 @@ describe('route public surface', () => {
           );
 
     expect([...missing, ...mismatched].sort()).toEqual([]);
+  });
+
+  it('keeps generated client route batch aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const exports = [...exportSets].find(
+      ([file]) => basename(file) === 'client.ts'
+    )?.[1];
+    const missing =
+      exports === undefined
+        ? ['client.ts: <missing>']
+        : generatedClientRouteBatchAliases.flatMap((name) =>
+            exports.has(name) ? [] : [`client.ts: ${name}`]
+          );
+
+    expect(missing).toEqual([]);
   });
 
   it('keeps generated platform route requirement aliases available', async () => {
