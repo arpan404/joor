@@ -9,6 +9,7 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
+const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -265,6 +266,13 @@ const publicRuntimeRouteTypeExports = async (): Promise<
     return kind === 'type' && relativeFile.startsWith('runtime/');
   });
 
+const publicRpcDispatcherRouteTypeExports = async (): Promise<
+  readonly ExportedSymbol[]
+> =>
+  (await publicRouteExports()).filter(
+    ({ file, kind }) => kind === 'type' && file === rpcDispatcher
+  );
+
 const publicRouteTypedFactoryExports = async (): Promise<
   readonly ExportedSymbol[]
 > =>
@@ -510,6 +518,35 @@ describe('route public surface', () => {
     const namespaceImports =
       collectNamespaceImportsByModule(packageSubpathSource);
     const missing = (await publicRuntimeRouteTypeExports())
+      .flatMap(({ file, name }) => {
+        const packageSubpath = packageSubpathForRouteFile(file);
+        if (packageSubpath === undefined) {
+          return [`${relative(repoRoot, file)}: ${name} <no package path>`];
+        }
+        const moduleSpecifier = packageImportSpecifier(packageSubpath);
+        const alias = namespaceImports.get(moduleSpecifier);
+        if (alias === undefined) {
+          return [
+            `${relative(repoRoot, file)}: ${name} missing namespace import from ${moduleSpecifier}`,
+          ];
+        }
+        if (namespaceReferencePattern(alias, name).test(packageSubpathSource)) {
+          return [];
+        }
+        return [
+          `${relative(repoRoot, file)}: ${alias}.${name} from ${moduleSpecifier}`,
+        ];
+      })
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps RPC dispatcher route type namespace smoke coverage tied to canonical subpaths', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const namespaceImports =
+      collectNamespaceImportsByModule(packageSubpathSource);
+    const missing = (await publicRpcDispatcherRouteTypeExports())
       .flatMap(({ file, name }) => {
         const packageSubpath = packageSubpathForRouteFile(file);
         if (packageSubpath === undefined) {

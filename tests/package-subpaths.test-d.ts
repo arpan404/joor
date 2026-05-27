@@ -2946,6 +2946,15 @@ type PackageSubpathRpcRouteDetailSurface = [
       >,
     ]
   >,
+  Rpc.RpcManifestRouteUnaryProtocolBatchRequest<
+    PackageSubpathManifest,
+    readonly [
+      Rpc.RpcManifestRouteUnaryProtocolRequest<
+        PackageSubpathManifest,
+        'users.get'
+      >,
+    ]
+  >,
   Rpc.RpcManifestRouteUnaryProtocolBatchRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteProtocolBatchRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryProtocolBatchResults<
@@ -2980,6 +2989,7 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestUnaryRouteBatchResults<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryBatchClientHeaders<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteBatchClientHeaders<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryBatchOptions<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteBatchOptions<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryBatchOptionsTuple<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteBatchOptionsTuple<PackageSubpathManifest>,
@@ -3005,7 +3015,9 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestUnaryRouteRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestRouteStreamRequestUnion<PackageSubpathManifest>,
   Rpc.RpcManifestStreamRouteRequestUnion<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteUnaryBody<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteBody<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamBody<PackageSubpathManifest>,
   Rpc.RpcManifestStreamRouteBody<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryBodyResult<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteBodyResult<PackageSubpathManifest>,
@@ -3039,14 +3051,23 @@ type PackageSubpathRpcRouteDetailSurface = [
       'users.watch'
     >
   >,
+  Rpc.RpcManifestRouteUnaryProcedure<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteProcedure<PackageSubpathManifest, 'users.get'>,
+  Rpc.RpcManifestRouteStreamProcedure<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestStreamRouteProcedure<PackageSubpathManifest, 'users.watch'>,
+  Rpc.RpcManifestRouteUnaryInput<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteInput<PackageSubpathManifest, 'users.get'>,
+  Rpc.RpcManifestRouteStreamInput<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestStreamRouteInput<PackageSubpathManifest, 'users.watch'>,
+  Rpc.RpcManifestRouteUnaryOutput<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteOutput<PackageSubpathManifest, 'users.get'>,
+  Rpc.RpcManifestRouteStreamOutput<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestStreamRouteOutput<PackageSubpathManifest, 'users.watch'>,
+  Rpc.RpcManifestRouteUnaryId<PackageSubpathManifest>,
   Rpc.RpcManifestUnaryRouteId<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamId<PackageSubpathManifest>,
   Rpc.RpcManifestStreamRouteId<PackageSubpathManifest>,
+  Rpc.RpcManifestRouteStreamEvent<PackageSubpathManifest, 'users.watch'>,
   Rpc.RpcManifestStreamRouteEvent<PackageSubpathManifest, 'users.watch'>,
 ];
 type PackageSubpathManifestRouteDetailSurface = [
