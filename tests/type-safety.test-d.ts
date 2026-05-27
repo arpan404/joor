@@ -3151,6 +3151,13 @@ const rpcSubpathRouteKindScopedStreamRouteRequest: RpcSubpathManifestStreamRoute
 routeKindScopedStreamRequest.streamRequestId.toUpperCase();
 routeKindScopedStreamRouteRequest.streamRequestId.toUpperCase();
 rpcSubpathRouteKindScopedStreamRouteRequest.streamRequestId.toUpperCase();
+const routeKindScopedRequiredRequest: RpcManifestRequiredRuntimeRequest<
+  typeof routeKindScopedManifest
+> = Object.assign(requestTypedProcedureRequest, {
+  streamRequestId: 'stream_req_full',
+}) as ProcedureAppRequest & StreamProcedureRequest;
+routeKindScopedRequiredRequest.requestId.toUpperCase();
+routeKindScopedRequiredRequest.streamRequestId.toUpperCase();
 // @ts-expect-error unary route request requirements exclude stream-only request types.
 const _wrongRouteKindScopedUnaryRequest: RpcManifestRouteUnaryRequiredRuntimeRequest<
   typeof routeKindScopedManifest
@@ -3553,6 +3560,17 @@ routeKindScopedStreamJoorHandler(
   // @ts-expect-error route-stream Joor handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedJoorHandler = createJoorHandlerFor()(
+  routeKindScopedManifest,
+  {
+    plugins: [usersPlugin, auditPlugin] as const,
+  }
+);
+routeKindScopedJoorHandler(routeKindScopedRequiredRequest);
+routeKindScopedJoorHandler(
+  // @ts-expect-error full Joor handlers default to all route request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryVercelFetch = createRouteUnaryVercelFetchFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
@@ -3570,6 +3588,26 @@ const routeKindScopedStreamVercelFunction =
 routeKindScopedStreamVercelFunction.fetch(requestTypedStreamProcedureRequest);
 routeKindScopedStreamVercelFunction.fetch(
   // @ts-expect-error route-stream Vercel function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedVercelFetch = createVercelFetchFor()(
+  routeKindScopedManifest,
+  {
+    plugins: [usersPlugin, auditPlugin] as const,
+  }
+);
+routeKindScopedVercelFetch(routeKindScopedRequiredRequest);
+routeKindScopedVercelFetch(
+  // @ts-expect-error full Vercel fetch helpers default to all route request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedVercelFunction = createVercelFunctionFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedVercelFunction.fetch(routeKindScopedRequiredRequest);
+routeKindScopedVercelFunction.fetch(
+  // @ts-expect-error full Vercel function helpers default to all route request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedUnaryCloudflareFetch =
@@ -3592,6 +3630,24 @@ routeKindScopedStreamCloudflareWorker.fetch(
   // @ts-expect-error route-stream Cloudflare Worker helpers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedCloudflareFetch = createCloudflareFetchFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedCloudflareFetch(routeKindScopedRequiredRequest);
+routeKindScopedCloudflareFetch(
+  // @ts-expect-error full Cloudflare fetch helpers default to all route request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedCloudflareWorker = createCloudflareWorkerFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedCloudflareWorker.fetch(routeKindScopedRequiredRequest);
+routeKindScopedCloudflareWorker.fetch(
+  // @ts-expect-error full Cloudflare Worker helpers default to all route request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlersFor()(
     routeKindScopedManifest,
@@ -3610,6 +3666,15 @@ routeKindScopedStreamNextHandler.POST(requestTypedStreamProcedureRequest);
 routeKindScopedStreamNextHandler.POST(
   // @ts-expect-error route-stream Next handlers default to stream-only request requirements.
   requestTypedProcedureRequest
+);
+const routeKindScopedNextRouteHandlers = createNextRouteHandlersFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedNextRouteHandlers.POST(routeKindScopedRequiredRequest);
+routeKindScopedNextRouteHandlers.POST(
+  // @ts-expect-error full Next handlers default to all route request requirements.
+  requestTypedStreamProcedureRequest
 );
 const routeKindScopedUnaryNetlifyFetch = createRouteUnaryNetlifyFetchFor()(
   routeKindScopedManifest,
@@ -3631,6 +3696,25 @@ routeKindScopedStreamNetlifyEdgeFunction(
 );
 routeKindScopedStreamNetlifyEdgeFunction(
   // @ts-expect-error route-stream Netlify Edge Function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  {}
+);
+const routeKindScopedNetlifyFetch = createNetlifyFetchFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedNetlifyFetch(routeKindScopedRequiredRequest);
+routeKindScopedNetlifyFetch(
+  // @ts-expect-error full Netlify fetch helpers default to all route request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedNetlifyEdgeFunction = createNetlifyEdgeFunctionFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedNetlifyEdgeFunction(routeKindScopedRequiredRequest, {});
+routeKindScopedNetlifyEdgeFunction(
+  // @ts-expect-error full Netlify Edge Function helpers default to all route request requirements.
   requestTypedProcedureRequest,
   {}
 );
@@ -4124,6 +4208,23 @@ routeKindScopedStreamBunRpcHandler(
   // @ts-expect-error route-stream Bun RPC handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedBunFetch = createBunFetchFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+});
+routeKindScopedBunFetch(routeKindScopedRequiredRequest);
+routeKindScopedBunFetch(
+  // @ts-expect-error full Bun fetch helpers default to all route request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedBunRpcHandler = createBunRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedBunRpcHandler(routeKindScopedRequiredRequest);
+routeKindScopedBunRpcHandler(
+  // @ts-expect-error full Bun RPC handlers default to all route request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryBunServeOptions: BunRouteUnaryServeOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -4224,6 +4325,23 @@ routeKindScopedStreamDenoRpcHandler(
   // @ts-expect-error route-stream Deno RPC handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedDenoFetch = createDenoFetchFor()(routeKindScopedManifest, {
+  plugins: [usersPlugin, auditPlugin] as const,
+});
+routeKindScopedDenoFetch(routeKindScopedRequiredRequest);
+routeKindScopedDenoFetch(
+  // @ts-expect-error full Deno fetch helpers default to all route request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedDenoRpcHandler = createDenoRpcRequestHandlerFor()(
+  routeKindScopedManifest,
+  { plugins: [usersPlugin, auditPlugin] as const }
+);
+routeKindScopedDenoRpcHandler(routeKindScopedRequiredRequest);
+routeKindScopedDenoRpcHandler(
+  // @ts-expect-error full Deno RPC handlers default to all route request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedUnaryDenoServeOptions: DenoRouteUnaryServeOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -4295,6 +4413,15 @@ routeKindScopedUnaryStandaloneDenoRpcHandler(requestTypedProcedureRequest);
 routeKindScopedUnaryStandaloneDenoRpcHandler(
   // @ts-expect-error route-unary standalone Deno RPC handlers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
+);
+const routeKindScopedStandaloneDenoRpcHandler =
+  createStandaloneDenoRpcRequestHandlerFor()(routeKindScopedManifest, {
+    plugins: [usersPlugin, auditPlugin] as const,
+  });
+routeKindScopedStandaloneDenoRpcHandler(routeKindScopedRequiredRequest);
+routeKindScopedStandaloneDenoRpcHandler(
+  // @ts-expect-error full standalone Deno RPC handlers default to all route request requirements.
+  requestTypedProcedureRequest
 );
 const routeKindScopedUnaryStandaloneDenoServeOptions: StandaloneDenoRouteUnaryServeOptionsFor<
   typeof routeKindScopedManifest,
