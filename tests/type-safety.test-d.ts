@@ -4122,6 +4122,89 @@ routeKindScopedStreamAwsLambdaRestApiRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamAwsLambdaRestApiRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamAwsLambdaRestApiOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedAwsLambdaOptions: AwsLambdaHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedAwsLambdaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedAwsLambdaRequest.requestId.toUpperCase();
+routeKindScopedAwsLambdaRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full AWS Lambda options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full AWS Lambda options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedAwsLambdaHttpApiOptions: AwsLambdaHttpApiHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedAwsLambdaOptions;
+const routeKindScopedAwsLambdaHttpApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaHttpApiOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedAwsLambdaHttpApiRequest.requestId.toUpperCase();
+routeKindScopedAwsLambdaHttpApiRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full AWS Lambda HTTP API options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaHttpApiUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaHttpApiOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full AWS Lambda HTTP API options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaHttpApiStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaHttpApiOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedAwsLambdaRestApiOptions: AwsLambdaRestApiHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedAwsLambdaOptions;
+const routeKindScopedAwsLambdaRestApiRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaRestApiOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedAwsLambdaRestApiRequest.requestId.toUpperCase();
+routeKindScopedAwsLambdaRestApiRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full AWS Lambda REST API options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaRestApiUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaRestApiOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full AWS Lambda REST API options default to all route request requirements.
+const _wrongRouteKindScopedAwsLambdaRestApiStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedAwsLambdaRestApiOptions
+> = requestTypedStreamProcedureRequest;
+createAwsLambdaHandlerFor()(routeKindScopedManifest, {
+  ...routeKindScopedAwsLambdaOptions,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
+createAwsLambdaHttpApiHandlerFor()(routeKindScopedManifest, {
+  ...routeKindScopedAwsLambdaHttpApiOptions,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
+createAwsLambdaRestApiHandlerFor()(routeKindScopedManifest, {
+  ...routeKindScopedAwsLambdaRestApiOptions,
+  hooks: {
+    beforeRequest(request) {
+      request.requestId.toUpperCase();
+      request.streamRequestId.toUpperCase();
+      return undefined;
+    },
+  },
+});
 createRouteUnaryAwsLambdaHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryAwsLambdaOptions
