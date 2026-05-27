@@ -3803,6 +3803,25 @@ routeKindScopedStreamExpressRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamExpressRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamExpressHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedExpressHandlerOptions: ExpressHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedExpressRequest: HandlerOptionsRequest<
+  typeof routeKindScopedExpressHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedExpressRequest.requestId.toUpperCase();
+routeKindScopedExpressRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Express options default to all route request requirements.
+const _wrongRouteKindScopedExpressUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedExpressHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Express options default to all route request requirements.
+const _wrongRouteKindScopedExpressStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedExpressHandlerOptions
+> = requestTypedStreamProcedureRequest;
 createRouteUnaryExpressHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryExpressHandlerOptions
@@ -3834,7 +3853,7 @@ createRouteStreamExpressHandlerFor()(routeKindScopedManifest, {
   },
 });
 createExpressHandlerFor()(routeKindScopedManifest, {
-  plugins: [usersPlugin, auditPlugin] as const,
+  ...routeKindScopedExpressHandlerOptions,
   hooks: {
     beforeRequest(request) {
       request.requestId.toUpperCase();
@@ -3867,6 +3886,25 @@ routeKindScopedStreamKoaRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamKoaRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamKoaHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedKoaHandlerOptions: KoaHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedKoaRequest: HandlerOptionsRequest<
+  typeof routeKindScopedKoaHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedKoaRequest.requestId.toUpperCase();
+routeKindScopedKoaRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Koa options default to all route request requirements.
+const _wrongRouteKindScopedKoaUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedKoaHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Koa options default to all route request requirements.
+const _wrongRouteKindScopedKoaStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedKoaHandlerOptions
+> = requestTypedStreamProcedureRequest;
 createRouteUnaryKoaHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryKoaHandlerOptions
@@ -3898,7 +3936,7 @@ createRouteStreamKoaHandlerFor()(routeKindScopedManifest, {
   },
 });
 createKoaHandlerFor()(routeKindScopedManifest, {
-  plugins: [usersPlugin, auditPlugin] as const,
+  ...routeKindScopedKoaHandlerOptions,
   hooks: {
     beforeRequest(request) {
       request.requestId.toUpperCase();
@@ -4004,6 +4042,25 @@ routeKindScopedStreamFastifyRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamFastifyRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamFastifyHandlerOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedFastifyHandlerOptions: FastifyHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedFastifyRequest: HandlerOptionsRequest<
+  typeof routeKindScopedFastifyHandlerOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedFastifyRequest.requestId.toUpperCase();
+routeKindScopedFastifyRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Fastify options default to all route request requirements.
+const _wrongRouteKindScopedFastifyUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedFastifyHandlerOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Fastify options default to all route request requirements.
+const _wrongRouteKindScopedFastifyStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedFastifyHandlerOptions
+> = requestTypedStreamProcedureRequest;
 createRouteUnaryFastifyHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryFastifyHandlerOptions
@@ -4013,7 +4070,7 @@ createRouteStreamFastifyHandlerFor()(
   routeKindScopedStreamFastifyHandlerOptions
 );
 createFastifyHandlerFor()(routeKindScopedManifest, {
-  plugins: [usersPlugin, auditPlugin] as const,
+  ...routeKindScopedFastifyHandlerOptions,
   hooks: {
     beforeRequest(request) {
       request.requestId.toUpperCase();
