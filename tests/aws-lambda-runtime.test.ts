@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest';
 import {
   createAwsLambdaHandler,
   createAwsLambdaRestApiHandler,
+  createRouteStreamAwsLambdaHandler,
   createRouteStreamAwsLambdaRestApiHandler,
   createRouteUnaryAwsLambdaHandlerFor,
+  createRouteUnaryAwsLambdaRestApiHandler,
   defineProcedure,
   t,
 } from '../src/index.js';
@@ -202,5 +204,96 @@ describe('aws lambda runtime', () => {
     expect(response.body).toContain('event: data');
     expect(response.body).toContain('"event":"updated"');
     expect(response.body).toContain('event: done');
+  });
+
+  it('rejects wrong route kinds in route-specific Lambda handlers', async () => {
+    const unary = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      output: t.object({ ok: t.boolean() }),
+      async handler(ctx, input) {
+        return ctx.ok(input);
+      },
+    });
+    const stream = defineProcedure({
+      input: t.object({ ok: t.boolean() }),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler(_ctx, input) {
+        yield input;
+      },
+    });
+    const routeManifest = { procedures: { ping: unary, watch: stream } };
+    const unaryHttpHandler = createRouteUnaryAwsLambdaHandlerFor()(
+      routeManifest,
+      { path: '/api/rpc' }
+    );
+    const streamHttpHandler = createRouteStreamAwsLambdaHandler(routeManifest, {
+      path: '/api/rpc',
+    });
+    const unaryRestHandler = createRouteUnaryAwsLambdaRestApiHandler(
+      routeManifest,
+      { path: '/api/rpc' }
+    );
+    const streamRestHandler = createRouteStreamAwsLambdaRestApiHandler(
+      routeManifest,
+      { path: '/api/rpc' }
+    );
+
+    const wrongUnaryHttpResponse = await unaryHttpHandler({
+      rawPath: '/api/rpc',
+      headers: { host: 'api.example', 'content-type': 'application/json' },
+      body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+      requestContext: { http: { method: 'POST' } },
+    });
+    const wrongStreamHttpResponse = await streamHttpHandler({
+      rawPath: '/api/rpc',
+      headers: {
+        host: 'api.example',
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+      requestContext: { http: { method: 'POST' } },
+    });
+    const wrongUnaryRestResponse = await unaryRestHandler({
+      path: '/api/rpc',
+      httpMethod: 'POST',
+      headers: { host: 'rest.example', 'content-type': 'application/json' },
+      body: JSON.stringify({ id: 'watch', input: { ok: true } }),
+    });
+    const wrongStreamRestResponse = await streamRestHandler({
+      path: '/api/rpc',
+      httpMethod: 'POST',
+      headers: {
+        host: 'rest.example',
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({ id: 'ping', input: { ok: true } }),
+    });
+
+    expect(wrongUnaryHttpResponse.statusCode).toBe(200);
+    expect(JSON.parse(wrongUnaryHttpResponse.body ?? '{}')).toMatchObject({
+      ok: false,
+      id: 'watch',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(wrongStreamHttpResponse.statusCode).toBe(200);
+    expect(JSON.parse(wrongStreamHttpResponse.body ?? '{}')).toMatchObject({
+      ok: false,
+      id: 'ping',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(wrongUnaryRestResponse.statusCode).toBe(200);
+    expect(JSON.parse(wrongUnaryRestResponse.body ?? '{}')).toMatchObject({
+      ok: false,
+      id: 'watch',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
+    expect(wrongStreamRestResponse.statusCode).toBe(200);
+    expect(JSON.parse(wrongStreamRestResponse.body ?? '{}')).toMatchObject({
+      ok: false,
+      id: 'ping',
+      error: { code: 'NOT_FOUND', status: 404 },
+    });
   });
 });
