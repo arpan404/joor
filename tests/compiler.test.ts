@@ -4438,6 +4438,34 @@ const typedNodeNativeHandler: NodeNativeHandler<
 > = createNodeNativeHandler<GeneratedIncomingMessage, GeneratedServerResponse>(
   nodeNativeOptions
 );
+const typedRouteUnaryNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createRouteUnaryNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
+const typedUnaryRouteNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createUnaryRouteNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
+const typedRouteStreamNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createRouteStreamNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
+const typedStreamRouteNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createStreamRouteNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
 createNodeNativeHandler({ ...nodeNativeOptions, cors: false });
 const nodeDefaultHandler: NodeNativeHandler = nodeNativeHandler;
 const nodeDefaultExportHandler: NodeNativeHandler = nodeNativeHandlerDefault;
@@ -4458,11 +4486,35 @@ nodeDefaultHandler;
 nodeDefaultExportHandler;
 syncNodeHandler;
 typedNodeNativeHandler(generatedIncomingMessage, generatedServerResponse);
+typedRouteUnaryNodeNativeHandler(
+  generatedIncomingMessage,
+  generatedServerResponse
+);
+typedUnaryRouteNodeNativeHandler(
+  generatedIncomingMessage,
+  generatedServerResponse
+);
+typedRouteStreamNodeNativeHandler(
+  generatedIncomingMessage,
+  generatedServerResponse
+);
+typedStreamRouteNodeNativeHandler(
+  generatedIncomingMessage,
+  generatedServerResponse
+);
 syncTypedNodeHandler(generatedIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed Node handlers preserve custom incoming message types.
 typedNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed Node handlers preserve custom outgoing response types.
 typedNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
+// @ts-expect-error generated typed route-unary Node handlers preserve custom incoming message types.
+typedRouteUnaryNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
+// @ts-expect-error generated typed unary-route Node handlers preserve custom outgoing response types.
+typedUnaryRouteNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
+// @ts-expect-error generated typed route-stream Node handlers preserve custom incoming message types.
+typedRouteStreamNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
+// @ts-expect-error generated typed stream-route Node handlers preserve custom outgoing response types.
+typedStreamRouteNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
 const nodeServer: NodeNativeServer = listenNodeNative({ ...nodeNativeOptions, port: 3000 });
 const routeUnaryNodeServer: NodeNativeServer =
   createRouteUnaryNodeNativeServerFor(nodeNativeOptions);
