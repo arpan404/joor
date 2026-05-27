@@ -13,8 +13,10 @@ import {
   createManifestRouteStreamClient,
   createManifestRouteUnaryProtocolRequest,
   createManifestRouteUnaryClient,
+  createManifestStreamClient,
   createManifestStreamProtocolRequest,
   createManifestStreamRouteClient,
+  createManifestUnaryClient,
   createManifestUnaryProtocolRequest,
   createManifestUnaryRouteClient,
   createProtocolRequest,
@@ -25,7 +27,9 @@ import {
   createRouteStreamProtocolRequest,
   createRouteUnaryClient,
   createRouteUnaryProtocolRequest,
+  createStreamClient,
   createStreamProtocolRequest,
+  createUnaryClient,
   createUnaryProtocolRequest,
   defineProcedure,
   t,
@@ -36,13 +40,17 @@ import type {
   RpcManifestProtocolRequestBuilder,
   RpcManifestRouteStreamProtocolRequest,
   RpcManifestStreamProtocolRequestBuilder,
+  RpcManifestStreamTransportClient,
   RpcManifestRouteUnaryProtocolRequest,
   RpcManifestUnaryProtocolRequestBuilder,
+  RpcManifestUnaryTransportClient,
   RpcProtocolRequest,
   RpcProtocolRequestBuilder,
   RpcRouteStreamProtocolRequest,
   RpcStreamProtocolRequestBuilder,
   RpcRouteUnaryProtocolRequest,
+  RpcStreamTransportClient,
+  RpcUnaryTransportClient,
   RpcUnaryProtocolRequestBuilder,
 } from '../src/index.js';
 
@@ -364,11 +372,31 @@ describe('client', () => {
         throw new Error('Unexpected fetch');
       },
     };
+    const conciseUnaryClient: RpcManifestUnaryTransportClient<typeof manifest> =
+      createUnaryClient({ ...options, manifest });
+    const conciseManifestUnaryClient: RpcManifestUnaryTransportClient<
+      typeof manifest
+    > = createManifestUnaryClient(manifest, options);
+    const conciseStreamClient: RpcManifestStreamTransportClient<typeof manifest> =
+      createStreamClient({ ...options, manifest });
+    const conciseManifestStreamClient: RpcManifestStreamTransportClient<
+      typeof manifest
+    > = createManifestStreamClient(manifest, options);
+    const routeUnaryClient: RpcUnaryTransportClient<typeof manifest.procedures> =
+      createUnaryClient<typeof manifest.procedures>(options);
+    const routeStreamClient: RpcStreamTransportClient<typeof manifest.procedures> =
+      createStreamClient<typeof manifest.procedures>(options);
+    routeUnaryClient.request('protected', {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+    });
+    routeStreamClient.stream('stream', { ok: true });
 
     for (const client of [
       createRouteUnaryClient({ ...options, manifest }),
       createManifestRouteUnaryClient(manifest, options),
       createManifestUnaryRouteClient(manifest, options),
+      conciseUnaryClient,
+      conciseManifestUnaryClient,
     ]) {
       expect(Object.isFrozen(client)).toBe(true);
       expect(Object.keys(client).sort()).toEqual(['batch', 'call', 'request']);
@@ -379,6 +407,8 @@ describe('client', () => {
       createRouteStreamClient({ ...options, manifest }),
       createManifestRouteStreamClient(manifest, options),
       createManifestStreamRouteClient(manifest, options),
+      conciseStreamClient,
+      conciseManifestStreamClient,
     ]) {
       expect(Object.isFrozen(client)).toBe(true);
       expect(Object.keys(client)).toEqual(['stream']);

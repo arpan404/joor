@@ -2807,7 +2807,13 @@ export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
 export type RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryTransportClient<TRoutes>;
 
+export type RpcUnaryTransportClient<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryTransportClient<TRoutes>;
+
 export type RpcStreamRouteTransportClient<TRoutes extends RpcRouteMap> =
+  RpcRouteStreamTransportClient<TRoutes>;
+
+export type RpcStreamTransportClient<TRoutes extends RpcRouteMap> =
   RpcRouteStreamTransportClient<TRoutes>;
 
 export interface RouteRpcTransportClient<TRoutes extends RpcRouteMap>
@@ -2852,6 +2858,9 @@ export type RpcManifestUnaryRouteTransportClient<
   TManifest extends JoorManifest,
 > = RpcManifestRouteUnaryTransportClient<TManifest>;
 
+export type RpcManifestUnaryTransportClient<TManifest extends JoorManifest> =
+  RpcManifestRouteUnaryTransportClient<TManifest>;
+
 export interface RpcManifestRouteStreamTransportClient<
   TManifest extends JoorManifest,
 > {
@@ -2867,6 +2876,9 @@ export interface RpcManifestRouteStreamTransportClient<
 export type RpcManifestStreamRouteTransportClient<
   TManifest extends JoorManifest,
 > = RpcManifestRouteStreamTransportClient<TManifest>;
+
+export type RpcManifestStreamTransportClient<TManifest extends JoorManifest> =
+  RpcManifestRouteStreamTransportClient<TManifest>;
 
 export interface RpcManifestTransportClient<TManifest extends JoorManifest>
   extends
@@ -2895,11 +2907,17 @@ export type RpcRouteUnaryClientOptions<
 export type RpcUnaryRouteClientOptions<TRequest extends Request = Request> =
   RpcRouteUnaryClientOptions<TRequest>;
 
+export type RpcUnaryClientOptions<TRequest extends Request = Request> =
+  RpcRouteUnaryClientOptions<TRequest>;
+
 export type RpcRouteStreamClientOptions<
   TRequest extends Request = Request,
 > = ClientOptions<undefined, TRequest>;
 
 export type RpcStreamRouteClientOptions<TRequest extends Request = Request> =
+  RpcRouteStreamClientOptions<TRequest>;
+
+export type RpcStreamClientOptions<TRequest extends Request = Request> =
   RpcRouteStreamClientOptions<TRequest>;
 
 export type RpcRouteUnaryClientOptionsFor<
@@ -2920,7 +2938,19 @@ export type RpcUnaryRouteClientOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = RpcRouteUnaryClientOptionsFor<TManifest, TRequest>;
 
+export type RpcUnaryClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcRouteUnaryClientOptionsFor<TManifest, TRequest>;
+
 export type RpcManifestUnaryRouteClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryClientOptionsFor<TManifest, TRequest>;
+
+export type RpcManifestUnaryClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
@@ -2944,7 +2974,19 @@ export type RpcStreamRouteClientOptionsFor<
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = RpcRouteStreamClientOptionsFor<TManifest, TRequest>;
 
+export type RpcStreamClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcRouteStreamClientOptionsFor<TManifest, TRequest>;
+
 export type RpcManifestStreamRouteClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamClientOptionsFor<TManifest, TRequest>;
+
+export type RpcManifestStreamClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
@@ -2962,6 +3004,12 @@ export type RpcManifestUnaryRouteClientOptions<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = RpcManifestRouteUnaryClientOptions<TManifest, TRequest>;
 
+export type RpcManifestUnaryClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteUnaryClientOptions<TManifest, TRequest>;
+
 export type RpcManifestRouteStreamClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request =
@@ -2969,6 +3017,12 @@ export type RpcManifestRouteStreamClientOptions<
 > = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
 
 export type RpcManifestStreamRouteClientOptions<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcManifestRouteStreamClientOptions<TManifest, TRequest>;
+
+export type RpcManifestStreamClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request =
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
@@ -3359,6 +3413,9 @@ export function createRouteUnaryClient<TRequest extends Request = Request>(
 export const createUnaryRouteClient: typeof createRouteUnaryClient =
   createRouteUnaryClient;
 
+export const createUnaryClient: typeof createRouteUnaryClient =
+  createRouteUnaryClient;
+
 export const createManifestRouteUnaryClient = <
   const TManifest extends JoorManifest,
   TRequest extends Request =
@@ -3373,6 +3430,9 @@ export const createManifestRouteUnaryClient = <
   });
 
 export const createManifestUnaryRouteClient: typeof createManifestRouteUnaryClient =
+  createManifestRouteUnaryClient;
+
+export const createManifestUnaryClient: typeof createManifestRouteUnaryClient =
   createManifestRouteUnaryClient;
 
 export function createRouteStreamClient<
@@ -3412,6 +3472,9 @@ export function createRouteStreamClient<TRequest extends Request = Request>(
 export const createStreamRouteClient: typeof createRouteStreamClient =
   createRouteStreamClient;
 
+export const createStreamClient: typeof createRouteStreamClient =
+  createRouteStreamClient;
+
 export const createManifestRouteStreamClient = <
   const TManifest extends JoorManifest,
   TRequest extends Request =
@@ -3426,4 +3489,7 @@ export const createManifestRouteStreamClient = <
   });
 
 export const createManifestStreamRouteClient: typeof createManifestRouteStreamClient =
+  createManifestRouteStreamClient;
+
+export const createManifestStreamClient: typeof createManifestRouteStreamClient =
   createManifestRouteStreamClient;

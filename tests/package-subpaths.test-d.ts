@@ -151,9 +151,11 @@ import {
   createManifestRouteStreamRequest as createRootManifestRouteStreamRequest,
   createManifestRouteUnaryProtocolRequest as createRootManifestRouteUnaryProtocolRequest,
   createManifestRouteUnaryRequest as createRootManifestRouteUnaryRequest,
+  createManifestStreamClient as createRootManifestStreamClient,
   createManifestStreamProtocolRequest as createRootManifestStreamProtocolRequest,
   createManifestStreamRouteProtocolRequest as createRootManifestStreamRouteProtocolRequest,
   createManifestStreamRouteRequest as createRootManifestStreamRouteRequest,
+  createManifestUnaryClient as createRootManifestUnaryClient,
   createManifestUnaryProtocolRequest as createRootManifestUnaryProtocolRequest,
   createManifestUnaryRouteProtocolRequest as createRootManifestUnaryRouteProtocolRequest,
   createManifestUnaryRouteRequest as createRootManifestUnaryRouteRequest,
@@ -164,9 +166,11 @@ import {
   createRouteStreamRequest as createRootRouteStreamRequest,
   createRouteUnaryProtocolRequest as createRootRouteUnaryProtocolRequest,
   createRouteUnaryRequest as createRootRouteUnaryRequest,
+  createStreamClient as createRootStreamClient,
   createStreamProtocolRequest as createRootStreamProtocolRequest,
   createStreamRouteProtocolRequest as createRootStreamRouteProtocolRequest,
   createStreamRouteRequest as createRootStreamRouteRequest,
+  createUnaryClient as createRootUnaryClient,
   createUnaryProtocolRequest as createRootUnaryProtocolRequest,
   createUnaryRouteProtocolRequest as createRootUnaryRouteProtocolRequest,
   createUnaryRouteRequest as createRootUnaryRouteRequest,
@@ -327,10 +331,12 @@ import {
   createManifestRouteUnaryProtocolRequest as createClientManifestRouteUnaryProtocolRequest,
   createManifestRouteUnaryRequest as createClientManifestRouteUnaryRequest,
   createManifestRouteUnaryClient,
+  createManifestStreamClient as createClientManifestStreamClient,
   createManifestStreamProtocolRequest as createClientManifestStreamProtocolRequest,
   createManifestStreamRouteProtocolRequest as createClientManifestStreamRouteProtocolRequest,
   createManifestStreamRouteRequest as createClientManifestStreamRouteRequest,
   createManifestStreamRouteClient,
+  createManifestUnaryClient as createClientManifestUnaryClient,
   createManifestUnaryProtocolRequest as createClientManifestUnaryProtocolRequest,
   createManifestUnaryRouteProtocolRequest as createClientManifestUnaryRouteProtocolRequest,
   createManifestUnaryRouteRequest as createClientManifestUnaryRouteRequest,
@@ -344,10 +350,12 @@ import {
   createRouteUnaryClient,
   createRouteUnaryProtocolRequest as createClientRouteUnaryProtocolRequest,
   createRouteUnaryRequest as createClientRouteUnaryRequest,
+  createStreamClient as createClientStreamClient,
   createStreamProtocolRequest as createClientStreamProtocolRequest,
   createStreamRouteClient,
   createStreamRouteProtocolRequest as createClientStreamRouteProtocolRequest,
   createStreamRouteRequest as createClientStreamRouteRequest,
+  createUnaryClient as createClientUnaryClient,
   createUnaryProtocolRequest as createClientUnaryProtocolRequest,
   createUnaryRouteClient,
   createUnaryRouteProtocolRequest as createClientUnaryRouteProtocolRequest,
@@ -378,9 +386,11 @@ import {
   createManifestRouteStreamRequest,
   createManifestRouteUnaryProtocolRequest,
   createManifestRouteUnaryRequest,
+  createManifestStreamClient,
   createManifestStreamProtocolRequest,
   createManifestStreamRouteProtocolRequest,
   createManifestStreamRouteRequest,
+  createManifestUnaryClient,
   createManifestUnaryProtocolRequest,
   createManifestUnaryRouteProtocolRequest,
   createManifestUnaryRouteRequest,
@@ -391,9 +401,11 @@ import {
   createRouteStreamRequest,
   createRouteUnaryProtocolRequest,
   createRouteUnaryRequest,
+  createStreamClient,
   createStreamProtocolRequest,
   createStreamRouteProtocolRequest,
   createStreamRouteRequest,
+  createUnaryClient,
   createUnaryProtocolRequest,
   createUnaryRouteProtocolRequest,
   createUnaryRouteRequest,
@@ -1034,6 +1046,71 @@ const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClien
   packageSubpathClient;
 const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
   packageSubpathClient;
+const packageSubpathUnaryClientOptions: Client.RpcUnaryClientOptions = {
+  url: 'https://example.com/rpc',
+};
+const packageSubpathStreamClientOptions: Client.RpcStreamClientOptions =
+  packageSubpathUnaryClientOptions;
+const packageSubpathManifestUnaryClientOptions: Client.RpcManifestUnaryClientOptions<PackageSubpathManifest> =
+  packageSubpathUnaryClientOptions;
+const packageSubpathManifestStreamClientOptions: Client.RpcManifestStreamClientOptions<PackageSubpathManifest> =
+  packageSubpathStreamClientOptions;
+const packageSubpathClientUnaryClient: Client.RpcManifestUnaryTransportClient<PackageSubpathManifest> =
+  createClientManifestUnaryClient(
+    packageSubpathManifest,
+    packageSubpathManifestUnaryClientOptions
+  );
+const packageSubpathClientStreamClient: Client.RpcManifestStreamTransportClient<PackageSubpathManifest> =
+  createClientManifestStreamClient(
+    packageSubpathManifest,
+    packageSubpathManifestStreamClientOptions
+  );
+const packageSubpathClientRouteUnaryClient: Client.RpcUnaryTransportClient<PackageSubpathRoutes> =
+  createClientUnaryClient<PackageSubpathRoutes>(packageSubpathUnaryClientOptions);
+const packageSubpathClientRouteStreamClient: Client.RpcStreamTransportClient<PackageSubpathRoutes> =
+  createClientStreamClient<PackageSubpathRoutes>(packageSubpathStreamClientOptions);
+const packageSubpathRpcUnaryClient: Rpc.RpcManifestUnaryTransportClient<PackageSubpathManifest> =
+  createManifestUnaryClient(
+    packageSubpathManifest,
+    packageSubpathManifestUnaryClientOptions
+  );
+const packageSubpathRpcStreamClient: Rpc.RpcManifestStreamTransportClient<PackageSubpathManifest> =
+  createManifestStreamClient(
+    packageSubpathManifest,
+    packageSubpathManifestStreamClientOptions
+  );
+const packageSubpathRpcRouteUnaryClient: Rpc.RpcUnaryTransportClient<PackageSubpathRoutes> =
+  createUnaryClient<PackageSubpathRoutes>(packageSubpathUnaryClientOptions);
+const packageSubpathRpcRouteStreamClient: Rpc.RpcStreamTransportClient<PackageSubpathRoutes> =
+  createStreamClient<PackageSubpathRoutes>(packageSubpathStreamClientOptions);
+const packageSubpathRootUnaryClient: Root.RpcManifestUnaryTransportClient<PackageSubpathManifest> =
+  createRootManifestUnaryClient(
+    packageSubpathManifest,
+    packageSubpathManifestUnaryClientOptions
+  );
+const packageSubpathRootStreamClient: Root.RpcManifestStreamTransportClient<PackageSubpathManifest> =
+  createRootManifestStreamClient(
+    packageSubpathManifest,
+    packageSubpathManifestStreamClientOptions
+  );
+const packageSubpathRootRouteUnaryClient: Root.RpcUnaryTransportClient<PackageSubpathRoutes> =
+  createRootUnaryClient<PackageSubpathRoutes>(packageSubpathUnaryClientOptions);
+const packageSubpathRootRouteStreamClient: Root.RpcStreamTransportClient<PackageSubpathRoutes> =
+  createRootStreamClient<PackageSubpathRoutes>(packageSubpathStreamClientOptions);
+void [
+  packageSubpathClientUnaryClient,
+  packageSubpathClientStreamClient,
+  packageSubpathClientRouteUnaryClient,
+  packageSubpathClientRouteStreamClient,
+  packageSubpathRpcUnaryClient,
+  packageSubpathRpcStreamClient,
+  packageSubpathRpcRouteUnaryClient,
+  packageSubpathRpcRouteStreamClient,
+  packageSubpathRootUnaryClient,
+  packageSubpathRootStreamClient,
+  packageSubpathRootRouteUnaryClient,
+  packageSubpathRootRouteStreamClient,
+];
 const packageSubpathRouteProtocolRequestBuilder: Client.RpcRouteProtocolRequestBuilder<PackageSubpathRoutes> =
   createClientRouteProtocolRequest;
 const packageSubpathProtocolRequestBuilder: Client.RpcProtocolRequestBuilder<PackageSubpathRoutes> =
@@ -3822,16 +3899,22 @@ type PackageSubpathManifestRouteDetailSurface = [
   Manifest.JoorManifestClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteClientOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestStreamRouteClientOptions<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteClientOptionsFor<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestStreamRouteClientOptionsFor<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestUnaryTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestStreamRouteTransportClient<PackageSubpathManifest>,
+  Manifest.JoorManifestStreamTransportClient<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryId<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteId<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamId<PackageSubpathManifest>,
