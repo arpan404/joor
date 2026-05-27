@@ -1232,6 +1232,9 @@ export function createRouteProtocolRequest(
   return createProtocolRequestObject(id, input, options);
 }
 
+export const createProtocolRequest: typeof createRouteProtocolRequest =
+  createRouteProtocolRequest;
+
 export function createRouteUnaryProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
@@ -1251,6 +1254,9 @@ export function createRouteUnaryProtocolRequest(
 export const createUnaryRouteProtocolRequest: typeof createRouteUnaryProtocolRequest =
   createRouteUnaryProtocolRequest;
 
+export const createUnaryProtocolRequest: typeof createRouteUnaryProtocolRequest =
+  createRouteUnaryProtocolRequest;
+
 export function createRouteStreamProtocolRequest<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
@@ -1268,6 +1274,9 @@ export function createRouteStreamProtocolRequest(
 }
 
 export const createStreamRouteProtocolRequest: typeof createRouteStreamProtocolRequest =
+  createRouteStreamProtocolRequest;
+
+export const createStreamProtocolRequest: typeof createRouteStreamProtocolRequest =
   createRouteStreamProtocolRequest;
 
 export function createManifestRouteProtocolRequest<
@@ -1290,6 +1299,9 @@ export function createManifestRouteProtocolRequest(
   assertManifestRouteRequestKind(manifest, id, 'any');
   return createProtocolRequestObject(id, input, options);
 }
+
+export const createManifestProtocolRequest: typeof createManifestRouteProtocolRequest =
+  createManifestRouteProtocolRequest;
 
 export function createManifestRouteUnaryProtocolRequest<
   const TManifest extends JoorManifest,
@@ -1315,6 +1327,9 @@ export function createManifestRouteUnaryProtocolRequest(
 export const createManifestUnaryRouteProtocolRequest: typeof createManifestRouteUnaryProtocolRequest =
   createManifestRouteUnaryProtocolRequest;
 
+export const createManifestUnaryProtocolRequest: typeof createManifestRouteUnaryProtocolRequest =
+  createManifestRouteUnaryProtocolRequest;
+
 export function createManifestRouteStreamProtocolRequest<
   const TManifest extends JoorManifest,
   TId extends RpcRouteStreamId<JoorManifestRoutes<TManifest>> =
@@ -1336,6 +1351,9 @@ export function createManifestRouteStreamProtocolRequest(
 }
 
 export const createManifestStreamRouteProtocolRequest: typeof createManifestRouteStreamProtocolRequest =
+  createManifestRouteStreamProtocolRequest;
+
+export const createManifestStreamProtocolRequest: typeof createManifestRouteStreamProtocolRequest =
   createManifestRouteStreamProtocolRequest;
 
 export function createRouteStreamRequest<

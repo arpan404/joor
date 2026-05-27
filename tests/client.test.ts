@@ -5,6 +5,7 @@ import {
   type ClientRequestFactoryArgs,
   type ClientRequestInit,
   createClient,
+  createManifestProtocolRequest,
   createManifestRouteRequest,
   createManifestRouteProtocolRequest,
   createManifestRouteStreamRequest,
@@ -12,8 +13,11 @@ import {
   createManifestRouteStreamClient,
   createManifestRouteUnaryProtocolRequest,
   createManifestRouteUnaryClient,
+  createManifestStreamProtocolRequest,
   createManifestStreamRouteClient,
+  createManifestUnaryProtocolRequest,
   createManifestUnaryRouteClient,
+  createProtocolRequest,
   createJoorHandler,
   createRouteProtocolRequest,
   createRouteRequest,
@@ -21,10 +25,26 @@ import {
   createRouteStreamProtocolRequest,
   createRouteUnaryClient,
   createRouteUnaryProtocolRequest,
+  createStreamProtocolRequest,
+  createUnaryProtocolRequest,
   defineProcedure,
   t,
 } from '../src/index.js';
-import type { JsonValue } from '../src/index.js';
+import type {
+  JsonValue,
+  RpcManifestProtocolRequest,
+  RpcManifestProtocolRequestBuilder,
+  RpcManifestRouteStreamProtocolRequest,
+  RpcManifestStreamProtocolRequestBuilder,
+  RpcManifestRouteUnaryProtocolRequest,
+  RpcManifestUnaryProtocolRequestBuilder,
+  RpcProtocolRequest,
+  RpcProtocolRequestBuilder,
+  RpcRouteStreamProtocolRequest,
+  RpcStreamProtocolRequestBuilder,
+  RpcRouteUnaryProtocolRequest,
+  RpcUnaryProtocolRequestBuilder,
+} from '../src/index.js';
 
 type StreamTestProcedure = {
   types?: {
@@ -56,30 +76,91 @@ describe('client', () => {
       { id: '550e8400-e29b-41d4-a716-446655440000' },
       { traceId: 'trace-1' }
     );
+    const protocolRequestBuilder: RpcProtocolRequestBuilder<{
+      protected: typeof getUser;
+      stream: typeof streamProcedure;
+    }> = createProtocolRequest;
+    const conciseRouteRequest: RpcProtocolRequest<
+      { protected: typeof getUser; stream: typeof streamProcedure },
+      'protected'
+    > = protocolRequestBuilder(
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { traceId: 'trace-concise' }
+    );
     const routeUnaryRequest = createRouteUnaryProtocolRequest<
       { protected: typeof getUser },
       'protected'
     >('protected', { id: '550e8400-e29b-41d4-a716-446655440000' });
+    const unaryProtocolRequestBuilder: RpcUnaryProtocolRequestBuilder<{
+      protected: typeof getUser;
+      stream: typeof streamProcedure;
+    }> = createUnaryProtocolRequest;
+    const conciseUnaryRequest: RpcRouteUnaryProtocolRequest<
+      { protected: typeof getUser; stream: typeof streamProcedure },
+      'protected'
+    > = unaryProtocolRequestBuilder('protected', {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+    });
     const routeStreamRequest = createRouteStreamProtocolRequest<
       { stream: typeof streamProcedure },
       'stream'
     >('stream', { ok: true });
+    const streamProtocolRequestBuilder: RpcStreamProtocolRequestBuilder<{
+      protected: typeof getUser;
+      stream: typeof streamProcedure;
+    }> = createStreamProtocolRequest;
+    const conciseStreamRequest: RpcRouteStreamProtocolRequest<
+      { protected: typeof getUser; stream: typeof streamProcedure },
+      'stream'
+    > = streamProtocolRequestBuilder('stream', { ok: true });
+    const manifest = {
+      procedures: { protected: getUser, stream: streamProcedure },
+    };
     const manifestRouteRequest = createManifestRouteProtocolRequest(
-      { procedures: { protected: getUser, stream: streamProcedure } },
+      manifest,
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' },
       { traceId: 'trace-2' }
     );
+    const manifestProtocolRequestBuilder: RpcManifestProtocolRequestBuilder<
+      typeof manifest
+    > = createManifestProtocolRequest;
+    const conciseManifestRouteRequest: RpcManifestProtocolRequest<
+      typeof manifest,
+      'protected'
+    > = manifestProtocolRequestBuilder(
+      manifest,
+      'protected',
+      { id: '550e8400-e29b-41d4-a716-446655440000' },
+      { traceId: 'trace-manifest-concise' }
+    );
     const manifestRouteUnaryRequest = createManifestRouteUnaryProtocolRequest(
-      { procedures: { protected: getUser, stream: streamProcedure } },
+      manifest,
       'protected',
       { id: '550e8400-e29b-41d4-a716-446655440000' }
     );
+    const manifestUnaryProtocolRequestBuilder: RpcManifestUnaryProtocolRequestBuilder<
+      typeof manifest
+    > = createManifestUnaryProtocolRequest;
+    const conciseManifestUnaryRequest: RpcManifestRouteUnaryProtocolRequest<
+      typeof manifest,
+      'protected'
+    > = manifestUnaryProtocolRequestBuilder(manifest, 'protected', {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+    });
     const manifestRouteStreamRequest = createManifestRouteStreamProtocolRequest(
-      { procedures: { protected: getUser, stream: streamProcedure } },
+      manifest,
       'stream',
       { ok: true }
     );
+    const manifestStreamProtocolRequestBuilder: RpcManifestStreamProtocolRequestBuilder<
+      typeof manifest
+    > = createManifestStreamProtocolRequest;
+    const conciseManifestStreamRequest: RpcManifestRouteStreamProtocolRequest<
+      typeof manifest,
+      'stream'
+    > = manifestStreamProtocolRequestBuilder(manifest, 'stream', { ok: true });
 
     expect(routeRequest).toEqual({
       id: 'protected',
@@ -94,15 +175,39 @@ describe('client', () => {
       id: 'stream',
       input: { ok: true },
     });
+    expect(conciseRouteRequest).toEqual({
+      id: 'protected',
+      input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+      traceId: 'trace-concise',
+    });
+    expect(conciseUnaryRequest).toEqual({
+      id: 'protected',
+      input: { id: '550e8400-e29b-41d4-a716-446655440000' },
+    });
+    expect(conciseStreamRequest).toEqual({
+      id: 'stream',
+      input: { ok: true },
+    });
     expect(manifestRouteRequest.traceId).toBe('trace-2');
+    expect(conciseManifestRouteRequest.traceId).toBe(
+      'trace-manifest-concise'
+    );
     expect(manifestRouteUnaryRequest.id).toBe('protected');
+    expect(conciseManifestUnaryRequest.id).toBe('protected');
     expect(manifestRouteStreamRequest.id).toBe('stream');
+    expect(conciseManifestStreamRequest.id).toBe('stream');
     expect(Object.isFrozen(routeRequest)).toBe(true);
+    expect(Object.isFrozen(conciseRouteRequest)).toBe(true);
     expect(Object.isFrozen(routeUnaryRequest)).toBe(true);
+    expect(Object.isFrozen(conciseUnaryRequest)).toBe(true);
     expect(Object.isFrozen(routeStreamRequest)).toBe(true);
+    expect(Object.isFrozen(conciseStreamRequest)).toBe(true);
     expect(Object.isFrozen(manifestRouteRequest)).toBe(true);
+    expect(Object.isFrozen(conciseManifestRouteRequest)).toBe(true);
     expect(Object.isFrozen(manifestRouteUnaryRequest)).toBe(true);
+    expect(Object.isFrozen(conciseManifestUnaryRequest)).toBe(true);
     expect(Object.isFrozen(manifestRouteStreamRequest)).toBe(true);
+    expect(Object.isFrozen(conciseManifestStreamRequest)).toBe(true);
   });
 
   it('builds standalone route requests for batches', () => {
