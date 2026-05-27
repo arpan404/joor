@@ -5499,6 +5499,14 @@ const genericStreamRouteBodyResult: StreamRouteBodyResult<typeof streamRouteBody
 genericStreamRouteBodyResult.headers.get('content-type');
 const routeStreamBodyResultFor: RouteStreamBodyResultFor<typeof routeStreamBody> =
   streamRouteBodyResultFor;
+const _wrongRouteUnaryBodyResultFor: RouteUnaryBodyResultFor<
+  // @ts-expect-error generated route-unary body result aliases reject stream bodies.
+  typeof routeStreamBody
+> = routeStreamBodyResult;
+const _wrongRouteStreamBodyResultFor: RouteStreamBodyResultFor<
+  // @ts-expect-error generated route-stream body result aliases reject unary bodies.
+  typeof routeUnaryBody
+> = new Response();
 const routeEnvelope: RouteEnvelope<'users.get'> = routeBodyResult;
 const defaultRouteEnvelope: RouteEnvelope = routeEnvelope;
 const unaryRouteEnvelope: UnaryRouteEnvelope<'users.get'> = routeEnvelope;
