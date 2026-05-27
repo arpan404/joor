@@ -4522,6 +4522,22 @@ export type GeneratedClientOptions<TRequest extends Request = RequiredRuntimeReq
 > & {
   url?: string;
 };
+export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> = Omit<
+  JoorManifestClientOptions<Manifest, TRequest>,
+  'url'
+> & {
+  url?: string;
+};
+export type GeneratedUnaryRouteClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =
+  GeneratedRouteUnaryClientOptions<TRequest>;
+export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<
+  JoorManifestClientOptions<Manifest, TRequest>,
+  'url'
+> & {
+  url?: string;
+};
+export type GeneratedStreamRouteClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =
+  GeneratedRouteStreamClientOptions<TRequest>;
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
 type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
   readonly call: (...args: [id: TId, ...ClientArgs<TId>]) => Promise<RouteResult<TId>>;
@@ -4564,6 +4580,49 @@ export function createTransport<TRequest extends Request = RequiredRuntimeReques
     url: resolved.url ?? defaultUrl,
   } as JoorManifestClientOptions<Manifest, TRequest>);
 }
+
+export function createRouteUnaryTransport(): RouteUnaryTransportClient;
+export function createRouteUnaryTransport<TRequest extends Request>(
+  options: GeneratedRouteUnaryClientOptions<TRequest>
+): RouteUnaryTransportClient;
+export function createRouteUnaryTransport<TRequest extends Request = RouteUnaryRequiredRuntimeRequest>(
+  options?: GeneratedRouteUnaryClientOptions<TRequest>
+): RouteUnaryTransportClient {
+  const resolved = options ?? ({} as GeneratedRouteUnaryClientOptions<Request>);
+  return createTransportClient(manifest, {
+    ...(resolved as Omit<JoorManifestClientOptions<Manifest, TRequest>, 'url'>),
+    url: resolved.url ?? defaultUrl,
+  } as JoorManifestClientOptions<Manifest, TRequest>) as RouteUnaryTransportClient;
+}
+
+export const createUnaryRouteTransport: typeof createRouteUnaryTransport =
+  createRouteUnaryTransport;
+
+export function createRouteStreamTransport(): RouteStreamTransportClient;
+export function createRouteStreamTransport<TRequest extends Request>(
+  options: GeneratedRouteStreamClientOptions<TRequest>
+): RouteStreamTransportClient;
+export function createRouteStreamTransport<TRequest extends Request = RouteStreamRequiredRuntimeRequest>(
+  options?: GeneratedRouteStreamClientOptions<TRequest>
+): RouteStreamTransportClient {
+  const resolved = options ?? ({} as GeneratedRouteStreamClientOptions<Request>);
+  return createTransportClient(manifest, {
+    ...(resolved as Omit<JoorManifestClientOptions<Manifest, TRequest>, 'url'>),
+    url: resolved.url ?? defaultUrl,
+  } as JoorManifestClientOptions<Manifest, TRequest>) as RouteStreamTransportClient;
+}
+
+export const createStreamRouteTransport: typeof createRouteStreamTransport =
+  createRouteStreamTransport;
+
+export const routeUnaryTransport: RouteUnaryTransportClient =
+  createRouteUnaryTransport();
+export const unaryRouteTransport: UnaryRouteTransportClient =
+  routeUnaryTransport;
+export const routeStreamTransport: RouteStreamTransportClient =
+  createRouteStreamTransport();
+export const streamRouteTransport: StreamRouteTransportClient =
+  routeStreamTransport;
 
 export type GeneratedClient = {
 ${clientTypeBody}

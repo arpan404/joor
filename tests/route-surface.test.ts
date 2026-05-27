@@ -446,6 +446,25 @@ const generatedClientRouteBatchAliases = [
   'UnaryRouteProtocolBatchOptionsTuple',
 ] as const;
 
+const generatedClientRouteTransportExports = [
+  'GeneratedRouteUnaryClientOptions',
+  'GeneratedUnaryRouteClientOptions',
+  'GeneratedRouteStreamClientOptions',
+  'GeneratedStreamRouteClientOptions',
+  'RouteUnaryTransportClient',
+  'UnaryRouteTransportClient',
+  'RouteStreamTransportClient',
+  'StreamRouteTransportClient',
+  'createRouteUnaryTransport',
+  'createUnaryRouteTransport',
+  'createRouteStreamTransport',
+  'createStreamRouteTransport',
+  'routeUnaryTransport',
+  'unaryRouteTransport',
+  'routeStreamTransport',
+  'streamRouteTransport',
+] as const;
+
 const generatedDispatcherRouteBatchAliases = [
   'NativeRouteBatchRequestUnion',
   'NativeRouteUnaryBatchRequestUnion',
@@ -993,6 +1012,21 @@ describe('route public surface', () => {
       exports === undefined
         ? ['client.ts: <missing>']
         : generatedClientRouteBatchAliases.flatMap((name) =>
+            exports.has(name) ? [] : [`client.ts: ${name}`]
+          );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated client route transport exports available', async () => {
+    const exportSets = await generatedExportSets();
+    const exports = [...exportSets].find(
+      ([file]) => basename(file) === 'client.ts'
+    )?.[1];
+    const missing =
+      exports === undefined
+        ? ['client.ts: <missing>']
+        : generatedClientRouteTransportExports.flatMap((name) =>
             exports.has(name) ? [] : [`client.ts: ${name}`]
           );
 
