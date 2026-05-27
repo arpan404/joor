@@ -2840,13 +2840,13 @@ export default defineProcedure.withContext<Record<string, never>, StreamAppReque
         `import { createFetchFor, createRouteStreamFetchFor, createStreamRouteFetchFor, defineNativeRouteStreamConfig, defineNativeRouteStreamHandlerOptions, defineNativeStreamRouteConfig, defineNativeStreamRouteHandlerOptions, fetch, nativeBody, nativeRouteStreamBody, nativeRouteStreamTransport, nativeStreamRouteBody, nativeStreamRouteTransport, type NativeBodyHandler, type NativeFetchHandler, type NativeRouteStreamBodyHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamTransportHandler, type NativeStreamRouteBodyHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteTransportHandler } from './dispatcher.safe.js';
 import type { NativeConfigRequest, NativeRouteStreamConfig, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeStreamRouteConfig, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware } from './dispatcher.safe.js';
 import { createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteStreamFetchFor as createRuntimeRouteStreamFetchFor, createStreamRouteFetch as createRuntimeStreamRouteFetch, createStreamRouteFetchFor as createRuntimeStreamRouteFetchFor, fetch as runtimeFetch, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest } from './fetch.js';
-import { createRouteStreamWorker, createRouteStreamWorkerFor, worker } from './cloudflare.js';
-import { createRouteStreamHandlers, createRouteStreamHandlersFor, handlers } from './next.js';
-import { createRouteStreamVercel, createRouteStreamVercelFor, vercel } from './vercel.js';
-import { createRouteStreamEdge, createRouteStreamEdgeFor, edge } from './netlify.js';
-import { createAwsLambdaRequest, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
-import { createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, type BunNativeRouteStreamFetchHandler } from './bun.js';
-import { createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, type DenoNativeRouteStreamFetchHandler } from './deno.js';
+import { createRouteStreamWorker, createRouteStreamWorkerFor, createStreamRouteWorker, createStreamRouteWorkerFor, worker } from './cloudflare.js';
+import { createRouteStreamHandlers, createRouteStreamHandlersFor, createStreamRouteHandlers, createStreamRouteHandlersFor, handlers } from './next.js';
+import { createRouteStreamVercel, createRouteStreamVercelFor, createStreamRouteVercel, createStreamRouteVercelFor, vercel } from './vercel.js';
+import { createRouteStreamEdge, createRouteStreamEdgeFor, createStreamRouteEdge, createStreamRouteEdgeFor, edge } from './netlify.js';
+import { createAwsLambdaRequest, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHandler, createStreamRouteAwsLambdaHandlerFor, createStreamRouteAwsLambdaRestApiHandler, createStreamRouteAwsLambdaRestApiHandlerFor, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
+import { createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createStreamRouteFetch as createStreamRouteBunFetch, createStreamRouteFetchFor as createStreamRouteBunFetchFor, type BunNativeRouteStreamFetchHandler, type BunNativeStreamRouteFetchHandler } from './bun.js';
+import { createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createStreamRouteFetch as createStreamRouteDenoFetch, createStreamRouteFetchFor as createStreamRouteDenoFetchFor, type DenoNativeRouteStreamFetchHandler, type DenoNativeStreamRouteFetchHandler } from './deno.js';
 import type { StreamAppRequest } from '${procedureImport}';
 import type { AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1 } from 'joor/runtime/aws-lambda';
 
@@ -3107,23 +3107,39 @@ createRuntimeStreamRouteFetch()(plainRequest);
 worker.fetch(streamRequest);
 createRouteStreamWorker().fetch(streamRequest);
 createRouteStreamWorkerFor().fetch(streamRequest);
+createStreamRouteWorker().fetch(streamRequest);
+createStreamRouteWorkerFor().fetch(streamRequest);
 // @ts-expect-error generated route-stream Cloudflare workers preserve stream request requirements.
 createRouteStreamWorker().fetch(plainRequest);
+// @ts-expect-error generated stream-route Cloudflare worker aliases preserve stream request requirements.
+createStreamRouteWorker().fetch(plainRequest);
 handlers.POST(streamRequest);
 createRouteStreamHandlers().GET(streamRequest);
 createRouteStreamHandlersFor().POST(streamRequest);
+createStreamRouteHandlers().GET(streamRequest);
+createStreamRouteHandlersFor().POST(streamRequest);
 // @ts-expect-error generated route-stream Next handlers preserve stream request requirements.
 createRouteStreamHandlers().POST(plainRequest);
+// @ts-expect-error generated stream-route Next handler aliases preserve stream request requirements.
+createStreamRouteHandlers().POST(plainRequest);
 vercel.fetch(streamRequest);
 createRouteStreamVercel().fetch(streamRequest);
 createRouteStreamVercelFor().fetch(streamRequest);
+createStreamRouteVercel().fetch(streamRequest);
+createStreamRouteVercelFor().fetch(streamRequest);
 // @ts-expect-error generated route-stream Vercel functions preserve stream request requirements.
 createRouteStreamVercel().fetch(plainRequest);
+// @ts-expect-error generated stream-route Vercel aliases preserve stream request requirements.
+createStreamRouteVercel().fetch(plainRequest);
 edge(streamRequest, {});
 createRouteStreamEdge()(streamRequest, {});
 createRouteStreamEdgeFor()(streamRequest, {});
+createStreamRouteEdge()(streamRequest, {});
+createStreamRouteEdgeFor()(streamRequest, {});
 // @ts-expect-error generated route-stream Netlify edge functions preserve stream request requirements.
 createRouteStreamEdge()(plainRequest, {});
+// @ts-expect-error generated stream-route Netlify aliases preserve stream request requirements.
+createStreamRouteEdge()(plainRequest, {});
 
 const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   rawPath: '/rpc',
@@ -3160,37 +3176,69 @@ const awsLambdaRestApiOptions: NativeAwsLambdaRestApiHandlerOptions<
 > = { createRequest: createAwsLambdaRestApiStreamRequest };
 createRouteStreamAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
 createRouteStreamAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
+createStreamRouteAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
+createStreamRouteAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
 createRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
 createRouteStreamAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
+createStreamRouteAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
+createStreamRouteAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
 // @ts-expect-error generated route-stream AWS handlers require request adapters for custom stream requests.
 createRouteStreamAwsLambdaHandler()(awsLambdaEvent);
+// @ts-expect-error generated stream-route AWS handler aliases require request adapters for custom stream requests.
+createStreamRouteAwsLambdaHandler()(awsLambdaEvent);
 // @ts-expect-error generated route-stream AWS handler factories require request adapters for custom stream requests.
 createRouteStreamAwsLambdaHandlerFor()()(awsLambdaEvent);
+// @ts-expect-error generated stream-route AWS handler factory aliases require request adapters for custom stream requests.
+createStreamRouteAwsLambdaHandlerFor()()(awsLambdaEvent);
 // @ts-expect-error generated route-stream AWS REST handlers require request adapters for custom stream requests.
 createRouteStreamAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+// @ts-expect-error generated stream-route AWS REST handler aliases require request adapters for custom stream requests.
+createStreamRouteAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
 // @ts-expect-error generated route-stream AWS REST handler factories require request adapters for custom stream requests.
 createRouteStreamAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
+// @ts-expect-error generated stream-route AWS REST handler factory aliases require request adapters for custom stream requests.
+createStreamRouteAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
 
 const bunRouteStreamHandler: BunNativeRouteStreamFetchHandler =
   createRouteStreamBunFetch();
+const bunStreamRouteHandler: BunNativeStreamRouteFetchHandler =
+  createStreamRouteBunFetch();
 bunRouteStreamHandler(streamRequest);
+bunStreamRouteHandler(streamRequest);
 createRouteStreamBunFetchFor()(undefined)(streamRequest);
+createStreamRouteBunFetchFor()(undefined)(streamRequest);
 // @ts-expect-error generated Bun route-stream fetch defaults reject broad Request values.
 bunRouteStreamHandler(plainRequest);
+// @ts-expect-error generated Bun stream-route fetch aliases reject broad Request values.
+bunStreamRouteHandler(plainRequest);
 // @ts-expect-error generated Bun route-stream fetch factories reject broad Request values.
 createRouteStreamBunFetchFor()(undefined)(plainRequest);
+// @ts-expect-error generated Bun stream-route fetch factory aliases reject broad Request values.
+createStreamRouteBunFetchFor()(undefined)(plainRequest);
 const denoRouteStreamHandler: DenoNativeRouteStreamFetchHandler =
   createRouteStreamDenoFetch();
+const denoStreamRouteHandler: DenoNativeStreamRouteFetchHandler =
+  createStreamRouteDenoFetch();
 denoRouteStreamHandler(streamRequest);
+denoStreamRouteHandler(streamRequest);
 createRouteStreamDenoFetchFor()(undefined)(streamRequest);
+createStreamRouteDenoFetchFor()(undefined)(streamRequest);
 // @ts-expect-error generated Deno route-stream fetch defaults reject broad Request values.
 denoRouteStreamHandler(plainRequest);
+// @ts-expect-error generated Deno stream-route fetch aliases reject broad Request values.
+denoStreamRouteHandler(plainRequest);
 // @ts-expect-error generated Deno route-stream fetch factories reject broad Request values.
 createRouteStreamDenoFetchFor()(undefined)(plainRequest);
+// @ts-expect-error generated Deno stream-route fetch factory aliases reject broad Request values.
+createStreamRouteDenoFetchFor()(undefined)(plainRequest);
 `
       );
       const tsconfigFile = join(outDir, 'tsconfig.stream-request-runtime.json');
