@@ -3797,6 +3797,14 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledRpcStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRouteUnaryRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRouteUnaryRpcRequestHandler,
+  Runtime.CompiledUnaryRouteRpcRequestHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledUnaryRouteRpcRequestHandler,
   Runtime.CompiledRouteStreamRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -3805,10 +3813,22 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledStreamRouteRpcRequestHandler,
+  Runtime.CompiledRouteUnaryBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledUnaryRouteBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteStreamBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledStreamRouteBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcRouteUnaryBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcUnaryRouteBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcUnaryRouteBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteStreamBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -3817,6 +3837,14 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledRpcStreamRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcUnaryRouteTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
