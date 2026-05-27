@@ -4749,6 +4749,30 @@ routeKindScopedStreamElysiaHandler({
   // @ts-expect-error route-stream Elysia handlers default to stream-only request requirements.
   request: requestTypedProcedureRequest,
 });
+const routeKindScopedUnaryRouteElysiaHandler =
+  createUnaryRouteElysiaHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteElysiaHandler({
+  request: requestTypedProcedureRequest,
+});
+routeKindScopedUnaryRouteElysiaHandler({
+  // @ts-expect-error unary-route Elysia handler aliases default to unary-only request requirements.
+  request: requestTypedStreamProcedureRequest,
+});
+const routeKindScopedStreamRouteElysiaHandler =
+  createStreamRouteElysiaHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteElysiaHandler({
+  request: requestTypedStreamProcedureRequest,
+});
+routeKindScopedStreamRouteElysiaHandler({
+  // @ts-expect-error stream-route Elysia handler aliases default to stream-only request requirements.
+  request: requestTypedProcedureRequest,
+});
 const routeKindScopedElysiaHandlerOptions: ElysiaHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin, typeof auditPlugin]
@@ -4841,6 +4865,14 @@ createRouteStreamExpressHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamExpressHandlerOptions
 );
+createUnaryRouteExpressHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryExpressHandlerOptions
+);
+createStreamRouteExpressHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamExpressHandlerOptions
+);
 createRouteUnaryExpressHandlerFor()(routeKindScopedManifest, {
   plugins: [usersPlugin] as const,
   hooks: {
@@ -4924,6 +4956,14 @@ createRouteStreamKoaHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamKoaHandlerOptions
 );
+createUnaryRouteKoaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryKoaHandlerOptions
+);
+createStreamRouteKoaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamKoaHandlerOptions
+);
 createRouteUnaryKoaHandlerFor()(routeKindScopedManifest, {
   plugins: [usersPlugin] as const,
   hooks: {
@@ -4979,6 +5019,32 @@ routeKindScopedStreamHonoHandler({
 routeKindScopedStreamHonoHandler({
   req: {
     // @ts-expect-error route-stream Hono handlers default to stream-only request requirements.
+    raw: requestTypedProcedureRequest,
+  },
+});
+const routeKindScopedUnaryRouteHonoHandler = createUnaryRouteHonoHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteHonoHandler({
+  req: { raw: requestTypedProcedureRequest },
+});
+routeKindScopedUnaryRouteHonoHandler({
+  req: {
+    // @ts-expect-error unary-route Hono handler aliases default to unary-only request requirements.
+    raw: requestTypedStreamProcedureRequest,
+  },
+});
+const routeKindScopedStreamRouteHonoHandler = createStreamRouteHonoHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteHonoHandler({
+  req: { raw: requestTypedStreamProcedureRequest },
+});
+routeKindScopedStreamRouteHonoHandler({
+  req: {
+    // @ts-expect-error stream-route Hono handler aliases default to stream-only request requirements.
     raw: requestTypedProcedureRequest,
   },
 });
@@ -5077,6 +5143,14 @@ createRouteUnaryFastifyHandlerFor()(
   routeKindScopedUnaryFastifyHandlerOptions
 );
 createRouteStreamFastifyHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamFastifyHandlerOptions
+);
+createUnaryRouteFastifyHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryFastifyHandlerOptions
+);
+createStreamRouteFastifyHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamFastifyHandlerOptions
 );
@@ -5454,6 +5528,30 @@ createRouteUnaryAwsLambdaRestApiHandlerFor()(
   routeKindScopedUnaryAwsLambdaRestApiOptions
 );
 createRouteStreamAwsLambdaRestApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaRestApiOptions
+);
+createUnaryRouteAwsLambdaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaOptions
+);
+createStreamRouteAwsLambdaHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaOptions
+);
+createUnaryRouteAwsLambdaHttpApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaHttpApiOptions
+);
+createStreamRouteAwsLambdaHttpApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamAwsLambdaHttpApiOptions
+);
+createUnaryRouteAwsLambdaRestApiHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryAwsLambdaRestApiOptions
+);
+createStreamRouteAwsLambdaRestApiHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamAwsLambdaRestApiOptions
 );
