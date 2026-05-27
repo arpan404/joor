@@ -51,6 +51,8 @@ import {
   createCorsHeaderRecord,
   createJsonHeaderRecord,
   transportResultToResponse,
+  type RouteStreamTransportBodyResultFor,
+  type RouteUnaryTransportBodyResultFor,
   type SerializedJsonEnvelope,
   type TransportBodyResultFor,
 } from './response.js';
@@ -459,7 +461,7 @@ export type BunRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type BunUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
@@ -469,7 +471,7 @@ export type BunRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type BunStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =

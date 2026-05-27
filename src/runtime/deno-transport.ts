@@ -46,6 +46,8 @@ import {
   transportResultToResponse,
 } from './response.js';
 import type {
+  RouteStreamTransportBodyResultFor,
+  RouteUnaryTransportBodyResultFor,
   SerializedJsonEnvelope,
   TransportBodyResultFor,
 } from './response.js';
@@ -336,7 +338,7 @@ export type DenoRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
@@ -348,7 +350,7 @@ export type DenoRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,

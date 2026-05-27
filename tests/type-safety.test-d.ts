@@ -19738,6 +19738,16 @@ const streamRouteTransportBodyResultFor: StreamRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteProtocolRequest
 > = routeStreamTransportBodyResultFor;
+const _wrongRouteUnaryTransportBodyResultFor: RouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error route-unary transport result helpers reject route-stream bodies.
+  typeof manifestStreamProtocolRequest
+> = routeStreamTransportBodyResultFor;
+const _wrongRouteStreamTransportBodyResultFor: RouteStreamTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error route-stream transport result helpers reject route-unary bodies.
+  typeof manifestUnaryProtocolRequest
+> = routeUnaryTransportBodyResultFor;
 const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
   typeof manifest
 > = transportBodyResultFor;
@@ -19784,6 +19794,16 @@ const runtimeResponseSubpathStreamRouteTransportBodyResultFor: RuntimeResponseSu
   typeof manifest,
   typeof manifestStreamRouteProtocolRequest
 > = streamRouteTransportBodyResultFor;
+const _wrongRuntimeSubpathRouteUnaryTransportBodyResultFor: RuntimeSubpathRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error runtime route-unary transport result aliases reject route-stream bodies.
+  typeof manifestStreamProtocolRequest
+> = routeStreamTransportBodyResultFor;
+const _wrongRuntimeResponseSubpathRouteStreamTransportBodyResultFor: RuntimeResponseSubpathRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error runtime/response route-stream transport result aliases reject route-unary bodies.
+  typeof manifestUnaryProtocolRequest
+> = routeUnaryTransportBodyResultFor;
 runtimeSubpathRouteUnaryTransportBodyResultFor.valueOf();
 runtimeSubpathUnaryRouteTransportBodyResultFor.valueOf();
 runtimeSubpathRouteStreamTransportBodyResultFor.valueOf();
@@ -20170,6 +20190,16 @@ const compiledStreamRouteTransportResultFor: CompiledStreamRouteTransportBodyRes
   typeof manifest,
   typeof manifestStreamRouteBody
 > = compiledRouteStreamTransportResultFor;
+const _wrongCompiledRouteUnaryTransportResultFor: CompiledRouteUnaryTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error compiled route-unary transport result helpers reject route-stream bodies.
+  typeof manifestRouteStreamBody
+> = compiledRouteStreamTransportResultFor;
+const _wrongCompiledRouteStreamTransportResultFor: CompiledRouteStreamTransportBodyResultFor<
+  typeof manifest,
+  // @ts-expect-error compiled route-stream transport result helpers reject route-unary bodies.
+  typeof manifestRouteUnaryBody
+> = compiledRouteUnaryTransportResultFor;
 const compiledUnaryRouteBodyResultFor: CompiledUnaryRouteBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
