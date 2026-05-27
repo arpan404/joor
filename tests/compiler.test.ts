@@ -3722,9 +3722,9 @@ import type { NativeConfig, NativeConfigBody, NativeConfigFor, NativeConfigManif
 import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
 import { createPlugin } from 'joor';
 import awsLambdaHandler, { createAwsLambdaHandlerFor as createGeneratedAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor as createGeneratedAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest as createGeneratedAwsLambdaRequest, createAwsLambdaRestApiHandlerFor as createGeneratedAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest as createGeneratedAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandlerFor as createGeneratedRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaHttpApiHandlerFor as createGeneratedRouteStreamAwsLambdaHttpApiHandlerFor, createRouteStreamAwsLambdaRestApiHandlerFor as createGeneratedRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandlerFor as createGeneratedRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaHttpApiHandlerFor as createGeneratedRouteUnaryAwsLambdaHttpApiHandlerFor, createRouteUnaryAwsLambdaRestApiHandlerFor as createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHandlerFor as createGeneratedStreamRouteAwsLambdaHandlerFor, createStreamRouteAwsLambdaHttpApiHandlerFor as createGeneratedStreamRouteAwsLambdaHttpApiHandlerFor, createStreamRouteAwsLambdaRestApiHandlerFor as createGeneratedStreamRouteAwsLambdaRestApiHandlerFor, createUnaryRouteAwsLambdaHandlerFor as createGeneratedUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaHttpApiHandlerFor as createGeneratedUnaryRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaRestApiHandlerFor as createGeneratedUnaryRouteAwsLambdaRestApiHandlerFor, handler as namedAwsLambdaHandler, restApiHandler as namedAwsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaRestApiHandlerFactory } from './aws-lambda.js';
-import bunNativeFetchDefault, { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, fetch as bunNativeFetch, listenRouteStream as listenRouteStreamBunNative, listenRouteUnary as listenRouteUnaryBunNative, listenStreamRoute as listenStreamRouteBunNative, listenUnaryRoute as listenUnaryRouteBunNative, serve as serveBunNative, serveBunRouteStream as serveBunRouteStreamNative, serveBunRouteUnary as serveBunRouteUnaryNative, serveBunStreamRoute as serveBunStreamRouteNative, serveBunUnaryRoute as serveBunUnaryRouteNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, serveStreamRouteBun as serveStreamRouteBunNative, serveUnaryRouteBun as serveUnaryRouteBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
+import bunNativeFetchDefault, { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetch as createRouteUnaryBunFetch, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunNativeFetch, listenRouteStream as listenRouteStreamBunNative, listenRouteUnary as listenRouteUnaryBunNative, listenStreamRoute as listenStreamRouteBunNative, listenUnaryRoute as listenUnaryRouteBunNative, serve as serveBunNative, serveBunRouteStream as serveBunRouteStreamNative, serveBunRouteUnary as serveBunRouteUnaryNative, serveBunStreamRoute as serveBunStreamRouteNative, serveBunUnaryRoute as serveBunUnaryRouteNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, serveStreamRouteBun as serveStreamRouteBunNative, serveUnaryRouteBun as serveUnaryRouteBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeRouteStreamFetchHandler, type BunNativeRouteUnaryFetchHandler, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
 import cloudflareWorker, { createRouteStreamCloudflareWorkerFor as createGeneratedRouteStreamCloudflareWorkerFor, createRouteUnaryCloudflareWorkerFor as createGeneratedRouteUnaryCloudflareWorkerFor, createWorkerFor as createGeneratedCloudflareWorkerFor, fetch as cloudflareFetch, worker as namedCloudflareWorker } from './cloudflare.js';
-import denoNativeFetchDefault, { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, fetch as denoNativeFetch, listenRouteStream as listenRouteStreamDenoNative, listenRouteUnary as listenRouteUnaryDenoNative, listenStreamRoute as listenStreamRouteDenoNative, listenUnaryRoute as listenUnaryRouteDenoNative, serve as serveDenoNative, serveDenoRouteStream as serveDenoRouteStreamNative, serveDenoRouteUnary as serveDenoRouteUnaryNative, serveDenoStreamRoute as serveDenoStreamRouteNative, serveDenoUnaryRoute as serveDenoUnaryRouteNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, serveStreamRouteDeno as serveStreamRouteDenoNative, serveUnaryRouteDeno as serveUnaryRouteDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
+import denoNativeFetchDefault, { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createRouteUnaryFetch as createRouteUnaryDenoFetch, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoNativeFetch, listenRouteStream as listenRouteStreamDenoNative, listenRouteUnary as listenRouteUnaryDenoNative, listenStreamRoute as listenStreamRouteDenoNative, listenUnaryRoute as listenUnaryRouteDenoNative, serve as serveDenoNative, serveDenoRouteStream as serveDenoRouteStreamNative, serveDenoRouteUnary as serveDenoRouteUnaryNative, serveDenoStreamRoute as serveDenoStreamRouteNative, serveDenoUnaryRoute as serveDenoUnaryRouteNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, serveStreamRouteDeno as serveStreamRouteDenoNative, serveUnaryRouteDeno as serveUnaryRouteDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeRouteStreamFetchHandler, type DenoNativeRouteUnaryFetchHandler, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
 import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, createRouteStreamNetlifyEdgeFunctionFor as createGeneratedRouteStreamNetlifyEdgeFor, createRouteUnaryNetlifyEdgeFunctionFor as createGeneratedRouteUnaryNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
 import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, createRouteStreamNextRouteHandlersFor as createGeneratedRouteStreamNextHandlersFor, createRouteUnaryNextRouteHandlersFor as createGeneratedRouteUnaryNextHandlersFor, handlers as namedNextHandlers } from './next.js';
 import nodeNativeHandlerDefault, { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, createStreamRouteHandler as createStreamRouteNodeNativeHandler, createStreamRouteServerFor as createStreamRouteNodeNativeServerFor, createUnaryRouteHandler as createUnaryRouteNodeNativeHandler, createUnaryRouteServerFor as createUnaryRouteNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenNodeStreamRoute as listenNodeStreamRouteNative, listenNodeUnaryRoute as listenNodeUnaryRouteNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, listenStreamRoute as listenStreamRouteNodeNative, listenUnaryRoute as listenUnaryRouteNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
@@ -4297,11 +4297,23 @@ const bunFetchHandler: BunNativeFetchHandler = createBunNativeFetch(bunNativeOpt
 const createTypedBunNativeFetch = createBunNativeFetchFor<GeneratedRequest>();
 const typedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
   createTypedBunNativeFetch(bunNativeOptions);
+const createTypedRouteUnaryBunNativeFetch =
+  createRouteUnaryBunFetchFor<GeneratedRequest>();
+const typedRouteUnaryBunFetchHandler: BunNativeRouteUnaryFetchHandler<GeneratedRequest> =
+  createTypedRouteUnaryBunNativeFetch(bunNativeOptions);
+const createTypedRouteStreamBunNativeFetch =
+  createRouteStreamBunFetchFor<GeneratedRequest>();
+const typedRouteStreamBunFetchHandler: BunNativeRouteStreamFetchHandler<GeneratedRequest> =
+  createTypedRouteStreamBunNativeFetch(bunNativeOptions);
 const createDefaultBunNativeFetch = createBunNativeFetchFor();
 const defaultTypedBunFetchHandler: BunNativeFetchHandler =
   createDefaultBunNativeFetch(bunNativeOptions);
 const directTypedBunFetchHandler: BunNativeFetchHandler<GeneratedRequest> =
   createBunNativeFetch<GeneratedRequest>(bunNativeOptions);
+const directTypedRouteUnaryBunFetchHandler: BunNativeRouteUnaryFetchHandler<GeneratedRequest> =
+  createRouteUnaryBunFetch<GeneratedRequest>(bunNativeOptions);
+const directTypedRouteStreamBunFetchHandler: BunNativeRouteStreamFetchHandler<GeneratedRequest> =
+  createRouteStreamBunFetch<GeneratedRequest>(bunNativeOptions);
 createBunNativeFetch({ ...bunNativeOptions, cors: false });
 const bunDefaultFetchHandler: BunNativeFetchHandler = bunNativeFetch;
 const bunDefaultExportFetchHandler: BunNativeFetchHandler =
@@ -4310,9 +4322,21 @@ const syncBunFetchHandler: BunNativeFetchHandler = () => new Response();
 bunFetchHandler(new Request('https://example.com/rpc'));
 defaultTypedBunFetchHandler(new Request('https://example.com/rpc'));
 typedBunFetchHandler(generatedRequest);
+typedRouteUnaryBunFetchHandler(generatedRequest);
+typedRouteStreamBunFetchHandler(generatedRequest);
 directTypedBunFetchHandler(generatedRequest);
+directTypedRouteUnaryBunFetchHandler(generatedRequest);
+directTypedRouteStreamBunFetchHandler(generatedRequest);
 // @ts-expect-error generated direct typed Bun fetch handlers preserve request types.
 directTypedBunFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated typed route-unary Bun fetch factories preserve request types.
+typedRouteUnaryBunFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated typed route-stream Bun fetch factories preserve request types.
+typedRouteStreamBunFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated direct typed route-unary Bun fetch handlers preserve request types.
+directTypedRouteUnaryBunFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated direct typed route-stream Bun fetch handlers preserve request types.
+directTypedRouteStreamBunFetchHandler(new Request('https://example.com/rpc'));
 bunDefaultFetchHandler(new Request('https://example.com/rpc'));
 bunDefaultExportFetchHandler(new Request('https://example.com/rpc'));
 syncBunFetchHandler(new Request('https://example.com/rpc'));
@@ -4355,11 +4379,23 @@ const denoFetchHandler: DenoNativeFetchHandler = createDenoNativeFetch(denoNativ
 const createTypedDenoNativeFetch = createDenoNativeFetchFor<GeneratedRequest>();
 const typedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
   createTypedDenoNativeFetch(denoNativeOptions);
+const createTypedRouteUnaryDenoNativeFetch =
+  createRouteUnaryDenoFetchFor<GeneratedRequest>();
+const typedRouteUnaryDenoFetchHandler: DenoNativeRouteUnaryFetchHandler<GeneratedRequest> =
+  createTypedRouteUnaryDenoNativeFetch(denoNativeOptions);
+const createTypedRouteStreamDenoNativeFetch =
+  createRouteStreamDenoFetchFor<GeneratedRequest>();
+const typedRouteStreamDenoFetchHandler: DenoNativeRouteStreamFetchHandler<GeneratedRequest> =
+  createTypedRouteStreamDenoNativeFetch(denoNativeOptions);
 const createDefaultDenoNativeFetch = createDenoNativeFetchFor();
 const defaultTypedDenoFetchHandler: DenoNativeFetchHandler =
   createDefaultDenoNativeFetch(denoNativeOptions);
 const directTypedDenoFetchHandler: DenoNativeFetchHandler<GeneratedRequest> =
   createDenoNativeFetch<GeneratedRequest>(denoNativeOptions);
+const directTypedRouteUnaryDenoFetchHandler: DenoNativeRouteUnaryFetchHandler<GeneratedRequest> =
+  createRouteUnaryDenoFetch<GeneratedRequest>(denoNativeOptions);
+const directTypedRouteStreamDenoFetchHandler: DenoNativeRouteStreamFetchHandler<GeneratedRequest> =
+  createRouteStreamDenoFetch<GeneratedRequest>(denoNativeOptions);
 createDenoNativeFetch({ ...denoNativeOptions, cors: false });
 const denoDefaultFetchHandler: DenoNativeFetchHandler = denoNativeFetch;
 const denoDefaultExportFetchHandler: DenoNativeFetchHandler =
@@ -4368,9 +4404,21 @@ const syncDenoFetchHandler: DenoNativeFetchHandler = () => new Response();
 denoFetchHandler(new Request('https://example.com/rpc'));
 defaultTypedDenoFetchHandler(new Request('https://example.com/rpc'));
 typedDenoFetchHandler(generatedRequest);
+typedRouteUnaryDenoFetchHandler(generatedRequest);
+typedRouteStreamDenoFetchHandler(generatedRequest);
 directTypedDenoFetchHandler(generatedRequest);
+directTypedRouteUnaryDenoFetchHandler(generatedRequest);
+directTypedRouteStreamDenoFetchHandler(generatedRequest);
 // @ts-expect-error generated direct typed Deno fetch handlers preserve request types.
 directTypedDenoFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated typed route-unary Deno fetch factories preserve request types.
+typedRouteUnaryDenoFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated typed route-stream Deno fetch factories preserve request types.
+typedRouteStreamDenoFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated direct typed route-unary Deno fetch handlers preserve request types.
+directTypedRouteUnaryDenoFetchHandler(new Request('https://example.com/rpc'));
+// @ts-expect-error generated direct typed route-stream Deno fetch handlers preserve request types.
+directTypedRouteStreamDenoFetchHandler(new Request('https://example.com/rpc'));
 denoDefaultFetchHandler(new Request('https://example.com/rpc'));
 denoDefaultExportFetchHandler(new Request('https://example.com/rpc'));
 syncDenoFetchHandler(new Request('https://example.com/rpc'));
