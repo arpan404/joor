@@ -4634,6 +4634,48 @@ const routeKindScopedVercelRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedVercelRequest.requestId.toUpperCase();
 routeKindScopedVercelRequest.streamRequestId.toUpperCase();
+const routeKindScopedVercelRouteUnaryFetchOptionsArgs: VercelRouteUnaryFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedVercelRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedVercelRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedVercelRouteUnaryFetchOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Vercel fetch option args default to unary-only request requirements.
+const _wrongRouteKindScopedVercelRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedVercelRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedVercelUnaryRouteFetchOptionsArgs: VercelUnaryRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedVercelRouteUnaryFetchOptionsArgs;
+const routeKindScopedVercelRouteStreamFetchOptionsArgs: VercelRouteStreamFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedVercelRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedVercelRouteStreamFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedVercelRouteStreamFetchOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Vercel fetch option args default to stream-only request requirements.
+const _wrongRouteKindScopedVercelRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedVercelRouteStreamFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedVercelStreamRouteFetchOptionsArgs: VercelStreamRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedVercelRouteStreamFetchOptionsArgs;
+routeKindScopedVercelUnaryRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedVercelStreamRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Vercel options default to all route request requirements.
 const _wrongRouteKindScopedVercelUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedVercelFetchOptions
@@ -4750,6 +4792,90 @@ const routeKindScopedCloudflareWorkerRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedCloudflareWorkerRequest.requestId.toUpperCase();
 routeKindScopedCloudflareWorkerRequest.streamRequestId.toUpperCase();
+const routeKindScopedCloudflareRouteUnaryFetchOptionsArgs: CloudflareRouteUnaryFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedCloudflareRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedCloudflareRouteUnaryFetchOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Cloudflare fetch option args default to unary-only request requirements.
+const _wrongRouteKindScopedCloudflareRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedCloudflareUnaryRouteFetchOptionsArgs: CloudflareUnaryRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedCloudflareRouteUnaryFetchOptionsArgs;
+const routeKindScopedCloudflareRouteStreamFetchOptionsArgs: CloudflareRouteStreamFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedCloudflareRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteStreamFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedCloudflareRouteStreamFetchOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Cloudflare fetch option args default to stream-only request requirements.
+const _wrongRouteKindScopedCloudflareRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteStreamFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedCloudflareStreamRouteFetchOptionsArgs: CloudflareStreamRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedCloudflareRouteStreamFetchOptionsArgs;
+const routeKindScopedCloudflareRouteUnaryWorkerOptionsArgs: CloudflareRouteUnaryWorkerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedCloudflareRouteUnaryWorkerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteUnaryWorkerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedCloudflareRouteUnaryWorkerOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Cloudflare Worker option args default to unary-only request requirements.
+const _wrongRouteKindScopedCloudflareRouteUnaryWorkerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteUnaryWorkerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedCloudflareUnaryRouteWorkerOptionsArgs: CloudflareUnaryRouteWorkerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedCloudflareRouteUnaryWorkerOptionsArgs;
+const routeKindScopedCloudflareRouteStreamWorkerOptionsArgs: CloudflareRouteStreamWorkerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedCloudflareRouteStreamWorkerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteStreamWorkerOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedCloudflareRouteStreamWorkerOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Cloudflare Worker option args default to stream-only request requirements.
+const _wrongRouteKindScopedCloudflareRouteStreamWorkerOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedCloudflareRouteStreamWorkerOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedCloudflareStreamRouteWorkerOptionsArgs: CloudflareStreamRouteWorkerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedCloudflareRouteStreamWorkerOptionsArgs;
+routeKindScopedCloudflareUnaryRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedCloudflareStreamRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedCloudflareUnaryRouteWorkerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedCloudflareStreamRouteWorkerOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Cloudflare Worker options default to all route request requirements.
 const _wrongRouteKindScopedCloudflareWorkerUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedCloudflareWorkerOptions
@@ -4863,6 +4989,66 @@ const routeKindScopedNextHandlerRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedNextHandlerRequest.requestId.toUpperCase();
 routeKindScopedNextHandlerRequest.streamRequestId.toUpperCase();
+const routeKindScopedNextRouteUnaryHandlersOptionsArgs: NextRouteUnaryHandlersOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedNextRouteUnaryHandlersOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNextRouteUnaryHandlersOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedNextRouteUnaryHandlersOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Next route-handler option args default to unary-only request requirements.
+const _wrongRouteKindScopedNextRouteUnaryHandlersOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNextRouteUnaryHandlersOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedNextUnaryRouteHandlersOptionsArgs: NextUnaryRouteHandlersOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedNextRouteUnaryHandlersOptionsArgs;
+const routeKindScopedNextRouteUnaryHandlerOptionsArgs: NextRouteUnaryHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedNextRouteUnaryHandlersOptionsArgs;
+const routeKindScopedNextUnaryRouteHandlerOptionsArgs: NextUnaryRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedNextRouteUnaryHandlersOptionsArgs;
+const routeKindScopedNextRouteStreamHandlersOptionsArgs: NextRouteStreamHandlersOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedNextRouteStreamHandlersOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNextRouteStreamHandlersOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedNextRouteStreamHandlersOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Next route-handler option args default to stream-only request requirements.
+const _wrongRouteKindScopedNextRouteStreamHandlersOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNextRouteStreamHandlersOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedNextStreamRouteHandlersOptionsArgs: NextStreamRouteHandlersOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedNextRouteStreamHandlersOptionsArgs;
+const routeKindScopedNextRouteStreamHandlerOptionsArgs: NextRouteStreamHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedNextRouteStreamHandlersOptionsArgs;
+const routeKindScopedNextStreamRouteHandlerOptionsArgs: NextStreamRouteHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedNextRouteStreamHandlersOptionsArgs;
+routeKindScopedNextUnaryRouteHandlersOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedNextUnaryRouteHandlerOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedNextStreamRouteHandlersOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedNextStreamRouteHandlerOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Next handler options default to all route request requirements.
 const _wrongRouteKindScopedNextHandlerUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedNextHandlerOptions
@@ -4967,6 +5153,48 @@ const routeKindScopedNetlifyRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedNetlifyRequest.requestId.toUpperCase();
 routeKindScopedNetlifyRequest.streamRequestId.toUpperCase();
+const routeKindScopedNetlifyRouteUnaryFetchOptionsArgs: NetlifyRouteUnaryFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedNetlifyRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNetlifyRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedNetlifyRouteUnaryFetchOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Netlify fetch option args default to unary-only request requirements.
+const _wrongRouteKindScopedNetlifyRouteUnaryFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNetlifyRouteUnaryFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedNetlifyUnaryRouteFetchOptionsArgs: NetlifyUnaryRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedNetlifyRouteUnaryFetchOptionsArgs;
+const routeKindScopedNetlifyRouteStreamFetchOptionsArgs: NetlifyRouteStreamFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedNetlifyRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNetlifyRouteStreamFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedNetlifyRouteStreamFetchOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Netlify fetch option args default to stream-only request requirements.
+const _wrongRouteKindScopedNetlifyRouteStreamFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedNetlifyRouteStreamFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedNetlifyStreamRouteFetchOptionsArgs: NetlifyStreamRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedNetlifyRouteStreamFetchOptionsArgs;
+routeKindScopedNetlifyUnaryRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedNetlifyStreamRouteFetchOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Netlify options default to all route request requirements.
 const _wrongRouteKindScopedNetlifyUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedNetlifyFetchOptions
