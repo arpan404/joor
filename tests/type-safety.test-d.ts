@@ -1448,14 +1448,19 @@ import {
   type RouteRpcTransportClient,
   type RpcClientOptionsFor,
   type RpcManifestClientOptions,
+  type RpcManifestClientOptionsFor,
   type RpcManifestRouteStreamClientOptions,
+  type RpcManifestRouteStreamClientOptionsFor,
   type RpcManifestRouteStreamTransportClient,
   type RpcManifestRouteUnaryClientOptions,
+  type RpcManifestRouteUnaryClientOptionsFor,
   type RpcManifestRouteUnaryTransportClient,
   type RpcManifestStreamRouteClientOptions,
+  type RpcManifestStreamRouteClientOptionsFor,
   type RpcManifestStreamRouteTransportClient,
   type RpcManifestTransportClient,
   type RpcManifestUnaryRouteClientOptions,
+  type RpcManifestUnaryRouteClientOptionsFor,
   type RpcManifestUnaryRouteTransportClient,
   type RpcRouteStreamClientOptions,
   type RpcRouteStreamClientOptionsFor,
@@ -1762,6 +1767,11 @@ import {
   type RpcManifestUnaryRouteRequiredServices as RpcSubpathManifestUnaryRouteRequiredServices,
   type RpcClientOptionsFor as RpcSubpathClientOptionsFor,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
+  type RpcManifestClientOptionsFor as RpcSubpathManifestClientOptionsFor,
+  type RpcManifestRouteStreamClientOptionsFor as RpcSubpathManifestRouteStreamClientOptionsFor,
+  type RpcManifestRouteUnaryClientOptionsFor as RpcSubpathManifestRouteUnaryClientOptionsFor,
+  type RpcManifestStreamRouteClientOptionsFor as RpcSubpathManifestStreamRouteClientOptionsFor,
+  type RpcManifestUnaryRouteClientOptionsFor as RpcSubpathManifestUnaryRouteClientOptionsFor,
   type RpcRouteStreamClientOptions as RpcSubpathRouteStreamClientOptions,
   type RpcRouteStreamClientOptionsFor as RpcSubpathRouteStreamClientOptionsFor,
   type RpcRouteUnaryClientOptions as RpcSubpathRouteUnaryClientOptions,
@@ -11309,6 +11319,14 @@ const typedUnaryRouteClientOptionsFor: RpcUnaryRouteClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
 > = typedRouteUnaryClientOptionsFor;
+const typedManifestRouteUnaryClientOptionsFor: RpcManifestRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedRouteUnaryClientOptionsFor;
+const typedManifestUnaryRouteClientOptionsFor: RpcManifestUnaryRouteClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedManifestRouteUnaryClientOptionsFor;
 const rpcSubpathTypedRouteUnaryClientOptionsFor: RpcSubpathRouteUnaryClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
@@ -11317,12 +11335,32 @@ const rpcSubpathTypedUnaryRouteClientOptionsFor: RpcSubpathUnaryRouteClientOptio
   typeof requestTypedManifest,
   ClientAppRequest
 > = rpcSubpathTypedRouteUnaryClientOptionsFor;
+const rpcSubpathTypedManifestRouteUnaryClientOptionsFor: RpcSubpathManifestRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedManifestRouteUnaryClientOptionsFor;
+const rpcSubpathTypedManifestUnaryRouteClientOptionsFor: RpcSubpathManifestUnaryRouteClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = rpcSubpathTypedManifestRouteUnaryClientOptionsFor;
 createRootRouteUnaryClient(typedRouteUnaryClientOptionsFor);
 createRootUnaryRouteClient(typedUnaryRouteClientOptionsFor);
+createRootRouteUnaryClient(typedManifestRouteUnaryClientOptionsFor);
+createRootUnaryRouteClient(typedManifestUnaryRouteClientOptionsFor);
 createRouteUnaryClient(rpcSubpathTypedRouteUnaryClientOptionsFor);
 createUnaryRouteClient(rpcSubpathTypedUnaryRouteClientOptionsFor);
+createRouteUnaryClient(rpcSubpathTypedManifestRouteUnaryClientOptionsFor);
+createUnaryRouteClient(rpcSubpathTypedManifestUnaryRouteClientOptionsFor);
 // @ts-expect-error manifest-including route unary options require the route-specific request factory by default.
 const _missingRouteUnaryClientOptionsFor: RpcRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest
+> = {
+  url: '/rpc',
+  manifest: requestTypedManifest,
+  fetch: typedClientFetch,
+};
+// @ts-expect-error manifest-prefixed route unary options preserve route-specific request defaults.
+const _missingManifestRouteUnaryClientOptionsFor: RpcManifestRouteUnaryClientOptionsFor<
   typeof requestTypedManifest
 > = {
   url: '/rpc',
@@ -11357,6 +11395,14 @@ const typedStreamRouteClientOptionsFor: RpcStreamRouteClientOptionsFor<
   typeof routeKindScopedManifest,
   StreamProcedureRequest
 > = typedRouteStreamClientOptionsFor;
+const typedManifestRouteStreamClientOptionsFor: RpcManifestRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = typedRouteStreamClientOptionsFor;
+const typedManifestStreamRouteClientOptionsFor: RpcManifestStreamRouteClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = typedManifestRouteStreamClientOptionsFor;
 const rpcSubpathTypedRouteStreamClientOptionsFor: RpcSubpathRouteStreamClientOptionsFor<
   typeof routeKindScopedManifest,
   StreamProcedureRequest
@@ -11365,12 +11411,32 @@ const rpcSubpathTypedStreamRouteClientOptionsFor: RpcSubpathStreamRouteClientOpt
   typeof routeKindScopedManifest,
   StreamProcedureRequest
 > = rpcSubpathTypedRouteStreamClientOptionsFor;
+const rpcSubpathTypedManifestRouteStreamClientOptionsFor: RpcSubpathManifestRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = typedManifestRouteStreamClientOptionsFor;
+const rpcSubpathTypedManifestStreamRouteClientOptionsFor: RpcSubpathManifestStreamRouteClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = rpcSubpathTypedManifestRouteStreamClientOptionsFor;
 createRootRouteStreamClient(typedRouteStreamClientOptionsFor);
 createRootStreamRouteClient(typedStreamRouteClientOptionsFor);
+createRootRouteStreamClient(typedManifestRouteStreamClientOptionsFor);
+createRootStreamRouteClient(typedManifestStreamRouteClientOptionsFor);
 createRouteStreamClient(rpcSubpathTypedRouteStreamClientOptionsFor);
 createStreamRouteClient(rpcSubpathTypedStreamRouteClientOptionsFor);
+createRouteStreamClient(rpcSubpathTypedManifestRouteStreamClientOptionsFor);
+createStreamRouteClient(rpcSubpathTypedManifestStreamRouteClientOptionsFor);
 // @ts-expect-error manifest-including route stream options require the route-specific request factory by default.
 const _missingRouteStreamClientOptionsFor: RpcRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest
+> = {
+  url: '/rpc',
+  manifest: routeKindScopedManifest,
+  fetch: streamTypedClientFetch,
+};
+// @ts-expect-error manifest-prefixed route stream options preserve route-specific request defaults.
+const _missingManifestRouteStreamClientOptionsFor: RpcManifestRouteStreamClientOptionsFor<
   typeof routeKindScopedManifest
 > = {
   url: '/rpc',
@@ -11412,18 +11478,26 @@ const typedClientOptionsFor: RpcClientOptionsFor<
   ...typedClientOptions,
   manifest: requestTypedManifest,
 };
+const typedManifestClientOptionsFor: RpcManifestClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedClientOptionsFor;
 const rpcSubpathTypedClientOptionsFor: RpcSubpathClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
 > = typedClientOptionsFor;
+const rpcSubpathTypedManifestClientOptionsFor: RpcSubpathManifestClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedManifestClientOptionsFor;
 const typedJoorManifestClientOptionsFor: JoorManifestClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
-> = typedClientOptionsFor;
+> = typedManifestClientOptionsFor;
 const typedJoorSubpathManifestClientOptionsFor: JoorSubpathManifestClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
-> = typedJoorManifestClientOptionsFor;
+> = rpcSubpathTypedManifestClientOptionsFor;
 const typedJoorManifestRouteUnaryClientOptionsFor: JoorManifestRouteUnaryClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest

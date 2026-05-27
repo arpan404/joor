@@ -8,18 +8,18 @@ import type {
 } from './procedure/types.js';
 import type {
   RpcManifestClientOptions,
+  RpcManifestClientOptionsFor,
   RpcManifestRouteStreamClientOptions,
+  RpcManifestRouteStreamClientOptionsFor,
   RpcManifestRouteStreamTransportClient,
   RpcManifestRouteUnaryClientOptions,
+  RpcManifestRouteUnaryClientOptionsFor,
   RpcManifestRouteUnaryTransportClient,
   RpcManifestStreamRouteClientOptions,
+  RpcManifestStreamRouteClientOptionsFor,
   RpcManifestTransportClient,
   RpcManifestUnaryRouteClientOptions,
-  RpcClientOptionsFor,
-  RpcRouteStreamClientOptionsFor,
-  RpcRouteUnaryClientOptionsFor,
-  RpcStreamRouteClientOptionsFor,
-  RpcUnaryRouteClientOptionsFor,
+  RpcManifestUnaryRouteClientOptionsFor,
   RpcProtocolBatchRequest,
   RpcProtocolBatchResults,
   RpcProtocolBatchRequestUnion,
@@ -261,7 +261,7 @@ export type JoorManifestClientOptions<
 export type JoorManifestClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request = JoorManifestRequiredRuntimeRequest<TManifest>,
-> = RpcClientOptionsFor<TManifest, TRequest>;
+> = RpcManifestClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestRouteUnaryClientOptions<
   TManifest extends JoorManifest,
@@ -279,13 +279,13 @@ export type JoorManifestRouteUnaryClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
-> = RpcRouteUnaryClientOptionsFor<TManifest, TRequest>;
+> = RpcManifestRouteUnaryClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestUnaryRouteClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     JoorManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
-> = RpcUnaryRouteClientOptionsFor<TManifest, TRequest>;
+> = RpcManifestUnaryRouteClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestRouteStreamClientOptions<
   TManifest extends JoorManifest,
@@ -303,13 +303,13 @@ export type JoorManifestRouteStreamClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     JoorManifestRouteStreamRequiredRuntimeRequest<TManifest>,
-> = RpcRouteStreamClientOptionsFor<TManifest, TRequest>;
+> = RpcManifestRouteStreamClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestStreamRouteClientOptionsFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     JoorManifestRouteStreamRequiredRuntimeRequest<TManifest>,
-> = RpcStreamRouteClientOptionsFor<TManifest, TRequest>;
+> = RpcManifestStreamRouteClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestRouteId<TManifest> = RpcRouteId<
   JoorManifestRoutes<TManifest>
