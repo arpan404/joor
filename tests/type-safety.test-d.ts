@@ -6263,6 +6263,44 @@ const routeKindScopedBunFetchRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedBunFetchRequest.requestId.toUpperCase();
 routeKindScopedBunFetchRequest.streamRequestId.toUpperCase();
+const routeKindScopedRouteUnaryBunFetchOptionsArgs: BunRouteUnaryFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryHandlerOptions];
+const routeKindScopedRouteUnaryBunFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunFetchOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryBunFetchOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Bun fetch option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryBunFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunFetchOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteBunFetchOptionsArgs: BunUnaryRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryBunFetchOptionsArgs;
+const routeKindScopedRouteStreamBunFetchOptionsArgs: BunRouteStreamFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamHandlerOptions];
+const routeKindScopedRouteStreamBunFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamBunFetchOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamBunFetchOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Bun fetch option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamBunFetchOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamBunFetchOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteBunFetchOptionsArgs: BunStreamRouteFetchOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamBunFetchOptionsArgs;
+routeKindScopedUnaryRouteBunFetchOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteBunFetchOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Bun fetch options default to all route request requirements.
 const _wrongRouteKindScopedBunFetchUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedBunFetchOptions
@@ -6280,6 +6318,40 @@ const routeKindScopedBunRpcRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedBunRpcRequest.requestId.toUpperCase();
 routeKindScopedBunRpcRequest.streamRequestId.toUpperCase();
+const routeKindScopedRouteUnaryBunRpcOptionsArgs: BunRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryBunRpcOptions];
+const routeKindScopedRouteUnaryBunRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunRpcOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryBunRpcOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Bun RPC option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryBunRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunRpcOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteBunRpcOptionsArgs: BunUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryBunRpcOptionsArgs;
+const routeKindScopedRouteStreamBunRpcOptionsArgs: BunRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamBunRpcOptions];
+const routeKindScopedRouteStreamBunRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamBunRpcOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamBunRpcOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Bun RPC option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamBunRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamBunRpcOptionsArgs>
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteBunRpcOptionsArgs: BunStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamBunRpcOptionsArgs;
+routeKindScopedUnaryRouteBunRpcOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteBunRpcOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Bun RPC options default to all route request requirements.
 const _wrongRouteKindScopedBunRpcUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedBunRpcOptions
@@ -6347,6 +6419,44 @@ const routeKindScopedBunServeRequest: HandlerOptionsRequest<
 > = routeKindScopedRequiredRequest;
 routeKindScopedBunServeRequest.requestId.toUpperCase();
 routeKindScopedBunServeRequest.streamRequestId.toUpperCase();
+const routeKindScopedRouteUnaryBunServeOptionsArgs: BunRouteUnaryServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryBunServeOptions];
+const routeKindScopedRouteUnaryBunServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunServeOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryBunServeOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Bun serve option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryBunServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryBunServeOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteBunServeOptionsArgs: BunUnaryRouteServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryBunServeOptionsArgs;
+const routeKindScopedRouteStreamBunServeOptionsArgs: BunRouteStreamServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamBunServeOptions];
+const routeKindScopedRouteStreamBunServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamBunServeOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamBunServeOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Bun serve option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamBunServeOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamBunServeOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteBunServeOptionsArgs: BunStreamRouteServeOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamBunServeOptionsArgs;
+routeKindScopedUnaryRouteBunServeOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteBunServeOptionsArgs[0]?.plugins?.length.toFixed();
 // @ts-expect-error full Bun serve options default to all route request requirements.
 const _wrongRouteKindScopedBunServeUnaryRequest: HandlerOptionsRequest<
   typeof routeKindScopedBunServeOptions
