@@ -1533,13 +1533,20 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       );
       expect(clientSource).toContain('export type UnaryRouteTransport');
       expect(clientSource).toContain('export type StreamRouteTransport');
+      expect(clientSource).toContain('export type UnaryTransport');
+      expect(clientSource).toContain('export type StreamTransport');
       expect(clientSource).toContain('export type UnaryRouteTransportClient');
       expect(clientSource).toContain('export type StreamRouteTransportClient');
+      expect(clientSource).toContain('export type UnaryTransportClient');
+      expect(clientSource).toContain('export type StreamTransportClient');
       expect(clientSource).toContain(
         'export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {'
       );
       expect(clientSource).toContain(
         'export type UnaryRouteTransport<TId extends RouteUnaryId = RouteUnaryId> =\n  RouteUnaryTransport<TId>;'
+      );
+      expect(clientSource).toContain(
+        'export type UnaryTransport<TId extends RouteUnaryId = RouteUnaryId> =\n  RouteUnaryTransport<TId>;'
       );
       expect(clientSource).toContain(
         'export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {'
@@ -1548,16 +1555,25 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export type StreamRouteTransport<TId extends RouteStreamId = RouteStreamId> =\n  RouteStreamTransport<TId>;'
       );
       expect(clientSource).toContain(
+        'export type StreamTransport<TId extends RouteStreamId = RouteStreamId> =\n  RouteStreamTransport<TId>;'
+      );
+      expect(clientSource).toContain(
         "export type RouteUnaryTransportClient = Pick<\n  RouteTransportClient,\n  'call' | 'request' | 'batch'\n>;"
       );
       expect(clientSource).toContain(
         'export type UnaryRouteTransportClient = RouteUnaryTransportClient;'
       );
       expect(clientSource).toContain(
+        'export type UnaryTransportClient = RouteUnaryTransportClient;'
+      );
+      expect(clientSource).toContain(
         "export type RouteStreamTransportClient = Pick<RouteTransportClient, 'stream'>;"
       );
       expect(clientSource).toContain(
         'export type StreamRouteTransportClient = RouteStreamTransportClient;'
+      );
+      expect(clientSource).toContain(
+        'export type StreamTransportClient = RouteStreamTransportClient;'
       );
       expect(clientSource).toContain('export type GeneratedClient');
       expect(clientSource).toContain(
@@ -1669,10 +1685,22 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export type GeneratedRouteUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =\n  RouteUnaryClientOptions<TRequest>'
       );
       expect(clientSource).toContain(
+        'export type GeneratedUnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =\n  RouteUnaryClientOptions<TRequest>'
+      );
+      expect(clientSource).toContain(
+        'export type UnaryClientOptions<TRequest extends Request = RouteUnaryRequiredRuntimeRequest> =\n  RouteUnaryClientOptions<TRequest>'
+      );
+      expect(clientSource).toContain(
         'export type RouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> = Omit<'
       );
       expect(clientSource).toContain(
         'export type GeneratedRouteStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =\n  RouteStreamClientOptions<TRequest>'
+      );
+      expect(clientSource).toContain(
+        'export type GeneratedStreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =\n  RouteStreamClientOptions<TRequest>'
+      );
+      expect(clientSource).toContain(
+        'export type StreamClientOptions<TRequest extends Request = RouteStreamRequiredRuntimeRequest> =\n  RouteStreamClientOptions<TRequest>'
       );
       expect(clientSource).toContain(
         'export function createTransport<TRequest extends Request = RequiredRuntimeRequest>'
@@ -1696,7 +1724,13 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export const routeUnaryTransport: RouteUnaryTransportClient'
       );
       expect(clientSource).toContain(
+        'export const unaryTransport: UnaryTransportClient = routeUnaryTransport;'
+      );
+      expect(clientSource).toContain(
         'export const routeStreamTransport: RouteStreamTransportClient'
+      );
+      expect(clientSource).toContain(
+        'export const streamTransport: StreamTransportClient = routeStreamTransport;'
       );
       expect(clientSource).toContain(
         'export function createClient<TRequest extends Request = RequiredRuntimeRequest>'
@@ -1712,22 +1746,42 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'options?: RouteUnaryClientOptions<TRequest>\n): RouteUnaryClient'
       );
       expect(clientSource).toContain(
+        'export const createUnaryClient: typeof createRouteUnaryClient'
+      );
+      expect(clientSource).toContain(
         'export function createRouteStreamClient(): RouteStreamClient;'
       );
       expect(clientSource).toContain(
         'options?: RouteStreamClientOptions<TRequest>\n): RouteStreamClient'
       );
+      expect(clientSource).toContain(
+        'export const createStreamClient: typeof createRouteStreamClient'
+      );
       expect(clientSource).toContain('export const client: Client = createClient();');
+      expect(clientSource).toContain(
+        'export const unaryClient: UnaryClient = routeUnaryClient;'
+      );
+      expect(clientSource).toContain(
+        'export const streamClient: StreamClient = routeStreamClient;'
+      );
       expect(clientSource).toContain('export type Client = {');
       expect(clientSource).toContain('export type GeneratedClient = Client;');
       expect(clientSource).toContain('export type RouteUnaryClient = {');
       expect(clientSource).toContain(
         'export type GeneratedRouteUnaryClient = RouteUnaryClient;'
       );
+      expect(clientSource).toContain(
+        'export type GeneratedUnaryClient = RouteUnaryClient;'
+      );
+      expect(clientSource).toContain('export type UnaryClient = RouteUnaryClient;');
       expect(clientSource).toContain('export type RouteStreamClient = {');
       expect(clientSource).toContain(
         'export type GeneratedRouteStreamClient = RouteStreamClient;'
       );
+      expect(clientSource).toContain(
+        'export type GeneratedStreamClient = RouteStreamClient;'
+      );
+      expect(clientSource).toContain('export type StreamClient = RouteStreamClient;');
       expect(clientSource).toContain(
         'export type GeneratedUnaryRouteClient = RouteUnaryClient'
       );
@@ -4076,6 +4130,7 @@ createStreamRouteDenoFetchFor()(undefined)(plainRequest);
         usageFile,
         `import { client, createClient, createProtocolRequest, createRouteStreamClient, createRouteProtocolRequest, createRouteRequest, createRouteStreamProtocolRequest, createRouteStreamRequest, createRouteStreamTransport, createRouteUnaryClient, createRouteUnaryProtocolRequest, createRouteUnaryRequest, createRouteUnaryTransport, createStreamProtocolRequest, createStreamRouteClient, createStreamRouteProtocolRequest, createStreamRouteRequest, createStreamRouteTransport, createTransport, createUnaryProtocolRequest, createUnaryRouteClient, createUnaryRouteProtocolRequest, createUnaryRouteRequest, createUnaryRouteTransport, routeStreamClient as generatedRouteStreamClientSingleton, routeStreamTransport as generatedRouteStreamTransportSingleton, routeUnaryClient as generatedRouteUnaryClientSingleton, routeUnaryTransport as generatedRouteUnaryTransportSingleton, streamRouteClient, streamRouteTransport, unaryRouteClient, unaryRouteTransport, type BatchClientHeaders, type BatchFunction, type BatchOptions, type BatchOptionsTuple, type Client, type ClientOptions, type GeneratedClient, type GeneratedClientOptions, type GeneratedRouteStreamClient, type GeneratedRouteStreamClientOptions, type GeneratedRouteUnaryClient, type GeneratedRouteUnaryClientOptions, type GeneratedStreamRouteClient, type GeneratedStreamRouteClientOptions, type GeneratedUnaryRouteClient, type GeneratedUnaryRouteClientOptions, type RouteStreamClient, type RouteStreamClientOptions, type RouteUnaryClient, type RouteUnaryClientOptions, type StreamRouteClient, type StreamRouteClientOptions, type UnaryRouteClient, type UnaryRouteClientOptions, type RequiredRuntimeRequest, type RequiredServices, type RouteUnaryRequiredRuntimeRequest, type UnaryRouteRequiredRuntimeRequest, type RouteStreamRequiredRuntimeRequest, type StreamRouteRequiredRuntimeRequest, type RouteUnaryRequiredServices, type UnaryRouteRequiredServices, type RouteStreamRequiredServices, type StreamRouteRequiredServices, type ProtocolBatchRequest, type ProtocolBatchResults, type ProtocolBatchRequestUnion, type ProtocolRequest, type ProtocolRequestBuilder, type ProtocolRequestOptions, type ProtocolRequestUnion, type RouteBatchClientHeaders, type RouteBatchOptions, type RouteBatchOptionsTuple, type RouteBatchRequest, type RouteBatchResults, type RouteUnaryBatchClientHeaders, type RouteUnaryBatchOptions, type RouteUnaryBatchOptionsTuple, type RouteUnaryBatchRequest, type RouteUnaryBatchResults, type RouteBody, type RouteBodyResult, type RouteBodyResultFor, type RouteClientArgs, type RouteClientHeaders, type RouteEnvelope, type RouteEnvelopeUnion, type RouteErrorCode, type RouteErrorDetails, type RouteHasHeaders, type RouteHasResponseHeaders, type RouteHeaders, type RouteInput, type RouteOutput, type RouteProcedure, type RouteProtocolBatchRequest, type RouteProtocolBatchResults, type RouteProtocolBatchRequestUnion, type RouteProtocolRequest, type RouteProtocolRequestBuilder, type RouteProtocolRequestUnion, type RouteRequest, type RouteRequestBuilder, type RouteRequestOptions, type RouteRequiresHeaders, type RouteRequiresResponseHeaders, type RouteRequestUnion, type RouteResponseHeaders, type RouteResult, type RouteResultUnion, type RouteRuntimeRequest, type RouteServices, type RouteStreamBody, type RouteStreamBodyResult, type RouteStreamBodyResultFor, type RouteStreamClientArgs, type RouteStreamClientHeaders, type RouteStreamEvent, type RouteStreamFunction, type RouteStreamHeaders, type RouteStreamId, type RouteStreamInput, type RouteStreamOutput, type RouteStreamProcedure, type RouteStreamProtocolRequest, type RouteStreamProtocolRequestBuilder, type RouteStreamRequest, type RouteStreamRequestBuilder, type RouteStreamRequestOptions, type RouteStreamRequestUnion, type RouteStreamResponseHeaders, type RouteStreamTransport, type RouteStreamTransportClient, type RouteTransportClient, type RouteUnaryBody, type RouteUnaryBodyResult, type RouteUnaryBodyResultFor, type RouteUnaryClientArgs, type RouteUnaryClientHeaders, type RouteUnaryEnvelope, type RouteUnaryEnvelopeUnion, type RouteUnaryFunction, type RouteUnaryHeaders, type RouteUnaryId, type RouteUnaryInput, type RouteUnaryOutput, type RouteUnaryProcedure, type RouteUnaryProtocolBatchRequest, type RouteUnaryProtocolBatchResults, type RouteUnaryProtocolBatchRequestUnion, type RouteUnaryProtocolRequest, type RouteUnaryProtocolRequestBuilder, type RouteUnaryRequest, type RouteUnaryRequestBuilder, type RouteUnaryRequestOptions, type RouteUnaryRequestUnion, type RouteUnaryResponseHeaders, type RouteUnaryResult, type RouteUnaryResultUnion, type RouteUnaryTransport, type RouteUnaryTransportClient, type StreamProtocolRequest, type StreamProtocolRequestBuilder, type StreamProtocolRequestUnion, type StreamRouteBody, type StreamRouteBodyResult, type StreamRouteBodyResultFor, type StreamRouteClientArgs, type StreamRouteErrorCode, type StreamRouteErrorDetails, type StreamRouteEvent, type StreamRouteFunction, type StreamRouteHasResponseHeaders, type StreamRouteInput, type StreamRouteOutput, type StreamRouteProtocolRequest, type StreamRouteProtocolRequestBuilder, type StreamRouteProtocolRequestUnion, type StreamRouteRequest, type StreamRouteRequestBuilder, type StreamRouteRequestOptions, type StreamRouteRequestUnion, type StreamRouteResponseHeaders, type StreamRouteTransport, type StreamRouteTransportClient, type TransportClient, type UnaryProtocolRequest, type UnaryProtocolRequestBuilder, type UnaryProtocolRequestUnion, type UnaryRouteBatchClientHeaders, type UnaryRouteBatchOptions, type UnaryRouteBatchOptionsTuple, type UnaryRouteBatchResults, type UnaryRouteBody, type UnaryRouteBodyResult, type UnaryRouteBodyResultFor, type UnaryRouteClientArgs, type UnaryRouteEnvelope, type UnaryRouteEnvelopeUnion, type UnaryRouteErrorCode, type UnaryRouteErrorDetails, type UnaryRouteFunction, type UnaryRouteHasHeaders, type UnaryRouteHasResponseHeaders, type UnaryRouteBatchRequest, type UnaryRouteInput, type UnaryRouteOutput, type UnaryRouteProtocolBatchRequest, type UnaryRouteProtocolBatchResults, type UnaryRouteProtocolBatchRequestUnion, type UnaryRouteProtocolRequest, type UnaryRouteProtocolRequestBuilder, type UnaryRouteProtocolRequestUnion, type UnaryRouteRequest, type UnaryRouteRequestBuilder, type UnaryRouteRequestOptions, type UnaryRouteRequestUnion, type UnaryRouteRequiresHeaders, type UnaryRouteRequiresResponseHeaders, type UnaryRouteResponseHeaders, type UnaryRouteResult, type UnaryRouteResultUnion, type UnaryRouteTransport, type UnaryRouteTransportClient } from './client.js';
 import type { ProtocolBatchClientHeaders, ProtocolBatchOptions, ProtocolBatchOptionsTuple, RouteProtocolBatchClientHeaders, RouteProtocolBatchOptions, RouteProtocolBatchOptionsTuple, RouteUnaryProtocolBatchClientHeaders, RouteUnaryProtocolBatchOptions, RouteUnaryProtocolBatchOptionsTuple, UnaryRouteProtocolBatchClientHeaders, UnaryRouteProtocolBatchOptions, UnaryRouteProtocolBatchOptionsTuple } from './client.js';
+import { createStreamClient, createStreamTransport, createUnaryClient, createUnaryTransport, streamClient, streamTransport, unaryClient, unaryTransport, type GeneratedStreamClient, type GeneratedStreamClientOptions, type GeneratedUnaryClient, type GeneratedUnaryClientOptions, type StreamClient, type StreamClientOptions, type StreamTransport, type StreamTransportClient, type UnaryClient, type UnaryClientOptions, type UnaryTransport, type UnaryTransportClient } from './client.js';
 import { createFetchFor as createNativeFetchFor, createNativeProtocolRequest, createNativeRouteProtocolRequest, createNativeRouteStreamProtocolRequest, createNativeRouteStreamRequest, createNativeRouteUnaryProtocolRequest, createNativeStreamProtocolRequest, createNativeStreamRouteProtocolRequest, createNativeStreamRouteRequest, createNativeUnaryProtocolRequest, createNativeUnaryRouteProtocolRequest, defineNativeConfig, defineNativeHandlerOptions, defineNativeRouteStreamConfig, defineNativeRouteStreamHandlerOptions, defineNativeRouteUnaryConfig, defineNativeRouteUnaryHandlerOptions, defineNativeStreamRouteConfig, defineNativeStreamRouteHandlerOptions, defineNativeUnaryRouteConfig, defineNativeUnaryRouteHandlerOptions, fetch as nativeFetch, nativeBody as nativeBodyValue, nativeManifest, nativeResponseUnaryDispatch, nativeRouteStreamBody as nativeRouteStreamBodyHandlerValue, nativeRouteStreamTransport, nativeRouteUnaryBody as nativeRouteUnaryBodyHandlerValue, nativeRouteUnaryTransport, nativeRuntime, nativeStreamRouteBody as nativeStreamRouteBodyHandlerValue, nativeStreamRouteTransport, nativeTransport, nativeUnaryDispatch, nativeUnaryRouteBody as nativeUnaryRouteBodyHandlerValue, nativeUnaryRouteTransport, type NativeBatchBody, type NativeBody, type NativeBodyHandler, type NativeBodyResult, type NativeBodyResultFor, type NativeCompiledBodyResult, type NativeCompiledBodyResultFor, type NativeCompiledTransportResult, type NativeDispatch, type NativeFetchHandler, type NativeProtocolBatchRequest, type NativeProtocolBatchRequestUnion, type NativeProtocolBatchResults, type NativeProtocolRequest, type NativeProtocolRequestBuilder, type NativeProtocolRequestOptions, type NativeProtocolRequestUnion, type NativeRouteUnaryBatchRequest, type NativeRouteUnaryBatchRequestUnion, type NativeRouteUnaryBatchResults, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteBatchRequest, type NativeRouteBatchRequestUnion, type NativeRouteBatchResults, type NativeRouteProtocolBatchRequest, type NativeRouteProtocolBatchRequestUnion, type NativeRouteProtocolBatchResults, type NativeRouteProtocolRequestBuilder, type NativeRouteUnaryProtocolBatchRequest, type NativeRouteUnaryProtocolBatchRequestUnion, type NativeRouteUnaryProtocolBatchResults, type NativeUnaryRouteBatchRequest, type NativeUnaryRouteBatchRequestUnion, type NativeUnaryRouteBatchResults, type NativeUnaryRouteProtocolBatchRequest, type NativeUnaryRouteProtocolBatchRequestUnion, type NativeUnaryRouteProtocolBatchResults, type NativeRouteBody, type NativeRouteBodyResult, type NativeRouteBodyResultFor, type NativeRouteClientArgs, type NativeRouteClientHeaders, type NativeRouteEnvelope, type NativeRouteEnvelopeUnion, type NativeRouteErrorCode, type NativeRouteErrorDetails, type NativeRouteHasHeaders, type NativeRouteHasResponseHeaders, type NativeRouteHeaders, type NativeRouteInput, type NativeRouteOutput, type NativeRouteProcedure, type NativeRouteProtocolRequest, type NativeRouteProtocolRequestUnion, type NativeRouteRequest, type NativeRouteRequestOptions, type NativeRouteRequestUnion, type NativeRouteRequiresHeaders, type NativeRouteResponseHeaders, type NativeRouteRequiresResponseHeaders, type NativeRouteResult, type NativeRouteResultUnion, type NativeRouteStreamBody, type NativeRouteStreamBodyResult, type NativeRouteStreamBodyResultFor, type NativeRouteStreamId, type NativeRouteStreamProtocolRequestBuilder, type NativeRouteStreamRequest, type NativeRouteStreamRequestBuilder, type NativeRouteStreamRequestUnion, type NativeRouteUnaryBody, type NativeRouteUnaryBodyResult, type NativeRouteUnaryBodyResultFor, type NativeRouteUnaryEnvelopeUnion, type NativeRouteUnaryId, type NativeRouteUnaryProtocolRequestBuilder, type NativeRouteUnaryRequest, type NativeRouteUnaryRequestUnion, type NativeRouteUnaryResultUnion, type NativeRouteRuntimeRequest, type NativeRouteServices, type NativeRouteStreamClientArgs, type NativeRouteStreamClientHeaders, type NativeRouteStreamEvent, type NativeRouteStreamHeaders, type NativeRouteStreamInput, type NativeRouteStreamOutput, type NativeRouteStreamProcedure, type NativeRouteStreamProtocolRequest, type NativeRouteStreamProtocolRequestUnion, type NativeRouteStreamRequestOptions, type NativeRouteStreamResponseHeaders, type NativeRouteUnaryClientArgs, type NativeRouteUnaryClientHeaders, type NativeRouteUnaryEnvelope, type NativeRouteUnaryHeaders, type NativeRouteUnaryInput, type NativeRouteUnaryOutput, type NativeRouteUnaryProcedure, type NativeRouteUnaryProtocolRequest, type NativeRouteUnaryProtocolRequestUnion, type NativeRouteUnaryRequestOptions, type NativeRouteUnaryResponseHeaders, type NativeRouteUnaryResult, type NativeRuntimeState, type NativeServices, type NativeStreamEvent, type NativeStreamProtocolRequest, type NativeStreamProtocolRequestBuilder, type NativeStreamProtocolRequestUnion, type NativeStreamRouteBody, type NativeStreamRouteBodyResult, type NativeStreamRouteBodyResultFor, type NativeStreamRouteClientArgs, type NativeStreamRouteClientHeaders, type NativeStreamRouteErrorCode, type NativeStreamRouteErrorDetails, type NativeStreamRouteEvent, type NativeStreamRouteHasResponseHeaders, type NativeStreamRouteHeaders, type NativeStreamRouteInput, type NativeStreamRouteOutput, type NativeStreamRouteProcedure, type NativeStreamRouteProtocolRequest, type NativeStreamRouteProtocolRequestBuilder, type NativeStreamRouteProtocolRequestUnion, type NativeStreamRouteRequest, type NativeStreamRouteRequestBuilder, type NativeStreamRouteRequestOptions, type NativeStreamRouteRequestUnion, type NativeStreamRouteResponseHeaders, type NativeTransportHandler, type NativeTransportRequest, type NativeTransportResult, type NativeTransportResultFor, type NativeUnaryDispatch, type NativeUnaryProtocolRequest, type NativeUnaryProtocolRequestBuilder, type NativeUnaryProtocolRequestUnion, type NativeUnaryRequestUnion, type NativeUnaryRouteBody, type NativeUnaryRouteBodyResult, type NativeUnaryRouteBodyResultFor, type NativeUnaryRouteClientArgs, type NativeUnaryRouteClientHeaders, type NativeUnaryRouteEnvelope, type NativeUnaryRouteEnvelopeUnion, type NativeUnaryRouteErrorCode, type NativeUnaryRouteErrorDetails, type NativeUnaryRouteHasHeaders, type NativeUnaryRouteHasResponseHeaders, type NativeUnaryRouteHeaders, type NativeUnaryRouteInput, type NativeUnaryRouteOutput, type NativeUnaryRouteProcedure, type NativeUnaryRouteProtocolRequest, type NativeUnaryRouteProtocolRequestBuilder, type NativeUnaryRouteProtocolRequestUnion, type NativeUnaryRouteRequest, type NativeUnaryRouteRequestOptions, type NativeUnaryRouteRequestUnion, type NativeUnaryRouteRequiresHeaders, type NativeUnaryRouteRequiresResponseHeaders, type NativeUnaryRouteResponseHeaders, type NativeUnaryRouteResult, type NativeUnaryRouteResultUnion } from './dispatcher.safe.js';
 import type { NativeBatchClientHeaders, NativeBatchOptions, NativeBatchOptionsTuple, NativeRouteBatchClientHeaders, NativeRouteBatchOptions, NativeRouteBatchOptionsTuple, NativeRouteUnaryBatchClientHeaders, NativeRouteUnaryBatchOptions, NativeRouteUnaryBatchOptionsTuple, NativeUnaryRouteBatchClientHeaders, NativeUnaryRouteBatchOptions, NativeUnaryRouteBatchOptionsTuple } from './dispatcher.safe.js';
 import type { NativeProtocolBatchClientHeaders, NativeProtocolBatchOptions, NativeProtocolBatchOptionsTuple, NativeRouteProtocolBatchClientHeaders, NativeRouteProtocolBatchOptions, NativeRouteProtocolBatchOptionsTuple, NativeRouteUnaryProtocolBatchClientHeaders, NativeRouteUnaryProtocolBatchOptions, NativeRouteUnaryProtocolBatchOptionsTuple, NativeUnaryRouteProtocolBatchClientHeaders, NativeUnaryRouteProtocolBatchOptions, NativeUnaryRouteProtocolBatchOptionsTuple } from './dispatcher.safe.js';
@@ -4106,29 +4161,35 @@ const generatedRouteUnaryClient: GeneratedRouteUnaryClient =
   defaultRouteUnaryClient;
 const generatedUnaryRouteClient: GeneratedUnaryRouteClient =
   createUnaryRouteClient();
+const generatedUnaryClient: GeneratedUnaryClient = createUnaryClient();
 const generatedRouteUnaryClientAlias: RouteUnaryClient =
   generatedRouteUnaryClient;
 const generatedUnaryRouteClientAlias: UnaryRouteClient =
   generatedUnaryRouteClient;
+const generatedUnaryClientAlias: UnaryClient = generatedUnaryClient;
 const defaultRouteStreamClient = createRouteStreamClient();
 const generatedRouteStreamClient: GeneratedRouteStreamClient =
   defaultRouteStreamClient;
 const generatedStreamRouteClient: GeneratedStreamRouteClient =
   createStreamRouteClient();
+const generatedStreamClient: GeneratedStreamClient = createStreamClient();
 const generatedRouteStreamClientAlias: RouteStreamClient =
   generatedRouteStreamClient;
 const generatedStreamRouteClientAlias: StreamRouteClient =
   generatedStreamRouteClient;
+const generatedStreamClientAlias: StreamClient = generatedStreamClient;
 const generatedRouteUnaryClientSingletonShape: GeneratedRouteUnaryClient =
   generatedRouteUnaryClientSingleton;
 const generatedUnaryRouteClientSingletonShape: GeneratedUnaryRouteClient =
   unaryRouteClient;
 const unaryRouteClientSingletonAlias: UnaryRouteClient = unaryRouteClient;
+const unaryClientSingletonAlias: UnaryClient = unaryClient;
 const generatedRouteStreamClientSingletonShape: GeneratedRouteStreamClient =
   generatedRouteStreamClientSingleton;
 const generatedStreamRouteClientSingletonShape: GeneratedStreamRouteClient =
   streamRouteClient;
 const streamRouteClientSingletonAlias: StreamRouteClient = streamRouteClient;
+const streamClientSingletonAlias: StreamClient = streamClient;
 // @ts-expect-error generated client route groups are readonly.
 generatedClient.users = generatedClient.users;
 // @ts-expect-error generated client route leaves are readonly.
@@ -4493,10 +4554,16 @@ generatedRouteUnaryClient.users.get({
 generatedUnaryRouteClient.users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
+generatedUnaryClient.users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
 generatedRouteUnaryClientAlias.users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
 generatedUnaryRouteClientAlias.users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
+generatedUnaryClientAlias.users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
 generatedRouteUnaryClientSingletonShape.users.get({
@@ -4505,12 +4572,18 @@ generatedRouteUnaryClientSingletonShape.users.get({
 generatedUnaryRouteClientSingletonShape.users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
+unaryClientSingletonAlias.users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
 generatedRouteStreamClient.users.watch({ userId: '1' });
 generatedStreamRouteClient.users.watch({ userId: '1' });
+generatedStreamClient.users.watch({ userId: '1' });
 generatedRouteStreamClientAlias.users.watch({ userId: '1' });
 generatedStreamRouteClientAlias.users.watch({ userId: '1' });
+generatedStreamClientAlias.users.watch({ userId: '1' });
 generatedRouteStreamClientSingletonShape.users.watch({ userId: '1' });
 generatedStreamRouteClientSingletonShape.users.watch({ userId: '1' });
+streamClientSingletonAlias.users.watch({ userId: '1' });
 const options: GeneratedClientOptions = {
   headers: { authorization: 'token' },
   request: { credentials: 'include' },
@@ -4539,18 +4612,24 @@ const generatedRouteUnaryClientOptions: GeneratedRouteUnaryClientOptions = {
 };
 const generatedUnaryRouteClientOptions: GeneratedUnaryRouteClientOptions =
   generatedRouteUnaryClientOptions;
+const generatedUnaryClientOptions: GeneratedUnaryClientOptions =
+  generatedRouteUnaryClientOptions;
 const routeUnaryClientOptions: RouteUnaryClientOptions =
   generatedRouteUnaryClientOptions;
 const unaryRouteClientOptions: UnaryRouteClientOptions = routeUnaryClientOptions;
+const unaryClientOptions: UnaryClientOptions = routeUnaryClientOptions;
 const generatedRouteStreamClientOptions: GeneratedRouteStreamClientOptions = {
   headers: { authorization: 'token' },
 };
 const generatedStreamRouteClientOptions: GeneratedStreamRouteClientOptions =
   generatedRouteStreamClientOptions;
+const generatedStreamClientOptions: GeneratedStreamClientOptions =
+  generatedRouteStreamClientOptions;
 const routeStreamClientOptions: RouteStreamClientOptions =
   generatedRouteStreamClientOptions;
 const streamRouteClientOptions: StreamRouteClientOptions =
   routeStreamClientOptions;
+const streamClientOptions: StreamClientOptions = routeStreamClientOptions;
 const typedGeneratedRouteUnaryClientOptions: GeneratedRouteUnaryClientOptions<GeneratedRequest> =
   typedGeneratedClientOptions;
 const typedGeneratedRouteStreamClientOptions: GeneratedRouteStreamClientOptions<GeneratedRequest> =
@@ -4566,10 +4645,16 @@ createRouteUnaryClient<GeneratedRequest>(
 createUnaryRouteClient(generatedUnaryRouteClientOptions).users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
+createUnaryClient(generatedUnaryClientOptions).users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
 createRouteUnaryClient(routeUnaryClientOptions).users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
 createUnaryRouteClient(unaryRouteClientOptions).users.get({
+  id: '550e8400-e29b-41d4-a716-446655440000',
+});
+createUnaryClient(unaryClientOptions).users.get({
   id: '550e8400-e29b-41d4-a716-446655440000',
 });
 createRouteStreamClient(generatedRouteStreamClientOptions).users.watch({
@@ -4581,8 +4666,12 @@ createRouteStreamClient<GeneratedRequest>(
 createStreamRouteClient(generatedStreamRouteClientOptions).users.watch({
   userId: '1',
 });
+createStreamClient(generatedStreamClientOptions).users.watch({
+  userId: '1',
+});
 createRouteStreamClient(routeStreamClientOptions).users.watch({ userId: '1' });
 createStreamRouteClient(streamRouteClientOptions).users.watch({ userId: '1' });
+createStreamClient(streamClientOptions).users.watch({ userId: '1' });
 // @ts-expect-error generated typed client options require a matching request factory.
 const missingGeneratedClientRequestFactory: GeneratedClientOptions<GeneratedRequest> = {
   fetch(request) {
@@ -4744,6 +4833,8 @@ const generatedTypedRouteUnaryTransport: RouteUnaryTransportClient =
   );
 const generatedUnaryRouteTransport: UnaryRouteTransportClient =
   createUnaryRouteTransport(generatedUnaryRouteClientOptions);
+const generatedUnaryTransportClient: UnaryTransportClient =
+  createUnaryTransport(generatedUnaryClientOptions);
 const generatedRouteStreamTransport: RouteStreamTransportClient =
   createRouteStreamTransport(generatedRouteStreamClientOptions);
 const generatedTypedRouteStreamTransport: RouteStreamTransportClient =
@@ -4752,18 +4843,27 @@ const generatedTypedRouteStreamTransport: RouteStreamTransportClient =
   );
 const generatedStreamRouteTransport: StreamRouteTransportClient =
   createStreamRouteTransport(generatedStreamRouteClientOptions);
+const generatedStreamTransportClient: StreamTransportClient =
+  createStreamTransport(generatedStreamClientOptions);
 const generatedRouteUnarySingleton: RouteUnaryTransportClient =
   generatedRouteUnaryTransportSingleton;
 const generatedUnaryRouteSingleton: UnaryRouteTransportClient =
   unaryRouteTransport;
+const generatedUnarySingleton: UnaryTransportClient = unaryTransport;
 const generatedRouteStreamSingleton: RouteStreamTransportClient =
   generatedRouteStreamTransportSingleton;
 const generatedStreamRouteSingleton: StreamRouteTransportClient =
   streamRouteTransport;
+const generatedStreamSingleton: StreamTransportClient = streamTransport;
 const generatedUnaryTransport: UnaryRouteTransportClient =
   generatedRouteUnaryTransport;
 const generatedStreamTransport: StreamRouteTransportClient =
   generatedRouteStreamTransport;
+type GeneratedConciseRouteTransportShapes = [
+  UnaryTransport<'users.get'>,
+  StreamTransport<'users.watch'>,
+];
+void (undefined as unknown as GeneratedConciseRouteTransportShapes);
 generatedTransport.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' }).then((result) => {
   if (result.ok) result.data.name.toUpperCase();
 });
