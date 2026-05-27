@@ -227,6 +227,13 @@ const barrelIndexForSourceFile = (file: string): string | undefined => {
   return undefined;
 };
 
+const packageSubpathForRouteFile = (file: string): string | undefined => {
+  const directSubpath = packageSubpathForSourceFile(file);
+  if (directSubpath !== undefined) return directSubpath;
+  const barrel = barrelIndexForSourceFile(file);
+  return barrel === undefined ? undefined : packageSubpathForSourceFile(barrel);
+};
+
 const generatedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
 > => {
@@ -315,14 +322,16 @@ describe('route public surface', () => {
     const files = new Set((await publicRouteExports()).map(({ file }) => file));
     const missing = [...files]
       .flatMap((file) => {
-        const packageSubpath = packageSubpathForSourceFile(file);
+        const packageSubpath = packageSubpathForRouteFile(file);
         if (
-          packageSubpath === undefined ||
+          packageSubpath !== undefined &&
           packageExports.has(packageSubpath)
         ) {
           return [];
         }
-        return [`${relative(repoRoot, file)}: ${packageSubpath}`];
+        return [
+          `${relative(repoRoot, file)}: ${packageSubpath ?? '<no package path>'}`,
+        ];
       })
       .sort();
 
