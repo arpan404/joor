@@ -79,6 +79,45 @@ const collectExportedSymbols = (
   return symbols;
 };
 
+const collectStarExportFiles = (file: string, source: string): string[] => {
+  const files: string[] = [];
+  for (const match of source.matchAll(
+    /\bexport\s+\*\s+from\s+['"]([^'"]+)['"]/g
+  )) {
+    const moduleSpecifier = match[1];
+    if (moduleSpecifier === undefined) continue;
+    files.push(join(dirname(file), moduleSpecifier.replace(/\.js$/, '.ts')));
+  }
+
+  return files;
+};
+
+const collectReachableExportNames = (
+  file: string,
+  sources: ReadonlyMap<string, string>,
+  seen = new Set<string>()
+): ReadonlySet<string> => {
+  if (seen.has(file)) return new Set();
+  seen.add(file);
+  const source = sources.get(file);
+  if (source === undefined) return new Set();
+
+  const names = new Set(
+    collectExportedSymbols(file, source).map(({ name }) => name)
+  );
+  for (const starExportFile of collectStarExportFiles(file, source)) {
+    for (const name of collectReachableExportNames(
+      starExportFile,
+      sources,
+      seen
+    )) {
+      names.add(name);
+    }
+  }
+
+  return names;
+};
+
 const routeTwinName = (name: string): string | undefined => {
   if (name.includes('RouteUnary')) {
     return name.replaceAll('RouteUnary', 'UnaryRoute');
@@ -165,6 +204,24 @@ const packageSubpathForSourceFile = (file: string): string | undefined => {
   if (relativeFile === 'runtime/index.ts') return './runtime';
   if (relativeFile.startsWith('runtime/')) {
     return `./${relativeFile.replace(/\.ts$/, '')}`;
+  }
+
+  return undefined;
+};
+
+const barrelIndexForSourceFile = (file: string): string | undefined => {
+  const relativeFile = relative(srcRoot, file);
+  if (
+    relativeFile.startsWith('runtime/') &&
+    relativeFile !== 'runtime/index.ts'
+  ) {
+    return join(srcRoot, 'runtime/index.ts');
+  }
+  if (
+    relativeFile === 'rpc/client.ts' ||
+    relativeFile === 'rpc/dispatcher.ts'
+  ) {
+    return join(srcRoot, 'rpc/index.ts');
   }
 
   return undefined;
@@ -266,6 +323,49 @@ describe('route public surface', () => {
           return [];
         }
         return [`${relative(repoRoot, file)}: ${packageSubpath}`];
+      })
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-bearing barrel exports reachable', async () => {
+    const files = await collectTypeScriptFiles(srcRoot);
+    const sources = new Map(
+      await Promise.all(
+        files.map(
+          async (file): Promise<readonly [string, string]> => [
+            file,
+            await readFile(file, 'utf8'),
+          ]
+        )
+      )
+    );
+    const localExportNames = new Map(
+      [...sources].map(([file, source]) => [
+        file,
+        new Set(collectExportedSymbols(file, source).map(({ name }) => name)),
+      ])
+    );
+    const reachableExportNames = new Map(
+      [...sources].map(([file]) => [
+        file,
+        collectReachableExportNames(file, sources),
+      ])
+    );
+    const missing = [...localExportNames]
+      .flatMap(([file, names]) => {
+        const barrel = barrelIndexForSourceFile(file);
+        if (barrel === undefined) return [];
+        const barrelNames =
+          reachableExportNames.get(barrel) ?? new Set<string>();
+        return [...names]
+          .filter((name) => routeNamePattern.test(name))
+          .filter((name) => !barrelNames.has(name))
+          .map(
+            (name) =>
+              `${relative(repoRoot, barrel)} missing ${name} from ${relative(repoRoot, file)}`
+          );
       })
       .sort();
 
