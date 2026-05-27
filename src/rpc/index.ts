@@ -93,6 +93,7 @@ export type {
   LegacyRpcTransportClient,
   PendingRpcRequest,
   RouteRpcTransportClient,
+  RpcClientOptionsFor,
   RpcManifestClientOptions,
   RpcManifestRouteStreamClientOptions,
   RpcManifestRouteStreamTransportClient,

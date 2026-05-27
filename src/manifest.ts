@@ -15,6 +15,7 @@ import type {
   RpcManifestStreamRouteClientOptions,
   RpcManifestTransportClient,
   RpcManifestUnaryRouteClientOptions,
+  RpcClientOptionsFor,
   RpcRouteStreamClientOptionsFor,
   RpcRouteUnaryClientOptionsFor,
   RpcStreamRouteClientOptionsFor,
@@ -256,6 +257,11 @@ export type JoorManifestClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request = JoorManifestRequiredRuntimeRequest<TManifest>,
 > = RpcManifestClientOptions<TManifest, TRequest>;
+
+export type JoorManifestClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request = JoorManifestRequiredRuntimeRequest<TManifest>,
+> = RpcClientOptionsFor<TManifest, TRequest>;
 
 export type JoorManifestRouteUnaryClientOptions<
   TManifest extends JoorManifest,

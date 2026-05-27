@@ -921,6 +921,7 @@ import {
   type JoorHandlerOptionsArgs,
   type JoorHandlerOptionsFor,
   type JoorManifestClientOptions,
+  type JoorManifestClientOptionsFor,
   type JoorManifestRouteStreamClientOptions,
   type JoorManifestRouteStreamClientOptionsFor,
   type JoorManifestRouteUnaryClientOptions,
@@ -1445,6 +1446,7 @@ import {
   type RpcUnaryProtocolRequest,
   type RpcUnaryProtocolRequestUnion,
   type RouteRpcTransportClient,
+  type RpcClientOptionsFor,
   type RpcManifestClientOptions,
   type RpcManifestRouteStreamClientOptions,
   type RpcManifestRouteStreamTransportClient,
@@ -1758,6 +1760,7 @@ import {
   type RpcManifestUnaryRouteMiddlewareFor as RpcSubpathManifestUnaryRouteMiddlewareFor,
   type RpcManifestUnaryRouteRequiredRuntimeRequest as RpcSubpathManifestUnaryRouteRequiredRuntimeRequest,
   type RpcManifestUnaryRouteRequiredServices as RpcSubpathManifestUnaryRouteRequiredServices,
+  type RpcClientOptionsFor as RpcSubpathClientOptionsFor,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
   type RpcRouteStreamClientOptions as RpcSubpathRouteStreamClientOptions,
   type RpcRouteStreamClientOptionsFor as RpcSubpathRouteStreamClientOptionsFor,
@@ -1866,6 +1869,7 @@ import type { StreamEvent as RpcSseEvent } from '../src/rpc/stream.js';
 import {
   defineManifest as defineManifestSubpath,
   type JoorManifestClientOptions as JoorSubpathManifestClientOptions,
+  type JoorManifestClientOptionsFor as JoorSubpathManifestClientOptionsFor,
   type JoorManifestRouteStreamClientOptions as JoorSubpathManifestRouteStreamClientOptions,
   type JoorManifestRouteStreamClientOptionsFor as JoorSubpathManifestRouteStreamClientOptionsFor,
   type JoorManifestRouteUnaryClientOptions as JoorSubpathManifestRouteUnaryClientOptions,
@@ -11401,6 +11405,25 @@ const typedJoorManifestStreamRouteClientOptions: JoorManifestStreamRouteClientOp
   typeof manifest,
   ClientAppRequest
 > = typedJoorManifestRouteStreamClientOptions;
+const typedClientOptionsFor: RpcClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = {
+  ...typedClientOptions,
+  manifest: requestTypedManifest,
+};
+const rpcSubpathTypedClientOptionsFor: RpcSubpathClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedClientOptionsFor;
+const typedJoorManifestClientOptionsFor: JoorManifestClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedClientOptionsFor;
+const typedJoorSubpathManifestClientOptionsFor: JoorSubpathManifestClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedJoorManifestClientOptionsFor;
 const typedJoorManifestRouteUnaryClientOptionsFor: JoorManifestRouteUnaryClientOptionsFor<
   typeof requestTypedManifest,
   ClientAppRequest
@@ -11460,6 +11483,10 @@ const typedJoorSubpathManifestStreamRouteClientOptionsFor: JoorSubpathManifestSt
 createRootManifestClient(manifest, typedManifestClientOptions);
 createRootManifestClient(manifest, typedRpcSubpathManifestClientOptions);
 createRootManifestClient(manifest, typedJoorManifestClientOptions);
+createRootClient(typedClientOptionsFor);
+createRootClient(rpcSubpathTypedClientOptionsFor);
+createRootClient(typedJoorManifestClientOptionsFor);
+createRootClient(typedJoorSubpathManifestClientOptionsFor);
 createRootRouteUnaryClient(typedJoorManifestRouteUnaryClientOptionsFor);
 createRootUnaryRouteClient(typedJoorManifestUnaryRouteClientOptionsFor);
 createRootRouteStreamClient(typedJoorManifestRouteStreamClientOptionsFor);

@@ -599,6 +599,7 @@ export type {
 export type {
   JoorManifest,
   JoorManifestClientOptions,
+  JoorManifestClientOptionsFor,
   JoorManifestRouteStreamClientOptions,
   JoorManifestRouteStreamClientOptionsFor,
   JoorManifestRouteUnaryClientOptions,
@@ -833,6 +834,7 @@ export type {
   LegacyRpcTransportClient,
   PendingRpcRequest,
   RouteRpcTransportClient,
+  RpcClientOptionsFor,
   RpcManifestClientOptions,
   RpcManifestRouteStreamClientOptions,
   RpcProtocolBatchRequest,

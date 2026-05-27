@@ -306,6 +306,7 @@ import {
 } from 'joor';
 import { createAuthPolicy } from 'joor/auth';
 import {
+  createClient,
   createManifestClient,
   createManifestRouteStreamClient,
   createManifestRouteUnaryClient,
@@ -995,6 +996,8 @@ const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClien
   packageSubpathClient;
 const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
   packageSubpathClient;
+const packageSubpathClientOptionsFor: Client.RpcClientOptionsFor<PackageSubpathManifest> =
+  { url: 'https://example.com/rpc', manifest: packageSubpathManifest };
 const packageSubpathRouteUnaryClientOptions: Client.RpcManifestRouteUnaryClientOptions<PackageSubpathManifest> =
   { url: 'https://example.com/rpc' };
 const packageSubpathUnaryRouteClientOptions: Client.RpcManifestUnaryRouteClientOptions<PackageSubpathManifest> =
@@ -1059,6 +1062,7 @@ const packageSubpathStreamRouteMapClient =
   createStreamRouteClient<PackageSubpathRoutes>(
     packageSubpathStreamRouteMapClientOptions
   );
+createClient(packageSubpathClientOptionsFor).call('users.get', { id: '1' });
 packageSubpathRouteMapUnaryClient.call('users.get', { id: '1' });
 packageSubpathUnaryRouteMapClient.call('users.get', { id: '1' });
 packageSubpathRouteMapStreamClient.stream('users.watch', { userId: '1' });
@@ -3322,6 +3326,7 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcUnaryRouteTransportClient<PackageSubpathRoutes>,
   Rpc.RpcRouteStreamTransportClient<PackageSubpathRoutes>,
   Rpc.RpcStreamRouteTransportClient<PackageSubpathRoutes>,
+  Rpc.RpcClientOptionsFor<PackageSubpathManifest>,
   Rpc.RpcRouteUnaryClientOptions,
   Rpc.RpcUnaryRouteClientOptions,
   Rpc.RpcRouteStreamClientOptions,
@@ -3568,6 +3573,7 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcManifestStreamRouteEvent<PackageSubpathManifest, 'users.watch'>,
 ];
 type PackageSubpathManifestRouteDetailSurface = [
+  Manifest.JoorManifestClientOptionsFor<PackageSubpathManifest>,
   Manifest.JoorManifestRouteUnaryClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestUnaryRouteClientOptions<PackageSubpathManifest>,
   Manifest.JoorManifestRouteStreamClientOptions<PackageSubpathManifest>,

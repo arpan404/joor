@@ -2720,6 +2720,11 @@ export type RpcManifestClientOptions<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = Omit<ClientOptions<TManifest, TRequest>, 'manifest'>;
 
+export type RpcClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
+> = ClientOptions<TManifest, TRequest> & { readonly manifest: TManifest };
+
 export type RpcRouteUnaryClientOptions<
   TRequest extends Request = Request,
 > = ClientOptions<undefined, TRequest>;
@@ -2949,7 +2954,7 @@ export function createClient<
   const TManifest extends JoorManifest,
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 >(
-  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
+  options: RpcClientOptionsFor<TManifest, TRequest>
 ): RpcManifestTransportClient<TManifest>;
 export function createClient<
   TRoutes extends RpcRouteMap = never,
