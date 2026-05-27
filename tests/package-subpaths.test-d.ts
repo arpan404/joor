@@ -1011,6 +1011,14 @@ const packageSubpathRouteMapStreamClientOptions: Client.RpcRouteStreamClientOpti
   { url: 'https://example.com/rpc' };
 const packageSubpathStreamRouteMapClientOptions: Client.RpcStreamRouteClientOptions =
   packageSubpathRouteMapStreamClientOptions;
+const packageSubpathRouteUnaryClientOptionsFor: Client.RpcRouteUnaryClientOptionsFor<PackageSubpathManifest> =
+  { url: 'https://example.com/rpc', manifest: packageSubpathManifest };
+const packageSubpathUnaryRouteClientOptionsFor: Client.RpcUnaryRouteClientOptionsFor<PackageSubpathManifest> =
+  packageSubpathRouteUnaryClientOptionsFor;
+const packageSubpathRouteStreamClientOptionsFor: Client.RpcRouteStreamClientOptionsFor<PackageSubpathManifest> =
+  { url: 'https://example.com/rpc', manifest: packageSubpathManifest };
+const packageSubpathStreamRouteClientOptionsFor: Client.RpcStreamRouteClientOptionsFor<PackageSubpathManifest> =
+  packageSubpathRouteStreamClientOptionsFor;
 const packageSubpathRouteUnaryClient = createManifestRouteUnaryClient(
   packageSubpathManifest,
   packageSubpathRouteUnaryClientOptions
@@ -1055,6 +1063,22 @@ packageSubpathRouteMapUnaryClient.call('users.get', { id: '1' });
 packageSubpathUnaryRouteMapClient.call('users.get', { id: '1' });
 packageSubpathRouteMapStreamClient.stream('users.watch', { userId: '1' });
 packageSubpathStreamRouteMapClient.stream('users.watch', { userId: '1' });
+createRouteUnaryClient(packageSubpathRouteUnaryClientOptionsFor).call(
+  'users.get',
+  { id: '1' }
+);
+createUnaryRouteClient(packageSubpathUnaryRouteClientOptionsFor).call(
+  'users.get',
+  { id: '1' }
+);
+createRouteStreamClient(packageSubpathRouteStreamClientOptionsFor).stream(
+  'users.watch',
+  { userId: '1' }
+);
+createStreamRouteClient(packageSubpathStreamRouteClientOptionsFor).stream(
+  'users.watch',
+  { userId: '1' }
+);
 const packageSubpathRequest = packageSubpathClient.request('users.get', {
   id: '1',
 });
@@ -3302,6 +3326,10 @@ type PackageSubpathRpcRouteDetailSurface = [
   Rpc.RpcUnaryRouteClientOptions,
   Rpc.RpcRouteStreamClientOptions,
   Rpc.RpcStreamRouteClientOptions,
+  Rpc.RpcRouteUnaryClientOptionsFor<PackageSubpathManifest>,
+  Rpc.RpcUnaryRouteClientOptionsFor<PackageSubpathManifest>,
+  Rpc.RpcRouteStreamClientOptionsFor<PackageSubpathManifest>,
+  Rpc.RpcStreamRouteClientOptionsFor<PackageSubpathManifest>,
   Rpc.RpcManifestRouteUnaryHeaders<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestUnaryRouteHeaders<PackageSubpathManifest, 'users.get'>,
   Rpc.RpcManifestRouteStreamHeaders<PackageSubpathManifest, 'users.watch'>,

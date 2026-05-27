@@ -2734,6 +2734,30 @@ export type RpcRouteStreamClientOptions<
 export type RpcStreamRouteClientOptions<TRequest extends Request = Request> =
   RpcRouteStreamClientOptions<TRequest>;
 
+export type RpcRouteUnaryClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = ClientOptions<TManifest, TRequest> & { readonly manifest: TManifest };
+
+export type RpcUnaryRouteClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RpcRouteUnaryClientOptionsFor<TManifest, TRequest>;
+
+export type RpcRouteStreamClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = ClientOptions<TManifest, TRequest> & { readonly manifest: TManifest };
+
+export type RpcStreamRouteClientOptionsFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RpcRouteStreamClientOptionsFor<TManifest, TRequest>;
+
 export type RpcManifestRouteUnaryClientOptions<
   TManifest extends JoorManifest,
   TRequest extends Request =
@@ -3109,7 +3133,7 @@ export function createRouteUnaryClient<
   TRequest extends Request =
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 >(
-  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
+  options: RpcRouteUnaryClientOptionsFor<TManifest, TRequest>
 ): RpcManifestRouteUnaryTransportClient<TManifest>;
 export function createRouteUnaryClient<
   TRoutes extends RpcRouteMap,
@@ -3164,7 +3188,7 @@ export function createRouteStreamClient<
   TRequest extends Request =
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 >(
-  options: ClientOptions<TManifest, TRequest> & { manifest: TManifest }
+  options: RpcRouteStreamClientOptionsFor<TManifest, TRequest>
 ): RpcManifestRouteStreamTransportClient<TManifest>;
 export function createRouteStreamClient<
   TRoutes extends RpcRouteMap,

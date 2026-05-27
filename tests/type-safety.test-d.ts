@@ -1452,9 +1452,13 @@ import {
   type RpcManifestUnaryRouteClientOptions,
   type RpcManifestUnaryRouteTransportClient,
   type RpcRouteStreamClientOptions,
+  type RpcRouteStreamClientOptionsFor,
   type RpcRouteUnaryClientOptions,
+  type RpcRouteUnaryClientOptionsFor,
   type RpcStreamRouteClientOptions,
+  type RpcStreamRouteClientOptionsFor,
   type RpcUnaryRouteClientOptions,
+  type RpcUnaryRouteClientOptionsFor,
   type RpcSuccess,
   type RpcStreamProcedure,
   type RpcStreamRouteClientArgs,
@@ -1752,9 +1756,13 @@ import {
   type RpcManifestUnaryRouteRequiredServices as RpcSubpathManifestUnaryRouteRequiredServices,
   type RpcManifestClientOptions as RpcSubpathManifestClientOptions,
   type RpcRouteStreamClientOptions as RpcSubpathRouteStreamClientOptions,
+  type RpcRouteStreamClientOptionsFor as RpcSubpathRouteStreamClientOptionsFor,
   type RpcRouteUnaryClientOptions as RpcSubpathRouteUnaryClientOptions,
+  type RpcRouteUnaryClientOptionsFor as RpcSubpathRouteUnaryClientOptionsFor,
   type RpcStreamRouteClientOptions as RpcSubpathStreamRouteClientOptions,
+  type RpcStreamRouteClientOptionsFor as RpcSubpathStreamRouteClientOptionsFor,
   type RpcUnaryRouteClientOptions as RpcSubpathUnaryRouteClientOptions,
+  type RpcUnaryRouteClientOptionsFor as RpcSubpathUnaryRouteClientOptionsFor,
   type RpcManifestTransportClient as RpcSubpathManifestTransportClient,
   type RpcManifestBody as RpcSubpathManifestBody,
   type RpcManifestBodyResultFor as RpcSubpathManifestBodyResultFor,
@@ -11278,6 +11286,85 @@ createRouteStreamClient<Routes, ClientAppRequest>(
 createStreamRouteClient<Routes, ClientAppRequest>(
   rpcSubpathTypedStreamRouteClientOptions
 );
+const typedRouteUnaryClientOptionsFor: RpcRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = {
+  ...typedClientOptions,
+  manifest: requestTypedManifest,
+};
+const typedUnaryRouteClientOptionsFor: RpcUnaryRouteClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedRouteUnaryClientOptionsFor;
+const rpcSubpathTypedRouteUnaryClientOptionsFor: RpcSubpathRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = typedRouteUnaryClientOptionsFor;
+const rpcSubpathTypedUnaryRouteClientOptionsFor: RpcSubpathUnaryRouteClientOptionsFor<
+  typeof requestTypedManifest,
+  ClientAppRequest
+> = rpcSubpathTypedRouteUnaryClientOptionsFor;
+createRootRouteUnaryClient(typedRouteUnaryClientOptionsFor);
+createRootUnaryRouteClient(typedUnaryRouteClientOptionsFor);
+createRouteUnaryClient(rpcSubpathTypedRouteUnaryClientOptionsFor);
+createUnaryRouteClient(rpcSubpathTypedUnaryRouteClientOptionsFor);
+// @ts-expect-error manifest-including route unary options require the route-specific request factory by default.
+const _missingRouteUnaryClientOptionsFor: RpcRouteUnaryClientOptionsFor<
+  typeof requestTypedManifest
+> = {
+  url: '/rpc',
+  manifest: requestTypedManifest,
+  fetch: typedClientFetch,
+};
+const streamTypedClientRequestFactory: ClientRequestFactory<StreamProcedureRequest> =
+  ({ url, body, headers, baseRequest, request }) =>
+    Object.assign(
+      new Request(url, {
+        ...baseRequest,
+        ...request,
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      }),
+      { streamRequestId: 'stream_req_1' }
+    ) as StreamProcedureRequest;
+const streamTypedClientFetch: ClientFetch<StreamProcedureRequest> = async (
+  request
+) => new Response(request.streamRequestId);
+const typedRouteStreamClientOptionsFor: RpcRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = {
+  url: '/rpc',
+  manifest: routeKindScopedManifest,
+  fetch: streamTypedClientFetch,
+  createRequest: streamTypedClientRequestFactory,
+};
+const typedStreamRouteClientOptionsFor: RpcStreamRouteClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = typedRouteStreamClientOptionsFor;
+const rpcSubpathTypedRouteStreamClientOptionsFor: RpcSubpathRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = typedRouteStreamClientOptionsFor;
+const rpcSubpathTypedStreamRouteClientOptionsFor: RpcSubpathStreamRouteClientOptionsFor<
+  typeof routeKindScopedManifest,
+  StreamProcedureRequest
+> = rpcSubpathTypedRouteStreamClientOptionsFor;
+createRootRouteStreamClient(typedRouteStreamClientOptionsFor);
+createRootStreamRouteClient(typedStreamRouteClientOptionsFor);
+createRouteStreamClient(rpcSubpathTypedRouteStreamClientOptionsFor);
+createStreamRouteClient(rpcSubpathTypedStreamRouteClientOptionsFor);
+// @ts-expect-error manifest-including route stream options require the route-specific request factory by default.
+const _missingRouteStreamClientOptionsFor: RpcRouteStreamClientOptionsFor<
+  typeof routeKindScopedManifest
+> = {
+  url: '/rpc',
+  manifest: routeKindScopedManifest,
+  fetch: streamTypedClientFetch,
+};
 const typedManifestClientOptions: RpcManifestClientOptions<
   typeof manifest,
   ClientAppRequest
