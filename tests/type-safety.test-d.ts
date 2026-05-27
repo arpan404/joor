@@ -18457,10 +18457,31 @@ const joorRouteStreamHandlerOptions: JoorRouteStreamHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = manifestStreamRouteHandlerOptions;
+const requestTypedJoorRouteStreamHandlerOptions: JoorRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = {
+  plugins: [usersPlugin] as const,
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.userId.toUpperCase();
+      return undefined;
+    },
+  },
+};
 const joorStreamRouteHandlerOptions: JoorStreamRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorRouteStreamHandlerOptions;
+const requestTypedJoorStreamRouteHandlerOptions: JoorStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteStreamHandlerOptions;
 const runtimeSubpathJoorUnaryRouteHandlerOptions: RuntimeSubpathJoorUnaryRouteHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -18477,6 +18498,12 @@ const runtimeSubpathJoorRouteStreamHandlerOptions: RuntimeSubpathJoorRouteStream
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorRouteStreamHandlerOptions;
+const requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions: RuntimeSubpathJoorRouteStreamHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteStreamHandlerOptions;
 const exactRuntimeSubpathJoorHandlerOptions: RuntimeSubpathJoorHandlerOptionsFor<
   typeof manifest,
   readonly [typeof usersPlugin],
@@ -18494,6 +18521,12 @@ const requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions: RuntimeSubpathJoor
   typeof manifestRouteRequest,
   HookAppRequest
 > = requestTypedJoorRouteUnaryHandlerOptions;
+const requestTypedRuntimeSubpathJoorStreamRouteHandlerOptions: RuntimeSubpathJoorStreamRouteHandlerOptionsFor<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions;
 runtimeSubpathJoorUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestUnaryRouteHandlerHookContext
@@ -18522,6 +18555,15 @@ requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
   hookAppRequest,
   exactManifestHandlerHookContext
 );
+requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
+requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error request-typed runtime-subpath route-stream Joor options reject broader requests.
+  new Request('https://example.com/rpc'),
+  manifestStreamRouteHandlerHookContext
+);
 const joorHandlerOptionsArgs: JoorHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -18544,10 +18586,22 @@ const joorRouteStreamHandlerOptionsArgs: JoorRouteStreamHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = [joorRouteStreamHandlerOptions];
+const requestTypedJoorRouteStreamHandlerOptionsArgs: JoorRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = [requestTypedJoorRouteStreamHandlerOptions];
 const joorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorRouteStreamHandlerOptionsArgs;
+const requestTypedJoorStreamRouteHandlerOptionsArgs: JoorStreamRouteHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteStreamHandlerOptionsArgs;
 const runtimeSubpathJoorHandlerOptionsArgs: RuntimeSubpathJoorHandlerOptionsArgs<
   typeof manifest,
   readonly [typeof usersPlugin]
@@ -18574,6 +18628,12 @@ const runtimeSubpathJoorRouteStreamHandlerOptionsArgs: RuntimeSubpathJoorRouteSt
   typeof manifest,
   readonly [typeof usersPlugin]
 > = joorRouteStreamHandlerOptionsArgs;
+const requestTypedRuntimeSubpathJoorRouteStreamHandlerOptionsArgs: RuntimeSubpathJoorRouteStreamHandlerOptionsArgs<
+  typeof manifest,
+  readonly [typeof usersPlugin],
+  typeof manifestStreamRouteRequest,
+  HookAppRequest
+> = requestTypedJoorRouteStreamHandlerOptionsArgs;
 runtimeSubpathJoorHandlerOptionsArgs[0]?.plugins?.[0]?.name.toUpperCase();
 runtimeSubpathJoorUnaryRouteHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
@@ -18595,6 +18655,10 @@ runtimeSubpathJoorRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
   new Request('https://example.com/rpc'),
   manifestStreamRouteHandlerHookContext
 );
+requestTypedRuntimeSubpathJoorRouteStreamHandlerOptionsArgs[0]?.hooks?.beforeRequest?.(
+  hookAppRequest,
+  manifestStreamRouteHandlerHookContext
+);
 createJoorHandler(manifest, joorHandlerOptions);
 createRuntimeSubpathJoorHandler(manifest, runtimeSubpathJoorHandlerOptions);
 const routeUnaryJoorHandler = createRouteUnaryJoorHandler(
@@ -18609,6 +18673,11 @@ const routeStreamJoorHandler = createRouteStreamJoorHandler(
   manifest,
   joorRouteStreamHandlerOptions
 );
+const directHookTypedRouteStreamJoorHandler: JoorFetchHandler<HookAppRequest> =
+  createRouteStreamJoorHandler(
+    manifest,
+    requestTypedJoorRouteStreamHandlerOptions
+  );
 const streamRouteJoorHandler = createStreamRouteJoorHandler(
   manifest,
   joorStreamRouteHandlerOptions
@@ -18628,6 +18697,11 @@ const runtimeSubpathRouteStreamJoorHandler =
     manifest,
     runtimeSubpathJoorRouteStreamHandlerOptions
   );
+const directRuntimeSubpathHookTypedRouteStreamJoorHandler: RuntimeSubpathJoorFetchHandler<HookAppRequest> =
+  createRuntimeSubpathRouteStreamJoorHandler(
+    manifest,
+    requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions
+  );
 const runtimeSubpathStreamRouteJoorHandler =
   createRuntimeSubpathStreamRouteJoorHandler(
     manifest,
@@ -18638,6 +18712,11 @@ const requestTypedRouteUnaryJoorHandler =
     manifest,
     requestTypedJoorRouteUnaryHandlerOptions
   );
+const requestTypedRouteStreamJoorHandler =
+  createRouteStreamJoorHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedJoorRouteStreamHandlerOptions
+  );
 const defaultRouteUnaryJoorHandler = createRouteUnaryJoorHandlerFor()(
   manifest,
   joorRouteUnaryHandlerOptions
@@ -18647,6 +18726,11 @@ const runtimeSubpathRequestTypedRouteUnaryJoorHandler =
     manifest,
     requestTypedRuntimeSubpathJoorRouteUnaryHandlerOptions
   );
+const runtimeSubpathRequestTypedRouteStreamJoorHandler =
+  createRuntimeSubpathRouteStreamJoorHandlerFor<HookAppRequest>()(
+    manifest,
+    requestTypedRuntimeSubpathJoorRouteStreamHandlerOptions
+  );
 const runtimeSubpathDefaultRouteUnaryJoorHandler =
   createRuntimeSubpathRouteUnaryJoorHandlerFor()(
     manifest,
@@ -18655,6 +18739,10 @@ const runtimeSubpathDefaultRouteUnaryJoorHandler =
 createUnaryRouteJoorHandlerFor()(manifest, joorUnaryRouteHandlerOptions);
 createRouteStreamJoorHandlerFor()(manifest, joorRouteStreamHandlerOptions);
 createStreamRouteJoorHandlerFor()(manifest, joorStreamRouteHandlerOptions);
+createStreamRouteJoorHandlerFor<HookAppRequest>()(
+  manifest,
+  requestTypedJoorStreamRouteHandlerOptions
+);
 createRuntimeSubpathUnaryRouteJoorHandlerFor()(
   manifest,
   runtimeSubpathJoorUnaryRouteHandlerOptions
@@ -18663,6 +18751,10 @@ createRuntimeSubpathRouteStreamJoorHandlerFor()(
   manifest,
   runtimeSubpathJoorRouteStreamHandlerOptions
 );
+createRuntimeSubpathStreamRouteJoorHandlerFor<HookAppRequest>()(
+  manifest,
+  requestTypedRuntimeSubpathJoorStreamRouteHandlerOptions
+);
 createRuntimeSubpathStreamRouteJoorHandlerFor()(
   manifest,
   runtimeSubpathJoorStreamRouteHandlerOptions
@@ -18670,21 +18762,37 @@ createRuntimeSubpathStreamRouteJoorHandlerFor()(
 routeUnaryJoorHandler(new Request('https://example.com/rpc'));
 unaryRouteJoorHandler(new Request('https://example.com/rpc'));
 routeStreamJoorHandler(new Request('https://example.com/rpc'));
+directHookTypedRouteStreamJoorHandler(hookAppRequest);
 streamRouteJoorHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
 runtimeSubpathUnaryRouteJoorHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRouteStreamJoorHandler(new Request('https://example.com/rpc'));
+directRuntimeSubpathHookTypedRouteStreamJoorHandler(hookAppRequest);
 runtimeSubpathStreamRouteJoorHandler(new Request('https://example.com/rpc'));
 requestTypedRouteUnaryJoorHandler(hookAppRequest);
+requestTypedRouteStreamJoorHandler(hookAppRequest);
 defaultRouteUnaryJoorHandler(hookAppRequest);
 defaultRouteUnaryJoorHandler(new Request('https://example.com/rpc'));
 runtimeSubpathRequestTypedRouteUnaryJoorHandler(hookAppRequest);
+runtimeSubpathRequestTypedRouteStreamJoorHandler(hookAppRequest);
 runtimeSubpathDefaultRouteUnaryJoorHandler(hookAppRequest);
 runtimeSubpathDefaultRouteUnaryJoorHandler(
   new Request('https://example.com/rpc')
 );
 requestTypedRouteUnaryJoorHandler(
   // @ts-expect-error route-unary fetch handler factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+requestTypedRouteStreamJoorHandler(
+  // @ts-expect-error route-stream Joor handler factories preserve custom request types.
+  new Request('https://example.com/rpc')
+);
+directHookTypedRouteStreamJoorHandler(
+  // @ts-expect-error direct route-stream Joor handler factories infer custom hook request types.
+  new Request('https://example.com/rpc')
+);
+directRuntimeSubpathHookTypedRouteStreamJoorHandler(
+  // @ts-expect-error direct runtime-subpath route-stream Joor handler factories infer custom hook request types.
   new Request('https://example.com/rpc')
 );
 const nextHandlers: NextRouteHandlers = createNextRouteHandlers(
