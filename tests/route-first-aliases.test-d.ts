@@ -3,6 +3,7 @@ import type * as ConfigSubpath from '../src/config.js';
 import type * as ContextSubpath from '../src/context/index.js';
 import type * as ManifestSubpath from '../src/manifest.js';
 import type * as CompiledSubpath from '../src/runtime/compiled.js';
+import type * as FetchSubpath from '../src/runtime/fetch.js';
 import type * as Root from '../src/index.js';
 import type * as RpcSubpath from '../src/rpc/index.js';
 
@@ -238,6 +239,8 @@ export type RouteFirstJoorManifestProtocolBatchAliasSurface = [
 ];
 
 export type RootRouteFirstRpcAliasSurface = [
+  Root.DefineUnaryHandlerOptions<AliasManifest>,
+  Root.DefineStreamHandlerOptions<AliasManifest>,
   Root.DefineRouteUnaryHandlerOptions<AliasManifest>,
   Root.DefineRouteStreamHandlerOptions<AliasManifest>,
   Root.RpcManifestRouteUnaryId<AliasManifest>,
@@ -351,12 +354,28 @@ export type RootRouteFirstRpcAliasSurface = [
   Root.RpcManifestRouteStreamRequestOptions<AliasManifest, StreamId>,
   Root.RpcManifestRouteUnaryClientArgs<AliasManifest, UnaryId>,
   Root.RpcManifestRouteStreamClientArgs<AliasManifest, StreamId>,
+  Root.RpcManifestUnaryBodyHandler<AliasManifest>,
+  Root.RpcManifestStreamBodyHandler<AliasManifest>,
   Root.RpcManifestRouteUnaryBodyHandler<AliasManifest>,
   Root.RpcManifestRouteStreamBodyHandler<AliasManifest>,
+  Root.RpcManifestUnaryBodyResultHandler<AliasManifest>,
+  Root.RpcManifestStreamBodyResultHandler<AliasManifest>,
   Root.RpcManifestRouteUnaryBodyResultHandler<AliasManifest>,
   Root.RpcManifestRouteStreamBodyResultHandler<AliasManifest>,
+  Root.RpcManifestUnaryTransportBodyResultHandler<AliasManifest>,
+  Root.RpcManifestStreamTransportBodyResultHandler<AliasManifest>,
   Root.RpcManifestRouteUnaryTransportBodyResultHandler<AliasManifest>,
   Root.RpcManifestRouteStreamTransportBodyResultHandler<AliasManifest>,
+  Root.RpcManifestUnaryHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  Root.RpcManifestStreamHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
   Root.RpcManifestRouteUnaryHandlerOptionsFor<
     AliasManifest,
     AliasPlugins,
@@ -367,7 +386,17 @@ export type RootRouteFirstRpcAliasSurface = [
     AliasPlugins,
     StreamBody
   >,
+  Root.RpcManifestUnaryHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
   Root.RpcManifestRouteUnaryHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  Root.RpcManifestUnaryHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     UnaryBody
@@ -377,9 +406,20 @@ export type RootRouteFirstRpcAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  Root.RpcManifestUnaryHandlerOptionsWithTrailingArgs<
+    AliasManifest,
+    [preflight?: boolean],
+    AliasPlugins,
+    UnaryBody
+  >,
   Root.RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs<
     AliasManifest,
     [preflight?: boolean],
+    AliasPlugins,
+    UnaryBody
+  >,
+  Root.RpcManifestUnaryHandlerOptionsWithPreflightArgs<
+    AliasManifest,
     AliasPlugins,
     UnaryBody
   >,
@@ -388,7 +428,17 @@ export type RootRouteFirstRpcAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  Root.RpcManifestStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
   Root.RpcManifestRouteStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+  Root.RpcManifestStreamHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     StreamBody
@@ -398,9 +448,20 @@ export type RootRouteFirstRpcAliasSurface = [
     AliasPlugins,
     StreamBody
   >,
+  Root.RpcManifestStreamHandlerOptionsWithTrailingArgs<
+    AliasManifest,
+    [preflight?: boolean],
+    AliasPlugins,
+    StreamBody
+  >,
   Root.RpcManifestRouteStreamHandlerOptionsWithTrailingArgs<
     AliasManifest,
     [preflight?: boolean],
+    AliasPlugins,
+    StreamBody
+  >,
+  Root.RpcManifestStreamHandlerOptionsWithPreflightArgs<
+    AliasManifest,
     AliasPlugins,
     StreamBody
   >,
@@ -442,6 +503,8 @@ export type RootRouteFirstRpcAliasSurface = [
 ];
 
 export type RpcSubpathRouteFirstAliasSurface = [
+  RpcSubpath.DefineUnaryHandlerOptions<AliasManifest>,
+  RpcSubpath.DefineStreamHandlerOptions<AliasManifest>,
   RpcSubpath.DefineRouteUnaryHandlerOptions<AliasManifest>,
   RpcSubpath.DefineRouteStreamHandlerOptions<AliasManifest>,
   RpcSubpath.RpcManifestRouteUnaryId<AliasManifest>,
@@ -549,12 +612,28 @@ export type RpcSubpathRouteFirstAliasSurface = [
   RpcSubpath.RpcManifestRouteStreamRequestOptions<AliasManifest, StreamId>,
   RpcSubpath.RpcManifestRouteUnaryClientArgs<AliasManifest, UnaryId>,
   RpcSubpath.RpcManifestRouteStreamClientArgs<AliasManifest, StreamId>,
+  RpcSubpath.RpcManifestUnaryBodyHandler<AliasManifest>,
+  RpcSubpath.RpcManifestStreamBodyHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteUnaryBodyHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteStreamBodyHandler<AliasManifest>,
+  RpcSubpath.RpcManifestUnaryBodyResultHandler<AliasManifest>,
+  RpcSubpath.RpcManifestStreamBodyResultHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteUnaryBodyResultHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteStreamBodyResultHandler<AliasManifest>,
+  RpcSubpath.RpcManifestUnaryTransportBodyResultHandler<AliasManifest>,
+  RpcSubpath.RpcManifestStreamTransportBodyResultHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteUnaryTransportBodyResultHandler<AliasManifest>,
   RpcSubpath.RpcManifestRouteStreamTransportBodyResultHandler<AliasManifest>,
+  RpcSubpath.RpcManifestUnaryHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  RpcSubpath.RpcManifestStreamHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
   RpcSubpath.RpcManifestRouteUnaryHandlerOptionsFor<
     AliasManifest,
     AliasPlugins,
@@ -565,7 +644,17 @@ export type RpcSubpathRouteFirstAliasSurface = [
     AliasPlugins,
     StreamBody
   >,
+  RpcSubpath.RpcManifestUnaryHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
   RpcSubpath.RpcManifestRouteUnaryHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  RpcSubpath.RpcManifestUnaryHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     UnaryBody
@@ -575,9 +664,20 @@ export type RpcSubpathRouteFirstAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  RpcSubpath.RpcManifestUnaryHandlerOptionsWithTrailingArgs<
+    AliasManifest,
+    [preflight?: boolean],
+    AliasPlugins,
+    UnaryBody
+  >,
   RpcSubpath.RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs<
     AliasManifest,
     [preflight?: boolean],
+    AliasPlugins,
+    UnaryBody
+  >,
+  RpcSubpath.RpcManifestUnaryHandlerOptionsWithPreflightArgs<
+    AliasManifest,
     AliasPlugins,
     UnaryBody
   >,
@@ -586,7 +686,17 @@ export type RpcSubpathRouteFirstAliasSurface = [
     AliasPlugins,
     UnaryBody
   >,
+  RpcSubpath.RpcManifestStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
   RpcSubpath.RpcManifestRouteStreamHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+  RpcSubpath.RpcManifestStreamHandlerOptionsArgsFor<
     AliasManifest,
     AliasPlugins,
     StreamBody
@@ -596,9 +706,20 @@ export type RpcSubpathRouteFirstAliasSurface = [
     AliasPlugins,
     StreamBody
   >,
+  RpcSubpath.RpcManifestStreamHandlerOptionsWithTrailingArgs<
+    AliasManifest,
+    [preflight?: boolean],
+    AliasPlugins,
+    StreamBody
+  >,
   RpcSubpath.RpcManifestRouteStreamHandlerOptionsWithTrailingArgs<
     AliasManifest,
     [preflight?: boolean],
+    AliasPlugins,
+    StreamBody
+  >,
+  RpcSubpath.RpcManifestStreamHandlerOptionsWithPreflightArgs<
+    AliasManifest,
     AliasPlugins,
     StreamBody
   >,
@@ -633,6 +754,33 @@ export type RpcSubpathRouteFirstAliasSurface = [
     UnaryBody
   >,
   RpcSubpath.RpcManifestRouteStreamMiddlewareFor<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+];
+
+export type RuntimeFetchConciseAliasSurface = [
+  Root.JoorUnaryHandlerOptionsFor<AliasManifest, AliasPlugins, UnaryBody>,
+  Root.JoorStreamHandlerOptionsFor<AliasManifest, AliasPlugins, StreamBody>,
+  Root.JoorUnaryHandlerOptionsArgs<AliasManifest, AliasPlugins, UnaryBody>,
+  Root.JoorStreamHandlerOptionsArgs<AliasManifest, AliasPlugins, StreamBody>,
+  FetchSubpath.JoorUnaryHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  FetchSubpath.JoorStreamHandlerOptionsFor<
+    AliasManifest,
+    AliasPlugins,
+    StreamBody
+  >,
+  FetchSubpath.JoorUnaryHandlerOptionsArgs<
+    AliasManifest,
+    AliasPlugins,
+    UnaryBody
+  >,
+  FetchSubpath.JoorStreamHandlerOptionsArgs<
     AliasManifest,
     AliasPlugins,
     StreamBody
