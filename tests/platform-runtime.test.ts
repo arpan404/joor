@@ -77,29 +77,56 @@ const createRouteStreamRpcRequest = (): Request =>
     body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
   });
 
+const createWrongRouteUnaryRpcRequest = (): Request =>
+  new Request('http://localhost/rpc', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ id: 'users.watch', input: { userId: '1' } }),
+  });
+
+const createWrongRouteStreamRpcRequest = (): Request =>
+  new Request('http://localhost/rpc', {
+    method: 'POST',
+    headers: {
+      accept: 'text/event-stream',
+      'content-type': 'application/json',
+      'x-tenant-id': 'tenant-1',
+    },
+    body: JSON.stringify({ id: 'users.get', input: { id: '1' } }),
+  });
+
 const expectUserResponse = async (response: Response): Promise<void> => {
   const body = await response.json();
   expect(body.ok).toBe(true);
   expect(body.data.name).toBe('Ada');
 };
 
-const expectRouteUnaryResponse = async (
-  response: Response
-): Promise<void> => {
+const expectRouteUnaryResponse = async (response: Response): Promise<void> => {
   const body = await response.json();
   expect(response.status).toBe(200);
   expect(body.data).toEqual({ id: '1', tenantId: 'tenant-1' });
 };
 
-const expectRouteStreamResponse = async (
-  response: Response
-): Promise<void> => {
+const expectRouteStreamResponse = async (response: Response): Promise<void> => {
   const body = await response.text();
   expect(response.status).toBe(200);
   expect(response.headers.get('content-type')).toContain('text/event-stream');
   expect(body).toContain('event: data');
   expect(body).toContain('"event":"updated"');
   expect(body).toContain('event: done');
+};
+
+const expectRouteKindErrorResponse = async (
+  response: Response,
+  id: string
+): Promise<void> => {
+  const body = await response.json();
+  expect(response.status).toBe(200);
+  expect(body).toMatchObject({
+    ok: false,
+    id,
+    error: { code: 'NOT_FOUND', status: 404 },
+  });
 };
 
 describe('platform runtime helpers', () => {
@@ -132,10 +159,7 @@ describe('platform runtime helpers', () => {
   });
 
   it('dispatches route-specific unary Cloudflare Workers through the typed fetch runtime', async () => {
-    const worker = createRouteUnaryCloudflareWorkerFor()(
-      routeManifest,
-      config
-    );
+    const worker = createRouteUnaryCloudflareWorkerFor()(routeManifest, config);
     await expectRouteUnaryResponse(
       await worker.fetch(createRouteUnaryRpcRequest())
     );
@@ -154,10 +178,7 @@ describe('platform runtime helpers', () => {
   });
 
   it('dispatches route-specific unary Vercel functions through the typed fetch runtime', async () => {
-    const vercel = createRouteUnaryVercelFunctionFor()(
-      routeManifest,
-      config
-    );
+    const vercel = createRouteUnaryVercelFunctionFor()(routeManifest, config);
     await expectRouteUnaryResponse(
       await vercel.fetch(createRouteUnaryRpcRequest())
     );
@@ -201,6 +222,59 @@ describe('platform runtime helpers', () => {
 
     expect(response).toBeInstanceOf(Response);
     await expectRouteStreamResponse(response as Response);
+  });
+
+  it('rejects wrong route kinds in route-specific platform helpers', async () => {
+    const unaryCloudflare = createRouteUnaryCloudflareWorkerFor()(
+      routeManifest,
+      config
+    );
+    const streamCloudflare = createRouteStreamCloudflareWorker(
+      routeManifest,
+      config
+    );
+    const unaryVercel = createRouteUnaryVercelFunctionFor()(
+      routeManifest,
+      config
+    );
+    const streamVercel = createRouteStreamVercelFunction(routeManifest, config);
+    const unaryNetlify = createRouteUnaryNetlifyEdgeFunctionFor()(
+      routeManifest,
+      config
+    );
+    const streamNetlify = createRouteStreamNetlifyEdgeFunction(
+      routeManifest,
+      config
+    );
+
+    await expectRouteKindErrorResponse(
+      await unaryCloudflare.fetch(createWrongRouteUnaryRpcRequest()),
+      'users.watch'
+    );
+    await expectRouteKindErrorResponse(
+      await streamCloudflare.fetch(createWrongRouteStreamRpcRequest()),
+      'users.get'
+    );
+    await expectRouteKindErrorResponse(
+      await unaryVercel.fetch(createWrongRouteUnaryRpcRequest()),
+      'users.watch'
+    );
+    await expectRouteKindErrorResponse(
+      await streamVercel.fetch(createWrongRouteStreamRpcRequest()),
+      'users.get'
+    );
+    await expectRouteKindErrorResponse(
+      (await unaryNetlify(createWrongRouteUnaryRpcRequest(), {
+        requestId: 'request-1',
+      })) as Response,
+      'users.watch'
+    );
+    await expectRouteKindErrorResponse(
+      (await streamNetlify(createWrongRouteStreamRpcRequest(), {
+        requestId: 'request-1',
+      })) as Response,
+      'users.get'
+    );
   });
 
   it('dispatches through a typed Netlify Edge function handler', async () => {
