@@ -3804,6 +3804,20 @@ const generatedRouteStreamAwsLambdaHttpApiFactory: NativeAwsLambdaHandlerFactory
   createGeneratedRouteStreamAwsLambdaHttpApiHandlerFor();
 const generatedStreamRouteAwsLambdaHttpApiFactory: NativeAwsLambdaHandlerFactory =
   createGeneratedStreamRouteAwsLambdaHttpApiHandlerFor();
+const generatedTypedRouteUnaryAwsLambdaFactory: NativeAwsLambdaHandlerFactory<
+  GeneratedAwsLambdaEvent,
+  GeneratedRequest
+> = createGeneratedRouteUnaryAwsLambdaHandlerFor<
+  GeneratedAwsLambdaEvent,
+  GeneratedRequest
+>();
+const generatedTypedRouteStreamAwsLambdaFactory: NativeAwsLambdaHandlerFactory<
+  GeneratedAwsLambdaEvent,
+  GeneratedRequest
+> = createGeneratedRouteStreamAwsLambdaHttpApiHandlerFor<
+  GeneratedAwsLambdaEvent,
+  GeneratedRequest
+>();
 const generatedAwsLambdaRestApiHandler: AwsLambdaRestApiHandler =
   namedAwsLambdaRestApiHandler;
 const generatedTypedAwsLambdaRestApiHandler: AwsLambdaRestApiHandler<GeneratedAwsLambdaRestApiEvent> =
@@ -3816,6 +3830,20 @@ const generatedRouteStreamAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandler
   createGeneratedRouteStreamAwsLambdaRestApiHandlerFor();
 const generatedStreamRouteAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory =
   createGeneratedStreamRouteAwsLambdaRestApiHandlerFor();
+const generatedTypedRouteUnaryAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory<
+  GeneratedAwsLambdaRestApiEvent,
+  GeneratedRequest
+> = createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor<
+  GeneratedAwsLambdaRestApiEvent,
+  GeneratedRequest
+>();
+const generatedTypedRouteStreamAwsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory<
+  GeneratedAwsLambdaRestApiEvent,
+  GeneratedRequest
+> = createGeneratedRouteStreamAwsLambdaRestApiHandlerFor<
+  GeneratedAwsLambdaRestApiEvent,
+  GeneratedRequest
+>();
 const generatedCloudflareWorker: CloudflareWorker = cloudflareWorker;
 const generatedCloudflareFetch: NativeFetchHandler = cloudflareFetch;
 const generatedDefaultNativeFetch: NativeFetchHandler = createNativeFetchFor();
@@ -3869,6 +3897,22 @@ generatedRouteStreamAwsLambdaFactory()(generatedAwsLambdaEvent);
 generatedStreamRouteAwsLambdaFactory()(generatedAwsLambdaEvent);
 generatedRouteStreamAwsLambdaHttpApiFactory()(generatedAwsLambdaEvent);
 generatedStreamRouteAwsLambdaHttpApiFactory()(generatedAwsLambdaEvent);
+generatedTypedRouteUnaryAwsLambdaFactory({
+  createRequest(event) {
+    event.runtimeTag.toUpperCase();
+    return generatedRequest;
+  },
+})(generatedTypedAwsLambdaEvent);
+generatedTypedRouteStreamAwsLambdaFactory({
+  createRequest(event) {
+    event.runtimeTag.toUpperCase();
+    return generatedRequest;
+  },
+})(generatedTypedAwsLambdaEvent);
+// @ts-expect-error generated typed route AWS Lambda factories require custom request factories.
+generatedTypedRouteUnaryAwsLambdaFactory();
+// @ts-expect-error generated typed route AWS Lambda factories require custom request factories.
+generatedTypedRouteStreamAwsLambdaFactory();
 generatedAwsLambdaRestApiHandler(generatedAwsLambdaRestApiEvent);
 generatedTypedAwsLambdaRestApiHandler(generatedTypedAwsLambdaRestApiEvent);
 createGeneratedAwsLambdaRestApiHandlerFor()()(generatedAwsLambdaRestApiEvent);
@@ -3876,6 +3920,22 @@ generatedRouteUnaryAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
 generatedUnaryRouteAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
 generatedRouteStreamAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
 generatedStreamRouteAwsLambdaRestApiFactory()(generatedAwsLambdaRestApiEvent);
+generatedTypedRouteUnaryAwsLambdaRestApiFactory({
+  createRequest(event) {
+    event.runtimeTag.toUpperCase();
+    return generatedRequest;
+  },
+})(generatedTypedAwsLambdaRestApiEvent);
+generatedTypedRouteStreamAwsLambdaRestApiFactory({
+  createRequest(event) {
+    event.runtimeTag.toUpperCase();
+    return generatedRequest;
+  },
+})(generatedTypedAwsLambdaRestApiEvent);
+// @ts-expect-error generated typed route REST API Lambda factories require custom request factories.
+generatedTypedRouteUnaryAwsLambdaRestApiFactory();
+// @ts-expect-error generated typed route REST API Lambda factories require custom request factories.
+generatedTypedRouteStreamAwsLambdaRestApiFactory();
 generatedCloudflareWorker.fetch(new Request('https://example.com/rpc'));
 generatedCloudflareFetch(new Request('https://example.com/rpc'));
 generatedDefaultNativeFetch(new Request('https://example.com/rpc'));
