@@ -4259,6 +4259,25 @@ routeKindScopedStreamNodeRpcRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamNodeRpcRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamNodeRpcOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedNodeRpcOptions: NodeRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedNodeRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeRpcOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedNodeRpcRequest.requestId.toUpperCase();
+routeKindScopedNodeRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Node RPC options default to all route request requirements.
+const _wrongRouteKindScopedNodeRpcUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeRpcOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Node RPC options default to all route request requirements.
+const _wrongRouteKindScopedNodeRpcStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeRpcOptions
+> = requestTypedStreamProcedureRequest;
 createRouteUnaryNodeRpcRequestHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryNodeRpcOptions
@@ -4268,7 +4287,7 @@ createRouteStreamNodeRpcRequestHandlerFor()(
   routeKindScopedStreamNodeRpcOptions
 );
 createNodeRpcRequestHandlerFor()(routeKindScopedManifest, {
-  plugins: [usersPlugin, auditPlugin] as const,
+  ...routeKindScopedNodeRpcOptions,
   hooks: {
     beforeRequest(request) {
       request.requestId.toUpperCase();
@@ -4329,6 +4348,27 @@ routeKindScopedStreamNodeListenRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamNodeListenRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamNodeListenOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedNodeListenOptions: NodeListenOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+  port: 0,
+};
+const routeKindScopedNodeListenRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeListenOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedNodeListenRequest.requestId.toUpperCase();
+routeKindScopedNodeListenRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Node listen options default to all route request requirements.
+const _wrongRouteKindScopedNodeListenUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeListenOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Node listen options default to all route request requirements.
+const _wrongRouteKindScopedNodeListenStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedNodeListenOptions
+> = requestTypedStreamProcedureRequest;
+listen(routeKindScopedManifest, routeKindScopedNodeListenOptions);
 const routeKindScopedUnaryAwsLambdaOptions: AwsLambdaRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -4570,8 +4610,44 @@ routeKindScopedStreamBunRpcHandler(
   // @ts-expect-error route-stream Bun RPC handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
-const routeKindScopedBunFetch = createBunFetchFor()(routeKindScopedManifest, {
+const routeKindScopedBunFetchOptions: BunFetchOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
   plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedBunFetchRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunFetchOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedBunFetchRequest.requestId.toUpperCase();
+routeKindScopedBunFetchRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Bun fetch options default to all route request requirements.
+const _wrongRouteKindScopedBunFetchUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunFetchOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Bun fetch options default to all route request requirements.
+const _wrongRouteKindScopedBunFetchStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunFetchOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedBunRpcOptions: BunRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedBunFetchOptions;
+const routeKindScopedBunRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunRpcOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedBunRpcRequest.requestId.toUpperCase();
+routeKindScopedBunRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Bun RPC options default to all route request requirements.
+const _wrongRouteKindScopedBunRpcUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunRpcOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Bun RPC options default to all route request requirements.
+const _wrongRouteKindScopedBunRpcStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunRpcOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedBunFetch = createBunFetchFor()(routeKindScopedManifest, {
+  ...routeKindScopedBunFetchOptions,
 });
 routeKindScopedBunFetch(routeKindScopedRequiredRequest);
 routeKindScopedBunFetch(
@@ -4580,7 +4656,7 @@ routeKindScopedBunFetch(
 );
 const routeKindScopedBunRpcHandler = createBunRpcRequestHandlerFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedBunRpcOptions
 );
 routeKindScopedBunRpcHandler(routeKindScopedRequiredRequest);
 routeKindScopedBunRpcHandler(
@@ -4617,6 +4693,26 @@ routeKindScopedStreamBunServeRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamBunServeRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamBunServeOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedBunServeOptions: BunServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+  port: 0,
+};
+const routeKindScopedBunServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunServeOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedBunServeRequest.requestId.toUpperCase();
+routeKindScopedBunServeRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Bun serve options default to all route request requirements.
+const _wrongRouteKindScopedBunServeUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunServeOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Bun serve options default to all route request requirements.
+const _wrongRouteKindScopedBunServeStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedBunServeOptions
+> = requestTypedStreamProcedureRequest;
 serveRouteUnaryBun(
   routeKindScopedManifest,
   routeKindScopedUnaryBunServeOptions
@@ -4625,6 +4721,7 @@ serveRouteStreamBun(
   routeKindScopedManifest,
   routeKindScopedStreamBunServeOptions
 );
+serveBun(routeKindScopedManifest, routeKindScopedBunServeOptions);
 const routeKindScopedUnaryDenoFetch = createRouteUnaryDenoFetchFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryHandlerOptions
@@ -4687,8 +4784,44 @@ routeKindScopedStreamDenoRpcHandler(
   // @ts-expect-error route-stream Deno RPC handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
-const routeKindScopedDenoFetch = createDenoFetchFor()(routeKindScopedManifest, {
+const routeKindScopedDenoFetchOptions: DenoFetchOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
   plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedDenoFetchRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoFetchOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedDenoFetchRequest.requestId.toUpperCase();
+routeKindScopedDenoFetchRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Deno fetch options default to all route request requirements.
+const _wrongRouteKindScopedDenoFetchUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoFetchOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Deno fetch options default to all route request requirements.
+const _wrongRouteKindScopedDenoFetchStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoFetchOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedDenoRpcOptions: DenoRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = routeKindScopedDenoFetchOptions;
+const routeKindScopedDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoRpcOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedDenoRpcRequest.requestId.toUpperCase();
+routeKindScopedDenoRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Deno RPC options default to all route request requirements.
+const _wrongRouteKindScopedDenoRpcUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoRpcOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Deno RPC options default to all route request requirements.
+const _wrongRouteKindScopedDenoRpcStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoRpcOptions
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedDenoFetch = createDenoFetchFor()(routeKindScopedManifest, {
+  ...routeKindScopedDenoFetchOptions,
 });
 routeKindScopedDenoFetch(routeKindScopedRequiredRequest);
 routeKindScopedDenoFetch(
@@ -4697,7 +4830,7 @@ routeKindScopedDenoFetch(
 );
 const routeKindScopedDenoRpcHandler = createDenoRpcRequestHandlerFor()(
   routeKindScopedManifest,
-  { plugins: [usersPlugin, auditPlugin] as const }
+  routeKindScopedDenoRpcOptions
 );
 routeKindScopedDenoRpcHandler(routeKindScopedRequiredRequest);
 routeKindScopedDenoRpcHandler(
@@ -4734,6 +4867,26 @@ routeKindScopedStreamDenoServeRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamDenoServeRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamDenoServeOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedDenoServeOptions: DenoServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+  port: 0,
+};
+const routeKindScopedDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoServeOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedDenoServeRequest.requestId.toUpperCase();
+routeKindScopedDenoServeRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full Deno serve options default to all route request requirements.
+const _wrongRouteKindScopedDenoServeUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoServeOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full Deno serve options default to all route request requirements.
+const _wrongRouteKindScopedDenoServeStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedDenoServeOptions
+> = requestTypedStreamProcedureRequest;
 serveRouteUnaryDeno(
   routeKindScopedManifest,
   routeKindScopedUnaryDenoServeOptions
@@ -4742,6 +4895,7 @@ serveStreamRouteDeno(
   routeKindScopedManifest,
   routeKindScopedStreamDenoServeOptions
 );
+serveDeno(routeKindScopedManifest, routeKindScopedDenoServeOptions);
 const routeKindScopedUnaryStandaloneDenoRpcOptions: StandaloneDenoRouteUnaryRpcRequestHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin]
@@ -4776,10 +4930,30 @@ routeKindScopedUnaryStandaloneDenoRpcHandler(
   // @ts-expect-error route-unary standalone Deno RPC handlers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
 );
+const routeKindScopedStandaloneDenoRpcOptions: StandaloneDenoRpcRequestHandlerOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+};
+const routeKindScopedStandaloneDenoRpcRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoRpcOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedStandaloneDenoRpcRequest.requestId.toUpperCase();
+routeKindScopedStandaloneDenoRpcRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full standalone Deno RPC options default to all route request requirements.
+const _wrongRouteKindScopedStandaloneDenoRpcUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoRpcOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full standalone Deno RPC options default to all route request requirements.
+const _wrongRouteKindScopedStandaloneDenoRpcStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoRpcOptions
+> = requestTypedStreamProcedureRequest;
 const routeKindScopedStandaloneDenoRpcHandler =
-  createStandaloneDenoRpcRequestHandlerFor()(routeKindScopedManifest, {
-    plugins: [usersPlugin, auditPlugin] as const,
-  });
+  createStandaloneDenoRpcRequestHandlerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStandaloneDenoRpcOptions
+  );
 routeKindScopedStandaloneDenoRpcHandler(routeKindScopedRequiredRequest);
 routeKindScopedStandaloneDenoRpcHandler(
   // @ts-expect-error full standalone Deno RPC handlers default to all route request requirements.
@@ -4815,6 +4989,26 @@ routeKindScopedStreamStandaloneDenoServeRequest.streamRequestId.toUpperCase();
 const _wrongRouteKindScopedStreamStandaloneDenoServeRequest: HandlerOptionsRequest<
   typeof routeKindScopedStreamStandaloneDenoServeOptions
 > = requestTypedProcedureRequest;
+const routeKindScopedStandaloneDenoServeOptions: StandaloneDenoServeOptionsFor<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin, typeof auditPlugin]
+> = {
+  plugins: [usersPlugin, auditPlugin] as const,
+  port: 0,
+};
+const routeKindScopedStandaloneDenoServeRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoServeOptions
+> = routeKindScopedRequiredRequest;
+routeKindScopedStandaloneDenoServeRequest.requestId.toUpperCase();
+routeKindScopedStandaloneDenoServeRequest.streamRequestId.toUpperCase();
+// @ts-expect-error full standalone Deno serve options default to all route request requirements.
+const _wrongRouteKindScopedStandaloneDenoServeUnaryRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoServeOptions
+> = requestTypedProcedureRequest;
+// @ts-expect-error full standalone Deno serve options default to all route request requirements.
+const _wrongRouteKindScopedStandaloneDenoServeStreamRequest: HandlerOptionsRequest<
+  typeof routeKindScopedStandaloneDenoServeOptions
+> = requestTypedStreamProcedureRequest;
 serveStandaloneRouteUnaryDeno(
   routeKindScopedManifest,
   routeKindScopedUnaryStandaloneDenoServeOptions
@@ -4822,6 +5016,10 @@ serveStandaloneRouteUnaryDeno(
 serveStandaloneStreamRouteDeno(
   routeKindScopedManifest,
   routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveStandaloneDeno(
+  routeKindScopedManifest,
+  routeKindScopedStandaloneDenoServeOptions
 );
 const _wrongRouteKindScopedUnaryHandlerOptions: RpcManifestRouteUnaryHandlerOptionsFor<
   typeof routeKindScopedManifest,
