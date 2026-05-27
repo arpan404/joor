@@ -1,6 +1,6 @@
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join, relative } from 'node:path';
+import { basename, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
@@ -375,6 +375,9 @@ const generatedExportSets = async (): Promise<
   }
 };
 
+const routeExportNames = (names: ReadonlySet<string>): readonly string[] =>
+  [...names].filter((name) => routeNamePattern.test(name)).sort();
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -406,6 +409,39 @@ describe('route public surface', () => {
       .sort();
 
     expect(missing).toEqual([]);
+  });
+
+  it('keeps generated dispatcher route export surfaces aligned', async () => {
+    const exportSets = await generatedExportSets();
+    const dispatchers = new Map(
+      [...exportSets]
+        .filter(([file]) =>
+          [
+            'deno-dispatcher.safe.ts',
+            'dispatcher.safe.ts',
+            'dispatcher.streaming.ts',
+          ].includes(basename(file))
+        )
+        .map(([file, names]) => [basename(file), routeExportNames(names)])
+    );
+    const baseline = dispatchers.get('dispatcher.safe.ts');
+    const missing = [
+      'deno-dispatcher.safe.ts',
+      'dispatcher.safe.ts',
+      'dispatcher.streaming.ts',
+    ].flatMap((name) =>
+      dispatchers.has(name) ? [] : [`${name}: <missing generated file>`]
+    );
+    const mismatched =
+      baseline === undefined
+        ? []
+        : [...dispatchers].flatMap(([name, names]) =>
+            names.join('\n') === baseline.join('\n')
+              ? []
+              : [`${name}: ${names.length} route exports`]
+          );
+
+    expect([...missing, ...mismatched].sort()).toEqual([]);
   });
 
   it('keeps root route re-exports in sync with source modules', async () => {
