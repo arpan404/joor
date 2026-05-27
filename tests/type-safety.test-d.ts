@@ -460,9 +460,14 @@ import {
   serveStreamRouteDeno,
   serveUnaryRouteDeno,
   serveStandaloneDeno as serveRootStandaloneDeno,
+  serveStandaloneDenoRouteStream as serveRootStandaloneDenoRouteStream,
+  serveStandaloneDenoRouteUnary as serveRootStandaloneDenoRouteUnary,
+  serveStandaloneDenoStreamRoute as serveRootStandaloneDenoStreamRoute,
+  serveStandaloneDenoUnaryRoute as serveRootStandaloneDenoUnaryRoute,
   serveStandaloneRouteStreamDeno as serveRootStandaloneRouteStreamDeno,
   serveStandaloneRouteUnaryDeno as serveRootStandaloneRouteUnaryDeno,
   serveStandaloneStreamRouteDeno as serveRootStandaloneStreamRouteDeno,
+  serveStandaloneUnaryRouteDeno as serveRootStandaloneUnaryRouteDeno,
   t,
   toJsonSchema,
   rpcEnvelopeToResponse,
@@ -1911,10 +1916,15 @@ import {
   createStreamRouteDenoTransportRequestHandler as createStandaloneStreamRouteDenoTransportRequestHandler,
   createStreamRouteDenoTransportRequestHandlerFor as createStandaloneStreamRouteDenoTransportRequestHandlerFor,
   createStreamRouteDenoTransportRequestHandlerWithPathFor as createStandaloneStreamRouteDenoTransportRequestHandlerWithPathFor,
+  serveDenoRouteStream as serveStandaloneDenoRouteStream,
+  serveDenoRouteUnary as serveStandaloneDenoRouteUnary,
+  serveDenoStreamRoute as serveStandaloneDenoStreamRoute,
+  serveDenoUnaryRoute as serveStandaloneDenoUnaryRoute,
   serveDeno as serveStandaloneDeno,
   serveRouteStreamDeno as serveStandaloneRouteStreamDeno,
   serveRouteUnaryDeno as serveStandaloneRouteUnaryDeno,
   serveStreamRouteDeno as serveStandaloneStreamRouteDeno,
+  serveUnaryRouteDeno as serveStandaloneUnaryRouteDeno,
   type DenoRpcRequestHandlerOptionsArgs as StandaloneDenoRpcRequestHandlerOptionsArgs,
   type DenoRpcRequestHandlerOptionsFor as StandaloneDenoRpcRequestHandlerOptionsFor,
   type DenoRpcRequestHandler as StandaloneDenoRpcRequestHandler,
@@ -5780,7 +5790,67 @@ serveStandaloneStreamRouteDeno(
   routeKindScopedManifest,
   routeKindScopedStreamStandaloneDenoServeOptions
 );
+serveStandaloneUnaryRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveStandaloneDenoRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveStandaloneDenoUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveStandaloneRouteStreamDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveStandaloneDenoRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveStandaloneDenoStreamRoute(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
 serveStandaloneDeno(
+  routeKindScopedManifest,
+  routeKindScopedStandaloneDenoServeOptions
+);
+serveRootStandaloneRouteUnaryDeno(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveRootStandaloneUnaryRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveRootStandaloneDenoRouteUnary(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveRootStandaloneDenoUnaryRoute(
+  routeKindScopedManifest,
+  routeKindScopedUnaryStandaloneDenoServeOptions
+);
+serveRootStandaloneRouteStreamDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveRootStandaloneStreamRouteDeno(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveRootStandaloneDenoRouteStream(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveRootStandaloneDenoStreamRoute(
+  routeKindScopedManifest,
+  routeKindScopedStreamStandaloneDenoServeOptions
+);
+serveRootStandaloneDeno(
   routeKindScopedManifest,
   routeKindScopedStandaloneDenoServeOptions
 );
