@@ -9,6 +9,7 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
+const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
 
@@ -153,6 +154,22 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
   return symbols.flat().filter(({ name }) => routeNamePattern.test(name));
 };
 
+const packageSubpathForSourceFile = (file: string): string | undefined => {
+  const relativeFile = relative(srcRoot, file);
+  if (relativeFile === 'index.ts') return '.';
+  if (relativeFile === 'config.ts') return './config';
+  if (relativeFile === 'manifest.ts') return './manifest';
+  if (relativeFile === 'context/index.ts') return './context';
+  if (relativeFile === 'rpc/client.ts') return './client';
+  if (relativeFile === 'rpc/index.ts') return './rpc';
+  if (relativeFile === 'runtime/index.ts') return './runtime';
+  if (relativeFile.startsWith('runtime/')) {
+    return `./${relativeFile.replace(/\.ts$/, '')}`;
+  }
+
+  return undefined;
+};
+
 const generatedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
 > => {
@@ -227,6 +244,29 @@ describe('route public surface', () => {
         );
       })
       .map(({ file, name }) => `${relative(repoRoot, file)}: ${name}`)
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps package exports mapped for route-bearing public files', async () => {
+    const packageSource = await readFile(packageManifest, 'utf8');
+    const packageJson = JSON.parse(packageSource) as {
+      readonly exports?: Readonly<Record<string, unknown>>;
+    };
+    const packageExports = new Set(Object.keys(packageJson.exports ?? {}));
+    const files = new Set((await publicRouteExports()).map(({ file }) => file));
+    const missing = [...files]
+      .flatMap((file) => {
+        const packageSubpath = packageSubpathForSourceFile(file);
+        if (
+          packageSubpath === undefined ||
+          packageExports.has(packageSubpath)
+        ) {
+          return [];
+        }
+        return [`${relative(repoRoot, file)}: ${packageSubpath}`];
+      })
       .sort();
 
     expect(missing).toEqual([]);
