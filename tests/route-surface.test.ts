@@ -446,6 +446,55 @@ const generatedClientRouteBatchAliases = [
   'UnaryRouteProtocolBatchOptionsTuple',
 ] as const;
 
+const generatedDispatcherRouteBatchAliases = [
+  'NativeRouteBatchRequestUnion',
+  'NativeRouteUnaryBatchRequestUnion',
+  'NativeUnaryRouteBatchRequestUnion',
+  'NativeRouteProtocolBatchRequestUnion',
+  'NativeRouteUnaryProtocolBatchRequestUnion',
+  'NativeUnaryRouteProtocolBatchRequestUnion',
+  'NativeProtocolBatchRequestUnion',
+  'NativeRouteBatchRequest',
+  'NativeRouteUnaryBatchRequest',
+  'NativeUnaryRouteBatchRequest',
+  'NativeRouteProtocolBatchRequest',
+  'NativeRouteUnaryProtocolBatchRequest',
+  'NativeUnaryRouteProtocolBatchRequest',
+  'NativeProtocolBatchRequest',
+  'NativeRouteBatchClientHeaders',
+  'NativeBatchClientHeaders',
+  'NativeRouteUnaryBatchClientHeaders',
+  'NativeUnaryRouteBatchClientHeaders',
+  'NativeRouteProtocolBatchClientHeaders',
+  'NativeProtocolBatchClientHeaders',
+  'NativeRouteUnaryProtocolBatchClientHeaders',
+  'NativeUnaryRouteProtocolBatchClientHeaders',
+  'NativeRouteBatchOptions',
+  'NativeRouteUnaryBatchOptions',
+  'NativeUnaryRouteBatchOptions',
+  'NativeBatchOptions',
+  'NativeRouteProtocolBatchOptions',
+  'NativeProtocolBatchOptions',
+  'NativeRouteUnaryProtocolBatchOptions',
+  'NativeUnaryRouteProtocolBatchOptions',
+  'NativeRouteBatchOptionsTuple',
+  'NativeRouteUnaryBatchOptionsTuple',
+  'NativeUnaryRouteBatchOptionsTuple',
+  'NativeBatchOptionsTuple',
+  'NativeRouteProtocolBatchOptionsTuple',
+  'NativeProtocolBatchOptionsTuple',
+  'NativeRouteUnaryProtocolBatchOptionsTuple',
+  'NativeUnaryRouteProtocolBatchOptionsTuple',
+  'NativeRouteBatchResults',
+  'NativeRouteUnaryBatchResults',
+  'NativeUnaryRouteBatchResults',
+  'NativeRouteProtocolBatchResults',
+  'NativeRouteUnaryProtocolBatchResults',
+  'NativeUnaryRouteProtocolBatchResults',
+  'NativeProtocolBatchResults',
+  'NativeBatchBody',
+] as const;
+
 const generatedPlatformRouteHandlerTypeAliases = [
   {
     entrypoint: 'bun.ts',
@@ -883,6 +932,34 @@ describe('route public surface', () => {
         : generatedClientRouteBatchAliases.flatMap((name) =>
             exports.has(name) ? [] : [`client.ts: ${name}`]
           );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated dispatcher route batch aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const dispatchers = new Map(
+      [...exportSets]
+        .filter(([file]) =>
+          [
+            'deno-dispatcher.safe.ts',
+            'dispatcher.safe.ts',
+            'dispatcher.streaming.ts',
+          ].includes(basename(file))
+        )
+        .map(([file, names]) => [basename(file), names])
+    );
+    const missing = [
+      'deno-dispatcher.safe.ts',
+      'dispatcher.safe.ts',
+      'dispatcher.streaming.ts',
+    ].flatMap((entrypoint) => {
+      const exports = dispatchers.get(entrypoint);
+      if (exports === undefined) return [`${entrypoint}: <missing>`];
+      return generatedDispatcherRouteBatchAliases.flatMap((name) =>
+        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+      );
+    });
 
     expect(missing).toEqual([]);
   });
