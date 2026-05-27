@@ -1,12 +1,13 @@
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, relative } from 'node:path';
+import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { build } from '../src/compiler/build.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
+const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -34,8 +35,20 @@ const collectTypeScriptFiles = async (
 };
 
 const exportedName = (specifier: string): string => {
-  const parts = specifier.trim().split(/\s+as\s+/);
+  const parts = specifier
+    .trim()
+    .replace(/^type\s+/, '')
+    .split(/\s+as\s+/);
   return (parts[1] ?? parts[0] ?? '').trim();
+};
+
+const sourceName = (specifier: string): string => {
+  return (
+    specifier
+      .trim()
+      .replace(/^type\s+/, '')
+      .split(/\s+as\s+/)[0] ?? ''
+  );
 };
 
 const collectExportedSymbols = (
@@ -97,6 +110,33 @@ const sourceExportSets = async (): Promise<
   );
 
   return new Map(entries);
+};
+
+const rootReExportSets = async (): Promise<
+  Map<string, ReadonlySet<string>>
+> => {
+  const source = await readFile(rootIndex, 'utf8');
+  const entries = new Map<string, Set<string>>();
+
+  for (const match of source.matchAll(
+    /\bexport\s+(?:type\s+)?\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]/g
+  )) {
+    const specifiers = match[1];
+    const moduleSpecifier = match[2];
+    if (specifiers === undefined || moduleSpecifier === undefined) continue;
+    const sourceFile = join(
+      dirname(rootIndex),
+      moduleSpecifier.replace(/\.js$/, '.ts')
+    );
+    const names = entries.get(sourceFile) ?? new Set<string>();
+    for (const specifier of specifiers.split(',')) {
+      const name = sourceName(specifier).trim();
+      if (name.length > 0) names.add(name);
+    }
+    entries.set(sourceFile, names);
+  }
+
+  return entries;
 };
 
 const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
@@ -166,6 +206,29 @@ describe('route public surface', () => {
             : [];
         })
       )
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps root route re-exports in sync with source modules', async () => {
+    const rootExportNames = new Set(
+      collectExportedSymbols(rootIndex, await readFile(rootIndex, 'utf8')).map(
+        ({ name }) => name
+      )
+    );
+    const rootReExports = await rootReExportSets();
+    const publicExports = await publicRouteExports();
+    const missing = publicExports
+      .filter(({ file, name }) => {
+        if (file === rootIndex) return false;
+        return (
+          rootReExports.has(file) &&
+          !rootReExports.get(file)?.has(name) &&
+          !rootExportNames.has(name)
+        );
+      })
+      .map(({ file, name }) => `${relative(repoRoot, file)}: ${name}`)
       .sort();
 
     expect(missing).toEqual([]);
