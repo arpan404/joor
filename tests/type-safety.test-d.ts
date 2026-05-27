@@ -4253,6 +4253,24 @@ routeKindScopedStreamJoorHandler(
   // @ts-expect-error route-stream Joor handlers default to stream-only request requirements.
   requestTypedProcedureRequest
 );
+const routeKindScopedUnaryRouteJoorHandler = createUnaryRouteJoorHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteJoorHandler(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteJoorHandler(
+  // @ts-expect-error unary-route Joor handler aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteJoorHandler = createStreamRouteJoorHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteJoorHandler(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteJoorHandler(
+  // @ts-expect-error stream-route Joor handler aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedJoorHandlerOptions: JoorHandlerOptionsFor<
   typeof routeKindScopedManifest,
   readonly [typeof usersPlugin, typeof auditPlugin]
@@ -4290,6 +4308,34 @@ routeKindScopedUnaryVercelFetch(
   // @ts-expect-error route-unary Vercel fetch helpers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
 );
+const routeKindScopedUnaryRouteVercelFetch = createUnaryRouteVercelFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteVercelFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteVercelFetch(
+  // @ts-expect-error unary-route Vercel fetch aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRouteVercelFunction =
+  createUnaryRouteVercelFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteVercelFunction.fetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteVercelFunction.fetch(
+  // @ts-expect-error unary-route Vercel function aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteVercelFetch = createStreamRouteVercelFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteVercelFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteVercelFetch(
+  // @ts-expect-error stream-route Vercel fetch aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedStreamVercelFunction =
   createRouteStreamVercelFunctionFor()(
     routeKindScopedManifest,
@@ -4298,6 +4344,18 @@ const routeKindScopedStreamVercelFunction =
 routeKindScopedStreamVercelFunction.fetch(requestTypedStreamProcedureRequest);
 routeKindScopedStreamVercelFunction.fetch(
   // @ts-expect-error route-stream Vercel function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRouteVercelFunction =
+  createStreamRouteVercelFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteVercelFunction.fetch(
+  requestTypedStreamProcedureRequest
+);
+routeKindScopedStreamRouteVercelFunction.fetch(
+  // @ts-expect-error stream-route Vercel function aliases default to stream-only request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedVercelFetchOptions: VercelFetchOptionsFor<
@@ -4347,6 +4405,36 @@ routeKindScopedUnaryCloudflareFetch(
   // @ts-expect-error route-unary Cloudflare fetch helpers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
 );
+const routeKindScopedUnaryRouteCloudflareFetch =
+  createUnaryRouteCloudflareFetchFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteCloudflareFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteCloudflareFetch(
+  // @ts-expect-error unary-route Cloudflare fetch aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRouteCloudflareWorker =
+  createUnaryRouteCloudflareWorkerFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteCloudflareWorker.fetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteCloudflareWorker.fetch(
+  // @ts-expect-error unary-route Cloudflare Worker aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedStreamRouteCloudflareFetch =
+  createStreamRouteCloudflareFetchFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteCloudflareFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteCloudflareFetch(
+  // @ts-expect-error stream-route Cloudflare fetch aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedStreamCloudflareWorker =
   createRouteStreamCloudflareWorkerFor()(
     routeKindScopedManifest,
@@ -4355,6 +4443,18 @@ const routeKindScopedStreamCloudflareWorker =
 routeKindScopedStreamCloudflareWorker.fetch(requestTypedStreamProcedureRequest);
 routeKindScopedStreamCloudflareWorker.fetch(
   // @ts-expect-error route-stream Cloudflare Worker helpers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRouteCloudflareWorker =
+  createStreamRouteCloudflareWorkerFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteCloudflareWorker.fetch(
+  requestTypedStreamProcedureRequest
+);
+routeKindScopedStreamRouteCloudflareWorker.fetch(
+  // @ts-expect-error stream-route Cloudflare Worker aliases default to stream-only request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedCloudflareFetchOptions: CloudflareFetchOptionsFor<
@@ -4421,6 +4521,25 @@ routeKindScopedUnaryNextRouteHandlers.GET(
   // @ts-expect-error route-unary Next handlers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
 );
+const routeKindScopedUnaryRouteNextRouteHandlers =
+  createUnaryRouteNextRouteHandlersFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteNextRouteHandlers.GET(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteNextRouteHandlers.GET(
+  // @ts-expect-error unary-route Next route-handler aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRouteNextHandler = createUnaryRouteNextHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteNextHandler.POST(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteNextHandler.POST(
+  // @ts-expect-error unary-route Next handler aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
 const routeKindScopedStreamNextHandler = createRouteStreamNextHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedStreamHandlerOptions
@@ -4428,6 +4547,27 @@ const routeKindScopedStreamNextHandler = createRouteStreamNextHandlerFor()(
 routeKindScopedStreamNextHandler.POST(requestTypedStreamProcedureRequest);
 routeKindScopedStreamNextHandler.POST(
   // @ts-expect-error route-stream Next handlers default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRouteNextRouteHandlers =
+  createStreamRouteNextRouteHandlersFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteNextRouteHandlers.GET(
+  requestTypedStreamProcedureRequest
+);
+routeKindScopedStreamRouteNextRouteHandlers.GET(
+  // @ts-expect-error stream-route Next route-handler aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
+const routeKindScopedStreamRouteNextHandler = createStreamRouteNextHandlerFor()(
+  routeKindScopedManifest,
+  routeKindScopedStreamHandlerOptions
+);
+routeKindScopedStreamRouteNextHandler.POST(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteNextHandler.POST(
+  // @ts-expect-error stream-route Next handler aliases default to stream-only request requirements.
   requestTypedProcedureRequest
 );
 const routeKindScopedNextRouteHandlersOptions: NextRouteHandlersOptionsFor<
@@ -4493,6 +4633,36 @@ routeKindScopedUnaryNetlifyFetch(
   // @ts-expect-error route-unary Netlify fetch helpers default to unary-only request requirements.
   requestTypedStreamProcedureRequest
 );
+const routeKindScopedUnaryRouteNetlifyFetch = createUnaryRouteNetlifyFetchFor()(
+  routeKindScopedManifest,
+  routeKindScopedUnaryHandlerOptions
+);
+routeKindScopedUnaryRouteNetlifyFetch(requestTypedProcedureRequest);
+routeKindScopedUnaryRouteNetlifyFetch(
+  // @ts-expect-error unary-route Netlify fetch aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest
+);
+const routeKindScopedUnaryRouteNetlifyEdgeFunction =
+  createUnaryRouteNetlifyEdgeFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedUnaryHandlerOptions
+  );
+routeKindScopedUnaryRouteNetlifyEdgeFunction(requestTypedProcedureRequest, {});
+routeKindScopedUnaryRouteNetlifyEdgeFunction(
+  // @ts-expect-error unary-route Netlify Edge Function aliases default to unary-only request requirements.
+  requestTypedStreamProcedureRequest,
+  {}
+);
+const routeKindScopedStreamRouteNetlifyFetch =
+  createStreamRouteNetlifyFetchFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteNetlifyFetch(requestTypedStreamProcedureRequest);
+routeKindScopedStreamRouteNetlifyFetch(
+  // @ts-expect-error stream-route Netlify fetch aliases default to stream-only request requirements.
+  requestTypedProcedureRequest
+);
 const routeKindScopedStreamNetlifyEdgeFunction =
   createRouteStreamNetlifyEdgeFunctionFor()(
     routeKindScopedManifest,
@@ -4504,6 +4674,20 @@ routeKindScopedStreamNetlifyEdgeFunction(
 );
 routeKindScopedStreamNetlifyEdgeFunction(
   // @ts-expect-error route-stream Netlify Edge Function helpers default to stream-only request requirements.
+  requestTypedProcedureRequest,
+  {}
+);
+const routeKindScopedStreamRouteNetlifyEdgeFunction =
+  createStreamRouteNetlifyEdgeFunctionFor()(
+    routeKindScopedManifest,
+    routeKindScopedStreamHandlerOptions
+  );
+routeKindScopedStreamRouteNetlifyEdgeFunction(
+  requestTypedStreamProcedureRequest,
+  {}
+);
+routeKindScopedStreamRouteNetlifyEdgeFunction(
+  // @ts-expect-error stream-route Netlify Edge Function aliases default to stream-only request requirements.
   requestTypedProcedureRequest,
   {}
 );
