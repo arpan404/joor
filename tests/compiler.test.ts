@@ -2250,7 +2250,7 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
       const procedureImport = toRelativeModuleSpecifier(outDir, procedureFile);
       await writeFile(
         usageFile,
-        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './dispatcher.safe.js';
+        `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, defineNativeConfig, defineNativeHandlerOptions, defineNativeRouteUnaryConfig, defineNativeRouteUnaryHandlerOptions, defineNativeUnaryRouteConfig, defineNativeUnaryRouteHandlerOptions, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeConfig, type NativeConfigRequest, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryConfig, type NativeRouteUnaryHandlerOptions, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteConfig, type NativeUnaryRouteHandlerOptions, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRequiredServices as RuntimeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices as RuntimeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices as RuntimeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices as RuntimeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices as RuntimeUnaryRouteRequiredServices } from './fetch.js';
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, createUnaryRouteAwsLambdaHandler, createUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaRestApiHandler, createUnaryRouteAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createUnaryRouteWorker, createUnaryRouteWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
@@ -2477,6 +2477,118 @@ const nativeRouteUnaryBodyHandler: NativeRouteUnaryBodyHandler = nativeBody;
 nativeRouteUnaryBodyHandler(appRequest, nativeBodyValue);
 // @ts-expect-error generated route body handlers default to the manifest request subtype.
 nativeRouteUnaryBodyHandler(plainRequest, nativeBodyValue);
+const nativeRequestHandlerOptions: NativeHandlerOptions = {
+  hooks: nativeHandlerHooks,
+  middleware: [nativeMiddleware],
+};
+const definedNativeHandlerOptions = defineNativeHandlerOptions(
+  nativeRequestHandlerOptions
+);
+definedNativeHandlerOptions.hooks?.beforeRequest?.(appRequest, {
+  services: {},
+});
+definedNativeHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error generated native handler option definers preserve manifest request requirements.
+  plainRequest,
+  { services: {} }
+);
+const nativeRouteUnaryHandlerOptions: NativeRouteUnaryHandlerOptions<
+  readonly [],
+  typeof nativeBodyValue
+> = {
+  hooks: {
+    beforeRequest(request, context) {
+      request.requestId.toUpperCase();
+      context.body?.input.id.toUpperCase();
+      return undefined;
+    },
+  },
+};
+const nativeUnaryRouteHandlerOptions: NativeUnaryRouteHandlerOptions<
+  readonly [],
+  typeof nativeBodyValue
+> = nativeRouteUnaryHandlerOptions;
+const definedNativeRouteUnaryHandlerOptions =
+  defineNativeRouteUnaryHandlerOptions(nativeRouteUnaryHandlerOptions);
+const definedNativeUnaryRouteHandlerOptions =
+  defineNativeUnaryRouteHandlerOptions(nativeUnaryRouteHandlerOptions);
+definedNativeRouteUnaryHandlerOptions.hooks?.beforeRequest?.(appRequest, {
+  services: {},
+  body: nativeBodyValue,
+});
+definedNativeUnaryRouteHandlerOptions.hooks?.beforeRequest?.(appRequest, {
+  services: {},
+  body: nativeBodyValue,
+});
+definedNativeRouteUnaryHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error generated route-unary handler option definers preserve manifest request requirements.
+  plainRequest,
+  { services: {}, body: nativeBodyValue }
+);
+definedNativeUnaryRouteHandlerOptions.hooks?.beforeRequest?.(
+  // @ts-expect-error generated unary-route handler option definers preserve manifest request requirements.
+  plainRequest,
+  { services: {}, body: nativeBodyValue }
+);
+const nativeConfig: NativeConfig = {
+  ...nativeRequestHandlerOptions,
+  entry: 'rpc',
+  outDir: '.joor',
+};
+const nativeConfigRequest: NativeConfigRequest<typeof nativeConfig> = appRequest;
+nativeConfigRequest.requestId.toUpperCase();
+// @ts-expect-error generated native config request aliases preserve manifest request requirements.
+const _wrongNativeConfigRequest: NativeConfigRequest<typeof nativeConfig> =
+  plainRequest;
+const nativeRouteUnaryConfig: NativeRouteUnaryConfig<
+  readonly [],
+  typeof nativeBodyValue
+> = {
+  ...nativeRouteUnaryHandlerOptions,
+  entry: 'rpc',
+  outDir: '.joor',
+};
+const nativeUnaryRouteConfig: NativeUnaryRouteConfig<
+  readonly [],
+  typeof nativeBodyValue
+> = nativeRouteUnaryConfig;
+const nativeRouteUnaryConfigRequest: NativeConfigRequest<
+  typeof nativeRouteUnaryConfig
+> = appRequest;
+nativeRouteUnaryConfigRequest.requestId.toUpperCase();
+// @ts-expect-error generated route-unary config request aliases preserve manifest request requirements.
+const _wrongNativeRouteUnaryConfigRequest: NativeConfigRequest<
+  typeof nativeRouteUnaryConfig
+> = plainRequest;
+const definedNativeConfig = defineNativeConfig(nativeConfig);
+const definedNativeRouteUnaryConfig =
+  defineNativeRouteUnaryConfig(nativeRouteUnaryConfig);
+const definedNativeUnaryRouteConfig =
+  defineNativeUnaryRouteConfig(nativeUnaryRouteConfig);
+definedNativeConfig.hooks?.beforeRequest?.(appRequest, { services: {} });
+definedNativeRouteUnaryConfig.hooks?.beforeRequest?.(appRequest, {
+  services: {},
+  body: nativeBodyValue,
+});
+definedNativeUnaryRouteConfig.hooks?.beforeRequest?.(appRequest, {
+  services: {},
+  body: nativeBodyValue,
+});
+definedNativeConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error generated native config definers preserve manifest request requirements.
+  plainRequest,
+  { services: {} }
+);
+definedNativeRouteUnaryConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error generated route-unary config definers preserve manifest request requirements.
+  plainRequest,
+  { services: {}, body: nativeBodyValue }
+);
+definedNativeUnaryRouteConfig.hooks?.beforeRequest?.(
+  // @ts-expect-error generated unary-route config definers preserve manifest request requirements.
+  plainRequest,
+  { services: {}, body: nativeBodyValue }
+);
 createFetchFor()(appRequest);
 // @ts-expect-error generated native fetch factories default to the manifest request subtype.
 createFetchFor()(plainRequest);
