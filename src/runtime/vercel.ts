@@ -65,6 +65,16 @@ export type VercelUnaryRouteFetchOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = VercelRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type VercelUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = VercelRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type VercelRouteStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -81,6 +91,16 @@ export type VercelRouteStreamFetchOptionsFor<
 >;
 
 export type VercelStreamRouteFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = VercelRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type VercelStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -123,6 +143,16 @@ export type VercelUnaryRouteFetchOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = VercelRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type VercelUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = VercelRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type VercelRouteStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -139,6 +169,16 @@ export type VercelRouteStreamFetchOptionsArgs<
 >;
 
 export type VercelStreamRouteFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = VercelRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type VercelStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -208,6 +248,9 @@ export function createRouteUnaryVercelFetch<TManifest extends JoorManifest>(
 export const createUnaryRouteVercelFetch: typeof createRouteUnaryVercelFetch =
   createRouteUnaryVercelFetch;
 
+export const createUnaryVercelFetch: typeof createRouteUnaryVercelFetch =
+  createRouteUnaryVercelFetch;
+
 export function createRouteStreamVercelFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -238,6 +281,9 @@ export function createRouteStreamVercelFetch<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteVercelFetch: typeof createRouteStreamVercelFetch =
+  createRouteStreamVercelFetch;
+
+export const createStreamVercelFetch: typeof createRouteStreamVercelFetch =
   createRouteStreamVercelFetch;
 
 export function createVercelFetchFor(): <
@@ -341,6 +387,9 @@ export function createRouteUnaryVercelFetchFor<
 export const createUnaryRouteVercelFetchFor: typeof createRouteUnaryVercelFetchFor =
   createRouteUnaryVercelFetchFor;
 
+export const createUnaryVercelFetchFor: typeof createRouteUnaryVercelFetchFor =
+  createRouteUnaryVercelFetchFor;
+
 export function createRouteStreamVercelFetchFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -394,6 +443,9 @@ export function createRouteStreamVercelFetchFor<
 }
 
 export const createStreamRouteVercelFetchFor: typeof createRouteStreamVercelFetchFor =
+  createRouteStreamVercelFetchFor;
+
+export const createStreamVercelFetchFor: typeof createRouteStreamVercelFetchFor =
   createRouteStreamVercelFetchFor;
 
 export function createVercelFunction<
@@ -460,6 +512,9 @@ export function createRouteUnaryVercelFunction<TManifest extends JoorManifest>(
 export const createUnaryRouteVercelFunction: typeof createRouteUnaryVercelFunction =
   createRouteUnaryVercelFunction;
 
+export const createUnaryVercelFunction: typeof createRouteUnaryVercelFunction =
+  createRouteUnaryVercelFunction;
+
 export function createRouteStreamVercelFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -492,6 +547,9 @@ export function createRouteStreamVercelFunction<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteVercelFunction: typeof createRouteStreamVercelFunction =
+  createRouteStreamVercelFunction;
+
+export const createStreamVercelFunction: typeof createRouteStreamVercelFunction =
   createRouteStreamVercelFunction;
 
 export function createVercelFunctionFor(): <
@@ -597,6 +655,9 @@ export function createRouteUnaryVercelFunctionFor<
 export const createUnaryRouteVercelFunctionFor: typeof createRouteUnaryVercelFunctionFor =
   createRouteUnaryVercelFunctionFor;
 
+export const createUnaryVercelFunctionFor: typeof createRouteUnaryVercelFunctionFor =
+  createRouteUnaryVercelFunctionFor;
+
 export function createRouteStreamVercelFunctionFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -651,4 +712,7 @@ export function createRouteStreamVercelFunctionFor<
 }
 
 export const createStreamRouteVercelFunctionFor: typeof createRouteStreamVercelFunctionFor =
+  createRouteStreamVercelFunctionFor;
+
+export const createStreamVercelFunctionFor: typeof createRouteStreamVercelFunctionFor =
   createRouteStreamVercelFunctionFor;

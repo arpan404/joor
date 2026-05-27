@@ -2673,8 +2673,8 @@ import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRunt
 import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaHttpApiHandler, createRouteStreamAwsLambdaHttpApiHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaHttpApiHandler, createRouteUnaryAwsLambdaHttpApiHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHttpApiHandler, createStreamRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaHandler, createUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaHttpApiHandler, createUnaryRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaRestApiHandler, createUnaryRouteAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
 import { createCloudflareFetch, createCloudflareFetchFor, createCloudflareWorker, createRouteStreamCloudflareFetch, createRouteStreamCloudflareFetchFor, createRouteStreamCloudflareWorker, createRouteStreamCloudflareWorkerFor, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryCloudflareFetch, createRouteUnaryCloudflareFetchFor, createRouteUnaryCloudflareWorker, createRouteUnaryCloudflareWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createStreamCloudflareFetch, createStreamCloudflareFetchFor, createStreamCloudflareWorker, createStreamCloudflareWorkerFor, createStreamRouteCloudflareFetch, createStreamRouteCloudflareFetchFor, createStreamRouteCloudflareWorker, createStreamRouteCloudflareWorkerFor, createStreamRouteWorker, createStreamRouteWorkerFor, createStreamWorker, createStreamWorkerFor, createUnaryCloudflareFetch, createUnaryCloudflareFetchFor, createUnaryCloudflareWorker, createUnaryCloudflareWorkerFor, createUnaryRouteCloudflareFetch, createUnaryRouteCloudflareFetchFor, createUnaryRouteCloudflareWorker, createUnaryRouteCloudflareWorkerFor, createUnaryRouteWorker, createUnaryRouteWorkerFor, createUnaryWorker, createUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
 import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteStreamNextHandler, createRouteStreamNextHandlerFor, createRouteStreamNextRouteHandlers, createRouteStreamNextRouteHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, createRouteUnaryNextHandler, createRouteUnaryNextHandlerFor, createRouteUnaryNextRouteHandlers, createRouteUnaryNextRouteHandlersFor, createStreamRouteHandlers, createStreamRouteHandlersFor, createStreamRouteNextHandler, createStreamRouteNextHandlerFor, createStreamRouteNextRouteHandlers, createStreamRouteNextRouteHandlersFor, createUnaryRouteHandlers, createUnaryRouteHandlersFor, createUnaryRouteNextHandler, createUnaryRouteNextHandlerFor, createUnaryRouteNextRouteHandlers, createUnaryRouteNextRouteHandlersFor, handlers, GET } from './next.js';
-import { createRouteStreamVercel, createRouteStreamVercelFetch, createRouteStreamVercelFetchFor, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteStreamVercelFunctionFor, createRouteUnaryVercel, createRouteUnaryVercelFetch, createRouteUnaryVercelFetchFor, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createRouteUnaryVercelFunctionFor, createStreamRouteVercel, createStreamRouteVercelFetch, createStreamRouteVercelFetchFor, createStreamRouteVercelFor, createStreamRouteVercelFunction, createStreamRouteVercelFunctionFor, createUnaryRouteVercel, createUnaryRouteVercelFetch, createUnaryRouteVercelFetchFor, createUnaryRouteVercelFor, createUnaryRouteVercelFunction, createUnaryRouteVercelFunctionFor, createVercel, createVercelFetch, createVercelFetchFor, createVercelFor, createVercelFunction, vercel } from './vercel.js';
-import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createNetlifyFetch, createNetlifyFetchFor, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteStreamNetlifyEdgeFunctionFor, createRouteStreamNetlifyFetch, createRouteStreamNetlifyFetchFor, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, createRouteUnaryNetlifyEdgeFunctionFor, createRouteUnaryNetlifyFetch, createRouteUnaryNetlifyFetchFor, createStreamRouteEdge, createStreamRouteEdgeFor, createStreamRouteNetlifyEdgeFunction, createStreamRouteNetlifyEdgeFunctionFor, createStreamRouteNetlifyFetch, createStreamRouteNetlifyFetchFor, createUnaryRouteEdge, createUnaryRouteEdgeFor, createUnaryRouteNetlifyEdgeFunction, createUnaryRouteNetlifyEdgeFunctionFor, createUnaryRouteNetlifyFetch, createUnaryRouteNetlifyFetchFor, edge } from './netlify.js';
+import { createRouteStreamVercel, createRouteStreamVercelFetch, createRouteStreamVercelFetchFor, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteStreamVercelFunctionFor, createRouteUnaryVercel, createRouteUnaryVercelFetch, createRouteUnaryVercelFetchFor, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createRouteUnaryVercelFunctionFor, createStreamRouteVercel, createStreamRouteVercelFetch, createStreamRouteVercelFetchFor, createStreamRouteVercelFor, createStreamRouteVercelFunction, createStreamRouteVercelFunctionFor, createStreamVercel, createStreamVercelFetch, createStreamVercelFetchFor, createStreamVercelFor, createStreamVercelFunction, createStreamVercelFunctionFor, createUnaryRouteVercel, createUnaryRouteVercelFetch, createUnaryRouteVercelFetchFor, createUnaryRouteVercelFor, createUnaryRouteVercelFunction, createUnaryRouteVercelFunctionFor, createUnaryVercel, createUnaryVercelFetch, createUnaryVercelFetchFor, createUnaryVercelFor, createUnaryVercelFunction, createUnaryVercelFunctionFor, createVercel, createVercelFetch, createVercelFetchFor, createVercelFor, createVercelFunction, vercel } from './vercel.js';
+import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createNetlifyFetch, createNetlifyFetchFor, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteStreamNetlifyEdgeFunctionFor, createRouteStreamNetlifyFetch, createRouteStreamNetlifyFetchFor, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, createRouteUnaryNetlifyEdgeFunctionFor, createRouteUnaryNetlifyFetch, createRouteUnaryNetlifyFetchFor, createStreamEdge, createStreamEdgeFor, createStreamNetlifyEdgeFunction, createStreamNetlifyEdgeFunctionFor, createStreamNetlifyFetch, createStreamNetlifyFetchFor, createStreamRouteEdge, createStreamRouteEdgeFor, createStreamRouteNetlifyEdgeFunction, createStreamRouteNetlifyEdgeFunctionFor, createStreamRouteNetlifyFetch, createStreamRouteNetlifyFetchFor, createUnaryEdge, createUnaryEdgeFor, createUnaryNetlifyEdgeFunction, createUnaryNetlifyEdgeFunctionFor, createUnaryNetlifyFetch, createUnaryNetlifyFetchFor, createUnaryRouteEdge, createUnaryRouteEdgeFor, createUnaryRouteNetlifyEdgeFunction, createUnaryRouteNetlifyEdgeFunctionFor, createUnaryRouteNetlifyFetch, createUnaryRouteNetlifyFetchFor, edge } from './netlify.js';
 import { createBunFetch as createNamedBunFetch, createBunFetchFor as createNamedBunFetchFor, createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamBunFetch as createNamedRouteStreamBunFetch, createRouteStreamBunFetchFor as createNamedRouteStreamBunFetchFor, createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryBunFetch as createNamedRouteUnaryBunFetch, createRouteUnaryBunFetchFor as createNamedRouteUnaryBunFetchFor, createRouteUnaryFetch as createRouteUnaryBunFetch, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, createStreamRouteBunFetch as createNamedStreamRouteBunFetch, createStreamRouteBunFetchFor as createNamedStreamRouteBunFetchFor, createStreamRouteFetch as createStreamRouteBunFetch, createStreamRouteFetchFor as createStreamRouteBunFetchFor, createUnaryRouteBunFetch as createNamedUnaryRouteBunFetch, createUnaryRouteBunFetchFor as createNamedUnaryRouteBunFetchFor, createUnaryRouteFetch as createUnaryRouteBunFetch, createUnaryRouteFetchFor as createUnaryRouteBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler, type BunNativeRouteStreamFetchHandler, type BunNativeRouteUnaryFetchHandler, type BunNativeStreamRouteFetchHandler, type BunNativeUnaryRouteFetchHandler } from './bun.js';
 import { createDenoFetch as createNamedDenoFetch, createDenoFetchFor as createNamedDenoFetchFor, createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteStreamDenoFetch as createNamedRouteStreamDenoFetch, createRouteStreamDenoFetchFor as createNamedRouteStreamDenoFetchFor, createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createRouteUnaryDenoFetch as createNamedRouteUnaryDenoFetch, createRouteUnaryDenoFetchFor as createNamedRouteUnaryDenoFetchFor, createRouteUnaryFetch as createRouteUnaryDenoFetch, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, createStreamRouteDenoFetch as createNamedStreamRouteDenoFetch, createStreamRouteDenoFetchFor as createNamedStreamRouteDenoFetchFor, createStreamRouteFetch as createStreamRouteDenoFetch, createStreamRouteFetchFor as createStreamRouteDenoFetchFor, createUnaryRouteDenoFetch as createNamedUnaryRouteDenoFetch, createUnaryRouteDenoFetchFor as createNamedUnaryRouteDenoFetchFor, createUnaryRouteFetch as createUnaryRouteDenoFetch, createUnaryRouteFetchFor as createUnaryRouteDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler, type DenoNativeRouteStreamFetchHandler, type DenoNativeRouteUnaryFetchHandler, type DenoNativeStreamRouteFetchHandler, type DenoNativeUnaryRouteFetchHandler } from './deno.js';
 import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as AwsLambdaStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as AwsLambdaUnaryRouteRequiredServices } from './aws-lambda.js';
@@ -3190,26 +3190,38 @@ createRouteUnaryVercelFunctionFor().fetch(appRequest);
 createUnaryRouteVercel().fetch(appRequest);
 createUnaryRouteVercelFunction().fetch(appRequest);
 createUnaryRouteVercelFunctionFor().fetch(appRequest);
+createUnaryVercel().fetch(appRequest);
+createUnaryVercelFunction().fetch(appRequest);
+createUnaryVercelFunctionFor().fetch(appRequest);
 createRouteStreamVercel().fetch(appRequest);
 createRouteStreamVercelFunction().fetch(appRequest);
 createRouteStreamVercelFunctionFor().fetch(appRequest);
 createStreamRouteVercel().fetch(appRequest);
 createStreamRouteVercelFunction().fetch(appRequest);
 createStreamRouteVercelFunctionFor().fetch(appRequest);
+createStreamVercel().fetch(appRequest);
+createStreamVercelFunction().fetch(appRequest);
+createStreamVercelFunctionFor().fetch(appRequest);
 createRouteUnaryVercelFor().fetch(appRequest);
 createUnaryRouteVercelFor().fetch(appRequest);
+createUnaryVercelFor().fetch(appRequest);
 createRouteStreamVercelFor().fetch(appRequest);
 createStreamRouteVercelFor().fetch(appRequest);
+createStreamVercelFor().fetch(appRequest);
 createVercelFetch()(appRequest);
 createVercelFetchFor()(appRequest);
 createRouteUnaryVercelFetch()(appRequest);
 createUnaryRouteVercelFetch()(appRequest);
+createUnaryVercelFetch()(appRequest);
 createRouteUnaryVercelFetchFor()(appRequest);
 createUnaryRouteVercelFetchFor()(appRequest);
+createUnaryVercelFetchFor()(appRequest);
 createRouteStreamVercelFetch()(appRequest);
 createStreamRouteVercelFetch()(appRequest);
+createStreamVercelFetch()(appRequest);
 createRouteStreamVercelFetchFor()(appRequest);
 createStreamRouteVercelFetchFor()(appRequest);
+createStreamVercelFetchFor()(appRequest);
 // @ts-expect-error generated direct Vercel functions default to the manifest request subtype.
 createRouteUnaryVercel().fetch(plainRequest);
 // @ts-expect-error generated route-unary Vercel function aliases preserve the manifest request subtype.
@@ -3218,14 +3230,22 @@ createRouteUnaryVercelFunction().fetch(plainRequest);
 createRouteUnaryVercelFunctionFor().fetch(plainRequest);
 // @ts-expect-error generated unary-route Vercel aliases preserve the manifest request subtype.
 createUnaryRouteVercel().fetch(plainRequest);
+// @ts-expect-error generated concise unary Vercel aliases preserve the manifest request subtype.
+createUnaryVercel().fetch(plainRequest);
 // @ts-expect-error generated unary-route Vercel function aliases preserve the manifest request subtype.
 createUnaryRouteVercelFunction().fetch(plainRequest);
+// @ts-expect-error generated concise unary Vercel function aliases preserve the manifest request subtype.
+createUnaryVercelFunction().fetch(plainRequest);
 // @ts-expect-error generated unary-route Vercel function factories preserve the manifest request subtype.
 createUnaryRouteVercelFunctionFor().fetch(plainRequest);
+// @ts-expect-error generated concise unary Vercel function factories preserve the manifest request subtype.
+createUnaryVercelFunctionFor().fetch(plainRequest);
 // @ts-expect-error generated route-unary Vercel factories preserve the manifest request subtype.
 createRouteUnaryVercelFor().fetch(plainRequest);
 // @ts-expect-error generated unary-route Vercel factories preserve the manifest request subtype.
 createUnaryRouteVercelFor().fetch(plainRequest);
+// @ts-expect-error generated concise unary Vercel factories preserve the manifest request subtype.
+createUnaryVercelFor().fetch(plainRequest);
 // @ts-expect-error generated Vercel fetch aliases preserve the manifest request subtype.
 createVercelFetch()(plainRequest);
 // @ts-expect-error generated Vercel fetch factories preserve the manifest request subtype.
@@ -3234,10 +3254,14 @@ createVercelFetchFor()(plainRequest);
 createRouteUnaryVercelFetch()(plainRequest);
 // @ts-expect-error generated unary-route Vercel fetch aliases preserve the manifest request subtype.
 createUnaryRouteVercelFetch()(plainRequest);
+// @ts-expect-error generated concise unary Vercel fetch aliases preserve the manifest request subtype.
+createUnaryVercelFetch()(plainRequest);
 // @ts-expect-error generated route-unary Vercel fetch factories preserve the manifest request subtype.
 createRouteUnaryVercelFetchFor()(plainRequest);
 // @ts-expect-error generated unary-route Vercel fetch factories preserve the manifest request subtype.
 createUnaryRouteVercelFetchFor()(plainRequest);
+// @ts-expect-error generated concise unary Vercel fetch factories preserve the manifest request subtype.
+createUnaryVercelFetchFor()(plainRequest);
 // @ts-expect-error generated Vercel functions default to the manifest request subtype.
 vercelFunction.fetch(plainRequest);
 // @ts-expect-error generated named Vercel functions preserve the manifest request subtype.
@@ -3254,26 +3278,38 @@ createRouteUnaryNetlifyEdgeFunctionFor()(appRequest, {});
 createUnaryRouteEdge()(appRequest, {});
 createUnaryRouteNetlifyEdgeFunction()(appRequest, {});
 createUnaryRouteNetlifyEdgeFunctionFor()(appRequest, {});
+createUnaryEdge()(appRequest, {});
+createUnaryNetlifyEdgeFunction()(appRequest, {});
+createUnaryNetlifyEdgeFunctionFor()(appRequest, {});
 createRouteStreamEdge()(appRequest, {});
 createRouteStreamNetlifyEdgeFunction()(appRequest, {});
 createRouteStreamNetlifyEdgeFunctionFor()(appRequest, {});
 createStreamRouteEdge()(appRequest, {});
 createStreamRouteNetlifyEdgeFunction()(appRequest, {});
 createStreamRouteNetlifyEdgeFunctionFor()(appRequest, {});
+createStreamEdge()(appRequest, {});
+createStreamNetlifyEdgeFunction()(appRequest, {});
+createStreamNetlifyEdgeFunctionFor()(appRequest, {});
 createRouteUnaryEdgeFor()(appRequest, {});
 createUnaryRouteEdgeFor()(appRequest, {});
+createUnaryEdgeFor()(appRequest, {});
 createRouteStreamEdgeFor()(appRequest, {});
 createStreamRouteEdgeFor()(appRequest, {});
+createStreamEdgeFor()(appRequest, {});
 createNetlifyFetch()(appRequest);
 createNetlifyFetchFor()(appRequest);
 createRouteUnaryNetlifyFetch()(appRequest);
 createUnaryRouteNetlifyFetch()(appRequest);
+createUnaryNetlifyFetch()(appRequest);
 createRouteUnaryNetlifyFetchFor()(appRequest);
 createUnaryRouteNetlifyFetchFor()(appRequest);
+createUnaryNetlifyFetchFor()(appRequest);
 createRouteStreamNetlifyFetch()(appRequest);
 createStreamRouteNetlifyFetch()(appRequest);
+createStreamNetlifyFetch()(appRequest);
 createRouteStreamNetlifyFetchFor()(appRequest);
 createStreamRouteNetlifyFetchFor()(appRequest);
+createStreamNetlifyFetchFor()(appRequest);
 // @ts-expect-error generated direct Netlify edge functions default to the manifest request subtype.
 createRouteUnaryEdge()(plainRequest, {});
 // @ts-expect-error generated route-unary Netlify edge aliases preserve the manifest request subtype.
@@ -3282,14 +3318,22 @@ createRouteUnaryNetlifyEdgeFunction()(plainRequest, {});
 createRouteUnaryNetlifyEdgeFunctionFor()(plainRequest, {});
 // @ts-expect-error generated unary-route Netlify aliases preserve the manifest request subtype.
 createUnaryRouteEdge()(plainRequest, {});
+// @ts-expect-error generated concise unary Netlify aliases preserve the manifest request subtype.
+createUnaryEdge()(plainRequest, {});
 // @ts-expect-error generated unary-route Netlify edge aliases preserve the manifest request subtype.
 createUnaryRouteNetlifyEdgeFunction()(plainRequest, {});
+// @ts-expect-error generated concise unary Netlify edge aliases preserve the manifest request subtype.
+createUnaryNetlifyEdgeFunction()(plainRequest, {});
 // @ts-expect-error generated unary-route Netlify edge factories preserve the manifest request subtype.
 createUnaryRouteNetlifyEdgeFunctionFor()(plainRequest, {});
+// @ts-expect-error generated concise unary Netlify edge factories preserve the manifest request subtype.
+createUnaryNetlifyEdgeFunctionFor()(plainRequest, {});
 // @ts-expect-error generated route-unary Netlify edge factories preserve the manifest request subtype.
 createRouteUnaryEdgeFor()(plainRequest, {});
 // @ts-expect-error generated unary-route Netlify edge factories preserve the manifest request subtype.
 createUnaryRouteEdgeFor()(plainRequest, {});
+// @ts-expect-error generated concise unary Netlify edge factories preserve the manifest request subtype.
+createUnaryEdgeFor()(plainRequest, {});
 // @ts-expect-error generated Netlify fetch aliases preserve the manifest request subtype.
 createNetlifyFetch()(plainRequest);
 // @ts-expect-error generated Netlify fetch factories preserve the manifest request subtype.
@@ -3298,10 +3342,14 @@ createNetlifyFetchFor()(plainRequest);
 createRouteUnaryNetlifyFetch()(plainRequest);
 // @ts-expect-error generated unary-route Netlify fetch aliases preserve the manifest request subtype.
 createUnaryRouteNetlifyFetch()(plainRequest);
+// @ts-expect-error generated concise unary Netlify fetch aliases preserve the manifest request subtype.
+createUnaryNetlifyFetch()(plainRequest);
 // @ts-expect-error generated route-unary Netlify fetch factories preserve the manifest request subtype.
 createRouteUnaryNetlifyFetchFor()(plainRequest);
 // @ts-expect-error generated unary-route Netlify fetch factories preserve the manifest request subtype.
 createUnaryRouteNetlifyFetchFor()(plainRequest);
+// @ts-expect-error generated concise unary Netlify fetch factories preserve the manifest request subtype.
+createUnaryNetlifyFetchFor()(plainRequest);
 // @ts-expect-error generated Netlify edge functions default to the manifest request subtype.
 netlifyEdge(plainRequest, {});
 // @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.

@@ -70,6 +70,16 @@ export type NetlifyUnaryRouteFetchOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type NetlifyUnaryFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NetlifyRouteUnaryFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type NetlifyRouteStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -86,6 +96,16 @@ export type NetlifyRouteStreamFetchOptionsFor<
 >;
 
 export type NetlifyStreamRouteFetchOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NetlifyRouteStreamFetchOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type NetlifyStreamFetchOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -128,6 +148,16 @@ export type NetlifyUnaryRouteFetchOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NetlifyRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type NetlifyUnaryFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NetlifyRouteUnaryFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type NetlifyRouteStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -144,6 +174,16 @@ export type NetlifyRouteStreamFetchOptionsArgs<
 >;
 
 export type NetlifyStreamRouteFetchOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NetlifyRouteStreamFetchOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type NetlifyStreamFetchOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -213,6 +253,9 @@ export function createRouteUnaryNetlifyFetch<TManifest extends JoorManifest>(
 export const createUnaryRouteNetlifyFetch: typeof createRouteUnaryNetlifyFetch =
   createRouteUnaryNetlifyFetch;
 
+export const createUnaryNetlifyFetch: typeof createRouteUnaryNetlifyFetch =
+  createRouteUnaryNetlifyFetch;
+
 export function createRouteStreamNetlifyFetch<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -243,6 +286,9 @@ export function createRouteStreamNetlifyFetch<TManifest extends JoorManifest>(
 }
 
 export const createStreamRouteNetlifyFetch: typeof createRouteStreamNetlifyFetch =
+  createRouteStreamNetlifyFetch;
+
+export const createStreamNetlifyFetch: typeof createRouteStreamNetlifyFetch =
   createRouteStreamNetlifyFetch;
 
 export function createNetlifyFetchFor(): <
@@ -348,6 +394,9 @@ export function createRouteUnaryNetlifyFetchFor<
 export const createUnaryRouteNetlifyFetchFor: typeof createRouteUnaryNetlifyFetchFor =
   createRouteUnaryNetlifyFetchFor;
 
+export const createUnaryNetlifyFetchFor: typeof createRouteUnaryNetlifyFetchFor =
+  createRouteUnaryNetlifyFetchFor;
+
 export function createRouteStreamNetlifyFetchFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -401,6 +450,9 @@ export function createRouteStreamNetlifyFetchFor<
 }
 
 export const createStreamRouteNetlifyFetchFor: typeof createRouteStreamNetlifyFetchFor =
+  createRouteStreamNetlifyFetchFor;
+
+export const createStreamNetlifyFetchFor: typeof createRouteStreamNetlifyFetchFor =
   createRouteStreamNetlifyFetchFor;
 
 export function createNetlifyEdgeFunction<
@@ -464,6 +516,9 @@ export function createRouteUnaryNetlifyEdgeFunction<
 export const createUnaryRouteNetlifyEdgeFunction: typeof createRouteUnaryNetlifyEdgeFunction =
   createRouteUnaryNetlifyEdgeFunction;
 
+export const createUnaryNetlifyEdgeFunction: typeof createRouteUnaryNetlifyEdgeFunction =
+  createRouteUnaryNetlifyEdgeFunction;
+
 export function createRouteStreamNetlifyEdgeFunction<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -494,6 +549,9 @@ export function createRouteStreamNetlifyEdgeFunction<
 }
 
 export const createStreamRouteNetlifyEdgeFunction: typeof createRouteStreamNetlifyEdgeFunction =
+  createRouteStreamNetlifyEdgeFunction;
+
+export const createStreamNetlifyEdgeFunction: typeof createRouteStreamNetlifyEdgeFunction =
   createRouteStreamNetlifyEdgeFunction;
 
 export function createNetlifyEdgeFunctionFor<TContext = unknown>(): <
@@ -617,6 +675,9 @@ export function createRouteUnaryNetlifyEdgeFunctionFor<
 export const createUnaryRouteNetlifyEdgeFunctionFor: typeof createRouteUnaryNetlifyEdgeFunctionFor =
   createRouteUnaryNetlifyEdgeFunctionFor;
 
+export const createUnaryNetlifyEdgeFunctionFor: typeof createRouteUnaryNetlifyEdgeFunctionFor =
+  createRouteUnaryNetlifyEdgeFunctionFor;
+
 export function createRouteStreamNetlifyEdgeFunctionFor<TContext = unknown>(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -677,4 +738,7 @@ export function createRouteStreamNetlifyEdgeFunctionFor<
 }
 
 export const createStreamRouteNetlifyEdgeFunctionFor: typeof createRouteStreamNetlifyEdgeFunctionFor =
+  createRouteStreamNetlifyEdgeFunctionFor;
+
+export const createStreamNetlifyEdgeFunctionFor: typeof createRouteStreamNetlifyEdgeFunctionFor =
   createRouteStreamNetlifyEdgeFunctionFor;
