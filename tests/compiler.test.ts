@@ -2252,11 +2252,11 @@ export default defineProcedure.withContext<Record<string, never>, AppRequest>()(
         usageFile,
         `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamRouteFetchFor, createUnaryRouteFetchFor, fetch, nativeBody, type NativeBody, type NativeBodyHandler, type NativeFetchHandler, type NativeHandlerHooks, type NativeHandlerOptions, type NativeHandlerOptionsRequest, type NativeMiddleware, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBodyHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './dispatcher.safe.js';
 import { createFetch as createRuntimeFetch, createRouteStreamFetch as createRuntimeRouteStreamFetch, createRouteUnaryFetch as createRuntimeRouteUnaryFetch, createStreamRouteFetch as createRuntimeStreamRouteFetch, createUnaryRouteFetch as createRuntimeUnaryRouteFetch, createRouteUnaryFetchFor as createRuntimeRouteUnaryFetchFor, createFetchFor as createRuntimeFetchFor, fetch as runtimeFetch, type NativeRequiredRuntimeRequest as RuntimeRequiredRuntimeRequest, type NativeRequiredServices as RuntimeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest as RuntimeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices as RuntimeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest as RuntimeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices as RuntimeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest as RuntimeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices as RuntimeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest as RuntimeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices as RuntimeUnaryRouteRequiredServices } from './fetch.js';
-import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
-import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
-import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, handlers, GET } from './next.js';
-import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
-import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, edge } from './netlify.js';
+import { createAwsLambdaHandler, createAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest, createAwsLambdaResponse, createAwsLambdaRestApiHandler, createAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandler, createRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaRestApiHandler, createRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandler, createRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaRestApiHandler, createRouteUnaryAwsLambdaRestApiHandlerFor, createUnaryRouteAwsLambdaHandler, createUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaRestApiHandler, createUnaryRouteAwsLambdaRestApiHandlerFor, handler as awsLambdaHandler, restApiHandler as awsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaHandlerOptions, type NativeAwsLambdaRestApiHandlerFactory, type NativeAwsLambdaRestApiHandlerOptions } from './aws-lambda.js';
+import { createCloudflareWorker, createRouteStreamWorker, createRouteStreamWorkerFor, createRouteUnaryWorker, createRouteUnaryWorkerFor, createUnaryRouteWorker, createUnaryRouteWorkerFor, createWorker, createWorkerFor, worker } from './cloudflare.js';
+import { createHandlers, createHandlersFor, createNextRouteHandlers, createRouteStreamHandlers, createRouteStreamHandlersFor, createRouteUnaryHandlers, createRouteUnaryHandlersFor, createUnaryRouteHandlers, createUnaryRouteHandlersFor, handlers, GET } from './next.js';
+import { createRouteStreamVercel, createRouteStreamVercelFor, createRouteStreamVercelFunction, createRouteUnaryVercel, createRouteUnaryVercelFor, createRouteUnaryVercelFunction, createUnaryRouteVercel, createUnaryRouteVercelFor, createUnaryRouteVercelFunction, createVercel, createVercelFor, createVercelFunction, vercel } from './vercel.js';
+import { createEdge, createEdgeFor, createNetlifyEdgeFunction, createRouteStreamEdge, createRouteStreamEdgeFor, createRouteStreamNetlifyEdgeFunction, createRouteUnaryEdge, createRouteUnaryEdgeFor, createRouteUnaryNetlifyEdgeFunction, createUnaryRouteEdge, createUnaryRouteEdgeFor, createUnaryRouteNetlifyEdgeFunction, edge } from './netlify.js';
 import { createFetch as createBunFetch, createFetchFor as createBunFetchFor, createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetch as createRouteUnaryBunFetch, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, createStreamRouteFetch as createStreamRouteBunFetch, createStreamRouteFetchFor as createStreamRouteBunFetchFor, createUnaryRouteFetch as createUnaryRouteBunFetch, createUnaryRouteFetchFor as createUnaryRouteBunFetchFor, fetch as bunFetch, type BunNativeFetchHandler, type BunNativeRouteStreamFetchHandler, type BunNativeRouteUnaryFetchHandler, type BunNativeStreamRouteFetchHandler, type BunNativeUnaryRouteFetchHandler } from './bun.js';
 import { createFetch as createDenoFetch, createFetchFor as createDenoFetchFor, createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createRouteUnaryFetch as createRouteUnaryDenoFetch, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, createStreamRouteFetch as createStreamRouteDenoFetch, createStreamRouteFetchFor as createStreamRouteDenoFetchFor, createUnaryRouteFetch as createUnaryRouteDenoFetch, createUnaryRouteFetchFor as createUnaryRouteDenoFetchFor, fetch as denoFetch, type DenoNativeFetchHandler, type DenoNativeRouteStreamFetchHandler, type DenoNativeRouteUnaryFetchHandler, type DenoNativeStreamRouteFetchHandler, type DenoNativeUnaryRouteFetchHandler } from './deno.js';
 import type { NativeStreamRouteRequiredRuntimeRequest as AwsLambdaStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices as AwsLambdaStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest as AwsLambdaUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices as AwsLambdaUnaryRouteRequiredServices } from './aws-lambda.js';
@@ -2517,11 +2517,15 @@ worker.fetch(appRequest);
 createWorker().fetch(appRequest);
 createCloudflareWorker().fetch(appRequest);
 createRouteUnaryWorker().fetch(appRequest);
+createUnaryRouteWorker().fetch(appRequest);
 createRouteStreamWorker().fetch(appRequest);
 createRouteUnaryWorkerFor().fetch(appRequest);
+createUnaryRouteWorkerFor().fetch(appRequest);
 createRouteStreamWorkerFor().fetch(appRequest);
 // @ts-expect-error generated direct Cloudflare workers default to the manifest request subtype.
 createRouteUnaryWorker().fetch(plainRequest);
+// @ts-expect-error generated unary-route Cloudflare worker aliases preserve the manifest request subtype.
+createUnaryRouteWorker().fetch(plainRequest);
 // @ts-expect-error generated Cloudflare workers default to the manifest request subtype.
 cloudflareWorker.fetch(plainRequest);
 // @ts-expect-error generated named Cloudflare workers preserve the manifest request subtype.
@@ -2534,11 +2538,15 @@ GET(appRequest);
 createHandlers().GET(appRequest);
 createNextRouteHandlers().POST(appRequest);
 createRouteUnaryHandlers().POST(appRequest);
+createUnaryRouteHandlers().POST(appRequest);
 createRouteStreamHandlers().GET(appRequest);
 createRouteUnaryHandlersFor().POST(appRequest);
+createUnaryRouteHandlersFor().POST(appRequest);
 createRouteStreamHandlersFor().GET(appRequest);
 // @ts-expect-error generated direct Next handlers default to the manifest request subtype.
 createRouteUnaryHandlers().POST(plainRequest);
+// @ts-expect-error generated unary-route Next handler aliases preserve the manifest request subtype.
+createUnaryRouteHandlers().POST(plainRequest);
 // @ts-expect-error generated Next handlers default to the manifest request subtype.
 nextHandlers.GET(plainRequest);
 // @ts-expect-error generated named Next handlers preserve the manifest request subtype.
@@ -2551,12 +2559,17 @@ createVercel().fetch(appRequest);
 createVercelFunction().fetch(appRequest);
 createRouteUnaryVercel().fetch(appRequest);
 createRouteUnaryVercelFunction().fetch(appRequest);
+createUnaryRouteVercel().fetch(appRequest);
+createUnaryRouteVercelFunction().fetch(appRequest);
 createRouteStreamVercel().fetch(appRequest);
 createRouteStreamVercelFunction().fetch(appRequest);
 createRouteUnaryVercelFor().fetch(appRequest);
+createUnaryRouteVercelFor().fetch(appRequest);
 createRouteStreamVercelFor().fetch(appRequest);
 // @ts-expect-error generated direct Vercel functions default to the manifest request subtype.
 createRouteUnaryVercel().fetch(plainRequest);
+// @ts-expect-error generated unary-route Vercel aliases preserve the manifest request subtype.
+createUnaryRouteVercel().fetch(plainRequest);
 // @ts-expect-error generated Vercel functions default to the manifest request subtype.
 vercelFunction.fetch(plainRequest);
 // @ts-expect-error generated named Vercel functions preserve the manifest request subtype.
@@ -2569,12 +2582,17 @@ createEdge()(appRequest, {});
 createNetlifyEdgeFunction()(appRequest, {});
 createRouteUnaryEdge()(appRequest, {});
 createRouteUnaryNetlifyEdgeFunction()(appRequest, {});
+createUnaryRouteEdge()(appRequest, {});
+createUnaryRouteNetlifyEdgeFunction()(appRequest, {});
 createRouteStreamEdge()(appRequest, {});
 createRouteStreamNetlifyEdgeFunction()(appRequest, {});
 createRouteUnaryEdgeFor()(appRequest, {});
+createUnaryRouteEdgeFor()(appRequest, {});
 createRouteStreamEdgeFor()(appRequest, {});
 // @ts-expect-error generated direct Netlify edge functions default to the manifest request subtype.
 createRouteUnaryEdge()(plainRequest, {});
+// @ts-expect-error generated unary-route Netlify aliases preserve the manifest request subtype.
+createUnaryRouteEdge()(plainRequest, {});
 // @ts-expect-error generated Netlify edge functions default to the manifest request subtype.
 netlifyEdge(plainRequest, {});
 // @ts-expect-error generated named Netlify edge functions preserve the manifest request subtype.
@@ -2622,14 +2640,24 @@ const awsLambdaFactory: NativeAwsLambdaHandlerFactory<
 awsLambdaFactory(awsLambdaOptions)(awsLambdaEvent);
 createAwsLambdaHttpApiHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
 createRouteUnaryAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
+createUnaryRouteAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
 createRouteStreamAwsLambdaHandlerFor()(awsLambdaOptions)(awsLambdaEvent);
 // @ts-expect-error generated AWS handlers require request adapters when manifests require custom requests.
 createAwsLambdaHandler()(awsLambdaEvent);
+// @ts-expect-error generated route-unary AWS handlers require request adapters when manifests require custom requests.
+createRouteUnaryAwsLambdaHandler()(awsLambdaEvent);
+// @ts-expect-error generated unary-route AWS handler aliases require request adapters when manifests require custom requests.
+createUnaryRouteAwsLambdaHandler()(awsLambdaEvent);
 // @ts-expect-error generated AWS handler factories require request adapters when manifests require custom requests.
 createAwsLambdaHandlerFor()()(awsLambdaEvent);
+// @ts-expect-error generated route-unary AWS handler factories require request adapters when manifests require custom requests.
+createRouteUnaryAwsLambdaHandlerFor()()(awsLambdaEvent);
+// @ts-expect-error generated unary-route AWS handler factory aliases require request adapters when manifests require custom requests.
+createUnaryRouteAwsLambdaHandlerFor()()(awsLambdaEvent);
 // @ts-expect-error generated default AWS handlers are unavailable when manifests require custom requests.
 awsLambdaHandler(awsLambdaEvent);
 createRouteUnaryAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
+createUnaryRouteAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
 createRouteStreamAwsLambdaHandler(awsLambdaOptions)(awsLambdaEvent);
 createAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(awsLambdaRestApiEvent);
 const awsLambdaRestApiFactory: NativeAwsLambdaRestApiHandlerFactory<
@@ -2640,6 +2668,9 @@ awsLambdaRestApiFactory(awsLambdaRestApiOptions)(awsLambdaRestApiEvent);
 createRouteUnaryAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
+createUnaryRouteAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
 createRouteStreamAwsLambdaRestApiHandlerFor()(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
@@ -2648,13 +2679,24 @@ awsLambdaRestApiHandler(awsLambdaRestApiEvent);
 createRouteUnaryAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
+createUnaryRouteAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
+  awsLambdaRestApiEvent
+);
 createRouteStreamAwsLambdaRestApiHandler(awsLambdaRestApiOptions)(
   awsLambdaRestApiEvent
 );
 // @ts-expect-error generated AWS REST handlers require request adapters when manifests require custom requests.
 createAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+// @ts-expect-error generated route-unary AWS REST handlers require request adapters when manifests require custom requests.
+createRouteUnaryAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
+// @ts-expect-error generated unary-route AWS REST handler aliases require request adapters when manifests require custom requests.
+createUnaryRouteAwsLambdaRestApiHandler()(awsLambdaRestApiEvent);
 // @ts-expect-error generated AWS REST handler factories require request adapters when manifests require custom requests.
 createAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
+// @ts-expect-error generated route-unary AWS REST handler factories require request adapters when manifests require custom requests.
+createRouteUnaryAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
+// @ts-expect-error generated unary-route AWS REST handler factory aliases require request adapters when manifests require custom requests.
+createUnaryRouteAwsLambdaRestApiHandlerFor()()(awsLambdaRestApiEvent);
 
 const bunHandler: BunNativeFetchHandler = bunFetch;
 const bunRouteUnaryHandler: BunNativeRouteUnaryFetchHandler =
