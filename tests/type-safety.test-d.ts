@@ -5722,6 +5722,40 @@ const _wrongRouteKindScopedNodeRpcUnaryRequest: HandlerOptionsRequest<
 const _wrongRouteKindScopedNodeRpcStreamRequest: HandlerOptionsRequest<
   typeof routeKindScopedNodeRpcOptions
 > = requestTypedStreamProcedureRequest;
+const routeKindScopedRouteUnaryNodeRpcOptionsArgs: NodeRouteUnaryRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryNodeRpcOptions];
+const routeKindScopedRouteUnaryNodeRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryNodeRpcOptionsArgs>
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryNodeRpcOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Node RPC option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryNodeRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteUnaryNodeRpcOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteNodeRpcOptionsArgs: NodeUnaryRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryNodeRpcOptionsArgs;
+const routeKindScopedRouteStreamNodeRpcOptionsArgs: NodeRouteStreamRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamNodeRpcOptions];
+const routeKindScopedRouteStreamNodeRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamNodeRpcOptionsArgs>
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamNodeRpcOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Node RPC option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamNodeRpcOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<typeof routeKindScopedRouteStreamNodeRpcOptionsArgs>
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteNodeRpcOptionsArgs: NodeStreamRouteRpcRequestHandlerOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamNodeRpcOptionsArgs;
+routeKindScopedUnaryRouteNodeRpcOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteNodeRpcOptionsArgs[0]?.plugins?.length.toFixed();
 createRouteUnaryNodeRpcRequestHandlerFor()(
   routeKindScopedManifest,
   routeKindScopedUnaryNodeRpcOptions
@@ -5820,6 +5854,68 @@ const _wrongRouteKindScopedNodeListenUnaryRequest: HandlerOptionsRequest<
 const _wrongRouteKindScopedNodeListenStreamRequest: HandlerOptionsRequest<
   typeof routeKindScopedNodeListenOptions
 > = requestTypedStreamProcedureRequest;
+const routeKindScopedRouteUnaryNodeListenOptionsArgs: NodeRouteUnaryListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = [routeKindScopedUnaryNodeListenOptions];
+const routeKindScopedRouteUnaryNodeListenOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryNodeListenOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+routeKindScopedRouteUnaryNodeListenOptionsArgsRequest.requestId.toUpperCase();
+// @ts-expect-error route-unary Node listen option args default to unary-only request requirements.
+const _wrongRouteKindScopedRouteUnaryNodeListenOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteUnaryNodeListenOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+const routeKindScopedUnaryRouteNodeListenOptionsArgs: NodeUnaryRouteListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryNodeListenOptionsArgs;
+const routeKindScopedGenericRouteUnaryListenOptionsArgs: RouteUnaryListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryNodeListenOptionsArgs;
+const routeKindScopedGenericUnaryRouteListenOptionsArgs: UnaryRouteListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof usersPlugin]
+> = routeKindScopedRouteUnaryNodeListenOptionsArgs;
+const routeKindScopedRouteStreamNodeListenOptionsArgs: NodeRouteStreamListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = [routeKindScopedStreamNodeListenOptions];
+const routeKindScopedRouteStreamNodeListenOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamNodeListenOptionsArgs
+  >
+> = requestTypedStreamProcedureRequest;
+routeKindScopedRouteStreamNodeListenOptionsArgsRequest.streamRequestId.toUpperCase();
+// @ts-expect-error route-stream Node listen option args default to stream-only request requirements.
+const _wrongRouteKindScopedRouteStreamNodeListenOptionsArgsRequest: HandlerOptionsRequest<
+  RouteKindScopedOptionsArg<
+    typeof routeKindScopedRouteStreamNodeListenOptionsArgs
+  >
+> = requestTypedProcedureRequest;
+const routeKindScopedStreamRouteNodeListenOptionsArgs: NodeStreamRouteListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamNodeListenOptionsArgs;
+const routeKindScopedGenericRouteStreamListenOptionsArgs: RouteStreamListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamNodeListenOptionsArgs;
+const routeKindScopedGenericStreamRouteListenOptionsArgs: StreamRouteListenOptionsArgs<
+  typeof routeKindScopedManifest,
+  readonly [typeof auditPlugin]
+> = routeKindScopedRouteStreamNodeListenOptionsArgs;
+routeKindScopedUnaryRouteNodeListenOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedGenericRouteUnaryListenOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedGenericUnaryRouteListenOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedStreamRouteNodeListenOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedGenericRouteStreamListenOptionsArgs[0]?.plugins?.length.toFixed();
+routeKindScopedGenericStreamRouteListenOptionsArgs[0]?.plugins?.length.toFixed();
 listen(routeKindScopedManifest, routeKindScopedNodeListenOptions);
 listenRouteUnary(
   routeKindScopedManifest,
