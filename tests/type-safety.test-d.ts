@@ -21130,6 +21130,18 @@ const compiledRuntimeState: CompiledRuntimeState = {
     return {};
   },
 };
+const _invalidCompiledRuntimeStatePath: CompiledRuntimeState = {
+  // @ts-expect-error compiled runtime paths must be absolute.
+  path: 'rpc',
+  runtime: compiledRuntimeState.runtime,
+  services: {},
+  getServices() {
+    return {};
+  },
+  async resolveServices() {
+    return {};
+  },
+};
 // @ts-expect-error compiled runtime paths are readonly.
 compiledRuntimeState.path = '/other';
 // @ts-expect-error compiled runtime references are readonly.
@@ -21158,6 +21170,8 @@ rootTypedCompiledRuntimeState
   .name.toUpperCase();
 const rootCompiledRuntimeState: RootCompiledRuntimeState<Services> =
   rootTypedCompiledRuntimeState;
+const rootCompiledRuntimePath: RpcPath = rootCompiledRuntimeState.path;
+rootCompiledRuntimePath.toUpperCase();
 rootCompiledRuntimeState.resolveServices().then((services) => {
   services.users.findById('1').name.toUpperCase();
 });

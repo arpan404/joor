@@ -56,6 +56,7 @@ import type {
   RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcPath,
 } from '../rpc/dispatcher.js';
 import {
   DEFAULT_MAX_BODY_BYTES,
@@ -103,7 +104,7 @@ export interface CompiledRuntime {
 }
 
 export interface CompiledRuntimeState<TServices extends object = object> {
-  readonly path: string;
+  readonly path: RpcPath;
   readonly runtime: CompiledRuntime;
   readonly services: TServices | undefined;
   readonly getServices: () => TServices | undefined;
@@ -611,7 +612,7 @@ const isJsonContentType = (value: string): boolean => {
 
 const requestPreflight = (
   request: ContextRequestSource,
-  path: string,
+  path: RpcPath,
   extraHeaders?: Record<string, string>
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {

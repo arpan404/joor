@@ -2088,6 +2088,10 @@ compiledCreateProcedureCacheKey(
   {},
   {}
 ).toUpperCase();
+const packageSubpathCompiledRuntimeState = {} as Compiled.CompiledRuntimeState;
+const packageSubpathCompiledRuntimePath: Rpc.RpcPath =
+  packageSubpathCompiledRuntimeState.path;
+packageSubpathCompiledRuntimePath.toUpperCase();
 rootCompiledCreateProcedureCacheKey(
   'users.get',
   ['input.id'],
