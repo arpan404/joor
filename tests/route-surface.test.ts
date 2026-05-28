@@ -1449,6 +1449,91 @@ const routeKindDispatcherHandlerOptionSnippets = [
   },
 ] as const;
 
+const routeKindDispatcherCoreAliasSnippets = [
+  {
+    name: 'RpcManifestRouteUnaryInput',
+    snippets: ['ProcedureInput<RpcManifestRouteUnaryProcedure<TManifest, TId>>'],
+  },
+  {
+    name: 'RpcManifestRouteStreamInput',
+    snippets: [
+      'ProcedureInput<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryOutput',
+    snippets: [
+      'ProcedureOutput<RpcManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamOutput',
+    snippets: [
+      'ProcedureOutput<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryHeaders',
+    snippets: [
+      'ProcedureHeaders<RpcManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamHeaders',
+    snippets: [
+      'ProcedureHeaders<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryClientHeaders',
+    snippets: [
+      'ClientProcedureHeaders<RpcManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamClientHeaders',
+    snippets: [
+      'ClientProcedureHeaders<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryResponseHeaders',
+    snippets: [
+      'ProcedureResponseHeaders< RpcManifestRouteUnaryProcedure<TManifest, TId> >',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamResponseHeaders',
+    snippets: [
+      'ProcedureResponseHeaders< RpcManifestRouteStreamProcedure<TManifest, TId> >',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryError',
+    snippets: [
+      'RpcManifestProcedureError<RpcManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamError',
+    snippets: [
+      'RpcManifestProcedureError<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryErrorCode',
+    snippets: [
+      'ProcedureErrorCode<RpcManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamErrorCode',
+    snippets: [
+      'ProcedureErrorCode<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+] as const;
+
 const normalizeTypeSource = (source: string): string =>
   source.replace(/\s+/g, ' ');
 
@@ -1807,6 +1892,21 @@ describe('route public surface', () => {
     const missing = routeKindDispatcherInputPatterns
       .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
       .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind dispatcher core aliases tied to route-specific procedures', async () => {
+    const source = await readFile(rpcDispatcher, 'utf8');
+    const missing = routeKindDispatcherCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
