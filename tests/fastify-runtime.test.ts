@@ -6,6 +6,7 @@ import {
   createRouteStreamFastifyHandler,
   createRouteUnaryFastifyHandlerFor,
   defineProcedure,
+  type RpcPath,
   t,
 } from '../src/index.js';
 
@@ -310,7 +311,13 @@ describe('fastify runtime', () => {
     });
     const errors: string[] = [];
     const hooks: string[] = [];
-    const options = {
+    const options: {
+      path: RpcPath;
+      cors: { origin: string };
+      maxBodyBytes: number;
+      hooks: { beforeRequest(): undefined };
+      onError(): void;
+    } = {
       path: '/rpc',
       cors: { origin: 'https://original.example' },
       maxBodyBytes: 1024,

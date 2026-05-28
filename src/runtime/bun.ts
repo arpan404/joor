@@ -22,6 +22,7 @@ import type {
   RpcManifestRouteUnaryHandlerOptionsFor,
   RpcManifestRouteUnaryBody,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcPath,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
 import {
@@ -1139,7 +1140,7 @@ export const createBunTransportRequestHandlerWithPath = <
   TResult extends BunTransportBodyResult = BunTransportBodyResult,
 >(
   handler: BunTransportBodyResultHandler<TBody, TResult>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): BunTransportRequestHandler =>
   createBunTransportRequestHandler(
@@ -1155,7 +1156,7 @@ export const createBunTransportRequestHandlerWithPathFor =
     TResult extends BunTransportBodyResult = BunTransportBodyResult,
   >(
     handler: BunTransportBodyResultHandler<TBody, TResult>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): BunTransportRequestHandler<TRequest> =>
     createBunTransportRequestHandlerWithPath(
@@ -1168,7 +1169,7 @@ export const createRouteUnaryBunTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): BunRouteUnaryTransportRequestHandler =>
   createBunTransportRequestHandlerWithPath(
@@ -1190,7 +1191,7 @@ export const createRouteUnaryBunTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
     handler: BunRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): BunRouteUnaryTransportRequestHandler<TRequest> =>
     createRouteUnaryBunTransportRequestHandlerWithPath(
@@ -1209,7 +1210,7 @@ export const createRouteStreamBunTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): BunRouteStreamTransportRequestHandler =>
   createBunTransportRequestHandlerWithPath(
@@ -1231,7 +1232,7 @@ export const createRouteStreamBunTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
     handler: BunRouteStreamTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): BunRouteStreamTransportRequestHandler<TRequest> =>
     createRouteStreamBunTransportRequestHandlerWithPath(

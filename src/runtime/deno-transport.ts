@@ -16,6 +16,7 @@ import type {
   RpcManifestRouteUnaryHandlerOptionsFor,
   RpcManifestRouteUnaryBody,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcPath,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import type { JoorPlugin } from '../context/plugin.js';
@@ -767,7 +768,7 @@ export const createDenoTransportRequestHandlerWithPath = <
   TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
 >(
   handler: DenoTransportBodyResultHandler<TBody, TResult>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
@@ -793,7 +794,7 @@ export const createDenoTransportRequestHandlerWithPathFor =
     TResult extends DenoTransportBodyResult = DenoTransportBodyResult,
   >(
     handler: DenoTransportBodyResultHandler<TBody, TResult>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoTransportRequestHandler<TRequest> =>
     createDenoTransportRequestHandlerWithPath(
@@ -806,7 +807,7 @@ export const createRouteUnaryDenoTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoRouteUnaryTransportRequestHandler =>
   createDenoTransportRequestHandlerWithPath(
@@ -828,7 +829,7 @@ export const createRouteUnaryDenoTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
     handler: DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoRouteUnaryTransportRequestHandler<TRequest> =>
     createRouteUnaryDenoTransportRequestHandlerWithPath(
@@ -847,7 +848,7 @@ export const createRouteStreamDenoTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: DenoRouteStreamTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoRouteStreamTransportRequestHandler =>
   createDenoTransportRequestHandlerWithPath(
@@ -869,7 +870,7 @@ export const createRouteStreamDenoTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
     handler: DenoRouteStreamTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoRouteStreamTransportRequestHandler<TRequest> =>
     createRouteStreamDenoTransportRequestHandlerWithPath(

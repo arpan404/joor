@@ -862,6 +862,7 @@ import {
   type HandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs,
   type HandlerOptions,
+  type RpcPath,
   type JoorMiddleware,
   type JoorMiddlewareFor,
   type RateLimitIdentityResolver as RootRateLimitIdentityResolver,
@@ -1749,6 +1750,7 @@ import {
   type HandlerOptionsRequest as RpcSubpathHandlerOptionsRequest,
   type HandlerOptionsWithPreflightArgs as RpcSubpathHandlerOptionsWithPreflightArgs,
   type HandlerOptionsWithTrailingArgs as RpcSubpathHandlerOptionsWithTrailingArgs,
+  type RpcPath as RpcSubpathRpcPath,
   type JoorMiddlewareFor as RpcSubpathJoorMiddlewareFor,
   type RateLimitIdentityResolver as RpcSubpathRateLimitIdentityResolver,
   type RateLimitRuntimeOptions as RpcSubpathRateLimitRuntimeOptions,
@@ -14829,8 +14831,18 @@ rootRuntimeContext
   .ok({ id: '1' }, { 'cache-control': 'private' })
   .headers['cache-control'].toUpperCase();
 
+const rpcPath: RpcPath = '/rpc';
+const rpcSubpathRpcPath: RpcSubpathRpcPath = rpcPath;
+rpcSubpathRpcPath.toUpperCase();
+// @ts-expect-error RPC paths must be absolute.
+const invalidRpcPath: RpcPath = 'rpc';
+const invalidHandlerOptionsPath: HandlerOptions = {
+  // @ts-expect-error handler option paths must be absolute.
+  path: 'rpc',
+};
+invalidHandlerOptionsPath;
 const handlerOptions: HandlerOptions<readonly [typeof usersPlugin]> = {
-  path: '/rpc',
+  path: rpcPath,
   plugins: [usersPlugin] as const,
 };
 // @ts-expect-error handler options expose readonly path settings.

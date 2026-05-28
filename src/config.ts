@@ -7,6 +7,7 @@ import type {
   HandlerOptionsRequest,
   HandlerOptionsServices,
   HandlerOptionServices,
+  RpcPath,
   RpcManifest,
   RpcManifestBody,
   RpcManifestRequiredRuntimeRequest,
@@ -24,6 +25,7 @@ export type {
   HandlerOptionsManifest,
   HandlerOptionsRequest,
   HandlerOptionsServices,
+  RpcPath,
 };
 
 export type JoorConfig<

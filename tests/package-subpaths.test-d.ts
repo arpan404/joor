@@ -1349,6 +1349,12 @@ const packageSubpathPlugin = createPlugin({
 const packageSubpathConfig = defineConfigFor(packageSubpathManifest)({
   plugins: [packageSubpathPlugin] as const,
 });
+const packageSubpathRpcPath: Root.RpcPath = '/rpc';
+const packageSubpathRpcModulePath: Rpc.RpcPath = packageSubpathRpcPath;
+const packageSubpathConfigPath: Config.RpcPath = packageSubpathRpcModulePath;
+packageSubpathConfigPath.toUpperCase();
+// @ts-expect-error exported RPC paths must be absolute across package subpaths.
+const _packageSubpathInvalidRpcPath: Rpc.RpcPath = 'rpc';
 const packageSubpathConfigRequest: Root.HandlerOptionsRequest<
   typeof packageSubpathConfig
 > = new Request('https://example.com/rpc');

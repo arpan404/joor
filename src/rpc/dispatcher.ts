@@ -1381,7 +1381,7 @@ export interface HandlerOptions<
     TRequest
   >[];
   readonly hooks?: HandlerHooks<PluginServices<TPlugins>, TBody, TRequest>;
-  readonly path?: string;
+  readonly path?: RpcPath;
   readonly cors?: {
     readonly origin?: string;
     readonly headers?: readonly string[];
@@ -1403,6 +1403,8 @@ export interface HandlerOptions<
   readonly enforceRateLimit?: boolean;
   readonly onError?: (error: Error, request: TRequest) => void;
 }
+
+export type RpcPath = `/${string}`;
 
 type FreezableHandlerOptions = {
   readonly plugins?: readonly JoorPlugin<object>[];

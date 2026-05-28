@@ -530,6 +530,7 @@ export type {
   JoorMiddlewareFor,
   RateLimitIdentityResolver,
   RateLimitRuntimeOptions,
+  RpcPath,
   RpcManifestStreamHandlerOptionsArgs,
   RpcManifestStreamHandlerOptionsArgsFor,
   RpcManifestStreamHandlerOptionsFor,

@@ -7,6 +7,7 @@ import type {
   RpcManifestBody,
   RpcManifestRouteStreamBody,
   RpcManifestRouteUnaryBody,
+  RpcPath,
   RpcRequestPreflight,
 } from '../rpc/dispatcher.js';
 import { createRpcRequestPreflight } from '../rpc/dispatcher.js';
@@ -396,7 +397,7 @@ export const createDenoCompiledTransportRequestHandlerWithPath = <
   runtimeState: CompiledRuntimeState<TServices>,
   handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
   unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoCompiledTransportRequestHandler => {
   const bodyLimit = normalizeMaxBodyBytes(maxBodyBytes);
@@ -438,7 +439,7 @@ export const createDenoCompiledTransportRequestHandlerWithPathFor =
     runtimeState: CompiledRuntimeState<TServices>,
     handler: DenoCompiledTransportBodyResultHandler<TBody, TResult>,
     unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoCompiledTransportRequestHandler<TRequest> =>
     createDenoCompiledTransportRequestHandlerWithPath(
@@ -456,7 +457,7 @@ export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPath = <
   runtimeState: CompiledRuntimeState<TServices>,
   handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
   unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoCompiledRouteUnaryTransportRequestHandler =>
   createDenoCompiledTransportRequestHandlerWithPath(
@@ -485,7 +486,7 @@ export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
     runtimeState: CompiledRuntimeState<TServices>,
     handler: DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>,
     unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoCompiledRouteUnaryTransportRequestHandler<TRequest> =>
     createRouteUnaryDenoCompiledTransportRequestHandlerWithPath(
@@ -509,7 +510,7 @@ export const createRouteStreamDenoCompiledTransportRequestHandlerWithPath = <
   runtimeState: CompiledRuntimeState<TServices>,
   handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
   unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-  path: string,
+  path: RpcPath,
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): DenoCompiledRouteStreamTransportRequestHandler =>
   createDenoCompiledTransportRequestHandlerWithPath(
@@ -538,7 +539,7 @@ export const createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
     runtimeState: CompiledRuntimeState<TServices>,
     handler: DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>,
     unaryDispatch: CompiledFixedUnaryDispatch<TServices>,
-    path: string,
+    path: RpcPath,
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): DenoCompiledRouteStreamTransportRequestHandler<TRequest> =>
     createRouteStreamDenoCompiledTransportRequestHandlerWithPath(

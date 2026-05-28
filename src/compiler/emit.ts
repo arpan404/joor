@@ -3152,6 +3152,7 @@ export default handler;
     `import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
+import type { RpcPath } from 'joor';
 import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
 import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeTransportResult, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from '${dispatcherImport}';
@@ -3670,7 +3671,7 @@ ${nodeFastContextlessUnary}
 
 export interface NodeNativeOptions {
   readonly hostname?: string;
-  readonly path?: string;
+  readonly path?: RpcPath;
   readonly cors?: NativeCorsOptions | false;
   readonly maxBodyBytes?: number;
 }
@@ -3874,7 +3875,8 @@ export default handler;
   const bunFile = `${outDir}/bun.ts`;
   await writeTypeScript(
     bunFile,
-    `import type { JsonValue } from 'joor/schema';
+    `import type { RpcPath } from 'joor';
+import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
 import { nativeRouteStreamTransport, nativeRouteUnaryTransport, nativeRuntime, nativeTransport, nativeUnaryDispatch, type NativeBody, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamBody, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryBody, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeTransportResult, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from '${dispatcherImport}';
 ${bunFastImports}
@@ -4312,7 +4314,7 @@ ${bunFastContextlessUnary}
 
 export interface BunNativeOptions {
   readonly hostname?: string;
-  readonly path?: string;
+  readonly path?: RpcPath;
   readonly cors?: NativeCorsOptions | false;
   readonly maxBodyBytes?: number;
   readonly port?: number;
@@ -4540,7 +4542,7 @@ export default fetch;
   await writeTypeScript(
     denoFile,
     `${denoTransportImport}
-import { createRpcRequestPreflight } from 'joor';
+import { createRpcRequestPreflight, type RpcPath } from 'joor';
 ${denoDispatcherImport}
 
 export type { NativeRequiredRuntimeRequest, NativeRequiredServices, NativeRouteStreamRequiredRuntimeRequest, NativeRouteStreamRequiredServices, NativeRouteUnaryRequiredRuntimeRequest, NativeRouteUnaryRequiredServices, NativeStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices };
@@ -4566,7 +4568,7 @@ const resolveCorsOptions = (
 
 export interface DenoNativeOptions {
   readonly hostname?: string;
-  readonly path?: string;
+  readonly path?: RpcPath;
   readonly cors?: NativeCorsOptions | false;
   readonly maxBodyBytes?: number;
   readonly port?: number;

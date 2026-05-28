@@ -22,6 +22,7 @@ import {
   defineManifest,
   defineProcedure,
   t,
+  type RpcPath,
 } from '../src/index.js';
 import {
   compiledUncachedExecutionState,
@@ -223,7 +224,10 @@ describe('dispatcher', () => {
   });
 
   it('snapshots preflight options at creation time', () => {
-    const options = {
+    const options: {
+      path: RpcPath;
+      cors: { origin: string };
+    } = {
       path: '/rpc',
       cors: {
         origin: 'https://original.example',
@@ -261,7 +265,14 @@ describe('dispatcher', () => {
   it('snapshots RPC handler options at creation time', async () => {
     const errors: string[] = [];
     const hooks: string[] = [];
-    const options = {
+    const options: {
+      path: RpcPath;
+      cors: { origin: string };
+      maxBodyBytes: number;
+      hooks: { beforeRequest(): undefined };
+      onError(): void;
+    } = {
+      path: '/rpc',
       cors: {
         origin: 'https://original.example',
       },
@@ -598,7 +609,11 @@ describe('dispatcher', () => {
   });
 
   it('freezes compiled runtime state and response headers', () => {
-    const options = {
+    const options: {
+      path: RpcPath;
+      cors: { origin: string; headers: string[]; methods: string[] };
+      rateLimit: { trustProxy: boolean; maxEntries: number };
+    } = {
       path: '/rpc',
       cors: {
         origin: 'https://original.example',
@@ -630,7 +645,11 @@ describe('dispatcher', () => {
 
   it('snapshots compiled fetch handler config at creation time', async () => {
     const events: string[] = [];
-    const options = {
+    const options: {
+      path: RpcPath;
+      cors: { origin: string };
+      hooks: { beforeRequest(): undefined };
+    } = {
       path: '/rpc',
       cors: { origin: 'https://original.example' },
       hooks: {
@@ -1588,7 +1607,7 @@ describe('dispatcher', () => {
       },
     });
     const routeManifest = { procedures: { ping: unary, watch: stream } };
-    const options = {
+    const options: { path: RpcPath; cors: { origin: string } } = {
       path: '/api/rpc',
       cors: { origin: 'https://fetch-route.example' },
     };

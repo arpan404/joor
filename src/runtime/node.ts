@@ -21,6 +21,7 @@ import type {
   RpcManifestRouteUnaryHandlerOptionsFor,
   RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcPath,
   RpcRequestPreflight,
   RpcTransportBodyResultHandler,
 } from '../rpc/dispatcher.js';
@@ -1077,7 +1078,7 @@ export const createNodeTransportRequestHandlerWithPath = <
   TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
 >(
   handler: NodeTransportBodyResultHandler<TBody, TResult>,
-  path: string,
+  path: RpcPath,
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): NodeRpcRequestHandler =>
@@ -1098,7 +1099,7 @@ export const createNodeTransportRequestHandlerWithPathFor =
     TResult extends NodeTransportBodyResult = NodeTransportBodyResult,
   >(
     handler: NodeTransportBodyResultHandler<TBody, TResult>,
-    path: string,
+    path: RpcPath,
     hostname = '0.0.0.0',
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): NodeTransportRequestHandler<TIncoming, TOutgoing> =>
@@ -1113,7 +1114,7 @@ export const createRouteUnaryNodeTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): NodeRouteUnaryTransportRequestHandler =>
@@ -1140,7 +1141,7 @@ export const createRouteUnaryNodeTransportRequestHandlerWithPathFor =
   >() =>
   <TManifest extends JoorManifest>(
     handler: NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     hostname = '0.0.0.0',
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing> =>
@@ -1161,7 +1162,7 @@ export const createRouteStreamNodeTransportRequestHandlerWithPath = <
   TManifest extends JoorManifest,
 >(
   handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
-  path: string,
+  path: RpcPath,
   hostname = '0.0.0.0',
   maxBodyBytes = DEFAULT_MAX_BODY_BYTES
 ): NodeRouteStreamTransportRequestHandler =>
@@ -1188,7 +1189,7 @@ export const createRouteStreamNodeTransportRequestHandlerWithPathFor =
   >() =>
   <TManifest extends JoorManifest>(
     handler: NodeRouteStreamTransportBodyResultHandlerFor<TManifest>,
-    path: string,
+    path: RpcPath,
     hostname = '0.0.0.0',
     maxBodyBytes = DEFAULT_MAX_BODY_BYTES
   ): NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing> =>
