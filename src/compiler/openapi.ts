@@ -1,6 +1,7 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
 import { toJsonSchema } from '../schema/openapi.js';
 import type { HeaderObjectSchema } from '../schema/types.js';
+import type { RpcPath } from '../rpc/dispatcher.js';
 import { createClientDocs } from './client-docs.js';
 import type { CompilerManifest } from './manifest.js';
 
@@ -18,7 +19,7 @@ const hasRequiredObjectFields = (schema: HeaderObjectSchema): boolean =>
   Object.values(schema.shape).some((child) => child.kind !== 'optional');
 
 export interface OpenApiDocumentOptions {
-  readonly path?: string;
+  readonly path?: RpcPath;
 }
 
 export const createOpenApiDocument = (

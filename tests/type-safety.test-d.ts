@@ -11107,6 +11107,11 @@ compilerSubpathManifest.procedures[0] = compilerSubpathLoadedProcedure;
 const compilerSubpathOpenApiOptions: CompilerSubpathOpenApiDocumentOptions = {
   path: '/api/rpc',
 };
+const _invalidCompilerSubpathOpenApiOptions: CompilerSubpathOpenApiDocumentOptions =
+  {
+    // @ts-expect-error compiler openapi paths must be absolute.
+    path: 'api/rpc',
+  };
 // @ts-expect-error compiler openapi options are readonly.
 compilerSubpathOpenApiOptions.path = '/other-rpc';
 const compilerSubpathOpenApi = createCompilerSubpathOpenApiDocument(
@@ -11116,6 +11121,10 @@ const compilerSubpathOpenApi = createCompilerSubpathOpenApiDocument(
 compilerSubpathOpenApi['openapi'];
 const compilerSubpathAiDocsOptions: CompilerSubpathAiDocsOptions = {
   path: '/api/rpc',
+};
+const _invalidCompilerSubpathAiDocsOptions: CompilerSubpathAiDocsOptions = {
+  // @ts-expect-error compiler ai docs paths must be absolute.
+  path: 'api/rpc',
 };
 // @ts-expect-error compiler ai docs options are readonly.
 compilerSubpathAiDocsOptions.path = '/other-rpc';

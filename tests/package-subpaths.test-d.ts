@@ -2022,6 +2022,18 @@ const packageSubpathAiDocsOptions: AiDocsOptions = { path: '/api/rpc' };
 const packageSubpathOpenApiOptions: OpenApiDocumentOptions = {
   path: '/api/rpc',
 };
+const packageSubpathCompilerRpcPath: Compiler.OpenApiDocumentOptions = {
+  path: packageSubpathRpcPath,
+};
+packageSubpathCompilerRpcPath.path?.toUpperCase();
+const _packageSubpathInvalidAiDocsPath: AiDocsOptions = {
+  // @ts-expect-error compiler ai docs paths must be absolute across package subpaths.
+  path: 'api/rpc',
+};
+const _packageSubpathInvalidOpenApiPath: OpenApiDocumentOptions = {
+  // @ts-expect-error compiler openapi paths must be absolute across package subpaths.
+  path: 'api/rpc',
+};
 createAiDocs(packageSubpathCompilerManifest, packageSubpathAiDocsOptions)[
   'framework'
 ];
