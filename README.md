@@ -177,13 +177,13 @@ if (result.ok) {
 
 ## RPC Model
 
-All RPC calls go through:
+By default, all RPC calls go through:
 
 ```txt
 POST /rpc
 ```
 
-The dispatcher accepts a single request or a batch. Streaming procedures use the same endpoint with `Accept: text/event-stream` and emit `data`, `error`, and `done` SSE events.
+The dispatcher accepts a single request or a batch. Streaming procedures use the same endpoint with `Accept: text/event-stream` and emit `data`, `error`, and `done` SSE events. Set `path` in `joor.config.ts` to move the endpoint; generated clients, OpenAPI JSON, and AI docs JSON use that configured path.
 
 Procedure ids are derived from file paths:
 
