@@ -942,6 +942,10 @@ const streamResponse = async <
     async start(controller) {
       try {
         for await (const event of iterable as AsyncIterable<JsonValue>) {
+          if (!runtime.validateOutput) {
+            controller.enqueue(encodeSse('data', event));
+            continue;
+          }
           const eventResult = validate(schema, event, 'event');
           if (!eventResult.ok) {
             controller.enqueue(

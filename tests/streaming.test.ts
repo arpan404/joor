@@ -79,6 +79,39 @@ describe('streaming', () => {
     expect(text).toContain('event: done');
   });
 
+  it('honors disabled output validation for interpreted stream events', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler() {
+        yield { ok: 'trusted' as unknown as boolean };
+      },
+    });
+    const handler = createJoorHandler(
+      {
+        procedures: { 'events.watch': streamingProcedure },
+      },
+      { validateOutput: false }
+    );
+    const response = await handler(
+      new Request('http://localhost/rpc', {
+        method: 'POST',
+        headers: {
+          accept: 'text/event-stream',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ id: 'events.watch', input: {} }),
+      })
+    );
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(text).toContain('event: data');
+    expect(text).toContain('"ok":"trusted"');
+    expect(text).not.toContain('STREAM_VALIDATION_ERROR');
+    expect(text).toContain('event: done');
+  });
+
   it('accepts async stream factories', async () => {
     const streamingProcedure = defineProcedure({
       input: t.object({}),
@@ -224,6 +257,45 @@ describe('streaming', () => {
     expect(response.headers.get('content-type')).toContain('text/event-stream');
     expect(text).toContain('event: data');
     expect(text).toContain('"ok":true');
+    expect(text).toContain('event: done');
+  });
+
+  it('honors disabled output validation for compiled stream events', async () => {
+    const streamingProcedure = defineProcedure({
+      input: t.object({}),
+      stream: t.object({ ok: t.boolean() }),
+      async *handler() {
+        yield { ok: 'trusted' as unknown as boolean };
+      },
+    });
+    const request = new Request('http://localhost/rpc', {
+      method: 'POST',
+      headers: {
+        accept: 'text/event-stream',
+        'content-type': 'application/json',
+      },
+    });
+    const runtimeState = createCompiledRuntimeState({ validateOutput: false });
+    const response = await executeCompiledProcedure(
+      'events.watch',
+      streamingProcedure,
+      { id: 'events.watch', input: {} },
+      createFetchRequestSource(request),
+      {},
+      runtimeState.runtime,
+      compiledUncachedExecutionState,
+      false
+    );
+
+    if (!(response instanceof Response)) {
+      throw new Error('Expected compiled stream response');
+    }
+    const text = await response.text();
+
+    expect(response.headers.get('content-type')).toContain('text/event-stream');
+    expect(text).toContain('event: data');
+    expect(text).toContain('"ok":"trusted"');
+    expect(text).not.toContain('STREAM_VALIDATION_ERROR');
     expect(text).toContain('event: done');
   });
 });

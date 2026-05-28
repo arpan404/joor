@@ -3930,6 +3930,10 @@ const executeStream = async <TId extends string>(
     async start(controller) {
       try {
         for await (const event of iterable) {
+          if (!runtime.validateOutput) {
+            controller.enqueue(encodeSse('data', event as JsonValue));
+            continue;
+          }
           const eventResult = validate(streamSchema, event, 'event');
           if (!eventResult.ok) {
             controller.enqueue(
