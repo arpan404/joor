@@ -215,6 +215,23 @@ describe('openapi and ai docs', () => {
       procedures: [
         {
           id: 'users.get',
+          client: {
+            kind: 'unary',
+            routeId: 'users.get',
+            path: ['users', 'get'],
+            callable: {
+              result: 'client.users.get(input, options?)',
+              call: 'client.users.get.call(input, options?)',
+              request: 'client.users.get.request(input, options?)',
+              protocolRequest:
+                'client.users.get.protocolRequest(input, options?)',
+            },
+            transport: {
+              result: 'client.call("users.get", input, options?)',
+              request: 'client.request("users.get", input, options?)',
+              batch: 'client.batch([request], options?)',
+            },
+          },
           inputSchema: {
             properties: {
               id: { type: 'string', format: 'uuid' },
@@ -292,6 +309,22 @@ describe('openapi and ai docs', () => {
         },
         {
           id: 'users.watch',
+          client: {
+            kind: 'stream',
+            routeId: 'users.watch',
+            path: ['users', 'watch'],
+            callable: {
+              data: 'client.users.watch(input, options?)',
+              stream: 'client.users.watch.stream(input, options?)',
+              events: 'client.users.watch.events(input, options?)',
+              protocolRequest:
+                'client.users.watch.protocolRequest(input, options?)',
+            },
+            transport: {
+              data: 'client.stream("users.watch", input, options?)',
+              events: 'client.streamEvents("users.watch", input, options?)',
+            },
+          },
           requestSchema: {
             properties: {
               id: { const: 'users.watch' },

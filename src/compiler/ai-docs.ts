@@ -17,6 +17,63 @@ const frameworkErrorSchema: JsonObject = {
   },
 };
 
+const propertyAccessSegmentPattern = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+
+const createGeneratedClientExpression = (routeId: string): string =>
+  routeId
+    .split('.')
+    .reduce(
+      (expression, segment) =>
+        propertyAccessSegmentPattern.test(segment)
+          ? `${expression}.${segment}`
+          : `${expression}[${JSON.stringify(segment)}]`,
+      'client'
+    );
+
+const createClientDocs = (
+  id: string,
+  stream: CompilerManifest['procedures'][number]['procedure']['stream']
+): JsonObject => {
+  const path = id.split('.');
+  const leaf = createGeneratedClientExpression(id);
+  const quotedId = JSON.stringify(id);
+
+  if (stream === undefined) {
+    return {
+      kind: 'unary',
+      routeId: id,
+      path,
+      callable: {
+        result: `${leaf}(input, options?)`,
+        call: `${leaf}.call(input, options?)`,
+        request: `${leaf}.request(input, options?)`,
+        protocolRequest: `${leaf}.protocolRequest(input, options?)`,
+      },
+      transport: {
+        result: `client.call(${quotedId}, input, options?)`,
+        request: `client.request(${quotedId}, input, options?)`,
+        batch: 'client.batch([request], options?)',
+      },
+    };
+  }
+
+  return {
+    kind: 'stream',
+    routeId: id,
+    path,
+    callable: {
+      data: `${leaf}(input, options?)`,
+      stream: `${leaf}.stream(input, options?)`,
+      events: `${leaf}.events(input, options?)`,
+      protocolRequest: `${leaf}.protocolRequest(input, options?)`,
+    },
+    transport: {
+      data: `client.stream(${quotedId}, input, options?)`,
+      events: `client.streamEvents(${quotedId}, input, options?)`,
+    },
+  };
+};
+
 export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
   framework: 'joor',
   schemaVersion: '0.1.0',
@@ -37,6 +94,7 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
     authPolicy: entry.procedure.auth?.name ?? null,
     rateLimit: entry.procedure.meta.rateLimit ?? null,
     examples: [],
+    client: createClientDocs(entry.id, entry.procedure.stream),
     headersSchema:
       entry.procedure.headers === undefined
         ? {}
