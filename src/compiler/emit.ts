@@ -3432,7 +3432,7 @@ const failureBody = (
 
 const preflight = (
   request: RequestSource,
-  path: string,
+  path: RpcPath,
   cors: Record<string, string> | undefined
 ): NativeTransportResult | undefined => {
   if (!matchesPath(request.url, path)) {
@@ -3466,7 +3466,7 @@ const preflight = (
 const writeIncomingPreflightFailure = (
   outgoing: ServerResponse<IncomingMessage>,
   incoming: IncomingMessage,
-  path: string,
+  path: RpcPath,
   cors: Record<string, string> | undefined
 ): boolean => {
   const url = incoming.url ?? '/rpc';
@@ -4257,7 +4257,7 @@ const failureBody = (
 
 const preflight = (
   request: Request,
-  path: string,
+  path: RpcPath,
   cors: Record<string, string> | undefined
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {

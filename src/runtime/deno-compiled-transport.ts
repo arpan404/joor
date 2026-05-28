@@ -360,7 +360,7 @@ const bodyReadFailure = (request: Request, error: object): Response => {
 
 const requestPathPreflight = (
   request: Request,
-  path: string
+  path: RpcPath
 ): Response | undefined => {
   if (!matchesPath(request.url, path)) {
     return new Response(null, { status: 404 });

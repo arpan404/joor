@@ -569,6 +569,16 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.toContain('type NativeTransportResult');
+      const generatedNodePreflightSource = await readFile(
+        join(outDir, 'node.ts'),
+        'utf8'
+      );
+      expect(generatedNodePreflightSource).toMatch(
+        /const preflight = \([\s\S]*?path: RpcPath/
+      );
+      expect(generatedNodePreflightSource).toMatch(
+        /const writeIncomingPreflightFailure = \([\s\S]*?path: RpcPath/
+      );
       await expect(
         readFile(join(outDir, 'node.ts'), 'utf8')
       ).resolves.not.toContain('Parameters<typeof nativeTransport>');
@@ -594,6 +604,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         readFile(join(outDir, 'bun.ts'), 'utf8')
       ).resolves.not.toContain('ReturnType<typeof nativeTransport>');
       const generatedBunSource = await readFile(join(outDir, 'bun.ts'), 'utf8');
+      expect(generatedBunSource).toMatch(
+        /const preflight = \([\s\S]*?path: RpcPath/
+      );
       expect(generatedBunSource).toContain('nativeRouteUnaryTransport');
       expect(generatedBunSource).toContain('nativeRouteStreamTransport');
       expect(generatedBunSource).toContain('createFetchFromTransportFor');
