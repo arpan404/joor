@@ -2,7 +2,7 @@
 
 import { spawn } from 'node:child_process';
 import { watch } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { dirname, join } from 'node:path';
 import { build } from '../compiler/build.js';
 
 const readOption = (args: string[], name: string): string | undefined => {
@@ -40,8 +40,8 @@ const runBuild = async (args: string[]): Promise<void> => {
 
 const runDev = async (args: string[]): Promise<void> => {
   const options = readBuildOptions(args);
-  const entry = resolve(options.entry ?? './rpc');
-  await build(options);
+  const result = await build(options);
+  const entry = result.entry;
   console.info(`Watching ${entry}`);
   let building = false;
   watch(dirname(entry), { recursive: true }, () => {
