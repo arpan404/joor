@@ -5264,8 +5264,8 @@ export type StreamClientOptions<TRequest extends Request = RouteStreamRequiredRu
   RouteStreamClientOptions<TRequest>;
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
 type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
-  readonly call: (...args: [id: TId, ...ClientArgs<TId>]) => Promise<RouteResult<TId>>;
-  readonly request: (...args: [id: TId, ...ClientArgs<TId>]) => RouteRequest<TId>;
+  readonly call: (...args: [id: TId, ...RouteUnaryClientArgs<TId>]) => Promise<RouteResult<TId>>;
+  readonly request: (...args: [id: TId, ...RouteUnaryClientArgs<TId>]) => RouteRequest<TId>;
 };
 export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryTransportFor<TRouteId>;
@@ -5275,8 +5275,8 @@ export type UnaryRouteTransport<TId extends RouteUnaryId = RouteUnaryId> =
 export type UnaryTransport<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryTransport<TId>;
 type RouteStreamTransportFor<TId extends RouteStreamId> = {
-  readonly stream: (...args: [id: TId, ...ClientArgs<TId>]) => AsyncIterable<Stream<TId>>;
-  readonly streamEvents: (...args: [id: TId, ...ClientArgs<TId>]) => AsyncIterable<StreamSseEvent<TId>>;
+  readonly stream: (...args: [id: TId, ...RouteStreamClientArgs<TId>]) => AsyncIterable<Stream<TId>>;
+  readonly streamEvents: (...args: [id: TId, ...RouteStreamClientArgs<TId>]) => AsyncIterable<StreamSseEvent<TId>>;
 };
 export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamTransportFor<TRouteId>;
@@ -5409,9 +5409,9 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
     options === undefined ? createTransport() : createTransport(options);
   const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
     const routeTransport = transport as unknown as RouteUnaryTransport<TId>;
-    const call = (...args: ClientArgs<TId>) =>
+    const call = (...args: RouteUnaryClientArgs<TId>) =>
       routeTransport.call(id, ...args);
-    const request = (...args: ClientArgs<TId>) =>
+    const request = (...args: RouteUnaryClientArgs<TId>) =>
       routeTransport.request(id, ...args);
     const protocolRequest = (
       input: RouteUnaryInput<TId>,
@@ -5421,9 +5421,9 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
   };
   const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
     const routeTransport = transport as unknown as RouteStreamTransport<TId>;
-    const stream = (...args: ClientArgs<TId>) =>
+    const stream = (...args: RouteStreamClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
-    const events = (...args: ClientArgs<TId>) =>
+    const events = (...args: RouteStreamClientArgs<TId>) =>
       routeTransport.streamEvents(id, ...args);
     const protocolRequest = (
       input: RouteStreamInput<TId>,
@@ -5454,9 +5454,9 @@ export function createRouteUnaryClient<TRequest extends Request = RouteUnaryRequ
       : createRouteUnaryTransport(options);
   const routeUnary = <TId extends RouteUnaryId>(id: TId): RouteUnaryFunction<TId> => {
     const routeTransport = transport as unknown as RouteUnaryTransport<TId>;
-    const call = (...args: ClientArgs<TId>) =>
+    const call = (...args: RouteUnaryClientArgs<TId>) =>
       routeTransport.call(id, ...args);
-    const request = (...args: ClientArgs<TId>) =>
+    const request = (...args: RouteUnaryClientArgs<TId>) =>
       routeTransport.request(id, ...args);
     const protocolRequest = (
       input: RouteUnaryInput<TId>,
@@ -5495,9 +5495,9 @@ export function createRouteStreamClient<TRequest extends Request = RouteStreamRe
       : createRouteStreamTransport(options);
   const routeStream = <TId extends RouteStreamId>(id: TId): RouteStreamFunction<TId> => {
     const routeTransport = transport as unknown as RouteStreamTransport<TId>;
-    const stream = (...args: ClientArgs<TId>) =>
+    const stream = (...args: RouteStreamClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
-    const events = (...args: ClientArgs<TId>) =>
+    const events = (...args: RouteStreamClientArgs<TId>) =>
       routeTransport.streamEvents(id, ...args);
     const protocolRequest = (
       input: RouteStreamInput<TId>,
