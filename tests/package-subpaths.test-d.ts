@@ -500,7 +500,13 @@ import {
   defineUnaryRouteConfigFor as defineContextUnaryRouteConfigFor,
   type UnionToIntersection as ContextUnionToIntersection,
 } from 'joor/context';
-import { build, createAiDocs, createOpenApiDocument } from 'joor/compiler';
+import {
+  build,
+  createAiDocs,
+  createOpenApiDocument,
+  type AiDocsOptions,
+  type OpenApiDocumentOptions,
+} from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import {
   createManifestProtocolRequest,
@@ -2004,8 +2010,17 @@ const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
     },
   ],
 };
-createAiDocs(packageSubpathCompilerManifest)['framework'];
-createOpenApiDocument(packageSubpathCompilerManifest)['openapi'];
+const packageSubpathAiDocsOptions: AiDocsOptions = { path: '/api/rpc' };
+const packageSubpathOpenApiOptions: OpenApiDocumentOptions = {
+  path: '/api/rpc',
+};
+createAiDocs(packageSubpathCompilerManifest, packageSubpathAiDocsOptions)[
+  'framework'
+];
+createOpenApiDocument(
+  packageSubpathCompilerManifest,
+  packageSubpathOpenApiOptions
+)['openapi'];
 compiledCreateProcedureCacheKey(
   'users.get',
   ['input.id'],

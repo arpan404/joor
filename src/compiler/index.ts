@@ -7,6 +7,7 @@ export { loadProcedures } from './load.js';
 export { createOpenApiDocument } from './openapi.js';
 export { scanProcedureFiles } from './scan.js';
 
+export type { AiDocsOptions } from './ai-docs.js';
 export type { BuildOptions } from './build.js';
 export type {
   CompiledProcedureGenerationOptions,
@@ -14,4 +15,5 @@ export type {
 } from './codegen.js';
 export type { EmitOptions } from './emit.js';
 export type { CompilerManifest, LoadedProcedure } from './manifest.js';
+export type { OpenApiDocumentOptions } from './openapi.js';
 export type { ProcedureFile } from './scan.js';

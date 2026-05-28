@@ -1659,12 +1659,14 @@ import {
   build as buildCompilerSubpath,
   createAiDocs as createCompilerSubpathAiDocs,
   createOpenApiDocument as createCompilerSubpathOpenApiDocument,
+  type AiDocsOptions as CompilerSubpathAiDocsOptions,
   type BuildOptions as CompilerSubpathBuildOptions,
   type CompilerManifest as CompilerSubpathManifest,
   type CompiledProcedureGenerationOptions as CompilerSubpathCompiledProcedureGenerationOptions,
   type CompiledProcedureMode as CompilerSubpathCompiledProcedureMode,
   type EmitOptions as CompilerSubpathEmitOptions,
   type LoadedProcedure as CompilerSubpathLoadedProcedure,
+  type OpenApiDocumentOptions as CompilerSubpathOpenApiDocumentOptions,
   type ProcedureFile as CompilerSubpathProcedureFile,
 } from '../src/compiler/index.js';
 import {
@@ -11047,12 +11049,24 @@ const compilerSubpathManifest: CompilerSubpathManifest = {
 compilerSubpathManifest.procedures = [];
 // @ts-expect-error compiler manifest procedure lists are readonly arrays.
 compilerSubpathManifest.procedures[0] = compilerSubpathLoadedProcedure;
+const compilerSubpathOpenApiOptions: CompilerSubpathOpenApiDocumentOptions = {
+  path: '/api/rpc',
+};
+// @ts-expect-error compiler openapi options are readonly.
+compilerSubpathOpenApiOptions.path = '/other-rpc';
 const compilerSubpathOpenApi = createCompilerSubpathOpenApiDocument(
-  compilerSubpathManifest
+  compilerSubpathManifest,
+  compilerSubpathOpenApiOptions
 );
 compilerSubpathOpenApi['openapi'];
+const compilerSubpathAiDocsOptions: CompilerSubpathAiDocsOptions = {
+  path: '/api/rpc',
+};
+// @ts-expect-error compiler ai docs options are readonly.
+compilerSubpathAiDocsOptions.path = '/other-rpc';
 const compilerSubpathAiDocs = createCompilerSubpathAiDocs(
-  compilerSubpathManifest
+  compilerSubpathManifest,
+  compilerSubpathAiDocsOptions
 );
 compilerSubpathAiDocs['framework'];
 const manifestRouteClient = createClient<ManifestRoutes>({ url: '/rpc' });
