@@ -127,14 +127,20 @@ type GeneratedRouteUnaryClientRuntime = {
 
 type GeneratedRouteStreamClientRuntime = {
   readonly users: {
-    readonly watch: object;
+    readonly watch: {
+      readonly events: (input: {
+        readonly userId: string;
+      }) => AsyncIterable<unknown>;
+    };
   };
 };
 
 type GeneratedClientRuntimeModule = {
   readonly client: GeneratedClientRuntime;
   readonly createClient: () => GeneratedClientRuntime;
-  readonly createRouteStreamClient: () => GeneratedRouteStreamClientRuntime;
+  readonly createRouteStreamClient: (
+    options?: object
+  ) => GeneratedRouteStreamClientRuntime;
   readonly createRouteStreamTransport: () => object;
   readonly createRouteUnaryClient: () => GeneratedRouteUnaryClientRuntime;
   readonly createRouteUnaryTransport: () => object;
@@ -8287,6 +8293,38 @@ invalidNativeBatch;
         'stream',
         'events',
         'protocolRequest',
+      ]);
+      const generatedRawEventClient = clientModule.createRouteStreamClient({
+        url: 'https://example.com/rpc',
+        async fetch() {
+          return new Response(
+            [
+              'event: data',
+              'data: {"type":"user.updated","userId":"1"}',
+              '',
+              'event: done',
+              'data: null',
+              '',
+              '',
+            ].join('\n'),
+            {
+              headers: { 'content-type': 'text/event-stream' },
+            }
+          );
+        },
+      });
+      const rawEvents: unknown[] = [];
+      for await (const event of generatedRawEventClient.users.watch.events({
+        userId: '1',
+      })) {
+        rawEvents.push(event);
+      }
+      expect(rawEvents).toEqual([
+        {
+          event: 'data',
+          data: { type: 'user.updated', userId: '1' },
+        },
+        { event: 'done', data: {} },
       ]);
       expect(Object.keys(generatedRouteStreamClient)).toEqual(['users']);
       expect('get' in generatedRouteStreamClient.users).toBe(false);
