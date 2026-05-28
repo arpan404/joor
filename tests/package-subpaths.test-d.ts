@@ -56,8 +56,12 @@ import {
   createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor as createRootRouteStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerFor as createRootRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createStreamDenoCompiledTransportRequestHandlerFor as createRootStreamDenoCompiledTransportRequestHandlerFor,
+  createStreamDenoCompiledTransportRequestHandlerWithPathFor as createRootStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createStreamRouteDenoCompiledTransportRequestHandlerFor as createRootStreamRouteDenoCompiledTransportRequestHandlerFor,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor as createRootStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createUnaryDenoCompiledTransportRequestHandlerFor as createRootUnaryDenoCompiledTransportRequestHandlerFor,
+  createUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRootUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerFor as createRootUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor as createRootUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoRpcRequestHandlerFor as createRootDenoRpcRequestHandlerFor,
@@ -286,9 +290,15 @@ import {
   createCompiledRouteUnaryRpcHandlerFor as createRootCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRootCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor as createRootCompiledRpcHandlerFor,
+  createCompiledStreamRpcBodyResultHandler as createRootCompiledStreamRpcBodyResultHandler,
+  createCompiledStreamRpcHandlerFor as createRootCompiledStreamRpcHandlerFor,
+  createCompiledStreamRpcTransportBodyResultHandler as createRootCompiledStreamRpcTransportBodyResultHandler,
   createCompiledStreamRouteRpcBodyResultHandler as createRootCompiledStreamRouteRpcBodyResultHandler,
   createCompiledStreamRouteRpcHandlerFor as createRootCompiledStreamRouteRpcHandlerFor,
   createCompiledStreamRouteRpcTransportBodyResultHandler as createRootCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRpcBodyResultHandler as createRootCompiledUnaryRpcBodyResultHandler,
+  createCompiledUnaryRpcHandlerFor as createRootCompiledUnaryRpcHandlerFor,
+  createCompiledUnaryRpcTransportBodyResultHandler as createRootCompiledUnaryRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler as createRootCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcHandlerFor as createRootCompiledUnaryRouteRpcHandlerFor,
   createCompiledUnaryRouteRpcTransportBodyResultHandler as createRootCompiledUnaryRouteRpcTransportBodyResultHandler,
@@ -594,9 +604,15 @@ import {
   createCompiledRouteUnaryRpcHandlerFor as createRuntimeCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler as createRuntimeCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor as createRuntimeCompiledRpcHandlerFor,
+  createCompiledStreamRpcBodyResultHandler as createRuntimeCompiledStreamRpcBodyResultHandler,
+  createCompiledStreamRpcHandlerFor as createRuntimeCompiledStreamRpcHandlerFor,
+  createCompiledStreamRpcTransportBodyResultHandler as createRuntimeCompiledStreamRpcTransportBodyResultHandler,
   createCompiledStreamRouteRpcBodyResultHandler as createRuntimeCompiledStreamRouteRpcBodyResultHandler,
   createCompiledStreamRouteRpcHandlerFor as createRuntimeCompiledStreamRouteRpcHandlerFor,
   createCompiledStreamRouteRpcTransportBodyResultHandler as createRuntimeCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRpcBodyResultHandler as createRuntimeCompiledUnaryRpcBodyResultHandler,
+  createCompiledUnaryRpcHandlerFor as createRuntimeCompiledUnaryRpcHandlerFor,
+  createCompiledUnaryRpcTransportBodyResultHandler as createRuntimeCompiledUnaryRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler as createRuntimeCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcHandlerFor as createRuntimeCompiledUnaryRouteRpcHandlerFor,
   createCompiledUnaryRouteRpcTransportBodyResultHandler as createRuntimeCompiledUnaryRouteRpcTransportBodyResultHandler,
@@ -607,8 +623,12 @@ import {
   createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeRouteStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerFor as createRuntimeRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createStreamDenoCompiledTransportRequestHandlerFor as createRuntimeStreamDenoCompiledTransportRequestHandlerFor,
+  createStreamDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createStreamRouteDenoCompiledTransportRequestHandlerFor as createRuntimeStreamRouteDenoCompiledTransportRequestHandlerFor,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createUnaryDenoCompiledTransportRequestHandlerFor as createRuntimeUnaryDenoCompiledTransportRequestHandlerFor,
+  createUnaryDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerFor as createRuntimeUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor as createRuntimeUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor,
   createRouteStreamCloudflareFetchFor as createRuntimeRouteStreamCloudflareFetchFor,
@@ -825,10 +845,18 @@ import {
   createCompiledRouteUnaryRpcTransportBodyResultHandler,
   createCompiledRpcBodyResultHandler,
   createCompiledRpcHandlerFor,
+  createCompiledStreamRpcBodyResultHandler,
+  createCompiledStreamRpcHandler,
+  createCompiledStreamRpcHandlerFor,
+  createCompiledStreamRpcTransportBodyResultHandler,
   createCompiledStreamRouteRpcBodyResultHandler,
   createCompiledStreamRouteRpcHandler,
   createCompiledStreamRouteRpcHandlerFor,
   createCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRpcBodyResultHandler,
+  createCompiledUnaryRpcHandler,
+  createCompiledUnaryRpcHandlerFor,
+  createCompiledUnaryRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcHandler,
   createCompiledUnaryRouteRpcHandlerFor,
@@ -847,10 +875,18 @@ import {
   createRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPath,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createStreamDenoCompiledTransportRequestHandler,
+  createStreamDenoCompiledTransportRequestHandlerFor,
+  createStreamDenoCompiledTransportRequestHandlerWithPath,
+  createStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createStreamRouteDenoCompiledTransportRequestHandler,
   createStreamRouteDenoCompiledTransportRequestHandlerFor,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPath,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createUnaryDenoCompiledTransportRequestHandler,
+  createUnaryDenoCompiledTransportRequestHandlerFor,
+  createUnaryDenoCompiledTransportRequestHandlerWithPath,
+  createUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createUnaryRouteDenoCompiledTransportRequestHandler,
   createUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerWithPath,
@@ -2329,10 +2365,18 @@ const packageSubpathValues = [
   createCompiledRouteUnaryRpcHandler,
   createCompiledRouteUnaryRpcHandlerFor,
   createCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createCompiledStreamRpcBodyResultHandler,
+  createCompiledStreamRpcHandler,
+  createCompiledStreamRpcHandlerFor,
+  createCompiledStreamRpcTransportBodyResultHandler,
   createCompiledStreamRouteRpcBodyResultHandler,
   createCompiledStreamRouteRpcHandler,
   createCompiledStreamRouteRpcHandlerFor,
   createCompiledStreamRouteRpcTransportBodyResultHandler,
+  createCompiledUnaryRpcBodyResultHandler,
+  createCompiledUnaryRpcHandler,
+  createCompiledUnaryRpcHandlerFor,
+  createCompiledUnaryRpcTransportBodyResultHandler,
   createCompiledUnaryRouteRpcBodyResultHandler,
   createCompiledUnaryRouteRpcHandler,
   createCompiledUnaryRouteRpcHandlerFor,
@@ -2343,17 +2387,25 @@ const packageSubpathValues = [
   createRootCompiledRouteUnaryRpcBodyResultHandler,
   createRootCompiledRouteUnaryRpcHandlerFor,
   createRootCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createRootCompiledStreamRpcBodyResultHandler,
+  createRootCompiledStreamRpcHandlerFor,
+  createRootCompiledStreamRpcTransportBodyResultHandler,
   createCompiledRpcHandlerFor,
   createRootCompiledRpcHandlerFor,
   createRuntimeCompiledRpcHandlerFor,
   createRuntimeCompiledRouteStreamRpcHandlerFor,
   createRuntimeCompiledRouteUnaryRpcHandlerFor,
+  createRuntimeCompiledStreamRpcHandlerFor,
   createRuntimeCompiledStreamRouteRpcHandlerFor,
+  createRuntimeCompiledUnaryRpcHandlerFor,
   createRuntimeCompiledUnaryRouteRpcHandlerFor,
   createCompiledRpcBodyResultHandler,
   createRootCompiledStreamRouteRpcBodyResultHandler,
   createRootCompiledStreamRouteRpcHandlerFor,
   createRootCompiledStreamRouteRpcTransportBodyResultHandler,
+  createRootCompiledUnaryRpcBodyResultHandler,
+  createRootCompiledUnaryRpcHandlerFor,
+  createRootCompiledUnaryRpcTransportBodyResultHandler,
   createRootCompiledUnaryRouteRpcBodyResultHandler,
   createRootCompiledUnaryRouteRpcHandlerFor,
   createRootCompiledUnaryRouteRpcTransportBodyResultHandler,
@@ -2361,8 +2413,12 @@ const packageSubpathValues = [
   createRuntimeCompiledRouteStreamRpcTransportBodyResultHandler,
   createRuntimeCompiledRouteUnaryRpcBodyResultHandler,
   createRuntimeCompiledRouteUnaryRpcTransportBodyResultHandler,
+  createRuntimeCompiledStreamRpcBodyResultHandler,
+  createRuntimeCompiledStreamRpcTransportBodyResultHandler,
   createRuntimeCompiledStreamRouteRpcBodyResultHandler,
   createRuntimeCompiledStreamRouteRpcTransportBodyResultHandler,
+  createRuntimeCompiledUnaryRpcBodyResultHandler,
+  createRuntimeCompiledUnaryRpcTransportBodyResultHandler,
   createRuntimeCompiledUnaryRouteRpcBodyResultHandler,
   createRuntimeCompiledUnaryRouteRpcTransportBodyResultHandler,
   executeCompiledProcedure,
@@ -2396,10 +2452,18 @@ const packageSubpathValues = [
   createRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPath,
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createStreamDenoCompiledTransportRequestHandler,
+  createStreamDenoCompiledTransportRequestHandlerFor,
+  createStreamDenoCompiledTransportRequestHandlerWithPath,
+  createStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createStreamRouteDenoCompiledTransportRequestHandler,
   createStreamRouteDenoCompiledTransportRequestHandlerFor,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPath,
   createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createUnaryDenoCompiledTransportRequestHandler,
+  createUnaryDenoCompiledTransportRequestHandlerFor,
+  createUnaryDenoCompiledTransportRequestHandlerWithPath,
+  createUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createUnaryRouteDenoCompiledTransportRequestHandler,
   createUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createUnaryRouteDenoCompiledTransportRequestHandlerWithPath,
@@ -2410,8 +2474,12 @@ const packageSubpathValues = [
   createRootRouteStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRootRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRootRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createRootStreamDenoCompiledTransportRequestHandlerFor,
+  createRootStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRootStreamRouteDenoCompiledTransportRequestHandlerFor,
   createRootStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createRootUnaryDenoCompiledTransportRequestHandlerFor,
+  createRootUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createRootUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createRootUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor,
   createRuntimeDenoCompiledTransportRequestHandlerFor,
@@ -2420,8 +2488,12 @@ const packageSubpathValues = [
   createRuntimeRouteStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRuntimeRouteUnaryDenoCompiledTransportRequestHandlerFor,
   createRuntimeRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor,
+  createRuntimeStreamDenoCompiledTransportRequestHandlerFor,
+  createRuntimeStreamDenoCompiledTransportRequestHandlerWithPathFor,
   createRuntimeStreamRouteDenoCompiledTransportRequestHandlerFor,
   createRuntimeStreamRouteDenoCompiledTransportRequestHandlerWithPathFor,
+  createRuntimeUnaryDenoCompiledTransportRequestHandlerFor,
+  createRuntimeUnaryDenoCompiledTransportRequestHandlerWithPathFor,
   createRuntimeUnaryRouteDenoCompiledTransportRequestHandlerFor,
   createRuntimeUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor,
   createDenoFetchFor,
@@ -5500,6 +5572,8 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledUnaryRouteRpcRequestHandler,
+  Compiled.CompiledUnaryRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
+  Compiled.CompiledUnaryRpcRequestHandler,
   Compiled.CompiledRouteStreamRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5508,14 +5582,20 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledStreamRouteRpcRequestHandler,
+  Compiled.CompiledStreamRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
+  Compiled.CompiledStreamRpcRequestHandler,
   Compiled.CompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Compiled.CompiledUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Compiled.CompiledStreamTransportBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledRouteUnaryBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledUnaryRouteBodyResultFor<PackageSubpathManifest>,
+  Compiled.CompiledUnaryBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledRouteStreamBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledStreamRouteBodyResultFor<PackageSubpathManifest>,
+  Compiled.CompiledStreamBodyResultFor<PackageSubpathManifest>,
   Compiled.CompiledRuntime['rateLimit'],
   Compiled.CompiledRpcBodyResultHandlerForConfig<typeof packageSubpathConfig>,
   Compiled.CompiledRpcRouteStreamBodyResultHandlerForConfig<
@@ -5526,6 +5606,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledRpcStreamRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Compiled.CompiledRpcStreamBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcStreamBodyResultHandlerFor<PackageSubpathManifest>,
   Compiled.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5534,6 +5618,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledRpcStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Compiled.CompiledRpcStreamTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRouteUnaryRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5542,6 +5630,8 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledUnaryRouteRpcRequestHandler,
+  Runtime.CompiledUnaryRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
+  Runtime.CompiledUnaryRpcRequestHandler,
   Runtime.CompiledRouteStreamRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5550,26 +5640,38 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledStreamRouteRpcRequestHandler,
+  Runtime.CompiledStreamRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
+  Runtime.CompiledStreamRpcRequestHandler,
   Runtime.CompiledRouteUnaryBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledUnaryRouteBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledUnaryBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteStreamBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledStreamRouteBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledStreamBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.CompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.CompiledStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.DenoCompiledRouteUnaryTransportRequestHandler,
   Runtime.DenoCompiledUnaryRouteTransportRequestHandler,
+  Runtime.DenoCompiledUnaryTransportRequestHandler,
   Runtime.DenoCompiledRouteStreamTransportRequestHandler,
   Runtime.DenoCompiledStreamRouteTransportRequestHandler,
+  Runtime.DenoCompiledStreamTransportRequestHandler,
   Runtime.DenoCompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.DenoCompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledUnaryTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.DenoCompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.DenoCompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledStreamTransportBodyResultFor<PackageSubpathManifest>,
   Runtime.DenoCompiledRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.DenoCompiledUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.DenoCompiledRouteStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.DenoCompiledStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.DenoCompiledStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5578,6 +5680,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledRpcUnaryRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcUnaryBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcUnaryBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteStreamBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5586,6 +5692,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledRpcStreamRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcStreamBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcStreamBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5594,6 +5704,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledRpcUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcUnaryTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Runtime.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5602,6 +5716,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Runtime.CompiledRpcStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Runtime.CompiledRpcStreamTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Runtime.CompiledRpcStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Compiled.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5610,6 +5728,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledRpcUnaryRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Compiled.CompiledRpcUnaryBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcUnaryBodyResultHandlerFor<PackageSubpathManifest>,
   Compiled.CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5618,6 +5740,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Compiled.CompiledRpcUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Compiled.CompiledRpcUnaryTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Compiled.CompiledRpcUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Root.CompiledRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRpcTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
@@ -5630,6 +5756,8 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Root.CompiledRpcStreamRouteBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.CompiledRpcStreamBodyResultHandlerForConfig<typeof packageSubpathConfig>,
+  Root.CompiledRpcStreamBodyResultHandlerFor<PackageSubpathManifest>,
   Root.CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5638,6 +5766,10 @@ export type PackageSubpathSurface = [
     typeof packageSubpathConfig
   >,
   Root.CompiledRpcStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  Root.CompiledRpcStreamTransportBodyResultHandlerForConfig<
+    typeof packageSubpathConfig
+  >,
+  Root.CompiledRpcStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   Root.CompiledRpcRouteUnaryBodyResultHandlerForConfig<
     typeof packageSubpathConfig
   >,
@@ -5650,12 +5782,14 @@ export type PackageSubpathSurface = [
   Root.CompiledUnaryRouteRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
+  Root.CompiledUnaryRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledRouteStreamRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
   Root.CompiledStreamRouteRpcRequestHandlerForConfig<
     typeof packageSubpathConfig
   >,
+  Root.CompiledStreamRpcRequestHandlerForConfig<typeof packageSubpathConfig>,
   Root.CompiledCachedProcedureHeaders,
   Root.CompiledProcedureCacheHeaderValues,
   Root.RateLimitRuntimeOptions,
@@ -5751,16 +5885,22 @@ export type PackageSubpathSurface = [
   Deno.DenoRpcRequestHandler,
   DenoCompiledTransport.DenoCompiledRouteUnaryTransportRequestHandler,
   DenoCompiledTransport.DenoCompiledUnaryRouteTransportRequestHandler,
+  DenoCompiledTransport.DenoCompiledUnaryTransportRequestHandler,
   DenoCompiledTransport.DenoCompiledRouteStreamTransportRequestHandler,
   DenoCompiledTransport.DenoCompiledStreamRouteTransportRequestHandler,
+  DenoCompiledTransport.DenoCompiledStreamTransportRequestHandler,
   DenoCompiledTransport.DenoCompiledRouteUnaryTransportBodyResultFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledUnaryRouteTransportBodyResultFor<PackageSubpathManifest>,
+  DenoCompiledTransport.DenoCompiledUnaryTransportBodyResultFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledRouteStreamTransportBodyResultFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledStreamRouteTransportBodyResultFor<PackageSubpathManifest>,
+  DenoCompiledTransport.DenoCompiledStreamTransportBodyResultFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledRouteUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledUnaryRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  DenoCompiledTransport.DenoCompiledUnaryTransportBodyResultHandlerFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledRouteStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledStreamRouteTransportBodyResultHandlerFor<PackageSubpathManifest>,
+  DenoCompiledTransport.DenoCompiledStreamTransportBodyResultHandlerFor<PackageSubpathManifest>,
   DenoCompiledTransport.DenoCompiledTransportRequestHandler,
   DenoTransport.DenoRouteUnaryServeOptionsFor<PackageSubpathManifest>,
   DenoTransport.DenoUnaryRouteServeOptionsFor<PackageSubpathManifest>,

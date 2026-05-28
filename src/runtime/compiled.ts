@@ -156,12 +156,22 @@ export type CompiledUnaryRouteTransportBodyResultFor<
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+export type CompiledUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = CompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   _TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = Response | CompiledSerializedEnvelope;
 export type CompiledStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
+export type CompiledStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -176,12 +186,22 @@ export type CompiledUnaryRouteBodyResultFor<
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
 > = CompiledRouteUnaryBodyResultFor<TManifest, TBody>;
+export type CompiledUnaryBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = CompiledRouteUnaryBodyResultFor<TManifest, TBody>;
 export type CompiledRouteStreamBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type CompiledStreamRouteBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = CompiledRouteStreamBodyResultFor<TManifest, TBody>;
+export type CompiledStreamBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -194,10 +214,16 @@ export type CompiledRouteUnaryRpcRequestHandler<
 export type CompiledUnaryRouteRpcRequestHandler<
   TRequest extends Request = Request,
 > = CompiledRouteUnaryRpcRequestHandler<TRequest>;
+export type CompiledUnaryRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRouteUnaryRpcRequestHandler<TRequest>;
 export type CompiledRouteStreamRpcRequestHandler<
   TRequest extends Request = Request,
 > = CompiledRpcRequestHandler<TRequest>;
 export type CompiledStreamRouteRpcRequestHandler<
+  TRequest extends Request = Request,
+> = CompiledRouteStreamRpcRequestHandler<TRequest>;
+export type CompiledStreamRpcRequestHandler<
   TRequest extends Request = Request,
 > = CompiledRouteStreamRpcRequestHandler<TRequest>;
 
@@ -277,6 +303,10 @@ export type CompiledRpcUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = CompiledRpcRouteUnaryTransportBodyResultHandlerFor<TManifest>;
 
+export type CompiledRpcUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = CompiledRpcRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
 export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
@@ -285,6 +315,10 @@ export type CompiledRpcRouteStreamTransportBodyResultHandlerFor<
 ) => MaybePromise<CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = CompiledRpcRouteStreamTransportBodyResultHandlerFor<TManifest>;
+
+export type CompiledRpcStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = CompiledRpcRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
@@ -317,6 +351,12 @@ export type CompiledRpcUnaryRouteBodyResultHandlerFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest, TRequest>;
 
+export type CompiledRpcUnaryBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = CompiledRpcRouteUnaryBodyResultHandlerFor<TManifest, TRequest>;
+
 export type CompiledRpcRouteStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
@@ -327,6 +367,12 @@ export type CompiledRpcRouteStreamBodyResultHandlerFor<
 ) => MaybePromise<CompiledRouteStreamBodyResultFor<TManifest, TBody>>;
 
 export type CompiledRpcStreamRouteBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = CompiledRpcRouteStreamBodyResultHandlerFor<TManifest, TRequest>;
+
+export type CompiledRpcStreamBodyResultHandlerFor<
   TManifest extends JoorManifest,
   TRequest extends Request =
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
@@ -381,6 +427,9 @@ export type CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig> =
 export type CompiledRpcUnaryRouteTransportBodyResultHandlerForConfig<TConfig> =
   CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig>;
 
+export type CompiledRpcUnaryTransportBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteUnaryTransportBodyResultHandlerForConfig<TConfig>;
+
 export type CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig> =
   [CompiledConfigManifest<TConfig>] extends [never]
     ? CompiledRpcTransportBodyResultHandler<CompiledConfigBody<TConfig>>
@@ -389,6 +438,9 @@ export type CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig> =
       >;
 
 export type CompiledRpcStreamRouteTransportBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig>;
+
+export type CompiledRpcStreamTransportBodyResultHandlerForConfig<TConfig> =
   CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig>;
 
 export type CompiledRpcBodyResultHandlerForConfig<TConfig> = [
@@ -420,6 +472,9 @@ export type CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig> = [
 export type CompiledRpcUnaryRouteBodyResultHandlerForConfig<TConfig> =
   CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig>;
 
+export type CompiledRpcUnaryBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteUnaryBodyResultHandlerForConfig<TConfig>;
+
 export type CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig> = [
   CompiledConfigManifest<TConfig>,
 ] extends [never]
@@ -436,15 +491,22 @@ export type CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig> = [
 export type CompiledRpcStreamRouteBodyResultHandlerForConfig<TConfig> =
   CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig>;
 
+export type CompiledRpcStreamBodyResultHandlerForConfig<TConfig> =
+  CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig>;
+
 export type CompiledRpcRequestHandlerForConfig<TConfig> =
   CompiledRpcRequestHandler<CompiledHookRequest<TConfig>>;
 export type CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig> =
   CompiledRouteUnaryRpcRequestHandler<CompiledHookRequest<TConfig>>;
 export type CompiledUnaryRouteRpcRequestHandlerForConfig<TConfig> =
   CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig>;
+export type CompiledUnaryRpcRequestHandlerForConfig<TConfig> =
+  CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig>;
 export type CompiledRouteStreamRpcRequestHandlerForConfig<TConfig> =
   CompiledRouteStreamRpcRequestHandler<CompiledHookRequest<TConfig>>;
 export type CompiledStreamRouteRpcRequestHandlerForConfig<TConfig> =
+  CompiledRouteStreamRpcRequestHandlerForConfig<TConfig>;
+export type CompiledStreamRpcRequestHandlerForConfig<TConfig> =
   CompiledRouteStreamRpcRequestHandlerForConfig<TConfig>;
 
 type IsDefaultRequest<TRequest extends Request> = [Request] extends [TRequest]
@@ -1413,6 +1475,9 @@ export const createCompiledRouteUnaryRpcTransportBodyResultHandler = <
 export const createCompiledUnaryRouteRpcTransportBodyResultHandler: typeof createCompiledRouteUnaryRpcTransportBodyResultHandler =
   createCompiledRouteUnaryRpcTransportBodyResultHandler;
 
+export const createCompiledUnaryRpcTransportBodyResultHandler: typeof createCompiledRouteUnaryRpcTransportBodyResultHandler =
+  createCompiledRouteUnaryRpcTransportBodyResultHandler;
+
 export const createCompiledRouteStreamRpcTransportBodyResultHandler = <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
@@ -1433,6 +1498,9 @@ export const createCompiledRouteStreamRpcTransportBodyResultHandler = <
   ) as CompiledRpcRouteStreamTransportBodyResultHandlerForConfig<TConfig>;
 
 export const createCompiledStreamRouteRpcTransportBodyResultHandler: typeof createCompiledRouteStreamRpcTransportBodyResultHandler =
+  createCompiledRouteStreamRpcTransportBodyResultHandler;
+
+export const createCompiledStreamRpcTransportBodyResultHandler: typeof createCompiledRouteStreamRpcTransportBodyResultHandler =
   createCompiledRouteStreamRpcTransportBodyResultHandler;
 
 export const createCompiledRpcBodyResultHandler = <
@@ -1472,6 +1540,9 @@ export const createCompiledRouteUnaryRpcBodyResultHandler = <
 export const createCompiledUnaryRouteRpcBodyResultHandler: typeof createCompiledRouteUnaryRpcBodyResultHandler =
   createCompiledRouteUnaryRpcBodyResultHandler;
 
+export const createCompiledUnaryRpcBodyResultHandler: typeof createCompiledRouteUnaryRpcBodyResultHandler =
+  createCompiledRouteUnaryRpcBodyResultHandler;
+
 export const createCompiledRouteStreamRpcBodyResultHandler = <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
@@ -1486,6 +1557,9 @@ export const createCompiledRouteStreamRpcBodyResultHandler = <
   ) as CompiledRpcRouteStreamBodyResultHandlerForConfig<TConfig>;
 
 export const createCompiledStreamRouteRpcBodyResultHandler: typeof createCompiledRouteStreamRpcBodyResultHandler =
+  createCompiledRouteStreamRpcBodyResultHandler;
+
+export const createCompiledStreamRpcBodyResultHandler: typeof createCompiledRouteStreamRpcBodyResultHandler =
   createCompiledRouteStreamRpcBodyResultHandler;
 
 type CompiledRpcHandlerTransportFactory = <
@@ -1566,6 +1640,8 @@ export const createCompiledRouteUnaryRpcHandler =
   ) => CompiledRouteUnaryRpcRequestHandlerForConfig<TConfig>;
 export const createCompiledUnaryRouteRpcHandler: typeof createCompiledRouteUnaryRpcHandler =
   createCompiledRouteUnaryRpcHandler;
+export const createCompiledUnaryRpcHandler: typeof createCompiledRouteUnaryRpcHandler =
+  createCompiledRouteUnaryRpcHandler;
 export const createCompiledRouteStreamRpcHandler =
   createCompiledRpcHandlerFromTransport(
     createCompiledRouteStreamRpcTransportBodyResultHandler
@@ -1575,6 +1651,8 @@ export const createCompiledRouteStreamRpcHandler =
     unaryDispatch?: CompiledUnaryDispatch<JoorConfigContext<TConfig>>
   ) => CompiledRouteStreamRpcRequestHandlerForConfig<TConfig>;
 export const createCompiledStreamRouteRpcHandler: typeof createCompiledRouteStreamRpcHandler =
+  createCompiledRouteStreamRpcHandler;
+export const createCompiledStreamRpcHandler: typeof createCompiledRouteStreamRpcHandler =
   createCompiledRouteStreamRpcHandler;
 
 export function createCompiledRpcHandlerFor(): <
@@ -1638,6 +1716,9 @@ export function createCompiledRouteUnaryRpcHandlerFor<
 export const createCompiledUnaryRouteRpcHandlerFor: typeof createCompiledRouteUnaryRpcHandlerFor =
   createCompiledRouteUnaryRpcHandlerFor;
 
+export const createCompiledUnaryRpcHandlerFor: typeof createCompiledRouteUnaryRpcHandlerFor =
+  createCompiledRouteUnaryRpcHandlerFor;
+
 export function createCompiledRouteStreamRpcHandlerFor(): <
   const TConfig extends AnyJoorConfig = Record<string, never>,
 >(
@@ -1668,4 +1749,7 @@ export function createCompiledRouteStreamRpcHandlerFor<
 }
 
 export const createCompiledStreamRouteRpcHandlerFor: typeof createCompiledRouteStreamRpcHandlerFor =
+  createCompiledRouteStreamRpcHandlerFor;
+
+export const createCompiledStreamRpcHandlerFor: typeof createCompiledRouteStreamRpcHandlerFor =
   createCompiledRouteStreamRpcHandlerFor;

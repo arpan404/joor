@@ -39,10 +39,16 @@ export type DenoCompiledRouteUnaryTransportRequestHandler<
 export type DenoCompiledUnaryRouteTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
+export type DenoCompiledUnaryTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
 export type DenoCompiledRouteStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoCompiledTransportRequestHandler<TRequest>;
 export type DenoCompiledStreamRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
+export type DenoCompiledStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
 
@@ -67,6 +73,12 @@ export type DenoCompiledUnaryRouteTransportBodyResultFor<
     RpcManifestRouteUnaryBody<TManifest>,
 > = DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
+export type DenoCompiledUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = DenoCompiledRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
 export type DenoCompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
@@ -74,6 +86,12 @@ export type DenoCompiledRouteStreamTransportBodyResultFor<
 > = CompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoCompiledStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = DenoCompiledRouteStreamTransportBodyResultFor<TManifest, TBody>;
+
+export type DenoCompiledStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -108,6 +126,10 @@ export type DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>;
 
+export type DenoCompiledUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoCompiledRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
 export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
@@ -118,6 +140,10 @@ export type DenoCompiledRouteStreamTransportBodyResultHandlerFor<
 >;
 
 export type DenoCompiledStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>;
+
+export type DenoCompiledStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoCompiledRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
@@ -211,6 +237,9 @@ export const createRouteUnaryDenoCompiledTransportRequestHandler = <
 export const createUnaryRouteDenoCompiledTransportRequestHandler: typeof createRouteUnaryDenoCompiledTransportRequestHandler =
   createRouteUnaryDenoCompiledTransportRequestHandler;
 
+export const createUnaryDenoCompiledTransportRequestHandler: typeof createRouteUnaryDenoCompiledTransportRequestHandler =
+  createRouteUnaryDenoCompiledTransportRequestHandler;
+
 export const createRouteUnaryDenoCompiledTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <
@@ -232,6 +261,9 @@ export const createRouteUnaryDenoCompiledTransportRequestHandlerFor =
     ) as DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteDenoCompiledTransportRequestHandlerFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerFor =
+  createRouteUnaryDenoCompiledTransportRequestHandlerFor;
+
+export const createUnaryDenoCompiledTransportRequestHandlerFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerFor =
   createRouteUnaryDenoCompiledTransportRequestHandlerFor;
 
 export const createRouteStreamDenoCompiledTransportRequestHandler = <
@@ -258,6 +290,9 @@ export const createRouteStreamDenoCompiledTransportRequestHandler = <
 export const createStreamRouteDenoCompiledTransportRequestHandler: typeof createRouteStreamDenoCompiledTransportRequestHandler =
   createRouteStreamDenoCompiledTransportRequestHandler;
 
+export const createStreamDenoCompiledTransportRequestHandler: typeof createRouteStreamDenoCompiledTransportRequestHandler =
+  createRouteStreamDenoCompiledTransportRequestHandler;
+
 export const createRouteStreamDenoCompiledTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <
@@ -279,6 +314,9 @@ export const createRouteStreamDenoCompiledTransportRequestHandlerFor =
     ) as DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteDenoCompiledTransportRequestHandlerFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerFor =
+  createRouteStreamDenoCompiledTransportRequestHandlerFor;
+
+export const createStreamDenoCompiledTransportRequestHandlerFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerFor =
   createRouteStreamDenoCompiledTransportRequestHandlerFor;
 
 const matchesPath = (url: string, path: string): boolean => {
@@ -435,6 +473,9 @@ export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPath = <
 export const createUnaryRouteDenoCompiledTransportRequestHandlerWithPath: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPath;
 
+export const createUnaryDenoCompiledTransportRequestHandlerWithPath: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPath =
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPath;
+
 export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <
@@ -456,6 +497,9 @@ export const createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
     ) as DenoCompiledRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
+  createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor;
+
+export const createUnaryDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor =
   createRouteUnaryDenoCompiledTransportRequestHandlerWithPathFor;
 
 export const createRouteStreamDenoCompiledTransportRequestHandlerWithPath = <
@@ -482,6 +526,9 @@ export const createRouteStreamDenoCompiledTransportRequestHandlerWithPath = <
 export const createStreamRouteDenoCompiledTransportRequestHandlerWithPath: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPath =
   createRouteStreamDenoCompiledTransportRequestHandlerWithPath;
 
+export const createStreamDenoCompiledTransportRequestHandlerWithPath: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPath =
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPath;
+
 export const createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <
@@ -503,4 +550,7 @@ export const createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
     ) as DenoCompiledRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
+  createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor;
+
+export const createStreamDenoCompiledTransportRequestHandlerWithPathFor: typeof createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor =
   createRouteStreamDenoCompiledTransportRequestHandlerWithPathFor;
