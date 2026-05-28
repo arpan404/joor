@@ -1,4 +1,4 @@
-import { dirname, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import type { JoorConfig } from '../config.js';
 import { findConfigFile, loadConfig } from './config.js';
 import { emitArtifacts } from './emit.js';
@@ -15,6 +15,13 @@ export interface BuildResult {
   readonly entry: string;
   readonly outDir: string;
   readonly configPath?: string;
+  readonly artifacts: {
+    readonly manifest: string;
+    readonly dispatcher: string;
+    readonly client: string;
+    readonly openapi: string;
+    readonly aiDocs: string;
+  };
 }
 
 const disabledSafetyOptions = (config: JoorConfig): string[] => {
@@ -70,5 +77,12 @@ export const build = async (options: BuildOptions): Promise<BuildResult> => {
     entry,
     outDir,
     ...(configPath === undefined ? {} : { configPath }),
+    artifacts: {
+      manifest: join(outDir, 'manifest.ts'),
+      dispatcher: join(outDir, 'dispatcher.ts'),
+      client: join(outDir, 'client.ts'),
+      openapi: join(outDir, 'openapi.json'),
+      aiDocs: join(outDir, 'ai-docs.json'),
+    },
   };
 };

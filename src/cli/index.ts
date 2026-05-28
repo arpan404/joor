@@ -2,7 +2,7 @@
 
 import { spawn } from 'node:child_process';
 import { watch } from 'node:fs';
-import { dirname, join } from 'node:path';
+import { dirname } from 'node:path';
 import { build } from '../compiler/build.js';
 
 const readOption = (args: string[], name: string): string | undefined => {
@@ -60,7 +60,7 @@ const runDev = async (args: string[]): Promise<void> => {
 
 const runOpenApi = async (args: string[]): Promise<void> => {
   const result = await build(readBuildOptions(args));
-  console.info(`OpenAPI JSON written to ${join(result.outDir, 'openapi.json')}`);
+  console.info(`OpenAPI JSON written to ${result.artifacts.openapi}`);
 };
 
 const runDoctor = async (): Promise<void> => {

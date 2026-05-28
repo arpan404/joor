@@ -11007,11 +11007,21 @@ const compilerSubpathBuildResult: CompilerSubpathBuildResult = {
   entry: '/tmp/joor-app/rpc',
   outDir: '/tmp/joor-app/.joor',
   configPath: '/tmp/joor-app/joor.config.ts',
+  artifacts: {
+    manifest: '/tmp/joor-app/.joor/manifest.ts',
+    dispatcher: '/tmp/joor-app/.joor/dispatcher.ts',
+    client: '/tmp/joor-app/.joor/client.ts',
+    openapi: '/tmp/joor-app/.joor/openapi.json',
+    aiDocs: '/tmp/joor-app/.joor/ai-docs.json',
+  },
 };
 compilerSubpathBuildResult.outDir.toUpperCase();
 compilerSubpathBuildResult.configPath?.toUpperCase();
+compilerSubpathBuildResult.artifacts.openapi.toUpperCase();
 // @ts-expect-error compiler build results are readonly.
 compilerSubpathBuildResult.outDir = '/tmp/other/.joor';
+// @ts-expect-error compiler build artifact paths are readonly.
+compilerSubpathBuildResult.artifacts.openapi = '/tmp/other/openapi.json';
 const compilerSubpathEmitOptions: CompilerSubpathEmitOptions = {
   outDir: '/tmp/joor-app/.joor',
   config,

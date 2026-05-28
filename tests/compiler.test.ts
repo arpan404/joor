@@ -2021,6 +2021,13 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         configPath: fixtureConfig,
         entry: fixture,
         outDir,
+        artifacts: {
+          aiDocs: join(outDir, 'ai-docs.json'),
+          client: join(outDir, 'client.ts'),
+          dispatcher: join(outDir, 'dispatcher.ts'),
+          manifest: join(outDir, 'manifest.ts'),
+          openapi: join(outDir, 'openapi.json'),
+        },
       });
       await expect(
         readFile(join(outDir, 'manifest.ts'), 'utf8')

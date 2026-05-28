@@ -2025,8 +2025,16 @@ createOpenApiDocument(
 const packageSubpathBuildResult: BuildResult = {
   entry: '/tmp/joor/rpc',
   outDir: '/tmp/joor/.joor',
+  artifacts: {
+    manifest: '/tmp/joor/.joor/manifest.ts',
+    dispatcher: '/tmp/joor/.joor/dispatcher.ts',
+    client: '/tmp/joor/.joor/client.ts',
+    openapi: '/tmp/joor/.joor/openapi.json',
+    aiDocs: '/tmp/joor/.joor/ai-docs.json',
+  },
 };
 packageSubpathBuildResult.entry.toUpperCase();
+packageSubpathBuildResult.artifacts.aiDocs.toUpperCase();
 compiledCreateProcedureCacheKey(
   'users.get',
   ['input.id'],
