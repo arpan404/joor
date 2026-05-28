@@ -64,6 +64,75 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
       entry.procedure.stream === undefined
         ? {}
         : toJsonSchema(entry.procedure.stream),
+    streamEventSchema:
+      entry.procedure.stream === undefined
+        ? {}
+        : {
+            oneOf: [
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'data' },
+                  data: toJsonSchema(entry.procedure.stream),
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'error' },
+                  data: {
+                    type: 'object',
+                    required: ['ok', 'id', 'error', 'traceId'],
+                    properties: {
+                      ok: { const: false },
+                      id: { const: entry.id },
+                      error: {
+                        oneOf: [
+                          ...Object.entries(entry.procedure.errors).map(
+                            ([code, schema]) => ({
+                              type: 'object',
+                              required: [
+                                'code',
+                                'message',
+                                'status',
+                                'details',
+                              ],
+                              properties: {
+                                code: { const: code },
+                                message: { type: 'string' },
+                                status: { type: 'integer' },
+                                details: toJsonSchema(schema),
+                              },
+                              additionalProperties: false,
+                            })
+                          ),
+                          frameworkErrorSchema,
+                        ] as readonly JsonValue[],
+                      },
+                      traceId: { type: 'string' },
+                    },
+                    additionalProperties: false,
+                  },
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'done' },
+                  data: {
+                    type: 'object',
+                    additionalProperties: false,
+                  },
+                },
+                additionalProperties: false,
+              },
+            ],
+          },
     successSchema: {
       type: 'object',
       required: [

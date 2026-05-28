@@ -42,6 +42,9 @@ describe('openapi and ai docs', () => {
               { $ref: '#/components/schemas/UsersWatchResponse' },
             ],
           },
+          RpcStreamEvent: {
+            oneOf: [{ $ref: '#/components/schemas/UsersWatchStreamEvent' }],
+          },
           UsersGetRequest: {
             required: ['id', 'input'],
             properties: {
@@ -104,6 +107,40 @@ describe('openapi and ai docs', () => {
               { $ref: '#/components/schemas/UsersWatchFailure' },
             ],
           },
+          UsersWatchStreamEvent: {
+            oneOf: [
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'data' },
+                  data: { $ref: '#/components/schemas/UsersWatchStream' },
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'error' },
+                  data: { $ref: '#/components/schemas/UsersWatchFailure' },
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'done' },
+                  data: {
+                    type: 'object',
+                    additionalProperties: false,
+                  },
+                },
+                additionalProperties: false,
+              },
+            ],
+          },
         },
       },
       paths: {
@@ -138,6 +175,12 @@ describe('openapi and ai docs', () => {
                       ],
                     },
                   },
+                  'text/event-stream': {
+                    schema: { type: 'string' },
+                    'x-joor-stream-event-schema': {
+                      $ref: '#/components/schemas/RpcStreamEvent',
+                    },
+                  },
                 },
               },
             },
@@ -154,6 +197,7 @@ describe('openapi and ai docs', () => {
                 id: 'users.watch',
                 requestRef: '#/components/schemas/UsersWatchRequest',
                 responseRef: '#/components/schemas/UsersWatchResponse',
+                streamEventRef: '#/components/schemas/UsersWatchStreamEvent',
               }),
             ]),
           },
@@ -257,6 +301,39 @@ describe('openapi and ai docs', () => {
                 },
               },
             },
+          },
+          streamEventSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'data' },
+                  data: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      userId: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'error' },
+                  data: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      id: { const: 'users.watch' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'done' },
+                  data: {
+                    type: 'object',
+                    additionalProperties: false,
+                  },
+                }),
+              }),
+            ],
           },
           responseSchema: {
             oneOf: [

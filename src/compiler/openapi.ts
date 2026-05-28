@@ -71,10 +71,13 @@ export const createOpenApiDocument = (
   };
   const routeRequestRefs: JsonObject[] = [];
   const routeResponseRefs: JsonObject[] = [];
+  const routeStreamEventRefs: JsonObject[] = [];
   const procedures = manifest.procedures.map((entry): JsonObject => {
     const inputComponent = componentName(entry.id, 'Input');
     const requestComponent = componentName(entry.id, 'Request');
     const outputComponent = componentName(entry.id, 'Output');
+    const streamComponent = componentName(entry.id, 'Stream');
+    const streamEventComponent = componentName(entry.id, 'StreamEvent');
     const responseHeadersComponent = componentName(entry.id, 'ResponseHeaders');
     const errorComponent = componentName(entry.id, 'Error');
     const successComponent = componentName(entry.id, 'Success');
@@ -106,9 +109,7 @@ export const createOpenApiDocument = (
       schemas[outputComponent] = toJsonSchema(entry.procedure.output);
     }
     if (entry.procedure.stream !== undefined) {
-      schemas[componentName(entry.id, 'Stream')] = toJsonSchema(
-        entry.procedure.stream
-      );
+      schemas[streamComponent] = toJsonSchema(entry.procedure.stream);
     }
     const errors = Object.fromEntries(
       Object.entries(entry.procedure.errors).map(([code, schema]) => [
@@ -174,6 +175,43 @@ export const createOpenApiDocument = (
       oneOf: [schemaRef(successComponent), schemaRef(failureComponent)],
     };
     routeResponseRefs.push(schemaRef(responseComponent));
+    if (entry.procedure.stream !== undefined) {
+      schemas[streamEventComponent] = {
+        oneOf: [
+          {
+            type: 'object',
+            required: ['event', 'data'],
+            properties: {
+              event: { const: 'data' },
+              data: schemaRef(streamComponent),
+            },
+            additionalProperties: false,
+          },
+          {
+            type: 'object',
+            required: ['event', 'data'],
+            properties: {
+              event: { const: 'error' },
+              data: schemaRef(failureComponent),
+            },
+            additionalProperties: false,
+          },
+          {
+            type: 'object',
+            required: ['event', 'data'],
+            properties: {
+              event: { const: 'done' },
+              data: {
+                type: 'object',
+                additionalProperties: false,
+              },
+            },
+            additionalProperties: false,
+          },
+        ],
+      };
+      routeStreamEventRefs.push(schemaRef(streamEventComponent));
+    }
     return {
       id: entry.id,
       kind:
@@ -191,6 +229,10 @@ export const createOpenApiDocument = (
       successRef: `#/components/schemas/${successComponent}`,
       failureRef: `#/components/schemas/${failureComponent}`,
       errorRef: `#/components/schemas/${errorComponent}`,
+      streamEventRef:
+        entry.procedure.stream === undefined
+          ? null
+          : `#/components/schemas/${streamEventComponent}`,
       headersRef:
         entry.procedure.headers === undefined
           ? null
@@ -215,6 +257,9 @@ export const createOpenApiDocument = (
   }
   if (routeResponseRefs.length > 0) {
     schemas['RpcResponse'] = { oneOf: routeResponseRefs };
+  }
+  if (routeStreamEventRefs.length > 0) {
+    schemas['RpcStreamEvent'] = { oneOf: routeStreamEventRefs };
   }
   const rpcRequestSchema =
     routeRequestRefs.length > 0
@@ -273,6 +318,10 @@ export const createOpenApiDocument = (
                 },
                 'text/event-stream': {
                   schema: { type: 'string' },
+                  'x-joor-stream-event-schema':
+                    routeStreamEventRefs.length > 0
+                      ? schemaRef('RpcStreamEvent')
+                      : null,
                 },
               },
             },
