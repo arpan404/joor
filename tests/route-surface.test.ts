@@ -271,11 +271,43 @@ const publicRouteExports = async (): Promise<readonly ExportedSymbol[]> => {
   return symbols.flat().filter(({ name }) => routeNamePattern.test(name));
 };
 
+const publicConciseRouteAliasExports = async (): Promise<
+  readonly ExportedSymbol[]
+> => {
+  const byFile = new Map<string, Map<string, ExportedSymbol>>();
+  for (const symbol of await publicRouteExports()) {
+    const symbols =
+      byFile.get(symbol.file) ?? new Map<string, ExportedSymbol>();
+    symbols.set(symbol.name, symbol);
+    byFile.set(symbol.file, symbols);
+  }
+
+  const aliases = new Map<string, ExportedSymbol>();
+  for (const [file, symbols] of byFile) {
+    for (const symbol of symbols.values()) {
+      const aliasName = conciseRouteAliasName(symbol.name);
+      if (aliasName === undefined) continue;
+      const alias = symbols.get(aliasName);
+      if (alias === undefined) continue;
+      aliases.set(`${file}\0${alias.kind}\0${alias.name}`, alias);
+    }
+  }
+
+  return [...aliases.values()];
+};
+
+const publicRouteSurfaceExports = async (): Promise<
+  readonly ExportedSymbol[]
+> => [
+  ...(await publicRouteExports()),
+  ...(await publicConciseRouteAliasExports()),
+];
+
 const publicRouteValueExports = async (): Promise<readonly ExportedSymbol[]> =>
-  (await publicRouteExports()).filter(({ kind }) => kind === 'value');
+  (await publicRouteSurfaceExports()).filter(({ kind }) => kind === 'value');
 
 const publicRouteTypeExports = async (): Promise<readonly ExportedSymbol[]> =>
-  (await publicRouteExports()).filter(
+  (await publicRouteSurfaceExports()).filter(
     ({ file, kind }) => kind === 'type' && file !== rootIndex
   );
 
@@ -1589,7 +1621,7 @@ describe('route public surface', () => {
         ([token]) => token
       )
     );
-    const missing = (await publicRouteExports())
+    const missing = (await publicRouteSurfaceExports())
       .filter(({ name }) => !packageSubpathTokens.has(name))
       .map(({ file, name }) => `${relative(repoRoot, file)}: ${name}`)
       .sort();
