@@ -9246,6 +9246,14 @@ const compiledRouteRequest: RpcRequest<'users.get', { id: string }> = {
   input: { id: '1' },
   traceId: 'trace-1',
 };
+// @ts-expect-error compiled execution helpers require the request id to match the selected route id.
+const _mismatchedExecuteCompiledProcedureRequest: Parameters<
+  typeof executeCompiledProcedure<typeof procedure, 'users.list'>
+>[2] = compiledRouteRequest;
+// @ts-expect-error root compiled execution helpers require the request id to match the selected route id.
+const _rootMismatchedExecuteCompiledProcedureRequest: Parameters<
+  typeof rootExecuteCompiledProcedure<typeof procedure, 'users.list'>
+>[2] = compiledRouteRequest;
 const compiledNotFoundResult = compiledNotFound(
   compiledRouteRequest,
   {} as Parameters<typeof compiledNotFound>[1]
@@ -9270,6 +9278,10 @@ const compiledRateLimitResult = compiledRateLimitFailureStatic(
   'trace-1',
   {} as Parameters<typeof compiledRateLimitFailureStatic>[7]
 );
+// @ts-expect-error compiled static rate-limit helpers require the request id to match the selected route id.
+const _mismatchedCompiledRateLimitRequest: Parameters<
+  typeof compiledRateLimitFailureStatic<'users.list'>
+>[4] = compiledRouteRequest;
 const compiledRateLimitId: 'users.get' = (
   {} as NonNullable<typeof compiledRateLimitResult>
 ).id;
@@ -9284,6 +9296,10 @@ const rootCompiledRateLimitResult = rootCompiledRateLimitFailureStatic(
   'trace-1',
   {} as Parameters<typeof rootCompiledRateLimitFailureStatic>[7]
 );
+// @ts-expect-error root compiled static rate-limit helpers require the request id to match the selected route id.
+const _rootMismatchedCompiledRateLimitRequest: Parameters<
+  typeof rootCompiledRateLimitFailureStatic<'users.list'>
+>[4] = compiledRouteRequest;
 const rootCompiledRateLimitId: 'users.get' = (
   {} as NonNullable<typeof rootCompiledRateLimitResult>
 ).id;

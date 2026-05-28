@@ -736,7 +736,7 @@ export const compiledAuthenticateUncached = (
 const rateLimitFailure = <TId extends string>(
   id: TId,
   procedure: ProcedureRuntime,
-  rpcRequest: RpcRequest<TId>,
+  rpcRequest: RpcRequest<NoInfer<TId>>,
   request: ContextRequestSource,
   trace: string,
   runtime: CompiledRuntime
@@ -773,7 +773,7 @@ export const compiledRateLimitFailureStatic = <TId extends string>(
   limit: number,
   window: string,
   windowMs: number,
-  rpcRequest: RpcRequest<TId>,
+  rpcRequest: RpcRequest<NoInfer<TId>>,
   request: ContextRequestSource,
   trace: string,
   runtime: CompiledRuntime
@@ -852,7 +852,7 @@ const streamResponse = async <
 >(
   id: TId,
   procedure: TProcedure,
-  rpcRequest: RpcRequest<TId>,
+  rpcRequest: RpcRequest<NoInfer<TId>>,
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
@@ -990,7 +990,7 @@ export const executeCompiledProcedure = async <
 >(
   id: TId,
   procedure: TProcedure,
-  rpcRequest: RpcRequest<TId>,
+  rpcRequest: RpcRequest<NoInfer<TId>>,
   request: ContextRequestSource,
   services: ProcedureServices<TProcedure>,
   runtime: CompiledRuntime,
