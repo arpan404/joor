@@ -1202,6 +1202,23 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
+  it('keeps source concise route aliases available', async () => {
+    const exportSets = await sourceExportSets();
+    const missing = [...exportSets]
+      .flatMap(([file, names]) => {
+        if (file === compilerEmitter) return [];
+        return [...names].flatMap((name) => {
+          const conciseName = conciseRouteAliasName(name);
+          return conciseName !== undefined && !names.has(conciseName)
+            ? [`${relative(repoRoot, file)}: ${name} is missing ${conciseName}`]
+            : [];
+        });
+      })
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
   it('keeps generated route-first and noun-first aliases paired', async () => {
     const exportSets = await generatedExportSets();
     const missing = [...exportSets]
