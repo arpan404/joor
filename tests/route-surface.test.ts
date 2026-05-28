@@ -9,6 +9,7 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
+const manifestSource = join(srcRoot, 'manifest.ts');
 const rpcClient = join(srcRoot, 'rpc/client.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const packageManifest = join(repoRoot, 'package.json');
@@ -1469,6 +1470,119 @@ const routeKindDispatcherInputPatterns = [
   ],
 ] as const;
 
+const routeKindManifestCoreAliasSnippets = [
+  {
+    name: 'JoorManifestRouteUnaryProcedure',
+    snippets: ['JoorManifestRoutes<TManifest>[TId]'],
+  },
+  {
+    name: 'JoorManifestRouteStreamProcedure',
+    snippets: ['JoorManifestRoutes<TManifest>[TId]'],
+  },
+  {
+    name: 'JoorManifestRouteUnaryInput',
+    snippets: [
+      'ProcedureInput<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamInput',
+    snippets: [
+      'ProcedureInput<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryOutput',
+    snippets: [
+      'ProcedureOutput<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamOutput',
+    snippets: [
+      'ProcedureOutput<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryHeaders',
+    snippets: [
+      'ProcedureHeaders<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamHeaders',
+    snippets: [
+      'ProcedureHeaders<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryClientHeaders',
+    snippets: [
+      'ClientProcedureHeaders<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamClientHeaders',
+    snippets: [
+      'ClientProcedureHeaders<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryResponseHeaders',
+    snippets: [
+      'ProcedureResponseHeaders< JoorManifestRouteUnaryProcedure<TManifest, TId> >',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamResponseHeaders',
+    snippets: [
+      'ProcedureResponseHeaders< JoorManifestRouteStreamProcedure<TManifest, TId> >',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryError',
+    snippets: [
+      'RpcProcedureError<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamError',
+    snippets: [
+      'RpcProcedureError<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryErrorCode',
+    snippets: [
+      'ProcedureErrorCode<JoorManifestRouteUnaryProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamErrorCode',
+    snippets: [
+      'ProcedureErrorCode<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryErrorDetails',
+    snippets: [
+      'ProcedureErrorDetails< JoorManifestRouteUnaryProcedure<TManifest, TId>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamErrorDetails',
+    snippets: [
+      'ProcedureErrorDetails< JoorManifestRouteStreamProcedure<TManifest, TId>',
+    ],
+  },
+  {
+    name: 'JoorManifestRouteStreamEvent',
+    snippets: [
+      'ProcedureStreamEvent<JoorManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+] as const;
+
 const routeKindDispatcherHandlerOptionSnippets = [
   {
     name: 'RpcManifestRouteUnaryHandlerOptionsFor',
@@ -1990,6 +2104,21 @@ describe('route public surface', () => {
     const missing = routeKindDispatcherInputPatterns
       .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
       .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind manifest core aliases tied to route-specific procedures', async () => {
+    const source = await readFile(manifestSource, 'utf8');
+    const missing = routeKindManifestCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
