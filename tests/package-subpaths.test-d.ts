@@ -1370,6 +1370,8 @@ const typedPackageSubpathUnaryClient: Client.RpcManifestRouteUnaryTransportClien
   packageSubpathClient;
 const typedPackageSubpathStreamClient: Client.RpcManifestRouteStreamTransportClient<PackageSubpathManifest> =
   packageSubpathClient;
+typedPackageSubpathClient.streamEvents('users.watch', { userId: '1' });
+typedPackageSubpathStreamClient.streamEvents('users.watch', { userId: '1' });
 const packageSubpathUnaryClientOptions: Client.RpcUnaryClientOptions = {
   url: 'https://example.com/rpc',
 };
@@ -1655,7 +1657,11 @@ const typedPackageSubpathCreatedStreamClient: Client.RpcManifestRouteStreamTrans
 typedPackageSubpathCreatedUnaryClient.call('users.get', { id: '1' });
 packageSubpathUnaryRouteClient.call('users.get', { id: '1' });
 typedPackageSubpathCreatedStreamClient.stream('users.watch', { userId: '1' });
+typedPackageSubpathCreatedStreamClient.streamEvents('users.watch', {
+  userId: '1',
+});
 packageSubpathStreamRouteClient.stream('users.watch', { userId: '1' });
+packageSubpathStreamRouteClient.streamEvents('users.watch', { userId: '1' });
 const packageSubpathRouteMapUnaryClient =
   createRouteUnaryClient<PackageSubpathRoutes>(
     packageSubpathRouteMapUnaryClientOptions
@@ -1679,7 +1685,9 @@ createClient(packageSubpathManifestClientOptionsFor).call('users.get', {
 packageSubpathRouteMapUnaryClient.call('users.get', { id: '1' });
 packageSubpathUnaryRouteMapClient.call('users.get', { id: '1' });
 packageSubpathRouteMapStreamClient.stream('users.watch', { userId: '1' });
+packageSubpathRouteMapStreamClient.streamEvents('users.watch', { userId: '1' });
 packageSubpathStreamRouteMapClient.stream('users.watch', { userId: '1' });
+packageSubpathStreamRouteMapClient.streamEvents('users.watch', { userId: '1' });
 createRouteUnaryClient(packageSubpathRouteUnaryClientOptionsFor).call(
   'users.get',
   { id: '1' }
@@ -1700,16 +1708,30 @@ createRouteStreamClient(packageSubpathRouteStreamClientOptionsFor).stream(
   'users.watch',
   { userId: '1' }
 );
+createRouteStreamClient(packageSubpathRouteStreamClientOptionsFor).streamEvents(
+  'users.watch',
+  { userId: '1' }
+);
 createStreamRouteClient(packageSubpathStreamRouteClientOptionsFor).stream(
+  'users.watch',
+  { userId: '1' }
+);
+createStreamRouteClient(packageSubpathStreamRouteClientOptionsFor).streamEvents(
   'users.watch',
   { userId: '1' }
 );
 createRouteStreamClient(
   packageSubpathManifestRouteStreamClientOptionsFor
 ).stream('users.watch', { userId: '1' });
+createRouteStreamClient(
+  packageSubpathManifestRouteStreamClientOptionsFor
+).streamEvents('users.watch', { userId: '1' });
 createStreamRouteClient(
   packageSubpathManifestStreamRouteClientOptionsFor
 ).stream('users.watch', { userId: '1' });
+createStreamRouteClient(
+  packageSubpathManifestStreamRouteClientOptionsFor
+).streamEvents('users.watch', { userId: '1' });
 const packageSubpathRequest = packageSubpathClient.request('users.get', {
   id: '1',
 });

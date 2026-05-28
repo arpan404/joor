@@ -11072,6 +11072,7 @@ inferredManifestClient.call(
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 inferredManifestClient.stream('users.watch', { userId: '1' });
+inferredManifestClient.streamEvents('users.watch', { userId: '1' });
 
 // @ts-expect-error manifest-inferred clients reject unknown route ids.
 inferredManifestClient.call('users.missing', { id: '1' });
@@ -11086,6 +11087,7 @@ explicitManifestClient.call(
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 explicitManifestClient.stream('users.watch', { userId: '1' });
+explicitManifestClient.streamEvents('users.watch', { userId: '1' });
 
 const manifestRouteUnaryClientOptions: RpcManifestRouteUnaryClientOptions<
   typeof manifest
@@ -11123,10 +11125,14 @@ explicitManifestRouteUnaryClient.call(
 explicitManifestUnaryRouteClient.call('users.authenticated', { ok: true });
 explicitManifestRouteStreamClient.stream('users.watch', { userId: '1' });
 explicitManifestStreamRouteClient.stream('users.watch', { userId: '1' });
+explicitManifestRouteStreamClient.streamEvents('users.watch', { userId: '1' });
+explicitManifestStreamRouteClient.streamEvents('users.watch', { userId: '1' });
 // @ts-expect-error manifest route-unary clients reject stream routes.
 explicitManifestRouteUnaryClient.call('users.watch', { userId: '1' });
 // @ts-expect-error manifest route-unary clients do not expose stream commands.
 explicitManifestRouteUnaryClient.stream('users.watch', { userId: '1' });
+// @ts-expect-error manifest route-unary clients do not expose stream event commands.
+explicitManifestRouteUnaryClient.streamEvents('users.watch', { userId: '1' });
 // @ts-expect-error manifest route-stream clients do not expose unary calls.
 explicitManifestRouteStreamClient.call('users.get', { id: '1' });
 
@@ -11172,6 +11178,7 @@ const rootManifestStreamRouteClient = createRootManifestStreamRouteClient(
 const rootManifestClientShape: RpcManifestTransportClient<typeof manifest> =
   rootManifestClient;
 rootManifestClientShape.call('users.authenticated', { ok: true });
+rootManifestClientShape.streamEvents('users.watch', { userId: '1' });
 const rootManifestRouteUnaryClientShape: RpcManifestRouteUnaryTransportClient<
   typeof manifest
 > = rootRouteUnaryClient;
@@ -11192,14 +11199,18 @@ const rootManifestRouteStreamClientShape: RpcManifestRouteStreamTransportClient<
   typeof manifest
 > = rootRouteStreamClient;
 rootManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
+rootManifestRouteStreamClientShape.streamEvents('users.watch', { userId: '1' });
 const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
   typeof manifest
 > = rootStreamRouteClient;
 rootManifestStreamClientShape.stream('users.watch', { userId: '1' });
+rootManifestStreamClientShape.streamEvents('users.watch', { userId: '1' });
 rootManifestRouteUnaryClient.call('users.authenticated', { ok: true });
 rootManifestUnaryRouteClient.call('users.authenticated', { ok: true });
 rootManifestRouteStreamClient.stream('users.watch', { userId: '1' });
 rootManifestStreamRouteClient.stream('users.watch', { userId: '1' });
+rootManifestRouteStreamClient.streamEvents('users.watch', { userId: '1' });
+rootManifestStreamRouteClient.streamEvents('users.watch', { userId: '1' });
 const rpcSubpathManifestClientShape: RpcSubpathManifestTransportClient<
   typeof manifest
 > = rootManifestClient;
@@ -11218,15 +11229,19 @@ const joorManifestRouteStreamClientShape: JoorManifestRouteStreamTransportClient
   typeof manifest
 > = joorManifestClientShape;
 joorManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
+joorManifestRouteStreamClientShape.streamEvents('users.watch', { userId: '1' });
 const joorManifestStreamClientShape: JoorManifestStreamRouteTransportClient<
   typeof manifest
 > = joorManifestRouteStreamClientShape;
 joorManifestStreamClientShape.stream('users.watch', { userId: '1' });
+joorManifestStreamClientShape.streamEvents('users.watch', { userId: '1' });
 const joorSubpathManifestClientShape: JoorSubpathManifestTransportClient<
   typeof manifestFromSubpath
 > = joorManifestClientShape;
 joorManifestClientShape.call('users.authenticated', { ok: true });
+joorManifestClientShape.streamEvents('users.watch', { userId: '1' });
 joorSubpathManifestClientShape.call('users.authenticated', { ok: true });
+joorSubpathManifestClientShape.streamEvents('users.watch', { userId: '1' });
 const clientFetch: ClientFetch = async (request) => new Response(request.url);
 const rpcSubpathClientFetch: RpcSubpathClientFetch = clientFetch;
 const syncClientFetch: ClientFetch = (request) => new Response(request.url);
