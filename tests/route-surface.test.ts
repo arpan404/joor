@@ -493,7 +493,9 @@ const missingCanonicalNamespaceReferences = (
     .sort();
 };
 
-const generatedExportSets = async (): Promise<
+const generatedRouteSurfaceTestTimeout = 30_000;
+
+const collectGeneratedExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
 > => {
   const outDir = await mkdtemp(join(tmpdir(), 'joor-route-surface-'));
@@ -516,6 +518,17 @@ const generatedExportSets = async (): Promise<
   } finally {
     await rm(outDir, { force: true, recursive: true });
   }
+};
+
+let generatedExportSetsPromise:
+  | Promise<Map<string, ReadonlySet<string>>>
+  | undefined;
+
+const generatedExportSets = async (): Promise<
+  Map<string, ReadonlySet<string>>
+> => {
+  generatedExportSetsPromise ??= collectGeneratedExportSets();
+  return generatedExportSetsPromise;
 };
 
 const routeExportNames = (names: ReadonlySet<string>): readonly string[] =>
@@ -1356,6 +1369,10 @@ const routeKindClientInputPatterns = [
 
 const routeKindDispatcherInputPatterns = [
   [
+    'RpcManifestRouteProtocolRequestFor',
+    /type RpcManifestRouteProtocolRequestFor<[\s\S]*?readonly input: RpcManifestRouteInput<TManifest, TId> & JsonValue/,
+  ],
+  [
     'RpcManifestRouteUnaryClientArgs',
     /export type RpcManifestRouteUnaryClientArgs<[\s\S]*?RpcManifestRouteUnaryClientArgsFor<TManifest, TId>/,
   ],
@@ -1368,6 +1385,80 @@ const routeKindDispatcherInputPatterns = [
     /type RpcManifestRouteRequestFor<[\s\S]*?readonly input: RpcManifestRouteUnaryInput<TManifest, TId>/,
   ],
 ] as const;
+
+const routeKindDispatcherHandlerOptionSnippets = [
+  {
+    name: 'RpcManifestRouteUnaryHandlerOptionsFor',
+    snippets: [
+      'TBody extends RpcManifestRouteUnaryBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+      'HandlerOptionsForRequirements<',
+      'RpcManifestRouteUnaryRequiredServices<TManifest>',
+      'RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamHandlerOptionsFor',
+    snippets: [
+      'TBody extends RpcManifestRouteStreamBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+      'HandlerOptionsForRequirements<',
+      'RpcManifestRouteStreamRequiredServices<TManifest>',
+      'RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryHandlerOptionsArgsFor',
+    snippets: [
+      'TOptionsOrBody = HandlerOptions< TPlugins, RpcManifestRouteUnaryBody<TManifest> >',
+      'TBody extends RpcManifestRouteUnaryBody<TManifest>',
+      'HandlerOptionsArgsForRequirements<',
+      'RpcManifestRouteUnaryRequiredServices<TManifest>',
+      'RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamHandlerOptionsArgsFor',
+    snippets: [
+      'TOptionsOrBody = HandlerOptions< TPlugins, RpcManifestRouteStreamBody<TManifest> >',
+      'TBody extends RpcManifestRouteStreamBody<TManifest>',
+      'HandlerOptionsArgsForRequirements<',
+      'RpcManifestRouteStreamRequiredServices<TManifest>',
+      'RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryHandlerOptionsWithTrailingArgs',
+    snippets: [
+      'TBody extends RpcManifestRouteUnaryBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+      'HandlerOptionsWithTrailingArgsForRequirements<',
+      'RpcManifestRouteUnaryRequiredServices<TManifest>',
+      'RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamHandlerOptionsWithTrailingArgs',
+    snippets: [
+      'TBody extends RpcManifestRouteStreamBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+      'HandlerOptionsWithTrailingArgsForRequirements<',
+      'RpcManifestRouteStreamRequiredServices<TManifest>',
+      'RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+    ],
+  },
+] as const;
+
+const normalizeTypeSource = (source: string): string =>
+  source.replace(/\s+/g, ' ');
+
+const exportedTypeSource = (source: string, name: string): string => {
+  const marker = `export type ${name}<`;
+  const start = source.indexOf(marker);
+  if (start === -1) return '';
+  const end = source.indexOf('\nexport type ', start + marker.length);
+  return normalizeTypeSource(source.slice(start, end === -1 ? undefined : end));
+};
 
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
@@ -1403,254 +1494,304 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
-  it('keeps generated route-first and noun-first aliases paired', async () => {
-    const exportSets = await generatedExportSets();
-    const missing = [...exportSets]
-      .flatMap(([file, names]) =>
-        [...names].flatMap((name) => {
-          const twin = routeTwinName(name);
-          return twin !== undefined && !names.has(twin)
-            ? [`${relative(repoRoot, file)}: ${name} is missing ${twin}`]
-            : [];
-        })
-      )
-      .sort();
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated concise route aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const missing = [...exportSets]
-      .flatMap(([file, names]) =>
-        [...names].flatMap((name) => {
-          const conciseName = conciseRouteAliasName(name);
-          return conciseName !== undefined && !names.has(conciseName)
-            ? [`${relative(repoRoot, file)}: ${name} is missing ${conciseName}`]
-            : [];
-        })
-      )
-      .sort();
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated dispatcher route export surfaces aligned', async () => {
-    const exportSets = await generatedExportSets();
-    const dispatchers = new Map(
-      [...exportSets]
-        .filter(([file]) =>
-          [
-            'deno-dispatcher.safe.ts',
-            'dispatcher.safe.ts',
-            'dispatcher.streaming.ts',
-          ].includes(basename(file))
+  it(
+    'keeps generated route-first and noun-first aliases paired',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const missing = [...exportSets]
+        .flatMap(([file, names]) =>
+          [...names].flatMap((name) => {
+            const twin = routeTwinName(name);
+            return twin !== undefined && !names.has(twin)
+              ? [`${relative(repoRoot, file)}: ${name} is missing ${twin}`]
+              : [];
+          })
         )
-        .map(([file, names]) => [basename(file), routeExportNames(names)])
-    );
-    const baseline = dispatchers.get('dispatcher.safe.ts');
-    const missing = [
-      'deno-dispatcher.safe.ts',
-      'dispatcher.safe.ts',
-      'dispatcher.streaming.ts',
-    ].flatMap((name) =>
-      dispatchers.has(name) ? [] : [`${name}: <missing generated file>`]
-    );
-    const mismatched =
-      baseline === undefined
-        ? []
-        : [...dispatchers].flatMap(([name, names]) =>
-            names.join('\n') === baseline.join('\n')
-              ? []
-              : [`${name}: ${names.length} route exports`]
-          );
+        .sort();
 
-    expect([...missing, ...mismatched].sort()).toEqual([]);
-  });
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
 
-  it('keeps generated client route batch aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const exports = [...exportSets].find(
-      ([file]) => basename(file) === 'client.ts'
-    )?.[1];
-    const missing =
-      exports === undefined
-        ? ['client.ts: <missing>']
-        : generatedClientRouteBatchAliases.flatMap((name) =>
-            exports.has(name) ? [] : [`client.ts: ${name}`]
-          );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated client route-specific exports available', async () => {
-    const exportSets = await generatedExportSets();
-    const exports = [...exportSets].find(
-      ([file]) => basename(file) === 'client.ts'
-    )?.[1];
-    const missing =
-      exports === undefined
-        ? ['client.ts: <missing>']
-        : generatedClientRouteTransportExports.flatMap((name) =>
-            exports.has(name) ? [] : [`client.ts: ${name}`]
-          );
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated dispatcher route batch aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const dispatchers = new Map(
-      [...exportSets]
-        .filter(([file]) =>
-          [
-            'deno-dispatcher.safe.ts',
-            'dispatcher.safe.ts',
-            'dispatcher.streaming.ts',
-          ].includes(basename(file))
+  it(
+    'keeps generated concise route aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const missing = [...exportSets]
+        .flatMap(([file, names]) =>
+          [...names].flatMap((name) => {
+            const conciseName = conciseRouteAliasName(name);
+            return conciseName !== undefined && !names.has(conciseName)
+              ? [
+                  `${relative(repoRoot, file)}: ${name} is missing ${conciseName}`,
+                ]
+              : [];
+          })
         )
-        .map(([file, names]) => [basename(file), names])
-    );
-    const missing = [
-      'deno-dispatcher.safe.ts',
-      'dispatcher.safe.ts',
-      'dispatcher.streaming.ts',
-    ].flatMap((entrypoint) => {
-      const exports = dispatchers.get(entrypoint);
-      if (exports === undefined) return [`${entrypoint}: <missing>`];
-      return generatedDispatcherRouteBatchAliases.flatMap((name) =>
-        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+        .sort();
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated dispatcher route export surfaces aligned',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const dispatchers = new Map(
+        [...exportSets]
+          .filter(([file]) =>
+            [
+              'deno-dispatcher.safe.ts',
+              'dispatcher.safe.ts',
+              'dispatcher.streaming.ts',
+            ].includes(basename(file))
+          )
+          .map(([file, names]) => [basename(file), routeExportNames(names)])
       );
-    });
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated dispatcher route definition aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const dispatchers = new Map(
-      [...exportSets]
-        .filter(([file]) =>
-          [
-            'deno-dispatcher.safe.ts',
-            'dispatcher.safe.ts',
-            'dispatcher.streaming.ts',
-          ].includes(basename(file))
-        )
-        .map(([file, names]) => [basename(file), names])
-    );
-    const missing = [
-      'deno-dispatcher.safe.ts',
-      'dispatcher.safe.ts',
-      'dispatcher.streaming.ts',
-    ].flatMap((entrypoint) => {
-      const exports = dispatchers.get(entrypoint);
-      if (exports === undefined) return [`${entrypoint}: <missing>`];
-      return generatedDispatcherRouteDefinitionAliases.flatMap((name) =>
-        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+      const baseline = dispatchers.get('dispatcher.safe.ts');
+      const missing = [
+        'deno-dispatcher.safe.ts',
+        'dispatcher.safe.ts',
+        'dispatcher.streaming.ts',
+      ].flatMap((name) =>
+        dispatchers.has(name) ? [] : [`${name}: <missing generated file>`]
       );
-    });
+      const mismatched =
+        baseline === undefined
+          ? []
+          : [...dispatchers].flatMap(([name, names]) =>
+              names.join('\n') === baseline.join('\n')
+                ? []
+                : [`${name}: ${names.length} route exports`]
+            );
 
-    expect(missing).toEqual([]);
-  });
+      expect([...missing, ...mismatched].sort()).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
 
-  it('keeps generated dispatcher compiled route aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const dispatchers = new Map(
-      [...exportSets]
-        .filter(([file]) =>
-          [
-            'deno-dispatcher.safe.ts',
-            'dispatcher.safe.ts',
-            'dispatcher.streaming.ts',
-          ].includes(basename(file))
-        )
-        .map(([file, names]) => [basename(file), names])
-    );
-    const missing = [
-      'deno-dispatcher.safe.ts',
-      'dispatcher.safe.ts',
-      'dispatcher.streaming.ts',
-    ].flatMap((entrypoint) => {
-      const exports = dispatchers.get(entrypoint);
-      if (exports === undefined) return [`${entrypoint}: <missing>`];
-      return generatedDispatcherCompiledRouteAliases.flatMap((name) =>
-        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+  it(
+    'keeps generated client route batch aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exports = [...exportSets].find(
+        ([file]) => basename(file) === 'client.ts'
+      )?.[1];
+      const missing =
+        exports === undefined
+          ? ['client.ts: <missing>']
+          : generatedClientRouteBatchAliases.flatMap((name) =>
+              exports.has(name) ? [] : [`client.ts: ${name}`]
+            );
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated client route-specific exports available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exports = [...exportSets].find(
+        ([file]) => basename(file) === 'client.ts'
+      )?.[1];
+      const missing =
+        exports === undefined
+          ? ['client.ts: <missing>']
+          : generatedClientRouteTransportExports.flatMap((name) =>
+              exports.has(name) ? [] : [`client.ts: ${name}`]
+            );
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated dispatcher route batch aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const dispatchers = new Map(
+        [...exportSets]
+          .filter(([file]) =>
+            [
+              'deno-dispatcher.safe.ts',
+              'dispatcher.safe.ts',
+              'dispatcher.streaming.ts',
+            ].includes(basename(file))
+          )
+          .map(([file, names]) => [basename(file), names])
       );
-    });
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated platform route requirement aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const exportsByBasename = new Map(
-      [...exportSets].map(([file, names]) => [basename(file), names])
-    );
-    const missing = generatedPlatformEntrypoints.flatMap((entrypoint) => {
-      const exports = exportsByBasename.get(entrypoint);
-      if (exports === undefined) return [`${entrypoint}: <missing>`];
-      return generatedRouteRequirementAliases.flatMap((name) =>
-        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
-      );
-    });
-
-    expect(missing).toEqual([]);
-  });
-
-  it('keeps generated platform route handler type aliases available', async () => {
-    const exportSets = await generatedExportSets();
-    const exportsByBasename = new Map(
-      [...exportSets].map(([file, names]) => [basename(file), names])
-    );
-    const missing = generatedPlatformRouteHandlerTypeAliases.flatMap(
-      ({ entrypoint, names }) => {
-        const exports = exportsByBasename.get(entrypoint);
+      const missing = [
+        'deno-dispatcher.safe.ts',
+        'dispatcher.safe.ts',
+        'dispatcher.streaming.ts',
+      ].flatMap((entrypoint) => {
+        const exports = dispatchers.get(entrypoint);
         if (exports === undefined) return [`${entrypoint}: <missing>`];
-        return names.flatMap((name) =>
+        return generatedDispatcherRouteBatchAliases.flatMap((name) =>
           exports.has(name) ? [] : [`${entrypoint}: ${name}`]
         );
-      }
-    );
+      });
 
-    expect(missing).toEqual([]);
-  });
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
 
-  it('keeps generated platform generic factory exports available', async () => {
-    const exportSets = await generatedExportSets();
-    const exportsByBasename = new Map(
-      [...exportSets].map(([file, names]) => [basename(file), names])
-    );
-    const missing = generatedPlatformGenericFactoryExports.flatMap(
-      ({ entrypoint, names }) => {
-        const exports = exportsByBasename.get(entrypoint);
+  it(
+    'keeps generated dispatcher route definition aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const dispatchers = new Map(
+        [...exportSets]
+          .filter(([file]) =>
+            [
+              'deno-dispatcher.safe.ts',
+              'dispatcher.safe.ts',
+              'dispatcher.streaming.ts',
+            ].includes(basename(file))
+          )
+          .map(([file, names]) => [basename(file), names])
+      );
+      const missing = [
+        'deno-dispatcher.safe.ts',
+        'dispatcher.safe.ts',
+        'dispatcher.streaming.ts',
+      ].flatMap((entrypoint) => {
+        const exports = dispatchers.get(entrypoint);
         if (exports === undefined) return [`${entrypoint}: <missing>`];
-        return names.flatMap((name) =>
+        return generatedDispatcherRouteDefinitionAliases.flatMap((name) =>
           exports.has(name) ? [] : [`${entrypoint}: ${name}`]
         );
-      }
-    );
+      });
 
-    expect(missing).toEqual([]);
-  });
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
 
-  it('keeps generated platform route factory exports available', async () => {
-    const exportSets = await generatedExportSets();
-    const exportsByBasename = new Map(
-      [...exportSets].map(([file, names]) => [basename(file), names])
-    );
-    const missing = generatedPlatformRouteFactoryExports.flatMap(
-      ({ entrypoint, names }) => {
-        const exports = exportsByBasename.get(entrypoint);
+  it(
+    'keeps generated dispatcher compiled route aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const dispatchers = new Map(
+        [...exportSets]
+          .filter(([file]) =>
+            [
+              'deno-dispatcher.safe.ts',
+              'dispatcher.safe.ts',
+              'dispatcher.streaming.ts',
+            ].includes(basename(file))
+          )
+          .map(([file, names]) => [basename(file), names])
+      );
+      const missing = [
+        'deno-dispatcher.safe.ts',
+        'dispatcher.safe.ts',
+        'dispatcher.streaming.ts',
+      ].flatMap((entrypoint) => {
+        const exports = dispatchers.get(entrypoint);
         if (exports === undefined) return [`${entrypoint}: <missing>`];
-        return names.flatMap((name) =>
+        return generatedDispatcherCompiledRouteAliases.flatMap((name) =>
           exports.has(name) ? [] : [`${entrypoint}: ${name}`]
         );
-      }
-    );
+      });
 
-    expect(missing).toEqual([]);
-  });
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated platform route requirement aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exportsByBasename = new Map(
+        [...exportSets].map(([file, names]) => [basename(file), names])
+      );
+      const missing = generatedPlatformEntrypoints.flatMap((entrypoint) => {
+        const exports = exportsByBasename.get(entrypoint);
+        if (exports === undefined) return [`${entrypoint}: <missing>`];
+        return generatedRouteRequirementAliases.flatMap((name) =>
+          exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+        );
+      });
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated platform route handler type aliases available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exportsByBasename = new Map(
+        [...exportSets].map(([file, names]) => [basename(file), names])
+      );
+      const missing = generatedPlatformRouteHandlerTypeAliases.flatMap(
+        ({ entrypoint, names }) => {
+          const exports = exportsByBasename.get(entrypoint);
+          if (exports === undefined) return [`${entrypoint}: <missing>`];
+          return names.flatMap((name) =>
+            exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+          );
+        }
+      );
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated platform generic factory exports available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exportsByBasename = new Map(
+        [...exportSets].map(([file, names]) => [basename(file), names])
+      );
+      const missing = generatedPlatformGenericFactoryExports.flatMap(
+        ({ entrypoint, names }) => {
+          const exports = exportsByBasename.get(entrypoint);
+          if (exports === undefined) return [`${entrypoint}: <missing>`];
+          return names.flatMap((name) =>
+            exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+          );
+        }
+      );
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
+
+  it(
+    'keeps generated platform route factory exports available',
+    async () => {
+      const exportSets = await generatedExportSets();
+      const exportsByBasename = new Map(
+        [...exportSets].map(([file, names]) => [basename(file), names])
+      );
+      const missing = generatedPlatformRouteFactoryExports.flatMap(
+        ({ entrypoint, names }) => {
+          const exports = exportsByBasename.get(entrypoint);
+          if (exports === undefined) return [`${entrypoint}: <missing>`];
+          return names.flatMap((name) =>
+            exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+          );
+        }
+      );
+
+      expect(missing).toEqual([]);
+    },
+    generatedRouteSurfaceTestTimeout
+  );
 
   it('keeps route-kind client inputs spelled with specific public aliases', async () => {
     const source = await readFile(rpcClient, 'utf8');
@@ -1666,6 +1807,21 @@ describe('route public surface', () => {
     const missing = routeKindDispatcherInputPatterns
       .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
       .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind dispatcher handler options tied to route-specific requirements', async () => {
+    const source = await readFile(rpcDispatcher, 'utf8');
+    const missing = routeKindDispatcherHandlerOptionSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
 
     expect(missing).toEqual([]);
   });
