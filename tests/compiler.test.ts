@@ -767,6 +767,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export type NativeRouteRequestBuilder'
       );
       expect(dispatcherSource).toContain(
+        'input: NativeRouteInput<NoInfer<TId>>'
+      );
+      expect(dispatcherSource).toContain(
+        '...args: NativeRouteUnaryClientArgs<NoInfer<TId>>'
+      );
+      expect(dispatcherSource).toContain(
         'export type NativeRouteUnaryProtocolRequestBuilder'
       );
       expect(dispatcherSource).toContain(
@@ -1900,6 +1906,10 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain('readonly protocolRequest: (');
       expect(clientSource).toContain('input: RouteUnaryInput<TId>');
       expect(clientSource).toContain('input: RouteStreamInput<TId>');
+      expect(clientSource).toContain('input: RouteInput<NoInfer<TId>>');
+      expect(clientSource).toContain(
+        '...args: RouteUnaryClientArgs<NoInfer<TId>>'
+      );
       expect(clientSource).toContain('export type RouteRequestBuilder');
       expect(clientSource).toContain('export const createRouteRequest');
       expect(clientSource).toContain(
@@ -6042,6 +6052,10 @@ builtRouteUnaryRequest.input.id.toUpperCase();
 builtUnaryRouteRequest.input.id.toUpperCase();
 builtConciseUnaryRequest.input.id.toUpperCase();
 tenantStandaloneRequest.headers['x-tenant-id'].toUpperCase();
+// @ts-expect-error generated request builders bind inputs to the selected route id.
+createRouteRequest('users.get', { ok: true }, {
+  headers: { 'x-tenant-id': 'tenant-1' },
+});
 // @ts-expect-error generated request builders reject stream route ids.
 createRouteRequest('users.watch', { userId: '1' });
 // @ts-expect-error generated request builders require declared headers.
@@ -6440,6 +6454,10 @@ const builtConciseStreamRequestDirect = createConciseStreamRequest(
   'users.watch',
   { userId: '1' }
 );
+// @ts-expect-error generated protocol builders bind inputs to the selected route id.
+createRouteProtocolRequest('users.get', { userId: '1' });
+// @ts-expect-error generated unary protocol builders bind inputs to the selected route id.
+createRouteUnaryProtocolRequest('users.get', { ok: true });
 const typedBuiltProtocolRequest: RouteProtocolRequest<'users.get'> =
   builtProtocolRequest;
 const typedBuiltProtocolRequestAlias: ProtocolRequest<'users.get'> =
@@ -6892,6 +6910,12 @@ const builtNativeProtocolRequest = nativeProtocolRequestBuilder(
 builtNativeRouteProtocolRequest.traceId?.toUpperCase();
 builtNativeRouteRequest.headers['x-tenant-id'].toUpperCase();
 builtNativeProtocolRequest.input.id.toUpperCase();
+// @ts-expect-error generated native protocol builders bind inputs to the selected route id.
+createNativeRouteProtocolRequest('users.get', { userId: '1' });
+// @ts-expect-error generated native route request builders bind inputs to the selected route id.
+createNativeRouteRequest('users.get', { ok: true }, {
+  headers: { 'x-tenant-id': 'tenant-1' },
+});
 const nativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequest<'users.get'> =
   nativeUnaryProtocolBody;
 const defaultNativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequest =
@@ -6952,6 +6976,12 @@ builtNativeUnaryProtocolRequest.input.id.toUpperCase();
 builtNativeRouteUnaryRequest.headers['x-tenant-id'].toUpperCase();
 builtNativeUnaryRouteRequest.headers['x-tenant-id'].toUpperCase();
 builtConciseNativeUnaryRequest.headers['x-tenant-id'].toUpperCase();
+// @ts-expect-error generated native route-unary protocol builders bind inputs to the selected route id.
+createNativeRouteUnaryProtocolRequest('users.get', { ok: true });
+// @ts-expect-error generated native route-unary request builders bind inputs to the selected route id.
+createNativeRouteUnaryRequest('users.get', { ok: true }, {
+  headers: { 'x-tenant-id': 'tenant-1' },
+});
 // @ts-expect-error generated native route-unary protocol builders reject stream routes.
 createNativeRouteUnaryProtocolRequest('users.watch', { userId: '1' });
 // @ts-expect-error generated native route request builders require route headers.

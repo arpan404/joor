@@ -768,17 +768,17 @@ export type NativeStreamProtocolRequestUnion =
 export type NativeProtocolRequestOptions = RpcProtocolRequestOptions;
 export type NativeRouteProtocolRequestBuilder = <TId extends NativeRouteId>(
   id: TId,
-  input: NativeRouteInput<TId>,
+  input: NativeRouteInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteProtocolRequest<TId>;
 export type NativeProtocolRequestBuilder = NativeRouteProtocolRequestBuilder;
 export type NativeRouteRequestBuilder = <TId extends NativeRouteUnaryId>(
   id: TId,
-  ...args: NativeRouteUnaryClientArgs<TId>
+  ...args: NativeRouteUnaryClientArgs<NoInfer<TId>>
 ) => NativeRouteRequest<TId>;
 export type NativeRouteUnaryProtocolRequestBuilder = <TId extends NativeRouteUnaryId>(
   id: TId,
-  input: NativeRouteUnaryInput<TId>,
+  input: NativeRouteUnaryInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteUnaryProtocolRequest<TId>;
 export type NativeUnaryRouteProtocolRequestBuilder =
@@ -789,7 +789,7 @@ export type NativeRouteUnaryRequestBuilder = NativeRouteRequestBuilder;
 export type NativeUnaryRouteRequestBuilder = NativeRouteUnaryRequestBuilder;
 export type NativeRouteStreamProtocolRequestBuilder = <TId extends NativeRouteStreamId>(
   id: TId,
-  input: NativeRouteStreamInput<TId>,
+  input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteStreamProtocolRequest<TId>;
 export type NativeStreamRouteProtocolRequestBuilder =
@@ -798,7 +798,7 @@ export type NativeStreamProtocolRequestBuilder =
   NativeRouteStreamProtocolRequestBuilder;
 export type NativeRouteStreamRequestBuilder = <TId extends NativeRouteStreamId>(
   id: TId,
-  input: NativeRouteStreamInput<TId>,
+  input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteStreamRequest<TId>;
 export type NativeStreamRouteRequestBuilder = NativeRouteStreamRequestBuilder;
@@ -806,7 +806,7 @@ export const createNativeRouteProtocolRequest: NativeRouteProtocolRequestBuilder
   TId extends NativeRouteId,
 >(
   id: TId,
-  input: NativeRouteInput<TId>,
+  input: NativeRouteInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ): NativeRouteProtocolRequest<TId> =>
   createNativeManifestRouteProtocolRequest(
@@ -821,13 +821,13 @@ export const createNativeRouteRequest: NativeRouteRequestBuilder = <
   TId extends NativeRouteUnaryId,
 >(
   id: TId,
-  ...args: NativeRouteUnaryClientArgs<TId>
+  ...args: NativeRouteUnaryClientArgs<NoInfer<TId>>
 ): NativeRouteRequest<TId> =>
   createNativeManifestRouteRequest(
     nativeManifest,
     id,
-    args[0] as NativeRouteUnaryInput<TId>,
-    args[1] as NativeRouteUnaryRequestOptions<TId>
+    args[0] as NativeRouteUnaryInput<NoInfer<TId>>,
+    args[1] as NativeRouteUnaryRequestOptions<NoInfer<TId>>
   ) as NativeRouteRequest<TId>;
 export const createNativeRouteUnaryRequest: NativeRouteUnaryRequestBuilder =
   createNativeRouteRequest;
@@ -837,7 +837,7 @@ export const createNativeRouteUnaryProtocolRequest: NativeRouteUnaryProtocolRequ
   TId extends NativeRouteUnaryId,
 >(
   id: TId,
-  input: NativeRouteUnaryInput<TId>,
+  input: NativeRouteUnaryInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ): NativeRouteUnaryProtocolRequest<TId> =>
   createNativeManifestRouteUnaryProtocolRequest(
@@ -854,7 +854,7 @@ export const createNativeRouteStreamProtocolRequest: NativeRouteStreamProtocolRe
   TId extends NativeRouteStreamId,
 >(
   id: TId,
-  input: NativeRouteStreamInput<TId>,
+  input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ): NativeRouteStreamProtocolRequest<TId> =>
   createNativeManifestRouteStreamProtocolRequest(
@@ -871,7 +871,7 @@ export const createNativeRouteStreamRequest: NativeRouteStreamRequestBuilder = <
   TId extends NativeRouteStreamId,
 >(
   id: TId,
-  input: NativeRouteStreamInput<TId>,
+  input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ): NativeRouteStreamRequest<TId> =>
   createNativeManifestRouteStreamRequest(
@@ -5103,13 +5103,13 @@ export type BatchFunction = <const TRequests extends readonly [...RouteBatchRequ
 ) => Promise<RouteBatchResults<TRequests>>;
 export type RouteProtocolRequestBuilder = <TId extends RouteId>(
   id: TId,
-  input: RouteInput<TId>,
+  input: RouteInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ) => RouteProtocolRequest<TId>;
 export type ProtocolRequestBuilder = RouteProtocolRequestBuilder;
 export type RouteUnaryProtocolRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
-  input: RouteUnaryInput<TId>,
+  input: RouteUnaryInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ) => RouteUnaryProtocolRequest<TId>;
 export type UnaryRouteProtocolRequestBuilder =
@@ -5118,7 +5118,7 @@ export type UnaryProtocolRequestBuilder =
   RouteUnaryProtocolRequestBuilder;
 export type RouteStreamProtocolRequestBuilder = <TId extends RouteStreamId>(
   id: TId,
-  input: RouteStreamInput<TId>,
+  input: RouteStreamInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ) => RouteStreamProtocolRequest<TId>;
 export type StreamRouteProtocolRequestBuilder =
@@ -5127,31 +5127,31 @@ export type StreamProtocolRequestBuilder =
   RouteStreamProtocolRequestBuilder;
 export type RouteStreamRequestBuilder = <TId extends RouteStreamId>(
   id: TId,
-  input: RouteStreamInput<TId>,
+  input: RouteStreamInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ) => RouteStreamRequest<TId>;
 export type StreamRouteRequestBuilder = RouteStreamRequestBuilder;
 export type RouteRequestBuilder = <TId extends RouteUnaryId>(
   id: TId,
-  ...args: RouteUnaryClientArgs<TId>
+  ...args: RouteUnaryClientArgs<NoInfer<TId>>
 ) => RouteRequest<TId>;
 export type RouteUnaryRequestBuilder = RouteRequestBuilder;
 export type UnaryRouteRequestBuilder = RouteUnaryRequestBuilder;
 const createManifestRouteRequest = <TId extends RouteUnaryId>(
   id: TId,
-  ...args: RouteUnaryClientArgs<TId>
+  ...args: RouteUnaryClientArgs<NoInfer<TId>>
 ): RouteRequest<TId> =>
   createTransportRouteRequest<Manifest, TId>(
     manifest,
     id,
-    args[0] as RouteUnaryInput<TId>,
-    args[1] as RouteUnaryRequestOptions<TId>
+    args[0] as RouteUnaryInput<NoInfer<TId>>,
+    args[1] as RouteUnaryRequestOptions<NoInfer<TId>>
   ) as RouteRequest<TId>;
 export const createRouteRequest: RouteRequestBuilder = <
   TId extends RouteUnaryId,
 >(
   id: TId,
-  ...args: RouteUnaryClientArgs<TId>
+  ...args: RouteUnaryClientArgs<NoInfer<TId>>
 ): RouteRequest<TId> =>
   createManifestRouteRequest(id, ...args);
 export const createRouteUnaryRequest: typeof createRouteRequest =
@@ -5162,7 +5162,7 @@ export const createRouteProtocolRequest: RouteProtocolRequestBuilder = <
   TId extends RouteId,
 >(
   id: TId,
-  input: RouteInput<TId>,
+  input: RouteInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ): RouteProtocolRequest<TId> =>
   createTransportRouteProtocolRequest<Manifest, TId>(
@@ -5177,7 +5177,7 @@ export const createRouteUnaryProtocolRequest: RouteUnaryProtocolRequestBuilder =
   TId extends RouteUnaryId,
 >(
   id: TId,
-  input: RouteUnaryInput<TId>,
+  input: RouteUnaryInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ): RouteUnaryProtocolRequest<TId> =>
   createTransportRouteUnaryProtocolRequest<Manifest, TId>(
@@ -5194,7 +5194,7 @@ export const createRouteStreamProtocolRequest: RouteStreamProtocolRequestBuilder
   TId extends RouteStreamId,
 >(
   id: TId,
-  input: RouteStreamInput<TId>,
+  input: RouteStreamInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ): RouteStreamProtocolRequest<TId> =>
   createTransportRouteStreamProtocolRequest<Manifest, TId>(
@@ -5211,7 +5211,7 @@ export const createRouteStreamRequest: RouteStreamRequestBuilder = <
   TId extends RouteStreamId,
 >(
   id: TId,
-  input: RouteStreamInput<TId>,
+  input: RouteStreamInput<NoInfer<TId>>,
   options?: ProtocolRequestOptions
 ): RouteStreamRequest<TId> =>
   createTransportRouteStreamRequest<Manifest, TId>(
