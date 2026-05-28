@@ -367,6 +367,39 @@ const packageImportSpecifier = (packageSubpath: string): string =>
     ? 'joor'
     : `joor/${packageSubpath.replace(/^\.\//, '')}`;
 
+const packageSubpathFromImportSpecifier = (
+  moduleSpecifier: string
+): string | undefined => {
+  if (moduleSpecifier === 'joor') return '.';
+  if (moduleSpecifier.startsWith('joor/')) {
+    return `./${moduleSpecifier.slice('joor/'.length)}`;
+  }
+
+  return undefined;
+};
+
+const packageExportSet = async (): Promise<ReadonlySet<string>> => {
+  const packageSource = await readFile(packageManifest, 'utf8');
+  const packageJson = JSON.parse(packageSource) as {
+    readonly exports?: Readonly<Record<string, unknown>>;
+  };
+  return new Set(Object.keys(packageJson.exports ?? {}));
+};
+
+const collectPackageImportSubpaths = (source: string): ReadonlySet<string> => {
+  const subpaths = new Set<string>();
+  for (const match of source.matchAll(
+    /\bimport\s+(?:type\s+)?(?:[^'"]+?\s+from\s+)?['"]([^'"]+)['"]/g
+  )) {
+    const moduleSpecifier = match[1];
+    if (moduleSpecifier === undefined) continue;
+    const packageSubpath = packageSubpathFromImportSpecifier(moduleSpecifier);
+    if (packageSubpath !== undefined) subpaths.add(packageSubpath);
+  }
+
+  return subpaths;
+};
+
 const namespaceReferencePattern = (alias: string, name: string): RegExp =>
   new RegExp(`\\b${alias}\\s*\\.\\s*${name}\\b`);
 
@@ -1547,11 +1580,7 @@ describe('route public surface', () => {
   });
 
   it('keeps package exports mapped for route-bearing public files', async () => {
-    const packageSource = await readFile(packageManifest, 'utf8');
-    const packageJson = JSON.parse(packageSource) as {
-      readonly exports?: Readonly<Record<string, unknown>>;
-    };
-    const packageExports = new Set(Object.keys(packageJson.exports ?? {}));
+    const packageExports = await packageExportSet();
     const files = new Set((await publicRouteExports()).map(({ file }) => file));
     const missing = [...files]
       .flatMap((file) => {
@@ -1566,6 +1595,27 @@ describe('route public surface', () => {
           `${relative(repoRoot, file)}: ${packageSubpath ?? '<no package path>'}`,
         ];
       })
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps package-subpath smoke imports backed by package exports', async () => {
+    const packageExports = await packageExportSet();
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const missing = [...collectPackageImportSubpaths(packageSubpathSource)]
+      .filter((packageSubpath) => !packageExports.has(packageSubpath))
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps package exports covered by package-subpath smoke imports', async () => {
+    const packageExports = await packageExportSet();
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const smokeImports = collectPackageImportSubpaths(packageSubpathSource);
+    const missing = [...packageExports]
+      .filter((packageSubpath) => !smokeImports.has(packageSubpath))
       .sort();
 
     expect(missing).toEqual([]);
