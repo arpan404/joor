@@ -3495,9 +3495,13 @@ export const createRouteUnaryHandler: typeof createHandler =
   );
 export const createUnaryRouteHandler: typeof createRouteUnaryHandler =
   createRouteUnaryHandler;
+export const createUnaryHandler: typeof createRouteUnaryHandler =
+  createRouteUnaryHandler;
 export const createRouteUnaryNodeHandler: typeof createRouteUnaryHandler =
   createRouteUnaryHandler;
 export const createUnaryRouteNodeHandler: typeof createRouteUnaryNodeHandler =
+  createRouteUnaryNodeHandler;
+export const createUnaryNodeHandler: typeof createRouteUnaryNodeHandler =
   createRouteUnaryNodeHandler;
 export const createRouteStreamHandler: typeof createHandler =
   createHandlerFromTransport<NativeRouteStreamBody>(
@@ -3506,9 +3510,13 @@ export const createRouteStreamHandler: typeof createHandler =
   );
 export const createStreamRouteHandler: typeof createRouteStreamHandler =
   createRouteStreamHandler;
+export const createStreamHandler: typeof createRouteStreamHandler =
+  createRouteStreamHandler;
 export const createRouteStreamNodeHandler: typeof createRouteStreamHandler =
   createRouteStreamHandler;
 export const createStreamRouteNodeHandler: typeof createRouteStreamNodeHandler =
+  createRouteStreamNodeHandler;
+export const createStreamNodeHandler: typeof createRouteStreamNodeHandler =
   createRouteStreamNodeHandler;
 
 const listenWithHandler = (
@@ -3529,31 +3537,43 @@ export const createRouteUnaryServerFor: typeof listen = (
 ): NodeNativeServer => listenWithHandler(createRouteUnaryHandler, options);
 export const createUnaryRouteServerFor: typeof createRouteUnaryServerFor =
   createRouteUnaryServerFor;
+export const createUnaryServerFor: typeof createRouteUnaryServerFor =
+  createRouteUnaryServerFor;
 export const createRouteUnaryNodeServerFor: typeof createRouteUnaryServerFor =
   createRouteUnaryServerFor;
 export const createUnaryRouteNodeServerFor: typeof createRouteUnaryNodeServerFor =
   createRouteUnaryNodeServerFor;
+export const createUnaryNodeServerFor: typeof createRouteUnaryNodeServerFor =
+  createRouteUnaryNodeServerFor;
 export const listenRouteUnary: typeof createRouteUnaryServerFor =
   createRouteUnaryServerFor;
 export const listenUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenUnary: typeof listenRouteUnary = listenRouteUnary;
 export const listenNodeRouteUnary: typeof listenRouteUnary = listenRouteUnary;
 export const listenNodeUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeUnary: typeof listenRouteUnary = listenRouteUnary;
 export const createRouteStreamServerFor: typeof listen = (
   options: NodeListenOptions = {}
 ): NodeNativeServer => listenWithHandler(createRouteStreamHandler, options);
 export const createStreamRouteServerFor: typeof createRouteStreamServerFor =
   createRouteStreamServerFor;
+export const createStreamServerFor: typeof createRouteStreamServerFor =
+  createRouteStreamServerFor;
 export const createRouteStreamNodeServerFor: typeof createRouteStreamServerFor =
   createRouteStreamServerFor;
 export const createStreamRouteNodeServerFor: typeof createRouteStreamNodeServerFor =
   createRouteStreamNodeServerFor;
+export const createStreamNodeServerFor: typeof createRouteStreamNodeServerFor =
+  createRouteStreamNodeServerFor;
 export const listenRouteStream: typeof createRouteStreamServerFor =
   createRouteStreamServerFor;
 export const listenStreamRoute: typeof listenRouteStream = listenRouteStream;
+export const listenStream: typeof listenRouteStream = listenRouteStream;
 export const listenNodeRouteStream: typeof listenRouteStream =
   listenRouteStream;
 export const listenNodeStreamRoute: typeof listenRouteStream =
   listenRouteStream;
+export const listenNodeStream: typeof listenRouteStream = listenRouteStream;
 export default handler;
 `
   );

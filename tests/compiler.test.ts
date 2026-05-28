@@ -4288,7 +4288,7 @@ import cloudflareWorker, { createRouteStreamCloudflareWorkerFor as createGenerat
 import denoNativeFetchDefault, { createFetch as createDenoNativeFetch, createFetchFor as createDenoNativeFetchFor, createRouteStreamFetch as createRouteStreamDenoFetch, createRouteStreamFetchFor as createRouteStreamDenoFetchFor, createRouteUnaryFetch as createRouteUnaryDenoFetch, createRouteUnaryFetchFor as createRouteUnaryDenoFetchFor, fetch as denoNativeFetch, listenRouteStream as listenRouteStreamDenoNative, listenRouteUnary as listenRouteUnaryDenoNative, listenStreamRoute as listenStreamRouteDenoNative, listenUnaryRoute as listenUnaryRouteDenoNative, serve as serveDenoNative, serveDenoRouteStream as serveDenoRouteStreamNative, serveDenoRouteUnary as serveDenoRouteUnaryNative, serveDenoStreamRoute as serveDenoStreamRouteNative, serveDenoUnaryRoute as serveDenoUnaryRouteNative, serveRouteStreamDeno as serveRouteStreamDenoNative, serveRouteUnaryDeno as serveRouteUnaryDenoNative, serveStreamRouteDeno as serveStreamRouteDenoNative, serveUnaryRouteDeno as serveUnaryRouteDenoNative, type DenoNativeFetchHandler, type DenoNativeOptions, type DenoNativeRouteStreamFetchHandler, type DenoNativeRouteUnaryFetchHandler, type DenoNativeServer, type NativeCorsOptions as DenoNativeCorsOptions } from './deno.js';
 import netlifyEdge, { createEdgeFor as createGeneratedNetlifyEdgeFor, createRouteStreamNetlifyEdgeFunctionFor as createGeneratedRouteStreamNetlifyEdgeFor, createRouteUnaryNetlifyEdgeFunctionFor as createGeneratedRouteUnaryNetlifyEdgeFor, edge as namedNetlifyEdge, fetch as netlifyFetch } from './netlify.js';
 import nextHandlers, { GET, OPTIONS, POST, createHandlersFor as createGeneratedNextHandlersFor, createRouteStreamNextRouteHandlersFor as createGeneratedRouteStreamNextHandlersFor, createRouteUnaryNextRouteHandlersFor as createGeneratedRouteUnaryNextHandlersFor, handlers as namedNextHandlers } from './next.js';
-import nodeNativeHandlerDefault, { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, createStreamRouteHandler as createStreamRouteNodeNativeHandler, createStreamRouteServerFor as createStreamRouteNodeNativeServerFor, createUnaryRouteHandler as createUnaryRouteNodeNativeHandler, createUnaryRouteServerFor as createUnaryRouteNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenNodeStreamRoute as listenNodeStreamRouteNative, listenNodeUnaryRoute as listenNodeUnaryRouteNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, listenStreamRoute as listenStreamRouteNodeNative, listenUnaryRoute as listenUnaryRouteNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
+import nodeNativeHandlerDefault, { createHandler as createNodeNativeHandler, createRouteStreamHandler as createRouteStreamNodeNativeHandler, createRouteStreamServerFor as createRouteStreamNodeNativeServerFor, createRouteUnaryHandler as createRouteUnaryNodeNativeHandler, createRouteUnaryServerFor as createRouteUnaryNodeNativeServerFor, createStreamHandler as createStreamNodeNativeHandler, createStreamNodeHandler as createStreamNodeNativeNodeHandler, createStreamNodeServerFor as createStreamNodeNativeNodeServerFor, createStreamRouteHandler as createStreamRouteNodeNativeHandler, createStreamRouteServerFor as createStreamRouteNodeNativeServerFor, createStreamServerFor as createStreamNodeNativeServerFor, createUnaryHandler as createUnaryNodeNativeHandler, createUnaryNodeHandler as createUnaryNodeNativeNodeHandler, createUnaryNodeServerFor as createUnaryNodeNativeNodeServerFor, createUnaryRouteHandler as createUnaryRouteNodeNativeHandler, createUnaryRouteServerFor as createUnaryRouteNodeNativeServerFor, createUnaryServerFor as createUnaryNodeNativeServerFor, handler as nodeNativeHandler, listen as listenNodeNative, listenNodeStream as listenNodeStreamNative, listenNodeStreamRoute as listenNodeStreamRouteNative, listenNodeUnary as listenNodeUnaryNative, listenNodeUnaryRoute as listenNodeUnaryRouteNative, listenRouteStream as listenRouteStreamNodeNative, listenRouteUnary as listenRouteUnaryNodeNative, listenStream as listenStreamNodeNative, listenStreamRoute as listenStreamRouteNodeNative, listenUnary as listenUnaryNodeNative, listenUnaryRoute as listenUnaryRouteNodeNative, type NodeNativeHandler, type NodeNativeOptions, type NodeNativeServer, type NativeCorsOptions as NodeNativeCorsOptions } from './node.js';
 import vercelFunction, { createRouteStreamVercelFor as createGeneratedRouteStreamVercelFor, createRouteUnaryVercelFor as createGeneratedRouteUnaryVercelFor, createVercelFor as createGeneratedVercelFor, fetch as vercelFetch, vercel as namedVercelFunction } from './vercel.js';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { AwsLambdaHandler, AwsLambdaHttpEventV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler } from 'joor/runtime/aws-lambda';
@@ -5244,10 +5244,18 @@ const routeUnaryNodeHandler: NodeNativeHandler =
   createRouteUnaryNodeNativeHandler(nodeNativeOptions);
 const unaryRouteNodeHandler: NodeNativeHandler =
   createUnaryRouteNodeNativeHandler(nodeNativeOptions);
+const unaryNodeHandler: NodeNativeHandler =
+  createUnaryNodeNativeHandler(nodeNativeOptions);
+const unaryNodeNodeHandler: NodeNativeHandler =
+  createUnaryNodeNativeNodeHandler(nodeNativeOptions);
 const routeStreamNodeHandler: NodeNativeHandler =
   createRouteStreamNodeNativeHandler(nodeNativeOptions);
 const streamRouteNodeHandler: NodeNativeHandler =
   createStreamRouteNodeNativeHandler(nodeNativeOptions);
+const streamNodeHandler: NodeNativeHandler =
+  createStreamNodeNativeHandler(nodeNativeOptions);
+const streamNodeNodeHandler: NodeNativeHandler =
+  createStreamNodeNativeNodeHandler(nodeNativeOptions);
 interface GeneratedIncomingMessage extends IncomingMessage {
   readonly requestId: string;
 }
@@ -5278,6 +5286,13 @@ const typedUnaryRouteNodeNativeHandler: NodeNativeHandler<
   GeneratedIncomingMessage,
   GeneratedServerResponse
 >(nodeNativeOptions);
+const typedUnaryNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createUnaryNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
 const typedRouteStreamNodeNativeHandler: NodeNativeHandler<
   GeneratedIncomingMessage,
   GeneratedServerResponse
@@ -5289,6 +5304,13 @@ const typedStreamRouteNodeNativeHandler: NodeNativeHandler<
   GeneratedIncomingMessage,
   GeneratedServerResponse
 > = createStreamRouteNodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+>(nodeNativeOptions);
+const typedStreamNodeNativeHandler: NodeNativeHandler<
+  GeneratedIncomingMessage,
+  GeneratedServerResponse
+> = createStreamNodeNativeHandler<
   GeneratedIncomingMessage,
   GeneratedServerResponse
 >(nodeNativeOptions);
@@ -5306,8 +5328,12 @@ const syncTypedNodeHandler: NodeNativeHandler<
 nodeHandler;
 routeUnaryNodeHandler;
 unaryRouteNodeHandler;
+unaryNodeHandler;
+unaryNodeNodeHandler;
 routeStreamNodeHandler;
 streamRouteNodeHandler;
+streamNodeHandler;
+streamNodeNodeHandler;
 nodeDefaultHandler;
 nodeDefaultExportHandler;
 syncNodeHandler;
@@ -5320,6 +5346,7 @@ typedUnaryRouteNodeNativeHandler(
   generatedIncomingMessage,
   generatedServerResponse
 );
+typedUnaryNodeNativeHandler(generatedIncomingMessage, generatedServerResponse);
 typedRouteStreamNodeNativeHandler(
   generatedIncomingMessage,
   generatedServerResponse
@@ -5328,6 +5355,7 @@ typedStreamRouteNodeNativeHandler(
   generatedIncomingMessage,
   generatedServerResponse
 );
+typedStreamNodeNativeHandler(generatedIncomingMessage, generatedServerResponse);
 syncTypedNodeHandler(generatedIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed Node handlers preserve custom incoming message types.
 typedNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
@@ -5337,42 +5365,68 @@ typedNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
 typedRouteUnaryNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed unary-route Node handlers preserve custom outgoing response types.
 typedUnaryRouteNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
+// @ts-expect-error generated typed unary Node handlers preserve custom incoming message types.
+typedUnaryNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed route-stream Node handlers preserve custom incoming message types.
 typedRouteStreamNodeNativeHandler(baseIncomingMessage, generatedServerResponse);
 // @ts-expect-error generated typed stream-route Node handlers preserve custom outgoing response types.
 typedStreamRouteNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
+// @ts-expect-error generated typed stream Node handlers preserve custom outgoing response types.
+typedStreamNodeNativeHandler(generatedIncomingMessage, baseServerResponse);
 const nodeServer: NodeNativeServer = listenNodeNative({ ...nodeNativeOptions, port: 3000 });
 const routeUnaryNodeServer: NodeNativeServer =
   createRouteUnaryNodeNativeServerFor(nodeNativeOptions);
 const unaryRouteNodeServer: NodeNativeServer =
   createUnaryRouteNodeNativeServerFor(nodeNativeOptions);
+const unaryNodeServer: NodeNativeServer =
+  createUnaryNodeNativeServerFor(nodeNativeOptions);
+const unaryNodeNodeServer: NodeNativeServer =
+  createUnaryNodeNativeNodeServerFor(nodeNativeOptions);
 const routeStreamNodeServer: NodeNativeServer =
   createRouteStreamNodeNativeServerFor(nodeNativeOptions);
 const streamRouteNodeServer: NodeNativeServer =
   createStreamRouteNodeNativeServerFor(nodeNativeOptions);
+const streamNodeServer: NodeNativeServer =
+  createStreamNodeNativeServerFor(nodeNativeOptions);
+const streamNodeNodeServer: NodeNativeServer =
+  createStreamNodeNativeNodeServerFor(nodeNativeOptions);
 const routeUnaryNodeListener: NodeNativeServer =
   listenRouteUnaryNodeNative(nodeNativeOptions);
 const unaryRouteNodeListener: NodeNativeServer =
   listenUnaryRouteNodeNative(nodeNativeOptions);
+const unaryNodeListener: NodeNativeServer = listenUnaryNodeNative(nodeNativeOptions);
 const nodeUnaryRouteListener: NodeNativeServer =
   listenNodeUnaryRouteNative(nodeNativeOptions);
+const nodeUnaryListener: NodeNativeServer = listenNodeUnaryNative(nodeNativeOptions);
 const routeStreamNodeListener: NodeNativeServer =
   listenRouteStreamNodeNative(nodeNativeOptions);
 const streamRouteNodeListener: NodeNativeServer =
   listenStreamRouteNodeNative(nodeNativeOptions);
+const streamNodeListener: NodeNativeServer =
+  listenStreamNodeNative(nodeNativeOptions);
 const nodeStreamRouteListener: NodeNativeServer =
   listenNodeStreamRouteNative(nodeNativeOptions);
+const nodeStreamListener: NodeNativeServer =
+  listenNodeStreamNative(nodeNativeOptions);
 nodeServer.close();
 routeUnaryNodeServer.close();
 unaryRouteNodeServer.close();
+unaryNodeServer.close();
+unaryNodeNodeServer.close();
 routeStreamNodeServer.close();
 streamRouteNodeServer.close();
+streamNodeServer.close();
+streamNodeNodeServer.close();
 routeUnaryNodeListener.close();
 unaryRouteNodeListener.close();
+unaryNodeListener.close();
 nodeUnaryRouteListener.close();
+nodeUnaryListener.close();
 routeStreamNodeListener.close();
 streamRouteNodeListener.close();
+streamNodeListener.close();
 nodeStreamRouteListener.close();
+nodeStreamListener.close();
 nodeServer.address();
 nodeServer.ref().unref();
 const requiredServices: RequiredServices = {

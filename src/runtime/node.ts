@@ -121,7 +121,27 @@ export type UnaryRouteListenOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = RouteUnaryListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type UnaryListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RouteUnaryListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type NodeUnaryRouteListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NodeRouteUnaryListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type NodeUnaryListenOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -162,7 +182,27 @@ export type StreamRouteListenOptionsFor<
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = RouteStreamListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type StreamListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RouteStreamListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type NodeStreamRouteListenOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NodeRouteStreamListenOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type NodeStreamListenOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -233,7 +273,27 @@ export type UnaryRouteListenOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = RouteUnaryListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type UnaryListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = RouteUnaryListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type NodeUnaryRouteListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NodeRouteUnaryListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type NodeUnaryListenOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -280,7 +340,27 @@ export type StreamRouteListenOptionsArgs<
     RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
 > = RouteStreamListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type StreamListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = RouteStreamListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type NodeStreamRouteListenOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NodeRouteStreamListenOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type NodeStreamListenOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -328,6 +408,21 @@ export type NodeUnaryRouteRpcRequestHandlerOptionsFor<
   TRequest
 >;
 
+export type NodeUnaryRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NodeRouteUnaryRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type NodeRouteStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -344,6 +439,21 @@ export type NodeRouteStreamRpcRequestHandlerOptionsFor<
 >;
 
 export type NodeStreamRouteRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NodeRouteStreamRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
+export type NodeStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -403,6 +513,21 @@ export type NodeUnaryRouteRpcRequestHandlerOptionsArgs<
   TRequest
 >;
 
+export type NodeUnaryRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NodeRouteUnaryRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type NodeRouteStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -434,6 +559,21 @@ export type NodeStreamRouteRpcRequestHandlerOptionsArgs<
   TRequest
 >;
 
+export type NodeStreamRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NodeRouteStreamRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type NodeRpcRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
@@ -451,11 +591,19 @@ export type NodeUnaryRouteTransportRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
+export type NodeUnaryTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
 export type NodeRouteStreamTransportRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = NodeTransportRequestHandler<TIncoming, TOutgoing>;
 export type NodeStreamRouteTransportRequestHandler<
+  TIncoming extends IncomingMessage = IncomingMessage,
+  TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
+> = NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
+export type NodeStreamTransportRequestHandler<
   TIncoming extends IncomingMessage = IncomingMessage,
   TOutgoing extends ServerResponse<TIncoming> = ServerResponse<TIncoming>,
 > = NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
@@ -478,12 +626,22 @@ export type NodeUnaryRouteTransportBodyResultFor<
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
 > = NodeRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+export type NodeUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = NodeRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type NodeRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type NodeStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = NodeRouteStreamTransportBodyResultFor<TManifest, TBody>;
+export type NodeStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -509,6 +667,9 @@ export type NodeRouteUnaryTransportBodyResultHandlerFor<
 export type NodeUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+export type NodeUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = NodeRouteUnaryTransportBodyResultHandlerFor<TManifest>;
 
 export type NodeRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
@@ -518,6 +679,9 @@ export type NodeRouteStreamTransportBodyResultHandlerFor<
 ) => MaybePromise<NodeRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type NodeStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = NodeRouteStreamTransportBodyResultHandlerFor<TManifest>;
+export type NodeStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = NodeRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
@@ -821,6 +985,9 @@ export const createRouteUnaryNodeTransportRequestHandler = <
 export const createUnaryRouteNodeTransportRequestHandler: typeof createRouteUnaryNodeTransportRequestHandler =
   createRouteUnaryNodeTransportRequestHandler;
 
+export const createUnaryNodeTransportRequestHandler: typeof createRouteUnaryNodeTransportRequestHandler =
+  createRouteUnaryNodeTransportRequestHandler;
+
 export const createRouteUnaryNodeTransportRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -844,6 +1011,9 @@ export const createRouteUnaryNodeTransportRequestHandlerFor =
     ) as NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
 
 export const createUnaryRouteNodeTransportRequestHandlerFor: typeof createRouteUnaryNodeTransportRequestHandlerFor =
+  createRouteUnaryNodeTransportRequestHandlerFor;
+
+export const createUnaryNodeTransportRequestHandlerFor: typeof createRouteUnaryNodeTransportRequestHandlerFor =
   createRouteUnaryNodeTransportRequestHandlerFor;
 
 export const createRouteStreamNodeTransportRequestHandler = <
@@ -871,6 +1041,9 @@ export const createRouteStreamNodeTransportRequestHandler = <
 export const createStreamRouteNodeTransportRequestHandler: typeof createRouteStreamNodeTransportRequestHandler =
   createRouteStreamNodeTransportRequestHandler;
 
+export const createStreamNodeTransportRequestHandler: typeof createRouteStreamNodeTransportRequestHandler =
+  createRouteStreamNodeTransportRequestHandler;
+
 export const createRouteStreamNodeTransportRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -894,6 +1067,9 @@ export const createRouteStreamNodeTransportRequestHandlerFor =
     ) as NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
 
 export const createStreamRouteNodeTransportRequestHandlerFor: typeof createRouteStreamNodeTransportRequestHandlerFor =
+  createRouteStreamNodeTransportRequestHandlerFor;
+
+export const createStreamNodeTransportRequestHandlerFor: typeof createRouteStreamNodeTransportRequestHandlerFor =
   createRouteStreamNodeTransportRequestHandlerFor;
 
 export const createNodeTransportRequestHandlerWithPath = <
@@ -954,6 +1130,9 @@ export const createRouteUnaryNodeTransportRequestHandlerWithPath = <
 export const createUnaryRouteNodeTransportRequestHandlerWithPath: typeof createRouteUnaryNodeTransportRequestHandlerWithPath =
   createRouteUnaryNodeTransportRequestHandlerWithPath;
 
+export const createUnaryNodeTransportRequestHandlerWithPath: typeof createRouteUnaryNodeTransportRequestHandlerWithPath =
+  createRouteUnaryNodeTransportRequestHandlerWithPath;
+
 export const createRouteUnaryNodeTransportRequestHandlerWithPathFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -973,6 +1152,9 @@ export const createRouteUnaryNodeTransportRequestHandlerWithPathFor =
     ) as NodeRouteUnaryTransportRequestHandler<TIncoming, TOutgoing>;
 
 export const createUnaryRouteNodeTransportRequestHandlerWithPathFor: typeof createRouteUnaryNodeTransportRequestHandlerWithPathFor =
+  createRouteUnaryNodeTransportRequestHandlerWithPathFor;
+
+export const createUnaryNodeTransportRequestHandlerWithPathFor: typeof createRouteUnaryNodeTransportRequestHandlerWithPathFor =
   createRouteUnaryNodeTransportRequestHandlerWithPathFor;
 
 export const createRouteStreamNodeTransportRequestHandlerWithPath = <
@@ -996,6 +1178,9 @@ export const createRouteStreamNodeTransportRequestHandlerWithPath = <
 export const createStreamRouteNodeTransportRequestHandlerWithPath: typeof createRouteStreamNodeTransportRequestHandlerWithPath =
   createRouteStreamNodeTransportRequestHandlerWithPath;
 
+export const createStreamNodeTransportRequestHandlerWithPath: typeof createRouteStreamNodeTransportRequestHandlerWithPath =
+  createRouteStreamNodeTransportRequestHandlerWithPath;
+
 export const createRouteStreamNodeTransportRequestHandlerWithPathFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -1015,6 +1200,9 @@ export const createRouteStreamNodeTransportRequestHandlerWithPathFor =
     ) as NodeRouteStreamTransportRequestHandler<TIncoming, TOutgoing>;
 
 export const createStreamRouteNodeTransportRequestHandlerWithPathFor: typeof createRouteStreamNodeTransportRequestHandlerWithPathFor =
+  createRouteStreamNodeTransportRequestHandlerWithPathFor;
+
+export const createStreamNodeTransportRequestHandlerWithPathFor: typeof createRouteStreamNodeTransportRequestHandlerWithPathFor =
   createRouteStreamNodeTransportRequestHandlerWithPathFor;
 
 export function listen<
@@ -1147,6 +1335,9 @@ export function createRouteUnaryNodeRpcRequestHandler<
 export const createUnaryRouteNodeRpcRequestHandler: typeof createRouteUnaryNodeRpcRequestHandler =
   createRouteUnaryNodeRpcRequestHandler;
 
+export const createUnaryNodeRpcRequestHandler: typeof createRouteUnaryNodeRpcRequestHandler =
+  createRouteUnaryNodeRpcRequestHandler;
+
 export function createRouteStreamNodeRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1175,6 +1366,9 @@ export function createRouteStreamNodeRpcRequestHandler<
 }
 
 export const createStreamRouteNodeRpcRequestHandler: typeof createRouteStreamNodeRpcRequestHandler =
+  createRouteStreamNodeRpcRequestHandler;
+
+export const createStreamNodeRpcRequestHandler: typeof createRouteStreamNodeRpcRequestHandler =
   createRouteStreamNodeRpcRequestHandler;
 
 export const createNodeRpcRequestHandlerFor =
@@ -1237,6 +1431,9 @@ export const createRouteUnaryNodeRpcRequestHandlerFor =
 export const createUnaryRouteNodeRpcRequestHandlerFor: typeof createRouteUnaryNodeRpcRequestHandlerFor =
   createRouteUnaryNodeRpcRequestHandlerFor;
 
+export const createUnaryNodeRpcRequestHandlerFor: typeof createRouteUnaryNodeRpcRequestHandlerFor =
+  createRouteUnaryNodeRpcRequestHandlerFor;
+
 export const createRouteStreamNodeRpcRequestHandlerFor =
   <
     TIncoming extends IncomingMessage = IncomingMessage,
@@ -1271,6 +1468,9 @@ export const createRouteStreamNodeRpcRequestHandlerFor =
 export const createStreamRouteNodeRpcRequestHandlerFor: typeof createRouteStreamNodeRpcRequestHandlerFor =
   createRouteStreamNodeRpcRequestHandlerFor;
 
+export const createStreamNodeRpcRequestHandlerFor: typeof createRouteStreamNodeRpcRequestHandlerFor =
+  createRouteStreamNodeRpcRequestHandlerFor;
+
 export function listenRouteUnary<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1301,8 +1501,10 @@ export function listenRouteUnary<TManifest extends JoorManifest>(
 }
 
 export const listenUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenUnary: typeof listenRouteUnary = listenRouteUnary;
 export const listenNodeRouteUnary: typeof listenRouteUnary = listenRouteUnary;
 export const listenNodeUnaryRoute: typeof listenRouteUnary = listenRouteUnary;
+export const listenNodeUnary: typeof listenRouteUnary = listenRouteUnary;
 
 export function listenRouteStream<
   TManifest extends JoorManifest,
@@ -1334,7 +1536,9 @@ export function listenRouteStream<TManifest extends JoorManifest>(
 }
 
 export const listenStreamRoute: typeof listenRouteStream = listenRouteStream;
+export const listenStream: typeof listenRouteStream = listenRouteStream;
 export const listenNodeRouteStream: typeof listenRouteStream =
   listenRouteStream;
 export const listenNodeStreamRoute: typeof listenRouteStream =
   listenRouteStream;
+export const listenNodeStream: typeof listenRouteStream = listenRouteStream;
