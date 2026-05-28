@@ -8,6 +8,10 @@ const componentName = (id: string, suffix: string): string =>
     .map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
     .join('')}${suffix}`;
 
+const schemaRef = (name: string): JsonObject => ({
+  $ref: `#/components/schemas/${name}`,
+});
+
 export const createOpenApiDocument = (
   manifest: CompilerManifest
 ): JsonObject => {
@@ -51,10 +55,22 @@ export const createOpenApiDocument = (
       },
     },
   };
+  const routeRequestRefs: JsonObject[] = [];
   const procedures = manifest.procedures.map((entry): JsonObject => {
-    schemas[componentName(entry.id, 'Input')] = toJsonSchema(
-      entry.procedure.input
-    );
+    const inputComponent = componentName(entry.id, 'Input');
+    const requestComponent = componentName(entry.id, 'Request');
+    schemas[inputComponent] = toJsonSchema(entry.procedure.input);
+    schemas[requestComponent] = {
+      type: 'object',
+      required: ['id', 'input'],
+      properties: {
+        id: { const: entry.id },
+        input: schemaRef(inputComponent),
+        traceId: { type: 'string' },
+      },
+      additionalProperties: false,
+    };
+    routeRequestRefs.push(schemaRef(requestComponent));
     if (entry.procedure.headers !== undefined) {
       schemas[componentName(entry.id, 'Headers')] = toJsonSchema(
         entry.procedure.headers
@@ -94,6 +110,7 @@ export const createOpenApiDocument = (
       authPolicy: entry.procedure.auth?.name ?? null,
       rateLimit: entry.procedure.meta.rateLimit ?? null,
       inputRef: `#/components/schemas/${componentName(entry.id, 'Input')}`,
+      requestRef: `#/components/schemas/${requestComponent}`,
       headersRef:
         entry.procedure.headers === undefined
           ? null
@@ -113,6 +130,13 @@ export const createOpenApiDocument = (
       errors,
     };
   });
+  if (routeRequestRefs.length > 0) {
+    schemas['RpcRequest'] = { oneOf: routeRequestRefs };
+  }
+  const rpcRequestSchema =
+    routeRequestRefs.length > 0
+      ? schemaRef('RpcRequest')
+      : { $ref: '#/components/schemas/RpcRequest' };
 
   return {
     openapi: '3.1.0',
@@ -130,10 +154,10 @@ export const createOpenApiDocument = (
               'application/json': {
                 schema: {
                   oneOf: [
-                    { $ref: '#/components/schemas/RpcRequest' },
+                    rpcRequestSchema,
                     {
                       type: 'array',
-                      items: { $ref: '#/components/schemas/RpcRequest' },
+                      items: rpcRequestSchema,
                     },
                   ],
                 },
