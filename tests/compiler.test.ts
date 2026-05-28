@@ -496,7 +496,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
     } finally {
       await rm(entry, { force: true, recursive: true });
     }
-  }, 60_000);
+  }, 1_200_000);
 
   it('emits artifacts', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));

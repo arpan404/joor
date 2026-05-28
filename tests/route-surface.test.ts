@@ -1218,6 +1218,22 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
+  it('keeps generated concise route aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const missing = [...exportSets]
+      .flatMap(([file, names]) =>
+        [...names].flatMap((name) => {
+          const conciseName = conciseRouteAliasName(name);
+          return conciseName !== undefined && !names.has(conciseName)
+            ? [`${relative(repoRoot, file)}: ${name} is missing ${conciseName}`]
+            : [];
+        })
+      )
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
   it('keeps generated dispatcher route export surfaces aligned', async () => {
     const exportSets = await generatedExportSets();
     const dispatchers = new Map(

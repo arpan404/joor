@@ -25,6 +25,247 @@ const writeJson = async (path: string, value: object): Promise<void> => {
   await writeFile(path, `${JSON.stringify(value, null, 2)}\n`);
 };
 
+const conciseRouteAliasName = (name: string): string | undefined => {
+  if (name.includes('RouteUnary')) {
+    return name.replaceAll('RouteUnary', 'Unary');
+  }
+  if (name.includes('UnaryRoute')) {
+    return name.replaceAll('UnaryRoute', 'Unary');
+  }
+  if (name.includes('RouteStream')) {
+    return name.replaceAll('RouteStream', 'Stream');
+  }
+  if (name.includes('StreamRoute')) {
+    return name.replaceAll('StreamRoute', 'Stream');
+  }
+
+  return undefined;
+};
+
+type ExportedTypeAliasStart = {
+  readonly name: string;
+  readonly typeParameters?: string;
+};
+
+const parseExportedTypeAliasStart = (
+  line: string
+): ExportedTypeAliasStart | undefined => {
+  const prefix = 'export type ';
+  if (!line.startsWith(prefix)) return undefined;
+
+  let index = prefix.length;
+  const nameMatch = /^[A-Za-z_][A-Za-z0-9_]*/.exec(line.slice(index));
+  const name = nameMatch?.[0];
+  if (name === undefined) return undefined;
+  index += name.length;
+
+  while (line[index] === ' ') index += 1;
+  let typeParameters: string | undefined;
+  if (line[index] === '<') {
+    const start = index;
+    let depth = 0;
+    while (index < line.length) {
+      const char = line[index];
+      if (char === '<') depth += 1;
+      if (char === '>') {
+        depth -= 1;
+        if (depth === 0) {
+          index += 1;
+          break;
+        }
+      }
+      index += 1;
+    }
+    if (depth !== 0) return undefined;
+    typeParameters = line.slice(start, index);
+  }
+
+  while (line[index] === ' ') index += 1;
+  if (line[index] !== '=') return undefined;
+  return typeParameters === undefined ? { name } : { name, typeParameters };
+};
+
+const typeParameterArguments = (typeParameters?: string): string => {
+  if (typeParameters === undefined) return '';
+
+  const body = typeParameters.slice(1, -1);
+  const names: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let index = 0; index <= body.length; index += 1) {
+    const char = body[index];
+    if (char === '<') depth += 1;
+    if (char === '>') depth -= 1;
+    if ((char === ',' && depth === 0) || index === body.length) {
+      const parameter = body.slice(start, index).trim();
+      const name = /^[A-Za-z_][A-Za-z0-9_]*/.exec(parameter)?.[0];
+      if (name !== undefined) names.push(name);
+      start = index + 1;
+    }
+  }
+
+  return names.length === 0 ? '' : `<${names.join(', ')}>`;
+};
+
+const updateTypeAliasNesting = (
+  line: string,
+  nesting: { braces: number; brackets: number; parentheses: number }
+): void => {
+  for (const char of line) {
+    if (char === '{') nesting.braces += 1;
+    if (char === '}') nesting.braces -= 1;
+    if (char === '[') nesting.brackets += 1;
+    if (char === ']') nesting.brackets -= 1;
+    if (char === '(') nesting.parentheses += 1;
+    if (char === ')') nesting.parentheses -= 1;
+  }
+};
+
+const hasCompletedTypeAlias = (
+  line: string,
+  nesting: { braces: number; brackets: number; parentheses: number }
+): boolean =>
+  line.trimEnd().endsWith(';') &&
+  nesting.braces === 0 &&
+  nesting.brackets === 0 &&
+  nesting.parentheses === 0;
+
+const exportedTypeSpecifierNames = (source: string): string[] => {
+  const names: string[] = [];
+  for (const match of source.matchAll(/\bexport\s+type\s+\{([^}]*)\}/g)) {
+    const specifiers = match[1];
+    if (specifiers === undefined) continue;
+    for (const specifier of specifiers.split(',')) {
+      const parts = specifier.trim().split(/\s+as\s+/);
+      const name = (parts[1] ?? parts[0] ?? '').trim();
+      if (name.length > 0) names.push(name);
+    }
+  }
+  return names;
+};
+
+const localImportedTypeNames = (source: string): Set<string> => {
+  const names = new Set<string>();
+  for (const match of source.matchAll(
+    /\bimport\s+(type\s+)?\{([^}]*)\}\s+from\s+['"][^'"]+['"]/g
+  )) {
+    const typeOnlyImport = match[1] !== undefined;
+    const specifiers = match[2];
+    if (specifiers === undefined) continue;
+    for (const specifier of specifiers.split(',')) {
+      const trimmed = specifier.trim();
+      if (!typeOnlyImport && !trimmed.startsWith('type ')) continue;
+      const parts = trimmed.replace(/^type\s+/, '').split(/\s+as\s+/);
+      const name = (parts[1] ?? parts[0] ?? '').trim();
+      if (name.length > 0) names.add(name);
+    }
+  }
+  return names;
+};
+
+const withConciseExportedRouteTypeAliases = (source: string): string => {
+  const exportedTypeNames = new Set([
+    ...[...source.matchAll(/\bexport\s+type\s+([A-Za-z_][A-Za-z0-9_]*)/g)]
+      .map((match) => match[1])
+      .filter((name): name is string => name !== undefined),
+    ...exportedTypeSpecifierNames(source),
+  ]);
+  const localTypeNames = new Set([
+    ...exportedTypeNames,
+    ...localImportedTypeNames(source),
+  ]);
+  const aliases: string[] = [];
+
+  for (const name of exportedTypeNames) {
+    const conciseName = conciseRouteAliasName(name);
+    if (
+      conciseName === undefined ||
+      exportedTypeNames.has(conciseName) ||
+      !localTypeNames.has(name)
+    ) {
+      continue;
+    }
+    exportedTypeNames.add(conciseName);
+    aliases.push(`export type ${conciseName} = ${name};`);
+  }
+
+  return aliases.length === 0
+    ? source
+    : `${source.trimEnd()}\n${aliases.join('\n')}\n`;
+};
+
+const withConciseRouteValueAliases = (source: string): string => {
+  const exportedValueNames = new Set(
+    [...source.matchAll(/\bexport\s+(?:const|function)\s+([A-Za-z_][A-Za-z0-9_]*)/g)]
+      .map((match) => match[1])
+      .filter((name): name is string => name !== undefined)
+  );
+  const aliases: string[] = [];
+
+  for (const name of exportedValueNames) {
+    const conciseName = conciseRouteAliasName(name);
+    if (conciseName === undefined || exportedValueNames.has(conciseName)) {
+      continue;
+    }
+    exportedValueNames.add(conciseName);
+    aliases.push(`export const ${conciseName}: typeof ${name} = ${name};`);
+  }
+
+  return aliases.length === 0
+    ? source
+    : `${source.trimEnd()}\n${aliases.join('\n')}\n`;
+};
+
+const withConciseRouteAliases = (source: string): string => {
+  const exportedTypeNames = new Set(
+    [...source.matchAll(/\bexport\s+type\s+([A-Za-z_][A-Za-z0-9_]*)/g)]
+      .map((match) => match[1])
+      .filter((name): name is string => name !== undefined)
+  );
+  const lines = source.split('\n');
+  const output: string[] = [];
+  let pendingAlias: ExportedTypeAliasStart | undefined;
+  const nesting = { braces: 0, brackets: 0, parentheses: 0 };
+
+  for (const line of lines) {
+    const aliasStart = pendingAlias ?? parseExportedTypeAliasStart(line);
+    if (pendingAlias === undefined && aliasStart !== undefined) {
+      nesting.braces = 0;
+      nesting.brackets = 0;
+      nesting.parentheses = 0;
+    }
+
+    output.push(line);
+
+    if (aliasStart === undefined) continue;
+
+    updateTypeAliasNesting(line, nesting);
+    if (!hasCompletedTypeAlias(line, nesting)) {
+      pendingAlias = aliasStart;
+      continue;
+    }
+
+    pendingAlias = undefined;
+    const conciseName = conciseRouteAliasName(aliasStart.name);
+    if (conciseName === undefined || exportedTypeNames.has(conciseName)) {
+      continue;
+    }
+
+    exportedTypeNames.add(conciseName);
+    output.push(
+      `export type ${conciseName}${aliasStart.typeParameters ?? ''} = ${aliasStart.name}${typeParameterArguments(aliasStart.typeParameters)};`
+    );
+  }
+
+  return withConciseRouteValueAliases(
+    withConciseExportedRouteTypeAliases(output.join('\n'))
+  );
+};
+
+const writeTypeScript = async (path: string, source: string): Promise<void> => {
+  await writeFile(path, withConciseRouteAliases(source));
+};
+
 const emitManifest = async (
   manifest: CompilerManifest,
   outDir: string
@@ -50,7 +291,7 @@ ${entries}
   }),
 } as const);
 `;
-  await writeFile(manifestFile, source);
+  await writeTypeScript(manifestFile, source);
 };
 
 const emitProfileDispatcher = async (
@@ -1273,7 +1514,7 @@ ${unaryCases('response')}
     : hasBodyMode
       ? 'false'
       : "'response'";
-  await writeFile(
+  await writeTypeScript(
     dispatcherFile,
     `import {
   ${compiledImports.join(',\n  ')},
@@ -1460,7 +1701,7 @@ const emitDispatcher = async (
         ? dispatcherBare
         : dispatcherTrusted
     : dispatcherSafe;
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/dispatcher.ts`,
     `export * from '${toModuleSpecifier(selectedDispatcher)}';\n`
   );
@@ -1605,7 +1846,7 @@ const emitDenoDispatcher = async (
       );
     }
   }
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/deno-dispatcher.ts`,
     `export * from '${toModuleSpecifier(selectedPath)}';\n`
   );
@@ -1893,7 +2134,7 @@ ${nodeFastCases}
   );`;
 
   const fetchFile = `${outDir}/fetch.ts`;
-  await writeFile(
+  await writeTypeScript(
     fetchFile,
     `import { createFetchFor, createRouteStreamFetchFor, createRouteUnaryFetchFor, createStreamFetchFor, createStreamRouteFetchFor, createUnaryFetchFor, createUnaryRouteFetchFor, fetch, type NativeFetchHandler, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamFetchHandler, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryFetchHandler, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamFetchHandler, type NativeStreamRouteFetchHandler, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryFetchHandler, type NativeUnaryRouteFetchHandler, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from '${dispatcherImport}';
 
@@ -1917,7 +2158,7 @@ export default fetch;
 `
   );
 
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/cloudflare.ts`,
     `import type { CloudflareWorker } from 'joor/runtime/cloudflare';
 import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
@@ -2054,7 +2295,7 @@ export default worker;
 `
   );
 
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
 import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
@@ -2196,7 +2437,7 @@ export default handlers;
 `
   );
 
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/vercel.ts`,
     `import type { VercelFunction } from 'joor/runtime/vercel';
 import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
@@ -2318,7 +2559,7 @@ export default vercel;
 `
   );
 
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/netlify.ts`,
     `import type { NetlifyEdgeFetchHandler } from 'joor/runtime/netlify';
 import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
@@ -2447,7 +2688,7 @@ export default edge;
 `
   );
 
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/aws-lambda.ts`,
     `import { Buffer } from 'node:buffer';
 import type { AwsLambdaHandler, AwsLambdaHttpApiHandler, AwsLambdaHttpEventV2, AwsLambdaHttpResponseV2, AwsLambdaRestApiEventV1, AwsLambdaRestApiHandler, AwsLambdaRestApiResponseV1 } from 'joor/runtime/aws-lambda';
@@ -2874,7 +3115,7 @@ export default handler;
   );
 
   const nodeFile = `${outDir}/node.ts`;
-  await writeFile(
+  await writeTypeScript(
     nodeFile,
     `import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -3599,7 +3840,7 @@ export default handler;
   );
 
   const bunFile = `${outDir}/bun.ts`;
-  await writeFile(
+  await writeTypeScript(
     bunFile,
     `import type { JsonValue } from 'joor/schema';
 import { compiledUncachedExecutionState } from 'joor/runtime/compiled';
@@ -4264,7 +4505,7 @@ export default fetch;
   );
 
   const denoFile = `${outDir}/deno.ts`;
-  await writeFile(
+  await writeTypeScript(
     denoFile,
     `${denoTransportImport}
 import { createRpcRequestPreflight } from 'joor';
@@ -4569,7 +4810,7 @@ ${indent}};`;
   const routeStreamClientBody = renderNode(tree, 2, 'stream');
   const routeStreamClientTypeBody = renderTypeNode(tree, 1, 'stream');
   const defaultUrl = config?.path ?? '/rpc';
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/client.ts`,
     `import { createManifestClient as createTransportClient, createManifestRouteProtocolRequest as createTransportRouteProtocolRequest, createManifestRouteRequest as createTransportRouteRequest, createManifestRouteStreamProtocolRequest as createTransportRouteStreamProtocolRequest, createManifestRouteStreamRequest as createTransportRouteStreamRequest, createManifestRouteUnaryProtocolRequest as createTransportRouteUnaryProtocolRequest, type RpcProtocolRequestOptions } from 'joor/client';
 import type { JoorManifestClientOptions, JoorManifestRouteBatchClientHeaders, JoorManifestRouteBatchOptions, JoorManifestRouteBatchOptionsTuple, JoorManifestRouteBatchRequest, JoorManifestRouteBatchResults, JoorManifestRouteBody, JoorManifestRouteBodyResult, JoorManifestRouteBodyResultFor, JoorManifestRouteClientArgs, JoorManifestRouteClientHeaders, JoorManifestRouteEnvelope, JoorManifestRouteEnvelopeUnion, JoorManifestRouteError, JoorManifestRouteErrorCode, JoorManifestRouteErrorDetails, JoorManifestRouteHasHeaders, JoorManifestRouteHasResponseHeaders, JoorManifestRouteHeaders, JoorManifestRouteId, JoorManifestRouteInput, JoorManifestRouteOutput, JoorManifestRouteProcedure, JoorManifestRouteProtocolBatchRequest, JoorManifestRouteProtocolBatchResults, JoorManifestRouteProtocolRequest, JoorManifestRouteProtocolRequestUnion, JoorManifestRouteRequest, JoorManifestRouteRequestOptions, JoorManifestRouteRequestUnion, JoorManifestRouteRequiresHeaders, JoorManifestRouteRequiresResponseHeaders, JoorManifestRouteResponseHeaders, JoorManifestRequiredRuntimeRequest, JoorManifestRequiredServices, JoorManifestRouteResult, JoorManifestRouteResultUnion, JoorManifestRouteRuntimeRequest, JoorManifestRouteServices, JoorManifestRouteStreamEvent, JoorManifestRouteStreamId, JoorManifestRouteStreamProtocolRequest, JoorManifestRouteStreamProtocolRequestUnion, JoorManifestRouteStreamRequest, JoorManifestRouteStreamRequestUnion, JoorManifestRouteStreamRequiredRuntimeRequest, JoorManifestRouteStreamRequiredServices, JoorManifestRouteStreamClientOptions, JoorManifestRouteUnaryId, JoorManifestRouteUnaryProcedure, JoorManifestRouteStreamProcedure, JoorManifestRouteUnaryInput, JoorManifestRouteStreamInput, JoorManifestRouteUnaryOutput, JoorManifestRouteStreamOutput, JoorManifestRouteUnaryHeaders, JoorManifestRouteStreamHeaders, JoorManifestRouteUnaryClientHeaders, JoorManifestRouteStreamClientHeaders, JoorManifestRouteUnaryResponseHeaders, JoorManifestRouteStreamResponseHeaders, JoorManifestRouteUnaryError, JoorManifestRouteStreamError, JoorManifestRouteUnaryErrorCode, JoorManifestRouteStreamErrorCode, JoorManifestRouteUnaryErrorDetails, JoorManifestRouteStreamErrorDetails, JoorManifestRouteUnaryEnvelope, JoorManifestRouteUnaryEnvelopeUnion, JoorManifestRouteUnaryResult, JoorManifestRouteUnaryResultUnion, JoorManifestRouteUnaryHasHeaders, JoorManifestRouteStreamHasHeaders, JoorManifestRouteUnaryRequiresHeaders, JoorManifestRouteStreamRequiresHeaders, JoorManifestRouteUnaryHasResponseHeaders, JoorManifestRouteStreamHasResponseHeaders, JoorManifestRouteUnaryRequiresResponseHeaders, JoorManifestRouteStreamRequiresResponseHeaders, JoorManifestRouteUnaryRequestOptions, JoorManifestRouteStreamRequestOptions, JoorManifestRouteUnaryClientArgs, JoorManifestRouteStreamClientArgs, JoorManifestRouteUnaryClientOptions, JoorManifestRouteUnaryBatchClientHeaders, JoorManifestRouteUnaryBatchOptions, JoorManifestRouteUnaryBatchOptionsTuple, JoorManifestRouteUnaryBatchRequest, JoorManifestRouteUnaryBatchResults, JoorManifestRouteUnaryBodyResult, JoorManifestRouteStreamBodyResult, JoorManifestRouteUnaryBodyResultFor, JoorManifestRouteStreamBodyResultFor, JoorManifestRouteUnaryRequest, JoorManifestRouteUnaryRequestUnion, JoorManifestRouteUnaryRequiredRuntimeRequest, JoorManifestRouteUnaryRequiredServices, JoorManifestRouteUnaryProtocolBatchRequest, JoorManifestRouteUnaryProtocolBatchResults, JoorManifestRouteUnaryProtocolRequest, JoorManifestRouteUnaryProtocolRequestUnion, JoorManifestStreamRouteClientArgs, JoorManifestStreamRouteClientHeaders, JoorManifestStreamRouteClientOptions, JoorManifestStreamRouteError, JoorManifestStreamRouteErrorCode, JoorManifestStreamRouteErrorDetails, JoorManifestStreamRouteEvent, JoorManifestStreamRouteHasHeaders, JoorManifestStreamRouteHasResponseHeaders, JoorManifestStreamRouteHeaders, JoorManifestStreamRouteInput, JoorManifestStreamRouteOutput, JoorManifestStreamRouteProcedure, JoorManifestStreamRouteRequiresHeaders, JoorManifestStreamRouteRequiresResponseHeaders, JoorManifestStreamRouteResponseHeaders, JoorManifestStreamRouteRequestOptions, JoorManifestTransportClient, JoorManifestUnaryRouteBatchClientHeaders, JoorManifestUnaryRouteBatchOptions, JoorManifestUnaryRouteBatchOptionsTuple, JoorManifestUnaryRouteClientArgs, JoorManifestUnaryRouteClientHeaders, JoorManifestUnaryRouteClientOptions, JoorManifestUnaryRouteEnvelope, JoorManifestUnaryRouteError, JoorManifestUnaryRouteErrorCode, JoorManifestUnaryRouteErrorDetails, JoorManifestUnaryRouteHasHeaders, JoorManifestUnaryRouteHasResponseHeaders, JoorManifestUnaryRouteHeaders, JoorManifestUnaryRouteInput, JoorManifestUnaryRouteOutput, JoorManifestUnaryRouteProcedure, JoorManifestUnaryRouteResponseHeaders, JoorManifestUnaryRouteResult, JoorManifestUnaryRouteRequiresHeaders, JoorManifestUnaryRouteRequiresResponseHeaders, JoorManifestUnaryRouteRequestOptions } from 'joor/manifest';
@@ -5247,7 +5488,7 @@ const emitProcedureHelper = async (
     configPath === undefined
       ? 'Record<string, never>'
       : 'JoorConfigContext<typeof config>';
-  await writeFile(
+  await writeTypeScript(
     `${outDir}/procedure.ts`,
     `import { defineProcedure } from 'joor/procedure';
 import type { JoorConfigContext } from 'joor/config';
