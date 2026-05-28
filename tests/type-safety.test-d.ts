@@ -1009,6 +1009,7 @@ import {
   type JoorManifestRouteStreamBodyResultFor,
   type JoorManifestRouteStreamBodyResultHandler,
   type JoorManifestRouteStreamEvent,
+  type JoorManifestRouteStreamSseEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
   type JoorManifestStreamProtocolRequest,
@@ -1312,6 +1313,7 @@ import {
   type RpcManifestRouteStreamBodyResultFor,
   type RpcManifestRouteStreamBodyResultHandler,
   type RpcManifestRouteStreamEvent,
+  type RpcManifestRouteStreamSseEvent,
   type RpcManifestRouteStreamProtocolRequest,
   type RpcManifestRouteStreamProtocolRequestUnion,
   type RpcManifestStreamProtocolRequest,
@@ -1480,6 +1482,7 @@ import {
   type RpcStreamRouteErrorCode,
   type RpcStreamRouteErrorDetails,
   type RpcStreamRouteEvent,
+  type RpcStreamRouteSseEvent,
   type RpcStreamRouteHasHeaders,
   type RpcStreamRouteHasResponseHeaders,
   type RpcStreamRouteHeaders,
@@ -1818,6 +1821,7 @@ import {
   type RpcManifestRouteRequestOptions as RpcSubpathManifestRouteRequestOptions,
   type RpcManifestRouteRequestUnion as RpcSubpathManifestRouteRequestUnion,
   type RpcManifestRouteStreamEvent as RpcSubpathManifestRouteStreamEvent,
+  type RpcManifestRouteStreamSseEvent as RpcSubpathManifestRouteStreamSseEvent,
   type RpcManifestRouteStreamRequest as RpcSubpathManifestRouteStreamRequest,
   type RpcManifestRouteUnaryBatchClientHeaders as RpcSubpathManifestRouteUnaryBatchClientHeaders,
   type RpcManifestRouteUnaryBatchOptions as RpcSubpathManifestRouteUnaryBatchOptions,
@@ -10402,6 +10406,29 @@ const routeStreamEvent: RpcStreamRouteEvent<Routes, 'users.watch'> = {
 routeStreamEvent.userId.toUpperCase();
 const defaultRouteStreamEvent: RpcStreamRouteEvent<Routes> = routeStreamEvent;
 defaultRouteStreamEvent.userId.toUpperCase();
+const routeStreamSseDataEvent: RpcStreamRouteSseEvent<Routes, 'users.watch'> = {
+  event: 'data',
+  data: routeStreamEvent,
+};
+routeStreamSseDataEvent.data.userId.toUpperCase();
+const routeStreamSseErrorEvent: RpcStreamRouteSseEvent<Routes, 'users.watch'> =
+  {
+    event: 'error',
+    data: {
+      ok: false,
+      id: 'users.watch',
+      traceId: 'trace-stream',
+      error: {
+        code: 'STREAM_VALIDATION_ERROR',
+        message: 'Invalid stream event',
+        status: 500,
+        details: { issues: [] },
+      },
+    },
+  };
+routeStreamSseErrorEvent.data.error.code.toUpperCase();
+// @ts-expect-error route-specific SSE error events preserve their route id.
+routeStreamSseErrorEvent.data.id = 'users.get';
 const routeUnaryOutput: RpcUnaryRouteOutput<Routes, 'users.get'> = {
   id: '1',
   name: 'Ada',
@@ -11367,18 +11394,19 @@ const _missingManifestRouteUnaryClientOptionsFor: RpcManifestRouteUnaryClientOpt
   manifest: requestTypedManifest,
   fetch: typedClientFetch,
 };
-const streamTypedClientRequestFactory: ClientRequestFactory<StreamProcedureRequest> =
-  ({ url, body, headers, baseRequest, request }) =>
-    Object.assign(
-      new Request(url, {
-        ...baseRequest,
-        ...request,
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-      }),
-      { streamRequestId: 'stream_req_1' }
-    ) as StreamProcedureRequest;
+const streamTypedClientRequestFactory: ClientRequestFactory<
+  StreamProcedureRequest
+> = ({ url, body, headers, baseRequest, request }) =>
+  Object.assign(
+    new Request(url, {
+      ...baseRequest,
+      ...request,
+      method: 'POST',
+      headers,
+      body: JSON.stringify(body),
+    }),
+    { streamRequestId: 'stream_req_1' }
+  ) as StreamProcedureRequest;
 const streamTypedClientFetch: ClientFetch<StreamProcedureRequest> = async (
   request
 ) => new Response(request.streamRequestId);
@@ -11567,8 +11595,12 @@ createRootRouteStreamClient(typedJoorManifestRouteStreamClientOptionsFor);
 createRootStreamRouteClient(typedJoorManifestStreamRouteClientOptionsFor);
 createRootRouteUnaryClient(typedJoorSubpathManifestRouteUnaryClientOptionsFor);
 createRootUnaryRouteClient(typedJoorSubpathManifestUnaryRouteClientOptionsFor);
-createRootRouteStreamClient(typedJoorSubpathManifestRouteStreamClientOptionsFor);
-createRootStreamRouteClient(typedJoorSubpathManifestStreamRouteClientOptionsFor);
+createRootRouteStreamClient(
+  typedJoorSubpathManifestRouteStreamClientOptionsFor
+);
+createRootStreamRouteClient(
+  typedJoorSubpathManifestStreamRouteClientOptionsFor
+);
 createRootManifestRouteUnaryClient(
   manifest,
   typedJoorManifestRouteUnaryClientOptions
@@ -12888,6 +12920,14 @@ const defaultManifestRouteStreamEvent: JoorManifestRouteStreamEvent<
   typeof manifest
 > = manifestStreamEvent;
 defaultManifestRouteStreamEvent.userId.toUpperCase();
+const manifestStreamSseEvent: JoorManifestRouteStreamSseEvent<
+  typeof manifest,
+  'users.watch'
+> = {
+  event: 'data',
+  data: manifestStreamEvent,
+};
+manifestStreamSseEvent.data.userId.toUpperCase();
 const manifestProtocolRequest: JoorManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'
@@ -13860,6 +13900,19 @@ const rpcSubpathManifestRouteStreamEvent: RpcSubpathManifestRouteStreamEvent<
   'users.watch'
 > = publicManifestRouteStreamEvent;
 rpcSubpathManifestRouteStreamEvent.userId.toUpperCase();
+const publicManifestRouteStreamSseEvent: RpcManifestRouteStreamSseEvent<
+  typeof manifest,
+  'users.watch'
+> = {
+  event: 'data',
+  data: publicManifestRouteStreamEvent,
+};
+const rpcSubpathManifestRouteStreamSseEvent: RpcSubpathManifestRouteStreamSseEvent<
+  typeof manifest,
+  'users.watch'
+> = publicManifestRouteStreamSseEvent;
+publicManifestRouteStreamSseEvent.data.userId.toUpperCase();
+rpcSubpathManifestRouteStreamSseEvent.data.userId.toUpperCase();
 const publicManifestProtocolRequest: RpcManifestRouteProtocolRequest<
   typeof manifest,
   'users.get'

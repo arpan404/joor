@@ -13,7 +13,7 @@ import type {
   ProcedureErrorCode,
   ProcedureErrorDetails,
   ProcedureRuntime,
-  StreamEvent,
+  StreamEvent as ProcedureStreamEvent,
 } from '../procedure/types.js';
 import type {
   RpcEnvelope,
@@ -27,6 +27,7 @@ import type {
   RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
 } from './dispatcher.js';
+import type { StreamEvent as RpcSseEvent } from './stream.js';
 
 type IsExactRequest<TRequest extends Request> = [Request] extends [TRequest]
   ? [TRequest] extends [Request]
@@ -172,17 +173,17 @@ export type RpcRouteErrorDetails<
 export type RpcRouteStreamEvent<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes> = RpcRouteStreamId<TRoutes>,
-> = StreamEvent<RpcRouteProcedure<TRoutes, TId>>;
+> = ProcedureStreamEvent<RpcRouteProcedure<TRoutes, TId>>;
 
-export type RpcUnaryProcedure<TProcedure> = [StreamEvent<TProcedure>] extends [
-  never,
-]
+export type RpcUnaryProcedure<TProcedure> = [
+  ProcedureStreamEvent<TProcedure>,
+] extends [never]
   ? TProcedure
   : never;
 
-export type RpcStreamProcedure<TProcedure> = [StreamEvent<TProcedure>] extends [
-  never,
-]
+export type RpcStreamProcedure<TProcedure> = [
+  ProcedureStreamEvent<TProcedure>,
+] extends [never]
   ? never
   : TProcedure;
 
@@ -196,8 +197,7 @@ export type RpcRouteUnaryId<TRoutes extends RpcRouteMap> = {
 
 export type RpcUnaryRouteId<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryId<TRoutes>;
-export type RpcUnaryId<TRoutes extends RpcRouteMap> =
-  RpcRouteUnaryId<TRoutes>;
+export type RpcUnaryId<TRoutes extends RpcRouteMap> = RpcRouteUnaryId<TRoutes>;
 
 export type RpcRouteStreamId<TRoutes extends RpcRouteMap> = Exclude<
   RpcRouteId<TRoutes>,
@@ -597,6 +597,24 @@ export type RpcStreamEvent<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
 > = RpcRouteStreamEvent<TRoutes, TId>;
+
+export type RpcRouteStreamSseEvent<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+> = RpcSseEvent<
+  RpcRouteStreamEvent<TRoutes, TId> & JsonValue,
+  TId,
+  RpcRouteStreamError<TRoutes, TId>
+>;
+
+export type RpcStreamRouteSseEvent<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+> = RpcRouteStreamSseEvent<TRoutes, TId>;
+export type RpcStreamSseEvent<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+> = RpcRouteStreamSseEvent<TRoutes, TId>;
 
 export type RpcManifestRoutes<TManifest extends JoorManifest> =
   JoorManifestRoutes<TManifest>;
@@ -1159,6 +1177,23 @@ export type RpcManifestStreamEvent<
     RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteStreamEvent<TManifest, TId>;
 
+export type RpcManifestRouteStreamSseEvent<
+  TManifest extends JoorManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> =
+    RpcManifestRouteStreamId<TManifest>,
+> = RpcRouteStreamSseEvent<JoorManifestRoutes<TManifest>, TId>;
+
+export type RpcManifestStreamRouteSseEvent<
+  TManifest extends JoorManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> =
+    RpcManifestRouteStreamId<TManifest>,
+> = RpcManifestRouteStreamSseEvent<TManifest, TId>;
+export type RpcManifestStreamSseEvent<
+  TManifest extends JoorManifest,
+  TId extends RpcManifestRouteStreamId<TManifest> =
+    RpcManifestRouteStreamId<TManifest>,
+> = RpcManifestRouteStreamSseEvent<TManifest, TId>;
+
 type RpcRouteEnvelopeFor<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes>,
@@ -1370,12 +1405,13 @@ export type RpcRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> = <
 export type RpcProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
   RpcRouteProtocolRequestBuilder<TRoutes>;
 
-export type RpcRouteUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
-  <TId extends RpcRouteUnaryId<TRoutes>>(
-    id: TId,
-    input: RpcRouteUnaryInput<TRoutes, TId>,
-    options?: RpcProtocolRequestOptions
-  ) => RpcRouteUnaryProtocolRequest<TRoutes, TId>;
+export type RpcRouteUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> = <
+  TId extends RpcRouteUnaryId<TRoutes>,
+>(
+  id: TId,
+  input: RpcRouteUnaryInput<TRoutes, TId>,
+  options?: RpcProtocolRequestOptions
+) => RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 
 export type RpcUnaryRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
   RpcRouteUnaryProtocolRequestBuilder<TRoutes>;
@@ -2077,9 +2113,8 @@ export type RpcRouteStreamBodyResult<
 export type RpcStreamRouteBodyResult<
   TRoutes extends RpcRouteMap = RpcRouteMap,
 > = RpcRouteStreamBodyResult<TRoutes>;
-export type RpcStreamBodyResult<
-  TRoutes extends RpcRouteMap = RpcRouteMap,
-> = RpcRouteStreamBodyResult<TRoutes>;
+export type RpcStreamBodyResult<TRoutes extends RpcRouteMap = RpcRouteMap> =
+  RpcRouteStreamBodyResult<TRoutes>;
 
 export type RpcManifestRouteBody<TManifest extends JoorManifest> = RpcRouteBody<
   JoorManifestRoutes<TManifest>
@@ -3287,7 +3322,9 @@ export interface LegacyRpcTransportClient {
     id: string,
     input: ProcedureInput<RpcStreamProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcStreamProcedure<TProcedure>>
-  ) => AsyncIterable<StreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue>;
+  ) => AsyncIterable<
+    ProcedureStreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue
+  >;
 }
 
 export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
@@ -3413,9 +3450,8 @@ export type RpcManifestClientOptionsFor<
   TRequest extends Request = RpcManifestRequiredRuntimeRequest<TManifest>,
 > = RpcClientOptionsFor<TManifest, TRequest>;
 
-export type RpcRouteUnaryClientOptions<
-  TRequest extends Request = Request,
-> = ClientOptions<undefined, TRequest>;
+export type RpcRouteUnaryClientOptions<TRequest extends Request = Request> =
+  ClientOptions<undefined, TRequest>;
 
 export type RpcUnaryRouteClientOptions<TRequest extends Request = Request> =
   RpcRouteUnaryClientOptions<TRequest>;
@@ -3423,9 +3459,8 @@ export type RpcUnaryRouteClientOptions<TRequest extends Request = Request> =
 export type RpcUnaryClientOptions<TRequest extends Request = Request> =
   RpcRouteUnaryClientOptions<TRequest>;
 
-export type RpcRouteStreamClientOptions<
-  TRequest extends Request = Request,
-> = ClientOptions<undefined, TRequest>;
+export type RpcRouteStreamClientOptions<TRequest extends Request = Request> =
+  ClientOptions<undefined, TRequest>;
 
 export type RpcStreamRouteClientOptions<TRequest extends Request = Request> =
   RpcRouteStreamClientOptions<TRequest>;
@@ -3834,7 +3869,7 @@ export function createClient<TRequest extends Request = Request>(
     ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
       : [ClientRequestOptions<TProcedure>]
-  ): AsyncIterable<StreamEvent<TProcedure> & JsonValue> => {
+  ): AsyncIterable<ProcedureStreamEvent<TProcedure> & JsonValue> => {
     if (manifest !== undefined) {
       assertManifestRouteRequestKind(manifest, id, 'stream');
     }
@@ -3863,7 +3898,7 @@ export function createClient<TRequest extends Request = Request>(
         yield* parseSse<JsonValue>(
           response,
           maxStreamEventBytes
-        ) as AsyncIterable<StreamEvent<TProcedure> & JsonValue>;
+        ) as AsyncIterable<ProcedureStreamEvent<TProcedure> & JsonValue>;
       },
     };
   };
