@@ -11010,13 +11010,28 @@ const compilerSubpathBuildResult: CompilerSubpathBuildResult = {
   artifacts: {
     manifest: '/tmp/joor-app/.joor/manifest.ts',
     dispatcher: '/tmp/joor-app/.joor/dispatcher.ts',
+    dispatcherSafe: '/tmp/joor-app/.joor/dispatcher.safe.ts',
+    dispatcherStreaming: '/tmp/joor-app/.joor/dispatcher.streaming.ts',
+    denoDispatcher: '/tmp/joor-app/.joor/deno-dispatcher.ts',
+    denoDispatcherSafe: '/tmp/joor-app/.joor/deno-dispatcher.safe.ts',
     client: '/tmp/joor-app/.joor/client.ts',
+    fetch: '/tmp/joor-app/.joor/fetch.ts',
+    cloudflare: '/tmp/joor-app/.joor/cloudflare.ts',
+    next: '/tmp/joor-app/.joor/next.ts',
+    vercel: '/tmp/joor-app/.joor/vercel.ts',
+    netlify: '/tmp/joor-app/.joor/netlify.ts',
+    awsLambda: '/tmp/joor-app/.joor/aws-lambda.ts',
+    node: '/tmp/joor-app/.joor/node.ts',
+    bun: '/tmp/joor-app/.joor/bun.ts',
+    deno: '/tmp/joor-app/.joor/deno.ts',
+    procedure: '/tmp/joor-app/.joor/procedure.ts',
     openapi: '/tmp/joor-app/.joor/openapi.json',
     aiDocs: '/tmp/joor-app/.joor/ai-docs.json',
   },
 };
 compilerSubpathBuildResult.outDir.toUpperCase();
 compilerSubpathBuildResult.configPath?.toUpperCase();
+compilerSubpathBuildResult.artifacts.dispatcherSafe.toUpperCase();
 compilerSubpathBuildResult.artifacts.openapi.toUpperCase();
 // @ts-expect-error compiler build results are readonly.
 compilerSubpathBuildResult.outDir = '/tmp/other/.joor';

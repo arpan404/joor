@@ -18,7 +18,21 @@ export interface BuildResult {
   readonly artifacts: {
     readonly manifest: string;
     readonly dispatcher: string;
+    readonly dispatcherSafe: string;
+    readonly dispatcherStreaming: string;
+    readonly denoDispatcher: string;
+    readonly denoDispatcherSafe: string;
     readonly client: string;
+    readonly fetch: string;
+    readonly cloudflare: string;
+    readonly next: string;
+    readonly vercel: string;
+    readonly netlify: string;
+    readonly awsLambda: string;
+    readonly node: string;
+    readonly bun: string;
+    readonly deno: string;
+    readonly procedure: string;
     readonly openapi: string;
     readonly aiDocs: string;
   };
@@ -80,7 +94,21 @@ export const build = async (options: BuildOptions): Promise<BuildResult> => {
     artifacts: {
       manifest: join(outDir, 'manifest.ts'),
       dispatcher: join(outDir, 'dispatcher.ts'),
+      dispatcherSafe: join(outDir, 'dispatcher.safe.ts'),
+      dispatcherStreaming: join(outDir, 'dispatcher.streaming.ts'),
+      denoDispatcher: join(outDir, 'deno-dispatcher.ts'),
+      denoDispatcherSafe: join(outDir, 'deno-dispatcher.safe.ts'),
       client: join(outDir, 'client.ts'),
+      fetch: join(outDir, 'fetch.ts'),
+      cloudflare: join(outDir, 'cloudflare.ts'),
+      next: join(outDir, 'next.ts'),
+      vercel: join(outDir, 'vercel.ts'),
+      netlify: join(outDir, 'netlify.ts'),
+      awsLambda: join(outDir, 'aws-lambda.ts'),
+      node: join(outDir, 'node.ts'),
+      bun: join(outDir, 'bun.ts'),
+      deno: join(outDir, 'deno.ts'),
+      procedure: join(outDir, 'procedure.ts'),
       openapi: join(outDir, 'openapi.json'),
       aiDocs: join(outDir, 'ai-docs.json'),
     },

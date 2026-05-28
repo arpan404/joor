@@ -2028,13 +2028,28 @@ const packageSubpathBuildResult: BuildResult = {
   artifacts: {
     manifest: '/tmp/joor/.joor/manifest.ts',
     dispatcher: '/tmp/joor/.joor/dispatcher.ts',
+    dispatcherSafe: '/tmp/joor/.joor/dispatcher.safe.ts',
+    dispatcherStreaming: '/tmp/joor/.joor/dispatcher.streaming.ts',
+    denoDispatcher: '/tmp/joor/.joor/deno-dispatcher.ts',
+    denoDispatcherSafe: '/tmp/joor/.joor/deno-dispatcher.safe.ts',
     client: '/tmp/joor/.joor/client.ts',
+    fetch: '/tmp/joor/.joor/fetch.ts',
+    cloudflare: '/tmp/joor/.joor/cloudflare.ts',
+    next: '/tmp/joor/.joor/next.ts',
+    vercel: '/tmp/joor/.joor/vercel.ts',
+    netlify: '/tmp/joor/.joor/netlify.ts',
+    awsLambda: '/tmp/joor/.joor/aws-lambda.ts',
+    node: '/tmp/joor/.joor/node.ts',
+    bun: '/tmp/joor/.joor/bun.ts',
+    deno: '/tmp/joor/.joor/deno.ts',
+    procedure: '/tmp/joor/.joor/procedure.ts',
     openapi: '/tmp/joor/.joor/openapi.json',
     aiDocs: '/tmp/joor/.joor/ai-docs.json',
   },
 };
 packageSubpathBuildResult.entry.toUpperCase();
 packageSubpathBuildResult.artifacts.aiDocs.toUpperCase();
+packageSubpathBuildResult.artifacts.denoDispatcherSafe.toUpperCase();
 compiledCreateProcedureCacheKey(
   'users.get',
   ['input.id'],
