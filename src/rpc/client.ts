@@ -1398,7 +1398,7 @@ export type RpcRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> = <
   TId extends RpcRouteId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcRouteProtocolRequest<TRoutes, TId>;
 
@@ -1409,7 +1409,7 @@ export type RpcRouteUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> = <
   TId extends RpcRouteUnaryId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteUnaryInput<TRoutes, TId>,
+  input: RpcRouteUnaryInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 
@@ -1422,7 +1422,7 @@ export type RpcUnaryProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
 export type RpcRouteStreamProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
   <TId extends RpcRouteStreamId<TRoutes>>(
     id: TId,
-    input: RpcRouteStreamInput<TRoutes, TId>,
+    input: RpcRouteStreamInput<TRoutes, NoInfer<TId>>,
     options?: RpcProtocolRequestOptions
   ) => RpcRouteStreamProtocolRequest<TRoutes, TId>;
 
@@ -1432,11 +1432,35 @@ export type RpcStreamRouteProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
 export type RpcStreamProtocolRequestBuilder<TRoutes extends RpcRouteMap> =
   RpcRouteStreamProtocolRequestBuilder<TRoutes>;
 
+type RpcRouteProtocolRequestArgs<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteId<TRoutes>]: readonly [
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    options?: RpcProtocolRequestOptions,
+  ];
+}[RpcRouteId<TRoutes>];
+
+type RpcRouteUnaryProtocolRequestArgs<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteUnaryId<TRoutes>]: readonly [
+    id: TId,
+    input: RpcRouteUnaryInput<TRoutes, TId>,
+    options?: RpcProtocolRequestOptions,
+  ];
+}[RpcRouteUnaryId<TRoutes>];
+
+type RpcRouteStreamProtocolRequestArgs<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteStreamId<TRoutes>]: readonly [
+    id: TId,
+    input: RpcRouteStreamInput<TRoutes, TId>,
+    options?: RpcProtocolRequestOptions,
+  ];
+}[RpcRouteStreamId<TRoutes>];
+
 export type RpcRouteStreamRequestBuilder<TRoutes extends RpcRouteMap> = <
   TId extends RpcRouteStreamId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteStreamInput<TRoutes, TId>,
+  input: RpcRouteStreamInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcRouteStreamRequest<TRoutes, TId>;
 
@@ -1450,7 +1474,7 @@ export type RpcManifestRouteProtocolRequestBuilder<
 > = <TId extends RpcManifestRouteId<TManifest>>(
   manifest: TManifest,
   id: TId,
-  input: RpcManifestRouteInput<TManifest, TId>,
+  input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcManifestRouteProtocolRequest<TManifest, TId>;
 
@@ -1462,7 +1486,7 @@ export type RpcManifestRouteUnaryProtocolRequestBuilder<
 > = <TId extends RpcManifestRouteUnaryId<TManifest>>(
   manifest: TManifest,
   id: TId,
-  input: RpcManifestRouteUnaryInput<TManifest, TId>,
+  input: RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
 
@@ -1479,7 +1503,7 @@ export type RpcManifestRouteStreamProtocolRequestBuilder<
 > = <TId extends RpcManifestRouteStreamId<TManifest>>(
   manifest: TManifest,
   id: TId,
-  input: RpcManifestRouteStreamInput<TManifest, TId>,
+  input: RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
 
@@ -1496,7 +1520,7 @@ export type RpcManifestRouteStreamRequestBuilder<
 > = <TId extends RpcManifestRouteStreamId<TManifest>>(
   manifest: TManifest,
   id: TId,
-  input: RpcManifestRouteStreamInput<TManifest, TId>,
+  input: RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ) => RpcManifestRouteStreamRequest<TManifest, TId>;
 
@@ -1539,10 +1563,15 @@ const assertManifestRouteRequestKind = (
 
 export function createRouteProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
+>(
+  ...args: RpcRouteProtocolRequestArgs<TRoutes>
+): RpcRouteProtocolRequestUnion<TRoutes>;
+export function createRouteProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcRouteProtocolRequest<TRoutes, TId>;
 export function createRouteProtocolRequest(
@@ -1558,10 +1587,15 @@ export const createProtocolRequest: typeof createRouteProtocolRequest =
 
 export function createRouteUnaryProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+>(
+  ...args: RpcRouteUnaryProtocolRequestArgs<TRoutes>
+): RpcRouteUnaryProtocolRequestUnion<TRoutes>;
+export function createRouteUnaryProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcRouteUnaryProtocolRequest<TRoutes, TId>;
 export function createRouteUnaryProtocolRequest(
@@ -1580,10 +1614,15 @@ export const createUnaryProtocolRequest: typeof createRouteUnaryProtocolRequest 
 
 export function createRouteStreamProtocolRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+>(
+  ...args: RpcRouteStreamProtocolRequestArgs<TRoutes>
+): RpcRouteStreamProtocolRequestUnion<TRoutes>;
+export function createRouteStreamProtocolRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcRouteStreamProtocolRequest<TRoutes, TId>;
 export function createRouteStreamProtocolRequest(
@@ -1608,7 +1647,7 @@ export function createManifestRouteProtocolRequest<
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteProtocolRequest<TManifest, TId>;
 export function createManifestRouteProtocolRequest(
@@ -1632,7 +1671,7 @@ export function createManifestRouteUnaryProtocolRequest<
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteUnaryProtocolRequest<TManifest, TId>;
 export function createManifestRouteUnaryProtocolRequest(
@@ -1658,7 +1697,7 @@ export function createManifestRouteStreamProtocolRequest<
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteStreamProtocolRequest<TManifest, TId>;
 export function createManifestRouteStreamProtocolRequest(
@@ -1679,10 +1718,15 @@ export const createManifestStreamProtocolRequest: typeof createManifestRouteStre
 
 export function createRouteStreamRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
+>(
+  ...args: RpcRouteStreamProtocolRequestArgs<TRoutes>
+): RpcRouteStreamRequestUnion<TRoutes>;
+export function createRouteStreamRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcRouteStreamRequest<TRoutes, TId>;
 export function createRouteStreamRequest(
@@ -1705,7 +1749,7 @@ export function createManifestRouteStreamRequest<
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, NoInfer<TId>>,
   options?: RpcProtocolRequestOptions
 ): RpcManifestRouteStreamRequest<TManifest, TId>;
 export function createManifestRouteStreamRequest(
@@ -3129,12 +3173,22 @@ export type RpcManifestStreamClientArgs<
     RpcManifestRouteStreamId<TManifest>,
 > = RpcManifestRouteStreamClientArgs<TManifest, TId>;
 
+type RpcRouteRequestArgs<TRoutes extends RpcRouteMap> = {
+  [TId in RpcRouteUnaryId<TRoutes>]: readonly [
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>,
+  ];
+}[RpcRouteUnaryId<TRoutes>];
+
 export type RpcRouteRequestBuilder<TRoutes extends RpcRouteMap> = <
   TId extends RpcRouteUnaryId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
-  ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+  ...options: ClientRequestOptionsTuple<
+    RpcRouteProcedure<TRoutes, NoInfer<TId>>
+  >
 ) => RpcRouteRequest<TRoutes, TId>;
 
 export type RpcRouteUnaryRequestBuilder<TRoutes extends RpcRouteMap> =
@@ -3150,9 +3204,9 @@ export type RpcManifestRouteRequestBuilder<TManifest extends JoorManifest> = <
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcManifestRouteInput<TManifest, TId>,
+  input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
   ...options: ClientRequestOptionsTuple<
-    RpcManifestRouteProcedure<TManifest, TId>
+    RpcManifestRouteProcedure<TManifest, NoInfer<TId>>
   >
 ) => RpcManifestRouteRequest<TManifest, TId>;
 
@@ -3187,11 +3241,18 @@ const createPendingRpcRequest = <TProcedure, TId extends string>(
 
 export function createRouteRequest<
   TRoutes extends RpcRouteMap,
-  TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
+>(
+  ...args: RpcRouteRequestArgs<TRoutes>
+): RpcRouteRequestUnion<TRoutes>;
+export function createRouteRequest<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes>,
 >(
   id: TId,
-  input: RpcRouteInput<TRoutes, TId>,
-  ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+  ...options: ClientRequestOptionsTuple<
+    RpcRouteProcedure<TRoutes, NoInfer<TId>>
+  >
 ): RpcRouteRequest<TRoutes, TId>;
 export function createRouteRequest(
   id: string,
@@ -3226,9 +3287,9 @@ export function createManifestRouteRequest<
 >(
   manifest: TManifest,
   id: TId,
-  input: RpcRouteInput<JoorManifestRoutes<TManifest>, TId>,
+  input: RpcRouteInput<JoorManifestRoutes<TManifest>, NoInfer<TId>>,
   ...options: ClientRequestOptionsTuple<
-    RpcRouteProcedure<JoorManifestRoutes<TManifest>, TId>
+    RpcRouteProcedure<JoorManifestRoutes<TManifest>, NoInfer<TId>>
   >
 ): RpcManifestRouteRequest<TManifest, TId>;
 export function createManifestRouteRequest(
@@ -3341,13 +3402,17 @@ export interface LegacyRpcTransportClient {
 export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
   readonly call: <TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
-    input: RpcRouteInput<TRoutes, TId>,
-    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+    input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+    ...options: ClientRequestOptionsTuple<
+      RpcRouteProcedure<TRoutes, NoInfer<TId>>
+    >
   ) => Promise<RpcRouteEnvelope<TRoutes, TId>>;
   readonly request: <TId extends RpcRouteUnaryId<TRoutes>>(
     id: TId,
-    input: RpcRouteInput<TRoutes, TId>,
-    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+    input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+    ...options: ClientRequestOptionsTuple<
+      RpcRouteProcedure<TRoutes, NoInfer<TId>>
+    >
   ) => RpcRouteRequest<TRoutes, TId>;
   readonly batch: <
     const TRequests extends readonly [...RpcRouteBatchRequestUnion<TRoutes>[]],
@@ -3360,13 +3425,17 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
 export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
   readonly stream: <TId extends RpcRouteStreamId<TRoutes>>(
     id: TId,
-    input: RpcRouteInput<TRoutes, TId>,
-    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+    input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+    ...options: ClientRequestOptionsTuple<
+      RpcRouteProcedure<TRoutes, NoInfer<TId>>
+    >
   ) => AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
   readonly streamEvents: <TId extends RpcRouteStreamId<TRoutes>>(
     id: TId,
-    input: RpcRouteInput<TRoutes, TId>,
-    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+    input: RpcRouteInput<TRoutes, NoInfer<TId>>,
+    ...options: ClientRequestOptionsTuple<
+      RpcRouteProcedure<TRoutes, NoInfer<TId>>
+    >
   ) => AsyncIterable<RpcRouteStreamSseEvent<TRoutes, TId>>;
 }
 
@@ -3398,16 +3467,16 @@ export interface RpcManifestRouteUnaryTransportClient<
 > {
   readonly call: <TId extends RpcManifestRouteUnaryId<TManifest>>(
     id: TId,
-    input: RpcManifestRouteInput<TManifest, TId>,
+    input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
     ...options: ClientRequestOptionsTuple<
-      RpcManifestRouteProcedure<TManifest, TId>
+      RpcManifestRouteProcedure<TManifest, NoInfer<TId>>
     >
   ) => Promise<RpcManifestRouteEnvelope<TManifest, TId>>;
   readonly request: <TId extends RpcManifestRouteUnaryId<TManifest>>(
     id: TId,
-    input: RpcManifestRouteInput<TManifest, TId>,
+    input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
     ...options: ClientRequestOptionsTuple<
-      RpcManifestRouteProcedure<TManifest, TId>
+      RpcManifestRouteProcedure<TManifest, NoInfer<TId>>
     >
   ) => RpcManifestRouteRequest<TManifest, TId>;
   readonly batch: <
@@ -3432,16 +3501,16 @@ export interface RpcManifestRouteStreamTransportClient<
 > {
   readonly stream: <TId extends RpcManifestRouteStreamId<TManifest>>(
     id: TId,
-    input: RpcManifestRouteInput<TManifest, TId>,
+    input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
     ...options: ClientRequestOptionsTuple<
-      RpcManifestRouteProcedure<TManifest, TId>
+      RpcManifestRouteProcedure<TManifest, NoInfer<TId>>
     >
   ) => AsyncIterable<RpcManifestRouteStreamEvent<TManifest, TId> & JsonValue>;
   readonly streamEvents: <TId extends RpcManifestRouteStreamId<TManifest>>(
     id: TId,
-    input: RpcManifestRouteInput<TManifest, TId>,
+    input: RpcManifestRouteInput<TManifest, NoInfer<TId>>,
     ...options: ClientRequestOptionsTuple<
-      RpcManifestRouteProcedure<TManifest, TId>
+      RpcManifestRouteProcedure<TManifest, NoInfer<TId>>
     >
   ) => AsyncIterable<RpcManifestRouteStreamSseEvent<TManifest, TId>>;
 }

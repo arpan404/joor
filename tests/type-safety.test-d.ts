@@ -31527,20 +31527,47 @@ createRouteProtocolRequest<Routes, 'users.get'>(
   // @ts-expect-error standalone protocol request builders validate input by id.
   { userId: '1' }
 );
+createRouteProtocolRequest<Routes>(
+  'users.get',
+  // @ts-expect-error standalone protocol request builders infer the id from the selected route, not the input.
+  { userId: '1' }
+);
 createRouteUnaryProtocolRequest<Routes>(
   // @ts-expect-error unary protocol request builders reject stream route ids.
   'users.watch',
   { userId: '1' }
+);
+createRouteUnaryProtocolRequest<Routes>(
+  'users.authenticated',
+  // @ts-expect-error unary protocol request builders keep id/input correlated when the route id is inferred.
+  { id: '1' }
 );
 createRouteStreamProtocolRequest<Routes>(
   // @ts-expect-error stream protocol request builders reject unary route ids.
   'users.get',
   { id: '1' }
 );
+createRouteStreamProtocolRequest<Routes>(
+  'users.watch',
+  // @ts-expect-error stream protocol request builders keep id/input correlated when the route id is inferred.
+  { id: '1' }
+);
 createManifestRouteProtocolRequest(
   manifest,
   // @ts-expect-error manifest protocol request builders reject unknown route ids.
   'users.missing',
+  { id: '1' }
+);
+createManifestRouteProtocolRequest(
+  manifest,
+  'users.get',
+  // @ts-expect-error manifest protocol request builders infer the id from the selected route, not the input.
+  { userId: '1' }
+);
+createManifestRouteStreamProtocolRequest(
+  manifest,
+  'users.watch',
+  // @ts-expect-error manifest stream protocol request builders keep id/input correlated.
   { id: '1' }
 );
 const typedRouteRequest: RpcRouteRequest<Routes, 'users.get'> = routeRequest;
@@ -31607,10 +31634,21 @@ createRouteRequest<Routes, 'users.get'>(
 );
 // @ts-expect-error standalone route request builders reject stream route ids.
 createRouteRequest<Routes, 'users.watch'>('users.watch', { userId: '1' });
+createRouteRequest<Routes>(
+  'users.authenticated',
+  // @ts-expect-error standalone route request builders infer the id from the selected route, not the input.
+  { id: '1' }
+);
 createManifestRouteRequest(
   manifest,
   // @ts-expect-error manifest route request builders reject unknown route ids.
   'users.missing',
+  { id: '1' }
+);
+createManifestRouteRequest(
+  manifest,
+  'users.authenticated',
+  // @ts-expect-error manifest route request builders infer the id from the selected route, not the input.
   { id: '1' }
 );
 const typedUnaryRouteRequest: RpcUnaryRouteRequest<Routes, 'users.get'> =
@@ -31636,6 +31674,27 @@ unaryRouteRequestUnion.id.toUpperCase();
 
 // @ts-expect-error request ids preserve the selected route literal.
 const _wrongRouteRequestId: 'users.authenticated' = routeRequest.id;
+
+routeClient.call(
+  'users.authenticated',
+  // @ts-expect-error route client calls infer the id from the selected route, not the input.
+  { id: '1' }
+);
+routeClient.request(
+  'users.authenticated',
+  // @ts-expect-error route client requests infer the id from the selected route, not the input.
+  { id: '1' }
+);
+routeClient.stream(
+  'users.watch',
+  // @ts-expect-error route stream clients infer the id from the selected route, not the input.
+  { id: '1' }
+);
+routeClient.streamEvents(
+  'users.watch',
+  // @ts-expect-error route stream event clients infer the id from the selected route, not the input.
+  { id: '1' }
+);
 
 routeClient
   .call('users.get', { id: '1' }, { headers: { 'x-tenant-id': 'tenant-1' } })
