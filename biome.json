@@ -16,7 +16,8 @@
       "!.cache",
       "!.turbo",
       "!.vercel",
-      "!**/*.mp4"
+      "!**/*.mp4",
+      "!tests/type-safety.test-d.ts"
     ]
   },
   "formatter": {
