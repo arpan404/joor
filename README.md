@@ -2,14 +2,16 @@
 
 Joor is a Fetch-native, AOT-generated, type-safe RPC backend framework for AI-native TypeScript systems.
 
-The first vertical slice is intentionally small and strict:
+The framework is built around a strict route contract:
 
 - file-routed procedures with one `*.rpc.ts` file per operation
-- ahead-of-time manifest, dispatcher, typed client, OpenAPI JSON, and AI docs JSON
-- O(1) procedure dispatch through generated manifest lookup
-- unary RPC, batch RPC, and typed SSE streaming
+- ahead-of-time manifest, dispatcher, native adapters, typed client, OpenAPI JSON, and AI docs JSON
+- O(1) procedure dispatch through generated route-id lookup
+- unary RPC, batch RPC, typed SSE streaming, and route-specific transport surfaces
 - Joor-owned schema DSL with interpreted validation and OpenAPI conversion
 - layered typed context through plugins
+- typed headers, response headers, errors, auth, rate limits, caching, and custom request/context preservation
+- Fetch, Node, Express, Fastify, Elysia, Hono, Koa, Bun, Deno, AWS Lambda, Cloudflare Workers, Next.js, Vercel, and Netlify runtime adapters
 - Biome lint, oxfmt formatting, strict `tsc`, and Vitest
 
 ## Quickstart
@@ -226,6 +228,12 @@ Compiled runtime helpers mirror the same request typing with `createCompiledRpcH
 Generated native dispatcher, Bun, Deno, Node, AWS Lambda, Cloudflare, Next.js, Vercel, and Netlify entrypoints also export typed factory helpers such as `createFetchFor<Request>()`, `createRouteUnaryFetchFor<Request>()`/`createUnaryFetchFor<Request>()`, `.joor/node`'s `createHandler<Incoming, Outgoing>()`, `.joor/aws-lambda`'s `createRouteUnaryAwsLambdaHandlerFor<Event, Request>()({ createRequest })`, `.joor/cloudflare`'s `createRouteUnaryWorkerFor<Env, Context, Request>()`, and `.joor/next`'s `createRouteStreamHandlersFor<Context, Request>()` so generated handlers can preserve extended request types while keeping route-first and concise naming available in generated code. Generated dispatchers expose the same split at lower levels through `nativeUnaryTransport`, `nativeStreamTransport`, `nativeUnaryBody`, `nativeStreamBody`, and their `NativeUnary*`/`NativeStream*` result and handler aliases.
 Clients can also keep custom request types by pairing `ClientFetch<Request>()` with a matching `createRequest` factory, so the client transport never widens a typed fetch back to a plain `Request`. Route-specific client constructors, including `createRouteUnaryClient()`, `createRouteStreamClient()`, `createManifestRouteUnaryClient()`, and `createManifestRouteStreamClient()`, expose only the unary or streaming methods for that surface while preserving manifest-derived request defaults. Streaming clients keep `stream()` as the data-only iterator and expose `streamEvents()` for typed raw SSE `data`/`error`/`done` envelopes; generated callable stream leaves mirror that as `client.users.watch.events(input)`. Generated `.joor/client` entrypoints mirror the unary/stream split with `createRouteUnaryClient()`, `createRouteStreamClient()`, `routeUnaryClient`, and `routeStreamClient` callable trees that include only the matching route leaves. Generated `ai-docs.json` and OpenAPI `x-joor-procedures` metadata also record each route's generated client path and callable/transport methods, including streaming `events` and `streamEvents` surfaces, so agents can choose the typed route API without inferring it from prose.
 
+## Type Safety Contract
+
+Route ids are the source of truth for every route-specific type. Client calls, request builders, protocol request builders, batches, generated callable leaves, generated native dispatchers, and route-unary or route-stream adapters bind input, headers, response headers, errors, stream events, and result envelopes to the selected route id. Mismatched route ids and inputs are rejected at compile time on both handwritten manifest clients and generated `.joor/*` entrypoints.
+
+Unary-only surfaces do not expose stream calls, stream-only surfaces do not expose unary calls, and generated route-specific exports keep the same split across transport handlers, body handlers, platform factories, and native dispatch helpers. Absolute RPC paths use the `RpcPath` template type so compiler docs, OpenAPI metadata, runtime adapters, and package subpaths reject relative paths before runtime.
+
 ## Next.js API Routes
 
 For the Next.js App Router, create `app/api/rpc/route.ts` and export handlers from the generated manifest:
@@ -399,7 +407,7 @@ npm run build
 
 ## Status
 
-Joor is pre-release. The current implementation is the safe RPC foundation: schema validation, procedure definition, compiler output, Fetch runtime, typed client, OpenAPI, and AI-readable docs.
+Joor is pre-release, but the runtime surface is broader than a prototype slice: schema validation, procedure definition, generated dispatchers, generated native adapters, typed clients, route-specific transports, framework adapters, OpenAPI, and AI-readable docs are implemented and covered by strict TypeScript and runtime tests.
 
 ## License
 
