@@ -505,6 +505,7 @@ import {
   createAiDocs,
   createOpenApiDocument,
   type AiDocsOptions,
+  type BuildDispatcherProfile,
   type BuildResult,
   type OpenApiDocumentOptions,
 } from 'joor/compiler';
@@ -2025,6 +2026,14 @@ createOpenApiDocument(
 const packageSubpathBuildResult: BuildResult = {
   entry: '/tmp/joor/rpc',
   outDir: '/tmp/joor/.joor',
+  profiles: {
+    dispatcher: 'safe',
+    denoDispatcher: 'safe',
+  },
+  selectedArtifacts: {
+    dispatcher: '/tmp/joor/.joor/dispatcher.safe.ts',
+    denoDispatcher: '/tmp/joor/.joor/deno-dispatcher.safe.ts',
+  },
   artifacts: {
     manifest: '/tmp/joor/.joor/manifest.ts',
     dispatcher: '/tmp/joor/.joor/dispatcher.ts',
@@ -2047,7 +2056,11 @@ const packageSubpathBuildResult: BuildResult = {
     aiDocs: '/tmp/joor/.joor/ai-docs.json',
   },
 };
+const packageSubpathBuildDispatcherProfile: BuildDispatcherProfile =
+  packageSubpathBuildResult.profiles.dispatcher;
+packageSubpathBuildDispatcherProfile.toUpperCase();
 packageSubpathBuildResult.entry.toUpperCase();
+packageSubpathBuildResult.selectedArtifacts.dispatcher.toUpperCase();
 packageSubpathBuildResult.artifacts.aiDocs.toUpperCase();
 packageSubpathBuildResult.artifacts.denoDispatcherSafe.toUpperCase();
 compiledCreateProcedureCacheKey(

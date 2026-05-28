@@ -1660,6 +1660,7 @@ import {
   createAiDocs as createCompilerSubpathAiDocs,
   createOpenApiDocument as createCompilerSubpathOpenApiDocument,
   type AiDocsOptions as CompilerSubpathAiDocsOptions,
+  type BuildDispatcherProfile as CompilerSubpathBuildDispatcherProfile,
   type BuildOptions as CompilerSubpathBuildOptions,
   type BuildResult as CompilerSubpathBuildResult,
   type CompilerManifest as CompilerSubpathManifest,
@@ -11007,6 +11008,14 @@ const compilerSubpathBuildResult: CompilerSubpathBuildResult = {
   entry: '/tmp/joor-app/rpc',
   outDir: '/tmp/joor-app/.joor',
   configPath: '/tmp/joor-app/joor.config.ts',
+  profiles: {
+    dispatcher: 'safe',
+    denoDispatcher: 'safe',
+  },
+  selectedArtifacts: {
+    dispatcher: '/tmp/joor-app/.joor/dispatcher.safe.ts',
+    denoDispatcher: '/tmp/joor-app/.joor/deno-dispatcher.safe.ts',
+  },
   artifacts: {
     manifest: '/tmp/joor-app/.joor/manifest.ts',
     dispatcher: '/tmp/joor-app/.joor/dispatcher.ts',
@@ -11029,12 +11038,21 @@ const compilerSubpathBuildResult: CompilerSubpathBuildResult = {
     aiDocs: '/tmp/joor-app/.joor/ai-docs.json',
   },
 };
+const compilerSubpathBuildDispatcherProfile: CompilerSubpathBuildDispatcherProfile =
+  compilerSubpathBuildResult.profiles.dispatcher;
+compilerSubpathBuildDispatcherProfile.toUpperCase();
 compilerSubpathBuildResult.outDir.toUpperCase();
 compilerSubpathBuildResult.configPath?.toUpperCase();
+compilerSubpathBuildResult.selectedArtifacts.dispatcher.toUpperCase();
 compilerSubpathBuildResult.artifacts.dispatcherSafe.toUpperCase();
 compilerSubpathBuildResult.artifacts.openapi.toUpperCase();
 // @ts-expect-error compiler build results are readonly.
 compilerSubpathBuildResult.outDir = '/tmp/other/.joor';
+// @ts-expect-error compiler build profiles are readonly.
+compilerSubpathBuildResult.profiles.dispatcher = 'trusted';
+// @ts-expect-error compiler selected artifact paths are readonly.
+compilerSubpathBuildResult.selectedArtifacts.dispatcher =
+  '/tmp/other/dispatcher.safe.ts';
 // @ts-expect-error compiler build artifact paths are readonly.
 compilerSubpathBuildResult.artifacts.openapi = '/tmp/other/openapi.json';
 const compilerSubpathEmitOptions: CompilerSubpathEmitOptions = {

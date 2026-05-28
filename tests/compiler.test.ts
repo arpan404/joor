@@ -2021,6 +2021,14 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         configPath: fixtureConfig,
         entry: fixture,
         outDir,
+        profiles: {
+          denoDispatcher: 'safe',
+          dispatcher: 'safe',
+        },
+        selectedArtifacts: {
+          denoDispatcher: join(outDir, 'deno-dispatcher.safe.ts'),
+          dispatcher: join(outDir, 'dispatcher.safe.ts'),
+        },
         artifacts: {
           awsLambda: join(outDir, 'aws-lambda.ts'),
           aiDocs: join(outDir, 'ai-docs.json'),
@@ -2680,13 +2688,21 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
   it('emits Bun fast path for unsafe contextless procedures', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
-      await build({ config: contextlessFixtureConfig, outDir });
+      const result = await build({ config: contextlessFixtureConfig, outDir });
       const bunTarget = await readFile(join(outDir, 'bun.ts'), 'utf8');
       const dispatcher = await readFile(
         join(outDir, 'dispatcher.safe.ts'),
         'utf8'
       );
 
+      expect(result.profiles).toEqual({
+        denoDispatcher: 'bare',
+        dispatcher: 'bare',
+      });
+      expect(result.selectedArtifacts).toEqual({
+        denoDispatcher: join(outDir, 'deno-dispatcher.bare.ts'),
+        dispatcher: join(outDir, 'dispatcher.bare.ts'),
+      });
       expect(bunTarget).toContain('fastContextlessUnary');
       expect(bunTarget).toContain('contextlessHandler');
       expect(bunTarget).toContain('checkContentType = false');
