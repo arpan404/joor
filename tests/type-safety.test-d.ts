@@ -24060,6 +24060,10 @@ const awsLambdaEvent: AwsLambdaHttpEventV2 = {
   body: '{}',
   requestContext: { http: { method: 'POST' } },
 };
+const _invalidAwsLambdaEventPath: AwsLambdaHttpEventV2 = {
+  // @ts-expect-error AWS Lambda HTTP API event paths must be absolute URL paths.
+  rawPath: 'rpc',
+};
 // @ts-expect-error AWS Lambda HTTP API events expose readonly paths.
 awsLambdaEvent.rawPath = '/other';
 if (awsLambdaEvent.headers !== undefined) {
@@ -24074,6 +24078,16 @@ const awsLambdaRestApiEvent: AwsLambdaRestApiEventV1 = {
   multiValueHeaders: { cookie: ['a=1', undefined] },
   multiValueQueryStringParameters: { tag: ['one', 'two'] },
   body: '{}',
+};
+const _invalidAwsLambdaRestApiEventPath: AwsLambdaRestApiEventV1 = {
+  // @ts-expect-error AWS Lambda REST event paths must be absolute URL paths.
+  path: 'rpc',
+};
+const _invalidAwsLambdaRestApiRequestContextPath: AwsLambdaRestApiEventV1 = {
+  requestContext: {
+    // @ts-expect-error AWS Lambda REST request context paths must be absolute URL paths.
+    path: 'rpc',
+  },
 };
 // @ts-expect-error AWS Lambda REST events expose readonly paths.
 awsLambdaRestApiEvent.path = '/other';

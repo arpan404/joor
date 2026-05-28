@@ -15,6 +15,7 @@ import type {
   RpcManifestRouteUnaryHandlerOptionsFor,
   RpcManifestRouteUnaryBody,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
+  RpcPath,
 } from '../rpc/dispatcher.js';
 import {
   createJoorHandler,
@@ -24,7 +25,7 @@ import {
 
 export interface AwsLambdaHttpEventV2 {
   readonly version?: string;
-  readonly rawPath?: string;
+  readonly rawPath?: RpcPath;
   readonly rawQueryString?: string;
   readonly headers?: Readonly<Record<string, string | undefined>>;
   readonly cookies?: readonly string[];
@@ -49,7 +50,7 @@ export interface AwsLambdaHttpResponseV2 {
 }
 
 export interface AwsLambdaRestApiEventV1 {
-  readonly path?: string;
+  readonly path?: RpcPath;
   readonly httpMethod?: string;
   readonly headers?: Readonly<Record<string, string | undefined>>;
   readonly multiValueHeaders?: Readonly<
@@ -65,7 +66,7 @@ export interface AwsLambdaRestApiEventV1 {
   readonly isBase64Encoded?: boolean;
   readonly requestContext?: {
     readonly domainName?: string;
-    readonly path?: string;
+    readonly path?: RpcPath;
     readonly protocol?: string;
     readonly identity?: {
       readonly sourceIp?: string;
