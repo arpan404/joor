@@ -2037,9 +2037,9 @@ export default worker;
   await writeFile(
     `${outDir}/next.ts`,
     `import type { NextRouteHandlers } from 'joor/runtime/next';
-import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
+import { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor, fetch, type NativeRequiredRuntimeRequest, type NativeRequiredServices, type NativeRouteStreamRequiredRuntimeRequest, type NativeRouteStreamRequiredServices, type NativeRouteUnaryRequiredRuntimeRequest, type NativeRouteUnaryRequiredServices, type NativeStreamRouteRequiredRuntimeRequest, type NativeStreamRouteRequiredServices, type NativeUnaryRouteRequiredRuntimeRequest, type NativeUnaryRouteRequiredServices } from './fetch.js';
 
-export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor };
+export { createFetch, createFetchFor, createRouteStreamFetch, createRouteStreamFetchFor, createRouteUnaryFetch, createRouteUnaryFetchFor, createStreamFetch, createStreamFetchFor, createStreamRouteFetch, createStreamRouteFetchFor, createUnaryFetch, createUnaryFetchFor, createUnaryRouteFetch, createUnaryRouteFetchFor };
 export type { NativeRequiredRuntimeRequest, NativeRequiredServices, NativeRouteStreamRequiredRuntimeRequest, NativeRouteStreamRequiredServices, NativeRouteUnaryRequiredRuntimeRequest, NativeRouteUnaryRequiredServices, NativeStreamRouteRequiredRuntimeRequest, NativeStreamRouteRequiredServices, NativeUnaryRouteRequiredRuntimeRequest, NativeUnaryRouteRequiredServices };
 export const GET = fetch;
 export const POST = fetch;
@@ -2098,13 +2098,19 @@ export const createRouteUnaryHandlers =
   );
 export const createUnaryRouteHandlers: typeof createRouteUnaryHandlers =
   createRouteUnaryHandlers;
+export const createUnaryHandlers: typeof createRouteUnaryHandlers =
+  createRouteUnaryHandlers;
 export const createRouteUnaryNextRouteHandlers: typeof createRouteUnaryHandlers =
   createRouteUnaryHandlers;
 export const createUnaryRouteNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
+export const createUnaryNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
 export const createRouteUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
 export const createUnaryRouteNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
 export const createRouteUnaryHandlersFor =
   createHandlersFromFetchFor<NativeRouteUnaryRequiredRuntimeRequest>(
@@ -2112,13 +2118,19 @@ export const createRouteUnaryHandlersFor =
   );
 export const createUnaryRouteHandlersFor: typeof createRouteUnaryHandlersFor =
   createRouteUnaryHandlersFor;
+export const createUnaryHandlersFor: typeof createRouteUnaryHandlersFor =
+  createRouteUnaryHandlersFor;
 export const createRouteUnaryNextRouteHandlersFor: typeof createRouteUnaryHandlersFor =
   createRouteUnaryHandlersFor;
 export const createUnaryRouteNextRouteHandlersFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
+export const createUnaryNextRouteHandlersFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createUnaryRouteNextRouteHandlersFor;
 export const createRouteUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
 export const createUnaryRouteNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
+export const createUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
 export const createRouteStreamHandlers =
   createHandlersFromFetch<NativeRouteStreamRequiredRuntimeRequest>(
@@ -2126,13 +2138,19 @@ export const createRouteStreamHandlers =
   );
 export const createStreamRouteHandlers: typeof createRouteStreamHandlers =
   createRouteStreamHandlers;
+export const createStreamHandlers: typeof createRouteStreamHandlers =
+  createRouteStreamHandlers;
 export const createRouteStreamNextRouteHandlers: typeof createRouteStreamHandlers =
   createRouteStreamHandlers;
 export const createStreamRouteNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
+export const createStreamNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
+  createStreamRouteNextRouteHandlers;
 export const createRouteStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
 export const createStreamRouteNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
 export const createRouteStreamHandlersFor =
   createHandlersFromFetchFor<NativeRouteStreamRequiredRuntimeRequest>(
@@ -2140,14 +2158,20 @@ export const createRouteStreamHandlersFor =
   );
 export const createStreamRouteHandlersFor: typeof createRouteStreamHandlersFor =
   createRouteStreamHandlersFor;
+export const createStreamHandlersFor: typeof createRouteStreamHandlersFor =
+  createRouteStreamHandlersFor;
 export const createRouteStreamNextRouteHandlersFor: typeof createRouteStreamHandlersFor =
   createRouteStreamHandlersFor;
 export const createStreamRouteNextRouteHandlersFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
+export const createStreamNextRouteHandlersFor: typeof createRouteStreamNextRouteHandlersFor =
+  createStreamRouteNextRouteHandlersFor;
 export const createRouteStreamNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
 export const createStreamRouteNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
+export const createStreamNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
+  createStreamRouteNextRouteHandlersFor;
 export default handlers;
 `
   );

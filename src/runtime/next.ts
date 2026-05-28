@@ -87,6 +87,16 @@ export type NextUnaryRouteHandlersOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NextRouteUnaryHandlersOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type NextUnaryHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NextRouteUnaryHandlersOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type NextRouteStreamHandlersOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -103,6 +113,16 @@ export type NextRouteStreamHandlersOptionsFor<
 >;
 
 export type NextStreamRouteHandlersOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NextRouteStreamHandlersOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type NextStreamHandlersOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -140,6 +160,16 @@ export type NextUnaryRouteHandlerOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NextRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type NextUnaryHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NextRouteUnaryHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type NextRouteStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -151,6 +181,16 @@ export type NextRouteStreamHandlerOptionsFor<
 > = NextRouteStreamHandlersOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type NextStreamRouteHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NextRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type NextStreamHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -193,6 +233,16 @@ export type NextUnaryRouteHandlersOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NextRouteUnaryHandlersOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type NextUnaryHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NextRouteUnaryHandlersOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type NextRouteStreamHandlersOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -209,6 +259,16 @@ export type NextRouteStreamHandlersOptionsArgs<
 >;
 
 export type NextStreamRouteHandlersOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NextRouteStreamHandlersOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type NextStreamHandlersOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -246,6 +306,16 @@ export type NextUnaryRouteHandlerOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = NextRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type NextUnaryHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = NextRouteUnaryHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type NextRouteStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -257,6 +327,16 @@ export type NextRouteStreamHandlerOptionsArgs<
 > = NextRouteStreamHandlersOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
 export type NextStreamRouteHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = NextRouteStreamHandlerOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type NextStreamHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -376,9 +456,13 @@ export function createRouteUnaryNextRouteHandlers<
 
 export const createUnaryRouteNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
+export const createUnaryNextRouteHandlers: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
 export const createRouteUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
 export const createUnaryRouteNextHandler: typeof createRouteUnaryNextRouteHandlers =
+  createRouteUnaryNextRouteHandlers;
+export const createUnaryNextHandler: typeof createRouteUnaryNextRouteHandlers =
   createRouteUnaryNextRouteHandlers;
 
 export function createRouteStreamNextRouteHandlers<
@@ -424,9 +508,13 @@ export function createRouteStreamNextRouteHandlers<
 
 export const createStreamRouteNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
+export const createStreamNextRouteHandlers: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
 export const createRouteStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
 export const createStreamRouteNextHandler: typeof createRouteStreamNextRouteHandlers =
+  createRouteStreamNextRouteHandlers;
+export const createStreamNextHandler: typeof createRouteStreamNextRouteHandlers =
   createRouteStreamNextRouteHandlers;
 
 export function createNextRouteHandlersFor<TContext = never>(): <
@@ -562,9 +650,13 @@ export function createRouteUnaryNextRouteHandlersFor<
 
 export const createUnaryRouteNextRouteHandlersFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
+export const createUnaryNextRouteHandlersFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
 export const createRouteUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
 export const createUnaryRouteNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
+  createRouteUnaryNextRouteHandlersFor;
+export const createUnaryNextHandlerFor: typeof createRouteUnaryNextRouteHandlersFor =
   createRouteUnaryNextRouteHandlersFor;
 
 export function createRouteStreamNextRouteHandlersFor<TContext = never>(): <
@@ -637,7 +729,11 @@ export function createRouteStreamNextRouteHandlersFor<
 
 export const createStreamRouteNextRouteHandlersFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
+export const createStreamNextRouteHandlersFor: typeof createRouteStreamNextRouteHandlersFor =
+  createRouteStreamNextRouteHandlersFor;
 export const createRouteStreamNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
 export const createStreamRouteNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
+  createRouteStreamNextRouteHandlersFor;
+export const createStreamNextHandlerFor: typeof createRouteStreamNextRouteHandlersFor =
   createRouteStreamNextRouteHandlersFor;
