@@ -1,6 +1,21 @@
-import type { JsonObject } from '../schema/json.js';
+import type { JsonObject, JsonValue } from '../schema/json.js';
 import { toJsonSchema } from '../schema/openapi.js';
+import type { HeaderObjectSchema } from '../schema/types.js';
 import type { CompilerManifest } from './manifest.js';
+
+const hasRequiredObjectFields = (schema: HeaderObjectSchema): boolean =>
+  Object.values(schema.shape).some((child) => child.kind !== 'optional');
+
+const frameworkErrorSchema: JsonObject = {
+  type: 'object',
+  required: ['code', 'message', 'status'],
+  properties: {
+    code: { type: 'string' },
+    message: { type: 'string' },
+    status: { type: 'integer' },
+    details: {},
+  },
+};
 
 export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
   framework: 'joor',
@@ -26,6 +41,16 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
       entry.procedure.headers === undefined
         ? {}
         : toJsonSchema(entry.procedure.headers),
+    requestSchema: {
+      type: 'object',
+      required: ['id', 'input'],
+      properties: {
+        id: { const: entry.id },
+        input: toJsonSchema(entry.procedure.input),
+        traceId: { type: 'string' },
+      },
+      additionalProperties: false,
+    },
     responseHeadersSchema:
       entry.procedure.responseHeaders === undefined
         ? {}
@@ -39,6 +64,132 @@ export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
       entry.procedure.stream === undefined
         ? {}
         : toJsonSchema(entry.procedure.stream),
+    successSchema: {
+      type: 'object',
+      required: [
+        'ok',
+        'id',
+        'data',
+        'traceId',
+        ...(entry.procedure.responseHeaders !== undefined &&
+        hasRequiredObjectFields(entry.procedure.responseHeaders)
+          ? ['headers']
+          : []),
+      ],
+      properties: {
+        ok: { const: true },
+        id: { const: entry.id },
+        data:
+          entry.procedure.output === undefined
+            ? {}
+            : toJsonSchema(entry.procedure.output),
+        traceId: { type: 'string' },
+        ...(entry.procedure.responseHeaders === undefined
+          ? {}
+          : { headers: toJsonSchema(entry.procedure.responseHeaders) }),
+      },
+      additionalProperties: false,
+    },
+    errorSchema: {
+      oneOf: [
+        ...Object.entries(entry.procedure.errors).map(([code, schema]) => ({
+          type: 'object',
+          required: ['code', 'message', 'status', 'details'],
+          properties: {
+            code: { const: code },
+            message: { type: 'string' },
+            status: { type: 'integer' },
+            details: toJsonSchema(schema),
+          },
+          additionalProperties: false,
+        })),
+        frameworkErrorSchema,
+      ] as readonly JsonValue[],
+    },
+    failureSchema: {
+      type: 'object',
+      required: ['ok', 'id', 'error', 'traceId'],
+      properties: {
+        ok: { const: false },
+        id: { const: entry.id },
+        error: {
+          oneOf: [
+            ...Object.entries(entry.procedure.errors).map(([code, schema]) => ({
+              type: 'object',
+              required: ['code', 'message', 'status', 'details'],
+              properties: {
+                code: { const: code },
+                message: { type: 'string' },
+                status: { type: 'integer' },
+                details: toJsonSchema(schema),
+              },
+              additionalProperties: false,
+            })),
+            frameworkErrorSchema,
+          ] as readonly JsonValue[],
+        },
+        traceId: { type: 'string' },
+      },
+      additionalProperties: false,
+    },
+    responseSchema: {
+      oneOf: [
+        {
+          type: 'object',
+          required: [
+            'ok',
+            'id',
+            'data',
+            'traceId',
+            ...(entry.procedure.responseHeaders !== undefined &&
+            hasRequiredObjectFields(entry.procedure.responseHeaders)
+              ? ['headers']
+              : []),
+          ],
+          properties: {
+            ok: { const: true },
+            id: { const: entry.id },
+            data:
+              entry.procedure.output === undefined
+                ? {}
+                : toJsonSchema(entry.procedure.output),
+            traceId: { type: 'string' },
+            ...(entry.procedure.responseHeaders === undefined
+              ? {}
+              : { headers: toJsonSchema(entry.procedure.responseHeaders) }),
+          },
+          additionalProperties: false,
+        },
+        {
+          type: 'object',
+          required: ['ok', 'id', 'error', 'traceId'],
+          properties: {
+            ok: { const: false },
+            id: { const: entry.id },
+            error: {
+              oneOf: [
+                ...Object.entries(entry.procedure.errors).map(
+                  ([code, schema]) => ({
+                    type: 'object',
+                    required: ['code', 'message', 'status', 'details'],
+                    properties: {
+                      code: { const: code },
+                      message: { type: 'string' },
+                      status: { type: 'integer' },
+                      details: toJsonSchema(schema),
+                    },
+                    additionalProperties: false,
+                  })
+                ),
+                frameworkErrorSchema,
+              ] as readonly JsonValue[],
+            },
+            traceId: { type: 'string' },
+          },
+          additionalProperties: false,
+        },
+      ],
+    },
     errors: Object.fromEntries(
       Object.entries(entry.procedure.errors).map(([code, schema]) => [
         code,

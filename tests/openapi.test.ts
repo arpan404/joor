@@ -167,5 +167,113 @@ describe('openapi and ai docs', () => {
 
     expect(document['framework']).toBe('joor');
     expect(document['schemaVersion']).toBe('0.1.0');
+    expect(document).toMatchObject({
+      procedures: [
+        {
+          id: 'users.get',
+          inputSchema: {
+            properties: {
+              id: { type: 'string', format: 'uuid' },
+            },
+          },
+          requestSchema: {
+            required: ['id', 'input'],
+            properties: {
+              id: { const: 'users.get' },
+              input: {
+                properties: {
+                  id: { type: 'string', format: 'uuid' },
+                },
+              },
+            },
+          },
+          successSchema: {
+            required: ['ok', 'id', 'data', 'traceId', 'headers'],
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.get' },
+              data: {
+                properties: {
+                  name: { type: 'string' },
+                },
+              },
+              headers: {
+                properties: {
+                  'cache-control': { type: 'string' },
+                },
+              },
+            },
+          },
+          errorSchema: {
+            oneOf: expect.arrayContaining([
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { const: 'NOT_FOUND' },
+                  details: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      message: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { type: 'string' },
+                }),
+              }),
+            ]),
+          },
+          failureSchema: {
+            properties: {
+              ok: { const: false },
+              id: { const: 'users.get' },
+            },
+          },
+          responseSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  ok: { const: true },
+                  id: { const: 'users.get' },
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  ok: { const: false },
+                  id: { const: 'users.get' },
+                }),
+              }),
+            ],
+          },
+        },
+        {
+          id: 'users.watch',
+          requestSchema: {
+            properties: {
+              id: { const: 'users.watch' },
+              input: {
+                properties: {
+                  userId: { type: 'string' },
+                },
+              },
+            },
+          },
+          responseSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  id: { const: 'users.watch' },
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  id: { const: 'users.watch' },
+                }),
+              }),
+            ],
+          },
+        },
+      ],
+    });
   });
 });
