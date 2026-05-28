@@ -520,7 +520,13 @@ import {
   type OpenApiDocumentOptions,
   type ProcedureFile,
 } from 'joor/compiler';
-import { ok } from 'joor/procedure';
+import { defineManifest as defineSubpathManifest } from 'joor/manifest';
+import {
+  defineProcedure as defineSubpathProcedure,
+  errorStatus as procedureErrorStatus,
+  failure as procedureFailure,
+  ok as procedureOk,
+} from 'joor/procedure';
 import {
   createManifestProtocolRequest,
   createManifestRouteProtocolRequest,
@@ -610,6 +616,13 @@ import {
   encodeSse as rpcEncodeSse,
   validationDetails as rpcValidationDetails,
 } from 'joor/rpc';
+import {
+  isJsonObject,
+  parseJson,
+  t as schemaT,
+  toJsonSchema,
+  validate as validateSchema,
+} from 'joor/schema';
 import {
   compiledAuthenticate as runtimeCompiledAuthenticate,
   compiledAuthenticateUncached as runtimeCompiledAuthenticateUncached,
@@ -1344,6 +1357,41 @@ const packageSubpathManifest = defineManifest({
 });
 type PackageSubpathManifest = typeof packageSubpathManifest;
 
+const packageSubpathSchema = schemaT.object({ code: schemaT.string() });
+const packageSubpathOpenApiSchema = toJsonSchema(packageSubpathSchema);
+String(packageSubpathOpenApiSchema['type']).toUpperCase();
+const packageSubpathParsedJson = parseJson('{"code":"ok"}');
+if (isJsonObject(packageSubpathParsedJson)) {
+  String(packageSubpathParsedJson['code']).toUpperCase();
+}
+const packageSubpathSchemaValidation = validateSchema(packageSubpathSchema, {
+  code: 'ok',
+});
+if (packageSubpathSchemaValidation.ok) {
+  packageSubpathSchemaValidation.value.code.toUpperCase();
+}
+const packageSubpathProcedureFromSubpath = defineSubpathProcedure({
+  input: packageSubpathSchema,
+  output: packageSubpathSchema,
+  handler(ctx, input) {
+    return ctx.ok(input);
+  },
+});
+const packageSubpathProcedureFailure = procedureFailure(
+  'NOT_FOUND',
+  { code: 'missing' },
+  procedureErrorStatus('NOT_FOUND')
+);
+packageSubpathProcedureFailure.error.status.toFixed();
+const packageSubpathManifestFromSubpath = defineSubpathManifest({
+  procedures: {
+    'users.lookup': packageSubpathProcedureFromSubpath,
+  },
+});
+packageSubpathManifestFromSubpath.procedures[
+  'users.lookup'
+].input.kind.toUpperCase();
+
 const packageSubpathPlugin = createPlugin({
   name: 'package-subpath',
   setup() {
@@ -2026,9 +2074,7 @@ const packageSubpathCompilerLoadedProcedure: Compiler.LoadedProcedure = {
   procedure: packageSubpathProcedure,
 };
 const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
-  procedures: [
-    packageSubpathCompilerLoadedProcedure,
-  ],
+  procedures: [packageSubpathCompilerLoadedProcedure],
 };
 const packageSubpathAiDocsOptions: AiDocsOptions = { path: '/api/rpc' };
 const packageSubpathOpenApiOptions: OpenApiDocumentOptions = {
@@ -3295,7 +3341,7 @@ const packageSubpathValues = [
   listenStreamRoute,
   listenUnary,
   listenUnaryRoute,
-  ok,
+  procedureOk,
   rootEncodeSse,
   rootListen,
   rootOk,

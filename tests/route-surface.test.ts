@@ -122,6 +122,29 @@ const collectImportedSourceNamesByModule = (
   return imports;
 };
 
+const collectImportedValueSourceNamesByModule = (
+  source: string
+): ReadonlyMap<string, ReadonlySet<string>> => {
+  const imports = new Map<string, Set<string>>();
+
+  for (const match of source.matchAll(
+    /\bimport\s+\{([^}]*)\}\s+from\s+['"]([^'"]+)['"]/g
+  )) {
+    const specifiers = match[1];
+    const moduleSpecifier = match[2];
+    if (specifiers === undefined || moduleSpecifier === undefined) continue;
+    const names = imports.get(moduleSpecifier) ?? new Set<string>();
+    for (const specifier of specifiers.split(',')) {
+      if (specifier.trim().startsWith('type ')) continue;
+      const name = sourceName(specifier).trim();
+      if (name.length > 0) names.add(name);
+    }
+    imports.set(moduleSpecifier, names);
+  }
+
+  return imports;
+};
+
 const collectNamespaceImportsByModule = (
   source: string
 ): ReadonlyMap<string, string> => {
@@ -384,6 +407,42 @@ const packageExportSet = async (): Promise<ReadonlySet<string>> => {
     readonly exports?: Readonly<Record<string, unknown>>;
   };
   return new Set(Object.keys(packageJson.exports ?? {}));
+};
+
+type PackageExportEntrypoint = {
+  readonly file: string;
+  readonly moduleSpecifier: string;
+  readonly packageSubpath: string;
+};
+
+const packageExportSourceFile = (importPath: string): string => {
+  const distPrefix = './dist/';
+  return join(
+    srcRoot,
+    importPath.slice(distPrefix.length).replace(/\.js$/, '.ts')
+  );
+};
+
+const packageExportEntrypoints = async (): Promise<
+  readonly PackageExportEntrypoint[]
+> => {
+  const packageSource = await readFile(packageManifest, 'utf8');
+  const packageJson = JSON.parse(packageSource) as {
+    readonly exports?: Readonly<Record<string, { readonly import?: unknown }>>;
+  };
+
+  return Object.entries(packageJson.exports ?? {}).flatMap(
+    ([packageSubpath, entry]) => {
+      if (typeof entry.import !== 'string') return [];
+      return [
+        {
+          file: packageExportSourceFile(entry.import),
+          moduleSpecifier: packageImportSpecifier(packageSubpath),
+          packageSubpath,
+        },
+      ];
+    }
+  );
 };
 
 const collectPackageImportSubpaths = (source: string): ReadonlySet<string> => {
@@ -1616,6 +1675,45 @@ describe('route public surface', () => {
     const smokeImports = collectPackageImportSubpaths(packageSubpathSource);
     const missing = [...packageExports]
       .filter((packageSubpath) => !smokeImports.has(packageSubpath))
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps value-bearing package exports covered by value smoke imports', async () => {
+    const packageSubpathSource = await readFile(packageSubpathTest, 'utf8');
+    const importedValues =
+      collectImportedValueSourceNamesByModule(packageSubpathSource);
+    const sources = new Map(
+      await Promise.all(
+        (await packageExportEntrypoints()).map(
+          async (
+            entrypoint
+          ): Promise<
+            readonly [PackageExportEntrypoint, readonly ExportedSymbol[]]
+          > => [
+            entrypoint,
+            collectExportedSymbols(
+              entrypoint.file,
+              await readFile(entrypoint.file, 'utf8')
+            ),
+          ]
+        )
+      )
+    );
+    const missing = [...sources]
+      .flatMap(([entrypoint, exports]) => {
+        const valueNames = exports
+          .filter(({ kind }) => kind === 'value')
+          .map(({ name }) => name);
+        if (valueNames.length === 0) return [];
+        const importedNames =
+          importedValues.get(entrypoint.moduleSpecifier) ?? new Set<string>();
+        if (valueNames.some((name) => importedNames.has(name))) return [];
+        return [
+          `${entrypoint.packageSubpath}: ${entrypoint.moduleSpecifier} missing value import`,
+        ];
+      })
       .sort();
 
     expect(missing).toEqual([]);
