@@ -22,6 +22,62 @@ const manifest = {
 };
 
 describe('openapi and ai docs', () => {
+  it('documents generated client paths for non-identifier route segments', () => {
+    const dashedRouteManifest = {
+      procedures: [
+        {
+          id: 'teams.active-users',
+          importPath: '/tmp/teams/active-users.rpc.ts',
+          exportName: 'teams_active_users',
+          procedure: watchUser,
+        },
+      ],
+    };
+
+    const openapi = createOpenApiDocument(dashedRouteManifest);
+    const aiDocs = createAiDocs(dashedRouteManifest);
+
+    expect(openapi).toMatchObject({
+      paths: {
+        '/rpc': {
+          post: {
+            'x-joor-procedures': [
+              expect.objectContaining({
+                id: 'teams.active-users',
+                client: expect.objectContaining({
+                  path: ['teams', 'active-users'],
+                  callable: expect.objectContaining({
+                    data: 'client.teams["active-users"](input, options?)',
+                    events:
+                      'client.teams["active-users"].events(input, options?)',
+                    protocolRequest:
+                      'client.teams["active-users"].protocolRequest(input, options?)',
+                  }),
+                }),
+              }),
+            ],
+          },
+        },
+      },
+    });
+    expect(aiDocs).toMatchObject({
+      procedures: [
+        expect.objectContaining({
+          id: 'teams.active-users',
+          client: expect.objectContaining({
+            path: ['teams', 'active-users'],
+            callable: expect.objectContaining({
+              data: 'client.teams["active-users"](input, options?)',
+              events: 'client.teams["active-users"].events(input, options?)',
+              protocolRequest:
+                'client.teams["active-users"].protocolRequest(input, options?)',
+            }),
+          }),
+        }),
+      ],
+    });
+  });
+
   it('generates openapi', () => {
     const document = createOpenApiDocument(manifest);
 
