@@ -1731,6 +1731,200 @@ const routeKindDispatcherCoreAliasSnippets = [
   },
 ] as const;
 
+const generatedClientRouteKindCoreAliasSnippets = [
+  {
+    name: 'RouteUnaryProcedure',
+    snippets: ['JoorManifestRouteUnaryProcedure<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamProcedure',
+    snippets: ['JoorManifestRouteStreamProcedure<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryInput',
+    snippets: ['JoorManifestRouteUnaryInput<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamInput',
+    snippets: ['JoorManifestRouteStreamInput<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryOutput',
+    snippets: ['JoorManifestRouteUnaryOutput<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamOutput',
+    snippets: ['JoorManifestRouteStreamOutput<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryHeaders',
+    snippets: ['JoorManifestRouteUnaryHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamHeaders',
+    snippets: ['JoorManifestRouteStreamHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryClientHeaders',
+    snippets: ['JoorManifestRouteUnaryClientHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamClientHeaders',
+    snippets: ['JoorManifestRouteStreamClientHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryResponseHeaders',
+    snippets: ['JoorManifestRouteUnaryResponseHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamResponseHeaders',
+    snippets: ['JoorManifestRouteStreamResponseHeaders<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryError',
+    snippets: ['JoorManifestRouteUnaryError<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamError',
+    snippets: ['JoorManifestRouteStreamError<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryErrorCode',
+    snippets: ['JoorManifestRouteUnaryErrorCode<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamErrorCode',
+    snippets: ['JoorManifestRouteStreamErrorCode<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryErrorDetails',
+    snippets: ['JoorManifestRouteUnaryErrorDetails<Manifest, TId, TCode>'],
+  },
+  {
+    name: 'RouteStreamErrorDetails',
+    snippets: ['JoorManifestRouteStreamErrorDetails<Manifest, TId, TCode>'],
+  },
+  {
+    name: 'RouteStreamEvent',
+    snippets: ['JoorManifestRouteStreamEvent<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryRequestOptions',
+    snippets: ['JoorManifestRouteUnaryRequestOptions<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamRequestOptions',
+    snippets: ['JoorManifestRouteStreamRequestOptions<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryClientArgs',
+    snippets: ['JoorManifestRouteUnaryClientArgs<Manifest, TId>'],
+  },
+  {
+    name: 'RouteStreamClientArgs',
+    snippets: ['JoorManifestRouteStreamClientArgs<Manifest, TId>'],
+  },
+] as const;
+
+const generatedNativeRouteKindCoreAliasSnippets = [
+  {
+    name: 'NativeRouteUnaryProcedure',
+    snippets: ['JoorManifestRouteUnaryProcedure<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamProcedure',
+    snippets: ['JoorManifestRouteStreamProcedure<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryInput',
+    snippets: ['JoorManifestRouteUnaryInput<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamInput',
+    snippets: ['JoorManifestRouteStreamInput<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryOutput',
+    snippets: ['JoorManifestRouteUnaryOutput<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamOutput',
+    snippets: ['JoorManifestRouteStreamOutput<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryHeaders',
+    snippets: ['JoorManifestRouteUnaryHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamHeaders',
+    snippets: ['JoorManifestRouteStreamHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryClientHeaders',
+    snippets: ['JoorManifestRouteUnaryClientHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamClientHeaders',
+    snippets: ['JoorManifestRouteStreamClientHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryResponseHeaders',
+    snippets: ['JoorManifestRouteUnaryResponseHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamResponseHeaders',
+    snippets: ['JoorManifestRouteStreamResponseHeaders<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryError',
+    snippets: ['JoorManifestRouteUnaryError<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamError',
+    snippets: ['JoorManifestRouteStreamError<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryErrorCode',
+    snippets: ['JoorManifestRouteUnaryErrorCode<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamErrorCode',
+    snippets: ['JoorManifestRouteStreamErrorCode<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryErrorDetails',
+    snippets: [
+      'JoorManifestRouteUnaryErrorDetails<NativeManifest, TId, TCode>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamErrorDetails',
+    snippets: [
+      'JoorManifestRouteStreamErrorDetails<NativeManifest, TId, TCode>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamEvent',
+    snippets: ['JoorManifestRouteStreamEvent<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryRequestOptions',
+    snippets: ['JoorManifestRouteUnaryRequestOptions<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamRequestOptions',
+    snippets: ['JoorManifestRouteStreamRequestOptions<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryClientArgs',
+    snippets: ['JoorManifestRouteUnaryClientArgs<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteStreamClientArgs',
+    snippets: ['JoorManifestRouteStreamClientArgs<NativeManifest, TId>'],
+  },
+] as const;
+
 const normalizeTypeSource = (source: string): string =>
   source.replace(/\s+/g, ' ');
 
@@ -2074,6 +2268,36 @@ describe('route public surface', () => {
     },
     generatedRouteSurfaceTestTimeout
   );
+
+  it('keeps generated client route-kind aliases tied to manifest route aliases', async () => {
+    const source = await readFile(compilerEmitter, 'utf8');
+    const missing = generatedClientRouteKindCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps generated native route-kind aliases tied to manifest route aliases', async () => {
+    const source = await readFile(compilerEmitter, 'utf8');
+    const missing = generatedNativeRouteKindCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
+
+    expect(missing).toEqual([]);
+  });
 
   it('keeps route-kind client inputs spelled with specific public aliases', async () => {
     const source = await readFile(rpcClient, 'utf8');
