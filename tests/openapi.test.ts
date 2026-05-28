@@ -227,9 +227,9 @@ describe('openapi and ai docs', () => {
                 'client.users.get.protocolRequest(input, options?)',
             },
             transport: {
-              result: 'client.call("users.get", input, options?)',
-              request: 'client.request("users.get", input, options?)',
-              batch: 'client.batch([request], options?)',
+              result: 'transport.call("users.get", input, options?)',
+              request: 'transport.request("users.get", input, options?)',
+              batch: 'transport.batch([request], options?)',
             },
           },
           inputSchema: {
@@ -321,8 +321,8 @@ describe('openapi and ai docs', () => {
                 'client.users.watch.protocolRequest(input, options?)',
             },
             transport: {
-              data: 'client.stream("users.watch", input, options?)',
-              events: 'client.streamEvents("users.watch", input, options?)',
+              data: 'transport.stream("users.watch", input, options?)',
+              events: 'transport.streamEvents("users.watch", input, options?)',
             },
           },
           requestSchema: {

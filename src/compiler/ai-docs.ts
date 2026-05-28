@@ -50,9 +50,9 @@ const createClientDocs = (
         protocolRequest: `${leaf}.protocolRequest(input, options?)`,
       },
       transport: {
-        result: `client.call(${quotedId}, input, options?)`,
-        request: `client.request(${quotedId}, input, options?)`,
-        batch: 'client.batch([request], options?)',
+        result: `transport.call(${quotedId}, input, options?)`,
+        request: `transport.request(${quotedId}, input, options?)`,
+        batch: 'transport.batch([request], options?)',
       },
     };
   }
@@ -68,8 +68,8 @@ const createClientDocs = (
       protocolRequest: `${leaf}.protocolRequest(input, options?)`,
     },
     transport: {
-      data: `client.stream(${quotedId}, input, options?)`,
-      events: `client.streamEvents(${quotedId}, input, options?)`,
+      data: `transport.stream(${quotedId}, input, options?)`,
+      events: `transport.streamEvents(${quotedId}, input, options?)`,
     },
   };
 };
