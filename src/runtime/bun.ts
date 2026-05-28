@@ -263,6 +263,21 @@ export type BunUnaryRouteRpcRequestHandlerOptionsFor<
   TRequest
 >;
 
+export type BunUnaryRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type BunRouteStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -279,6 +294,21 @@ export type BunRouteStreamRpcRequestHandlerOptionsFor<
 >;
 
 export type BunStreamRouteRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
+export type BunStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -409,6 +439,21 @@ export type BunUnaryRouteRpcRequestHandlerOptionsArgs<
   TRequest
 >;
 
+export type BunUnaryRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type BunRouteStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -425,6 +470,21 @@ export type BunRouteStreamRpcRequestHandlerOptionsArgs<
 >;
 
 export type BunStreamRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
+export type BunStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -547,12 +607,22 @@ export type BunUnaryRouteTransportBodyResultFor<
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
 > = BunRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+export type BunUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = BunRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 export type BunRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
 > = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 export type BunStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = BunRouteStreamTransportBodyResultFor<TManifest, TBody>;
+export type BunStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -569,10 +639,16 @@ export type BunRouteUnaryTransportRequestHandler<
 export type BunUnaryRouteTransportRequestHandler<
   TRequest extends Request = Request,
 > = BunRouteUnaryTransportRequestHandler<TRequest>;
+export type BunUnaryTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunRouteUnaryTransportRequestHandler<TRequest>;
 export type BunRouteStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = BunTransportRequestHandler<TRequest>;
 export type BunStreamRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = BunRouteStreamTransportRequestHandler<TRequest>;
+export type BunStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = BunRouteStreamTransportRequestHandler<TRequest>;
 
@@ -599,6 +675,10 @@ export type BunUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = BunRouteUnaryTransportBodyResultHandlerFor<TManifest>;
 
+export type BunUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = BunRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
 export type BunRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
@@ -607,6 +687,10 @@ export type BunRouteStreamTransportBodyResultHandlerFor<
 ) => MaybePromise<BunRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type BunStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = BunRouteStreamTransportBodyResultHandlerFor<TManifest>;
+
+export type BunStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = BunRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
@@ -975,6 +1059,9 @@ export const createRouteUnaryBunTransportRequestHandler = <
 export const createUnaryRouteBunTransportRequestHandler: typeof createRouteUnaryBunTransportRequestHandler =
   createRouteUnaryBunTransportRequestHandler;
 
+export const createUnaryBunTransportRequestHandler: typeof createRouteUnaryBunTransportRequestHandler =
+  createRouteUnaryBunTransportRequestHandler;
+
 export const createRouteUnaryBunTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -993,6 +1080,9 @@ export const createRouteUnaryBunTransportRequestHandlerFor =
     ) as BunRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteBunTransportRequestHandlerFor: typeof createRouteUnaryBunTransportRequestHandlerFor =
+  createRouteUnaryBunTransportRequestHandlerFor;
+
+export const createUnaryBunTransportRequestHandlerFor: typeof createRouteUnaryBunTransportRequestHandlerFor =
   createRouteUnaryBunTransportRequestHandlerFor;
 
 export const createRouteStreamBunTransportRequestHandler = <
@@ -1018,6 +1108,9 @@ export const createRouteStreamBunTransportRequestHandler = <
 export const createStreamRouteBunTransportRequestHandler: typeof createRouteStreamBunTransportRequestHandler =
   createRouteStreamBunTransportRequestHandler;
 
+export const createStreamBunTransportRequestHandler: typeof createRouteStreamBunTransportRequestHandler =
+  createRouteStreamBunTransportRequestHandler;
+
 export const createRouteStreamBunTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1036,6 +1129,9 @@ export const createRouteStreamBunTransportRequestHandlerFor =
     ) as BunRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteBunTransportRequestHandlerFor: typeof createRouteStreamBunTransportRequestHandlerFor =
+  createRouteStreamBunTransportRequestHandlerFor;
+
+export const createStreamBunTransportRequestHandlerFor: typeof createRouteStreamBunTransportRequestHandlerFor =
   createRouteStreamBunTransportRequestHandlerFor;
 
 export const createBunTransportRequestHandlerWithPath = <
@@ -1087,6 +1183,9 @@ export const createRouteUnaryBunTransportRequestHandlerWithPath = <
 export const createUnaryRouteBunTransportRequestHandlerWithPath: typeof createRouteUnaryBunTransportRequestHandlerWithPath =
   createRouteUnaryBunTransportRequestHandlerWithPath;
 
+export const createUnaryBunTransportRequestHandlerWithPath: typeof createRouteUnaryBunTransportRequestHandlerWithPath =
+  createRouteUnaryBunTransportRequestHandlerWithPath;
+
 export const createRouteUnaryBunTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1101,6 +1200,9 @@ export const createRouteUnaryBunTransportRequestHandlerWithPathFor =
     ) as BunRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteBunTransportRequestHandlerWithPathFor: typeof createRouteUnaryBunTransportRequestHandlerWithPathFor =
+  createRouteUnaryBunTransportRequestHandlerWithPathFor;
+
+export const createUnaryBunTransportRequestHandlerWithPathFor: typeof createRouteUnaryBunTransportRequestHandlerWithPathFor =
   createRouteUnaryBunTransportRequestHandlerWithPathFor;
 
 export const createRouteStreamBunTransportRequestHandlerWithPath = <
@@ -1122,6 +1224,9 @@ export const createRouteStreamBunTransportRequestHandlerWithPath = <
 export const createStreamRouteBunTransportRequestHandlerWithPath: typeof createRouteStreamBunTransportRequestHandlerWithPath =
   createRouteStreamBunTransportRequestHandlerWithPath;
 
+export const createStreamBunTransportRequestHandlerWithPath: typeof createRouteStreamBunTransportRequestHandlerWithPath =
+  createRouteStreamBunTransportRequestHandlerWithPath;
+
 export const createRouteStreamBunTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1136,6 +1241,9 @@ export const createRouteStreamBunTransportRequestHandlerWithPathFor =
     ) as BunRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteBunTransportRequestHandlerWithPathFor: typeof createRouteStreamBunTransportRequestHandlerWithPathFor =
+  createRouteStreamBunTransportRequestHandlerWithPathFor;
+
+export const createStreamBunTransportRequestHandlerWithPathFor: typeof createRouteStreamBunTransportRequestHandlerWithPathFor =
   createRouteStreamBunTransportRequestHandlerWithPathFor;
 
 export function createBunRpcRequestHandler<
@@ -1219,6 +1327,9 @@ export function createRouteUnaryBunRpcRequestHandler<
 export const createUnaryRouteBunRpcRequestHandler: typeof createRouteUnaryBunRpcRequestHandler =
   createRouteUnaryBunRpcRequestHandler;
 
+export const createUnaryBunRpcRequestHandler: typeof createRouteUnaryBunRpcRequestHandler =
+  createRouteUnaryBunRpcRequestHandler;
+
 export function createRouteStreamBunRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1261,6 +1372,9 @@ export function createRouteStreamBunRpcRequestHandler<
 }
 
 export const createStreamRouteBunRpcRequestHandler: typeof createRouteStreamBunRpcRequestHandler =
+  createRouteStreamBunRpcRequestHandler;
+
+export const createStreamBunRpcRequestHandler: typeof createRouteStreamBunRpcRequestHandler =
   createRouteStreamBunRpcRequestHandler;
 
 export function createBunRpcRequestHandlerFor(): <
@@ -1388,6 +1502,9 @@ export function createRouteUnaryBunRpcRequestHandlerFor<
 export const createUnaryRouteBunRpcRequestHandlerFor: typeof createRouteUnaryBunRpcRequestHandlerFor =
   createRouteUnaryBunRpcRequestHandlerFor;
 
+export const createUnaryBunRpcRequestHandlerFor: typeof createRouteUnaryBunRpcRequestHandlerFor =
+  createRouteUnaryBunRpcRequestHandlerFor;
+
 export function createRouteStreamBunRpcRequestHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1443,6 +1560,9 @@ export function createRouteStreamBunRpcRequestHandlerFor<
 }
 
 export const createStreamRouteBunRpcRequestHandlerFor: typeof createRouteStreamBunRpcRequestHandlerFor =
+  createRouteStreamBunRpcRequestHandlerFor;
+
+export const createStreamBunRpcRequestHandlerFor: typeof createRouteStreamBunRpcRequestHandlerFor =
   createRouteStreamBunRpcRequestHandlerFor;
 
 const serveBunWithFetch = (

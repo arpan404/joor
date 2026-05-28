@@ -262,6 +262,21 @@ export type DenoUnaryRouteRpcRequestHandlerOptionsFor<
   TRequest
 >;
 
+export type DenoUnaryRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type DenoRouteStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -278,6 +293,21 @@ export type DenoRouteStreamRpcRequestHandlerOptionsFor<
 >;
 
 export type DenoStreamRouteRpcRequestHandlerOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamRpcRequestHandlerOptionsFor<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
+export type DenoStreamRpcRequestHandlerOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -408,6 +438,21 @@ export type DenoUnaryRouteRpcRequestHandlerOptionsArgs<
   TRequest
 >;
 
+export type DenoUnaryRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
 export type DenoRouteStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -424,6 +469,21 @@ export type DenoRouteStreamRpcRequestHandlerOptionsArgs<
 >;
 
 export type DenoStreamRouteRpcRequestHandlerOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamRpcRequestHandlerOptionsArgs<
+  TManifest,
+  TPlugins,
+  TBody,
+  TRequest
+>;
+
+export type DenoStreamRpcRequestHandlerOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -547,6 +607,12 @@ export type DenoUnaryRouteTransportBodyResultFor<
     RpcManifestRouteUnaryBody<TManifest>,
 > = DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
+export type DenoUnaryTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+> = DenoRouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
 export type DenoRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
@@ -554,6 +620,11 @@ export type DenoRouteStreamTransportBodyResultFor<
 > = RouteStreamTransportBodyResultFor<TManifest, TBody>;
 
 export type DenoStreamRouteTransportBodyResultFor<
+  TManifest extends JoorManifest,
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+> = DenoRouteStreamTransportBodyResultFor<TManifest, TBody>;
+export type DenoStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
@@ -570,10 +641,16 @@ export type DenoRouteUnaryTransportRequestHandler<
 export type DenoUnaryRouteTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoRouteUnaryTransportRequestHandler<TRequest>;
+export type DenoUnaryTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoRouteUnaryTransportRequestHandler<TRequest>;
 export type DenoRouteStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoTransportRequestHandler<TRequest>;
 export type DenoStreamRouteTransportRequestHandler<
+  TRequest extends Request = Request,
+> = DenoRouteStreamTransportRequestHandler<TRequest>;
+export type DenoStreamTransportRequestHandler<
   TRequest extends Request = Request,
 > = DenoRouteStreamTransportRequestHandler<TRequest>;
 
@@ -601,6 +678,10 @@ export type DenoUnaryRouteTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>;
 
+export type DenoUnaryTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoRouteUnaryTransportBodyResultHandlerFor<TManifest>;
+
 export type DenoRouteStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = <const TBody extends RpcManifestRouteStreamBody<TManifest>>(
@@ -609,6 +690,10 @@ export type DenoRouteStreamTransportBodyResultHandlerFor<
 ) => MaybePromise<DenoRouteStreamTransportBodyResultFor<TManifest, TBody>>;
 
 export type DenoStreamRouteTransportBodyResultHandlerFor<
+  TManifest extends JoorManifest,
+> = DenoRouteStreamTransportBodyResultHandlerFor<TManifest>;
+
+export type DenoStreamTransportBodyResultHandlerFor<
   TManifest extends JoorManifest,
 > = DenoRouteStreamTransportBodyResultHandlerFor<TManifest>;
 
@@ -1025,6 +1110,9 @@ export const createRouteUnaryDenoTransportRequestHandler = <
 export const createUnaryRouteDenoTransportRequestHandler: typeof createRouteUnaryDenoTransportRequestHandler =
   createRouteUnaryDenoTransportRequestHandler;
 
+export const createUnaryDenoTransportRequestHandler: typeof createRouteUnaryDenoTransportRequestHandler =
+  createRouteUnaryDenoTransportRequestHandler;
+
 export const createRouteUnaryDenoTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1043,6 +1131,9 @@ export const createRouteUnaryDenoTransportRequestHandlerFor =
     ) as DenoRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteDenoTransportRequestHandlerFor: typeof createRouteUnaryDenoTransportRequestHandlerFor =
+  createRouteUnaryDenoTransportRequestHandlerFor;
+
+export const createUnaryDenoTransportRequestHandlerFor: typeof createRouteUnaryDenoTransportRequestHandlerFor =
   createRouteUnaryDenoTransportRequestHandlerFor;
 
 export const createRouteStreamDenoTransportRequestHandler = <
@@ -1068,6 +1159,9 @@ export const createRouteStreamDenoTransportRequestHandler = <
 export const createStreamRouteDenoTransportRequestHandler: typeof createRouteStreamDenoTransportRequestHandler =
   createRouteStreamDenoTransportRequestHandler;
 
+export const createStreamDenoTransportRequestHandler: typeof createRouteStreamDenoTransportRequestHandler =
+  createRouteStreamDenoTransportRequestHandler;
+
 export const createRouteStreamDenoTransportRequestHandlerFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1086,6 +1180,9 @@ export const createRouteStreamDenoTransportRequestHandlerFor =
     ) as DenoRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteDenoTransportRequestHandlerFor: typeof createRouteStreamDenoTransportRequestHandlerFor =
+  createRouteStreamDenoTransportRequestHandlerFor;
+
+export const createStreamDenoTransportRequestHandlerFor: typeof createRouteStreamDenoTransportRequestHandlerFor =
   createRouteStreamDenoTransportRequestHandlerFor;
 
 export const createDenoTransportRequestHandlerWithPath = <
@@ -1147,6 +1244,9 @@ export const createRouteUnaryDenoTransportRequestHandlerWithPath = <
 export const createUnaryRouteDenoTransportRequestHandlerWithPath: typeof createRouteUnaryDenoTransportRequestHandlerWithPath =
   createRouteUnaryDenoTransportRequestHandlerWithPath;
 
+export const createUnaryDenoTransportRequestHandlerWithPath: typeof createRouteUnaryDenoTransportRequestHandlerWithPath =
+  createRouteUnaryDenoTransportRequestHandlerWithPath;
+
 export const createRouteUnaryDenoTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1161,6 +1261,9 @@ export const createRouteUnaryDenoTransportRequestHandlerWithPathFor =
     ) as DenoRouteUnaryTransportRequestHandler<TRequest>;
 
 export const createUnaryRouteDenoTransportRequestHandlerWithPathFor: typeof createRouteUnaryDenoTransportRequestHandlerWithPathFor =
+  createRouteUnaryDenoTransportRequestHandlerWithPathFor;
+
+export const createUnaryDenoTransportRequestHandlerWithPathFor: typeof createRouteUnaryDenoTransportRequestHandlerWithPathFor =
   createRouteUnaryDenoTransportRequestHandlerWithPathFor;
 
 export const createRouteStreamDenoTransportRequestHandlerWithPath = <
@@ -1182,6 +1285,9 @@ export const createRouteStreamDenoTransportRequestHandlerWithPath = <
 export const createStreamRouteDenoTransportRequestHandlerWithPath: typeof createRouteStreamDenoTransportRequestHandlerWithPath =
   createRouteStreamDenoTransportRequestHandlerWithPath;
 
+export const createStreamDenoTransportRequestHandlerWithPath: typeof createRouteStreamDenoTransportRequestHandlerWithPath =
+  createRouteStreamDenoTransportRequestHandlerWithPath;
+
 export const createRouteStreamDenoTransportRequestHandlerWithPathFor =
   <TRequest extends Request = Request>() =>
   <TManifest extends JoorManifest>(
@@ -1196,6 +1302,9 @@ export const createRouteStreamDenoTransportRequestHandlerWithPathFor =
     ) as DenoRouteStreamTransportRequestHandler<TRequest>;
 
 export const createStreamRouteDenoTransportRequestHandlerWithPathFor: typeof createRouteStreamDenoTransportRequestHandlerWithPathFor =
+  createRouteStreamDenoTransportRequestHandlerWithPathFor;
+
+export const createStreamDenoTransportRequestHandlerWithPathFor: typeof createRouteStreamDenoTransportRequestHandlerWithPathFor =
   createRouteStreamDenoTransportRequestHandlerWithPathFor;
 
 export function createDenoRpcRequestHandler<
@@ -1279,6 +1388,9 @@ export function createRouteUnaryDenoRpcRequestHandler<
 export const createUnaryRouteDenoRpcRequestHandler: typeof createRouteUnaryDenoRpcRequestHandler =
   createRouteUnaryDenoRpcRequestHandler;
 
+export const createUnaryDenoRpcRequestHandler: typeof createRouteUnaryDenoRpcRequestHandler =
+  createRouteUnaryDenoRpcRequestHandler;
+
 export function createRouteStreamDenoRpcRequestHandler<
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1321,6 +1433,9 @@ export function createRouteStreamDenoRpcRequestHandler<
 }
 
 export const createStreamRouteDenoRpcRequestHandler: typeof createRouteStreamDenoRpcRequestHandler =
+  createRouteStreamDenoRpcRequestHandler;
+
+export const createStreamDenoRpcRequestHandler: typeof createRouteStreamDenoRpcRequestHandler =
   createRouteStreamDenoRpcRequestHandler;
 
 export function createDenoRpcRequestHandlerFor(): <
@@ -1448,6 +1563,9 @@ export function createRouteUnaryDenoRpcRequestHandlerFor<
 export const createUnaryRouteDenoRpcRequestHandlerFor: typeof createRouteUnaryDenoRpcRequestHandlerFor =
   createRouteUnaryDenoRpcRequestHandlerFor;
 
+export const createUnaryDenoRpcRequestHandlerFor: typeof createRouteUnaryDenoRpcRequestHandlerFor =
+  createRouteUnaryDenoRpcRequestHandlerFor;
+
 export function createRouteStreamDenoRpcRequestHandlerFor(): <
   TManifest extends JoorManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -1503,6 +1621,9 @@ export function createRouteStreamDenoRpcRequestHandlerFor<
 }
 
 export const createStreamRouteDenoRpcRequestHandlerFor: typeof createRouteStreamDenoRpcRequestHandlerFor =
+  createRouteStreamDenoRpcRequestHandlerFor;
+
+export const createStreamDenoRpcRequestHandlerFor: typeof createRouteStreamDenoRpcRequestHandlerFor =
   createRouteStreamDenoRpcRequestHandlerFor;
 
 const serveDenoWithHandler = (
