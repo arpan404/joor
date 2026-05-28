@@ -163,9 +163,11 @@ export type {
   RouteStreamTransportBodyResultFor,
   RouteUnaryTransportBodyResultFor,
   SerializedJsonEnvelope,
+  StreamTransportBodyResultFor,
   StreamRouteTransportBodyResultFor,
   TransportBodyResult,
   TransportBodyResultFor,
+  UnaryTransportBodyResultFor,
   UnaryRouteTransportBodyResultFor,
 } from './response.js';
 export * from './vercel.js';

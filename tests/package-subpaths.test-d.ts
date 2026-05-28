@@ -5843,11 +5843,19 @@ export type PackageSubpathSurface = [
     PackageSubpathManifest,
     PackageSubpathBody
   >,
+  Runtime.UnaryTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
   Runtime.RouteStreamTransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathStreamBody
   >,
   Runtime.StreamRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
+  Runtime.StreamTransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathStreamBody
   >,
@@ -5859,11 +5867,19 @@ export type PackageSubpathSurface = [
     PackageSubpathManifest,
     PackageSubpathBody
   >,
+  ResponseRuntime.UnaryTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathBody
+  >,
   ResponseRuntime.RouteStreamTransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathStreamBody
   >,
   ResponseRuntime.StreamRouteTransportBodyResultFor<
+    PackageSubpathManifest,
+    PackageSubpathStreamBody
+  >,
+  ResponseRuntime.StreamTransportBodyResultFor<
     PackageSubpathManifest,
     PackageSubpathStreamBody
   >,

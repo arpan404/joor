@@ -45,6 +45,12 @@ export type UnaryRouteTransportBodyResultFor<
     RpcManifestUnaryRouteBody<TManifest>,
 > = RouteUnaryTransportBodyResultFor<TManifest, TBody>;
 
+export type UnaryTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestUnaryRouteBody<TManifest> =
+    RpcManifestUnaryRouteBody<TManifest>,
+> = RouteUnaryTransportBodyResultFor<TManifest, TBody>;
+
 export type RouteStreamTransportBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
@@ -52,6 +58,12 @@ export type RouteStreamTransportBodyResultFor<
 > = TransportBodyResultFor<TManifest, TBody>;
 
 export type StreamRouteTransportBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody extends RpcManifestStreamRouteBody<TManifest> =
+    RpcManifestStreamRouteBody<TManifest>,
+> = RouteStreamTransportBodyResultFor<TManifest, TBody>;
+
+export type StreamTransportBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestStreamRouteBody<TManifest> =
     RpcManifestStreamRouteBody<TManifest>,

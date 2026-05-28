@@ -2175,9 +2175,11 @@ export type {
   RouteStreamTransportBodyResultFor,
   RouteUnaryTransportBodyResultFor,
   SerializedJsonEnvelope,
+  StreamTransportBodyResultFor,
   StreamRouteTransportBodyResultFor,
   TransportBodyResult,
   TransportBodyResultFor,
+  UnaryTransportBodyResultFor,
   UnaryRouteTransportBodyResultFor,
 } from './runtime/response.js';
 export type {
