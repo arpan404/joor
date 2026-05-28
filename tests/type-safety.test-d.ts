@@ -30907,14 +30907,18 @@ const createdRouteStreamClientShape: RpcRouteStreamTransportClient<Routes> =
 const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
   streamRouteClient;
 streamRouteClientShape.stream('users.watch', { userId: '1' });
+streamRouteClientShape.streamEvents('users.watch', { userId: '1' });
 createdRouteUnaryClientShape.call(
   'users.get',
   { id: '1' },
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
 createdRouteStreamClientShape.stream('users.watch', { userId: '1' });
+createdRouteStreamClientShape.streamEvents('users.watch', { userId: '1' });
 // @ts-expect-error route-unary clients do not expose stream commands.
 routeUnaryClient.stream('users.watch', { userId: '1' });
+// @ts-expect-error route-unary clients do not expose stream event commands.
+routeUnaryClient.streamEvents('users.watch', { userId: '1' });
 // @ts-expect-error route-stream clients do not expose unary calls.
 routeStreamClient.call('users.get', { id: '1' });
 // @ts-expect-error route stream client commands are readonly.
@@ -31013,6 +31017,8 @@ const rpcSubpathStreamRouteClientArgs: RpcSubpathStreamRouteClientArgs<
 > = streamRouteClientArgs;
 routeClient.stream('users.watch', ...rpcSubpathStreamRouteClientArgs);
 routeClient.stream('users.watch', ...defaultStreamRouteClientArgs);
+routeClient.streamEvents('users.watch', ...rpcSubpathStreamRouteClientArgs);
+routeClient.streamEvents('users.watch', ...defaultStreamRouteClientArgs);
 const noHeaderRouteClientArgs: RpcRouteClientArgs<
   Routes,
   'users.authenticated'
@@ -31060,6 +31066,7 @@ routeClient.call(
 );
 routeClient.call('users.authenticated', { ok: true });
 routeClient.stream('users.watch', { userId: '1' });
+routeClient.streamEvents('users.watch', { userId: '1' });
 
 async function consumeRouteStream() {
   for await (const event of routeClient.stream('users.watch', {
@@ -31071,6 +31078,25 @@ async function consumeRouteStream() {
   }
 }
 consumeRouteStream();
+
+async function consumeRouteStreamEvents() {
+  for await (const event of routeClient.streamEvents('users.watch', {
+    userId: '1',
+  })) {
+    if (event.event === 'data') {
+      const eventType: 'user.updated' = event.data.type;
+      eventType.toUpperCase();
+      event.data.userId.toUpperCase();
+    } else if (event.event === 'error') {
+      const routeId: 'users.watch' = event.data.id;
+      routeId.toUpperCase();
+      event.data.error.code.toUpperCase();
+    } else {
+      event.data.valueOf();
+    }
+  }
+}
+consumeRouteStreamEvents();
 
 const routeRequest = routeClient.request(
   'users.get',

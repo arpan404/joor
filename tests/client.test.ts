@@ -197,9 +197,7 @@ describe('client', () => {
       input: { ok: true },
     });
     expect(manifestRouteRequest.traceId).toBe('trace-2');
-    expect(conciseManifestRouteRequest.traceId).toBe(
-      'trace-manifest-concise'
-    );
+    expect(conciseManifestRouteRequest.traceId).toBe('trace-manifest-concise');
     expect(manifestRouteUnaryRequest.id).toBe('protected');
     expect(conciseManifestUnaryRequest.id).toBe('protected');
     expect(manifestRouteStreamRequest.id).toBe('stream');
@@ -305,9 +303,9 @@ describe('client', () => {
     expect(() =>
       createUnaryRequest(manifest, 'stream', { ok: true })
     ).toThrowError('RPC route "stream" is a stream route, expected unary');
-    expect(() =>
-      createStreamRequest(manifest, 'protected', {})
-    ).toThrowError('RPC route "protected" is a unary route, expected stream');
+    expect(() => createStreamRequest(manifest, 'protected', {})).toThrowError(
+      'RPC route "protected" is a unary route, expected stream'
+    );
   });
 
   it('validates manifest client ids and route kinds at runtime', async () => {
@@ -334,6 +332,10 @@ describe('client', () => {
         requests: readonly { readonly id: string; readonly input: unknown }[]
       ) => Promise<unknown>;
       readonly stream: (id: string, input: unknown) => AsyncIterable<unknown>;
+      readonly streamEvents: (
+        id: string,
+        input: unknown
+      ) => AsyncIterable<unknown>;
     };
 
     await expect(client.call('missing', {})).rejects.toThrowError(
@@ -351,6 +353,9 @@ describe('client', () => {
       'RPC route "stream" is a stream route, expected unary'
     );
     expect(() => client.stream('protected', {})).toThrowError(
+      'RPC route "protected" is a unary route, expected stream'
+    );
+    expect(() => client.streamEvents('protected', {})).toThrowError(
       'RPC route "protected" is a unary route, expected stream'
     );
   });
@@ -377,19 +382,23 @@ describe('client', () => {
     const conciseManifestUnaryClient: RpcManifestUnaryTransportClient<
       typeof manifest
     > = createManifestUnaryClient(manifest, options);
-    const conciseStreamClient: RpcManifestStreamTransportClient<typeof manifest> =
-      createStreamClient({ ...options, manifest });
+    const conciseStreamClient: RpcManifestStreamTransportClient<
+      typeof manifest
+    > = createStreamClient({ ...options, manifest });
     const conciseManifestStreamClient: RpcManifestStreamTransportClient<
       typeof manifest
     > = createManifestStreamClient(manifest, options);
-    const routeUnaryClient: RpcUnaryTransportClient<typeof manifest.procedures> =
-      createUnaryClient<typeof manifest.procedures>(options);
-    const routeStreamClient: RpcStreamTransportClient<typeof manifest.procedures> =
-      createStreamClient<typeof manifest.procedures>(options);
+    const routeUnaryClient: RpcUnaryTransportClient<
+      typeof manifest.procedures
+    > = createUnaryClient<typeof manifest.procedures>(options);
+    const routeStreamClient: RpcStreamTransportClient<
+      typeof manifest.procedures
+    > = createStreamClient<typeof manifest.procedures>(options);
     routeUnaryClient.request('protected', {
       id: '550e8400-e29b-41d4-a716-446655440000',
     });
     routeStreamClient.stream('stream', { ok: true });
+    routeStreamClient.streamEvents('stream', { ok: true });
 
     for (const client of [
       createRouteUnaryClient({ ...options, manifest }),
@@ -411,7 +420,7 @@ describe('client', () => {
       conciseManifestStreamClient,
     ]) {
       expect(Object.isFrozen(client)).toBe(true);
-      expect(Object.keys(client)).toEqual(['stream']);
+      expect(Object.keys(client)).toEqual(['stream', 'streamEvents']);
       expect('call' in client).toBe(false);
       expect('request' in client).toBe(false);
       expect('batch' in client).toBe(false);
@@ -433,9 +442,12 @@ describe('client', () => {
         const body = (await request.json()) as JsonValue;
         bodies.push(body);
         if (request.headers.get('accept') === 'text/event-stream') {
-          return new Response('event: data\ndata: {"ok":true}\n\nevent: done\ndata: null\n\n', {
-            headers: { 'content-type': 'text/event-stream' },
-          });
+          return new Response(
+            'event: data\ndata: {"ok":true}\n\nevent: done\ndata: null\n\n',
+            {
+              headers: { 'content-type': 'text/event-stream' },
+            }
+          );
         }
         if (Array.isArray(body)) {
           return Response.json(
@@ -476,16 +488,33 @@ describe('client', () => {
     )) {
       streamEvents.push(event);
     }
+    const streamEnvelopeEvents: unknown[] = [];
+    for await (const event of client.streamEvents<StreamTestProcedure>(
+      'stream',
+      { ok: true },
+      { traceId: 'trace-stream-events' }
+    )) {
+      streamEnvelopeEvents.push(event);
+    }
 
     expect(call.traceId).toBe('trace-call');
     expect(pending.traceId).toBe('trace-pending');
     expect(Object.isFrozen(pending)).toBe(true);
     expect(batch?.traceId).toBe('trace-pending');
     expect(streamEvents).toEqual([{ ok: true }]);
+    expect(streamEnvelopeEvents).toEqual([
+      { event: 'data', data: { ok: true } },
+      { event: 'done', data: {} },
+    ]);
     expect(bodies).toEqual([
       { id: 'call', input: { ok: true }, traceId: 'trace-call' },
       [{ id: 'pending', input: { ok: true }, traceId: 'trace-pending' }],
       { id: 'stream', input: { ok: true }, traceId: 'trace-stream' },
+      {
+        id: 'stream',
+        input: { ok: true },
+        traceId: 'trace-stream-events',
+      },
     ]);
   });
 
@@ -748,9 +777,13 @@ describe('client', () => {
       },
     });
 
-    await client.call<typeof procedure>('call', { ok: true }, {
-      request: callRequest,
-    });
+    await client.call<typeof procedure>(
+      'call',
+      { ok: true },
+      {
+        request: callRequest,
+      }
+    );
     await client.batch([{ id: 'batch', input: { ok: true } }] as const);
 
     expect(seen).toHaveLength(2);
@@ -812,7 +845,7 @@ describe('client', () => {
         );
       },
     });
-    const events: JsonValue[] = [];
+    const events: unknown[] = [];
 
     for await (const event of client.stream<StreamTestProcedure>('stream', {
       ok: true,
@@ -821,6 +854,53 @@ describe('client', () => {
     }
 
     expect(events).toEqual([{ ok: true }]);
+  });
+
+  it('exposes typed raw sse error and done frames', async () => {
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      async fetch() {
+        return new Response(
+          [
+            'event: error',
+            'data: {"ok":false,"id":"stream","traceId":"trace-1","error":{"code":"STREAM_VALIDATION_ERROR","message":"bad event","status":500}}',
+            '',
+            'event: done',
+            'data: null',
+            '',
+            '',
+          ].join('\n'),
+          {
+            headers: { 'content-type': 'text/event-stream' },
+          }
+        );
+      },
+    });
+    const events: unknown[] = [];
+
+    for await (const event of client.streamEvents<StreamTestProcedure>(
+      'stream',
+      { ok: true }
+    )) {
+      events.push(event);
+    }
+
+    expect(events).toEqual([
+      {
+        event: 'error',
+        data: {
+          ok: false,
+          id: 'stream',
+          traceId: 'trace-1',
+          error: {
+            code: 'STREAM_VALIDATION_ERROR',
+            message: 'bad event',
+            status: 500,
+          },
+        },
+      },
+      { event: 'done', data: {} },
+    ]);
   });
 
   it('throws json rpc failures returned from stream requests', async () => {

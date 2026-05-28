@@ -3318,12 +3318,23 @@ export interface LegacyRpcTransportClient {
     requests: TRequests,
     options?: ClientBatchOptions
   ) => Promise<BatchResults<TRequests>>;
-  readonly stream: <TProcedure>(
-    id: string,
+  readonly stream: <TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<RpcStreamProcedure<TProcedure>>,
     ...options: ClientRequestOptionsTuple<RpcStreamProcedure<TProcedure>>
   ) => AsyncIterable<
     ProcedureStreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue
+  >;
+  readonly streamEvents: <TProcedure, TId extends string = string>(
+    id: TId,
+    input: ProcedureInput<RpcStreamProcedure<TProcedure>>,
+    ...options: ClientRequestOptionsTuple<RpcStreamProcedure<TProcedure>>
+  ) => AsyncIterable<
+    RpcSseEvent<
+      ProcedureStreamEvent<RpcStreamProcedure<TProcedure>> & JsonValue,
+      TId,
+      RpcProcedureError<RpcStreamProcedure<TProcedure>>
+    >
   >;
 }
 
@@ -3352,6 +3363,11 @@ export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
     input: RpcRouteInput<TRoutes, TId>,
     ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
   ) => AsyncIterable<RpcRouteStreamEvent<TRoutes, TId> & JsonValue>;
+  readonly streamEvents: <TId extends RpcRouteStreamId<TRoutes>>(
+    id: TId,
+    input: RpcRouteInput<TRoutes, TId>,
+    ...options: ClientRequestOptionsTuple<RpcRouteProcedure<TRoutes, TId>>
+  ) => AsyncIterable<RpcRouteStreamSseEvent<TRoutes, TId>>;
 }
 
 export type RpcUnaryRouteTransportClient<TRoutes extends RpcRouteMap> =
@@ -3421,6 +3437,13 @@ export interface RpcManifestRouteStreamTransportClient<
       RpcManifestRouteProcedure<TManifest, TId>
     >
   ) => AsyncIterable<RpcManifestRouteStreamEvent<TManifest, TId> & JsonValue>;
+  readonly streamEvents: <TId extends RpcManifestRouteStreamId<TManifest>>(
+    id: TId,
+    input: RpcManifestRouteInput<TManifest, TId>,
+    ...options: ClientRequestOptionsTuple<
+      RpcManifestRouteProcedure<TManifest, TId>
+    >
+  ) => AsyncIterable<RpcManifestRouteStreamSseEvent<TManifest, TId>>;
 }
 
 export type RpcManifestStreamRouteTransportClient<
@@ -3693,6 +3716,20 @@ const parseSse = async function* <TEvent extends JsonValue>(
   response: Response,
   maxEventBytes: number
 ): AsyncIterable<TEvent> {
+  for await (const event of parseSseEvents<
+    RpcSseEvent<TEvent, string, RpcError>
+  >(response, maxEventBytes)) {
+    if (event.event === 'done') return;
+    if (event.event === 'error') {
+      throw new Error(JSON.stringify(event.data));
+    }
+    yield event.data;
+  }
+};
+
+const parseSseEvents = async function* <
+  TEvent extends RpcSseEvent<JsonValue, string, RpcError>,
+>(response: Response, maxEventBytes: number): AsyncIterable<TEvent> {
   if (response.body === null) return;
   const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = '';
@@ -3712,13 +3749,17 @@ const parseSse = async function* <TEvent extends JsonValue>(
         throw new Error('SSE event exceeds maxStreamEventBytes');
       }
       const { eventName, data } = parseSseChunk(chunk);
-      if (eventName === 'done') return;
+      if (eventName === 'done') {
+        yield { event: 'done', data: {} } as unknown as TEvent;
+        return;
+      }
       if (data !== undefined) {
         const parsed = JSON.parse(data) as JsonValue;
         if (eventName === 'error') {
-          throw new Error(JSON.stringify(parsed));
+          yield { event: 'error', data: parsed } as unknown as TEvent;
+          continue;
         }
-        yield parsed as TEvent;
+        yield { event: 'data', data: parsed } as unknown as TEvent;
       }
     }
   }
@@ -3863,8 +3904,40 @@ export function createClient<TRequest extends Request = Request>(
     );
     return (await response.json()) as BatchResults<TRequests>;
   };
-  const stream = <TProcedure>(
-    id: string,
+  const streamResponse = async <TProcedure, TId extends string = string>(
+    id: TId,
+    input: ProcedureInput<TProcedure>,
+    ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
+      ? [ClientRequestOptions<TProcedure>?]
+      : [ClientRequestOptions<TProcedure>]
+  ): Promise<Response> => {
+    if (manifest !== undefined) {
+      assertManifestRouteRequestKind(manifest, id, 'stream');
+    }
+    const headers = createHeaders(baseHeaders, requestOptions[0]?.headers);
+    headers.set('accept', 'text/event-stream');
+    const response = await fetcher(
+      requestFactory(
+        createClientRequestFactoryArgs({
+          url,
+          body: {
+            id,
+            input,
+            ...(requestOptions[0]?.traceId === undefined
+              ? {}
+              : { traceId: requestOptions[0].traceId }),
+          } as JsonValue,
+          headers,
+          baseRequest,
+          request: requestOptions[0]?.request,
+        })
+      )
+    );
+    await assertSseResponse(response);
+    return response;
+  };
+  const stream = <TProcedure, TId extends string = string>(
+    id: TId,
     input: ProcedureInput<TProcedure>,
     ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
       ? [ClientRequestOptions<TProcedure>?]
@@ -3875,30 +3948,40 @@ export function createClient<TRequest extends Request = Request>(
     }
     return {
       async *[Symbol.asyncIterator]() {
-        const headers = createHeaders(baseHeaders, requestOptions[0]?.headers);
-        headers.set('accept', 'text/event-stream');
-        const response = await fetcher(
-          requestFactory(
-            createClientRequestFactoryArgs({
-              url,
-              body: {
-                id,
-                input,
-                ...(requestOptions[0]?.traceId === undefined
-                  ? {}
-                  : { traceId: requestOptions[0].traceId }),
-              } as JsonValue,
-              headers,
-              baseRequest,
-              request: requestOptions[0]?.request,
-            })
-          )
-        );
-        await assertSseResponse(response);
+        const response = await streamResponse(id, input, ...requestOptions);
         yield* parseSse<JsonValue>(
           response,
           maxStreamEventBytes
         ) as AsyncIterable<ProcedureStreamEvent<TProcedure> & JsonValue>;
+      },
+    };
+  };
+  const streamEvents = <TProcedure, TId extends string = string>(
+    id: TId,
+    input: ProcedureInput<TProcedure>,
+    ...requestOptions: ProcedureRequiresHeaders<TProcedure> extends false
+      ? [ClientRequestOptions<TProcedure>?]
+      : [ClientRequestOptions<TProcedure>]
+  ): AsyncIterable<
+    RpcSseEvent<
+      ProcedureStreamEvent<TProcedure> & JsonValue,
+      TId,
+      RpcProcedureError<TProcedure>
+    >
+  > => {
+    if (manifest !== undefined) {
+      assertManifestRouteRequestKind(manifest, id, 'stream');
+    }
+    return {
+      async *[Symbol.asyncIterator]() {
+        const response = await streamResponse(id, input, ...requestOptions);
+        yield* parseSseEvents<
+          RpcSseEvent<
+            ProcedureStreamEvent<TProcedure> & JsonValue,
+            TId,
+            RpcProcedureError<TProcedure>
+          >
+        >(response, maxStreamEventBytes);
       },
     };
   };
@@ -3907,6 +3990,7 @@ export function createClient<TRequest extends Request = Request>(
     request,
     batch,
     stream,
+    streamEvents,
   });
 }
 
@@ -4012,6 +4096,7 @@ export function createRouteStreamClient<TRequest extends Request = Request>(
         );
   return Object.freeze({
     stream: client.stream,
+    streamEvents: client.streamEvents,
   }) as
     | RpcManifestRouteStreamTransportClient<JoorManifest>
     | RpcRouteStreamTransportClient<RpcRouteMap>;

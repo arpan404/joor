@@ -127,7 +127,7 @@ type GeneratedRouteUnaryClientRuntime = {
 
 type GeneratedRouteStreamClientRuntime = {
   readonly users: {
-    readonly watch: unknown;
+    readonly watch: object;
   };
 };
 
@@ -1509,6 +1509,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain(
         'readonly stream: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<Stream<TId>>;'
       );
+      expect(clientSource).toContain(
+        'readonly events: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<StreamSseEvent<TId>>;'
+      );
       expect(clientSource).toContain('  readonly batch: BatchFunction;');
       expect(clientSource).toContain('export type BatchClientHeaders');
       expect(clientSource).toContain(
@@ -1588,9 +1591,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain(
         'export type UnaryTransportClient = RouteUnaryTransportClient;'
       );
-      expect(clientSource).toContain(
-        "export type RouteStreamTransportClient = Pick<RouteTransportClient, 'stream'>;"
-      );
+      expect(clientSource).toContain("  'stream' | 'streamEvents'");
       expect(clientSource).toContain(
         'export type StreamRouteTransportClient = RouteStreamTransportClient;'
       );
@@ -4721,6 +4722,7 @@ const defaultStreamRouteFunction: StreamRouteFunction =
   defaultRouteStreamFunction;
 generatedRouteUnaryFunction({ id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedRouteStreamFunction({ userId: '1' });
+generatedRouteStreamFunction.events({ userId: '1' });
 const generatedLeafProtocolRequest =
   generatedRouteUnaryFunction.protocolRequest(
     { id: '550e8400-e29b-41d4-a716-446655440000' },
@@ -5066,10 +5068,15 @@ generatedRouteUnarySingleton.call('users.get', { id: '550e8400-e29b-41d4-a716-44
 generatedUnaryRouteSingleton.call('users.get', { id: '550e8400-e29b-41d4-a716-446655440000' });
 generatedTransport.stream('users.watch', { userId: '1' });
 generatedRouteStreamTransport.stream('users.watch', { userId: '1' });
+generatedRouteStreamTransport.streamEvents('users.watch', { userId: '1' });
 generatedTypedRouteStreamTransport.stream('users.watch', { userId: '1' });
+generatedTypedRouteStreamTransport.streamEvents('users.watch', { userId: '1' });
 generatedStreamRouteTransport.stream('users.watch', { userId: '1' });
+generatedStreamRouteTransport.streamEvents('users.watch', { userId: '1' });
 generatedRouteStreamSingleton.stream('users.watch', { userId: '1' });
+generatedRouteStreamSingleton.streamEvents('users.watch', { userId: '1' });
 generatedStreamRouteSingleton.stream('users.watch', { userId: '1' });
+generatedStreamRouteSingleton.streamEvents('users.watch', { userId: '1' });
 // @ts-expect-error generated route-unary transports do not expose stream commands.
 generatedRouteUnaryTransport.stream('users.watch', { userId: '1' });
 // @ts-expect-error generated route-stream transports do not expose unary calls.
@@ -5082,6 +5089,7 @@ routeUnaryTransport.request('users.get', {
 const routeStreamTransport: RouteStreamTransport<'users.watch'> =
   generatedRouteTransport;
 routeStreamTransport.stream('users.watch', { userId: '1' });
+routeStreamTransport.streamEvents('users.watch', { userId: '1' });
 const defaultRouteUnaryTransport: RouteUnaryTransport = routeUnaryTransport;
 const defaultUnaryRouteTransport: UnaryRouteTransport =
   defaultRouteUnaryTransport;
@@ -8246,7 +8254,10 @@ invalidNativeBatch;
       ]);
       expect('stream' in generatedRouteUnaryTransport).toBe(false);
       expect(Object.isFrozen(generatedRouteStreamTransport)).toBe(true);
-      expect(Object.keys(generatedRouteStreamTransport)).toEqual(['stream']);
+      expect(Object.keys(generatedRouteStreamTransport)).toEqual([
+        'stream',
+        'streamEvents',
+      ]);
       expect('call' in generatedRouteStreamTransport).toBe(false);
       expect('request' in generatedRouteStreamTransport).toBe(false);
       expect('batch' in generatedRouteStreamTransport).toBe(false);
@@ -8257,6 +8268,7 @@ invalidNativeBatch;
       ]);
       expect(Object.keys(clientModule.routeStreamTransport)).toEqual([
         'stream',
+        'streamEvents',
       ]);
       expect(Object.isFrozen(generatedRouteUnaryClient)).toBe(true);
       expect(Object.isFrozen(generatedRouteUnaryClient.users)).toBe(true);
@@ -8271,6 +8283,11 @@ invalidNativeBatch;
         true
       );
       expect(Object.keys(generatedRouteStreamClient.users)).toEqual(['watch']);
+      expect(Object.keys(generatedRouteStreamClient.users.watch)).toEqual([
+        'stream',
+        'events',
+        'protocolRequest',
+      ]);
       expect(Object.keys(generatedRouteStreamClient)).toEqual(['users']);
       expect('get' in generatedRouteStreamClient.users).toBe(false);
       expect('batch' in generatedRouteStreamClient).toBe(false);

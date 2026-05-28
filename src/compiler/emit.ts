@@ -5060,6 +5060,7 @@ export type UnaryRouteFunction<TId extends RouteUnaryId = RouteUnaryId> =
 type RouteStreamFunctionFor<TId extends RouteStreamId> = {
   (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
   readonly stream: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<Stream<TId>>;
+  readonly events: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<StreamSseEvent<TId>>;
   readonly protocolRequest: (
     input: RouteStreamInput<TId>,
     options?: ProtocolRequestOptions
@@ -5273,6 +5274,7 @@ export type UnaryTransport<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryTransport<TId>;
 type RouteStreamTransportFor<TId extends RouteStreamId> = {
   readonly stream: (...args: [id: TId, ...ClientArgs<TId>]) => AsyncIterable<Stream<TId>>;
+  readonly streamEvents: (...args: [id: TId, ...ClientArgs<TId>]) => AsyncIterable<StreamSseEvent<TId>>;
 };
 export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamTransportFor<TRouteId>;
@@ -5287,7 +5289,10 @@ export type RouteUnaryTransportClient = Pick<
 >;
 export type UnaryRouteTransportClient = RouteUnaryTransportClient;
 export type UnaryTransportClient = RouteUnaryTransportClient;
-export type RouteStreamTransportClient = Pick<RouteTransportClient, 'stream'>;
+export type RouteStreamTransportClient = Pick<
+  RouteTransportClient,
+  'stream' | 'streamEvents'
+>;
 export type StreamRouteTransportClient = RouteStreamTransportClient;
 export type StreamTransportClient = RouteStreamTransportClient;
 export type TransportClient = RouteTransportClient;
@@ -5347,6 +5352,7 @@ export function createRouteStreamTransport<TRequest extends Request = RouteStrea
   } as JoorManifestRouteStreamClientOptions<Manifest, TRequest>);
   return Object.freeze({
     stream: client.stream,
+    streamEvents: client.streamEvents,
   }) as RouteStreamTransportClient;
 }
 
@@ -5415,11 +5421,13 @@ export function createClient<TRequest extends Request = RequiredRuntimeRequest>(
     const routeTransport = transport as unknown as RouteStreamTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
+    const events = (...args: ClientArgs<TId>) =>
+      routeTransport.streamEvents(id, ...args);
     const protocolRequest = (
       input: RouteStreamInput<TId>,
       options?: ProtocolRequestOptions
     ) => createRouteStreamProtocolRequest(id, input, options);
-    return Object.assign(stream, { stream, protocolRequest });
+    return Object.assign(stream, { stream, events, protocolRequest });
   };
   const batch: BatchFunction = (requests, ...options) =>
     transport.batch(requests, ...options);
@@ -5487,11 +5495,13 @@ export function createRouteStreamClient<TRequest extends Request = RouteStreamRe
     const routeTransport = transport as unknown as RouteStreamTransport<TId>;
     const stream = (...args: ClientArgs<TId>) =>
       routeTransport.stream(id, ...args);
+    const events = (...args: ClientArgs<TId>) =>
+      routeTransport.streamEvents(id, ...args);
     const protocolRequest = (
       input: RouteStreamInput<TId>,
       options?: ProtocolRequestOptions
     ) => createRouteStreamProtocolRequest(id, input, options);
-    return Object.assign(stream, { stream, protocolRequest });
+    return Object.assign(stream, { stream, events, protocolRequest });
   };
   return freezeClientTree({
 ${routeStreamClientBody}
