@@ -9,6 +9,7 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
+const rpcClient = join(srcRoot, 'rpc/client.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -1309,6 +1310,49 @@ const generatedPlatformRouteFactoryExports = [
   },
 ] as const;
 
+const routeKindClientInputPatterns = [
+  [
+    'createRouteUnaryProtocolRequest',
+    /export function createRouteUnaryProtocolRequest[\s\S]*?input: RpcRouteUnaryInput<TRoutes, NoInfer<TId>>/,
+  ],
+  [
+    'createRouteStreamProtocolRequest',
+    /export function createRouteStreamProtocolRequest[\s\S]*?input: RpcRouteStreamInput<TRoutes, NoInfer<TId>>/,
+  ],
+  [
+    'createManifestRouteUnaryProtocolRequest',
+    /export function createManifestRouteUnaryProtocolRequest[\s\S]*?input: RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>/,
+  ],
+  [
+    'createManifestRouteStreamProtocolRequest',
+    /export function createManifestRouteStreamProtocolRequest[\s\S]*?input: RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>/,
+  ],
+  [
+    'createRouteRequest',
+    /export function createRouteRequest[\s\S]*?input: RpcRouteUnaryInput<TRoutes, NoInfer<TId>>/,
+  ],
+  [
+    'createManifestRouteRequest',
+    /export function createManifestRouteRequest[\s\S]*?input: RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>/,
+  ],
+  [
+    'RpcRouteUnaryTransportClient',
+    /export interface RpcRouteUnaryTransportClient[\s\S]*?input: RpcRouteUnaryInput<TRoutes, NoInfer<TId>>/,
+  ],
+  [
+    'RpcRouteStreamTransportClient',
+    /export interface RpcRouteStreamTransportClient[\s\S]*?input: RpcRouteStreamInput<TRoutes, NoInfer<TId>>/,
+  ],
+  [
+    'RpcManifestRouteUnaryTransportClient',
+    /export interface RpcManifestRouteUnaryTransportClient[\s\S]*?input: RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>/,
+  ],
+  [
+    'RpcManifestRouteStreamTransportClient',
+    /export interface RpcManifestRouteStreamTransportClient[\s\S]*?input: RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>/,
+  ],
+] as const;
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -1588,6 +1632,15 @@ describe('route public surface', () => {
         );
       }
     );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind client inputs spelled with specific public aliases', async () => {
+    const source = await readFile(rpcClient, 'utf8');
+    const missing = routeKindClientInputPatterns
+      .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
+      .sort();
 
     expect(missing).toEqual([]);
   });
