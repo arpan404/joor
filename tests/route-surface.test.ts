@@ -10,6 +10,7 @@ const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const rpcClient = join(srcRoot, 'rpc/client.ts');
+const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -1353,6 +1354,21 @@ const routeKindClientInputPatterns = [
   ],
 ] as const;
 
+const routeKindDispatcherInputPatterns = [
+  [
+    'RpcManifestRouteUnaryClientArgs',
+    /export type RpcManifestRouteUnaryClientArgs<[\s\S]*?RpcManifestRouteUnaryClientArgsFor<TManifest, TId>/,
+  ],
+  [
+    'RpcManifestRouteStreamClientArgs',
+    /export type RpcManifestRouteStreamClientArgs<[\s\S]*?RpcManifestRouteStreamClientArgsFor<TManifest, TId>/,
+  ],
+  [
+    'RpcManifestRouteRequestFor',
+    /type RpcManifestRouteRequestFor<[\s\S]*?readonly input: RpcManifestRouteUnaryInput<TManifest, TId>/,
+  ],
+] as const;
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -1639,6 +1655,15 @@ describe('route public surface', () => {
   it('keeps route-kind client inputs spelled with specific public aliases', async () => {
     const source = await readFile(rpcClient, 'utf8');
     const missing = routeKindClientInputPatterns
+      .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
+      .sort();
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind dispatcher inputs spelled with specific public aliases', async () => {
+    const source = await readFile(rpcDispatcher, 'utf8');
+    const missing = routeKindDispatcherInputPatterns
       .flatMap(([name, pattern]) => (pattern.test(source) ? [] : [name]))
       .sort();
 

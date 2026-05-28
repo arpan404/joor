@@ -505,7 +505,7 @@ type RpcManifestRouteProtocolRequestFor<
   TId extends RpcManifestRouteId<TManifest>,
 > = {
   readonly id: TId;
-  readonly input: ProcedureInput<RpcManifestRoutes<TManifest>[TId]> & JsonValue;
+  readonly input: RpcManifestRouteInput<TManifest, TId> & JsonValue;
   readonly traceId?: string;
 };
 
@@ -1133,6 +1133,34 @@ type RpcManifestRouteClientArgsFor<
         options: RpcManifestRouteRequestOptions<TManifest, TId>,
       ];
 
+type RpcManifestRouteUnaryClientArgsFor<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteUnaryId<TManifest>,
+> =
+  RpcManifestRouteUnaryRequiresHeaders<TManifest, TId> extends false
+    ? readonly [
+        input: RpcManifestRouteUnaryInput<TManifest, TId>,
+        options?: RpcManifestRouteUnaryRequestOptions<TManifest, TId>,
+      ]
+    : readonly [
+        input: RpcManifestRouteUnaryInput<TManifest, TId>,
+        options: RpcManifestRouteUnaryRequestOptions<TManifest, TId>,
+      ];
+
+type RpcManifestRouteStreamClientArgsFor<
+  TManifest extends RpcManifest,
+  TId extends RpcManifestRouteStreamId<TManifest>,
+> =
+  RpcManifestRouteStreamRequiresHeaders<TManifest, TId> extends false
+    ? readonly [
+        input: RpcManifestRouteStreamInput<TManifest, TId>,
+        options?: RpcManifestRouteStreamRequestOptions<TManifest, TId>,
+      ]
+    : readonly [
+        input: RpcManifestRouteStreamInput<TManifest, TId>,
+        options: RpcManifestRouteStreamRequestOptions<TManifest, TId>,
+      ];
+
 export type RpcManifestRouteClientArgs<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteId<TManifest> = RpcManifestRouteId<TManifest>,
@@ -1145,20 +1173,26 @@ export type RpcManifestRouteUnaryClientArgs<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest> =
     RpcManifestRouteUnaryId<TManifest>,
-> = RpcManifestRouteClientArgs<TManifest, TId>;
+> =
+  TId extends RpcManifestRouteUnaryId<TManifest>
+    ? RpcManifestRouteUnaryClientArgsFor<TManifest, TId>
+    : never;
 
 export type RpcManifestRouteStreamClientArgs<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteStreamId<TManifest> =
     RpcManifestRouteStreamId<TManifest>,
-> = RpcManifestRouteClientArgs<TManifest, TId>;
+> =
+  TId extends RpcManifestRouteStreamId<TManifest>
+    ? RpcManifestRouteStreamClientArgsFor<TManifest, TId>
+    : never;
 
 type RpcManifestRouteRequestFor<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest>,
 > = {
   readonly id: TId;
-  readonly input: RpcManifestRouteInput<TManifest, TId>;
+  readonly input: RpcManifestRouteUnaryInput<TManifest, TId>;
 } & (RpcManifestRouteRequiresHeaders<TManifest, TId> extends false
   ? { readonly headers?: RpcManifestRouteClientHeaders<TManifest, TId> }
   : { readonly headers: RpcManifestRouteClientHeaders<TManifest, TId> });
