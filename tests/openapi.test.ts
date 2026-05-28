@@ -192,12 +192,40 @@ describe('openapi and ai docs', () => {
                 successRef: '#/components/schemas/UsersGetSuccess',
                 failureRef: '#/components/schemas/UsersGetFailure',
                 errorRef: '#/components/schemas/UsersGetError',
+                client: expect.objectContaining({
+                  kind: 'unary',
+                  routeId: 'users.get',
+                  path: ['users', 'get'],
+                  callable: expect.objectContaining({
+                    result: 'client.users.get(input, options?)',
+                    protocolRequest:
+                      'client.users.get.protocolRequest(input, options?)',
+                  }),
+                  transport: expect.objectContaining({
+                    result: 'transport.call("users.get", input, options?)',
+                    batch: 'transport.batch([request], options?)',
+                  }),
+                }),
               }),
               expect.objectContaining({
                 id: 'users.watch',
                 requestRef: '#/components/schemas/UsersWatchRequest',
                 responseRef: '#/components/schemas/UsersWatchResponse',
                 streamEventRef: '#/components/schemas/UsersWatchStreamEvent',
+                client: expect.objectContaining({
+                  kind: 'stream',
+                  routeId: 'users.watch',
+                  path: ['users', 'watch'],
+                  callable: expect.objectContaining({
+                    data: 'client.users.watch(input, options?)',
+                    events: 'client.users.watch.events(input, options?)',
+                  }),
+                  transport: expect.objectContaining({
+                    data: 'transport.stream("users.watch", input, options?)',
+                    events:
+                      'transport.streamEvents("users.watch", input, options?)',
+                  }),
+                }),
               }),
             ]),
           },

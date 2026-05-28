@@ -1,6 +1,7 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
 import { toJsonSchema } from '../schema/openapi.js';
 import type { HeaderObjectSchema } from '../schema/types.js';
+import { createClientDocs } from './client-docs.js';
 import type { CompilerManifest } from './manifest.js';
 
 const componentName = (id: string, suffix: string): string =>
@@ -223,6 +224,7 @@ export const createOpenApiDocument = (
       auth: entry.procedure.meta.auth ?? [],
       authPolicy: entry.procedure.auth?.name ?? null,
       rateLimit: entry.procedure.meta.rateLimit ?? null,
+      client: createClientDocs(entry.id, entry.procedure.stream),
       inputRef: `#/components/schemas/${componentName(entry.id, 'Input')}`,
       requestRef: `#/components/schemas/${requestComponent}`,
       responseRef: `#/components/schemas/${responseComponent}`,
