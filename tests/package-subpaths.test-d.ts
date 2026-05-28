@@ -504,10 +504,21 @@ import {
   build,
   createAiDocs,
   createOpenApiDocument,
+  emitArtifacts,
+  emitCompiledProcedureSource,
+  findConfigFile,
+  loadConfig,
+  loadProcedures,
+  scanProcedureFiles,
   type AiDocsOptions,
   type BuildDispatcherProfile,
+  type BuildOptions,
   type BuildResult,
+  type CompiledProcedureGenerationOptions,
+  type CompiledProcedureMode,
+  type EmitOptions,
   type OpenApiDocumentOptions,
+  type ProcedureFile,
 } from 'joor/compiler';
 import { ok } from 'joor/procedure';
 import {
@@ -2008,14 +2019,15 @@ const contextSubpathUnionToIntersection =
 contextSubpathUnionToIntersection.user.toUpperCase();
 contextSubpathUnionToIntersection.org.toUpperCase();
 
+const packageSubpathCompilerLoadedProcedure: Compiler.LoadedProcedure = {
+  id: 'users.get',
+  importPath: '/tmp/joor/users.get.ts',
+  exportName: 'users_get',
+  procedure: packageSubpathProcedure,
+};
 const packageSubpathCompilerManifest: Compiler.CompilerManifest = {
   procedures: [
-    {
-      id: 'users.get',
-      importPath: '/tmp/joor/users.get.ts',
-      exportName: 'users_get',
-      procedure: packageSubpathProcedure,
-    },
+    packageSubpathCompilerLoadedProcedure,
   ],
 };
 const packageSubpathAiDocsOptions: AiDocsOptions = { path: '/api/rpc' };
@@ -2041,6 +2053,40 @@ createOpenApiDocument(
   packageSubpathCompilerManifest,
   packageSubpathOpenApiOptions
 )['openapi'];
+const packageSubpathCompiledProcedureMode: CompiledProcedureMode = 'body';
+const packageSubpathCompiledProcedureOptions: CompiledProcedureGenerationOptions =
+  {
+    enforceRateLimit: true,
+    modes: [packageSubpathCompiledProcedureMode],
+    validateHeaders: true,
+    validateInput: true,
+    validateOutput: true,
+    validateResponseHeaders: true,
+  };
+emitCompiledProcedureSource(
+  packageSubpathCompilerLoadedProcedure,
+  packageSubpathCompiledProcedureOptions
+).toUpperCase();
+const packageSubpathBuildOptions: BuildOptions = {
+  entry: '/tmp/joor/rpc',
+  outDir: '/tmp/joor/.joor',
+};
+packageSubpathBuildOptions.entry?.toUpperCase();
+const packageSubpathEmitOptions: EmitOptions = {
+  outDir: '/tmp/joor/.joor',
+};
+const packageSubpathEmitResult: Promise<void> = emitArtifacts(
+  packageSubpathCompilerManifest,
+  packageSubpathEmitOptions
+);
+const packageSubpathFoundConfigPath = findConfigFile('/tmp/joor');
+packageSubpathFoundConfigPath?.toUpperCase();
+const packageSubpathLoadedConfig: Promise<Config.JoorConfig> =
+  loadConfig('/tmp/joor');
+const packageSubpathLoadedProcedures: Promise<Compiler.CompilerManifest> =
+  loadProcedures('/tmp/joor/rpc');
+const packageSubpathProcedureFiles: Promise<ProcedureFile[]> =
+  scanProcedureFiles('/tmp/joor/rpc');
 const packageSubpathBuildResult: BuildResult = {
   entry: '/tmp/joor/rpc',
   outDir: '/tmp/joor/.joor',
@@ -2110,6 +2156,16 @@ createRootCorsHeaderRecord({ origin: 'https://app.example' })?.[
 
 const packageSubpathValues = [
   build,
+  emitArtifacts,
+  emitCompiledProcedureSource,
+  findConfigFile,
+  loadConfig,
+  loadProcedures,
+  scanProcedureFiles,
+  packageSubpathEmitResult,
+  packageSubpathLoadedConfig,
+  packageSubpathLoadedProcedures,
+  packageSubpathProcedureFiles,
   packageSubpathProtocolRequestBuilder,
   packageSubpathRouteProtocolRequestBuilder,
   packageSubpathRouteRequestBuilder,
