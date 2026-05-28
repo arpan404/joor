@@ -4280,7 +4280,7 @@ import { createFetchFor as createNativeFetchFor, createNativeProtocolRequest, cr
 import type { NativeBatchClientHeaders, NativeBatchOptions, NativeBatchOptionsTuple, NativeRouteBatchClientHeaders, NativeRouteBatchOptions, NativeRouteBatchOptionsTuple, NativeRouteUnaryBatchClientHeaders, NativeRouteUnaryBatchOptions, NativeRouteUnaryBatchOptionsTuple, NativeUnaryRouteBatchClientHeaders, NativeUnaryRouteBatchOptions, NativeUnaryRouteBatchOptionsTuple } from './dispatcher.safe.js';
 import type { NativeProtocolBatchClientHeaders, NativeProtocolBatchOptions, NativeProtocolBatchOptionsTuple, NativeRouteProtocolBatchClientHeaders, NativeRouteProtocolBatchOptions, NativeRouteProtocolBatchOptionsTuple, NativeRouteUnaryProtocolBatchClientHeaders, NativeRouteUnaryProtocolBatchOptions, NativeRouteUnaryProtocolBatchOptionsTuple, NativeUnaryRouteProtocolBatchClientHeaders, NativeUnaryRouteProtocolBatchOptions, NativeUnaryRouteProtocolBatchOptionsTuple } from './dispatcher.safe.js';
 import type { NativeConfig, NativeConfigBody, NativeConfigFor, NativeConfigManifest, NativeConfigRequest, NativeConfigServices, NativeDefineConfig, NativeDefineHandlerOptions, NativeDefineRouteStreamConfig, NativeDefineRouteStreamHandlerOptions, NativeDefineRouteUnaryConfig, NativeDefineRouteUnaryHandlerOptions, NativeDefineStreamRouteConfig, NativeDefineStreamRouteHandlerOptions, NativeDefineUnaryRouteConfig, NativeDefineUnaryRouteHandlerOptions, NativeHandlerHookContext, NativeHandlerHooks, NativeHandlerOptionServices, NativeHandlerOptions, NativeHandlerOptionsArgs, NativeHandlerOptionsArgsFor, NativeHandlerOptionsBody, NativeHandlerOptionsFor, NativeHandlerOptionsManifest, NativeHandlerOptionsRequest, NativeHandlerOptionsServices, NativeHandlerOptionsWithPreflightArgs, NativeHandlerOptionsWithTrailingArgs, NativeMiddleware, NativeRouteStreamConfig, NativeRouteStreamConfigFor, NativeRouteStreamHandlerHookContext, NativeRouteStreamHandlerHooks, NativeRouteStreamHandlerOptions, NativeRouteStreamHandlerOptionsArgs, NativeRouteStreamHandlerOptionsArgsFor, NativeRouteStreamHandlerOptionsFor, NativeRouteStreamHandlerOptionsWithPreflightArgs, NativeRouteStreamHandlerOptionsWithTrailingArgs, NativeRouteStreamMiddleware, NativeRouteUnaryConfig, NativeRouteUnaryConfigFor, NativeRouteUnaryHandlerHookContext, NativeRouteUnaryHandlerHooks, NativeRouteUnaryHandlerOptions, NativeRouteUnaryHandlerOptionsArgs, NativeRouteUnaryHandlerOptionsArgsFor, NativeRouteUnaryHandlerOptionsFor, NativeRouteUnaryHandlerOptionsWithPreflightArgs, NativeRouteUnaryHandlerOptionsWithTrailingArgs, NativeRouteUnaryMiddleware, NativeStreamRouteConfig, NativeStreamRouteConfigFor, NativeStreamRouteHandlerHookContext, NativeStreamRouteHandlerHooks, NativeStreamRouteHandlerOptions, NativeStreamRouteHandlerOptionsArgs, NativeStreamRouteHandlerOptionsArgsFor, NativeStreamRouteHandlerOptionsFor, NativeStreamRouteHandlerOptionsWithPreflightArgs, NativeStreamRouteHandlerOptionsWithTrailingArgs, NativeStreamRouteMiddleware, NativeUnaryRouteConfig, NativeUnaryRouteConfigFor, NativeUnaryRouteHandlerHookContext, NativeUnaryRouteHandlerHooks, NativeUnaryRouteHandlerOptions, NativeUnaryRouteHandlerOptionsArgs, NativeUnaryRouteHandlerOptionsArgsFor, NativeUnaryRouteHandlerOptionsFor, NativeUnaryRouteHandlerOptionsWithPreflightArgs, NativeUnaryRouteHandlerOptionsWithTrailingArgs, NativeUnaryRouteMiddleware } from './dispatcher.safe.js';
-import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor } from './dispatcher.safe.js';
+import type { NativeRouteStreamBodyHandler, NativeRouteStreamCompiledBodyResultFor, NativeRouteStreamTransportHandler, NativeRouteStreamTransportResultFor, NativeRouteUnaryBodyHandler, NativeRouteUnaryCompiledBodyResultFor, NativeRouteUnaryTransportHandler, NativeRouteUnaryTransportResultFor, NativeStreamBodyHandler, NativeStreamCompiledBodyResultFor, NativeStreamRouteBodyHandler, NativeStreamRouteCompiledBodyResultFor, NativeStreamRouteTransportHandler, NativeStreamRouteTransportResultFor, NativeStreamTransportHandler, NativeStreamTransportResultFor, NativeUnaryBodyHandler, NativeUnaryCompiledBodyResultFor, NativeUnaryRouteBodyHandler, NativeUnaryRouteCompiledBodyResultFor, NativeUnaryRouteTransportHandler, NativeUnaryRouteTransportResultFor, NativeUnaryTransportHandler, NativeUnaryTransportResultFor } from './dispatcher.safe.js';
 import { createPlugin } from 'joor';
 import awsLambdaHandler, { createAwsLambdaHandlerFor as createGeneratedAwsLambdaHandlerFor, createAwsLambdaHttpApiHandlerFor as createGeneratedAwsLambdaHttpApiHandlerFor, createAwsLambdaRequest as createGeneratedAwsLambdaRequest, createAwsLambdaRestApiHandlerFor as createGeneratedAwsLambdaRestApiHandlerFor, createAwsLambdaRestApiRequest as createGeneratedAwsLambdaRestApiRequest, createRouteStreamAwsLambdaHandlerFor as createGeneratedRouteStreamAwsLambdaHandlerFor, createRouteStreamAwsLambdaHttpApiHandlerFor as createGeneratedRouteStreamAwsLambdaHttpApiHandlerFor, createRouteStreamAwsLambdaRestApiHandlerFor as createGeneratedRouteStreamAwsLambdaRestApiHandlerFor, createRouteUnaryAwsLambdaHandlerFor as createGeneratedRouteUnaryAwsLambdaHandlerFor, createRouteUnaryAwsLambdaHttpApiHandlerFor as createGeneratedRouteUnaryAwsLambdaHttpApiHandlerFor, createRouteUnaryAwsLambdaRestApiHandlerFor as createGeneratedRouteUnaryAwsLambdaRestApiHandlerFor, createStreamAwsLambdaHandlerFor as createGeneratedStreamAwsLambdaHandlerFor, createStreamAwsLambdaHttpApiHandlerFor as createGeneratedStreamAwsLambdaHttpApiHandlerFor, createStreamAwsLambdaRestApiHandlerFor as createGeneratedStreamAwsLambdaRestApiHandlerFor, createStreamRouteAwsLambdaHandlerFor as createGeneratedStreamRouteAwsLambdaHandlerFor, createStreamRouteAwsLambdaHttpApiHandlerFor as createGeneratedStreamRouteAwsLambdaHttpApiHandlerFor, createStreamRouteAwsLambdaRestApiHandlerFor as createGeneratedStreamRouteAwsLambdaRestApiHandlerFor, createUnaryAwsLambdaHandlerFor as createGeneratedUnaryAwsLambdaHandlerFor, createUnaryAwsLambdaHttpApiHandlerFor as createGeneratedUnaryAwsLambdaHttpApiHandlerFor, createUnaryAwsLambdaRestApiHandlerFor as createGeneratedUnaryAwsLambdaRestApiHandlerFor, createUnaryRouteAwsLambdaHandlerFor as createGeneratedUnaryRouteAwsLambdaHandlerFor, createUnaryRouteAwsLambdaHttpApiHandlerFor as createGeneratedUnaryRouteAwsLambdaHttpApiHandlerFor, createUnaryRouteAwsLambdaRestApiHandlerFor as createGeneratedUnaryRouteAwsLambdaRestApiHandlerFor, handler as namedAwsLambdaHandler, restApiHandler as namedAwsLambdaRestApiHandler, type NativeAwsLambdaHandlerFactory, type NativeAwsLambdaRestApiHandlerFactory } from './aws-lambda.js';
 import bunNativeFetchDefault, { createFetch as createBunNativeFetch, createFetchFor as createBunNativeFetchFor, createRouteStreamFetch as createRouteStreamBunFetch, createRouteStreamFetchFor as createRouteStreamBunFetchFor, createRouteUnaryFetch as createRouteUnaryBunFetch, createRouteUnaryFetchFor as createRouteUnaryBunFetchFor, fetch as bunNativeFetch, listenRouteStream as listenRouteStreamBunNative, listenRouteUnary as listenRouteUnaryBunNative, listenStream as listenStreamBunNative, listenStreamRoute as listenStreamRouteBunNative, listenUnary as listenUnaryBunNative, listenUnaryRoute as listenUnaryRouteBunNative, serve as serveBunNative, serveBunRouteStream as serveBunRouteStreamNative, serveBunRouteUnary as serveBunRouteUnaryNative, serveBunStream as serveBunStreamNative, serveBunStreamRoute as serveBunStreamRouteNative, serveBunUnary as serveBunUnaryNative, serveBunUnaryRoute as serveBunUnaryRouteNative, serveRouteStreamBun as serveRouteStreamBunNative, serveRouteUnaryBun as serveRouteUnaryBunNative, serveStream as serveStreamBunGenericNative, serveStreamBun as serveStreamBunNative, serveStreamRouteBun as serveStreamRouteBunNative, serveUnary as serveUnaryBunGenericNative, serveUnaryBun as serveUnaryBunNative, serveUnaryRouteBun as serveUnaryRouteBunNative, type BunNativeFetchHandler, type BunNativeOptions, type BunNativeRouteStreamFetchHandler, type BunNativeRouteUnaryFetchHandler, type BunNativeServer, type NativeCorsOptions as BunNativeCorsOptions } from './bun.js';
@@ -6611,6 +6611,10 @@ const nativeUnaryRouteTransportHandler: NativeUnaryRouteTransportHandler =
   nativeUnaryRouteTransport;
 const nativeStreamRouteTransportHandler: NativeStreamRouteTransportHandler =
   nativeStreamRouteTransport;
+const nativeUnaryTransportHandler: NativeUnaryTransportHandler =
+  nativeUnaryRouteTransport;
+const nativeStreamTransportHandler: NativeStreamTransportHandler =
+  nativeStreamRouteTransport;
 const nativeUnaryRouteBodyHandler: NativeUnaryRouteBodyHandler =
   nativeUnaryRouteBodyHandlerValue;
 const nativeRouteUnaryBodyHandler: NativeRouteUnaryBodyHandler =
@@ -6619,6 +6623,10 @@ const nativeStreamRouteBodyHandler: NativeStreamRouteBodyHandler =
   nativeStreamRouteBodyHandlerValue;
 const nativeRouteStreamBodyHandler: NativeRouteStreamBodyHandler =
   nativeRouteStreamBodyHandlerValue;
+const nativeUnaryBodyHandler: NativeUnaryBodyHandler =
+  nativeUnaryRouteBodyHandlerValue;
+const nativeStreamBodyHandler: NativeStreamBodyHandler =
+  nativeStreamRouteBodyHandlerValue;
 const nativeUnaryBody: NativeRouteRequest<'users.get'> = {
   id: 'users.get',
   input: { id: '550e8400-e29b-41d4-a716-446655440000' },
@@ -7499,16 +7507,28 @@ const nativeUnaryRouteCompiledBodyResultFor: NativeUnaryRouteCompiledBodyResultF
   nativeBodyResult;
 const nativeRouteUnaryCompiledBodyResultFor: NativeRouteUnaryCompiledBodyResultFor<typeof nativeRouteUnaryBody> =
   nativeUnaryRouteCompiledBodyResultFor;
+const nativeUnaryCompiledBodyResultFor: NativeUnaryCompiledBodyResultFor<typeof nativeUnaryRouteBody> =
+  nativeRouteUnaryCompiledBodyResultFor;
 const nativeStreamRouteCompiledBodyResultFor: NativeStreamRouteCompiledBodyResultFor<typeof nativeStreamRouteBody> =
   new Response();
 const nativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResultFor<typeof nativeRouteStreamBody> =
   nativeStreamRouteCompiledBodyResultFor;
+const nativeStreamCompiledBodyResultFor: NativeStreamCompiledBodyResultFor<typeof nativeStreamRouteBody> =
+  nativeRouteStreamCompiledBodyResultFor;
 const _wrongNativeRouteUnaryCompiledBodyResultFor: NativeRouteUnaryCompiledBodyResultFor<
   // @ts-expect-error generated native route-unary compiled body result aliases reject stream bodies.
   typeof nativeStreamRouteBody
 > = nativeRouteStreamCompiledBodyResultFor;
+const _wrongNativeUnaryCompiledBodyResultFor: NativeUnaryCompiledBodyResultFor<
+  // @ts-expect-error generated native concise unary compiled body result aliases reject stream bodies.
+  typeof nativeStreamRouteBody
+> = nativeStreamCompiledBodyResultFor;
 const _wrongNativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResultFor<
   // @ts-expect-error generated native route-stream compiled body result aliases reject unary bodies.
+  typeof nativeRouteUnaryBody
+> = new Response();
+const _wrongNativeStreamCompiledBodyResultFor: NativeStreamCompiledBodyResultFor<
+  // @ts-expect-error generated native concise stream compiled body result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
 > = new Response();
 const nativeCompiledTransportResult: NativeCompiledTransportResult = nativeCompiledBodyResult;
@@ -7575,14 +7595,26 @@ const nativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<type
   new Response();
 const nativeUnaryRouteTransportResult: NativeUnaryRouteTransportResultFor<typeof nativeUnaryRouteBody> =
   nativeRouteUnaryTransportResult;
+const nativeUnaryTransportResultFor: NativeUnaryTransportResultFor<typeof nativeUnaryRouteBody> =
+  nativeUnaryRouteTransportResult;
 const nativeStreamRouteTransportResult: NativeStreamRouteTransportResultFor<typeof nativeStreamRouteBody> =
   nativeRouteStreamTransportResult;
+const nativeStreamTransportResultFor: NativeStreamTransportResultFor<typeof nativeStreamRouteBody> =
+  nativeStreamRouteTransportResult;
 const _wrongNativeRouteUnaryTransportResult: NativeRouteUnaryTransportResultFor<
   // @ts-expect-error generated native route-unary transport result aliases reject stream bodies.
   typeof nativeRouteStreamBody
 > = nativeRouteStreamTransportResult;
+const _wrongNativeUnaryTransportResult: NativeUnaryTransportResultFor<
+  // @ts-expect-error generated native concise unary transport result aliases reject stream bodies.
+  typeof nativeRouteStreamBody
+> = nativeStreamTransportResultFor;
 const _wrongNativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<
   // @ts-expect-error generated native route-stream transport result aliases reject unary bodies.
+  typeof nativeRouteUnaryBody
+> = new Response();
+const _wrongNativeStreamTransportResult: NativeStreamTransportResultFor<
+  // @ts-expect-error generated native concise stream transport result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
 > = new Response();
 const isNativeResultArray = (
@@ -7754,8 +7786,10 @@ nativeTransportHandler(source, nativeBody);
 nativeBodyHandler(new Request('https://example.com/rpc'), nativeUnaryBody);
 nativeUnaryRouteTransportHandler(source, nativeUnaryRouteBody);
 nativeRouteUnaryTransportHandler(source, nativeRouteUnaryBody);
+nativeUnaryTransportHandler(source, nativeUnaryRouteBody);
 nativeStreamRouteTransportHandler(source, nativeStreamRouteBody);
 nativeRouteStreamTransportHandler(source, nativeRouteStreamBody);
+nativeStreamTransportHandler(source, nativeStreamRouteBody);
 nativeUnaryRouteBodyHandler(
   new Request('https://example.com/rpc'),
   nativeUnaryRouteBody
@@ -7772,14 +7806,26 @@ nativeRouteStreamBodyHandler(
   new Request('https://example.com/rpc'),
   nativeRouteStreamBody
 );
+nativeUnaryBodyHandler(new Request('https://example.com/rpc'), nativeUnaryRouteBody);
+nativeStreamBodyHandler(new Request('https://example.com/rpc'), nativeStreamRouteBody);
 nativeUnaryRouteTransportHandler(
   source,
   // @ts-expect-error generated native unary transport handlers reject stream route bodies.
   nativeStreamRouteBody
 );
+nativeUnaryTransportHandler(
+  source,
+  // @ts-expect-error generated native concise unary transport handlers reject stream route bodies.
+  nativeStreamRouteBody
+);
 nativeStreamRouteBodyHandler(
   new Request('https://example.com/rpc'),
   // @ts-expect-error generated native stream body handlers reject unary route bodies.
+  nativeUnaryRouteBody
+);
+nativeStreamBodyHandler(
+  new Request('https://example.com/rpc'),
+  // @ts-expect-error generated native concise stream body handlers reject unary route bodies.
   nativeUnaryRouteBody
 );
 nativeTransport(source, nativeStreamBody);

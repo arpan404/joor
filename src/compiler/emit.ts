@@ -922,9 +922,13 @@ export type NativeRouteUnaryCompiledBodyResultFor<TBody extends NativeRouteUnary
   CompiledRouteUnaryBodyResultFor<NativeManifest, TBody>;
 export type NativeUnaryRouteCompiledBodyResultFor<TBody extends NativeRouteUnaryBody> =
   NativeRouteUnaryCompiledBodyResultFor<TBody>;
+export type NativeUnaryCompiledBodyResultFor<TBody extends NativeRouteUnaryBody> =
+  NativeRouteUnaryCompiledBodyResultFor<TBody>;
 export type NativeRouteStreamCompiledBodyResultFor<TBody extends NativeRouteStreamBody> =
   CompiledRouteStreamBodyResultFor<NativeManifest, TBody>;
 export type NativeStreamRouteCompiledBodyResultFor<TBody extends NativeRouteStreamBody> =
+  NativeRouteStreamCompiledBodyResultFor<TBody>;
+export type NativeStreamCompiledBodyResultFor<TBody extends NativeRouteStreamBody> =
   NativeRouteStreamCompiledBodyResultFor<TBody>;
 export type NativeCompiledTransportResult<TBody extends NativeBody = NativeBody> =
   CompiledTransportBodyResultFor<NativeManifest, TBody>;
@@ -935,25 +939,33 @@ export type NativeRouteUnaryTransportResultFor<TBody extends NativeRouteUnaryBod
   CompiledRouteUnaryTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeUnaryRouteTransportResultFor<TBody extends NativeRouteUnaryBody> =
   NativeRouteUnaryTransportResultFor<TBody>;
+export type NativeUnaryTransportResultFor<TBody extends NativeRouteUnaryBody> =
+  NativeRouteUnaryTransportResultFor<TBody>;
 export type NativeRouteStreamTransportResultFor<TBody extends NativeRouteStreamBody> =
   CompiledRouteStreamTransportBodyResultFor<NativeManifest, TBody>;
 export type NativeStreamRouteTransportResultFor<TBody extends NativeRouteStreamBody> =
+  NativeRouteStreamTransportResultFor<TBody>;
+export type NativeStreamTransportResultFor<TBody extends NativeRouteStreamBody> =
   NativeRouteStreamTransportResultFor<TBody>;
 export type NativeTransportHandler = CompiledRpcTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeRouteUnaryTransportHandler =
   CompiledRpcRouteUnaryTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeUnaryRouteTransportHandler = NativeRouteUnaryTransportHandler;
+export type NativeUnaryTransportHandler = NativeRouteUnaryTransportHandler;
 export type NativeRouteStreamTransportHandler =
   CompiledRpcRouteStreamTransportBodyResultHandlerFor<NativeManifest>;
 export type NativeStreamRouteTransportHandler = NativeRouteStreamTransportHandler;
+export type NativeStreamTransportHandler = NativeRouteStreamTransportHandler;
 export type NativeBodyHandler =
   CompiledRpcBodyResultHandlerFor<NativeManifest, NativeRequiredRuntimeRequest>;
 export type NativeRouteUnaryBodyHandler =
   CompiledRpcRouteUnaryBodyResultHandlerFor<NativeManifest, NativeRouteUnaryRequiredRuntimeRequest>;
 export type NativeUnaryRouteBodyHandler = NativeRouteUnaryBodyHandler;
+export type NativeUnaryBodyHandler = NativeRouteUnaryBodyHandler;
 export type NativeRouteStreamBodyHandler =
   CompiledRpcRouteStreamBodyResultHandlerFor<NativeManifest, NativeRouteStreamRequiredRuntimeRequest>;
 export type NativeStreamRouteBodyHandler = NativeRouteStreamBodyHandler;
+export type NativeStreamBodyHandler = NativeRouteStreamBodyHandler;
 export type NativeTransportRequest = ContextRequestSource;`;
   const executors = manifest.procedures
     .map((entry) => emitCompiledProcedureSource(entry, generationOptions))
@@ -1310,6 +1322,8 @@ export const nativeRouteUnaryTransport: NativeRouteUnaryTransportHandler = creat
 ) as NativeRouteUnaryTransportHandler;
 export const nativeUnaryRouteTransport: NativeUnaryRouteTransportHandler =
   nativeRouteUnaryTransport;
+export const nativeUnaryTransport: NativeUnaryTransportHandler =
+  nativeRouteUnaryTransport;
 export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler = createCompiledRouteStreamRpcTransportBodyResultHandler(
   ${routeStreamDispatchName},
   ${configValue},
@@ -1319,6 +1333,8 @@ export const nativeRouteStreamTransport: NativeRouteStreamTransportHandler = cre
   nativeRuntime
 ) as NativeRouteStreamTransportHandler;
 export const nativeStreamRouteTransport: NativeStreamRouteTransportHandler =
+  nativeRouteStreamTransport;
+export const nativeStreamTransport: NativeStreamTransportHandler =
   nativeRouteStreamTransport;
 export const nativeResponseTransport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   ${responseDispatchName},
@@ -1340,12 +1356,16 @@ export const nativeRouteUnaryBody: NativeRouteUnaryBodyHandler = createCompiledR
 ) as NativeRouteUnaryBodyHandler;
 export const nativeUnaryRouteBody: NativeUnaryRouteBodyHandler =
   nativeRouteUnaryBody;
+export const nativeUnaryBody: NativeUnaryBodyHandler =
+  nativeRouteUnaryBody;
 export const nativeRouteStreamBody: NativeRouteStreamBodyHandler = createCompiledRouteStreamRpcBodyResultHandler(
   ${routeStreamDispatchName},
   ${configValue},
   ${routeStreamUnaryDispatchName}
 ) as NativeRouteStreamBodyHandler;
 export const nativeStreamRouteBody: NativeStreamRouteBodyHandler =
+  nativeRouteStreamBody;
+export const nativeStreamBody: NativeStreamBodyHandler =
   nativeRouteStreamBody;
 export const transport: NativeTransportHandler = createCompiledRpcTransportBodyResultHandler(
   dispatch,

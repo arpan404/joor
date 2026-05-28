@@ -196,6 +196,23 @@ const routeTwinName = (name: string): string | undefined => {
   return undefined;
 };
 
+const conciseRouteAliasName = (name: string): string | undefined => {
+  if (name.includes('RouteUnary')) {
+    return name.replaceAll('RouteUnary', 'Unary');
+  }
+  if (name.includes('UnaryRoute')) {
+    return name.replaceAll('UnaryRoute', 'Unary');
+  }
+  if (name.includes('RouteStream')) {
+    return name.replaceAll('RouteStream', 'Stream');
+  }
+  if (name.includes('StreamRoute')) {
+    return name.replaceAll('StreamRoute', 'Stream');
+  }
+
+  return undefined;
+};
+
 const sourceExportSets = async (): Promise<
   Map<string, ReadonlySet<string>>
 > => {
@@ -643,6 +660,45 @@ const generatedDispatcherRouteDefinitionAliases = [
   'NativeRouteStreamMiddleware',
   'NativeStreamRouteMiddleware',
   'NativeStreamMiddleware',
+] as const;
+
+const generatedDispatcherCompiledRouteAliases = [
+  'NativeRouteUnaryCompiledBodyResultFor',
+  'NativeUnaryRouteCompiledBodyResultFor',
+  'NativeUnaryCompiledBodyResultFor',
+  'NativeRouteStreamCompiledBodyResultFor',
+  'NativeStreamRouteCompiledBodyResultFor',
+  'NativeStreamCompiledBodyResultFor',
+  'NativeRouteUnaryTransportResultFor',
+  'NativeUnaryRouteTransportResultFor',
+  'NativeUnaryTransportResultFor',
+  'NativeRouteStreamTransportResultFor',
+  'NativeStreamRouteTransportResultFor',
+  'NativeStreamTransportResultFor',
+  'NativeRouteUnaryTransportHandler',
+  'NativeUnaryRouteTransportHandler',
+  'NativeUnaryTransportHandler',
+  'NativeRouteStreamTransportHandler',
+  'NativeStreamRouteTransportHandler',
+  'NativeStreamTransportHandler',
+  'NativeRouteUnaryBodyHandler',
+  'NativeUnaryRouteBodyHandler',
+  'NativeUnaryBodyHandler',
+  'NativeRouteStreamBodyHandler',
+  'NativeStreamRouteBodyHandler',
+  'NativeStreamBodyHandler',
+  'nativeRouteUnaryTransport',
+  'nativeUnaryRouteTransport',
+  'nativeUnaryTransport',
+  'nativeRouteStreamTransport',
+  'nativeStreamRouteTransport',
+  'nativeStreamTransport',
+  'nativeRouteUnaryBody',
+  'nativeUnaryRouteBody',
+  'nativeUnaryBody',
+  'nativeRouteStreamBody',
+  'nativeStreamRouteBody',
+  'nativeStreamBody',
 ] as const;
 
 const generatedPlatformRouteHandlerTypeAliases = [
@@ -1281,6 +1337,34 @@ describe('route public surface', () => {
     expect(missing).toEqual([]);
   });
 
+  it('keeps generated dispatcher compiled route aliases available', async () => {
+    const exportSets = await generatedExportSets();
+    const dispatchers = new Map(
+      [...exportSets]
+        .filter(([file]) =>
+          [
+            'deno-dispatcher.safe.ts',
+            'dispatcher.safe.ts',
+            'dispatcher.streaming.ts',
+          ].includes(basename(file))
+        )
+        .map(([file, names]) => [basename(file), names])
+    );
+    const missing = [
+      'deno-dispatcher.safe.ts',
+      'dispatcher.safe.ts',
+      'dispatcher.streaming.ts',
+    ].flatMap((entrypoint) => {
+      const exports = dispatchers.get(entrypoint);
+      if (exports === undefined) return [`${entrypoint}: <missing>`];
+      return generatedDispatcherCompiledRouteAliases.flatMap((name) =>
+        exports.has(name) ? [] : [`${entrypoint}: ${name}`]
+      );
+    });
+
+    expect(missing).toEqual([]);
+  });
+
   it('keeps generated platform route requirement aliases available', async () => {
     const exportSets = await generatedExportSets();
     const exportsByBasename = new Map(
@@ -1370,6 +1454,31 @@ describe('route public surface', () => {
       .sort();
 
     expect(missing).toEqual([]);
+  });
+
+  it('keeps root concise route aliases in sync with source modules', async () => {
+    const rootExportNames = new Set(
+      collectExportedSymbols(rootIndex, await readFile(rootIndex, 'utf8')).map(
+        ({ name }) => name
+      )
+    );
+    const rootReExports = await rootReExportSets();
+    const sourceExports = await sourceExportSets();
+    const missing = [...sourceExports]
+      .flatMap(([file, names]) => {
+        if (file === rootIndex || file === compilerEmitter) return [];
+        return [...names].flatMap((name) => {
+          const conciseName = conciseRouteAliasName(name);
+          if (conciseName === undefined || !names.has(conciseName)) return [];
+          return !rootReExports.get(file)?.has(conciseName) &&
+            !rootExportNames.has(conciseName)
+            ? [`${relative(repoRoot, file)}: ${conciseName}`]
+            : [];
+        });
+      })
+      .sort();
+
+    expect([...new Set(missing)]).toEqual([]);
   });
 
   it('keeps package exports mapped for route-bearing public files', async () => {
