@@ -3737,9 +3737,6 @@ const parseSseEvents = async function* <
     const read = await reader.read();
     if (read.done) break;
     buffer += read.value;
-    if (buffer.length > maxEventBytes) {
-      throw new Error('SSE event exceeds maxStreamEventBytes');
-    }
     for (;;) {
       const next = nextSseChunk(buffer);
       if (next === undefined) break;
@@ -3761,6 +3758,9 @@ const parseSseEvents = async function* <
         }
         yield { event: 'data', data: parsed } as unknown as TEvent;
       }
+    }
+    if (buffer.length > maxEventBytes) {
+      throw new Error('SSE event exceeds maxStreamEventBytes');
     }
   }
 };

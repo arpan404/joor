@@ -824,6 +824,40 @@ describe('client', () => {
     await expect(consume()).rejects.toThrow('SSE event exceeds');
   });
 
+  it('bounds SSE buffering per event instead of per response chunk', async () => {
+    const client = createClient({
+      url: 'http://localhost/rpc',
+      maxStreamEventBytes: 40,
+      async fetch() {
+        return new Response(
+          [
+            'event: data',
+            'data: {"ok":true}',
+            '',
+            'event: data',
+            'data: {"ok":false}',
+            '',
+            'event: done',
+            'data: null',
+            '',
+          ].join('\n'),
+          {
+            headers: { 'content-type': 'text/event-stream' },
+          }
+        );
+      },
+    });
+    const events: unknown[] = [];
+
+    for await (const event of client.stream<StreamTestProcedure>('stream', {
+      ok: true,
+    })) {
+      events.push(event);
+    }
+
+    expect(events).toEqual([{ ok: true }, { ok: false }]);
+  });
+
   it('parses standard crlf and multiline sse data frames', async () => {
     const client = createClient({
       url: 'http://localhost/rpc',
