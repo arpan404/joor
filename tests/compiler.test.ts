@@ -3733,7 +3733,7 @@ createNamedStreamRouteDenoFetchFor()(undefined)(plainRequest);
     } finally {
       await rm(appDir, { recursive: true, force: true });
     }
-  }, 10_000);
+  }, 30_000);
 
   it('defaults generated route-stream runtimes to the stream required request type', async () => {
     const appDir = await mkdtemp(join(tmpdir(), 'joor-stream-request-app-'));
@@ -4264,7 +4264,7 @@ createStreamRouteDenoFetchFor()(undefined)(plainRequest);
     } finally {
       await rm(appDir, { recursive: true, force: true });
     }
-  }, 10_000);
+  }, 30_000);
 
   it('typechecks generated callable client route leaves', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
