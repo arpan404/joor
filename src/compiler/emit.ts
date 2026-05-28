@@ -5564,9 +5564,14 @@ export const emitArtifacts = async (
   await emitRuntimeTargets(manifest, options.outDir, options.config);
   await emitClient(manifest, options.outDir, options.config);
   await emitProcedureHelper(options.outDir, options.configPath);
+  const docsOptions =
+    options.config?.path === undefined ? {} : { path: options.config.path };
   await writeJson(
     `${options.outDir}/openapi.json`,
-    createOpenApiDocument(manifest)
+    createOpenApiDocument(manifest, docsOptions)
   );
-  await writeJson(`${options.outDir}/ai-docs.json`, createAiDocs(manifest));
+  await writeJson(
+    `${options.outDir}/ai-docs.json`,
+    createAiDocs(manifest, docsOptions)
+  );
 };

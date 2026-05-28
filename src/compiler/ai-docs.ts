@@ -18,11 +18,18 @@ const frameworkErrorSchema: JsonObject = {
   },
 };
 
-export const createAiDocs = (manifest: CompilerManifest): JsonObject => ({
+export interface AiDocsOptions {
+  readonly path?: string;
+}
+
+export const createAiDocs = (
+  manifest: CompilerManifest,
+  options: AiDocsOptions = {}
+): JsonObject => ({
   framework: 'joor',
   schemaVersion: '0.1.0',
   transport: {
-    endpoint: '/rpc',
+    endpoint: options.path ?? '/rpc',
     methods: ['POST'],
     streaming: 'text/event-stream',
   },

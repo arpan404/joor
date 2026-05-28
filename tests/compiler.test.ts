@@ -2632,11 +2632,20 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         },
       });
       const clientSource = await readFile(join(outDir, 'client.ts'), 'utf8');
+      const openapi = JSON.parse(
+        await readFile(join(outDir, 'openapi.json'), 'utf8')
+      ) as { paths: Record<string, unknown> };
+      const aiDocs = JSON.parse(
+        await readFile(join(outDir, 'ai-docs.json'), 'utf8')
+      ) as { transport: { endpoint: string } };
 
       expect(clientSource).toContain('const defaultUrl = "/api/rpc"');
       expect(clientSource).toContain(
         'export const client: Client = createClient()'
       );
+      expect(openapi.paths).toHaveProperty('/api/rpc');
+      expect(openapi.paths).not.toHaveProperty('/rpc');
+      expect(aiDocs.transport.endpoint).toBe('/api/rpc');
     } finally {
       await rm(outDir, { recursive: true, force: true });
     }

@@ -78,6 +78,23 @@ describe('openapi and ai docs', () => {
     });
   });
 
+  it('documents the configured rpc path', () => {
+    const openapi = createOpenApiDocument(manifest, { path: '/api/rpc' });
+    const aiDocs = createAiDocs(manifest, { path: '/api/rpc' });
+
+    expect(openapi).toMatchObject({
+      paths: {
+        '/api/rpc': expect.any(Object),
+      },
+    });
+    expect(openapi['paths']).not.toHaveProperty('/rpc');
+    expect(aiDocs).toMatchObject({
+      transport: {
+        endpoint: '/api/rpc',
+      },
+    });
+  });
+
   it('generates openapi', () => {
     const document = createOpenApiDocument(manifest);
 

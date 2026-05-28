@@ -17,9 +17,15 @@ const schemaRef = (name: string): JsonObject => ({
 const hasRequiredObjectFields = (schema: HeaderObjectSchema): boolean =>
   Object.values(schema.shape).some((child) => child.kind !== 'optional');
 
+export interface OpenApiDocumentOptions {
+  readonly path?: string;
+}
+
 export const createOpenApiDocument = (
-  manifest: CompilerManifest
+  manifest: CompilerManifest,
+  options: OpenApiDocumentOptions = {}
 ): JsonObject => {
+  const path = options.path ?? '/rpc';
   const schemas: Record<string, JsonValue> = {
     RpcFrameworkError: {
       type: 'object',
@@ -284,7 +290,7 @@ export const createOpenApiDocument = (
       version: '0.0.0',
     },
     paths: {
-      '/rpc': {
+      [path]: {
         post: {
           summary: 'Joor RPC endpoint',
           requestBody: {
