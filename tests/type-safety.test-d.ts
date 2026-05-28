@@ -1661,6 +1661,7 @@ import {
   createOpenApiDocument as createCompilerSubpathOpenApiDocument,
   type AiDocsOptions as CompilerSubpathAiDocsOptions,
   type BuildOptions as CompilerSubpathBuildOptions,
+  type BuildResult as CompilerSubpathBuildResult,
   type CompilerManifest as CompilerSubpathManifest,
   type CompiledProcedureGenerationOptions as CompilerSubpathCompiledProcedureGenerationOptions,
   type CompiledProcedureMode as CompilerSubpathCompiledProcedureMode,
@@ -11002,6 +11003,15 @@ const compilerSubpathBuildOptions: CompilerSubpathBuildOptions = {
 compilerSubpathBuildOptions.outDir?.toUpperCase();
 // @ts-expect-error compiler build options are readonly.
 compilerSubpathBuildOptions.outDir = './dist';
+const compilerSubpathBuildResult: CompilerSubpathBuildResult = {
+  entry: '/tmp/joor-app/rpc',
+  outDir: '/tmp/joor-app/.joor',
+  configPath: '/tmp/joor-app/joor.config.ts',
+};
+compilerSubpathBuildResult.outDir.toUpperCase();
+compilerSubpathBuildResult.configPath?.toUpperCase();
+// @ts-expect-error compiler build results are readonly.
+compilerSubpathBuildResult.outDir = '/tmp/other/.joor';
 const compilerSubpathEmitOptions: CompilerSubpathEmitOptions = {
   outDir: '/tmp/joor-app/.joor',
   config,

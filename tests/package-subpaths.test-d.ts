@@ -505,6 +505,7 @@ import {
   createAiDocs,
   createOpenApiDocument,
   type AiDocsOptions,
+  type BuildResult,
   type OpenApiDocumentOptions,
 } from 'joor/compiler';
 import { ok } from 'joor/procedure';
@@ -2021,6 +2022,11 @@ createOpenApiDocument(
   packageSubpathCompilerManifest,
   packageSubpathOpenApiOptions
 )['openapi'];
+const packageSubpathBuildResult: BuildResult = {
+  entry: '/tmp/joor/rpc',
+  outDir: '/tmp/joor/.joor',
+};
+packageSubpathBuildResult.entry.toUpperCase();
 compiledCreateProcedureCacheKey(
   'users.get',
   ['input.id'],

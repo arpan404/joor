@@ -2016,7 +2016,12 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
   it('loads config-relative entry paths', async () => {
     const outDir = await mkdtemp(join(tmpdir(), 'joor-'));
     try {
-      await build({ config: fixtureConfig, outDir });
+      const result = await build({ config: fixtureConfig, outDir });
+      expect(result).toMatchObject({
+        configPath: fixtureConfig,
+        entry: fixture,
+        outDir,
+      });
       await expect(
         readFile(join(outDir, 'manifest.ts'), 'utf8')
       ).resolves.toContain('users.watch');

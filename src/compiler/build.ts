@@ -11,6 +11,12 @@ export interface BuildOptions {
   readonly outDir?: string;
 }
 
+export interface BuildResult {
+  readonly entry: string;
+  readonly outDir: string;
+  readonly configPath?: string;
+}
+
 const disabledSafetyOptions = (config: JoorConfig): string[] => {
   const disabled: string[] = [];
   if (config.enforceRateLimit === false) disabled.push('enforceRateLimit');
@@ -37,7 +43,7 @@ const warnUnsafeBuildOptions = (config: JoorConfig): void => {
   }
 };
 
-export const build = async (options: BuildOptions): Promise<void> => {
+export const build = async (options: BuildOptions): Promise<BuildResult> => {
   const cwd = resolve(options.cwd ?? process.cwd());
   const configPath =
     options.config === undefined
@@ -60,4 +66,9 @@ export const build = async (options: BuildOptions): Promise<void> => {
     config,
     ...(configPath === undefined ? {} : { configPath }),
   });
+  return {
+    entry,
+    outDir,
+    ...(configPath === undefined ? {} : { configPath }),
+  };
 };

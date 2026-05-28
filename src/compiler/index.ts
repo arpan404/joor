@@ -8,7 +8,7 @@ export { createOpenApiDocument } from './openapi.js';
 export { scanProcedureFiles } from './scan.js';
 
 export type { AiDocsOptions } from './ai-docs.js';
-export type { BuildOptions } from './build.js';
+export type { BuildOptions, BuildResult } from './build.js';
 export type {
   CompiledProcedureGenerationOptions,
   CompiledProcedureMode,
