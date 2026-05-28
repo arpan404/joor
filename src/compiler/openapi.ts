@@ -1,5 +1,6 @@
 import type { JsonObject, JsonValue } from '../schema/json.js';
 import { toJsonSchema } from '../schema/openapi.js';
+import type { HeaderObjectSchema } from '../schema/types.js';
 import type { CompilerManifest } from './manifest.js';
 
 const componentName = (id: string, suffix: string): string =>
@@ -12,10 +13,23 @@ const schemaRef = (name: string): JsonObject => ({
   $ref: `#/components/schemas/${name}`,
 });
 
+const hasRequiredObjectFields = (schema: HeaderObjectSchema): boolean =>
+  Object.values(schema.shape).some((child) => child.kind !== 'optional');
+
 export const createOpenApiDocument = (
   manifest: CompilerManifest
 ): JsonObject => {
   const schemas: Record<string, JsonValue> = {
+    RpcFrameworkError: {
+      type: 'object',
+      required: ['code', 'message', 'status'],
+      properties: {
+        code: { type: 'string' },
+        message: { type: 'string' },
+        status: { type: 'integer' },
+        details: {},
+      },
+    },
     RpcRequest: {
       type: 'object',
       required: ['id'],
@@ -56,9 +70,16 @@ export const createOpenApiDocument = (
     },
   };
   const routeRequestRefs: JsonObject[] = [];
+  const routeResponseRefs: JsonObject[] = [];
   const procedures = manifest.procedures.map((entry): JsonObject => {
     const inputComponent = componentName(entry.id, 'Input');
     const requestComponent = componentName(entry.id, 'Request');
+    const outputComponent = componentName(entry.id, 'Output');
+    const responseHeadersComponent = componentName(entry.id, 'ResponseHeaders');
+    const errorComponent = componentName(entry.id, 'Error');
+    const successComponent = componentName(entry.id, 'Success');
+    const failureComponent = componentName(entry.id, 'Failure');
+    const responseComponent = componentName(entry.id, 'Response');
     schemas[inputComponent] = toJsonSchema(entry.procedure.input);
     schemas[requestComponent] = {
       type: 'object',
@@ -77,14 +98,12 @@ export const createOpenApiDocument = (
       );
     }
     if (entry.procedure.responseHeaders !== undefined) {
-      schemas[componentName(entry.id, 'ResponseHeaders')] = toJsonSchema(
+      schemas[responseHeadersComponent] = toJsonSchema(
         entry.procedure.responseHeaders
       );
     }
     if (entry.procedure.output !== undefined) {
-      schemas[componentName(entry.id, 'Output')] = toJsonSchema(
-        entry.procedure.output
-      );
+      schemas[outputComponent] = toJsonSchema(entry.procedure.output);
     }
     if (entry.procedure.stream !== undefined) {
       schemas[componentName(entry.id, 'Stream')] = toJsonSchema(
@@ -98,6 +117,63 @@ export const createOpenApiDocument = (
       ])
     ) as JsonObject;
     schemas[componentName(entry.id, 'Errors')] = errors;
+    schemas[errorComponent] = {
+      oneOf: [
+        ...Object.entries(entry.procedure.errors).map(([code, schema]) => ({
+          type: 'object',
+          required: ['code', 'message', 'status', 'details'],
+          properties: {
+            code: { const: code },
+            message: { type: 'string' },
+            status: { type: 'integer' },
+            details: toJsonSchema(schema),
+          },
+          additionalProperties: false,
+        })),
+        schemaRef('RpcFrameworkError'),
+      ],
+    };
+    schemas[successComponent] = {
+      type: 'object',
+      required: [
+        'ok',
+        'id',
+        'data',
+        'traceId',
+        ...(entry.procedure.responseHeaders !== undefined &&
+        hasRequiredObjectFields(entry.procedure.responseHeaders)
+          ? ['headers']
+          : []),
+      ],
+      properties: {
+        ok: { const: true },
+        id: { const: entry.id },
+        data:
+          entry.procedure.output === undefined
+            ? {}
+            : schemaRef(outputComponent),
+        traceId: { type: 'string' },
+        ...(entry.procedure.responseHeaders === undefined
+          ? {}
+          : { headers: schemaRef(responseHeadersComponent) }),
+      },
+      additionalProperties: false,
+    };
+    schemas[failureComponent] = {
+      type: 'object',
+      required: ['ok', 'id', 'error', 'traceId'],
+      properties: {
+        ok: { const: false },
+        id: { const: entry.id },
+        error: schemaRef(errorComponent),
+        traceId: { type: 'string' },
+      },
+      additionalProperties: false,
+    };
+    schemas[responseComponent] = {
+      oneOf: [schemaRef(successComponent), schemaRef(failureComponent)],
+    };
+    routeResponseRefs.push(schemaRef(responseComponent));
     return {
       id: entry.id,
       kind:
@@ -111,6 +187,10 @@ export const createOpenApiDocument = (
       rateLimit: entry.procedure.meta.rateLimit ?? null,
       inputRef: `#/components/schemas/${componentName(entry.id, 'Input')}`,
       requestRef: `#/components/schemas/${requestComponent}`,
+      responseRef: `#/components/schemas/${responseComponent}`,
+      successRef: `#/components/schemas/${successComponent}`,
+      failureRef: `#/components/schemas/${failureComponent}`,
+      errorRef: `#/components/schemas/${errorComponent}`,
       headersRef:
         entry.procedure.headers === undefined
           ? null
@@ -133,10 +213,22 @@ export const createOpenApiDocument = (
   if (routeRequestRefs.length > 0) {
     schemas['RpcRequest'] = { oneOf: routeRequestRefs };
   }
+  if (routeResponseRefs.length > 0) {
+    schemas['RpcResponse'] = { oneOf: routeResponseRefs };
+  }
   const rpcRequestSchema =
     routeRequestRefs.length > 0
       ? schemaRef('RpcRequest')
       : { $ref: '#/components/schemas/RpcRequest' };
+  const rpcResponseSchema =
+    routeResponseRefs.length > 0
+      ? schemaRef('RpcResponse')
+      : {
+          oneOf: [
+            { $ref: '#/components/schemas/RpcSuccess' },
+            { $ref: '#/components/schemas/RpcFailure' },
+          ],
+        };
 
   return {
     openapi: '3.1.0',
@@ -171,16 +263,10 @@ export const createOpenApiDocument = (
                 'application/json': {
                   schema: {
                     oneOf: [
-                      { $ref: '#/components/schemas/RpcSuccess' },
-                      { $ref: '#/components/schemas/RpcFailure' },
+                      rpcResponseSchema,
                       {
                         type: 'array',
-                        items: {
-                          oneOf: [
-                            { $ref: '#/components/schemas/RpcSuccess' },
-                            { $ref: '#/components/schemas/RpcFailure' },
-                          ],
-                        },
+                        items: rpcResponseSchema,
                       },
                     ],
                   },

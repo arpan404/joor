@@ -36,6 +36,12 @@ describe('openapi and ai docs', () => {
               { $ref: '#/components/schemas/UsersWatchRequest' },
             ],
           },
+          RpcResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersGetResponse' },
+              { $ref: '#/components/schemas/UsersWatchResponse' },
+            ],
+          },
           UsersGetRequest: {
             required: ['id', 'input'],
             properties: {
@@ -48,6 +54,55 @@ describe('openapi and ai docs', () => {
               id: { const: 'users.watch' },
               input: { $ref: '#/components/schemas/UsersWatchInput' },
             },
+          },
+          UsersGetSuccess: {
+            required: ['ok', 'id', 'data', 'traceId', 'headers'],
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.get' },
+              data: { $ref: '#/components/schemas/UsersGetOutput' },
+              headers: { $ref: '#/components/schemas/UsersGetResponseHeaders' },
+            },
+          },
+          UsersGetFailure: {
+            properties: {
+              ok: { const: false },
+              id: { const: 'users.get' },
+              error: { $ref: '#/components/schemas/UsersGetError' },
+            },
+          },
+          UsersGetError: {
+            oneOf: expect.arrayContaining([
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { const: 'NOT_FOUND' },
+                  details: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      message: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              { $ref: '#/components/schemas/RpcFrameworkError' },
+            ]),
+          },
+          UsersGetResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersGetSuccess' },
+              { $ref: '#/components/schemas/UsersGetFailure' },
+            ],
+          },
+          UsersWatchSuccess: {
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.watch' },
+            },
+          },
+          UsersWatchResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersWatchSuccess' },
+              { $ref: '#/components/schemas/UsersWatchFailure' },
+            ],
           },
         },
       },
@@ -69,14 +124,36 @@ describe('openapi and ai docs', () => {
                 },
               },
             },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {
+                    schema: {
+                      oneOf: [
+                        { $ref: '#/components/schemas/RpcResponse' },
+                        {
+                          type: 'array',
+                          items: { $ref: '#/components/schemas/RpcResponse' },
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            },
             'x-joor-procedures': expect.arrayContaining([
               expect.objectContaining({
                 id: 'users.get',
                 requestRef: '#/components/schemas/UsersGetRequest',
+                responseRef: '#/components/schemas/UsersGetResponse',
+                successRef: '#/components/schemas/UsersGetSuccess',
+                failureRef: '#/components/schemas/UsersGetFailure',
+                errorRef: '#/components/schemas/UsersGetError',
               }),
               expect.objectContaining({
                 id: 'users.watch',
                 requestRef: '#/components/schemas/UsersWatchRequest',
+                responseRef: '#/components/schemas/UsersWatchResponse',
               }),
             ]),
           },
