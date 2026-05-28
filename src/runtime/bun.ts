@@ -106,6 +106,16 @@ export type BunUnaryRouteServeOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = BunRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type BunUnaryServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type BunRouteStreamServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -118,6 +128,16 @@ export type BunRouteStreamServeOptionsFor<
   RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type BunStreamRouteServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type BunStreamServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -462,6 +482,16 @@ export type BunUnaryRouteServeOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = BunRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type BunUnaryServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = BunRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type BunRouteStreamServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -480,6 +510,16 @@ export type BunRouteStreamServeOptionsArgs<
 >;
 
 export type BunStreamRouteServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = BunRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type BunStreamServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -1488,8 +1528,10 @@ export function serveRouteUnaryBun<TManifest extends JoorManifest>(
 }
 
 export const serveUnaryRouteBun: typeof serveRouteUnaryBun = serveRouteUnaryBun;
+export const serveUnaryBun: typeof serveRouteUnaryBun = serveRouteUnaryBun;
 export const serveBunRouteUnary: typeof serveRouteUnaryBun = serveRouteUnaryBun;
 export const serveBunUnaryRoute: typeof serveRouteUnaryBun = serveRouteUnaryBun;
+export const serveBunUnary: typeof serveRouteUnaryBun = serveRouteUnaryBun;
 
 export function serveRouteStreamBun<
   TManifest extends JoorManifest,
@@ -1523,7 +1565,11 @@ export function serveRouteStreamBun<TManifest extends JoorManifest>(
 
 export const serveStreamRouteBun: typeof serveRouteStreamBun =
   serveRouteStreamBun;
+export const serveStreamBun: typeof serveRouteStreamBun =
+  serveRouteStreamBun;
 export const serveBunRouteStream: typeof serveRouteStreamBun =
   serveRouteStreamBun;
 export const serveBunStreamRoute: typeof serveRouteStreamBun =
+  serveRouteStreamBun;
+export const serveBunStream: typeof serveRouteStreamBun =
   serveRouteStreamBun;

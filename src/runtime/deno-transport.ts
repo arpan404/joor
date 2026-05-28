@@ -99,6 +99,16 @@ export type DenoUnaryRouteServeOptionsFor<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = DenoRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
+export type DenoUnaryServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
 export type DenoRouteStreamServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -111,6 +121,16 @@ export type DenoRouteStreamServeOptionsFor<
   RpcManifestRouteStreamHandlerOptionsFor<TManifest, TPlugins, TBody, TRequest>;
 
 export type DenoStreamRouteServeOptionsFor<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamServeOptionsFor<TManifest, TPlugins, TBody, TRequest>;
+
+export type DenoStreamServeOptionsFor<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -299,6 +319,16 @@ export type DenoUnaryRouteServeOptionsArgs<
     RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
 > = DenoRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
 
+export type DenoUnaryServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteUnaryBody<TManifest> =
+    RpcManifestRouteUnaryBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>,
+> = DenoRouteUnaryServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
 export type DenoRouteStreamServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
@@ -317,6 +347,16 @@ export type DenoRouteStreamServeOptionsArgs<
 >;
 
 export type DenoStreamRouteServeOptionsArgs<
+  TManifest extends JoorManifest,
+  TPlugins extends readonly JoorPlugin<object>[] =
+    readonly JoorPlugin<object>[],
+  TBody extends RpcManifestRouteStreamBody<TManifest> =
+    RpcManifestRouteStreamBody<TManifest>,
+  TRequest extends Request =
+    RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>,
+> = DenoRouteStreamServeOptionsArgs<TManifest, TPlugins, TBody, TRequest>;
+
+export type DenoStreamServeOptionsArgs<
   TManifest extends JoorManifest,
   TPlugins extends readonly JoorPlugin<object>[] =
     readonly JoorPlugin<object>[],
@@ -1126,9 +1166,13 @@ export function serveRouteUnaryDeno<TManifest extends JoorManifest>(
 
 export const serveUnaryRouteDeno: typeof serveRouteUnaryDeno =
   serveRouteUnaryDeno;
+export const serveUnaryDeno: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
 export const serveDenoRouteUnary: typeof serveRouteUnaryDeno =
   serveRouteUnaryDeno;
 export const serveDenoUnaryRoute: typeof serveRouteUnaryDeno =
+  serveRouteUnaryDeno;
+export const serveDenoUnary: typeof serveRouteUnaryDeno =
   serveRouteUnaryDeno;
 
 export function serveRouteStreamDeno<
@@ -1163,7 +1207,11 @@ export function serveRouteStreamDeno<TManifest extends JoorManifest>(
 
 export const serveStreamRouteDeno: typeof serveRouteStreamDeno =
   serveRouteStreamDeno;
+export const serveStreamDeno: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
 export const serveDenoRouteStream: typeof serveRouteStreamDeno =
   serveRouteStreamDeno;
 export const serveDenoStreamRoute: typeof serveRouteStreamDeno =
+  serveRouteStreamDeno;
+export const serveDenoStream: typeof serveRouteStreamDeno =
   serveRouteStreamDeno;
