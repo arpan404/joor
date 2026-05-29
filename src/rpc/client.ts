@@ -3030,7 +3030,7 @@ export type RpcRouteRequestOptions<
 export type RpcRouteUnaryRequestOptions<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
-> = RpcRouteRequestOptions<TRoutes, TId>;
+> = ClientRequestOptions<RpcRouteUnaryProcedure<TRoutes, TId>>;
 
 export type RpcUnaryRouteRequestOptions<
   TRoutes extends RpcRouteMap,
@@ -3044,7 +3044,7 @@ export type RpcUnaryRequestOptions<
 export type RpcRouteStreamRequestOptions<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
-> = RpcRouteRequestOptions<TRoutes, TId>;
+> = ClientRequestOptions<RpcRouteStreamProcedure<TRoutes, TId>>;
 
 export type RpcStreamRouteRequestOptions<
   TRoutes extends RpcRouteMap,
@@ -3108,6 +3108,34 @@ type RpcRouteClientArgsFor<
         options: RpcRouteRequestOptions<TRoutes, TId>,
       ];
 
+type RpcRouteUnaryClientArgsFor<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteUnaryId<TRoutes>,
+> =
+  RpcRouteUnaryRequiresHeaders<TRoutes, TId> extends false
+    ? readonly [
+        input: RpcRouteUnaryInput<TRoutes, TId>,
+        options?: RpcRouteUnaryRequestOptions<TRoutes, TId>,
+      ]
+    : readonly [
+        input: RpcRouteUnaryInput<TRoutes, TId>,
+        options: RpcRouteUnaryRequestOptions<TRoutes, TId>,
+      ];
+
+type RpcRouteStreamClientArgsFor<
+  TRoutes extends RpcRouteMap,
+  TId extends RpcRouteStreamId<TRoutes>,
+> =
+  RpcRouteStreamRequiresHeaders<TRoutes, TId> extends false
+    ? readonly [
+        input: RpcRouteStreamInput<TRoutes, TId>,
+        options?: RpcRouteStreamRequestOptions<TRoutes, TId>,
+      ]
+    : readonly [
+        input: RpcRouteStreamInput<TRoutes, TId>,
+        options: RpcRouteStreamRequestOptions<TRoutes, TId>,
+      ];
+
 export type RpcRouteClientArgs<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteId<TRoutes> = RpcRouteId<TRoutes>,
@@ -3117,7 +3145,10 @@ export type RpcRouteClientArgs<
 export type RpcRouteUnaryClientArgs<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteUnaryId<TRoutes> = RpcRouteUnaryId<TRoutes>,
-> = RpcRouteClientArgs<TRoutes, TId>;
+> =
+  TId extends RpcRouteUnaryId<TRoutes>
+    ? RpcRouteUnaryClientArgsFor<TRoutes, TId>
+    : never;
 
 export type RpcUnaryRouteClientArgs<
   TRoutes extends RpcRouteMap,
@@ -3131,7 +3162,10 @@ export type RpcUnaryClientArgs<
 export type RpcRouteStreamClientArgs<
   TRoutes extends RpcRouteMap,
   TId extends RpcRouteStreamId<TRoutes> = RpcRouteStreamId<TRoutes>,
-> = RpcRouteClientArgs<TRoutes, TId>;
+> =
+  TId extends RpcRouteStreamId<TRoutes>
+    ? RpcRouteStreamClientArgsFor<TRoutes, TId>
+    : never;
 
 export type RpcStreamRouteClientArgs<
   TRoutes extends RpcRouteMap,

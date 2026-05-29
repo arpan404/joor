@@ -1119,13 +1119,23 @@ export type RpcManifestRouteUnaryRequestOptions<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteUnaryId<TManifest> =
     RpcManifestRouteUnaryId<TManifest>,
-> = RpcManifestRouteRequestOptions<TManifest, TId>;
+> =
+  ProcedureRequiresHeaders<
+    RpcManifestRouteUnaryProcedure<TManifest, TId>
+  > extends false
+    ? { readonly headers?: RpcManifestRouteUnaryClientHeaders<TManifest, TId> }
+    : { readonly headers: RpcManifestRouteUnaryClientHeaders<TManifest, TId> };
 
 export type RpcManifestRouteStreamRequestOptions<
   TManifest extends RpcManifest,
   TId extends RpcManifestRouteStreamId<TManifest> =
     RpcManifestRouteStreamId<TManifest>,
-> = RpcManifestRouteRequestOptions<TManifest, TId>;
+> =
+  ProcedureRequiresHeaders<
+    RpcManifestRouteStreamProcedure<TManifest, TId>
+  > extends false
+    ? { readonly headers?: RpcManifestRouteStreamClientHeaders<TManifest, TId> }
+    : { readonly headers: RpcManifestRouteStreamClientHeaders<TManifest, TId> };
 
 type RpcManifestRouteClientArgsFor<
   TManifest extends RpcManifest,

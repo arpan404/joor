@@ -1449,6 +1449,22 @@ const routeKindClientCoreAliasSnippets = [
     name: 'RpcRouteStreamEvent',
     snippets: ['ProcedureStreamEvent<RpcRouteStreamProcedure<TRoutes, TId>>'],
   },
+  {
+    name: 'RpcRouteUnaryRequestOptions',
+    snippets: ['ClientRequestOptions<RpcRouteUnaryProcedure<TRoutes, TId>>'],
+  },
+  {
+    name: 'RpcRouteStreamRequestOptions',
+    snippets: ['ClientRequestOptions<RpcRouteStreamProcedure<TRoutes, TId>>'],
+  },
+  {
+    name: 'RpcRouteUnaryClientArgs',
+    snippets: ['RpcRouteUnaryClientArgsFor<TRoutes, TId>'],
+  },
+  {
+    name: 'RpcRouteStreamClientArgs',
+    snippets: ['RpcRouteStreamClientArgsFor<TRoutes, TId>'],
+  },
 ] as const;
 
 const routeKindDispatcherInputPatterns = [
@@ -1580,6 +1596,22 @@ const routeKindManifestCoreAliasSnippets = [
     snippets: [
       'ProcedureStreamEvent<JoorManifestRouteStreamProcedure<TManifest, TId>>',
     ],
+  },
+  {
+    name: 'JoorManifestRouteUnaryRequestOptions',
+    snippets: ['RpcRouteUnaryRequestOptions<JoorManifestRoutes<TManifest>, TId>'],
+  },
+  {
+    name: 'JoorManifestRouteStreamRequestOptions',
+    snippets: ['RpcRouteStreamRequestOptions<JoorManifestRoutes<TManifest>, TId>'],
+  },
+  {
+    name: 'JoorManifestRouteUnaryClientArgs',
+    snippets: ['RpcRouteUnaryClientArgs<JoorManifestRoutes<TManifest>, TId>'],
+  },
+  {
+    name: 'JoorManifestRouteStreamClientArgs',
+    snippets: ['RpcRouteStreamClientArgs<JoorManifestRoutes<TManifest>, TId>'],
   },
 ] as const;
 
@@ -1727,6 +1759,20 @@ const routeKindDispatcherCoreAliasSnippets = [
     name: 'RpcManifestRouteStreamErrorCode',
     snippets: [
       'ProcedureErrorCode<RpcManifestRouteStreamProcedure<TManifest, TId>>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryRequestOptions',
+    snippets: [
+      'RpcManifestRouteUnaryProcedure<TManifest, TId>',
+      'RpcManifestRouteUnaryClientHeaders<TManifest, TId>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamRequestOptions',
+    snippets: [
+      'RpcManifestRouteStreamProcedure<TManifest, TId>',
+      'RpcManifestRouteStreamClientHeaders<TManifest, TId>',
     ],
   },
 ] as const;
