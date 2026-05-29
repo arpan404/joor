@@ -1465,6 +1465,17 @@ const routeKindClientCoreAliasSnippets = [
     name: 'RpcRouteStreamClientArgs',
     snippets: ['RpcRouteStreamClientArgsFor<TRoutes, TId>'],
   },
+  {
+    name: 'RpcRouteUnaryBodyResultFor',
+    snippets: [
+      'RpcRouteUnaryProtocolBatchResults<TRoutes, TBody>',
+      'RpcRouteUnaryProtocolBodyResultFor<TRoutes, TBody>',
+    ],
+  },
+  {
+    name: 'RpcRouteStreamBodyResultFor',
+    snippets: ['RpcRouteStreamBodyResult<TRoutes>'],
+  },
 ] as const;
 
 const routeKindDispatcherInputPatterns = [
@@ -1612,6 +1623,14 @@ const routeKindManifestCoreAliasSnippets = [
   {
     name: 'JoorManifestRouteStreamClientArgs',
     snippets: ['RpcRouteStreamClientArgs<JoorManifestRoutes<TManifest>, TId>'],
+  },
+  {
+    name: 'JoorManifestRouteUnaryBodyResultFor',
+    snippets: ['RpcRouteUnaryBodyResultFor<JoorManifestRoutes<TManifest>, TBody>'],
+  },
+  {
+    name: 'JoorManifestRouteStreamBodyResultFor',
+    snippets: ['RpcRouteStreamBodyResultFor<JoorManifestRoutes<TManifest>, TBody>'],
   },
 ] as const;
 
@@ -1775,6 +1794,17 @@ const routeKindDispatcherCoreAliasSnippets = [
       'RpcManifestRouteStreamClientHeaders<TManifest, TId>',
     ],
   },
+  {
+    name: 'RpcManifestRouteUnaryBodyResultFor',
+    snippets: [
+      'RpcManifestRouteUnaryProtocolBatchResults<TManifest, TBody>',
+      'RpcManifestRouteUnaryProtocolBodyResultFor<TManifest, TBody>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamBodyResultFor',
+    snippets: ['RpcManifestRouteStreamBodyResult<TManifest>'],
+  },
 ] as const;
 
 const generatedClientRouteKindCoreAliasSnippets = [
@@ -1869,6 +1899,14 @@ const generatedClientRouteKindCoreAliasSnippets = [
   {
     name: 'RouteStreamClientArgs',
     snippets: ['JoorManifestRouteStreamClientArgs<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryBodyResultFor',
+    snippets: ['JoorManifestRouteUnaryBodyResultFor<Manifest, TBody>'],
+  },
+  {
+    name: 'RouteStreamBodyResultFor',
+    snippets: ['JoorManifestRouteStreamBodyResult<Manifest>'],
   },
 ] as const;
 
@@ -1968,6 +2006,14 @@ const generatedNativeRouteKindCoreAliasSnippets = [
   {
     name: 'NativeRouteStreamClientArgs',
     snippets: ['JoorManifestRouteStreamClientArgs<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryBodyResultFor',
+    snippets: ['JoorManifestRouteUnaryBodyResultFor<NativeManifest, TBody>'],
+  },
+  {
+    name: 'NativeRouteStreamBodyResultFor',
+    snippets: ['JoorManifestRouteStreamBodyResult<NativeManifest>'],
   },
 ] as const;
 

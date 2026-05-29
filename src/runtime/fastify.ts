@@ -41,7 +41,6 @@ import {
   isSerializedJsonEnvelope,
   type SerializedJsonEnvelope,
   type TransportBodyResult,
-  type TransportBodyResultFor,
 } from './response.js';
 
 export interface FastifyRequest<
@@ -279,7 +278,7 @@ type FastifyTransportBodyResultHandler<
 > = <const TRequestBody extends TBody>(
   request: ContextRequestSource,
   body: TRequestBody
-) => MaybePromise<TransportBodyResultFor<TManifest, TRequestBody>>;
+) => MaybePromise<TransportBodyResult>;
 
 type FastifyTransportBodyResultHandlerFactory<
   TManifest extends JoorManifest,

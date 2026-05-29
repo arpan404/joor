@@ -1272,15 +1272,32 @@ export type RpcManifestBodyResultFor<
     : never
   : RpcManifestProtocolBodyResultFor<TManifest, TBody>;
 
+type RpcManifestRouteUnaryProtocolBodyResultFor<
+  TManifest extends RpcManifest,
+  TBody,
+> = TBody extends { id: infer TId extends RpcManifestRouteUnaryId<TManifest> }
+  ? TBody extends RpcManifestRouteUnaryProtocolRequest<TManifest, TId>
+    ? RpcManifestRouteUnaryEnvelope<TManifest, TId> | Response
+    : never
+  : TBody extends { id: string }
+    ? never
+    : RpcManifestRouteUnaryBodyResult<TManifest>;
+
 export type RpcManifestRouteUnaryBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest>,
-> = RpcManifestBodyResultFor<TManifest, TBody>;
+> = TBody extends readonly unknown[]
+  ? TBody extends readonly RpcManifestRouteUnaryProtocolBatchRequestUnion<TManifest>[]
+    ? RpcManifestRouteUnaryProtocolBatchRequest<TManifest, TBody> extends never
+      ? never
+      : RpcManifestRouteUnaryProtocolBatchResults<TManifest, TBody> | Response
+    : never
+  : RpcManifestRouteUnaryProtocolBodyResultFor<TManifest, TBody>;
 
 export type RpcManifestRouteStreamBodyResultFor<
   TManifest extends RpcManifest,
-  TBody extends RpcManifestRouteStreamBody<TManifest>,
-> = RpcManifestBodyResultFor<TManifest, TBody>;
+  _TBody extends RpcManifestRouteStreamBody<TManifest>,
+> = RpcManifestRouteStreamBodyResult<TManifest>;
 
 export type RpcBodyResultHandler<
   TManifest extends RpcManifest,

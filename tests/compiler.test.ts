@@ -6657,14 +6657,14 @@ const genericStreamRouteBodyResult: StreamRouteBodyResult<typeof streamRouteBody
 genericStreamRouteBodyResult.headers.get('content-type');
 const routeStreamBodyResultFor: RouteStreamBodyResultFor<typeof routeStreamBody> =
   streamRouteBodyResultFor;
-const _wrongRouteUnaryBodyResultFor: RouteUnaryBodyResultFor<
+type _WrongRouteUnaryBodyResultFor = RouteUnaryBodyResultFor<
   // @ts-expect-error generated route-unary body result aliases reject stream bodies.
   typeof routeStreamBody
-> = routeStreamBodyResult;
-const _wrongRouteStreamBodyResultFor: RouteStreamBodyResultFor<
+>;
+type _WrongRouteStreamBodyResultFor = RouteStreamBodyResultFor<
   // @ts-expect-error generated route-stream body result aliases reject unary bodies.
   typeof routeUnaryBody
-> = new Response();
+>;
 const routeEnvelope: RouteEnvelope<'users.get'> = routeBodyResult;
 const defaultRouteEnvelope: RouteEnvelope = routeEnvelope;
 const unaryRouteEnvelope: UnaryRouteEnvelope<'users.get'> = routeEnvelope;
@@ -7768,14 +7768,14 @@ const nativeStreamRouteBodyResultFor: NativeStreamRouteBodyResultFor<typeof nati
   nativeRouteStreamBodyResult;
 const nativeRouteStreamBodyResultFor: NativeRouteStreamBodyResultFor<typeof nativeRouteStreamBody> =
   nativeStreamRouteBodyResultFor;
-const _wrongNativeRouteUnaryBodyResultFor: NativeRouteUnaryBodyResultFor<
+type _WrongNativeRouteUnaryBodyResultFor = NativeRouteUnaryBodyResultFor<
   // @ts-expect-error generated native route-unary body result aliases reject stream bodies.
   typeof nativeStreamRouteBody
-> = nativeRouteStreamBodyResult;
-const _wrongNativeRouteStreamBodyResultFor: NativeRouteStreamBodyResultFor<
+>;
+type _WrongNativeRouteStreamBodyResultFor = NativeRouteStreamBodyResultFor<
   // @ts-expect-error generated native route-stream body result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
-> = new Response();
+>;
 const nativeBodyResultFor: NativeBodyResultFor<typeof nativeUnaryBody> = nativeBodyResult;
 const nativeGenericBodyResult: NativeBodyResult<typeof nativeUnaryBody> = nativeBodyResultFor;
 if (!(nativeGenericBodyResult instanceof Response) && nativeGenericBodyResult.ok) {

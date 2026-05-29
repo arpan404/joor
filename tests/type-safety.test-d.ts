@@ -16426,6 +16426,7 @@ const publicManifestRouteStreamBodyHandler: RpcManifestRouteStreamBodyHandler<
 const syncPublicManifestRouteStreamBodyHandler: RpcManifestRouteStreamBodyHandler<
   typeof manifest
 > = () => new Response();
+// @ts-expect-error broad manifest body result handlers are not route-kind-specific.
 const publicManifestRouteUnaryBodyResultHandler: RpcManifestRouteUnaryBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
@@ -16464,6 +16465,7 @@ const publicManifestUnaryRouteBodyResultHandler: RpcManifestUnaryRouteBodyResult
 const publicManifestStreamRouteBodyResultHandler: RpcManifestStreamRouteBodyResultHandler<
   typeof manifest
 > = publicManifestRouteStreamBodyResultHandler;
+// @ts-expect-error broad manifest transport body result handlers are not route-kind-specific.
 const publicManifestUnaryRouteTransportBodyResultHandler: RpcManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
@@ -16496,12 +16498,14 @@ const publicJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandl
 const syncPublicJoorManifestStreamRouteBodyHandler: JoorManifestStreamRouteBodyHandler<
   typeof manifest
 > = syncPublicManifestStreamRouteBodyHandler;
+// @ts-expect-error broad manifest body result handlers are not route-kind-specific.
 const publicJoorManifestUnaryRouteBodyResultHandler: JoorManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
 const publicJoorManifestStreamRouteBodyResultHandler: JoorManifestStreamRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
+// @ts-expect-error broad manifest transport body result handlers are not route-kind-specific.
 const publicJoorManifestUnaryRouteTransportBodyResultHandler: JoorManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
@@ -16604,12 +16608,14 @@ const rpcSubpathManifestStreamRouteBodyHandler: RpcSubpathManifestStreamRouteBod
 const syncRpcSubpathManifestStreamRouteBodyHandler: RpcSubpathManifestStreamRouteBodyHandler<
   typeof manifest
 > = syncPublicManifestStreamRouteBodyHandler;
+// @ts-expect-error broad manifest body result handlers are not route-kind-specific.
 const rpcSubpathManifestUnaryRouteBodyResultHandler: RpcSubpathManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
 const rpcSubpathManifestStreamRouteBodyResultHandler: RpcSubpathManifestStreamRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
+// @ts-expect-error broad manifest transport body result handlers are not route-kind-specific.
 const rpcSubpathManifestUnaryRouteTransportBodyResultHandler: RpcSubpathManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;
@@ -16628,12 +16634,14 @@ const joorSubpathManifestStreamRouteBodyHandler: JoorSubpathManifestStreamRouteB
 const syncJoorSubpathManifestStreamRouteBodyHandler: JoorSubpathManifestStreamRouteBodyHandler<
   typeof manifest
 > = syncPublicJoorManifestStreamRouteBodyHandler;
+// @ts-expect-error broad manifest body result handlers are not route-kind-specific.
 const joorSubpathManifestUnaryRouteBodyResultHandler: JoorSubpathManifestUnaryRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
 const joorSubpathManifestStreamRouteBodyResultHandler: JoorSubpathManifestStreamRouteBodyResultHandler<
   typeof manifest
 > = rpcBodyResultHandler;
+// @ts-expect-error broad manifest transport body result handlers are not route-kind-specific.
 const joorSubpathManifestUnaryRouteTransportBodyResultHandler: JoorSubpathManifestUnaryRouteTransportBodyResultHandler<
   typeof manifest
 > = rpcTransportResultHandler;

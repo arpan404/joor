@@ -2240,10 +2240,27 @@ export type RpcRouteBodyResultFor<
     : never
   : RpcRouteProtocolBodyResultFor<TRoutes, TBody>;
 
+type RpcRouteUnaryProtocolBodyResultFor<
+  TRoutes extends RpcRouteMap,
+  TBody,
+> = TBody extends { id: infer TId extends RpcRouteUnaryId<TRoutes> }
+  ? TBody extends RpcRouteUnaryProtocolRequest<TRoutes, TId>
+    ? RpcRouteUnaryEnvelope<TRoutes, TId> | Response
+    : never
+  : TBody extends { id: string }
+    ? never
+    : RpcRouteUnaryBodyResult<TRoutes>;
+
 export type RpcRouteUnaryBodyResultFor<
   TRoutes extends RpcRouteMap,
   TBody extends RpcRouteUnaryBody<TRoutes>,
-> = RpcRouteBodyResultFor<TRoutes, TBody>;
+> = TBody extends readonly unknown[]
+  ? TBody extends readonly RpcRouteUnaryProtocolBatchRequestUnion<TRoutes>[]
+    ? RpcRouteUnaryProtocolBatchRequest<TRoutes, TBody> extends never
+      ? never
+      : RpcRouteUnaryProtocolBatchResults<TRoutes, TBody> | Response
+    : never
+  : RpcRouteUnaryProtocolBodyResultFor<TRoutes, TBody>;
 
 export type RpcUnaryRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
@@ -2256,8 +2273,8 @@ export type RpcUnaryBodyResultFor<
 
 export type RpcRouteStreamBodyResultFor<
   TRoutes extends RpcRouteMap,
-  TBody extends RpcRouteStreamBody<TRoutes>,
-> = RpcRouteBodyResultFor<TRoutes, TBody>;
+  _TBody extends RpcRouteStreamBody<TRoutes>,
+> = RpcRouteStreamBodyResult<TRoutes>;
 
 export type RpcStreamRouteBodyResultFor<
   TRoutes extends RpcRouteMap,
