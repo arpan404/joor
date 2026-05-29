@@ -53,8 +53,10 @@ import type {
   RpcManifestBodyResultFor,
   RpcManifestRequiredRuntimeRequest,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamBodyResultFor,
   RpcManifestRouteStreamRequiredRuntimeRequest,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryBodyResultFor,
   RpcManifestRouteUnaryRequiredRuntimeRequest,
   RpcPath,
 } from '../rpc/dispatcher.js';
@@ -151,7 +153,9 @@ export type CompiledRouteUnaryTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = CompiledTransportBodyResultFor<TManifest, TBody>;
+> =
+  | RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>
+  | CompiledSerializedEnvelope;
 export type CompiledUnaryRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
@@ -166,7 +170,9 @@ export type CompiledRouteStreamTransportBodyResultFor<
   TManifest extends JoorManifest,
   _TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = Response | CompiledSerializedEnvelope;
+> =
+  | RpcManifestRouteStreamBodyResultFor<TManifest, _TBody>
+  | CompiledSerializedEnvelope;
 export type CompiledStreamRouteTransportBodyResultFor<
   TManifest extends JoorManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =

@@ -3011,6 +3011,7 @@ const nativeBodyHandler: NativeBodyHandler = nativeBody;
 nativeBodyHandler(appRequest, nativeBodyValue);
 // @ts-expect-error generated body handlers default to the manifest request subtype.
 nativeBodyHandler(plainRequest, nativeBodyValue);
+// @ts-expect-error generated route-unary body handlers reject broad native body handlers.
 const nativeRouteUnaryBodyHandler: NativeRouteUnaryBodyHandler = nativeBody;
 nativeRouteUnaryBodyHandler(appRequest, nativeBodyValue);
 // @ts-expect-error generated route body handlers default to the manifest request subtype.
@@ -7815,22 +7816,24 @@ const nativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResul
   nativeStreamRouteCompiledBodyResultFor;
 const nativeStreamCompiledBodyResultFor: NativeStreamCompiledBodyResultFor<typeof nativeStreamRouteBody> =
   nativeRouteStreamCompiledBodyResultFor;
-const _wrongNativeRouteUnaryCompiledBodyResultFor: NativeRouteUnaryCompiledBodyResultFor<
+type _WrongNativeRouteUnaryCompiledBodyResultFor =
+  NativeRouteUnaryCompiledBodyResultFor<
   // @ts-expect-error generated native route-unary compiled body result aliases reject stream bodies.
   typeof nativeStreamRouteBody
-> = nativeRouteStreamCompiledBodyResultFor;
-const _wrongNativeUnaryCompiledBodyResultFor: NativeUnaryCompiledBodyResultFor<
+>;
+type _WrongNativeUnaryCompiledBodyResultFor = NativeUnaryCompiledBodyResultFor<
   // @ts-expect-error generated native concise unary compiled body result aliases reject stream bodies.
   typeof nativeStreamRouteBody
-> = nativeStreamCompiledBodyResultFor;
-const _wrongNativeRouteStreamCompiledBodyResultFor: NativeRouteStreamCompiledBodyResultFor<
+>;
+type _WrongNativeRouteStreamCompiledBodyResultFor =
+  NativeRouteStreamCompiledBodyResultFor<
   // @ts-expect-error generated native route-stream compiled body result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
-> = new Response();
-const _wrongNativeStreamCompiledBodyResultFor: NativeStreamCompiledBodyResultFor<
+>;
+type _WrongNativeStreamCompiledBodyResultFor = NativeStreamCompiledBodyResultFor<
   // @ts-expect-error generated native concise stream compiled body result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
-> = new Response();
+>;
 const nativeCompiledTransportResult: NativeCompiledTransportResult = nativeCompiledBodyResult;
 const nativeRouteEnvelope: NativeRouteEnvelope<'users.get'> = nativeBodyResult;
 const defaultNativeRouteEnvelope: NativeRouteEnvelope = nativeRouteEnvelope;
@@ -7901,22 +7904,24 @@ const nativeStreamRouteTransportResult: NativeStreamRouteTransportResultFor<type
   nativeRouteStreamTransportResult;
 const nativeStreamTransportResultFor: NativeStreamTransportResultFor<typeof nativeStreamRouteBody> =
   nativeStreamRouteTransportResult;
-const _wrongNativeRouteUnaryTransportResult: NativeRouteUnaryTransportResultFor<
+type _WrongNativeRouteUnaryTransportResult =
+  NativeRouteUnaryTransportResultFor<
   // @ts-expect-error generated native route-unary transport result aliases reject stream bodies.
   typeof nativeRouteStreamBody
-> = nativeRouteStreamTransportResult;
-const _wrongNativeUnaryTransportResult: NativeUnaryTransportResultFor<
+>;
+type _WrongNativeUnaryTransportResult = NativeUnaryTransportResultFor<
   // @ts-expect-error generated native concise unary transport result aliases reject stream bodies.
   typeof nativeRouteStreamBody
-> = nativeStreamTransportResultFor;
-const _wrongNativeRouteStreamTransportResult: NativeRouteStreamTransportResultFor<
+>;
+type _WrongNativeRouteStreamTransportResult =
+  NativeRouteStreamTransportResultFor<
   // @ts-expect-error generated native route-stream transport result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
-> = new Response();
-const _wrongNativeStreamTransportResult: NativeStreamTransportResultFor<
+>;
+type _WrongNativeStreamTransportResult = NativeStreamTransportResultFor<
   // @ts-expect-error generated native concise stream transport result aliases reject unary bodies.
   typeof nativeRouteUnaryBody
-> = new Response();
+>;
 const isNativeResultArray = (
   result: NativeTransportResult
 ): result is Extract<NativeTransportResult, readonly unknown[]> => Array.isArray(result);

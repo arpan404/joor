@@ -12,6 +12,8 @@ const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const manifestSource = join(srcRoot, 'manifest.ts');
 const rpcClient = join(srcRoot, 'rpc/client.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
+const runtimeResponse = join(srcRoot, 'runtime/response.ts');
+const runtimeCompiled = join(srcRoot, 'runtime/compiled.ts');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -2017,6 +2019,40 @@ const generatedNativeRouteKindCoreAliasSnippets = [
   },
 ] as const;
 
+const routeKindRuntimeResponseAliasSnippets = [
+  {
+    name: 'RouteUnaryTransportBodyResultFor',
+    snippets: [
+      'RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>',
+      'SerializedJsonEnvelope',
+    ],
+  },
+  {
+    name: 'RouteStreamTransportBodyResultFor',
+    snippets: [
+      'RpcManifestRouteStreamBodyResultFor<TManifest, TBody>',
+      'SerializedJsonEnvelope',
+    ],
+  },
+] as const;
+
+const routeKindRuntimeCompiledAliasSnippets = [
+  {
+    name: 'CompiledRouteUnaryTransportBodyResultFor',
+    snippets: [
+      'RpcManifestRouteUnaryBodyResultFor<TManifest, TBody>',
+      'CompiledSerializedEnvelope',
+    ],
+  },
+  {
+    name: 'CompiledRouteStreamTransportBodyResultFor',
+    snippets: [
+      'RpcManifestRouteStreamBodyResultFor<TManifest, _TBody>',
+      'CompiledSerializedEnvelope',
+    ],
+  },
+] as const;
+
 const normalizeTypeSource = (source: string): string =>
   source.replace(/\s+/g, ' ');
 
@@ -2442,6 +2478,36 @@ describe('route public surface', () => {
   it('keeps route-kind dispatcher core aliases tied to route-specific procedures', async () => {
     const source = await readFile(rpcDispatcher, 'utf8');
     const missing = routeKindDispatcherCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind runtime response aliases tied to route-specific body results', async () => {
+    const source = await readFile(runtimeResponse, 'utf8');
+    const missing = routeKindRuntimeResponseAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind compiled runtime aliases tied to route-specific body results', async () => {
+    const source = await readFile(runtimeCompiled, 'utf8');
+    const missing = routeKindRuntimeCompiledAliasSnippets.flatMap(
       ({ name, snippets }) => {
         const typeSource = exportedTypeSource(source, name);
         if (typeSource.length === 0) return [`${name}: <missing>`];

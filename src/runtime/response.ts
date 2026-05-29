@@ -4,7 +4,9 @@ import type {
   RpcManifestBody,
   RpcManifestBodyResultFor,
   RpcManifestRouteStreamBody,
+  RpcManifestRouteStreamBodyResultFor,
   RpcManifestRouteUnaryBody,
+  RpcManifestRouteUnaryBodyResultFor,
   RpcManifestStreamRouteBody,
   RpcManifestUnaryRouteBody,
 } from '../rpc/dispatcher.js';
@@ -37,7 +39,7 @@ export type RouteUnaryTransportBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestRouteUnaryBody<TManifest> =
     RpcManifestRouteUnaryBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RpcManifestRouteUnaryBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope;
 
 export type UnaryRouteTransportBodyResultFor<
   TManifest extends RpcManifest,
@@ -55,7 +57,7 @@ export type RouteStreamTransportBodyResultFor<
   TManifest extends RpcManifest,
   TBody extends RpcManifestRouteStreamBody<TManifest> =
     RpcManifestRouteStreamBody<TManifest>,
-> = TransportBodyResultFor<TManifest, TBody>;
+> = RpcManifestRouteStreamBodyResultFor<TManifest, TBody> | SerializedJsonEnvelope;
 
 export type StreamRouteTransportBodyResultFor<
   TManifest extends RpcManifest,

@@ -19511,9 +19511,11 @@ const syncManifestDenoTransportHandler: DenoTransportBodyResultHandlerFor<
     responseHeaders: { 'cache-control': 'private' },
   };
 };
+// @ts-expect-error broad Deno transport handlers are not route-unary-specific.
 const manifestDenoRouteUnaryTransportHandler: DenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+// @ts-expect-error broad Deno transport handlers are not route-unary-specific.
 const syncManifestDenoRouteUnaryTransportHandler: DenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestDenoTransportHandler;
@@ -19814,9 +19816,11 @@ const manifestBunTransportHandler: BunTransportBodyResultHandlerFor<
 const syncManifestBunTransportHandler: BunTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestDenoTransportHandler;
+// @ts-expect-error broad Bun transport handlers are not route-unary-specific.
 const manifestBunRouteUnaryTransportHandler: BunRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestBunTransportHandler;
+// @ts-expect-error broad Bun transport handlers are not route-unary-specific.
 const syncManifestBunRouteUnaryTransportHandler: BunRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestBunTransportHandler;
@@ -20214,9 +20218,11 @@ const manifestStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultH
 const syncManifestStandaloneDenoTransportHandler: StandaloneDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestDenoTransportHandler;
+// @ts-expect-error broad standalone Deno transport handlers are not route-unary-specific.
 const manifestStandaloneDenoRouteUnaryTransportHandler: StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
+// @ts-expect-error broad standalone Deno transport handlers are not route-unary-specific.
 const syncManifestStandaloneDenoRouteUnaryTransportHandler: StandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestStandaloneDenoTransportHandler;
@@ -20235,6 +20241,7 @@ const manifestStandaloneDenoStreamRouteTransportHandler: StandaloneDenoStreamRou
 const rootManifestStandaloneDenoTransportHandler: RootStandaloneDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestStandaloneDenoTransportHandler;
+// @ts-expect-error broad root standalone Deno transport handlers are not route-unary-specific.
 const rootManifestStandaloneDenoRouteUnaryTransportHandler: RootStandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestStandaloneDenoTransportHandler;
@@ -20250,6 +20257,7 @@ const rootManifestStandaloneDenoStreamRouteTransportHandler: RootStandaloneDenoS
 const runtimeSubpathManifestStandaloneDenoTransportHandler: RuntimeSubpathStandaloneDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = rootManifestStandaloneDenoTransportHandler;
+// @ts-expect-error broad runtime subpath standalone Deno transport handlers are not route-unary-specific.
 const runtimeSubpathManifestStandaloneDenoRouteUnaryTransportHandler: RuntimeSubpathStandaloneDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestStandaloneDenoTransportHandler;
@@ -20432,16 +20440,16 @@ const streamRouteTransportBodyResultFor: StreamRouteTransportBodyResultFor<
   typeof manifest,
   typeof manifestStreamRouteProtocolRequest
 > = routeStreamTransportBodyResultFor;
-const _wrongRouteUnaryTransportBodyResultFor: RouteUnaryTransportBodyResultFor<
+type _WrongRouteUnaryTransportBodyResultFor = RouteUnaryTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error route-unary transport result helpers reject route-stream bodies.
   typeof manifestStreamProtocolRequest
-> = routeStreamTransportBodyResultFor;
-const _wrongRouteStreamTransportBodyResultFor: RouteStreamTransportBodyResultFor<
+>;
+type _WrongRouteStreamTransportBodyResultFor = RouteStreamTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error route-stream transport result helpers reject route-unary bodies.
   typeof manifestUnaryProtocolRequest
-> = routeUnaryTransportBodyResultFor;
+>;
 const runtimeSubpathTransportBodyResultFor: RuntimeSubpathTransportBodyResultFor<
   typeof manifest
 > = transportBodyResultFor;
@@ -20488,16 +20496,18 @@ const runtimeResponseSubpathStreamRouteTransportBodyResultFor: RuntimeResponseSu
   typeof manifest,
   typeof manifestStreamRouteProtocolRequest
 > = streamRouteTransportBodyResultFor;
-const _wrongRuntimeSubpathRouteUnaryTransportBodyResultFor: RuntimeSubpathRouteUnaryTransportBodyResultFor<
+type _WrongRuntimeSubpathRouteUnaryTransportBodyResultFor =
+  RuntimeSubpathRouteUnaryTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error runtime route-unary transport result aliases reject route-stream bodies.
   typeof manifestStreamProtocolRequest
-> = routeStreamTransportBodyResultFor;
-const _wrongRuntimeResponseSubpathRouteStreamTransportBodyResultFor: RuntimeResponseSubpathRouteStreamTransportBodyResultFor<
+>;
+type _WrongRuntimeResponseSubpathRouteStreamTransportBodyResultFor =
+  RuntimeResponseSubpathRouteStreamTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error runtime/response route-stream transport result aliases reject route-unary bodies.
   typeof manifestUnaryProtocolRequest
-> = routeUnaryTransportBodyResultFor;
+>;
 runtimeSubpathRouteUnaryTransportBodyResultFor.valueOf();
 runtimeSubpathUnaryRouteTransportBodyResultFor.valueOf();
 runtimeSubpathRouteStreamTransportBodyResultFor.valueOf();
@@ -20884,16 +20894,18 @@ const compiledStreamRouteTransportResultFor: CompiledStreamRouteTransportBodyRes
   typeof manifest,
   typeof manifestStreamRouteBody
 > = compiledRouteStreamTransportResultFor;
-const _wrongCompiledRouteUnaryTransportResultFor: CompiledRouteUnaryTransportBodyResultFor<
+type _WrongCompiledRouteUnaryTransportResultFor =
+  CompiledRouteUnaryTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error compiled route-unary transport result helpers reject route-stream bodies.
   typeof manifestRouteStreamBody
-> = compiledRouteStreamTransportResultFor;
-const _wrongCompiledRouteStreamTransportResultFor: CompiledRouteStreamTransportBodyResultFor<
+>;
+type _WrongCompiledRouteStreamTransportResultFor =
+  CompiledRouteStreamTransportBodyResultFor<
   typeof manifest,
   // @ts-expect-error compiled route-stream transport result helpers reject route-unary bodies.
   typeof manifestRouteUnaryBody
-> = compiledRouteUnaryTransportResultFor;
+>;
 const compiledUnaryRouteBodyResultFor: CompiledUnaryRouteBodyResultFor<
   typeof manifest,
   typeof manifestUnaryRouteBody
@@ -22166,9 +22178,11 @@ const manifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandl
 const syncManifestDenoCompiledTransportHandler: DenoCompiledTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestCompiledTransportHandler;
+// @ts-expect-error broad compiled Deno transport handlers are not route-unary-specific.
 const manifestDenoCompiledUnaryRouteTransportHandler: DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoCompiledTransportHandler;
+// @ts-expect-error broad compiled Deno transport handlers are not route-unary-specific.
 const syncManifestDenoCompiledUnaryRouteTransportHandler: DenoCompiledUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestDenoCompiledTransportHandler;
@@ -29687,9 +29701,11 @@ const manifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
 const syncManifestNodeTransportHandler: NodeTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestDenoTransportHandler;
+// @ts-expect-error broad Node transport handlers are not route-unary-specific.
 const manifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestNodeTransportHandler;
+// @ts-expect-error broad Node transport handlers are not route-unary-specific.
 const syncManifestNodeRouteUnaryTransportHandler: NodeRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = syncManifestNodeTransportHandler;
@@ -30038,6 +30054,7 @@ createRuntimeSubpathDenoTransportRequestHandler(
 const runtimeSubpathManifestBunTransportHandler: RuntimeSubpathBunTransportBodyResultHandlerFor<
   typeof manifest
 > = manifestDenoTransportHandler;
+// @ts-expect-error broad runtime subpath Bun transport handlers are not route-unary-specific.
 const runtimeSubpathManifestBunRouteUnaryTransportHandler: RuntimeSubpathBunRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestBunTransportHandler;
@@ -30129,6 +30146,7 @@ const runtimeSubpathTypedBunStreamRouteTransportRequestHandlerWithPath: RuntimeS
 const runtimeSubpathManifestDenoTransportHandler: RuntimeSubpathDenoTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestBunTransportHandler;
+// @ts-expect-error broad runtime subpath Deno transport handlers are not route-unary-specific.
 const runtimeSubpathManifestDenoRouteUnaryTransportHandler: RuntimeSubpathDenoRouteUnaryTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestDenoTransportHandler;
@@ -30201,6 +30219,7 @@ createRuntimeSubpathNodeTransportRequestHandlerWithPath(
 const runtimeSubpathManifestNodeTransportHandler: RuntimeSubpathNodeTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestBunTransportHandler;
+// @ts-expect-error broad runtime subpath Node transport handlers are not route-unary-specific.
 const runtimeSubpathManifestNodeUnaryRouteTransportHandler: RuntimeSubpathNodeUnaryRouteTransportBodyResultHandlerFor<
   typeof manifest
 > = runtimeSubpathManifestNodeTransportHandler;
