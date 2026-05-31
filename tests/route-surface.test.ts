@@ -2161,6 +2161,29 @@ const routeKindRuntimeCompiledAliasSnippets = [
   },
 ] as const;
 
+const routeKindManifestWideForbiddenSnippets = [
+  {
+    label: 'RpcManifestBody<TManifest>',
+    pattern: /\bRpcManifestBody<TManifest>/,
+  },
+  {
+    label: 'RpcManifestRequiredRuntimeRequest<TManifest>',
+    pattern: /\bRpcManifestRequiredRuntimeRequest<TManifest>/,
+  },
+  {
+    label: 'RpcManifestRequiredServices<TManifest>',
+    pattern: /\bRpcManifestRequiredServices<TManifest>/,
+  },
+  {
+    label: 'HandlerOptionsFor<TManifest',
+    pattern: /\bHandlerOptionsFor<TManifest/,
+  },
+  {
+    label: 'HandlerOptionsArgs<TManifest',
+    pattern: /\bHandlerOptionsArgs<TManifest/,
+  },
+] as const;
+
 const normalizeTypeSource = (source: string): string =>
   source.replace(/\s+/g, ' ');
 
@@ -2197,6 +2220,30 @@ const collectExportedTypeAliasSources = (
   }
 
   return aliases;
+};
+
+const collectExportedValueDeclarationSources = (
+  source: string
+): ReadonlyMap<string, string> => {
+  const declarations = new Map<string, string>();
+  for (const match of source.matchAll(
+    /\bexport\s+(?:function|const)\s+([A-Za-z_][A-Za-z0-9_]*)/g
+  )) {
+    const name = match[1];
+    if (name === undefined) continue;
+    const start = match.index;
+    if (start === undefined) continue;
+    const nextExport = /\nexport\s+(?:type|interface|function|const|class)\s+/.exec(
+      source.slice(start + match[0].length)
+    );
+    const end =
+      nextExport === null
+        ? undefined
+        : start + match[0].length + nextExport.index;
+    declarations.set(name, normalizeTypeSource(source.slice(start, end)));
+  }
+
+  return declarations;
 };
 
 describe('route public surface', () => {
@@ -2642,28 +2689,6 @@ describe('route public surface', () => {
 
   it('keeps route-kind runtime aliases from widening to manifest-wide handler types', async () => {
     const files = [configSource, ...(await collectTypeScriptFiles(runtimeRoot))];
-    const forbidden = [
-      {
-        label: 'RpcManifestBody<TManifest>',
-        pattern: /\bRpcManifestBody<TManifest>/,
-      },
-      {
-        label: 'RpcManifestRequiredRuntimeRequest<TManifest>',
-        pattern: /\bRpcManifestRequiredRuntimeRequest<TManifest>/,
-      },
-      {
-        label: 'RpcManifestRequiredServices<TManifest>',
-        pattern: /\bRpcManifestRequiredServices<TManifest>/,
-      },
-      {
-        label: 'HandlerOptionsFor<TManifest',
-        pattern: /\bHandlerOptionsFor<TManifest/,
-      },
-      {
-        label: 'HandlerOptionsArgs<TManifest',
-        pattern: /\bHandlerOptionsArgs<TManifest/,
-      },
-    ] as const;
     const leaking = (
       await Promise.all(
         files.map(async (file) => {
@@ -2671,10 +2696,35 @@ describe('route public surface', () => {
           return [...collectExportedTypeAliasSources(source)].flatMap(
             ([name, typeSource]) => {
               if (!routeKindTypePattern.test(name)) return [];
-              return forbidden.flatMap(({ label, pattern }) =>
-                pattern.test(typeSource)
-                  ? [`${relative(repoRoot, file)}: ${name}: ${label}`]
-                  : []
+              return routeKindManifestWideForbiddenSnippets.flatMap(
+                ({ label, pattern }) =>
+                  pattern.test(typeSource)
+                    ? [`${relative(repoRoot, file)}: ${name}: ${label}`]
+                    : []
+              );
+            }
+          );
+        })
+      )
+    ).flat();
+
+    expect(leaking).toEqual([]);
+  });
+
+  it('keeps route-kind runtime factories from widening to manifest-wide handler types', async () => {
+    const files = [configSource, ...(await collectTypeScriptFiles(runtimeRoot))];
+    const leaking = (
+      await Promise.all(
+        files.map(async (file) => {
+          const source = await readFile(file, 'utf8');
+          return [...collectExportedValueDeclarationSources(source)].flatMap(
+            ([name, declarationSource]) => {
+              if (!routeKindTypePattern.test(name)) return [];
+              return routeKindManifestWideForbiddenSnippets.flatMap(
+                ({ label, pattern }) =>
+                  pattern.test(declarationSource)
+                    ? [`${relative(repoRoot, file)}: ${name}: ${label}`]
+                    : []
               );
             }
           );
