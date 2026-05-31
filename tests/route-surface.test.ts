@@ -1521,6 +1521,14 @@ const routeKindClientCoreAliasSnippets = [
     ],
   },
   {
+    name: 'RpcRouteUnaryProtocolRequestFunction',
+    snippets: [
+      'RpcRouteUnaryInput<TRoutes, NoInfer<TId>>',
+      'RpcProtocolRequestOptions',
+      'RpcRouteUnaryProtocolRequest<TRoutes, TId>',
+    ],
+  },
+  {
     name: 'RpcRouteUnaryBatchFunction',
     snippets: [
       'RpcRouteUnaryBatchRequestUnion<TRoutes>',
@@ -1555,6 +1563,14 @@ const routeKindClientCoreAliasSnippets = [
     ],
   },
   {
+    name: 'RpcRouteStreamProtocolRequestFunction',
+    snippets: [
+      'RpcRouteStreamInput<TRoutes, NoInfer<TId>>',
+      'RpcProtocolRequestOptions',
+      'RpcRouteStreamProtocolRequest<TRoutes, TId>',
+    ],
+  },
+  {
     name: 'RpcManifestRouteUnaryCallFunction',
     snippets: [
       'RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>',
@@ -1571,6 +1587,14 @@ const routeKindClientCoreAliasSnippets = [
     ],
   },
   {
+    name: 'RpcManifestRouteUnaryProtocolRequestFunction',
+    snippets: [
+      'RpcManifestRouteUnaryInput<TManifest, NoInfer<TId>>',
+      'RpcProtocolRequestOptions',
+      'RpcManifestRouteUnaryProtocolRequest<TManifest, TId>',
+    ],
+  },
+  {
     name: 'RpcManifestRouteStreamFunction',
     snippets: [
       'RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>',
@@ -1584,6 +1608,14 @@ const routeKindClientCoreAliasSnippets = [
       'RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>',
       'RpcManifestRouteStreamProcedure<TManifest, NoInfer<TId>>',
       'RpcManifestRouteStreamSseEvent<TManifest, TId>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteStreamProtocolRequestFunction',
+    snippets: [
+      'RpcManifestRouteStreamInput<TManifest, NoInfer<TId>>',
+      'RpcProtocolRequestOptions',
+      'RpcManifestRouteStreamProtocolRequest<TManifest, TId>',
     ],
   },
   {
@@ -1754,6 +1786,12 @@ const routeKindManifestCoreAliasSnippets = [
     snippets: ['RpcRouteUnaryRequestFunction<JoorManifestRoutes<TManifest>>'],
   },
   {
+    name: 'JoorManifestRouteUnaryProtocolRequestFunction',
+    snippets: [
+      'RpcRouteUnaryProtocolRequestFunction<JoorManifestRoutes<TManifest>>',
+    ],
+  },
+  {
     name: 'JoorManifestRouteUnaryBatchFunction',
     snippets: ['RpcRouteUnaryBatchFunction<JoorManifestRoutes<TManifest>>'],
   },
@@ -1764,6 +1802,12 @@ const routeKindManifestCoreAliasSnippets = [
   {
     name: 'JoorManifestRouteStreamEventsFunction',
     snippets: ['RpcRouteStreamEventsFunction<JoorManifestRoutes<TManifest>>'],
+  },
+  {
+    name: 'JoorManifestRouteStreamProtocolRequestFunction',
+    snippets: [
+      'RpcRouteStreamProtocolRequestFunction<JoorManifestRoutes<TManifest>>',
+    ],
   },
   {
     name: 'JoorManifestRouteUnaryBodyResultFor',

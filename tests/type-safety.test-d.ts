@@ -1012,6 +1012,7 @@ import {
   type JoorManifestRouteStreamEvent,
   type JoorManifestRouteStreamEventsFunction,
   type JoorManifestRouteStreamFunction,
+  type JoorManifestRouteStreamProtocolRequestFunction,
   type JoorManifestRouteStreamSseEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
@@ -1039,12 +1040,14 @@ import {
   type JoorManifestRouteUnaryBatchOptionsTuple,
   type JoorManifestRouteUnaryBatchRequestUnion,
   type JoorManifestRouteUnaryCallFunction,
+  type JoorManifestRouteUnaryProtocolRequestFunction,
   type JoorManifestRouteUnaryRequestFunction,
   type JoorManifestUnaryProtocolRequest,
   type JoorManifestUnaryProtocolRequestUnion,
   type JoorManifestRouteUnaryTransportClient,
   type JoorManifestRoutes,
   type JoorManifestStreamRouteProtocolRequest,
+  type JoorManifestStreamRouteProtocolRequestFunction,
   type JoorManifestStreamRouteProtocolRequestUnion,
   type JoorManifestStreamRouteId,
   type JoorManifestStreamRouteRequiredRuntimeRequest,
@@ -1083,6 +1086,7 @@ import {
   type JoorManifestUnaryRouteProtocolBatchResults,
   type JoorManifestUnaryRouteProtocolBatchRequestUnion,
   type JoorManifestUnaryRouteProtocolRequest,
+  type JoorManifestUnaryRouteProtocolRequestFunction,
   type JoorManifestUnaryRouteProtocolRequestUnion,
   type JoorManifestUnaryRouteResponseHeaders,
   type JoorManifestUnaryRouteRequest,
@@ -1321,6 +1325,7 @@ import {
   type RpcManifestRouteStreamEvent,
   type RpcManifestRouteStreamSseEvent,
   type RpcManifestRouteStreamProtocolRequest,
+  type RpcManifestRouteStreamProtocolRequestFunction,
   type RpcManifestRouteStreamProtocolRequestUnion,
   type RpcManifestStreamProtocolRequest,
   type RpcManifestStreamProtocolRequestUnion,
@@ -1337,6 +1342,7 @@ import {
   type RpcManifestRouteUnaryBatchOptionsTuple,
   type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryBatchRequestUnion,
+  type RpcManifestRouteUnaryProtocolRequestFunction,
   type RpcManifestRouteUnaryRequestFunction,
   type RpcManifestRouteUnaryProtocolBatchRequest,
   type RpcManifestRouteUnaryProtocolBatchClientHeaders,
@@ -1456,6 +1462,7 @@ import {
   type RpcRouteUnaryBatchFunction,
   type RpcRouteUnaryCallFunction,
   type RpcRouteUnaryBatchOptionsTuple,
+  type RpcRouteUnaryProtocolRequestFunction,
   type RpcRouteUnaryRequestFunction,
   type RpcUnaryProtocolRequest,
   type RpcUnaryProtocolRequestUnion,
@@ -1496,6 +1503,7 @@ import {
   type RpcStreamRouteEvent,
   type RpcStreamRouteEventsFunction,
   type RpcStreamRouteFunction,
+  type RpcStreamRouteProtocolRequestFunction,
   type RpcStreamRouteSseEvent,
   type RpcStreamRouteHasHeaders,
   type RpcStreamRouteHasResponseHeaders,
@@ -1518,6 +1526,7 @@ import {
   type RpcRouteUnaryTransportClient,
   type RpcRouteStreamEventsFunction,
   type RpcRouteStreamFunction,
+  type RpcRouteStreamProtocolRequestFunction,
   type RpcStreamRouteId,
   type RpcStreamRouteTransportClient,
   type RpcUnaryProcedure,
@@ -1529,6 +1538,7 @@ import {
   type RpcUnaryRouteEnvelope,
   type RpcUnaryRouteEnvelopeUnion,
   type RpcUnaryRouteCallFunction,
+  type RpcUnaryRouteProtocolRequestFunction,
   type RpcUnaryRouteErrorCode,
   type RpcUnaryRouteErrorDetails,
   type RpcUnaryRouteHasHeaders,
@@ -11299,6 +11309,9 @@ const rootManifestRouteUnaryCall: RpcManifestRouteUnaryCallFunction<
 const rootManifestRouteUnaryRequest: RpcManifestRouteUnaryRequestFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.request;
+const rootManifestRouteUnaryProtocolRequest: RpcManifestRouteUnaryProtocolRequestFunction<
+  typeof manifest
+> = createManifestRouteUnaryProtocolRequest;
 const rootManifestRouteUnaryBatch: RpcManifestRouteUnaryBatchFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.batch;
@@ -11308,6 +11321,12 @@ const rootJoorManifestRouteUnaryCall: JoorManifestRouteUnaryCallFunction<
 const rootJoorManifestRouteUnaryRequest: JoorManifestRouteUnaryRequestFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.request;
+const rootJoorManifestRouteUnaryProtocolRequest: JoorManifestRouteUnaryProtocolRequestFunction<
+  typeof manifest
+> = createRouteUnaryProtocolRequest;
+const rootJoorManifestUnaryRouteProtocolRequest: JoorManifestUnaryRouteProtocolRequestFunction<
+  typeof manifest
+> = rootJoorManifestRouteUnaryProtocolRequest;
 const rootJoorManifestRouteUnaryBatch: JoorManifestRouteUnaryBatchFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.batch;
@@ -11316,6 +11335,15 @@ rootManifestRouteUnaryCall('users.authenticated', { ok: true });
 rootJoorManifestRouteUnaryCall('users.authenticated', { ok: true });
 rootManifestRouteUnaryRequest('users.authenticated', { ok: true });
 rootJoorManifestRouteUnaryRequest('users.authenticated', { ok: true });
+rootManifestRouteUnaryProtocolRequest(manifest, 'users.authenticated', {
+  ok: true,
+});
+rootJoorManifestRouteUnaryProtocolRequest('users.authenticated', {
+  ok: true,
+});
+rootJoorManifestUnaryRouteProtocolRequest('users.authenticated', {
+  ok: true,
+});
 rootManifestRouteUnaryClientShape.batch([
   rootManifestRouteUnaryClientShape.request('users.authenticated', {
     ok: true,
@@ -11347,10 +11375,24 @@ const rootManifestRouteStream: JoorManifestRouteStreamFunction<
 const rootManifestRouteStreamEvents: JoorManifestRouteStreamEventsFunction<
   typeof manifest
 > = rootManifestRouteStreamClientShape.streamEvents;
+const rootManifestRouteStreamProtocolRequest: RpcManifestRouteStreamProtocolRequestFunction<
+  typeof manifest
+> = createManifestRouteStreamProtocolRequest;
+const rootJoorManifestRouteStreamProtocolRequest: JoorManifestRouteStreamProtocolRequestFunction<
+  typeof manifest
+> = createRouteStreamProtocolRequest;
+const rootJoorManifestStreamRouteProtocolRequest: JoorManifestStreamRouteProtocolRequestFunction<
+  typeof manifest
+> = rootJoorManifestRouteStreamProtocolRequest;
 rootManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
 rootManifestRouteStreamClientShape.streamEvents('users.watch', { userId: '1' });
 rootManifestRouteStream('users.watch', { userId: '1' });
 rootManifestRouteStreamEvents('users.watch', { userId: '1' });
+rootManifestRouteStreamProtocolRequest(manifest, 'users.watch', {
+  userId: '1',
+});
+rootJoorManifestRouteStreamProtocolRequest('users.watch', { userId: '1' });
+rootJoorManifestStreamRouteProtocolRequest('users.watch', { userId: '1' });
 const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
   typeof manifest
 > = rootStreamRouteClient;
@@ -31477,6 +31519,14 @@ const standaloneRouteUnaryProtocolRequest = createRouteUnaryProtocolRequest<
   Routes,
   'users.get'
 >('users.get', { id: '1' });
+const routeUnaryProtocolRequestFunction: RpcRouteUnaryProtocolRequestFunction<Routes> =
+  createRouteUnaryProtocolRequest;
+const unaryRouteProtocolRequestFunction: RpcUnaryRouteProtocolRequestFunction<Routes> =
+  createUnaryRouteProtocolRequest;
+routeUnaryProtocolRequestFunction('users.get', { id: '1' });
+unaryRouteProtocolRequestFunction('users.get', { id: '1' });
+// @ts-expect-error route-unary protocol request functions reject stream route ids.
+routeUnaryProtocolRequestFunction('users.watch', { userId: '1' });
 const standaloneUnaryRouteProtocolRequest = createUnaryRouteProtocolRequest<
   Routes,
   'users.get'
@@ -31485,6 +31535,14 @@ const standaloneRouteStreamProtocolRequest = createRouteStreamProtocolRequest<
   Routes,
   'users.watch'
 >('users.watch', { userId: '1' });
+const routeStreamProtocolRequestFunction: RpcRouteStreamProtocolRequestFunction<Routes> =
+  createRouteStreamProtocolRequest;
+const streamRouteProtocolRequestFunction: RpcStreamRouteProtocolRequestFunction<Routes> =
+  createStreamRouteProtocolRequest;
+routeStreamProtocolRequestFunction('users.watch', { userId: '1' });
+streamRouteProtocolRequestFunction('users.watch', { userId: '1' });
+// @ts-expect-error route-stream protocol request functions reject unary route ids.
+routeStreamProtocolRequestFunction('users.get', { id: '1' });
 const standaloneStreamRouteProtocolRequest = createStreamRouteProtocolRequest<
   Routes,
   'users.watch'

@@ -83,6 +83,7 @@ import type {
   RpcRouteStreamClientArgs,
   RpcRouteStreamEventsFunction,
   RpcRouteStreamFunction,
+  RpcRouteStreamProtocolRequestFunction,
   RpcRouteStreamProtocolRequestBuilder,
   RpcRouteStreamProtocolRequest,
   RpcRouteStreamProtocolRequestUnion,
@@ -108,6 +109,7 @@ import type {
   RpcRouteUnaryProtocolBatchOptionsTuple,
   RpcRouteUnaryProtocolBatchResults,
   RpcRouteUnaryProtocolBatchRequestUnion,
+  RpcRouteUnaryProtocolRequestFunction,
   RpcRouteUnaryProtocolRequestBuilder,
   RpcRouteUnaryProtocolRequest,
   RpcRouteUnaryProtocolRequestUnion,
@@ -1445,6 +1447,14 @@ export type JoorManifestUnaryRouteRequestFunction<TManifest> =
 export type JoorManifestUnaryRequestFunction<TManifest> =
   JoorManifestRouteUnaryRequestFunction<TManifest>;
 
+export type JoorManifestRouteUnaryProtocolRequestFunction<TManifest> =
+  RpcRouteUnaryProtocolRequestFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestUnaryRouteProtocolRequestFunction<TManifest> =
+  JoorManifestRouteUnaryProtocolRequestFunction<TManifest>;
+export type JoorManifestUnaryProtocolRequestFunction<TManifest> =
+  JoorManifestRouteUnaryProtocolRequestFunction<TManifest>;
+
 export type JoorManifestRouteStreamFunction<TManifest> =
   RpcRouteStreamFunction<JoorManifestRoutes<TManifest>>;
 
@@ -1460,6 +1470,14 @@ export type JoorManifestStreamRouteEventsFunction<TManifest> =
   JoorManifestRouteStreamEventsFunction<TManifest>;
 export type JoorManifestStreamEventsFunction<TManifest> =
   JoorManifestRouteStreamEventsFunction<TManifest>;
+
+export type JoorManifestRouteStreamProtocolRequestFunction<TManifest> =
+  RpcRouteStreamProtocolRequestFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestStreamRouteProtocolRequestFunction<TManifest> =
+  JoorManifestRouteStreamProtocolRequestFunction<TManifest>;
+export type JoorManifestStreamProtocolRequestFunction<TManifest> =
+  JoorManifestRouteStreamProtocolRequestFunction<TManifest>;
 
 export type JoorManifestRouteProtocolBatchOptionsTuple<
   TManifest,
