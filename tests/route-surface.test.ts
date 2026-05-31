@@ -15,6 +15,7 @@ const rpcClient = join(srcRoot, 'rpc/client.ts');
 const rpcDispatcher = join(srcRoot, 'rpc/dispatcher.ts');
 const runtimeResponse = join(srcRoot, 'runtime/response.ts');
 const runtimeCompiled = join(srcRoot, 'runtime/compiled.ts');
+const runtimeRoot = join(srcRoot, 'runtime');
 const packageManifest = join(repoRoot, 'package.json');
 const packageSubpathTest = join(repoRoot, 'tests/package-subpaths.test-d.ts');
 const fixture = join(repoRoot, 'tests/fixtures/basic-app/rpc');
@@ -26,6 +27,7 @@ type ExportedSymbol = {
 };
 
 const routeNamePattern = /(?:RouteUnary|UnaryRoute|RouteStream|StreamRoute)/;
+const routeKindTypePattern = /(?:RouteUnary|RouteStream)/;
 
 const collectTypeScriptFiles = async (
   dir: string
@@ -2170,6 +2172,33 @@ const exportedTypeSource = (source: string, name: string): string => {
   return normalizeTypeSource(source.slice(start, end === -1 ? undefined : end));
 };
 
+const collectExportedTypeAliasSources = (
+  source: string
+): ReadonlyMap<string, string> => {
+  const aliases = new Map<string, string>();
+  for (const match of source.matchAll(
+    /\bexport\s+type\s+([A-Za-z_][A-Za-z0-9_]*)(?:\s*<|[\s=])/g
+  )) {
+    const name = match[1];
+    if (name === undefined) continue;
+    const start = match.index;
+    if (start === undefined) continue;
+    const nextExport = /\nexport\s+(?:type|interface|function|const|class)\s+/.exec(
+      source.slice(start + match[0].length)
+    );
+    const end =
+      nextExport === null
+        ? undefined
+        : start + match[0].length + nextExport.index;
+    aliases.set(
+      name,
+      normalizeTypeSource(source.slice(start, end))
+    );
+  }
+
+  return aliases;
+};
+
 describe('route public surface', () => {
   it('keeps route-first and noun-first exported aliases paired', async () => {
     const exportSets = await sourceExportSets();
@@ -2609,6 +2638,51 @@ describe('route public surface', () => {
     );
 
     expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind runtime aliases from widening to manifest-wide handler types', async () => {
+    const files = [configSource, ...(await collectTypeScriptFiles(runtimeRoot))];
+    const forbidden = [
+      {
+        label: 'RpcManifestBody<TManifest>',
+        pattern: /\bRpcManifestBody<TManifest>/,
+      },
+      {
+        label: 'RpcManifestRequiredRuntimeRequest<TManifest>',
+        pattern: /\bRpcManifestRequiredRuntimeRequest<TManifest>/,
+      },
+      {
+        label: 'RpcManifestRequiredServices<TManifest>',
+        pattern: /\bRpcManifestRequiredServices<TManifest>/,
+      },
+      {
+        label: 'HandlerOptionsFor<TManifest',
+        pattern: /\bHandlerOptionsFor<TManifest/,
+      },
+      {
+        label: 'HandlerOptionsArgs<TManifest',
+        pattern: /\bHandlerOptionsArgs<TManifest/,
+      },
+    ] as const;
+    const leaking = (
+      await Promise.all(
+        files.map(async (file) => {
+          const source = await readFile(file, 'utf8');
+          return [...collectExportedTypeAliasSources(source)].flatMap(
+            ([name, typeSource]) => {
+              if (!routeKindTypePattern.test(name)) return [];
+              return forbidden.flatMap(({ label, pattern }) =>
+                pattern.test(typeSource)
+                  ? [`${relative(repoRoot, file)}: ${name}: ${label}`]
+                  : []
+              );
+            }
+          );
+        })
+      )
+    ).flat();
+
+    expect(leaking).toEqual([]);
   });
 
   it('keeps route-kind runtime response aliases tied to route-specific body results', async () => {
