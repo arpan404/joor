@@ -1608,7 +1608,7 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export type StreamTransport<TId extends RouteStreamId = RouteStreamId> =\n  RouteStreamTransport<TId>;'
       );
       expect(clientSource).toContain(
-        "export type RouteUnaryTransportClient = Pick<\n  RouteTransportClient,\n  'call' | 'request' | 'batch'\n>;"
+        'export type RouteUnaryTransportClient = JoorManifestRouteUnaryTransportClient<Manifest>;'
       );
       expect(clientSource).toContain(
         'export type UnaryRouteTransportClient = RouteUnaryTransportClient;'
@@ -1616,7 +1616,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain(
         'export type UnaryTransportClient = RouteUnaryTransportClient;'
       );
-      expect(clientSource).toContain("  'stream' | 'streamEvents'");
+      expect(clientSource).toContain(
+        'export type RouteStreamTransportClient = JoorManifestRouteStreamTransportClient<Manifest>;'
+      );
       expect(clientSource).toContain(
         'export type StreamRouteTransportClient = RouteStreamTransportClient;'
       );

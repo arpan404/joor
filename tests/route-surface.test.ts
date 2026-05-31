@@ -1941,6 +1941,14 @@ const generatedClientRouteKindCoreAliasSnippets = [
     snippets: ['JoorManifestRouteStreamClientArgs<Manifest, TId>'],
   },
   {
+    name: 'RouteUnaryTransportClient',
+    snippets: ['JoorManifestRouteUnaryTransportClient<Manifest>'],
+  },
+  {
+    name: 'RouteStreamTransportClient',
+    snippets: ['JoorManifestRouteStreamTransportClient<Manifest>'],
+  },
+  {
     name: 'RouteUnaryBodyResultFor',
     snippets: ['JoorManifestRouteUnaryBodyResultFor<Manifest, TBody>'],
   },
@@ -2188,9 +2196,13 @@ const normalizeTypeSource = (source: string): string =>
   source.replace(/\s+/g, ' ');
 
 const exportedTypeSource = (source: string, name: string): string => {
-  const marker = `export type ${name}<`;
-  const start = source.indexOf(marker);
-  if (start === -1) return '';
+  const typePattern = new RegExp(
+    `\\bexport\\s+type\\s+${name}(?:\\s*<|\\s*=)`
+  );
+  const match = typePattern.exec(source);
+  if (match === null || match.index === undefined) return '';
+  const marker = match[0];
+  const start = match.index;
   const end = source.indexOf('\nexport type ', start + marker.length);
   return normalizeTypeSource(source.slice(start, end === -1 ? undefined : end));
 };
