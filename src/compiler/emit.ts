@@ -5097,10 +5097,13 @@ export type RouteProtocolBatchOptionsTuple<TRequests extends readonly unknown[] 
 export type ProtocolBatchOptionsTuple<TRequests extends readonly unknown[] = ProtocolBatchRequest> = JoorManifestProtocolBatchOptionsTuple<Manifest, TRequests>;
 export type RouteUnaryProtocolBatchOptionsTuple<TRequests extends readonly unknown[] = RouteUnaryProtocolBatchRequest> = JoorManifestRouteUnaryProtocolBatchOptionsTuple<Manifest, TRequests>;
 export type UnaryRouteProtocolBatchOptionsTuple<TRequests extends readonly unknown[] = UnaryRouteProtocolBatchRequest> = JoorManifestUnaryRouteProtocolBatchOptionsTuple<Manifest, TRequests>;
-export type BatchFunction = <const TRequests extends readonly [...RouteBatchRequestUnion[]]>(
+export type RouteUnaryBatchFunction = <const TRequests extends readonly [...RouteUnaryBatchRequestUnion[]]>(
   requests: TRequests,
-  ...options: BatchOptionsTuple<NoInfer<TRequests>>
-) => Promise<RouteBatchResults<TRequests>>;
+  ...options: RouteUnaryBatchOptionsTuple<NoInfer<TRequests>>
+) => Promise<RouteUnaryBatchResults<TRequests>>;
+export type UnaryRouteBatchFunction = RouteUnaryBatchFunction;
+export type UnaryBatchFunction = RouteUnaryBatchFunction;
+export type BatchFunction = RouteUnaryBatchFunction;
 export type RouteProtocolRequestBuilder = <TId extends RouteId>(
   id: TId,
   input: RouteInput<NoInfer<TId>>,
@@ -5376,7 +5379,7 @@ ${clientTypeBody}
 export type GeneratedClient = Client;
 export type RouteUnaryClient = {
 ${routeUnaryClientTypeBody}
-  readonly batch: BatchFunction;
+  readonly batch: RouteUnaryBatchFunction;
 };
 export type GeneratedRouteUnaryClient = RouteUnaryClient;
 export type GeneratedUnaryRouteClient = RouteUnaryClient;
@@ -5458,7 +5461,7 @@ export function createRouteUnaryClient<TRequest extends Request = RouteUnaryRequ
     ) => createRouteUnaryProtocolRequest(id, input, options);
     return Object.assign(call, { call, request, protocolRequest });
   };
-  const batch: BatchFunction = (requests, ...options) =>
+  const batch: RouteUnaryBatchFunction = (requests, ...options) =>
     transport.batch(requests, ...options);
   return freezeClientTree({
 ${routeUnaryClientBody}

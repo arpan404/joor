@@ -1510,6 +1510,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
       expect(clientSource).toContain('export type RouteUnaryFunction');
       expect(clientSource).toContain('export type RouteStreamFunction');
       expect(clientSource).toContain('export type BatchFunction');
+      expect(clientSource).toContain('export type RouteUnaryBatchFunction');
+      expect(clientSource).toContain('export type UnaryRouteBatchFunction');
+      expect(clientSource).toContain('export type UnaryBatchFunction');
       expect(clientSource).toContain(
         'export type RouteUnaryFunction<TId extends RouteUnaryId = RouteUnaryId> = {'
       );
@@ -1523,7 +1526,10 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'export type StreamRouteFunction<TId extends RouteStreamId = RouteStreamId> =\n  RouteStreamFunction<TId>;'
       );
       expect(clientSource).toContain(
-        'export type BatchFunction = <const TRequests extends readonly [...RouteBatchRequestUnion[]]>'
+        'export type RouteUnaryBatchFunction = <const TRequests extends readonly [...RouteUnaryBatchRequestUnion[]]>'
+      );
+      expect(clientSource).toContain(
+        'export type BatchFunction = RouteUnaryBatchFunction;'
       );
       expect(clientSource).toContain(
         'readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;'
@@ -1538,6 +1544,9 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         'readonly events: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<StreamSseEvent<TId>>;'
       );
       expect(clientSource).toContain('  readonly batch: BatchFunction;');
+      expect(clientSource).toContain(
+        '  readonly batch: RouteUnaryBatchFunction;'
+      );
       expect(clientSource).toContain('export type BatchClientHeaders');
       expect(clientSource).toContain(
         'export type RouteUnaryBatchClientHeaders'

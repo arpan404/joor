@@ -606,6 +606,10 @@ const generatedClientRouteBatchAliases = [
   'ProtocolBatchOptionsTuple',
   'RouteUnaryProtocolBatchOptionsTuple',
   'UnaryRouteProtocolBatchOptionsTuple',
+  'RouteUnaryBatchFunction',
+  'UnaryRouteBatchFunction',
+  'UnaryBatchFunction',
+  'BatchFunction',
 ] as const;
 
 const generatedClientRouteTransportExports = [
@@ -1939,6 +1943,18 @@ const generatedClientRouteKindCoreAliasSnippets = [
   {
     name: 'RouteStreamClientArgs',
     snippets: ['JoorManifestRouteStreamClientArgs<Manifest, TId>'],
+  },
+  {
+    name: 'RouteUnaryBatchFunction',
+    snippets: [
+      'RouteUnaryBatchRequestUnion',
+      'RouteUnaryBatchOptionsTuple<NoInfer<TRequests>>',
+      'RouteUnaryBatchResults<TRequests>',
+    ],
+  },
+  {
+    name: 'BatchFunction',
+    snippets: ['RouteUnaryBatchFunction'],
   },
   {
     name: 'RouteUnaryTransportClient',
