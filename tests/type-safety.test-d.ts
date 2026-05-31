@@ -1010,6 +1010,8 @@ import {
   type JoorManifestRouteStreamBodyResultFor,
   type JoorManifestRouteStreamBodyResultHandler,
   type JoorManifestRouteStreamEvent,
+  type JoorManifestRouteStreamEventsFunction,
+  type JoorManifestRouteStreamFunction,
   type JoorManifestRouteStreamSseEvent,
   type JoorManifestRouteStreamProtocolRequest,
   type JoorManifestRouteStreamProtocolRequestUnion,
@@ -1036,6 +1038,8 @@ import {
   type JoorManifestRouteUnaryBatchOptions,
   type JoorManifestRouteUnaryBatchOptionsTuple,
   type JoorManifestRouteUnaryBatchRequestUnion,
+  type JoorManifestRouteUnaryCallFunction,
+  type JoorManifestRouteUnaryRequestFunction,
   type JoorManifestUnaryProtocolRequest,
   type JoorManifestUnaryProtocolRequestUnion,
   type JoorManifestRouteUnaryTransportClient,
@@ -1328,10 +1332,12 @@ import {
   type RpcManifestRouteUnaryBodyResultFor,
   type RpcManifestRouteUnaryBatchClientHeaders,
   type RpcManifestRouteUnaryBatchFunction,
+  type RpcManifestRouteUnaryCallFunction,
   type RpcManifestRouteUnaryBatchOptions,
   type RpcManifestRouteUnaryBatchOptionsTuple,
   type RpcManifestRouteUnaryBodyResultHandler,
   type RpcManifestRouteUnaryBatchRequestUnion,
+  type RpcManifestRouteUnaryRequestFunction,
   type RpcManifestRouteUnaryProtocolBatchRequest,
   type RpcManifestRouteUnaryProtocolBatchClientHeaders,
   type RpcManifestRouteUnaryProtocolBatchOptions,
@@ -1448,7 +1454,9 @@ import {
   type RpcRouteUnaryProtocolRequestUnion,
   type RpcRouteUnaryBatchClientHeaders,
   type RpcRouteUnaryBatchFunction,
+  type RpcRouteUnaryCallFunction,
   type RpcRouteUnaryBatchOptionsTuple,
+  type RpcRouteUnaryRequestFunction,
   type RpcUnaryProtocolRequest,
   type RpcUnaryProtocolRequestUnion,
   type RouteRpcTransportClient,
@@ -1486,6 +1494,8 @@ import {
   type RpcStreamRouteErrorCode,
   type RpcStreamRouteErrorDetails,
   type RpcStreamRouteEvent,
+  type RpcStreamRouteEventsFunction,
+  type RpcStreamRouteFunction,
   type RpcStreamRouteSseEvent,
   type RpcStreamRouteHasHeaders,
   type RpcStreamRouteHasResponseHeaders,
@@ -1506,6 +1516,8 @@ import {
   type RpcRouteRequestOptions,
   type RpcRouteStreamTransportClient,
   type RpcRouteUnaryTransportClient,
+  type RpcRouteStreamEventsFunction,
+  type RpcRouteStreamFunction,
   type RpcStreamRouteId,
   type RpcStreamRouteTransportClient,
   type RpcUnaryProcedure,
@@ -1516,6 +1528,7 @@ import {
   type RpcUnaryRouteBodyResultFor,
   type RpcUnaryRouteEnvelope,
   type RpcUnaryRouteEnvelopeUnion,
+  type RpcUnaryRouteCallFunction,
   type RpcUnaryRouteErrorCode,
   type RpcUnaryRouteErrorDetails,
   type RpcUnaryRouteHasHeaders,
@@ -1538,6 +1551,7 @@ import {
   type RpcUnaryRouteProtocolRequestUnion,
   type RpcUnaryRouteResponseHeaders,
   type RpcUnaryRouteRequest,
+  type RpcUnaryRouteRequestFunction,
   type RpcUnaryRouteRequestUnion,
   type RpcUnaryRouteResult,
   type RpcUnaryRouteResultUnion,
@@ -11279,13 +11293,29 @@ rootManifestClientShape.streamEvents('users.watch', { userId: '1' });
 const rootManifestRouteUnaryClientShape: RpcManifestRouteUnaryTransportClient<
   typeof manifest
 > = rootRouteUnaryClient;
+const rootManifestRouteUnaryCall: RpcManifestRouteUnaryCallFunction<
+  typeof manifest
+> = rootManifestRouteUnaryClientShape.call;
+const rootManifestRouteUnaryRequest: RpcManifestRouteUnaryRequestFunction<
+  typeof manifest
+> = rootManifestRouteUnaryClientShape.request;
 const rootManifestRouteUnaryBatch: RpcManifestRouteUnaryBatchFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.batch;
+const rootJoorManifestRouteUnaryCall: JoorManifestRouteUnaryCallFunction<
+  typeof manifest
+> = rootManifestRouteUnaryClientShape.call;
+const rootJoorManifestRouteUnaryRequest: JoorManifestRouteUnaryRequestFunction<
+  typeof manifest
+> = rootManifestRouteUnaryClientShape.request;
 const rootJoorManifestRouteUnaryBatch: JoorManifestRouteUnaryBatchFunction<
   typeof manifest
 > = rootManifestRouteUnaryClientShape.batch;
 rootManifestRouteUnaryClientShape.call('users.authenticated', { ok: true });
+rootManifestRouteUnaryCall('users.authenticated', { ok: true });
+rootJoorManifestRouteUnaryCall('users.authenticated', { ok: true });
+rootManifestRouteUnaryRequest('users.authenticated', { ok: true });
+rootJoorManifestRouteUnaryRequest('users.authenticated', { ok: true });
 rootManifestRouteUnaryClientShape.batch([
   rootManifestRouteUnaryClientShape.request('users.authenticated', {
     ok: true,
@@ -11311,8 +11341,16 @@ rootManifestUnaryClientShape.batch([
 const rootManifestRouteStreamClientShape: RpcManifestRouteStreamTransportClient<
   typeof manifest
 > = rootRouteStreamClient;
+const rootManifestRouteStream: JoorManifestRouteStreamFunction<
+  typeof manifest
+> = rootManifestRouteStreamClientShape.stream;
+const rootManifestRouteStreamEvents: JoorManifestRouteStreamEventsFunction<
+  typeof manifest
+> = rootManifestRouteStreamClientShape.streamEvents;
 rootManifestRouteStreamClientShape.stream('users.watch', { userId: '1' });
 rootManifestRouteStreamClientShape.streamEvents('users.watch', { userId: '1' });
+rootManifestRouteStream('users.watch', { userId: '1' });
+rootManifestRouteStreamEvents('users.watch', { userId: '1' });
 const rootManifestStreamClientShape: RpcManifestStreamRouteTransportClient<
   typeof manifest
 > = rootStreamRouteClient;
@@ -31077,15 +31115,45 @@ const routeClientShape: RouteRpcTransportClient<Routes> = routeClient;
 const routeUnaryClientShape: RpcRouteUnaryTransportClient<Routes> = routeClient;
 const createdRouteUnaryClientShape: RpcRouteUnaryTransportClient<Routes> =
   routeUnaryClient;
+const routeUnaryCall: RpcRouteUnaryCallFunction<Routes> =
+  routeUnaryClientShape.call;
+const routeUnaryRequestFunction: RpcRouteUnaryRequestFunction<Routes> =
+  routeUnaryClientShape.request;
 const routeUnaryBatch: RpcRouteUnaryBatchFunction<Routes> =
   routeUnaryClientShape.batch;
 const unaryRouteClientShape: RpcUnaryRouteTransportClient<Routes> =
   unaryRouteClient;
+const unaryRouteCall: RpcUnaryRouteCallFunction<Routes> =
+  unaryRouteClientShape.call;
+const unaryRouteRequestFunction: RpcUnaryRouteRequestFunction<Routes> =
+  unaryRouteClientShape.request;
 unaryRouteClientShape.call(
   'users.get',
   { id: '1' },
   { headers: { 'x-tenant-id': 'tenant-1' } }
 );
+routeUnaryCall(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+unaryRouteCall(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+routeUnaryRequestFunction(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+unaryRouteRequestFunction(
+  'users.get',
+  { id: '1' },
+  { headers: { 'x-tenant-id': 'tenant-1' } }
+);
+// @ts-expect-error route-unary call functions reject stream route ids.
+routeUnaryCall('users.watch', { userId: '1' });
 unaryRouteClientShape.batch([
   unaryRouteClientShape.request(
     'users.get',
@@ -31113,8 +31181,22 @@ const createdRouteStreamClientShape: RpcRouteStreamTransportClient<Routes> =
   routeStreamClient;
 const streamRouteClientShape: RpcStreamRouteTransportClient<Routes> =
   streamRouteClient;
+const routeStreamFunction: RpcRouteStreamFunction<Routes> =
+  routeStreamClientShape.stream;
+const routeStreamEventsFunction: RpcRouteStreamEventsFunction<Routes> =
+  routeStreamClientShape.streamEvents;
+const streamRouteFunction: RpcStreamRouteFunction<Routes> =
+  streamRouteClientShape.stream;
+const streamRouteEventsFunction: RpcStreamRouteEventsFunction<Routes> =
+  streamRouteClientShape.streamEvents;
 streamRouteClientShape.stream('users.watch', { userId: '1' });
 streamRouteClientShape.streamEvents('users.watch', { userId: '1' });
+routeStreamFunction('users.watch', { userId: '1' });
+routeStreamEventsFunction('users.watch', { userId: '1' });
+streamRouteFunction('users.watch', { userId: '1' });
+streamRouteEventsFunction('users.watch', { userId: '1' });
+// @ts-expect-error route-stream functions reject unary route ids.
+routeStreamFunction('users.get', { id: '1' });
 createdRouteUnaryClientShape.call(
   'users.get',
   { id: '1' },

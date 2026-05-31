@@ -81,6 +81,8 @@ import type {
   RpcRouteResponseHeaders,
   RpcRouteStreamBodyResult,
   RpcRouteStreamClientArgs,
+  RpcRouteStreamEventsFunction,
+  RpcRouteStreamFunction,
   RpcRouteStreamProtocolRequestBuilder,
   RpcRouteStreamProtocolRequest,
   RpcRouteStreamProtocolRequestUnion,
@@ -96,6 +98,7 @@ import type {
   RpcRouteUnaryBatchOptions,
   RpcRouteUnaryBatchOptionsTuple,
   RpcRouteUnaryBatchResults,
+  RpcRouteUnaryCallFunction,
   RpcRouteUnaryClientArgs,
   RpcRouteUnaryEnvelope,
   RpcRouteUnaryEnvelopeUnion,
@@ -108,6 +111,7 @@ import type {
   RpcRouteUnaryProtocolRequestBuilder,
   RpcRouteUnaryProtocolRequest,
   RpcRouteUnaryProtocolRequestUnion,
+  RpcRouteUnaryRequestFunction,
   RpcRouteUnaryRequestBuilder,
   RpcRouteUnaryRequest,
   RpcRouteUnaryRequestOptions,
@@ -1424,6 +1428,38 @@ export type JoorManifestUnaryRouteBatchFunction<TManifest> =
   JoorManifestRouteUnaryBatchFunction<TManifest>;
 export type JoorManifestUnaryBatchFunction<TManifest> =
   JoorManifestRouteUnaryBatchFunction<TManifest>;
+
+export type JoorManifestRouteUnaryCallFunction<TManifest> =
+  RpcRouteUnaryCallFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestUnaryRouteCallFunction<TManifest> =
+  JoorManifestRouteUnaryCallFunction<TManifest>;
+export type JoorManifestUnaryCallFunction<TManifest> =
+  JoorManifestRouteUnaryCallFunction<TManifest>;
+
+export type JoorManifestRouteUnaryRequestFunction<TManifest> =
+  RpcRouteUnaryRequestFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestUnaryRouteRequestFunction<TManifest> =
+  JoorManifestRouteUnaryRequestFunction<TManifest>;
+export type JoorManifestUnaryRequestFunction<TManifest> =
+  JoorManifestRouteUnaryRequestFunction<TManifest>;
+
+export type JoorManifestRouteStreamFunction<TManifest> =
+  RpcRouteStreamFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestStreamRouteFunction<TManifest> =
+  JoorManifestRouteStreamFunction<TManifest>;
+export type JoorManifestStreamFunction<TManifest> =
+  JoorManifestRouteStreamFunction<TManifest>;
+
+export type JoorManifestRouteStreamEventsFunction<TManifest> =
+  RpcRouteStreamEventsFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestStreamRouteEventsFunction<TManifest> =
+  JoorManifestRouteStreamEventsFunction<TManifest>;
+export type JoorManifestStreamEventsFunction<TManifest> =
+  JoorManifestRouteStreamEventsFunction<TManifest>;
 
 export type JoorManifestRouteProtocolBatchOptionsTuple<
   TManifest,
