@@ -8,6 +8,7 @@ import { build } from '../src/compiler/build.js';
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const srcRoot = join(repoRoot, 'src');
 const rootIndex = join(srcRoot, 'index.ts');
+const configSource = join(srcRoot, 'config.ts');
 const compilerEmitter = join(srcRoot, 'compiler/emit.ts');
 const manifestSource = join(srcRoot, 'manifest.ts');
 const rpcClient = join(srcRoot, 'rpc/client.ts');
@@ -1809,6 +1810,41 @@ const routeKindDispatcherCoreAliasSnippets = [
   },
 ] as const;
 
+const routeKindConfigAliasSnippets = [
+  {
+    name: 'JoorRouteUnaryConfigFor',
+    snippets: [
+      'TBody extends RpcManifestRouteUnaryBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+      'RpcManifestRouteUnaryHandlerOptionsFor<',
+    ],
+  },
+  {
+    name: 'JoorRouteStreamConfigFor',
+    snippets: [
+      'TBody extends RpcManifestRouteStreamBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+      'RpcManifestRouteStreamHandlerOptionsFor<',
+    ],
+  },
+  {
+    name: 'DefineRouteUnaryConfigFor',
+    snippets: [
+      'TBody extends RpcManifestRouteUnaryBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteUnaryRequiredRuntimeRequest<TManifest>',
+      'JoorRouteUnaryConfigFor<TManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'DefineRouteStreamConfigFor',
+    snippets: [
+      'TBody extends RpcManifestRouteStreamBody<TManifest>',
+      'TRequest extends Request = RpcManifestRouteStreamRequiredRuntimeRequest<TManifest>',
+      'JoorRouteStreamConfigFor<TManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+] as const;
+
 const generatedClientRouteKindCoreAliasSnippets = [
   {
     name: 'RouteUnaryProcedure',
@@ -2008,6 +2044,76 @@ const generatedNativeRouteKindCoreAliasSnippets = [
   {
     name: 'NativeRouteStreamClientArgs',
     snippets: ['JoorManifestRouteStreamClientArgs<NativeManifest, TId>'],
+  },
+  {
+    name: 'NativeRouteUnaryConfig',
+    snippets: ['JoorRouteUnaryConfigFor<NativeManifest, TPlugins, TBody, TRequest>'],
+  },
+  {
+    name: 'NativeRouteStreamConfig',
+    snippets: ['JoorRouteStreamConfigFor<NativeManifest, TPlugins, TBody, TRequest>'],
+  },
+  {
+    name: 'NativeRouteUnaryHandlerOptions',
+    snippets: [
+      'RpcManifestRouteUnaryHandlerOptionsFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamHandlerOptions',
+    snippets: [
+      'RpcManifestRouteStreamHandlerOptionsFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryHandlerOptionsArgsFor',
+    snippets: [
+      'TOptionsOrBody extends NativeRouteUnaryHandlerOptions<TPlugins> | NativeRouteUnaryBody',
+      'RpcManifestRouteUnaryHandlerOptionsArgsFor<NativeManifest, TPlugins, TOptionsOrBody, TBody, NativeRouteUnaryHandlerOptions<TPlugins, TBody, TRequest>, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamHandlerOptionsArgsFor',
+    snippets: [
+      'TOptionsOrBody extends NativeRouteStreamHandlerOptions<TPlugins> | NativeRouteStreamBody',
+      'RpcManifestRouteStreamHandlerOptionsArgsFor<NativeManifest, TPlugins, TOptionsOrBody, TBody, NativeRouteStreamHandlerOptions<TPlugins, TBody, TRequest>, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryHandlerHookContext',
+    snippets: [
+      'RpcManifestRouteUnaryHandlerHookContextFor<NativeManifest, TPlugins, TBody>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamHandlerHookContext',
+    snippets: [
+      'RpcManifestRouteStreamHandlerHookContextFor<NativeManifest, TPlugins, TBody>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryHandlerHooks',
+    snippets: [
+      'RpcManifestRouteUnaryHandlerHooksFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamHandlerHooks',
+    snippets: [
+      'RpcManifestRouteStreamHandlerHooksFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryMiddleware',
+    snippets: [
+      'RpcManifestRouteUnaryMiddlewareFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamMiddleware',
+    snippets: [
+      'RpcManifestRouteStreamMiddlewareFor<NativeManifest, TPlugins, TBody, TRequest>',
+    ],
   },
   {
     name: 'NativeRouteUnaryBodyResultFor',
@@ -2478,6 +2584,21 @@ describe('route public surface', () => {
   it('keeps route-kind dispatcher core aliases tied to route-specific procedures', async () => {
     const source = await readFile(rpcDispatcher, 'utf8');
     const missing = routeKindDispatcherCoreAliasSnippets.flatMap(
+      ({ name, snippets }) => {
+        const typeSource = exportedTypeSource(source, name);
+        if (typeSource.length === 0) return [`${name}: <missing>`];
+        return snippets.flatMap((snippet) =>
+          typeSource.includes(snippet) ? [] : [`${name}: ${snippet}`]
+        );
+      }
+    );
+
+    expect(missing).toEqual([]);
+  });
+
+  it('keeps route-kind config aliases tied to route-specific handler options', async () => {
+    const source = await readFile(configSource, 'utf8');
+    const missing = routeKindConfigAliasSnippets.flatMap(
       ({ name, snippets }) => {
         const typeSource = exportedTypeSource(source, name);
         if (typeSource.length === 0) return [`${name}: <missing>`];
