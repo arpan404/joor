@@ -5045,29 +5045,71 @@ const freezeClientTree = <T>(value: T, seen = new WeakSet<object>()): T => {
   Object.freeze(objectValue);
   return value;
 };
-type RouteUnaryFunctionFor<TId extends RouteUnaryId> = {
-  (...args: RouteUnaryClientArgs<TId>): Promise<RouteResult<TId>>;
-  readonly call: (...args: RouteUnaryClientArgs<TId>) => Promise<RouteResult<TId>>;
-  readonly request: (...args: RouteUnaryClientArgs<TId>) => RouteRequest<TId>;
-  readonly protocolRequest: (
-    input: RouteUnaryInput<TId>,
+export type RouteUnaryCallFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: (...args: RouteUnaryClientArgs<TRouteId>) => Promise<RouteResult<TRouteId>>;
+}[TId];
+export type UnaryRouteCallFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryCallFunction<TId>;
+export type UnaryCallFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryCallFunction<TId>;
+export type RouteUnaryRequestFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: (...args: RouteUnaryClientArgs<TRouteId>) => RouteRequest<TRouteId>;
+}[TId];
+export type UnaryRouteRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryRequestFunction<TId>;
+export type UnaryRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryRequestFunction<TId>;
+export type RouteUnaryProtocolRequestFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: (
+    input: RouteUnaryInput<TRouteId>,
     options?: ProtocolRequestOptions
-  ) => RouteUnaryProtocolRequest<TId>;
-};
+  ) => RouteUnaryProtocolRequest<TRouteId>;
+}[TId];
+export type UnaryRouteProtocolRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryProtocolRequestFunction<TId>;
+export type UnaryProtocolRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryProtocolRequestFunction<TId>;
+type RouteUnaryFunctionFor<TId extends RouteUnaryId> =
+  RouteUnaryCallFunction<TId> & {
+    readonly call: RouteUnaryCallFunction<TId>;
+    readonly request: RouteUnaryRequestFunction<TId>;
+    readonly protocolRequest: RouteUnaryProtocolRequestFunction<TId>;
+  };
 export type RouteUnaryFunction<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryFunctionFor<TRouteId>;
 }[TId];
 export type UnaryRouteFunction<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryFunction<TId>;
-type RouteStreamFunctionFor<TId extends RouteStreamId> = {
-  (...args: RouteStreamClientArgs<TId>): AsyncIterable<Stream<TId>>;
-  readonly stream: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<Stream<TId>>;
-  readonly events: (...args: RouteStreamClientArgs<TId>) => AsyncIterable<StreamSseEvent<TId>>;
-  readonly protocolRequest: (
-    input: RouteStreamInput<TId>,
+export type RouteStreamCallFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: (...args: RouteStreamClientArgs<TRouteId>) => AsyncIterable<Stream<TRouteId>>;
+}[TId];
+export type StreamRouteCallFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamCallFunction<TId>;
+export type StreamCallFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamCallFunction<TId>;
+export type RouteStreamEventsFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: (...args: RouteStreamClientArgs<TRouteId>) => AsyncIterable<StreamSseEvent<TRouteId>>;
+}[TId];
+export type StreamRouteEventsFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamEventsFunction<TId>;
+export type StreamEventsFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamEventsFunction<TId>;
+export type RouteStreamProtocolRequestFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: (
+    input: RouteStreamInput<TRouteId>,
     options?: ProtocolRequestOptions
-  ) => RouteStreamProtocolRequest<TId>;
-};
+  ) => RouteStreamProtocolRequest<TRouteId>;
+}[TId];
+export type StreamRouteProtocolRequestFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamProtocolRequestFunction<TId>;
+export type StreamProtocolRequestFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamProtocolRequestFunction<TId>;
+type RouteStreamFunctionFor<TId extends RouteStreamId> =
+  RouteStreamCallFunction<TId> & {
+    readonly stream: RouteStreamCallFunction<TId>;
+    readonly events: RouteStreamEventsFunction<TId>;
+    readonly protocolRequest: RouteStreamProtocolRequestFunction<TId>;
+  };
 export type RouteStreamFunction<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamFunctionFor<TRouteId>;
 }[TId];

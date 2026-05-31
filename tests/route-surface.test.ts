@@ -637,6 +637,24 @@ const generatedClientRouteTransportExports = [
   'RouteStreamClientOptions',
   'StreamRouteClientOptions',
   'StreamClientOptions',
+  'RouteUnaryCallFunction',
+  'UnaryRouteCallFunction',
+  'UnaryCallFunction',
+  'RouteUnaryRequestFunction',
+  'UnaryRouteRequestFunction',
+  'UnaryRequestFunction',
+  'RouteUnaryProtocolRequestFunction',
+  'UnaryRouteProtocolRequestFunction',
+  'UnaryProtocolRequestFunction',
+  'RouteStreamCallFunction',
+  'StreamRouteCallFunction',
+  'StreamCallFunction',
+  'RouteStreamEventsFunction',
+  'StreamRouteEventsFunction',
+  'StreamEventsFunction',
+  'RouteStreamProtocolRequestFunction',
+  'StreamRouteProtocolRequestFunction',
+  'StreamProtocolRequestFunction',
   'RouteUnaryTransportClient',
   'UnaryRouteTransportClient',
   'UnaryTransportClient',
@@ -2069,6 +2087,56 @@ const generatedClientRouteKindCoreAliasSnippets = [
   {
     name: 'BatchFunction',
     snippets: ['RouteUnaryBatchFunction'],
+  },
+  {
+    name: 'RouteUnaryCallFunction',
+    snippets: [
+      'RouteUnaryClientArgs<TRouteId>',
+      'Promise<RouteResult<TRouteId>>',
+    ],
+  },
+  {
+    name: 'RouteUnaryRequestFunction',
+    snippets: [
+      'RouteUnaryClientArgs<TRouteId>',
+      'RouteRequest<TRouteId>',
+    ],
+  },
+  {
+    name: 'RouteUnaryProtocolRequestFunction',
+    snippets: [
+      'RouteUnaryInput<TRouteId>',
+      'RouteUnaryProtocolRequest<TRouteId>',
+    ],
+  },
+  {
+    name: 'RouteUnaryFunction',
+    snippets: ['RouteUnaryFunctionFor<TRouteId>'],
+  },
+  {
+    name: 'RouteStreamCallFunction',
+    snippets: [
+      'RouteStreamClientArgs<TRouteId>',
+      'AsyncIterable<Stream<TRouteId>>',
+    ],
+  },
+  {
+    name: 'RouteStreamEventsFunction',
+    snippets: [
+      'RouteStreamClientArgs<TRouteId>',
+      'AsyncIterable<StreamSseEvent<TRouteId>>',
+    ],
+  },
+  {
+    name: 'RouteStreamProtocolRequestFunction',
+    snippets: [
+      'RouteStreamInput<TRouteId>',
+      'RouteStreamProtocolRequest<TRouteId>',
+    ],
+  },
+  {
+    name: 'RouteStreamFunction',
+    snippets: ['RouteStreamFunctionFor<TRouteId>'],
   },
   {
     name: 'RouteUnaryTransportCallFunction',
