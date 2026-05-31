@@ -766,41 +766,64 @@ export type NativeStreamProtocolRequest<TId extends NativeRouteStreamId = Native
 export type NativeStreamProtocolRequestUnion =
   NativeRouteStreamProtocolRequestUnion;
 export type NativeProtocolRequestOptions = RpcProtocolRequestOptions;
-export type NativeRouteProtocolRequestBuilder = <TId extends NativeRouteId>(
+export type NativeRouteProtocolRequestFunction = <TId extends NativeRouteId>(
   id: TId,
   input: NativeRouteInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteProtocolRequest<TId>;
+export type NativeProtocolRequestFunction = NativeRouteProtocolRequestFunction;
+export type NativeRouteProtocolRequestBuilder = NativeRouteProtocolRequestFunction;
 export type NativeProtocolRequestBuilder = NativeRouteProtocolRequestBuilder;
-export type NativeRouteRequestBuilder = <TId extends NativeRouteUnaryId>(
+export type NativeRouteUnaryRequestFunction = <TId extends NativeRouteUnaryId>(
   id: TId,
   ...args: NativeRouteUnaryClientArgs<NoInfer<TId>>
-) => NativeRouteRequest<TId>;
-export type NativeRouteUnaryProtocolRequestBuilder = <TId extends NativeRouteUnaryId>(
+) => NativeRouteUnaryRequest<TId>;
+export type NativeUnaryRouteRequestFunction =
+  NativeRouteUnaryRequestFunction;
+export type NativeUnaryRequestFunction = NativeRouteUnaryRequestFunction;
+export type NativeRouteRequestFunction = NativeRouteUnaryRequestFunction;
+export type NativeRouteRequestBuilder = NativeRouteRequestFunction;
+export type NativeRouteUnaryProtocolRequestFunction = <TId extends NativeRouteUnaryId>(
   id: TId,
   input: NativeRouteUnaryInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteUnaryProtocolRequest<TId>;
+export type NativeUnaryRouteProtocolRequestFunction =
+  NativeRouteUnaryProtocolRequestFunction;
+export type NativeUnaryProtocolRequestFunction =
+  NativeRouteUnaryProtocolRequestFunction;
+export type NativeRouteUnaryProtocolRequestBuilder =
+  NativeRouteUnaryProtocolRequestFunction;
 export type NativeUnaryRouteProtocolRequestBuilder =
   NativeRouteUnaryProtocolRequestBuilder;
 export type NativeUnaryProtocolRequestBuilder =
   NativeRouteUnaryProtocolRequestBuilder;
-export type NativeRouteUnaryRequestBuilder = NativeRouteRequestBuilder;
+export type NativeRouteUnaryRequestBuilder = NativeRouteUnaryRequestFunction;
 export type NativeUnaryRouteRequestBuilder = NativeRouteUnaryRequestBuilder;
-export type NativeRouteStreamProtocolRequestBuilder = <TId extends NativeRouteStreamId>(
+export type NativeRouteStreamProtocolRequestFunction = <TId extends NativeRouteStreamId>(
   id: TId,
   input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteStreamProtocolRequest<TId>;
+export type NativeStreamRouteProtocolRequestFunction =
+  NativeRouteStreamProtocolRequestFunction;
+export type NativeStreamProtocolRequestFunction =
+  NativeRouteStreamProtocolRequestFunction;
+export type NativeRouteStreamProtocolRequestBuilder =
+  NativeRouteStreamProtocolRequestFunction;
 export type NativeStreamRouteProtocolRequestBuilder =
   NativeRouteStreamProtocolRequestBuilder;
 export type NativeStreamProtocolRequestBuilder =
   NativeRouteStreamProtocolRequestBuilder;
-export type NativeRouteStreamRequestBuilder = <TId extends NativeRouteStreamId>(
+export type NativeRouteStreamRequestFunction = <TId extends NativeRouteStreamId>(
   id: TId,
   input: NativeRouteStreamInput<NoInfer<TId>>,
   options?: NativeProtocolRequestOptions
 ) => NativeRouteStreamRequest<TId>;
+export type NativeStreamRouteRequestFunction =
+  NativeRouteStreamRequestFunction;
+export type NativeStreamRequestFunction = NativeRouteStreamRequestFunction;
+export type NativeRouteStreamRequestBuilder = NativeRouteStreamRequestFunction;
 export type NativeStreamRouteRequestBuilder = NativeRouteStreamRequestBuilder;
 export const createNativeRouteProtocolRequest: NativeRouteProtocolRequestBuilder = <
   TId extends NativeRouteId,

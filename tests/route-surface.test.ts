@@ -2326,6 +2326,61 @@ const generatedNativeRouteKindCoreAliasSnippets = [
     snippets: ['JoorManifestRouteStreamClientArgs<NativeManifest, TId>'],
   },
   {
+    name: 'NativeRouteProtocolRequestFunction',
+    snippets: [
+      'NativeRouteInput<NoInfer<TId>>',
+      'NativeProtocolRequestOptions',
+      'NativeRouteProtocolRequest<TId>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryRequestFunction',
+    snippets: [
+      'NativeRouteUnaryClientArgs<NoInfer<TId>>',
+      'NativeRouteUnaryRequest<TId>',
+    ],
+  },
+  {
+    name: 'NativeRouteRequestFunction',
+    snippets: ['NativeRouteUnaryRequestFunction'],
+  },
+  {
+    name: 'NativeRouteUnaryProtocolRequestFunction',
+    snippets: [
+      'NativeRouteUnaryInput<NoInfer<TId>>',
+      'NativeProtocolRequestOptions',
+      'NativeRouteUnaryProtocolRequest<TId>',
+    ],
+  },
+  {
+    name: 'NativeRouteUnaryProtocolRequestBuilder',
+    snippets: ['NativeRouteUnaryProtocolRequestFunction'],
+  },
+  {
+    name: 'NativeRouteStreamProtocolRequestFunction',
+    snippets: [
+      'NativeRouteStreamInput<NoInfer<TId>>',
+      'NativeProtocolRequestOptions',
+      'NativeRouteStreamProtocolRequest<TId>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamProtocolRequestBuilder',
+    snippets: ['NativeRouteStreamProtocolRequestFunction'],
+  },
+  {
+    name: 'NativeRouteStreamRequestFunction',
+    snippets: [
+      'NativeRouteStreamInput<NoInfer<TId>>',
+      'NativeProtocolRequestOptions',
+      'NativeRouteStreamRequest<TId>',
+    ],
+  },
+  {
+    name: 'NativeRouteStreamRequestBuilder',
+    snippets: ['NativeRouteStreamRequestFunction'],
+  },
+  {
     name: 'NativeRouteUnaryConfig',
     snippets: ['JoorRouteUnaryConfigFor<NativeManifest, TPlugins, TBody, TRequest>'],
   },
