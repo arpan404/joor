@@ -3000,6 +3000,40 @@ export type RpcManifestUnaryBatchOptionsTuple<
     readonly RpcRouteUnaryBatchRequestUnion<JoorManifestRoutes<TManifest>>[],
 > = RpcManifestRouteUnaryBatchOptionsTuple<TManifest, TRequests>;
 
+export type RpcRouteUnaryBatchFunction<TRoutes extends RpcRouteMap> = <
+  const TRequests extends readonly [
+    ...RpcRouteUnaryBatchRequestUnion<TRoutes>[],
+  ],
+>(
+  requests: TRequests,
+  ...options: RpcRouteUnaryBatchOptionsTuple<TRoutes, NoInfer<TRequests>>
+) => Promise<RpcRouteUnaryBatchResults<TRoutes, TRequests>>;
+
+export type RpcUnaryRouteBatchFunction<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryBatchFunction<TRoutes>;
+export type RpcUnaryBatchFunction<TRoutes extends RpcRouteMap> =
+  RpcRouteUnaryBatchFunction<TRoutes>;
+
+export type RpcManifestRouteUnaryBatchFunction<
+  TManifest extends JoorManifest,
+> = <
+  const TRequests extends readonly [
+    ...RpcManifestRouteUnaryBatchRequestUnion<TManifest>[],
+  ],
+>(
+  requests: TRequests,
+  ...options: RpcManifestRouteUnaryBatchOptionsTuple<
+    TManifest,
+    NoInfer<TRequests>
+  >
+) => Promise<RpcManifestRouteUnaryBatchResults<TManifest, TRequests>>;
+
+export type RpcManifestUnaryRouteBatchFunction<
+  TManifest extends JoorManifest,
+> = RpcManifestRouteUnaryBatchFunction<TManifest>;
+export type RpcManifestUnaryBatchFunction<TManifest extends JoorManifest> =
+  RpcManifestRouteUnaryBatchFunction<TManifest>;
+
 export type RpcManifestRouteProtocolBatchOptionsTuple<
   TManifest extends JoorManifest,
   TRequests extends readonly unknown[] =
@@ -3471,12 +3505,7 @@ export interface RpcRouteUnaryTransportClient<TRoutes extends RpcRouteMap> {
       RpcRouteUnaryProcedure<TRoutes, NoInfer<TId>>
     >
   ) => RpcRouteRequest<TRoutes, TId>;
-  readonly batch: <
-    const TRequests extends readonly [...RpcRouteBatchRequestUnion<TRoutes>[]],
-  >(
-    requests: TRequests,
-    ...options: RpcRouteBatchOptionsTuple<TRoutes, NoInfer<TRequests>>
-  ) => Promise<RpcRouteBatchResults<TRoutes, TRequests>>;
+  readonly batch: RpcRouteUnaryBatchFunction<TRoutes>;
 }
 
 export interface RpcRouteStreamTransportClient<TRoutes extends RpcRouteMap> {
@@ -3536,14 +3565,7 @@ export interface RpcManifestRouteUnaryTransportClient<
       RpcManifestRouteUnaryProcedure<TManifest, NoInfer<TId>>
     >
   ) => RpcManifestRouteRequest<TManifest, TId>;
-  readonly batch: <
-    const TRequests extends readonly [
-      ...RpcManifestRouteBatchRequestUnion<TManifest>[],
-    ],
-  >(
-    requests: TRequests,
-    ...options: RpcManifestRouteBatchOptionsTuple<TManifest, NoInfer<TRequests>>
-  ) => Promise<RpcManifestRouteBatchResults<TManifest, TRequests>>;
+  readonly batch: RpcManifestRouteUnaryBatchFunction<TManifest>;
 }
 
 export type RpcManifestUnaryRouteTransportClient<

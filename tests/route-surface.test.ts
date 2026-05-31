@@ -1475,6 +1475,24 @@ const routeKindClientCoreAliasSnippets = [
     snippets: ['RpcRouteStreamClientArgsFor<TRoutes, TId>'],
   },
   {
+    name: 'RpcRouteUnaryBatchFunction',
+    snippets: [
+      'RpcRouteUnaryBatchRequestUnion<TRoutes>',
+      'RpcRouteUnaryBatchOptionsTuple<TRoutes, NoInfer<TRequests>>',
+      'RpcRouteUnaryBatchResults<TRoutes, TRequests>',
+    ],
+  },
+  {
+    name: 'RpcManifestRouteUnaryBatchFunction',
+    snippets: [
+      'RpcManifestRouteUnaryBatchRequestUnion<TManifest>',
+      'RpcManifestRouteUnaryBatchOptionsTuple<',
+      'TManifest',
+      'NoInfer<TRequests>',
+      'RpcManifestRouteUnaryBatchResults<TManifest, TRequests>',
+    ],
+  },
+  {
     name: 'RpcRouteUnaryBodyResultFor',
     snippets: [
       'RpcRouteUnaryProtocolBatchResults<TRoutes, TBody>',
@@ -1632,6 +1650,10 @@ const routeKindManifestCoreAliasSnippets = [
   {
     name: 'JoorManifestRouteStreamClientArgs',
     snippets: ['RpcRouteStreamClientArgs<JoorManifestRoutes<TManifest>, TId>'],
+  },
+  {
+    name: 'JoorManifestRouteUnaryBatchFunction',
+    snippets: ['RpcRouteUnaryBatchFunction<JoorManifestRoutes<TManifest>>'],
   },
   {
     name: 'JoorManifestRouteUnaryBodyResultFor',

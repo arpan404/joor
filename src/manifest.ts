@@ -92,6 +92,7 @@ import type {
   RpcRouteUnaryBatchRequest,
   RpcRouteUnaryBatchRequestUnion,
   RpcRouteUnaryBatchClientHeaders,
+  RpcRouteUnaryBatchFunction,
   RpcRouteUnaryBatchOptions,
   RpcRouteUnaryBatchOptionsTuple,
   RpcRouteUnaryBatchResults,
@@ -1415,6 +1416,14 @@ export type JoorManifestUnaryBatchOptionsTuple<
   TRequests extends readonly unknown[] =
     readonly JoorManifestRouteUnaryBatchRequestUnion<TManifest>[],
 > = JoorManifestRouteUnaryBatchOptionsTuple<TManifest, TRequests>;
+
+export type JoorManifestRouteUnaryBatchFunction<TManifest> =
+  RpcRouteUnaryBatchFunction<JoorManifestRoutes<TManifest>>;
+
+export type JoorManifestUnaryRouteBatchFunction<TManifest> =
+  JoorManifestRouteUnaryBatchFunction<TManifest>;
+export type JoorManifestUnaryBatchFunction<TManifest> =
+  JoorManifestRouteUnaryBatchFunction<TManifest>;
 
 export type JoorManifestRouteProtocolBatchOptionsTuple<
   TManifest,
