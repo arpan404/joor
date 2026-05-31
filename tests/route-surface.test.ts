@@ -640,9 +640,21 @@ const generatedClientRouteTransportExports = [
   'RouteUnaryTransportClient',
   'UnaryRouteTransportClient',
   'UnaryTransportClient',
+  'RouteUnaryTransportCallFunction',
+  'UnaryRouteTransportCallFunction',
+  'UnaryTransportCallFunction',
+  'RouteUnaryTransportRequestFunction',
+  'UnaryRouteTransportRequestFunction',
+  'UnaryTransportRequestFunction',
   'RouteStreamTransportClient',
   'StreamRouteTransportClient',
   'StreamTransportClient',
+  'RouteStreamTransportFunction',
+  'StreamRouteTransportFunction',
+  'StreamTransportFunction',
+  'RouteStreamTransportEventsFunction',
+  'StreamRouteTransportEventsFunction',
+  'StreamTransportEventsFunction',
   'createRouteUnaryClient',
   'createUnaryRouteClient',
   'createUnaryClient',
@@ -2057,6 +2069,34 @@ const generatedClientRouteKindCoreAliasSnippets = [
   {
     name: 'BatchFunction',
     snippets: ['RouteUnaryBatchFunction'],
+  },
+  {
+    name: 'RouteUnaryTransportCallFunction',
+    snippets: [
+      '[id: TRouteId, ...RouteUnaryClientArgs<TRouteId>]',
+      'Promise<RouteResult<TRouteId>>',
+    ],
+  },
+  {
+    name: 'RouteUnaryTransportRequestFunction',
+    snippets: [
+      '[id: TRouteId, ...RouteUnaryClientArgs<TRouteId>]',
+      'RouteRequest<TRouteId>',
+    ],
+  },
+  {
+    name: 'RouteStreamTransportFunction',
+    snippets: [
+      '[id: TRouteId, ...RouteStreamClientArgs<TRouteId>]',
+      'AsyncIterable<Stream<TRouteId>>',
+    ],
+  },
+  {
+    name: 'RouteStreamTransportEventsFunction',
+    snippets: [
+      '[id: TRouteId, ...RouteStreamClientArgs<TRouteId>]',
+      'AsyncIterable<StreamSseEvent<TRouteId>>',
+    ],
   },
   {
     name: 'RouteUnaryTransportClient',

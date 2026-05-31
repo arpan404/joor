@@ -1660,10 +1660,22 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         '"current": routeUnary("tenants.current")'
       );
       expect(clientSource).toContain(
-        'readonly call: (...args: [id: TId, ...RouteUnaryClientArgs<TId>]) => Promise<RouteResult<TId>>;'
+        'readonly call: RouteUnaryTransportCallFunction<TId>;'
       );
       expect(clientSource).toContain(
-        'readonly stream: (...args: [id: TId, ...RouteStreamClientArgs<TId>]) => AsyncIterable<Stream<TId>>;'
+        'readonly stream: RouteStreamTransportFunction<TId>;'
+      );
+      expect(clientSource).toContain(
+        'export type RouteUnaryTransportCallFunction<TId extends RouteUnaryId = RouteUnaryId> = {'
+      );
+      expect(clientSource).toContain(
+        'export type RouteUnaryTransportRequestFunction<TId extends RouteUnaryId = RouteUnaryId> = {'
+      );
+      expect(clientSource).toContain(
+        'export type RouteStreamTransportFunction<TId extends RouteStreamId = RouteStreamId> = {'
+      );
+      expect(clientSource).toContain(
+        'export type RouteStreamTransportEventsFunction<TId extends RouteStreamId = RouteStreamId> = {'
       );
       expect(clientSource).toContain(
         'Object.assign(call, { call, request, protocolRequest })'
@@ -1925,10 +1937,10 @@ export const protocolRequest = createManifestRouteUnaryProtocolRequest(
         '...args: RouteUnaryClientArgs<NoInfer<TId>>'
       );
       expect(clientSource).toContain(
-        '...args: [id: TId, ...RouteUnaryClientArgs<TId>]'
+        '...args: [id: TRouteId, ...RouteUnaryClientArgs<TRouteId>]'
       );
       expect(clientSource).toContain(
-        '...args: [id: TId, ...RouteStreamClientArgs<TId>]'
+        '...args: [id: TRouteId, ...RouteStreamClientArgs<TRouteId>]'
       );
       expect(clientSource).toContain(
         'const call = (...args: RouteUnaryClientArgs<TId>)'

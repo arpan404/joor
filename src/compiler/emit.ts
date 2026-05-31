@@ -5267,9 +5267,23 @@ export type StreamClientOptions<TRequest extends Request = RouteStreamRequiredRu
   RouteStreamClientOptions<TRequest>;
 export type RouteTransportClient = JoorManifestTransportClient<Manifest>;
 type RouteUnaryTransportFor<TId extends RouteUnaryId> = {
-  readonly call: (...args: [id: TId, ...RouteUnaryClientArgs<TId>]) => Promise<RouteResult<TId>>;
-  readonly request: (...args: [id: TId, ...RouteUnaryClientArgs<TId>]) => RouteRequest<TId>;
+  readonly call: RouteUnaryTransportCallFunction<TId>;
+  readonly request: RouteUnaryTransportRequestFunction<TId>;
 };
+export type RouteUnaryTransportCallFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: (...args: [id: TRouteId, ...RouteUnaryClientArgs<TRouteId>]) => Promise<RouteResult<TRouteId>>;
+}[TId];
+export type UnaryRouteTransportCallFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryTransportCallFunction<TId>;
+export type UnaryTransportCallFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryTransportCallFunction<TId>;
+export type RouteUnaryTransportRequestFunction<TId extends RouteUnaryId = RouteUnaryId> = {
+  [TRouteId in TId]: (...args: [id: TRouteId, ...RouteUnaryClientArgs<TRouteId>]) => RouteRequest<TRouteId>;
+}[TId];
+export type UnaryRouteTransportRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryTransportRequestFunction<TId>;
+export type UnaryTransportRequestFunction<TId extends RouteUnaryId = RouteUnaryId> =
+  RouteUnaryTransportRequestFunction<TId>;
 export type RouteUnaryTransport<TId extends RouteUnaryId = RouteUnaryId> = {
   [TRouteId in TId]: RouteUnaryTransportFor<TRouteId>;
 }[TId];
@@ -5278,9 +5292,23 @@ export type UnaryRouteTransport<TId extends RouteUnaryId = RouteUnaryId> =
 export type UnaryTransport<TId extends RouteUnaryId = RouteUnaryId> =
   RouteUnaryTransport<TId>;
 type RouteStreamTransportFor<TId extends RouteStreamId> = {
-  readonly stream: (...args: [id: TId, ...RouteStreamClientArgs<TId>]) => AsyncIterable<Stream<TId>>;
-  readonly streamEvents: (...args: [id: TId, ...RouteStreamClientArgs<TId>]) => AsyncIterable<StreamSseEvent<TId>>;
+  readonly stream: RouteStreamTransportFunction<TId>;
+  readonly streamEvents: RouteStreamTransportEventsFunction<TId>;
 };
+export type RouteStreamTransportFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: (...args: [id: TRouteId, ...RouteStreamClientArgs<TRouteId>]) => AsyncIterable<Stream<TRouteId>>;
+}[TId];
+export type StreamRouteTransportFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamTransportFunction<TId>;
+export type StreamTransportFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamTransportFunction<TId>;
+export type RouteStreamTransportEventsFunction<TId extends RouteStreamId = RouteStreamId> = {
+  [TRouteId in TId]: (...args: [id: TRouteId, ...RouteStreamClientArgs<TRouteId>]) => AsyncIterable<StreamSseEvent<TRouteId>>;
+}[TId];
+export type StreamRouteTransportEventsFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamTransportEventsFunction<TId>;
+export type StreamTransportEventsFunction<TId extends RouteStreamId = RouteStreamId> =
+  RouteStreamTransportEventsFunction<TId>;
 export type RouteStreamTransport<TId extends RouteStreamId = RouteStreamId> = {
   [TRouteId in TId]: RouteStreamTransportFor<TRouteId>;
 }[TId];
