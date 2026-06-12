@@ -5254,6 +5254,28 @@ export function createRpcTransportBodyResultHandler<
   }) as RpcTransportBodyResultHandler<TManifest>;
 }
 
+export function createRpcTransportBodyResultHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+) => RpcTransportBodyResultHandler<TManifest>;
+export function createRpcTransportBodyResultHandlerFor() {
+  return <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: HandlerOptionsWithPreflightArgs<TManifest, TPlugins>
+  ): RpcTransportBodyResultHandler<TManifest> =>
+    createRpcTransportBodyResultHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as HandlerOptionsFor<TManifest, TPlugins>,
+      args[1] ?? true
+    );
+}
+
 export function createRouteUnaryRpcTransportBodyResultHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -5300,6 +5322,43 @@ export const createUnaryRouteRpcTransportBodyResultHandler: typeof createRouteUn
 export const createUnaryRpcTransportBodyResultHandler: typeof createRouteUnaryRpcTransportBodyResultHandler =
   createRouteUnaryRpcTransportBodyResultHandler;
 
+export function createRouteUnaryRpcTransportBodyResultHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins
+  >
+) => RpcManifestRouteUnaryTransportBodyResultHandler<TManifest>;
+export function createRouteUnaryRpcTransportBodyResultHandlerFor() {
+  return <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: RpcManifestRouteUnaryHandlerOptionsWithPreflightArgs<
+      TManifest,
+      TPlugins
+    >
+  ): RpcManifestRouteUnaryTransportBodyResultHandler<TManifest> =>
+    createRouteUnaryRpcTransportBodyResultHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as RpcManifestRouteUnaryHandlerOptionsFor<
+        TManifest,
+        TPlugins
+      >,
+      args[1] ?? true
+    );
+}
+
+export const createUnaryRouteRpcTransportBodyResultHandlerFor: typeof createRouteUnaryRpcTransportBodyResultHandlerFor =
+  createRouteUnaryRpcTransportBodyResultHandlerFor;
+
+export const createUnaryRpcTransportBodyResultHandlerFor: typeof createRouteUnaryRpcTransportBodyResultHandlerFor =
+  createRouteUnaryRpcTransportBodyResultHandlerFor;
+
 export function createRouteStreamRpcTransportBodyResultHandler<
   TManifest extends RpcManifest,
   const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
@@ -5345,3 +5404,40 @@ export const createStreamRouteRpcTransportBodyResultHandler: typeof createRouteS
 
 export const createStreamRpcTransportBodyResultHandler: typeof createRouteStreamRpcTransportBodyResultHandler =
   createRouteStreamRpcTransportBodyResultHandler;
+
+export function createRouteStreamRpcTransportBodyResultHandlerFor(): <
+  TManifest extends RpcManifest,
+  const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+>(
+  manifest: TManifest,
+  ...args: RpcManifestRouteStreamHandlerOptionsWithPreflightArgs<
+    TManifest,
+    TPlugins
+  >
+) => RpcManifestRouteStreamTransportBodyResultHandler<TManifest>;
+export function createRouteStreamRpcTransportBodyResultHandlerFor() {
+  return <
+    TManifest extends RpcManifest,
+    const TPlugins extends readonly JoorPlugin<object>[] = readonly [],
+  >(
+    manifest: TManifest,
+    ...args: RpcManifestRouteStreamHandlerOptionsWithPreflightArgs<
+      TManifest,
+      TPlugins
+    >
+  ): RpcManifestRouteStreamTransportBodyResultHandler<TManifest> =>
+    createRouteStreamRpcTransportBodyResultHandler(
+      manifest,
+      (args[0] ?? {}) as unknown as RpcManifestRouteStreamHandlerOptionsFor<
+        TManifest,
+        TPlugins
+      >,
+      args[1] ?? true
+    );
+}
+
+export const createStreamRouteRpcTransportBodyResultHandlerFor: typeof createRouteStreamRpcTransportBodyResultHandlerFor =
+  createRouteStreamRpcTransportBodyResultHandlerFor;
+
+export const createStreamRpcTransportBodyResultHandlerFor: typeof createRouteStreamRpcTransportBodyResultHandlerFor =
+  createRouteStreamRpcTransportBodyResultHandlerFor;

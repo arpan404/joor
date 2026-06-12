@@ -367,6 +367,7 @@ import {
   createRpcHandlerFor,
   createRpcRequestPreflight,
   createRpcTransportBodyResultHandler,
+  createRpcTransportBodyResultHandlerFor,
   createRouteStreamRpcHandler,
   createRouteStreamRpcHandlerFor,
   createRouteStreamRpcBodyHandler,
@@ -374,6 +375,7 @@ import {
   createRouteStreamRpcBodyResultHandler,
   createRouteStreamRpcBodyResultHandlerFor,
   createRouteStreamRpcTransportBodyResultHandler,
+  createRouteStreamRpcTransportBodyResultHandlerFor,
   createRouteUnaryRpcHandler,
   createRouteUnaryRpcHandlerFor,
   createRouteUnaryRpcBodyHandler,
@@ -381,6 +383,7 @@ import {
   createRouteUnaryRpcBodyResultHandler,
   createRouteUnaryRpcBodyResultHandlerFor,
   createRouteUnaryRpcTransportBodyResultHandler,
+  createRouteUnaryRpcTransportBodyResultHandlerFor,
   createStreamRouteRpcHandler,
   createStreamRouteRpcHandlerFor,
   createStreamRouteRpcBodyHandler,
@@ -388,6 +391,7 @@ import {
   createStreamRouteRpcBodyResultHandler,
   createStreamRouteRpcBodyResultHandlerFor,
   createStreamRouteRpcTransportBodyResultHandler,
+  createStreamRouteRpcTransportBodyResultHandlerFor,
   createUnaryRouteRpcHandler,
   createUnaryRouteRpcHandlerFor,
   createUnaryRouteRpcBodyHandler,
@@ -395,6 +399,7 @@ import {
   createUnaryRouteRpcBodyResultHandler,
   createUnaryRouteRpcBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler,
+  createUnaryRouteRpcTransportBodyResultHandlerFor,
   compiledAuthenticate as rootCompiledAuthenticate,
   compiledAuthenticateUncached as rootCompiledAuthenticateUncached,
   compiledCreateContext as rootCompiledCreateContext,
@@ -1235,6 +1240,7 @@ import {
   type RpcBodyHandler,
   type RpcBodyResultHandler,
   type RpcBodyResult,
+  type RpcTransportBodyResultHandler,
   type RpcFailure,
   type RpcFrameworkErrorCode,
   type RpcManifest,
@@ -1707,26 +1713,31 @@ import {
   createRpcHandler as createRpcSubpathHandler,
   createRpcHandlerFor as createRpcSubpathHandlerFor,
   createRpcTransportBodyResultHandler as createRpcSubpathTransportBodyResultHandler,
+  createRpcTransportBodyResultHandlerFor as createRpcSubpathTransportBodyResultHandlerFor,
   createRouteStreamRpcBodyHandler as createRpcSubpathRouteStreamBodyHandler,
   createRouteStreamRpcBodyHandlerFor as createRpcSubpathRouteStreamBodyHandlerFor,
   createRouteStreamRpcBodyResultHandler as createRpcSubpathRouteStreamBodyResultHandler,
   createRouteStreamRpcBodyResultHandlerFor as createRpcSubpathRouteStreamBodyResultHandlerFor,
   createRouteStreamRpcTransportBodyResultHandler as createRpcSubpathRouteStreamTransportBodyResultHandler,
+  createRouteStreamRpcTransportBodyResultHandlerFor as createRpcSubpathRouteStreamTransportBodyResultHandlerFor,
   createRouteUnaryRpcBodyHandler as createRpcSubpathRouteUnaryBodyHandler,
   createRouteUnaryRpcBodyHandlerFor as createRpcSubpathRouteUnaryBodyHandlerFor,
   createRouteUnaryRpcBodyResultHandler as createRpcSubpathRouteUnaryBodyResultHandler,
   createRouteUnaryRpcBodyResultHandlerFor as createRpcSubpathRouteUnaryBodyResultHandlerFor,
   createRouteUnaryRpcTransportBodyResultHandler as createRpcSubpathRouteUnaryTransportBodyResultHandler,
+  createRouteUnaryRpcTransportBodyResultHandlerFor as createRpcSubpathRouteUnaryTransportBodyResultHandlerFor,
   createStreamRouteRpcBodyHandler as createRpcSubpathStreamRouteBodyHandler,
   createStreamRouteRpcBodyHandlerFor as createRpcSubpathStreamRouteBodyHandlerFor,
   createStreamRouteRpcBodyResultHandler as createRpcSubpathStreamRouteBodyResultHandler,
   createStreamRouteRpcBodyResultHandlerFor as createRpcSubpathStreamRouteBodyResultHandlerFor,
   createStreamRouteRpcTransportBodyResultHandler as createRpcSubpathStreamRouteTransportBodyResultHandler,
+  createStreamRouteRpcTransportBodyResultHandlerFor as createRpcSubpathStreamRouteTransportBodyResultHandlerFor,
   createUnaryRouteRpcBodyHandler as createRpcSubpathUnaryRouteBodyHandler,
   createUnaryRouteRpcBodyHandlerFor as createRpcSubpathUnaryRouteBodyHandlerFor,
   createUnaryRouteRpcBodyResultHandler as createRpcSubpathUnaryRouteBodyResultHandler,
   createUnaryRouteRpcBodyResultHandlerFor as createRpcSubpathUnaryRouteBodyResultHandlerFor,
   createUnaryRouteRpcTransportBodyResultHandler as createRpcSubpathUnaryRouteTransportBodyResultHandler,
+  createUnaryRouteRpcTransportBodyResultHandlerFor as createRpcSubpathUnaryRouteTransportBodyResultHandlerFor,
   createManifestRouteProtocolRequest as createRpcSubpathManifestRouteProtocolRequest,
   createManifestRouteRequest as createRpcSubpathManifestRouteRequest,
   createManifestRouteStreamProtocolRequest as createRpcSubpathManifestRouteStreamProtocolRequest,
@@ -16420,6 +16431,11 @@ const rpcTransportResultHandler = createRpcTransportBodyResultHandler(
   manifest,
   handlerOptions
 );
+const createRpcTransportResultHandler =
+  createRpcTransportBodyResultHandlerFor();
+const rpcTransportResultHandlerFromFactory: RpcTransportBodyResultHandler<
+  typeof manifest
+> = createRpcTransportResultHandler(manifest, handlerOptions);
 const routeUnaryRpcTransportResultHandler =
   createRouteUnaryRpcTransportBodyResultHandler(
     manifest,
@@ -16437,6 +16453,34 @@ const routeStreamRpcTransportResultHandler =
   );
 const streamRouteRpcTransportResultHandler =
   createStreamRouteRpcTransportBodyResultHandler(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+const routeUnaryRpcTransportResultHandlerFor =
+  createRouteUnaryRpcTransportBodyResultHandlerFor();
+const unaryRouteRpcTransportResultHandlerFor =
+  createUnaryRouteRpcTransportBodyResultHandlerFor();
+const routeStreamRpcTransportResultHandlerFor =
+  createRouteStreamRpcTransportBodyResultHandlerFor();
+const streamRouteRpcTransportResultHandlerFor =
+  createStreamRouteRpcTransportBodyResultHandlerFor();
+const routeUnaryRpcTransportResultHandlerFromFactory =
+  routeUnaryRpcTransportResultHandlerFor(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
+const unaryRouteRpcTransportResultHandlerFromFactory =
+  unaryRouteRpcTransportResultHandlerFor(
+    manifest,
+    manifestUnaryRouteHandlerOptions
+  );
+const routeStreamRpcTransportResultHandlerFromFactory =
+  routeStreamRpcTransportResultHandlerFor(
+    manifest,
+    manifestStreamRouteHandlerOptions
+  );
+const streamRouteRpcTransportResultHandlerFromFactory =
+  streamRouteRpcTransportResultHandlerFor(
     manifest,
     manifestStreamRouteHandlerOptions
   );
@@ -16460,8 +16504,32 @@ const rpcSubpathStreamRouteRpcTransportResultHandler =
     manifest,
     rpcSubpathManifestStreamRouteHandlerOptions
   );
+const rpcSubpathTransportResultHandlerFromFactory =
+  createRpcSubpathTransportBodyResultHandlerFor()(manifest, handlerOptions);
+const rpcSubpathRouteUnaryRpcTransportResultHandlerFromFactory =
+  createRpcSubpathRouteUnaryTransportBodyResultHandlerFor()(
+    manifest,
+    rpcSubpathManifestUnaryRouteHandlerOptions
+  );
+const rpcSubpathRouteStreamRpcTransportResultHandlerFromFactory =
+  createRpcSubpathRouteStreamTransportBodyResultHandlerFor()(
+    manifest,
+    rpcSubpathManifestStreamRouteHandlerOptions
+  );
+const rpcSubpathUnaryRouteRpcTransportResultHandlerFromFactory =
+  createRpcSubpathUnaryRouteTransportBodyResultHandlerFor()(
+    manifest,
+    rpcSubpathManifestUnaryRouteHandlerOptions
+  );
+const rpcSubpathStreamRouteRpcTransportResultHandlerFromFactory =
+  createRpcSubpathStreamRouteTransportBodyResultHandlerFor()(
+    manifest,
+    rpcSubpathManifestStreamRouteHandlerOptions
+  );
 // @ts-expect-error service-dependent manifests require matching transport handler plugins.
 createRpcTransportBodyResultHandler(manifest);
+// @ts-expect-error service-dependent manifests require matching transport handler factory plugins.
+createRpcTransportResultHandler(manifest);
 Promise.resolve(
   rpcTransportResultHandler(createFetchRequestSourceForTypes(), {
     id: 'users.get',
@@ -16474,6 +16542,9 @@ Promise.resolve(
   }
 });
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
+  { id: 'users.authenticated', input: { ok: true } },
+]);
+rpcTransportResultHandlerFromFactory(createFetchRequestSourceForTypes(), [
   { id: 'users.authenticated', input: { ok: true } },
 ]);
 rpcTransportResultHandler(createFetchRequestSourceForTypes(), [
@@ -16496,6 +16567,22 @@ streamRouteRpcTransportResultHandler(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
+routeUnaryRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+unaryRouteRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+routeStreamRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+streamRouteRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
 rpcSubpathRouteUnaryRpcTransportResultHandler(
   createFetchRequestSourceForTypes(),
   manifestUnaryRouteBody
@@ -16509,6 +16596,26 @@ rpcSubpathUnaryRouteRpcTransportResultHandler(
   manifestUnaryRouteBody
 );
 rpcSubpathStreamRouteRpcTransportResultHandler(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+rpcSubpathTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestRouteBody
+);
+rpcSubpathRouteUnaryRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rpcSubpathRouteStreamRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestStreamRouteBody
+);
+rpcSubpathUnaryRouteRpcTransportResultHandlerFromFactory(
+  createFetchRequestSourceForTypes(),
+  manifestUnaryRouteBody
+);
+rpcSubpathStreamRouteRpcTransportResultHandlerFromFactory(
   createFetchRequestSourceForTypes(),
   manifestStreamRouteBody
 );
