@@ -20,6 +20,7 @@ export { defineManifest } from './manifest.js';
 export { defineProcedure } from './procedure/define.js';
 export { errorStatus } from './procedure/errors.js';
 export { failure, ok } from './procedure/result.js';
+export { otp } from './packages/otp/otp.js';
 export {
   createClient,
   createManifestClient,
