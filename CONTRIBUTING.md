@@ -38,7 +38,6 @@ To ensure consistency across development environments, please follow these steps
 1. **Environment Setup**
    - Ensure you have Node.js version **22.13.0** or any LTS version above **18** installed.
 2. **Cloning and Setup**
-
    - Fork the repository on GitHub.
    - Clone your fork to your local machine:
      ```
@@ -50,7 +49,6 @@ To ensure consistency across development environments, please follow these steps
      ```
 
 3. **Building the Project**
-
    - Execute the build process:
      ```
      npm run build
@@ -62,7 +60,6 @@ To ensure consistency across development environments, please follow these steps
      ```
 
 4. **Linking Joor for Testing**
-
    - Go to the desired playground folder:
      ```
      cd dev/playground/ground*  # Choose your preferred ground

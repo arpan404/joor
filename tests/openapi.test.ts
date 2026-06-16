@@ -1,0 +1,490 @@
+import { describe, expect, it } from 'vitest';
+import getUser from './fixtures/basic-app/rpc/users/get.rpc.js';
+import watchUser from './fixtures/basic-app/rpc/users/watch.rpc.js';
+import { createAiDocs } from '../src/compiler/ai-docs.js';
+import { createOpenApiDocument } from '../src/compiler/openapi.js';
+
+const manifest = {
+  procedures: [
+    {
+      id: 'users.get',
+      importPath: '/tmp/users/get.rpc.ts',
+      exportName: 'users_get',
+      procedure: getUser,
+    },
+    {
+      id: 'users.watch',
+      importPath: '/tmp/users/watch.rpc.ts',
+      exportName: 'users_watch',
+      procedure: watchUser,
+    },
+  ],
+};
+
+describe('openapi and ai docs', () => {
+  it('documents generated client paths for non-identifier route segments', () => {
+    const dashedRouteManifest = {
+      procedures: [
+        {
+          id: 'teams.active-users',
+          importPath: '/tmp/teams/active-users.rpc.ts',
+          exportName: 'teams_active_users',
+          procedure: watchUser,
+        },
+      ],
+    };
+
+    const openapi = createOpenApiDocument(dashedRouteManifest);
+    const aiDocs = createAiDocs(dashedRouteManifest);
+
+    expect(openapi).toMatchObject({
+      paths: {
+        '/rpc': {
+          post: {
+            'x-joor-procedures': [
+              expect.objectContaining({
+                id: 'teams.active-users',
+                client: expect.objectContaining({
+                  path: ['teams', 'active-users'],
+                  callable: expect.objectContaining({
+                    data: 'client.teams["active-users"](input, options?)',
+                    events:
+                      'client.teams["active-users"].events(input, options?)',
+                    protocolRequest:
+                      'client.teams["active-users"].protocolRequest(input, options?)',
+                  }),
+                }),
+              }),
+            ],
+          },
+        },
+      },
+    });
+    expect(aiDocs).toMatchObject({
+      procedures: [
+        expect.objectContaining({
+          id: 'teams.active-users',
+          client: expect.objectContaining({
+            path: ['teams', 'active-users'],
+            callable: expect.objectContaining({
+              data: 'client.teams["active-users"](input, options?)',
+              events: 'client.teams["active-users"].events(input, options?)',
+              protocolRequest:
+                'client.teams["active-users"].protocolRequest(input, options?)',
+            }),
+          }),
+        }),
+      ],
+    });
+  });
+
+  it('documents the configured rpc path', () => {
+    const openapi = createOpenApiDocument(manifest, { path: '/api/rpc' });
+    const aiDocs = createAiDocs(manifest, { path: '/api/rpc' });
+
+    expect(openapi).toMatchObject({
+      paths: {
+        '/api/rpc': expect.any(Object),
+      },
+    });
+    expect(openapi['paths']).not.toHaveProperty('/rpc');
+    expect(aiDocs).toMatchObject({
+      transport: {
+        endpoint: '/api/rpc',
+      },
+    });
+  });
+
+  it('generates openapi', () => {
+    const document = createOpenApiDocument(manifest);
+
+    expect(document['openapi']).toBe('3.1.0');
+    expect(document['components']).toBeTypeOf('object');
+    expect(document).toMatchObject({
+      components: {
+        schemas: {
+          RpcRequest: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersGetRequest' },
+              { $ref: '#/components/schemas/UsersWatchRequest' },
+            ],
+          },
+          RpcResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersGetResponse' },
+              { $ref: '#/components/schemas/UsersWatchResponse' },
+            ],
+          },
+          RpcStreamEvent: {
+            oneOf: [{ $ref: '#/components/schemas/UsersWatchStreamEvent' }],
+          },
+          UsersGetRequest: {
+            required: ['id', 'input'],
+            properties: {
+              id: { const: 'users.get' },
+              input: { $ref: '#/components/schemas/UsersGetInput' },
+            },
+          },
+          UsersWatchRequest: {
+            properties: {
+              id: { const: 'users.watch' },
+              input: { $ref: '#/components/schemas/UsersWatchInput' },
+            },
+          },
+          UsersGetSuccess: {
+            required: ['ok', 'id', 'data', 'traceId', 'headers'],
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.get' },
+              data: { $ref: '#/components/schemas/UsersGetOutput' },
+              headers: { $ref: '#/components/schemas/UsersGetResponseHeaders' },
+            },
+          },
+          UsersGetFailure: {
+            properties: {
+              ok: { const: false },
+              id: { const: 'users.get' },
+              error: { $ref: '#/components/schemas/UsersGetError' },
+            },
+          },
+          UsersGetError: {
+            oneOf: expect.arrayContaining([
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { const: 'NOT_FOUND' },
+                  details: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      message: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              { $ref: '#/components/schemas/RpcFrameworkError' },
+            ]),
+          },
+          UsersGetResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersGetSuccess' },
+              { $ref: '#/components/schemas/UsersGetFailure' },
+            ],
+          },
+          UsersWatchSuccess: {
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.watch' },
+            },
+          },
+          UsersWatchResponse: {
+            oneOf: [
+              { $ref: '#/components/schemas/UsersWatchSuccess' },
+              { $ref: '#/components/schemas/UsersWatchFailure' },
+            ],
+          },
+          UsersWatchStreamEvent: {
+            oneOf: [
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'data' },
+                  data: { $ref: '#/components/schemas/UsersWatchStream' },
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'error' },
+                  data: { $ref: '#/components/schemas/UsersWatchFailure' },
+                },
+                additionalProperties: false,
+              },
+              {
+                type: 'object',
+                required: ['event', 'data'],
+                properties: {
+                  event: { const: 'done' },
+                  data: {
+                    type: 'object',
+                    additionalProperties: false,
+                  },
+                },
+                additionalProperties: false,
+              },
+            ],
+          },
+        },
+      },
+      paths: {
+        '/rpc': {
+          post: {
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: {
+                    oneOf: [
+                      { $ref: '#/components/schemas/RpcRequest' },
+                      {
+                        type: 'array',
+                        items: { $ref: '#/components/schemas/RpcRequest' },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {
+                    schema: {
+                      oneOf: [
+                        { $ref: '#/components/schemas/RpcResponse' },
+                        {
+                          type: 'array',
+                          items: { $ref: '#/components/schemas/RpcResponse' },
+                        },
+                      ],
+                    },
+                  },
+                  'text/event-stream': {
+                    schema: { type: 'string' },
+                    'x-joor-stream-event-schema': {
+                      $ref: '#/components/schemas/RpcStreamEvent',
+                    },
+                  },
+                },
+              },
+            },
+            'x-joor-procedures': expect.arrayContaining([
+              expect.objectContaining({
+                id: 'users.get',
+                requestRef: '#/components/schemas/UsersGetRequest',
+                responseRef: '#/components/schemas/UsersGetResponse',
+                successRef: '#/components/schemas/UsersGetSuccess',
+                failureRef: '#/components/schemas/UsersGetFailure',
+                errorRef: '#/components/schemas/UsersGetError',
+                client: expect.objectContaining({
+                  kind: 'unary',
+                  routeId: 'users.get',
+                  path: ['users', 'get'],
+                  callable: expect.objectContaining({
+                    result: 'client.users.get(input, options?)',
+                    protocolRequest:
+                      'client.users.get.protocolRequest(input, options?)',
+                  }),
+                  transport: expect.objectContaining({
+                    result: 'transport.call("users.get", input, options?)',
+                    batch: 'transport.batch([request], options?)',
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                id: 'users.watch',
+                requestRef: '#/components/schemas/UsersWatchRequest',
+                responseRef: '#/components/schemas/UsersWatchResponse',
+                streamEventRef: '#/components/schemas/UsersWatchStreamEvent',
+                client: expect.objectContaining({
+                  kind: 'stream',
+                  routeId: 'users.watch',
+                  path: ['users', 'watch'],
+                  callable: expect.objectContaining({
+                    data: 'client.users.watch(input, options?)',
+                    events: 'client.users.watch.events(input, options?)',
+                  }),
+                  transport: expect.objectContaining({
+                    data: 'transport.stream("users.watch", input, options?)',
+                    events:
+                      'transport.streamEvents("users.watch", input, options?)',
+                  }),
+                }),
+              }),
+            ]),
+          },
+        },
+      },
+    });
+  });
+
+  it('generates ai docs', () => {
+    const document = createAiDocs(manifest);
+
+    expect(document['framework']).toBe('joor');
+    expect(document['schemaVersion']).toBe('0.1.0');
+    expect(document).toMatchObject({
+      procedures: [
+        {
+          id: 'users.get',
+          client: {
+            kind: 'unary',
+            routeId: 'users.get',
+            path: ['users', 'get'],
+            callable: {
+              result: 'client.users.get(input, options?)',
+              call: 'client.users.get.call(input, options?)',
+              request: 'client.users.get.request(input, options?)',
+              protocolRequest:
+                'client.users.get.protocolRequest(input, options?)',
+            },
+            transport: {
+              result: 'transport.call("users.get", input, options?)',
+              request: 'transport.request("users.get", input, options?)',
+              batch: 'transport.batch([request], options?)',
+            },
+          },
+          inputSchema: {
+            properties: {
+              id: { type: 'string', format: 'uuid' },
+            },
+          },
+          requestSchema: {
+            required: ['id', 'input'],
+            properties: {
+              id: { const: 'users.get' },
+              input: {
+                properties: {
+                  id: { type: 'string', format: 'uuid' },
+                },
+              },
+            },
+          },
+          successSchema: {
+            required: ['ok', 'id', 'data', 'traceId', 'headers'],
+            properties: {
+              ok: { const: true },
+              id: { const: 'users.get' },
+              data: {
+                properties: {
+                  name: { type: 'string' },
+                },
+              },
+              headers: {
+                properties: {
+                  'cache-control': { type: 'string' },
+                },
+              },
+            },
+          },
+          errorSchema: {
+            oneOf: expect.arrayContaining([
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { const: 'NOT_FOUND' },
+                  details: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      message: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  code: { type: 'string' },
+                }),
+              }),
+            ]),
+          },
+          failureSchema: {
+            properties: {
+              ok: { const: false },
+              id: { const: 'users.get' },
+            },
+          },
+          responseSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  ok: { const: true },
+                  id: { const: 'users.get' },
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  ok: { const: false },
+                  id: { const: 'users.get' },
+                }),
+              }),
+            ],
+          },
+        },
+        {
+          id: 'users.watch',
+          client: {
+            kind: 'stream',
+            routeId: 'users.watch',
+            path: ['users', 'watch'],
+            callable: {
+              data: 'client.users.watch(input, options?)',
+              stream: 'client.users.watch.stream(input, options?)',
+              events: 'client.users.watch.events(input, options?)',
+              protocolRequest:
+                'client.users.watch.protocolRequest(input, options?)',
+            },
+            transport: {
+              data: 'transport.stream("users.watch", input, options?)',
+              events: 'transport.streamEvents("users.watch", input, options?)',
+            },
+          },
+          requestSchema: {
+            properties: {
+              id: { const: 'users.watch' },
+              input: {
+                properties: {
+                  userId: { type: 'string' },
+                },
+              },
+            },
+          },
+          streamEventSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'data' },
+                  data: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      userId: { type: 'string' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'error' },
+                  data: expect.objectContaining({
+                    properties: expect.objectContaining({
+                      id: { const: 'users.watch' },
+                    }),
+                  }),
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  event: { const: 'done' },
+                  data: {
+                    type: 'object',
+                    additionalProperties: false,
+                  },
+                }),
+              }),
+            ],
+          },
+          responseSchema: {
+            oneOf: [
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  id: { const: 'users.watch' },
+                }),
+              }),
+              expect.objectContaining({
+                properties: expect.objectContaining({
+                  id: { const: 'users.watch' },
+                }),
+              }),
+            ],
+          },
+        },
+      ],
+    });
+  });
+});

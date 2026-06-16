@@ -1,5 +1,3 @@
-import logger from '@/helpers/joorLogger';
-
 /**
  * Utility function to generate an OTP of a given length and character set.
  * @param length - The desired length of the OTP.
@@ -20,7 +18,7 @@ function generate(length: number, charSet: string): string {
  */
 function validateLength(length: number): number {
   if (!Number.isInteger(length) || length < 4 || length > 30) {
-    logger.warn(`Invalid OTP length: ${length}. Using default length: 8.`);
+    console.warn(`Invalid OTP length: ${length}. Using default length: 8.`);
     return 8; // Default length
   }
 
@@ -82,7 +80,7 @@ export const otp = {
           : '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
       if (validCharSet !== charSet) {
-        logger.warn(
+        console.warn(
           `Invalid character set: "${charSet}". Using default character set.`
         );
       }

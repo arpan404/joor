@@ -1,29 +1,61 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "lib": ["ES2020"],
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": false,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "sourceMap": true,
     "declaration": true,
-    "noEmit": false,
-
-    "outDir": "./build",
+    "declarationMap": true,
+    "noEmit": true,
+    "outDir": "./dist",
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "joor": ["./src/index.ts"],
+      "joor/client": ["./src/rpc/client.ts"],
+      "joor/auth": ["./src/auth/index.ts"],
+      "joor/rpc": ["./src/rpc/index.ts"],
+      "joor/manifest": ["./src/manifest.ts"],
+      "joor/procedure": ["./src/procedure/index.ts"],
+      "joor/schema": ["./src/schema/index.ts"],
+      "joor/context": ["./src/context/index.ts"],
+      "joor/config": ["./src/config.ts"],
+      "joor/runtime": ["./src/runtime/index.ts"],
+      "joor/runtime/*": ["./src/runtime/*.ts"],
+      "joor/compiler": ["./src/compiler/index.ts"],
+      "@/*": ["./src/*"]
+    },
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ]
   },
-  "include": ["src/**/*", "tests/**/*", "jest.config.ts", "dev"],
-  "exclude": ["node_modules", "build"]
+  "include": ["src/**/*", "tests/**/*", "examples/**/*"],
+  "exclude": ["node_modules", "dist", ".joor", "**/.joor"]
 }

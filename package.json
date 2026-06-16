@@ -1,80 +1,188 @@
 {
   "name": "joor",
-  "version": "0.0.1",
-  "description": "Joor is a full-fledged backend web framework for small to enterprise-level projects. Joor.js provides blazing fast responsiveness to the web app with many built-in features.",
-  "author": "Joor",
+  "version": "0.0.0-alpha",
+  "description": "A Fetch-native, AOT-generated, type-safe RPC backend framework.",
+  "homepage": "https://github.com/arpan404/joor#readme",
+  "bugs": {
+    "url": "https://github.com/arpan404/joor/issues"
+  },
   "license": "MIT",
-  "module": "index.ts",
-  "type": "module",
-  "main": "./release/src/index.js",
-  "files": [
-    "src"
-  ],
-  "scripts": {
-    "build": "tsx dev/scripts/build.ts",
-    "compile": "tsc --project tsconfig.build.json && tsc-alias",
-    "setup": "node dev/scripts/setup.js",
-    "format": "prettier --write .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky",
-    "test": "jest",
-    "prepublishOnly": "npm run build",
-    "link": "npm link"
-  },
-  "lint-staged": {
-    "*.{js,ts}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0",
-    "@eslint/js": "^9.18.0",
-    "@types/eslint-config-prettier": "^6.11.3",
-    "@types/inquirer": "^9.0.7",
-    "@types/jest": "^29.5.14",
-    "@types/mime-types": "^2.1.4",
-    "@types/node": "^20.10.0",
-    "@typescript-eslint/eslint-plugin": "^8.21.0",
-    "@typescript-eslint/parser": "^8.21.0",
-    "eslint": "^9.19.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-jest": "^28.11.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^5.2.2",
-    "eslint-plugin-promise": "^7.2.1",
-    "eslint-plugin-security": "^3.0.1",
-    "eslint-plugin-unicorn": "^56.0.1",
-    "globals": "^15.14.0",
-    "husky": "^9.1.7",
-    "jest": "^29.7.0",
-    "lint-staged": "^15.4.1",
-    "prettier": "^3.4.2",
-    "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
-    "tsc-alias": "^1.8.10",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
-  },
+  "author": "Joor",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arpan404/joor.git"
   },
-  "bugs": {
-    "url": "https://github.com/arpan404/joor/issues"
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "joor": "./dist/cli/index.js"
   },
-  "homepage": "https://github.com/arpan404/joor#readme",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./dist/rpc/client.d.ts",
+      "import": "./dist/rpc/client.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.js"
+    },
+    "./rpc": {
+      "types": "./dist/rpc/index.d.ts",
+      "import": "./dist/rpc/index.js"
+    },
+    "./manifest": {
+      "types": "./dist/manifest.d.ts",
+      "import": "./dist/manifest.js"
+    },
+    "./procedure": {
+      "types": "./dist/procedure/index.d.ts",
+      "import": "./dist/procedure/index.js"
+    },
+    "./schema": {
+      "types": "./dist/schema/index.d.ts",
+      "import": "./dist/schema/index.js"
+    },
+    "./context": {
+      "types": "./dist/context/index.d.ts",
+      "import": "./dist/context/index.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime/index.d.ts",
+      "import": "./dist/runtime/index.js"
+    },
+    "./runtime/aws-lambda": {
+      "types": "./dist/runtime/aws-lambda.d.ts",
+      "import": "./dist/runtime/aws-lambda.js"
+    },
+    "./runtime/body": {
+      "types": "./dist/runtime/body.d.ts",
+      "import": "./dist/runtime/body.js"
+    },
+    "./runtime/elysia": {
+      "types": "./dist/runtime/elysia.d.ts",
+      "import": "./dist/runtime/elysia.js"
+    },
+    "./runtime/express": {
+      "types": "./dist/runtime/express.d.ts",
+      "import": "./dist/runtime/express.js"
+    },
+    "./runtime/fastify": {
+      "types": "./dist/runtime/fastify.d.ts",
+      "import": "./dist/runtime/fastify.js"
+    },
+    "./runtime/hono": {
+      "types": "./dist/runtime/hono.d.ts",
+      "import": "./dist/runtime/hono.js"
+    },
+    "./runtime/koa": {
+      "types": "./dist/runtime/koa.d.ts",
+      "import": "./dist/runtime/koa.js"
+    },
+    "./runtime/fetch": {
+      "types": "./dist/runtime/fetch.d.ts",
+      "import": "./dist/runtime/fetch.js"
+    },
+    "./runtime/node": {
+      "types": "./dist/runtime/node.d.ts",
+      "import": "./dist/runtime/node.js"
+    },
+    "./runtime/response": {
+      "types": "./dist/runtime/response.d.ts",
+      "import": "./dist/runtime/response.js"
+    },
+    "./runtime/bun": {
+      "types": "./dist/runtime/bun.d.ts",
+      "import": "./dist/runtime/bun.js"
+    },
+    "./runtime/compiled": {
+      "types": "./dist/runtime/compiled.d.ts",
+      "import": "./dist/runtime/compiled.js"
+    },
+    "./runtime/deno": {
+      "types": "./dist/runtime/deno.d.ts",
+      "import": "./dist/runtime/deno.js"
+    },
+    "./runtime/deno-transport": {
+      "types": "./dist/runtime/deno-transport.d.ts",
+      "import": "./dist/runtime/deno-transport.js"
+    },
+    "./runtime/deno-compiled-transport": {
+      "types": "./dist/runtime/deno-compiled-transport.d.ts",
+      "import": "./dist/runtime/deno-compiled-transport.js"
+    },
+    "./runtime/cloudflare": {
+      "types": "./dist/runtime/cloudflare.d.ts",
+      "import": "./dist/runtime/cloudflare.js"
+    },
+    "./runtime/vercel": {
+      "types": "./dist/runtime/vercel.d.ts",
+      "import": "./dist/runtime/vercel.js"
+    },
+    "./runtime/next": {
+      "types": "./dist/runtime/next.d.ts",
+      "import": "./dist/runtime/next.js"
+    },
+    "./compiler": {
+      "types": "./dist/compiler/index.d.ts",
+      "import": "./dist/compiler/index.js"
+    },
+    "./runtime/netlify": {
+      "types": "./dist/runtime/netlify.d.ts",
+      "import": "./dist/runtime/netlify.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "mime-types": "^2.1.35",
-    "socket.io": "^4.8.1"
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "lint": "biome lint . && npm run typecheck",
+    "lint:fix": "biome lint . --write && oxfmt . --write",
+    "format": "oxfmt . --write",
+    "format:check": "oxfmt . --check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "benchmark:example": "tsx examples/ai-native-backend/benchmark.ts",
+    "benchmark:frameworks": "tsx examples/ai-native-backend/framework-benchmark.ts",
+    "benchmark:bun": "bun examples/ai-native-backend/bun-framework-benchmark.ts",
+    "benchmark:deno": "npm run build && npm run joor -- build --config examples/ai-native-backend/joor.config.ts --out examples/ai-native-backend/.joor && npm run joor -- build --config examples/ai-native-backend/joor.trusted.config.ts --out examples/ai-native-backend/.joor-trusted && npm run joor -- build --config examples/ai-native-backend/joor.bare.config.ts --out examples/ai-native-backend/.joor-bare && deno run --allow-net --allow-read --allow-env examples/ai-native-backend/deno-framework-benchmark.ts",
+    "benchmark:matrix:5": "BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:example && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:frameworks && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:bun && BENCHMARK_RUNS=5 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:deno",
+    "benchmark:matrix:10": "BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:example && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:frameworks && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:bun && BENCHMARK_RUNS=10 BENCHMARK_SETTINGS=1000x25,5000x100 npm run benchmark:deno",
+    "joor": "tsx src/cli/index.ts",
+    "prepare": "husky",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
-  "exports": {
-    "./middlewares": "./src/middlewares/index.js"
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.14",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@effect/language-service": "^0.81.0",
+    "@trpc/server": "^11.17.0",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.10.0",
+    "elysia": "^1.4.28",
+    "express": "^5.2.1",
+    "fastify": "^5.8.5",
+    "hono": "^4.12.16",
+    "husky": "^9.1.7",
+    "oxfmt": "^0.47.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.7.3",
+    "vitest": "^4.0.14",
+    "zod": "^4.4.2"
   }
 }
